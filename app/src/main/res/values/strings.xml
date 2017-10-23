@@ -1,0 +1,27 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">Calls</string>
+    <string name="nc_bottom_navigation_title_contacts">Contacts</string>
+    <string name="nc_bottom_navigation_title_settings">Settings</string>
+
+    <!-- Server selection -->
+    <string name="nc_appended_server_url">server URL</string>
+    <string name="nc_server_url_prefix">Please enter http:// or https:// before the hostname</string>
+    <string name="nc_server_not_installed">Please finish your %1$s installation</string>
+    <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
+    <string name="nc_server_maintenance">Please bring your %1$s out of maintenance</string>
+    <string name="nc_server_not_nc">%1$s! only works with %2$s servers</string>
+
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Display name fetched</string>
+    <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
+    <string name="nc_nextcloud_talk_app_installed">%1$s app found</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s app not installed, aborting</string>
+    <string name="nc_display_name_stored">Display name stored</string>
+    <string name="nc_display_name_not_stored">Display name not stored, aborting</string>
+
+    <string name="nc_invited">Invited</string>
+
+    <string name="nc_search">Search</string>
+
+</resources>

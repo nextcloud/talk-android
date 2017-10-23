@@ -1,0 +1,13 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="display_target_image_size">200dp</dimen>
+    <dimen name="display_target_image_margin">24dp</dimen>
+
+    <!-- Custom transition dimensions -->
+    <dimen name="padding_normal">16dp</dimen>
+    <dimen name="padding_between_elements">8dp</dimen>
+
+</resources>

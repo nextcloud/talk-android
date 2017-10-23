@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Set before a release -->
+    <string name="nc_talk_database_encryption_key">mario</string>
+    <string name="nc_talk_login_scheme">nc</string>
+
+    <string name="nc_app_name">Nextcloud Talk</string>
+    <string name="nc_server_product_name">Nextcloud</string>
+
+    <color name="background_color">@color/per70white</color>
+</resources>
