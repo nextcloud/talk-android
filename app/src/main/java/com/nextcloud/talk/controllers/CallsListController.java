@@ -249,7 +249,7 @@ public class CallsListController extends BaseController implements SearchView.On
                             }, throwable -> {
                                 if (searchItem != null) {
                                     searchItem.setVisible(false);
-                                 }
+                                }
                                 dispose(roomsQueryDisposable);
                             }
                             , () -> {
@@ -265,19 +265,8 @@ public class CallsListController extends BaseController implements SearchView.On
                                         roomItems.add(new RoomItem(room, userEntity));
                                     }
 
-                                    if (!TextUtils.isEmpty(adapter.getSearchText()) && searchItem != null && searchView != null) {
-                                        searchItem.expandActionView();
-                                        searchView.setQuery(adapter.getSearchText(), false);
-                                        recyclerView.setAdapter(null);
-                                        adapter.updateDataSet(roomItems, false);
-                                        onQueryTextSubmit(adapter.getSearchText());
-                                        recyclerView.setAdapter(adapter);
-                                    } else {
-                                        adapter.updateDataSet(roomItems, true);
-                                        if (searchItem != null) {
-                                            searchItem.setVisible(roomItems.size() > 0);
-                                        }
-                                    }
+                                    adapter.updateDataSet(roomItems, true);
+                                    searchItem.setVisible(roomItems.size() > 0);
                                 }
                             }, throwable -> {
                                 if (searchItem != null) {

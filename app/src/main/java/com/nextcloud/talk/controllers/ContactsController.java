@@ -80,6 +80,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     public static final String TAG = "ContactsController";
 
+    private static final String KEY_FROM_RESTORE_CONTROLLER = "ContactsController.fromRestoreController";
     private static final String KEY_FROM_RESTORE_VIEW = "ContactsController.fromRestoreView";
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
 
@@ -103,11 +104,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private FlexibleAdapter<UserItem> adapter;
     private List<UserItem> contactItems = new ArrayList<>();
 
-    private boolean isFromRestore;
-    private String searchQuery;
+    private boolean isFromRestoreController;
+    private boolean isFromRestoreView;
 
     private MenuItem searchItem;
     private SearchView searchView;
+    private String searchQuery;
 
     public ContactsController() {
         super();
@@ -123,23 +125,25 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-
-        adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
-        prepareRecyclerView();
-
-        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorPrimary));
     }
 
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
 
+        if (adapter == null) {
+            adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
+        }
+
+        prepareViews();
+
         if ((userEntity = userUtils.getCurrentUser()) != null) {
-            if (!cacheUtils.cacheExistsForContext(TAG) || !isFromRestore) {
-                fetchData(true);
-            } else {
-                fetchData(false);
+            if (!adapter.hasSearchText()) {
+                if (!cacheUtils.cacheExistsForContext(TAG) || !isFromRestoreView) {
+                    fetchData(true);
+                } else if (cacheUtils.cacheExistsForContext(TAG) && isFromRestoreController) {
+                    fetchData(false);
+                }
             }
         } else {
             // Fallback to login if we have no users
@@ -212,6 +216,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         searchItem.setVisible(contactItems.size() > 0);
+        if (adapter.hasSearchText()) {
+            searchItem.expandActionView();
+            searchView.setQuery(adapter.getSearchText(), false);
+        }
     }
 
     private void fetchData(boolean forceNew) {
@@ -302,17 +310,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                                     }
 
-                                    if (!TextUtils.isEmpty(searchQuery) && searchItem != null && searchView != null) {
-                                        searchItem.expandActionView();
-                                        searchView.setQuery(searchQuery, false);
-                                        recyclerView.setAdapter(null);
-                                        adapter.updateDataSet(contactItems, false);
-                                        onQueryTextSubmit(searchQuery);
-                                        recyclerView.setAdapter(adapter);
-                                    } else {
-                                        adapter.updateDataSet(contactItems, true);
-                                        searchItem.setVisible(contactItems.size() > 0);
-                                    }
+                                    adapter.updateDataSet(contactItems, true);
+                                    searchItem.setVisible(contactItems.size() > 0);
 
                                 }
                             }, throwable -> {
@@ -327,13 +326,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
     }
 
-    private void prepareRecyclerView() {
+    private void prepareViews() {
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
         recyclerView.addItemDecoration(new FlexibleItemDecoration(getActivity())
                 .withDivider(R.drawable.divider));
+
+        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorPrimary));
     }
 
     private void dispose(@Nullable Disposable disposable) {
@@ -354,6 +356,18 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_FROM_RESTORE_CONTROLLER, true);
+    }
+
+    @Override
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        isFromRestoreController = savedInstanceState.getBoolean(KEY_FROM_RESTORE_CONTROLLER, false);
+    }
+
+    @Override
     public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
         super.onSaveViewState(view, outState);
         outState.putBoolean(KEY_FROM_RESTORE_VIEW, true);
@@ -365,16 +379,22 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         super.onRestoreViewState(view, savedViewState);
-        isFromRestore = savedViewState.getBoolean(KEY_FROM_RESTORE_VIEW, false);
+        isFromRestoreView = savedViewState.getBoolean(KEY_FROM_RESTORE_VIEW, false);
         searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (adapter.hasNewSearchText(newText)) {
-            adapter.setSearchText(newText);
+        if (adapter.hasNewSearchText(newText) || !TextUtils.isEmpty(searchQuery)) {
 
-            adapter.filterItems(300);
+            if (!TextUtils.isEmpty(searchQuery)) {
+                adapter.setSearchText(searchQuery);
+                searchQuery = "";
+                adapter.filterItems();
+            } else {
+                adapter.setSearchText(newText);
+                adapter.filterItems(300);
+            }
         }
 
         if (swipeRefreshLayout != null) {
