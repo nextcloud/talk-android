@@ -1,4 +1,14 @@
 apply plugin: 'com.android.application'
+apply plugin: 'eu.davidea.grabver'
+
+versioning {
+    major 0
+    minor 1
+    //preRelease "rc1"
+}
+
+// For maven repository
+version = versioning.name
 
 android {
     compileSdkVersion 26
