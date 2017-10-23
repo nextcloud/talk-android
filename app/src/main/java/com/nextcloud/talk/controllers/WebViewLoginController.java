@@ -33,6 +33,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -166,7 +167,8 @@ public class WebViewLoginController extends BaseController {
                         bundleBuilder.putString(BundleKeys.KEY_TOKEN, userEntity.getToken());
                         bundleBuilder.putString(BundleKeys.KEY_BASE_URL, userEntity.getBaseUrl());
                         getRouter().pushController(RouterTransaction.with(new AccountVerificationController
-                                (bundleBuilder.build())));
+                                (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()));
                     }, throwable -> dispose(),
                     this::dispose);
         }

@@ -43,7 +43,7 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 
 import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.UserItem;
@@ -149,8 +149,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             // Fallback to login if we have no users
             if (getParentController().getRouter() != null) {
                 getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
-                        .pushChangeHandler(new FadeChangeHandler())
-                        .popChangeHandler(new FadeChangeHandler())));
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler())));
             }
         }
     }

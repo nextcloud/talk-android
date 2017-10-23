@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
@@ -136,7 +137,9 @@ public class AccountVerificationController extends BaseController {
                                                                 getResources().getString(
                                                                         R.string.nc_display_name_stored));
                                                         getRouter().setRoot(RouterTransaction.with(new
-                                                                BottomNavigationController(R.menu.menu_navigation)));
+                                                                BottomNavigationController(R.menu.menu_navigation))
+                                                                .pushChangeHandler(new HorizontalChangeHandler())
+                                                                .popChangeHandler(new HorizontalChangeHandler()));
                                                     },
                                                     throwable -> {
                                                         progressText.setText(progressText.getText().toString() +

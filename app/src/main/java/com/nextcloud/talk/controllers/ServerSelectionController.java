@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
@@ -105,7 +106,9 @@ public class ServerSelectionController extends BaseController {
                                                 getResources().getString(R.string.nc_server_product_name))) {
 
                                     getRouter().pushController(RouterTransaction.with(
-                                            new WebViewLoginController(finalServerUrl)));
+                                            new WebViewLoginController(finalServerUrl))
+                                            .pushChangeHandler(new HorizontalChangeHandler())
+                                            .popChangeHandler(new HorizontalChangeHandler()));
                                 } else if (!status.isInstalled()) {
                                     textFieldBoxes.setError(String.format(
                                             getResources().getString(R.string.nc_server_not_installed), productName),
