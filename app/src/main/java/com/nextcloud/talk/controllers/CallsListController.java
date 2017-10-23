@@ -75,6 +75,7 @@ public class CallsListController extends BaseController implements SearchView.On
 
     public static final String TAG = "CallsListController";
 
+    private static final String KEY_FROM_RESTORE_CONTROLLER = "CallsListController.fromRestoreController";
     private static final String KEY_FROM_RESTORE_VIEW = "CallsListController.fromRestoreView";
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
 
@@ -98,11 +99,12 @@ public class CallsListController extends BaseController implements SearchView.On
     private FlexibleAdapter<RoomItem> adapter;
     private List<RoomItem> roomItems = new ArrayList<>();
 
-    private boolean isFromRestore;
-    private String searchQuery;
+    private boolean isFromRestoreView;
+    private boolean isFromRestoreController;
 
     private MenuItem searchItem;
     private SearchView searchView;
+    private String searchQuery;
 
     public CallsListController() {
         super();
@@ -118,27 +120,29 @@ public class CallsListController extends BaseController implements SearchView.On
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-
-        adapter = new FlexibleAdapter<>(roomItems, getActivity(), false);
-        prepareRecyclerView();
-
-        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorPrimary));
     }
 
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
 
+        if (adapter == null) {
+            adapter = new FlexibleAdapter<>(roomItems, getActivity(), false);
+        }
+
+        prepareViews();
+
         if ((userEntity = userUtils.getCurrentUser()) != null) {
-            if (!cacheUtils.cacheExistsForContext(TAG) || !isFromRestore) {
-                fetchData(true);
-            } else {
-                fetchData(false);
+            if (!adapter.hasSearchText()) {
+                if (!cacheUtils.cacheExistsForContext(TAG) || !isFromRestoreView) {
+                    fetchData(true);
+                } else if (cacheUtils.cacheExistsForContext(TAG) && isFromRestoreController) {
+                    fetchData(false);
+                }
             }
         } else {
             // Fallback to login if we have no users
-            if (getParentController().getRouter() != null) {
+            if (getParentController() != null && getParentController().getRouter() != null) {
                 getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
                         .pushChangeHandler(new FadeChangeHandler())
                         .popChangeHandler(new FadeChangeHandler())));
@@ -207,6 +211,10 @@ public class CallsListController extends BaseController implements SearchView.On
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         searchItem.setVisible(roomItems.size() > 0);
+        if (adapter.hasSearchText()) {
+            searchItem.expandActionView();
+            searchView.setQuery(adapter.getSearchText(), false);
+        }
     }
 
     private void fetchData(boolean forceNew) {
@@ -257,12 +265,12 @@ public class CallsListController extends BaseController implements SearchView.On
                                         roomItems.add(new RoomItem(room, userEntity));
                                     }
 
-                                    if (!TextUtils.isEmpty(searchQuery) && searchItem != null && searchView != null) {
+                                    if (!TextUtils.isEmpty(adapter.getSearchText()) && searchItem != null && searchView != null) {
                                         searchItem.expandActionView();
-                                        searchView.setQuery(searchQuery, false);
+                                        searchView.setQuery(adapter.getSearchText(), false);
                                         recyclerView.setAdapter(null);
                                         adapter.updateDataSet(roomItems, false);
-                                        onQueryTextSubmit(searchQuery);
+                                        onQueryTextSubmit(adapter.getSearchText());
                                         recyclerView.setAdapter(adapter);
                                     } else {
                                         adapter.updateDataSet(roomItems, true);
@@ -281,13 +289,17 @@ public class CallsListController extends BaseController implements SearchView.On
         }
     }
 
-    private void prepareRecyclerView() {
+    private void prepareViews() {
         recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
+
         recyclerView.setAdapter(adapter);
 
         recyclerView.addItemDecoration(new FlexibleItemDecoration(getActivity())
                 .withDivider(R.drawable.divider));
+
+        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorPrimary));
     }
 
     private void dispose(@Nullable Disposable disposable) {
@@ -307,6 +319,17 @@ public class CallsListController extends BaseController implements SearchView.On
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_FROM_RESTORE_CONTROLLER, true);
+    }
+
+    @Override
+    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        isFromRestoreController = savedInstanceState.getBoolean(KEY_FROM_RESTORE_CONTROLLER, false);
+    }
 
     @Override
     public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
@@ -320,16 +343,22 @@ public class CallsListController extends BaseController implements SearchView.On
     @Override
     public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         super.onRestoreViewState(view, savedViewState);
-        isFromRestore = savedViewState.getBoolean(KEY_FROM_RESTORE_VIEW, false);
+        isFromRestoreView = savedViewState.getBoolean(KEY_FROM_RESTORE_VIEW, false);
         searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (adapter.hasNewSearchText(newText)) {
-            adapter.setSearchText(newText);
+        if (adapter.hasNewSearchText(newText) || !TextUtils.isEmpty(searchQuery)) {
 
-            adapter.filterItems(300);
+            if (!TextUtils.isEmpty(searchQuery)) {
+                adapter.setSearchText(searchQuery);
+                searchQuery = "";
+                adapter.filterItems();
+            } else {
+                adapter.setSearchText(newText);
+                adapter.filterItems(300);
+            }
         }
 
         if (swipeRefreshLayout != null) {
