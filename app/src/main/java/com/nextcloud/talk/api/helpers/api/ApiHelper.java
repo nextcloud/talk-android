@@ -22,7 +22,9 @@ package com.nextcloud.talk.api.helpers.api;
 import android.net.Uri;
 
 import com.nextcloud.talk.BuildConfig;
+import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.models.RetrofitBucket;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +35,9 @@ public class ApiHelper {
     private static String ocsApiVersion = "/ocs/v2.php";
     private static String spreedApiVersion = "/apps/spreed/api/v1";
 
-    private static String userAgent = "Nextcloud Talk Android/v";
-
     public static String getUserAgent() {
-        return userAgent + BuildConfig.VERSION_NAME;
+        return NextcloudTalkApplication.getSharedApplication().getResources().getString(R.string.nc_app_name) +
+                " Android v" + BuildConfig.VERSION_NAME;
     }
 
     public static RetrofitBucket getRetrofitBucketForContactsSearch(String baseUrl, String searchQuery) {
