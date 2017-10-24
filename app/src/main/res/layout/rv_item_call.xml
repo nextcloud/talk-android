@@ -3,7 +3,9 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
   ~ Copyright (C) 2017 Mario Danic
+  ~ Copyright (C) 2017 Andy Scherzinger
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -21,54 +23,60 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="@dimen/item_height">
 
     <cn.carbs.android.avatarimageview.library.AvatarImageView
         android:id="@+id/avatar_image_invisible"
         android:visibility="invisible"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/padding_between_elements"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:scaleType="centerInside"
-        app:aiv_CornerRadius="20dp"
+        app:aiv_CornerRadius="@dimen/avatar_corner_radius"
         app:aiv_ShowBoarder="false"
         app:aiv_TextSizeRatio="0.5"/>
 
     <cn.carbs.android.avatarimageview.library.AvatarImageView
         android:id="@+id/avatar_image"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/padding_between_elements"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:scaleType="centerInside"
-        app:aiv_CornerRadius="20dp"
+        app:aiv_CornerRadius="@dimen/avatar_corner_radius"
         app:aiv_ShowBoarder="false"
         app:aiv_TextSizeRatio="0.5"/>
 
-    <TextView
-        android:id="@+id/name_text"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/avatar_image"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/padding_between_elements"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_toEndOf="@id/avatar_image"/>
-
-    <TextView
-        android:id="@+id/timestamp_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/name_text"
+        android:layout_centerInParent="true"
         android:layout_toEndOf="@id/avatar_image"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/padding_between_elements"
-        android:layout_marginTop="@dimen/padding_between_elements"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            tools:text="Call item text"/>
+
+        <TextView
+            android:id="@+id/timestamp_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="?android:attr/textColorSecondary"
+            tools:text="A week ago"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -29,6 +29,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
@@ -279,16 +281,19 @@ public class CallsListController extends BaseController implements SearchView.On
     }
 
     private void prepareViews() {
-        recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addItemDecoration(new FlexibleItemDecoration(getActivity())
-                .withDivider(R.drawable.divider));
+        recyclerView.addItemDecoration(new DividerItemDecoration(
+                recyclerView.getContext(),
+                layoutManager.getOrientation()
+        ));
 
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorPrimary));
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
     }
 
     private void dispose(@Nullable Disposable disposable) {

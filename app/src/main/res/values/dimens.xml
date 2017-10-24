@@ -3,11 +3,17 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="item_height">72dp</dimen>
+
     <dimen name="display_target_image_size">200dp</dimen>
     <dimen name="display_target_image_margin">24dp</dimen>
 
     <!-- Custom transition dimensions -->
     <dimen name="padding_normal">16dp</dimen>
+    <dimen name="margin_normal">16dp</dimen>
     <dimen name="padding_between_elements">8dp</dimen>
+    <dimen name="margin_between_elements">8dp</dimen>
+    <dimen name="avatar_size">40dp</dimen>
+    <dimen name="avatar_corner_radius">20dp</dimen>
 
 </resources>
