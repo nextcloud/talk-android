@@ -2,7 +2,7 @@
 
 **Video & audio calls through Nextcloud on Android**
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6e151be57a3d4f69a7cf1bc047e75daa)](https://www.codacy.com/app/mario_6/talk-android?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nextcloud/talk-android&amp;utm_campaign=Badge_Grade) [![irc](https://img.shields.io/badge/IRC-%23nextcloud--mobile%20on%20freenode-blue.svg)](https://webchat.freenode.net/?channels=nextcloud-mobile)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/21a6fb22279e401baba31fb296b6f20e)](https://www.codacy.com/app/Nextcloud/talk-android?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nextcloud/talk-android&amp;utm_campaign=Badge_Grade) [![irc](https://img.shields.io/badge/IRC-%23nextcloud--mobile%20on%20freenode-blue.svg)](https://webchat.freenode.net/?channels=nextcloud-mobile)
 
 ## Why is this so awesome?
 
