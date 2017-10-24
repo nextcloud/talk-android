@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="?android:attr/textColorSecondary"
-            tools:text="30/12/2017 12:30am"/>
+            tools:text="A week ago"/>
 
     </LinearLayout>
 
