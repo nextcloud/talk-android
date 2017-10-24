@@ -333,11 +333,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecoration(
+        recyclerView.addItemDecoration(new DividerItemDecoration(
                 recyclerView.getContext(),
                 layoutManager.getOrientation()
-        );
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        ));
 
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
