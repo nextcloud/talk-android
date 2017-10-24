@@ -33,6 +33,6 @@ import lombok.Data;
 @Data
 @JsonObject
 public class ExactSharees {
-    @JsonField(name = "exact")
+    @JsonField(name = "users")
     List<Sharee> exactSharees;
 }
