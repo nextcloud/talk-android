@@ -52,5 +52,4 @@
         android:textSize="26sp"
         tools:text="Verifying..."/>
 
-
 </RelativeLayout>
