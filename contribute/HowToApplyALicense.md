@@ -33,7 +33,8 @@ If you create a new file please use this license header:
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */````
+ */
+ ````
 
 Additionally we require a Developer Certificate of Origin (DCO), look
 at [CONTRIBUTING.md][contributing] to learn more how to sign your commits.
