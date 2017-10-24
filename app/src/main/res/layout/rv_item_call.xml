@@ -3,7 +3,9 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
   ~ Copyright (C) 2017 Mario Danic
+  ~ Copyright (C) 2017 Andy Scherzinger
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -21,6 +23,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/item_height">
 
@@ -63,14 +66,16 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceListItem"/>
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            tools:text="Call item text"/>
 
         <TextView
             android:id="@+id/timestamp_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:textColor="?android:attr/textColorSecondary"/>
+            android:textColor="?android:attr/textColorSecondary"
+            tools:text="30/12/2017 12:30am"/>
 
     </LinearLayout>
 
