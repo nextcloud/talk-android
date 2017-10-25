@@ -161,11 +161,6 @@ public interface NcApi {
     @GET
     Observable<Integer> pullSignalingMessages(@Header("Authorization") String authorization, @Url String url);
 
-    /*
-        Server URL is: baseUrl + /index.php/avatar/userId/128
-        Avatar OkHttp
-    */
-
      /*
         QueryMap items are as follows:
             - "format" : "json"

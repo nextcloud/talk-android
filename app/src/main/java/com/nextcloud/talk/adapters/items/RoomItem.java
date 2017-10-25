@@ -26,7 +26,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.rooms.Room;
@@ -116,14 +115,8 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
                         toUpperCase().charAt(0)), ColorUtils.colorSeed);
 
                 if (!TextUtils.isEmpty(room.getName())) {
-                    GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                            room.getName()), new LazyHeaders.Builder()
-                            .addHeader("OCS-APIRequest", "true")
-                            .addHeader("User-Agent", ApiHelper.getUserAgent())
-                            .addHeader("Accept", "*/*")
-                            .addHeader("Authorization", () ->
-                                    ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()))
-                            .build());
+                    String glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                            room.getName())).toString();
 
                     GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                             .asBitmap()
