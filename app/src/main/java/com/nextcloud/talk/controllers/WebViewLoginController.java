@@ -39,8 +39,8 @@ import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.LoginData;
-import com.nextcloud.talk.utils.BundleBuilder;
-import com.nextcloud.talk.utils.BundleKeys;
+import com.nextcloud.talk.utils.bundle.BundleBuilder;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.net.URLDecoder;

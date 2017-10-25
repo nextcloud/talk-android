@@ -21,14 +21,20 @@
 package com.nextcloud.talk.dagger.modules;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.github.aurae.retrofit2.LoganSquareConverterFactory;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.preferences.json.ProxyPrefs;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 
 import javax.inject.Singleton;
 
@@ -44,13 +50,26 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
-@Module
+@Module(includes = DatabaseModule.class)
 public class RestModule {
 
     @Provides
     @Singleton
     NcApi provideNcApi(Retrofit retrofit) {
         return retrofit.create(NcApi.class);
+    }
+
+    @Provides
+    @Singleton
+    @Nullable
+    Proxy provideProxy(AppPreferences appPreferences) {
+        ProxyPrefs proxyPrefs = appPreferences.getProxyServer();
+        if (!TextUtils.isEmpty(proxyPrefs.getProxyHost())) {
+            return (new Proxy(Proxy.Type.valueOf(proxyPrefs.getProxyType()),
+                    new InetSocketAddress(proxyPrefs.getProxyHost(), proxyPrefs.getProxyPort())));
+        } else {
+            return null;
+        }
     }
 
     @Provides
@@ -67,7 +86,7 @@ public class RestModule {
 
     @Provides
     @Singleton
-    OkHttpClient provideHttpClient() {
+    OkHttpClient provideHttpClient(@Nullable Proxy proxy) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         int cacheSize = 128 * 1024 * 1024; // 128 MB
@@ -80,6 +99,11 @@ public class RestModule {
 
             httpClient.addInterceptor(loggingInterceptor);
         }
+
+        if (proxy != null) {
+            httpClient.proxy(proxy);
+        }
+
         httpClient.addInterceptor(new HeadersInterceptor());
 
         return httpClient.build();

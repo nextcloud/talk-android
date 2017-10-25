@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2017 Mario Danic
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.utils;
+package com.nextcloud.talk.utils.bundle;
 
 public class BundleKeys {
     public static final String KEY_USERNAME = "KEY_USERNAME";
     public static final String KEY_TOKEN = "KEY_TOKEN";
     public static final String KEY_BASE_URL = "KEY_BASE_URL";
-
 }

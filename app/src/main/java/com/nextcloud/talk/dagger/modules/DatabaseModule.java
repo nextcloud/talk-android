@@ -25,10 +25,9 @@ import android.support.annotation.NonNull;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.persistence.entities.Models;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import net.orange_box.storebox.StoreBox;
-
-import java.util.prefs.Preferences;
 
 import javax.inject.Singleton;
 
@@ -58,7 +57,7 @@ public class DatabaseModule {
 
     @Provides
     @Singleton
-    public Preferences providePreferences(@NonNull final Context poContext) {
-        return StoreBox.create(poContext, Preferences.class);
+    public AppPreferences providePreferences(@NonNull final Context poContext) {
+        return StoreBox.create(poContext, AppPreferences.class);
     }
 }

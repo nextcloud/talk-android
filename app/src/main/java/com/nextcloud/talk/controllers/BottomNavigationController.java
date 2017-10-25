@@ -42,7 +42,7 @@ import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.utils.BundleBuilder;
+import com.nextcloud.talk.utils.bundle.BundleBuilder;
 
 import butterknife.BindView;
 
