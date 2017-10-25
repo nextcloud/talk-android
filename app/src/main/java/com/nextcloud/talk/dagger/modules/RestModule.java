@@ -64,14 +64,18 @@ public class RestModule {
 
     @Provides
     @Singleton
-    @Nullable
     Proxy provideProxy(AppPreferences appPreferences) {
         ProxyPrefs proxyPrefs = appPreferences.getProxyServer();
         if (!TextUtils.isEmpty(proxyPrefs.getProxyHost())) {
-            return (new Proxy(Proxy.Type.valueOf(proxyPrefs.getProxyType()),
-                    new InetSocketAddress(proxyPrefs.getProxyHost(), proxyPrefs.getProxyPort())));
+            if (Proxy.Type.SOCKS.equals(Proxy.Type.valueOf(proxyPrefs.getProxyType()))) {
+                return (new Proxy(Proxy.Type.valueOf(proxyPrefs.getProxyType()),
+                        InetSocketAddress.createUnresolved(proxyPrefs.getProxyHost(), proxyPrefs.getProxyPort())));
+            } else {
+                return (new Proxy(Proxy.Type.valueOf(proxyPrefs.getProxyType()),
+                        new InetSocketAddress(proxyPrefs.getProxyHost(), proxyPrefs.getProxyPort())));
+            }
         } else {
-            return null;
+            return Proxy.NO_PROXY;
         }
     }
 
@@ -89,7 +93,7 @@ public class RestModule {
 
     @Provides
     @Singleton
-    OkHttpClient provideHttpClient(@Nullable Proxy proxy, AppPreferences appPreferences) {
+    OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         int cacheSize = 128 * 1024 * 1024; // 128 MB
@@ -103,7 +107,7 @@ public class RestModule {
             httpClient.addInterceptor(loggingInterceptor);
         }
 
-        if (proxy != null) {
+        if (!Proxy.NO_PROXY.equals(proxy)) {
             httpClient.proxy(proxy);
 
             if (!TextUtils.isEmpty(appPreferences.getProxyServer().getUsername()) &&
@@ -130,6 +134,19 @@ public class RestModule {
         @Nullable
         @Override
         public Request authenticate(@NonNull Route route, @NonNull Response response) throws IOException {
+            if (credentials.equals(response.request().header("Proxy-Authorization"))) {
+                return null;
+            }
+
+            int attemptsCount = 0;
+            Response countedResponse = response;
+
+            while ((countedResponse = countedResponse.priorResponse()) != null) {
+                attemptsCount++;
+                if (attemptsCount == 3) {
+                    return null;
+                }
+            }
             return response.request().newBuilder()
                     .header("Proxy-Authorization", credentials)
                     .build();
