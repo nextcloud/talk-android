@@ -40,4 +40,10 @@ public class ProxyPrefs {
 
     @JsonField(name = "proxy_type")
     String proxyType;
+
+    @JsonField(name = "username")
+    String username;
+
+    @JsonField(name = "password")
+    String password;
 }

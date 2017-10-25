@@ -41,11 +41,14 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Authenticator;
 import okhttp3.Cache;
+import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.Route;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -86,7 +89,7 @@ public class RestModule {
 
     @Provides
     @Singleton
-    OkHttpClient provideHttpClient(@Nullable Proxy proxy) {
+    OkHttpClient provideHttpClient(@Nullable Proxy proxy, AppPreferences appPreferences) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         int cacheSize = 128 * 1024 * 1024; // 128 MB
@@ -102,11 +105,35 @@ public class RestModule {
 
         if (proxy != null) {
             httpClient.proxy(proxy);
+
+            if (!TextUtils.isEmpty(appPreferences.getProxyServer().getUsername()) &&
+                    !TextUtils.isEmpty(appPreferences.getProxyServer().getPassword())) {
+                httpClient.proxyAuthenticator(new ProxyAuthenticator(Credentials.basic(
+                        appPreferences.getProxyServer().getUsername(),
+                        appPreferences.getProxyServer().getPassword())));
+            }
         }
 
         httpClient.addInterceptor(new HeadersInterceptor());
 
         return httpClient.build();
+    }
+
+    private class ProxyAuthenticator implements Authenticator {
+
+        private String credentials;
+
+        private ProxyAuthenticator(String credentials) {
+            this.credentials = credentials;
+        }
+
+        @Nullable
+        @Override
+        public Request authenticate(@NonNull Route route, @NonNull Response response) throws IOException {
+            return response.request().newBuilder()
+                    .header("Proxy-Authorization", credentials)
+                    .build();
+        }
     }
 
     private class HeadersInterceptor implements Interceptor {
