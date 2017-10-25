@@ -43,7 +43,8 @@ public class CachingGlideModule extends AppGlideModule {
     // 256 MB
     private static final int IMAGE_CACHE_SIZE = 256 * 1024 * 1024;
 
-    @Inject OkHttpClient okHttpClient;
+    @Inject
+    OkHttpClient okHttpClient;
 
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {
