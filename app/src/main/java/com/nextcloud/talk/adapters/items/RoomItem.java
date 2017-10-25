@@ -100,7 +100,7 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
         }
 
         if (room.getLastPing() == 0) {
-            holder.roomLastPing.setText(R.string.nc_invited);
+            holder.roomLastPing.setText(R.string.nc_never);
         } else {
             holder.roomLastPing.setText(DateUtils.getRelativeTimeSpanString(room.getLastPing() * 1000L,
                     System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));

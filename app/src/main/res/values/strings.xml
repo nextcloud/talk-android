@@ -21,6 +21,7 @@
     <string name="nc_display_name_not_stored">Display name not stored, aborting</string>
 
     <string name="nc_invited">Invited</string>
+    <string name="nc_never">Never</string>
 
     <string name="nc_search">Search</string>
 
