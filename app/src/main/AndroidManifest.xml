@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.nextcloud.talk">
 
-
     <uses-feature android:name="android.hardware.camera.any"/>
     <uses-feature android:name="android.hardware.camera.autofocus"/>
     <uses-feature
