@@ -102,7 +102,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                 user.getUserId()), new LazyHeaders.Builder()
                 .setHeader("Accept", "*/*")
-                .setHeader("Cache-Control", "max-age=0")
+                .setHeader("User-Agent", ApiHelper.getUserAgent())
                 .build());
 
         GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
