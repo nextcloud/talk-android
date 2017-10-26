@@ -213,7 +213,7 @@ public class AccountVerificationController extends BaseController {
 
             @Override
             public void onComplete() {
-                new Handler().postDelayed(() -> getRouter().popToRoot(), 5000);
+                new Handler().postDelayed(() -> getRouter().popToRoot(), 7500);
             }
 
             @Override
