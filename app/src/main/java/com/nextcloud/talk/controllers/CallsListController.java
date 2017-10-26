@@ -70,6 +70,7 @@ import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallsListController extends BaseController implements SearchView.OnQueryTextListener {
@@ -230,35 +231,52 @@ public class CallsListController extends BaseController implements SearchView.On
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(roomsOverall -> {
 
-                                if (roomsOverall != null) {
-                                    for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
-                                        roomItems.add(new RoomItem(roomsOverall.getOcs().getData().get(i), userEntity));
-                                    }
-
-                                    adapter.updateDataSet(roomItems, true);
-                                    if (searchItem != null) {
-                                        searchItem.setVisible(roomItems.size() > 0);
-                                    }
-
-                                    cacheQueryDisposable = cacheUtils.createOrUpdateViewCache(
-                                            LoganSquare.serialize(roomsOverall.getOcs().getData()),
-                                            userEntity.getId(), TAG).subscribe(cacheEntity -> {
-                                                // do nothing
-                                            }, throwable -> dispose(cacheQueryDisposable),
-                                            () -> dispose(cacheQueryDisposable));
-                                }
-                            }, throwable -> {
-                                if (searchItem != null) {
-                                    searchItem.setVisible(false);
-                                }
-                                dispose(roomsQueryDisposable);
+                        if (roomsOverall != null) {
+                            for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
+                                roomItems.add(new RoomItem(roomsOverall.getOcs().getData().get(i), userEntity));
                             }
-                            , () -> {
-                                dispose(roomsQueryDisposable);
-                                if (swipeRefreshLayout != null) {
-                                    swipeRefreshLayout.setRefreshing(false);
-                                }
-                            });
+
+                            adapter.updateDataSet(roomItems, true);
+                            if (searchItem != null) {
+                                searchItem.setVisible(roomItems.size() > 0);
+                            }
+
+                            cacheQueryDisposable = cacheUtils.createOrUpdateViewCache(
+                                    LoganSquare.serialize(roomsOverall.getOcs().getData()),
+                                    userEntity.getId(), TAG).subscribe(cacheEntity -> {
+                                        // do nothing
+                                    }, throwable -> dispose(cacheQueryDisposable),
+                                    () -> dispose(cacheQueryDisposable));
+                        }
+                    }, throwable -> {
+                        if (searchItem != null) {
+                            searchItem.setVisible(false);
+                        }
+
+                        if (throwable instanceof HttpException) {
+                            HttpException exception = (HttpException) throwable;
+                            switch (exception.code()) {
+                                case 401:
+                                    if (getParentController() != null &&
+                                            getParentController().getRouter() != null) {
+                                        getParentController().getRouter().setRoot((RouterTransaction.with
+                                                (new WebViewLoginController(userEntity.getBaseUrl(),
+                                                        true))
+                                                .pushChangeHandler(new HorizontalChangeHandler())
+                                                .popChangeHandler(new HorizontalChangeHandler())));
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        dispose(roomsQueryDisposable);
+                    }, () -> {
+                        dispose(roomsQueryDisposable);
+                        if (swipeRefreshLayout != null) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
         } else {
             cacheQueryDisposable = cacheUtils.getViewCache(userEntity.getId(), TAG)
                     .subscribe(o -> {

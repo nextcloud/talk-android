@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -54,6 +55,8 @@ public class ServerSelectionController extends BaseController {
     ExtendedEditText serverEntry;
     @BindView(R.id.text_field_boxes)
     TextFieldBoxes textFieldBoxes;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     @Inject
     NcApi ncApi;
@@ -74,6 +77,10 @@ public class ServerSelectionController extends BaseController {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
+        if (getActionBar() != null) {
+            getActionBar().hide();
+        }
+
         textFieldBoxes.setLabelText(getResources().getString(R.string.nc_app_name) + " " + getResources().getString(R.string.nc_appended_server_url));
 
         serverEntry.requestFocus();
@@ -86,6 +93,7 @@ public class ServerSelectionController extends BaseController {
 
                 if (url.startsWith("http://") || url.startsWith("https://")) {
                     serverEntry.setEnabled(false);
+                    progressBar.setVisibility(View.VISIBLE);
 
                     if (url.endsWith("/")) {
                         url = url.substring(0, url.length() - 1);
@@ -106,7 +114,7 @@ public class ServerSelectionController extends BaseController {
                                                 getResources().getString(R.string.nc_server_product_name))) {
 
                                     getRouter().pushController(RouterTransaction.with(
-                                            new WebViewLoginController(finalServerUrl))
+                                            new WebViewLoginController(finalServerUrl, false))
                                             .pushChangeHandler(new HorizontalChangeHandler())
                                             .popChangeHandler(new HorizontalChangeHandler()));
                                 } else if (!status.isInstalled()) {
@@ -133,9 +141,14 @@ public class ServerSelectionController extends BaseController {
                                 if (serverEntry != null) {
                                     serverEntry.setEnabled(true);
                                 }
+                                progressBar.setVisibility(View.GONE);
+
                                 dispose();
 
-                            }, this::dispose);
+                            }, () -> {
+                                progressBar.setVisibility(View.GONE);
+                                dispose();
+                            });
                 } else {
                     textFieldBoxes.setError(getResources().getString(R.string.nc_server_url_prefix), true);
                     serverEntry.setEnabled(true);

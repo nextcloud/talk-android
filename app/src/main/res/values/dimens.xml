@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="item_height">72dp</dimen>
+    <dimen name="small_item_height">24dp</dimen>
 
     <dimen name="display_target_image_size">200dp</dimen>
     <dimen name="display_target_image_margin">24dp</dimen>

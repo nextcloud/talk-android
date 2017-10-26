@@ -47,4 +47,19 @@
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/small_item_height"
+        android:layout_height="@dimen/small_item_height"
+        android:layout_below="@id/text_field_boxes"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/padding_between_elements"
+        android:indeterminate="true"
+        android:progressTint="@color/colorPrimary"
+        android:visibility="invisible"/>
+
 </RelativeLayout>

@@ -75,6 +75,7 @@ import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ContactsController extends BaseController implements SearchView.OnQueryTextListener {
@@ -277,6 +278,25 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 if (searchItem != null) {
                                     searchItem.setVisible(false);
                                 }
+
+                                if (throwable instanceof HttpException) {
+                                    HttpException exception = (HttpException) throwable;
+                                    switch (exception.code()) {
+                                        case 401:
+                                            if (getParentController() != null &&
+                                                    getParentController().getRouter() != null) {
+                                                getParentController().getRouter().setRoot((RouterTransaction.with
+                                                        (new WebViewLoginController(userEntity.getBaseUrl(),
+                                                                true))
+                                                        .pushChangeHandler(new HorizontalChangeHandler())
+                                                        .popChangeHandler(new HorizontalChangeHandler())));
+                                            }
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+
                                 dispose(contactsQueryDisposable);
                             }
                             , () -> {

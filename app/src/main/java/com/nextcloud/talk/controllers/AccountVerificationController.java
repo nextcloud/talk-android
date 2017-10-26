@@ -96,6 +96,10 @@ public class AccountVerificationController extends BaseController {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
+        if (getActionBar() != null) {
+            getActionBar().hide();
+        }
+
         dispose(null);
 
         String credentials = ApiHelper.getCredentials(username, token);

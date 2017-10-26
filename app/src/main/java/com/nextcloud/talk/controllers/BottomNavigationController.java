@@ -110,6 +110,10 @@ public class BottomNavigationController extends BaseController {
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
 
+        if (getActionBar() != null) {
+            getActionBar().show();
+        }
+
         /* Setup the BottomNavigationView with the constructor supplied Menu resource */
         bottomNavigationView.inflateMenu(getMenuResource());
 

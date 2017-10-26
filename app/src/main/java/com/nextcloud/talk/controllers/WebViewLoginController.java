@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -71,14 +72,19 @@ public class WebViewLoginController extends BaseController {
     @BindView(R.id.webview)
     WebView webView;
 
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+
     private String assembledPrefix;
 
     private Disposable userQueryDisposable;
 
     private String baseUrl;
+    private boolean isPasswordUpdate;
 
-    public WebViewLoginController(String baseUrl) {
+    public WebViewLoginController(String baseUrl, boolean isPasswordUpdate) {
         this.baseUrl = baseUrl;
+        this.isPasswordUpdate = isPasswordUpdate;
     }
 
     public WebViewLoginController(Bundle args) {
@@ -99,6 +105,10 @@ public class WebViewLoginController extends BaseController {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
+        if (getActionBar() != null) {
+            getActionBar().hide();
+        }
+
         assembledPrefix = getResources().getString(R.string.nc_talk_login_scheme) + PROTOCOL_SUFFIX + "login/";
 
         webView.getSettings().setAllowFileAccess(false);
@@ -116,6 +126,7 @@ public class WebViewLoginController extends BaseController {
         headers.put("OCS-APIRequest", "true");
 
         webView.setWebViewClient(new WebViewClient() {
+            private boolean basePageLoaded;
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith(assembledPrefix)) {
@@ -127,8 +138,13 @@ public class WebViewLoginController extends BaseController {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
+                if (!basePageLoaded) {
+                    progressBar.setVisibility(View.GONE);
+                    webView.setVisibility(View.VISIBLE);
+                    basePageLoaded = true;
+                }
 
+                super.onPageFinished(view, url);
             }
 
             @Override
@@ -162,13 +178,20 @@ public class WebViewLoginController extends BaseController {
             // We use the URL user entered because one provided by the server is NOT reliable
             userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
                     baseUrl, null).subscribe(userEntity -> {
-                        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                        bundleBuilder.putString(BundleKeys.KEY_USERNAME, userEntity.getUsername());
-                        bundleBuilder.putString(BundleKeys.KEY_TOKEN, userEntity.getToken());
-                        bundleBuilder.putString(BundleKeys.KEY_BASE_URL, userEntity.getBaseUrl());
-                        getRouter().pushController(RouterTransaction.with(new AccountVerificationController
-                                (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
-                                .popChangeHandler(new HorizontalChangeHandler()));
+                        if (!isPasswordUpdate) {
+
+                            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                            bundleBuilder.putString(BundleKeys.KEY_USERNAME, userEntity.getUsername());
+                            bundleBuilder.putString(BundleKeys.KEY_TOKEN, userEntity.getToken());
+                            bundleBuilder.putString(BundleKeys.KEY_BASE_URL, userEntity.getBaseUrl());
+                            getRouter().pushController(RouterTransaction.with(new AccountVerificationController
+                                    (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        } else {
+                            getRouter().setRoot(RouterTransaction.with(new BottomNavigationController(R.menu.menu_navigation))
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        }
                     }, throwable -> dispose(),
                     this::dispose);
         }
