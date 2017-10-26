@@ -52,8 +52,7 @@ public class CachingGlideModule extends AppGlideModule {
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-        registry.replace(GlideUrl.class, InputStream.class,
-                new OkHttpUrlLoader.Factory(okHttpClient));
+        registry.replace(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(okHttpClient));
     }
 
     @Override

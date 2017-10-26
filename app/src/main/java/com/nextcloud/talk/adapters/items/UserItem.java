@@ -23,7 +23,9 @@ package com.nextcloud.talk.adapters.items;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.User;
@@ -97,13 +99,17 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         holder.avatarImageView.setTextAndColorSeed(String.valueOf(user.getName().
                 toUpperCase().charAt(0)), ColorUtils.colorSeed);
 
-
-        String glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                user.getUserId())).toString();
+        GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                user.getUserId()), new LazyHeaders.Builder()
+                .setHeader("Accept", "*/*")
+                .setHeader("Cache-Control", "max-age=0")
+                .build());
 
         GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                 .asBitmap()
                 .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .placeholder(holder.avatarImageViewInvisible.getDrawable())
                 .load(glideUrl)
                 .circleCrop()
                 .centerInside()

@@ -25,7 +25,9 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.rooms.Room;
@@ -111,16 +113,21 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
                 holder.avatarImageView.setVisibility(View.VISIBLE);
 
                 if (!TextUtils.isEmpty(room.getName())) {
-                    String glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                            room.getName())).toString();
+                    GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                            room.getName()), new LazyHeaders.Builder()
+                            .setHeader("Accept", "*/*")
+                            .build());
 
                     GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                             .asBitmap()
                             .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .load(glideUrl)
+                            .placeholder(holder.avatarImageViewInvisible.getDrawable())
                             .circleCrop()
                             .centerInside()
                             .into(holder.avatarImageView);
+
                 } else {
                     holder.avatarImageView.setDrawable(holder.avatarImageViewInvisible.getDrawable());
                 }

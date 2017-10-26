@@ -255,7 +255,9 @@ public class CallsListController extends BaseController implements SearchView.On
                             }
                             , () -> {
                                 dispose(roomsQueryDisposable);
-                                swipeRefreshLayout.setRefreshing(false);
+                                if (swipeRefreshLayout != null) {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
                             });
         } else {
             cacheQueryDisposable = cacheUtils.getViewCache(userEntity.getId(), TAG)
