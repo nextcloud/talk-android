@@ -32,11 +32,13 @@ import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.AppGlideModule;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.utils.HttpClientUtils;
 
 import java.io.InputStream;
 
+import javax.inject.Inject;
+
 import autodagger.AutoInjector;
+import okhttp3.OkHttpClient;
 
 @AutoInjector(NextcloudTalkApplication.class)
 @GlideModule
@@ -44,10 +46,14 @@ public class CachingGlideModule extends AppGlideModule {
     // 256 MB
     private static final int IMAGE_CACHE_SIZE = 256 * 1024 * 1024;
 
+    @Inject
+    OkHttpClient okHttpClient;
+
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         registry.replace(GlideUrl.class, InputStream.class,
-                new OkHttpUrlLoader.Factory(HttpClientUtils.getOkHttpClient()));
+                new OkHttpUrlLoader.Factory(okHttpClient));
     }
 
     @Override

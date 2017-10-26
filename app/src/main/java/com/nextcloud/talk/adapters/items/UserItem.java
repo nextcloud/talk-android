@@ -30,7 +30,7 @@ import com.nextcloud.talk.api.models.User;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ColorUtils;
-import com.nextcloud.talk.utils.GlideApp;
+import com.nextcloud.talk.utils.glide.GlideApp;
 
 import java.util.List;
 
@@ -94,7 +94,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         }
 
         // Awful hack
-        holder.avatarImageViewInvisible.setTextAndColorSeed(String.valueOf(user.getName().
+        holder.avatarImageView.setTextAndColorSeed(String.valueOf(user.getName().
                 toUpperCase().charAt(0)), ColorUtils.colorSeed);
 
 
@@ -104,7 +104,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                 .asBitmap()
                 .skipMemoryCache(true)
-                .placeholder(holder.avatarImageViewInvisible.getDrawable())
                 .load(glideUrl)
                 .circleCrop()
                 .centerInside()

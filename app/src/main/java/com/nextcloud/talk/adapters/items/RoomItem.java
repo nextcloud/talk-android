@@ -31,8 +31,7 @@ import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.ColorUtils;
-import com.nextcloud.talk.utils.GlideApp;
+import com.nextcloud.talk.utils.glide.GlideApp;
 
 import java.util.List;
 
@@ -111,9 +110,6 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
             case ROOM_TYPE_ONE_TO_ONE_CALL:
                 holder.avatarImageView.setVisibility(View.VISIBLE);
 
-                holder.avatarImageViewInvisible.setTextAndColorSeed(String.valueOf(room.getDisplayName().
-                        toUpperCase().charAt(0)), ColorUtils.colorSeed);
-
                 if (!TextUtils.isEmpty(room.getName())) {
                     String glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                             room.getName())).toString();
@@ -122,7 +118,6 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
                             .asBitmap()
                             .skipMemoryCache(true)
                             .load(glideUrl)
-                            .placeholder(holder.avatarImageViewInvisible.getDrawable())
                             .circleCrop()
                             .centerInside()
                             .into(holder.avatarImageView);
