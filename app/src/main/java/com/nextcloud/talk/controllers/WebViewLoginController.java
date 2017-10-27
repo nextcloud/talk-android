@@ -21,6 +21,7 @@
 package com.nextcloud.talk.controllers;
 
 import android.content.pm.ActivityInfo;
+import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -43,8 +44,12 @@ import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 
+import java.lang.reflect.Field;
 import java.net.URLDecoder;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +73,8 @@ public class WebViewLoginController extends BaseController {
     UserUtils userUtils;
     @Inject
     ReactiveEntityStore<Persistable> dataStore;
+    @Inject
+    MagicTrustManager magicTrustManager;
 
     @BindView(R.id.webview)
     WebView webView;
@@ -149,7 +156,26 @@ public class WebViewLoginController extends BaseController {
 
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                super.onReceivedSslError(view, handler, error);
+                try {
+                    SslCertificate sslCertificate = error.getCertificate();
+                    Field f = sslCertificate.getClass().getDeclaredField("mX509Certificate");
+                    f.setAccessible(true);
+                    X509Certificate cert = (X509Certificate)f.get(sslCertificate);
+
+                    if (cert == null) {
+                        handler.cancel();
+                    } else {
+                        try {
+                            magicTrustManager.checkServerTrusted(new X509Certificate[]{cert}, "generic");
+                            handler.proceed();
+                        } catch (CertificateException exception) {
+                            // cancel for now, as we don't have a way to accept custom certificates
+                            handler.cancel();
+                        }
+                    }
+                } catch (Exception exception) {
+                    handler.cancel();
+                }
             }
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
