@@ -22,9 +22,14 @@ package com.nextcloud.talk.utils.database.user;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.persistence.entities.User;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+
+import java.io.IOException;
+import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -35,6 +40,7 @@ import io.requery.query.Result;
 import io.requery.reactivex.ReactiveEntityStore;
 
 public class UserUtils {
+    private static final String TAG = "UserUtils";
     private ReactiveEntityStore<Persistable> dataStore;
 
     UserUtils(ReactiveEntityStore<Persistable> dataStore) {
@@ -44,6 +50,12 @@ public class UserUtils {
 
     public boolean anyUserExists() {
         return (dataStore.count(User.class).limit(1).get().value() > 0);
+    }
+
+    public List<UserEntity> getUsers() {
+        Result findUsersQueryResult = dataStore.select(User.class).get();
+
+        return findUsersQueryResult.toList();
     }
 
     // temporary method while we only support 1 user
@@ -66,7 +78,8 @@ public class UserUtils {
     }
 
     public Observable<UserEntity> createOrUpdateUser(String username, String token, String serverUrl,
-                                                     @Nullable String displayName) {
+                                                     @Nullable String displayName,
+                                                     @Nullable String pushConfigurationState) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
                 and(UserEntity.BASE_URL.eq(serverUrl.toLowerCase()))).limit(1).get();
 
@@ -82,6 +95,14 @@ public class UserUtils {
                 user.setDisplayName(displayName);
             }
 
+            if (pushConfigurationState != null) {
+                try {
+                    user.setPushConfigurationState(LoganSquare.serialize(pushConfigurationState));
+                } catch (IOException e) {
+                    Log.d(TAG, "Failed to serialize push configuration state");
+                }
+            }
+
         } else {
             if (!token.equals(user.getToken())) {
                 user.setToken(token);
@@ -89,6 +110,14 @@ public class UserUtils {
 
             if (!TextUtils.isEmpty(displayName) && !displayName.equals(user.getDisplayName())) {
                 user.setDisplayName(displayName);
+            }
+
+            if (pushConfigurationState != null && !pushConfigurationState.equals(user.getPushConfigurationState())) {
+                try {
+                    user.setPushConfigurationState(LoganSquare.serialize(pushConfigurationState));
+                } catch (IOException e) {
+                    Log.d(TAG, "Failed to serialize push configuration state");
+                }
             }
         }
 

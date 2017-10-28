@@ -24,11 +24,15 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.evernote.android.job.JobManager;
+import com.evernote.android.job.JobRequest;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
 import com.nextcloud.talk.dagger.modules.DatabaseModule;
 import com.nextcloud.talk.dagger.modules.RestModule;
+import com.nextcloud.talk.jobs.PushRegistrationJob;
+import com.nextcloud.talk.jobs.creator.MagicJobCreator;
 import com.nextcloud.talk.utils.database.cache.CacheModule;
 import com.nextcloud.talk.utils.database.user.UserModule;
 import com.squareup.leakcanary.LeakCanary;
@@ -76,6 +80,8 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        JobManager.create(this).addJobCreator(new MagicJobCreator());
+
         sharedApplication = this;
 
         try {
@@ -88,6 +94,9 @@ public class NextcloudTalkApplication extends MultiDexApplication {
 
         componentApplication.inject(this);
         refWatcher = LeakCanary.install(this);
+
+        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow();
+
     }
 
 

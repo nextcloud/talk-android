@@ -42,4 +42,6 @@ public interface User extends Parcelable, Persistable, Serializable {
     String getToken();
 
     String getDisplayName();
+
+    String getPushConfigurationState();
 }

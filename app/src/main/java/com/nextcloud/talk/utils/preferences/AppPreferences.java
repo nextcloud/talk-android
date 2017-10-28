@@ -45,6 +45,15 @@ public interface AppPreferences {
     @RemoveMethod
     void removeProxyServer();
 
+    @KeyByString("push_token")
+    String getPushToken();
+
+    @KeyByString("push_token")
+    void setPushtoken(String pushToken);
+
+    @KeyByString("push_token")
+    void removePushToken();
+
     @ClearMethod
     void clear();
 }

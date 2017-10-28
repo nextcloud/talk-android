@@ -41,6 +41,7 @@ import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.LoginData;
+import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -134,6 +135,7 @@ public class WebViewLoginController extends BaseController {
 
         webView.setWebViewClient(new WebViewClient() {
             private boolean basePageLoaded;
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith(assembledPrefix)) {
@@ -160,7 +162,7 @@ public class WebViewLoginController extends BaseController {
                     SslCertificate sslCertificate = error.getCertificate();
                     Field f = sslCertificate.getClass().getDeclaredField("mX509Certificate");
                     f.setAccessible(true);
-                    X509Certificate cert = (X509Certificate)f.get(sslCertificate);
+                    X509Certificate cert = (X509Certificate) f.get(sslCertificate);
 
                     if (cert == null) {
                         handler.cancel();
@@ -201,25 +203,34 @@ public class WebViewLoginController extends BaseController {
         if (loginData != null) {
             dispose();
 
+            UserEntity currentUser = userUtils.getCurrentUser();
+
+            String displayName = null;
+            String pushConfiguration = null;
+
+            if (currentUser != null) {
+                displayName = currentUser.getDisplayName();
+                pushConfiguration = currentUser.getPushConfigurationState();
+            }
             // We use the URL user entered because one provided by the server is NOT reliable
             userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
-                    baseUrl, null).subscribe(userEntity -> {
-                        if (!isPasswordUpdate) {
-
-                            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                            bundleBuilder.putString(BundleKeys.KEY_USERNAME, userEntity.getUsername());
-                            bundleBuilder.putString(BundleKeys.KEY_TOKEN, userEntity.getToken());
-                            bundleBuilder.putString(BundleKeys.KEY_BASE_URL, userEntity.getBaseUrl());
-                            getRouter().pushController(RouterTransaction.with(new AccountVerificationController
-                                    (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
-                                    .popChangeHandler(new HorizontalChangeHandler()));
-                        } else {
-                            getRouter().setRoot(RouterTransaction.with(new BottomNavigationController(R.menu.menu_navigation))
-                                    .pushChangeHandler(new HorizontalChangeHandler())
-                                    .popChangeHandler(new HorizontalChangeHandler()));
-                        }
-                    }, throwable -> dispose(),
-                    this::dispose);
+                    baseUrl, displayName, pushConfiguration).
+                    subscribe(userEntity -> {
+                                if (!isPasswordUpdate) {
+                                    BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                                    bundleBuilder.putString(BundleKeys.KEY_USERNAME, userEntity.getUsername());
+                                    bundleBuilder.putString(BundleKeys.KEY_TOKEN, userEntity.getToken());
+                                    bundleBuilder.putString(BundleKeys.KEY_BASE_URL, userEntity.getBaseUrl());
+                                    getRouter().pushController(RouterTransaction.with(new AccountVerificationController
+                                            (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
+                                            .popChangeHandler(new HorizontalChangeHandler()));
+                                } else {
+                                    getRouter().setRoot(RouterTransaction.with(new BottomNavigationController(R.menu.menu_navigation))
+                                            .pushChangeHandler(new HorizontalChangeHandler())
+                                            .popChangeHandler(new HorizontalChangeHandler()));
+                                }
+                            }, throwable -> dispose(),
+                            this::dispose);
         }
     }
 

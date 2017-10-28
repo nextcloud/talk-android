@@ -24,6 +24,7 @@ import com.nextcloud.talk.api.models.json.call.CallOverall;
 import com.nextcloud.talk.api.models.json.generic.Status;
 import com.nextcloud.talk.api.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.api.models.json.participants.ParticipantsOverall;
+import com.nextcloud.talk.api.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.api.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.api.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.api.models.json.sharees.ShareesOverall;
@@ -33,6 +34,8 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 import retrofit2.http.DELETE;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -176,4 +179,29 @@ public interface NcApi {
      */
     @GET
     Observable<Status> getServerStatus(@Url String url);
+
+
+    /*
+        QueryMap items are as follows:
+            - "format" : "json"
+            - "pushTokenHash" : ""
+            - "devicePublicKey" : ""
+            - "proxyServer" : ""
+
+        Server URL is: baseUrl + ocsApiVersion + "/apps/notifications/api/v2/push
+     */
+
+    @POST
+    Observable<PushRegistrationOverall> registerDeviceForNotificationsWithNextcloud(@Header("Authorization")
+                                                                                            String authorization,
+                                                                                    @Url String url,
+                                                                                    @QueryMap Map<String,
+                                                                                            String> options);
+
+    @FormUrlEncoded
+    @POST
+    Observable<Void> registerDeviceForNotificationsWithProxy(@Header("Authorization") String authorization,
+                                                             @Url String url,
+                                                             @FieldMap Map<String, String> fields);
+
 }

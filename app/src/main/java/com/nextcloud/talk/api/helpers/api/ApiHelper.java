@@ -22,7 +22,9 @@ package com.nextcloud.talk.api.helpers.api;
 import android.net.Uri;
 
 import com.nextcloud.talk.BuildConfig;
+import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.models.RetrofitBucket;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -137,5 +139,14 @@ public class ApiHelper {
 
     public static String getCredentials(String username, String token) {
         return Credentials.basic(username, token);
+    }
+
+    public static String getUrlNextcloudPush(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/apps/notifications/api/v2/push";
+    }
+
+    public static String getUrlPushProxy(String baseUrl) {
+        return NextcloudTalkApplication.getSharedApplication().
+                getApplicationContext().getResources().getString(R.string.nc_push_server_url) + "/devices";
     }
 }

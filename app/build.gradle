@@ -55,6 +55,7 @@ android {
 
 ext {
     supportLibraryVersion = '26.1.0'
+    googleLibraryVersion = '11.4.2'
 }
 
 dependencies {
@@ -69,7 +70,7 @@ dependencies {
     implementation 'com.bluelinelabs:conductor:2.1.4'
     implementation 'com.bluelinelabs:conductor-support:2.1.4'
 
-    implementation 'com.squareup.okhttp3:okhttp:3.8.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.9.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.6.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.6.0'
 
@@ -120,6 +121,13 @@ dependencies {
 
     implementation 'org.webrtc:google-webrtc:1.0.+'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
+
+    implementation 'com.evernote:android-job:1.2.0'
+
+    implementation "com.google.firebase:firebase-messaging:${googleLibraryVersion}"
+    implementation "com.google.android.gms:play-services-base:${googleLibraryVersion}"
+    implementation "com.google.android.gms:play-services-gcm:${googleLibraryVersion}"
+    implementation "com.google.firebase:firebase-core:${googleLibraryVersion}"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.1', {

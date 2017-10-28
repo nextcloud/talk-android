@@ -19,7 +19,7 @@ import javax.net.ssl.SSLSocket
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
 
-class SSLSocketFactoryCompat(trustManager: X509TrustManager): SSLSocketFactory() {
+class SSLSocketFactoryCompat(trustManager: X509TrustManager) : SSLSocketFactory() {
 
     private var delegate: SSLSocketFactory
 
@@ -29,6 +29,7 @@ class SSLSocketFactoryCompat(trustManager: X509TrustManager): SSLSocketFactory()
         // https://developer.android.com/reference/javax/net/ssl/SSLSocket.html
         var protocols: Array<String>? = null
         var cipherSuites: Array<String>? = null
+
         init {
             if (Build.VERSION.SDK_INT >= 23) {
                 // Since Android 6.0 (API level 23),
@@ -87,7 +88,7 @@ class SSLSocketFactoryCompat(trustManager: X509TrustManager): SSLSocketFactory()
 
                         cipherSuites = _cipherSuites.toTypedArray()
                     }
-                } catch(e: IOException) {
+                } catch (e: IOException) {
                 } finally {
                     socket?.close()     // doesn't implement Closeable on all supported Android versions
                 }

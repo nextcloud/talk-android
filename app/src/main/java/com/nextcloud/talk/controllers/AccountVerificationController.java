@@ -132,7 +132,7 @@ public class AccountVerificationController extends BaseController {
 
                                 if (!TextUtils.isEmpty(displayName)) {
                                     dbQueryDisposable = userUtils.createOrUpdateUser(username, token,
-                                            baseUrl, displayName)
+                                            baseUrl, displayName, null)
                                             .subscribeOn(Schedulers.newThread())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(userEntity -> {

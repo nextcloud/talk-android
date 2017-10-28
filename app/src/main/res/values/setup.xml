@@ -7,5 +7,8 @@
     <string name="nc_app_name">Nextcloud Talk</string>
     <string name="nc_server_product_name">Nextcloud</string>
 
-    <color name="background_color">@color/per70white</color>
+    <color name="nc_background_color">@color/per70white</color>
+
+    <string name="nc_push_server_url">https://push-notifications.nextcloud.com</string>
+
 </resources>
