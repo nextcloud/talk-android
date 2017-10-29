@@ -17,20 +17,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.nextcloud.talk.api.models;
+package com.nextcloud.talk.models;
 
 import org.parceler.Parcel;
+
+import java.util.Map;
 
 import lombok.Data;
 
 @Parcel
 @Data
-public class PushConfigurationState {
-    String pushToken;
-    String deviceIdentifier;
-    String deviceIdentifierSignature;
-    String userPublicKey;
-    boolean shouldBeDeleted;
-    boolean usesRegularPass;
+public class RetrofitBucket {
+    String url;
+    Map<String, String> queryMap;
 }

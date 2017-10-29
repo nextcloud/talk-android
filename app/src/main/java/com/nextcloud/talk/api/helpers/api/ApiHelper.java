@@ -23,8 +23,8 @@ import android.net.Uri;
 
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.api.models.RetrofitBucket;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.RetrofitBucket;
 
 import java.util.HashMap;
 import java.util.Map;

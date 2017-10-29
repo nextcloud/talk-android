@@ -212,6 +212,7 @@ public class WebViewLoginController extends BaseController {
                 displayName = currentUser.getDisplayName();
                 pushConfiguration = currentUser.getPushConfigurationState();
             }
+
             // We use the URL user entered because one provided by the server is NOT reliable
             userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
                     baseUrl, displayName, pushConfiguration).

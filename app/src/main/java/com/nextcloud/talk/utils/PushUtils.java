@@ -29,17 +29,21 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.PushConfigurationState;
+import com.nextcloud.talk.api.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -47,10 +51,13 @@ import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -91,7 +98,49 @@ public class PushUtils {
 
     }
 
-    private static int saveKeyToFile(Key key, String path) {
+
+    public SignatureVerification verifySignature(byte[] signatureBytes, byte[] subjectBytes) {
+        Signature signature = null;
+        PushConfigurationState pushConfigurationState;
+        PublicKey publicKey;
+        JSONObject jsonObject;
+        SignatureVerification signatureVerification = new SignatureVerification();
+        signatureVerification.setSignatureValid(false);
+
+        List<UserEntity> userEntities = userUtils.getUsers();
+        try {
+            signature = Signature.getInstance("SHA512withRSA");
+            if (userEntities != null && userEntities.size() > 0) {
+                for (UserEntity userEntity : userEntities) {
+                    if (!TextUtils.isEmpty(userEntity.getPushConfigurationState())) {
+                        pushConfigurationState = LoganSquare.parse(userEntity.getPushConfigurationState(),
+                                PushConfigurationState.class);
+                        publicKey = (PublicKey) readKeyFromString(true,
+                                pushConfigurationState.getUserPublicKey());
+                        signature.initVerify(publicKey);
+                        signature.update(subjectBytes);
+                        if (signature.verify(signatureBytes)) {
+                            signatureVerification.setSignatureValid(true);
+                            signatureVerification.setUserEntity(userEntity);
+                            return signatureVerification;
+                        }
+                    }
+                }
+            }
+        } catch (NoSuchAlgorithmException e) {
+            Log.d(TAG, "No such algorithm");
+        } catch (IOException e) {
+            Log.d(TAG, "Error while trying to parse push configuration state");
+        } catch (InvalidKeyException e) {
+            Log.d(TAG, "Invalid key while trying to verify");
+        } catch (SignatureException e) {
+            Log.d(TAG, "Signature exception while trying to verify");
+        }
+
+        return signatureVerification;
+    }
+
+    private int saveKeyToFile(Key key, String path) {
         byte[] encoded = key.getEncoded();
         FileOutputStream keyFileOutputStream = null;
         try {
@@ -250,7 +299,18 @@ public class PushUtils {
                                                         userUtils.createOrUpdateUser(userEntity.getUsername(),
                                                                 userEntity.getToken(), userEntity.getBaseUrl(),
                                                                 userEntity.getDisplayName(),
-                                                                LoganSquare.serialize(pushConfigurationState));
+                                                                LoganSquare.serialize(pushConfigurationState))
+                                                                .subscribe(new Consumer<UserEntity>() {
+                                                                    @Override
+                                                                    public void accept(UserEntity userEntity) throws Exception {
+                                                                        // all went well
+                                                                    }
+                                                                }, new Consumer<Throwable>() {
+                                                                    @Override
+                                                                    public void accept(Throwable throwable) throws Exception {
+                                                                    }
+                                                                });
+
 
                                                     }
                                                 }, new Consumer<Throwable>() {
@@ -275,7 +335,39 @@ public class PushUtils {
         }
     }
 
-    private Key readKeyFromFile(boolean readPublicKey) {
+    private Key readKeyFromString(boolean readPublicKey, String keyString) {
+        keyString = keyString.replace("-----BEGIN PUBLIC KEY-----", "");
+        keyString = keyString.replace("-----END PUBLIC KEY-----", "");
+
+        if (readPublicKey) {
+            keyString = keyString.replaceAll("\\n", "").replace("-----BEGIN PUBLIC KEY-----",
+                    "").replace("-----END PUBLIC KEY-----", "");;
+        } else {
+            keyString = keyString.replaceAll("\\n", "").replace("-----BEGIN PRIVATE KEY-----",
+                    "").replace("-----END PRIVATE KEY-----", "");
+        }
+
+        KeyFactory keyFactory = null;
+        try {
+            keyFactory = KeyFactory.getInstance("RSA");
+            if (readPublicKey) {
+                X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.decode(keyString, Base64.DEFAULT));
+                return keyFactory.generatePublic(keySpec);
+            } else {
+                PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.decode(keyString, Base64.DEFAULT));
+                return keyFactory.generatePrivate(keySpec);
+            }
+
+        } catch (NoSuchAlgorithmException e) {
+            Log.d("TAG", "No such algorithm while reading key from string");
+        } catch (InvalidKeySpecException e) {
+            Log.d("TAG", "Invalid key spec while reading key from string");
+        }
+
+        return null;
+    }
+
+    public Key readKeyFromFile(boolean readPublicKey) {
         String path;
 
         if (readPublicKey) {

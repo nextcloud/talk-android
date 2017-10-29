@@ -32,7 +32,6 @@ public class PushRegistrationJob extends Job {
     @Override
     protected Result onRunJob(Params params) {
         PushUtils pushUtils = new PushUtils();
-
         pushUtils.generateRsa2048KeyPair();
         pushUtils.pushRegistrationToServer();
 

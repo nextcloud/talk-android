@@ -33,11 +33,13 @@ import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.evernote.android.job.JobRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.jobs.PushRegistrationJob;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -140,6 +142,10 @@ public class AccountVerificationController extends BaseController {
                                                                 + "\n" +
                                                                 getResources().getString(
                                                                         R.string.nc_display_name_stored));
+
+                                                        new JobRequest.Builder(PushRegistrationJob.TAG).
+                                                                setUpdateCurrent(true).startNow().build().schedule();
+
                                                         getRouter().setRoot(RouterTransaction.with(new
                                                                 BottomNavigationController(R.menu.menu_navigation))
                                                                 .pushChangeHandler(new HorizontalChangeHandler())

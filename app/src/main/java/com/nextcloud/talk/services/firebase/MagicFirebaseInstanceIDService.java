@@ -40,13 +40,14 @@ public class MagicFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     public MagicFirebaseInstanceIDService() {
         super();
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication()
+                .inject(this);
     }
 
     @Override
     public void onTokenRefresh() {
         appPreferences.setPushtoken(FirebaseInstanceId.getInstance().getToken());
 
-        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow();
+        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
     }
 }

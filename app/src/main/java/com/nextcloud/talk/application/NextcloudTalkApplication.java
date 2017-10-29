@@ -26,6 +26,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
@@ -81,8 +82,9 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         JobManager.create(this).addJobCreator(new MagicJobCreator());
-
+        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false);
         sharedApplication = this;
+
 
         try {
             buildComponent();
@@ -95,7 +97,7 @@ public class NextcloudTalkApplication extends MultiDexApplication {
         componentApplication.inject(this);
         refWatcher = LeakCanary.install(this);
 
-        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow();
+        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
 
     }
 

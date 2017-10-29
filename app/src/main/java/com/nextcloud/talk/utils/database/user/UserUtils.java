@@ -22,13 +22,10 @@ package com.nextcloud.talk.utils.database.user;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.persistence.entities.User;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 
-import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -96,11 +93,7 @@ public class UserUtils {
             }
 
             if (pushConfigurationState != null) {
-                try {
-                    user.setPushConfigurationState(LoganSquare.serialize(pushConfigurationState));
-                } catch (IOException e) {
-                    Log.d(TAG, "Failed to serialize push configuration state");
-                }
+                user.setPushConfigurationState(pushConfigurationState);
             }
 
         } else {
@@ -113,11 +106,7 @@ public class UserUtils {
             }
 
             if (pushConfigurationState != null && !pushConfigurationState.equals(user.getPushConfigurationState())) {
-                try {
-                    user.setPushConfigurationState(LoganSquare.serialize(pushConfigurationState));
-                } catch (IOException e) {
-                    Log.d(TAG, "Failed to serialize push configuration state");
-                }
+                user.setPushConfigurationState(pushConfigurationState);
             }
         }
 

@@ -18,26 +18,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.jobs.creator;
+package com.nextcloud.talk.api.models.json.push;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import com.evernote.android.job.Job;
-import com.evernote.android.job.JobCreator;
-import com.nextcloud.talk.jobs.PushRegistrationJob;
+import org.parceler.Parcel;
 
-public class MagicJobCreator implements JobCreator {
-    private static final String TAG = "MagicJobCreator";
+import lombok.Data;
 
-    @Nullable
-    @Override
-    public Job create(@NonNull String tag) {
-        switch (tag) {
-            case PushRegistrationJob.TAG:
-                return new PushRegistrationJob();
-            default:
-                return null;
-        }
-    }
+@Parcel
+@Data
+@JsonObject
+public class PushConfigurationState {
+    @JsonField(name = "pushToken")
+    String pushToken;
+
+    @JsonField(name = "deviceIdentifier")
+    String deviceIdentifier;
+
+    @JsonField(name = "deviceIdentifierSignature")
+    String deviceIdentifierSignature;
+
+    @JsonField(name = "userPublicKey")
+    String userPublicKey;
+
+    @JsonField(name = "shouldBeDeleted")
+    boolean shouldBeDeleted;
+
+    @JsonField(name = "usesRegularPass")
+    boolean usesRegularPass;
 }
