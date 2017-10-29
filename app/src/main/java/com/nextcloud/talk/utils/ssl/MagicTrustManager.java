@@ -50,8 +50,6 @@ public class MagicTrustManager implements X509TrustManager {
     private X509TrustManager systemTrustManager = null;
     private KeyStore trustedKeyStore = null;
 
-    private HostnameVerifier hostnameVerifier;
-
     public HostnameVerifier getHostnameVerifier(HostnameVerifier defaultHostNameVerifier) {
         return new MagicHostnameVerifier(defaultHostNameVerifier);
     }
