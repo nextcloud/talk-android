@@ -32,20 +32,20 @@ import lombok.Data;
 @JsonObject
 public class PushConfigurationState {
     @JsonField(name = "pushToken")
-    String pushToken;
+    public String pushToken;
 
     @JsonField(name = "deviceIdentifier")
-    String deviceIdentifier;
+    public String deviceIdentifier;
 
     @JsonField(name = "deviceIdentifierSignature")
-    String deviceIdentifierSignature;
+    public String deviceIdentifierSignature;
 
     @JsonField(name = "userPublicKey")
-    String userPublicKey;
+    public String userPublicKey;
 
     @JsonField(name = "shouldBeDeleted")
-    boolean shouldBeDeleted;
+    public boolean shouldBeDeleted;
 
     @JsonField(name = "usesRegularPass")
-    boolean usesRegularPass;
+    public boolean usesRegularPass;
 }
