@@ -95,18 +95,23 @@ public class MagicTrustManager implements X509TrustManager {
                 systemTrustManager.checkServerTrusted(new X509Certificate[]{x509Certificate}, "generic");
                 return true;
             } catch (CertificateException e) {
-                if (trustedKeyStore != null) {
-                    try {
-                        if (trustedKeyStore.getCertificateAlias(x509Certificate) != null) {
-                            return true;
-                        }
-                    } catch (KeyStoreException exception) {
-                        return false;
-                    }
-                }
-
+                return isCertInMagicTrustStore(x509Certificate);
             }
         }
+        return false;
+    }
+
+    private boolean isCertInMagicTrustStore(X509Certificate x509Certificate) {
+        if (trustedKeyStore != null) {
+            try {
+                if (trustedKeyStore.getCertificateAlias(x509Certificate) != null) {
+                    return true;
+                }
+            } catch (KeyStoreException exception) {
+                return false;
+            }
+        }
+
         return false;
     }
 
@@ -157,7 +162,7 @@ public class MagicTrustManager implements X509TrustManager {
 
             try {
                 X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();
-                if (certificates.length > 0 && certificates[0] != null) {
+                if (certificates.length > 0 && certificates[0] != null && isCertInMagicTrustStore(certificates[0])) {
                     return true;
                 }
             } catch (SSLPeerUnverifiedException e) {
