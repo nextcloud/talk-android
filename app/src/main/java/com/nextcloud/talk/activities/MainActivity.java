@@ -21,9 +21,12 @@
 package com.nextcloud.talk.activities;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ViewGroup;
+import android.webkit.SslErrorHandler;
 
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
@@ -58,6 +61,8 @@ import io.requery.reactivex.ReactiveEntityStore;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public final class MainActivity extends AppCompatActivity implements ActionBarProvider {
+
+    private static final String TAG = "MainActivity";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -105,7 +110,8 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         }
     }
 
-    private void showCertificateDialog(X509Certificate cert, MagicTrustManager magicTrustManager) {
+    public void showCertificateDialog(X509Certificate cert, MagicTrustManager magicTrustManager,
+                                       @Nullable SslErrorHandler sslErrorHandler) {
         DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG);
         String validFrom = formatter.format(cert.getNotBefore());
         String validUntil = formatter.format(cert.getNotAfter());
@@ -130,8 +136,8 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
             }
 
             String dialogText = String.format(getResources()
-                            .getString(R.string.nc_certificate_dialog_text), issuedBy, issuedFor,
-                    validFrom, validUntil);
+                            .getString(R.string.nc_certificate_dialog_text),
+                    issuedBy, issuedFor, validFrom, validUntil);
 
             new LovelyStandardDialog(this)
                     .setTopColorRes(R.color.darkRed)
@@ -142,22 +148,28 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
                     .setMessage(dialogText)
                     .setPositiveButton(R.string.nc_yes, v -> {
                         magicTrustManager.addCertInTrustStore(cert);
+                        if (sslErrorHandler != null) {
+                            sslErrorHandler.proceed();
+                        }
                     })
                     .setNegativeButton(R.string.nc_no, view1 -> {
-                        router.setRoot(RouterTransaction.with(new
-                                ServerSelectionController()));
+                        if (sslErrorHandler != null) {
+                            sslErrorHandler.cancel();
+                        }
                     })
                     .show();
 
         } catch (CertificateParsingException e) {
-            e.printStackTrace();
+            Log.d(TAG, "Failed to parse the certificate");
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(CertificateEvent event) {
-        showCertificateDialog(event.getX509Certificate(), event.getMagicTrustManager());
-    };
+        showCertificateDialog(event.getX509Certificate(), event.getMagicTrustManager(), event.getSslErrorHandler());
+    }
+
+    ;
 
     @Override
     public void onStart() {

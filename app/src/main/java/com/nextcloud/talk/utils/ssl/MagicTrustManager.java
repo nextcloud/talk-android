@@ -99,7 +99,8 @@ public class MagicTrustManager implements X509TrustManager {
                 return true;
             } catch (CertificateException e) {
                 if (!isCertInMagicTrustStore(x509Certificate)) {
-                    EventBus.getDefault().post(new CertificateEvent(x509Certificate, this));
+                    EventBus.getDefault().post(new CertificateEvent(x509Certificate, this,
+                            null));
                     long startTime = System.currentTimeMillis();
                     while (!isCertInMagicTrustStore(x509Certificate) && System.currentTimeMillis() <=
                             startTime + 15000) {

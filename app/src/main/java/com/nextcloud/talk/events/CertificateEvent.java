@@ -20,6 +20,9 @@
 
 package com.nextcloud.talk.events;
 
+import android.support.annotation.Nullable;
+import android.webkit.SslErrorHandler;
+
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 
 import java.security.cert.X509Certificate;
@@ -27,10 +30,18 @@ import java.security.cert.X509Certificate;
 public class CertificateEvent {
     private final X509Certificate x509Certificate;
     private final MagicTrustManager magicTrustManager;
+    @Nullable private final SslErrorHandler sslErrorHandler;
 
-    public CertificateEvent(X509Certificate x509Certificate, MagicTrustManager magicTrustManager) {
+    public CertificateEvent(X509Certificate x509Certificate, MagicTrustManager magicTrustManager,
+                            @Nullable SslErrorHandler sslErrorHandler) {
         this.x509Certificate = x509Certificate;
         this.magicTrustManager = magicTrustManager;
+        this.sslErrorHandler = sslErrorHandler;
+    }
+
+    @Nullable
+    public SslErrorHandler getSslErrorHandler() {
+        return sslErrorHandler;
     }
 
     public X509Certificate getX509Certificate() {

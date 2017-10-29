@@ -133,7 +133,7 @@ public class RestModule {
 
         httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager);
         httpClient.retryOnConnectionFailure(true);
-        httpClient.hostnameVerifier(new MagicTrustManager().getHostnameVerifier(OkHostnameVerifier.INSTANCE));
+        httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE));
 
         if (!Proxy.NO_PROXY.equals(proxy)) {
             httpClient.proxy(proxy);
