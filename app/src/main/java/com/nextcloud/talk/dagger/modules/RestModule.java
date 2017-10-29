@@ -125,7 +125,7 @@ public class RestModule {
         }
 
         httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager);
-        httpClient.hostnameVerifier(OkHostnameVerifier.INSTANCE);
+        httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE));
 
         if (!Proxy.NO_PROXY.equals(proxy)) {
             httpClient.proxy(proxy);
@@ -167,6 +167,7 @@ public class RestModule {
                     return null;
                 }
             }
+
             return response.request().newBuilder()
                     .header("Proxy-Authorization", credentials)
                     .build();

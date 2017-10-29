@@ -35,9 +35,13 @@ import java.security.KeyStoreException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
+
 
 public class MagicTrustManager implements X509TrustManager {
     private static final String TAG = "MagicTrustManager";
@@ -45,6 +49,12 @@ public class MagicTrustManager implements X509TrustManager {
     private File keystoreFile;
     private X509TrustManager systemTrustManager = null;
     private KeyStore trustedKeyStore = null;
+
+    private HostnameVerifier hostnameVerifier;
+
+    public HostnameVerifier getHostnameVerifier(HostnameVerifier defaultHostNameVerifier) {
+        return new MagicHostnameVerifier(defaultHostNameVerifier);
+    }
 
     public MagicTrustManager() {
         keystoreFile = new File(NextcloudTalkApplication.getSharedApplication().getDir("CertsKeystore",
@@ -130,4 +140,34 @@ public class MagicTrustManager implements X509TrustManager {
     public X509Certificate[] getAcceptedIssuers() {
         return new X509Certificate[0];
     }
+
+    private class MagicHostnameVerifier implements HostnameVerifier {
+        private static final String TAG = "MagicHostnameVerifier";
+        private HostnameVerifier defaultHostNameVerifier;
+
+        public MagicHostnameVerifier(HostnameVerifier defaultHostNameVerifier) {
+            this.defaultHostNameVerifier = defaultHostNameVerifier;
+        }
+
+        @Override
+        public boolean verify(String s, SSLSession sslSession) {
+
+            if (defaultHostNameVerifier.verify(s, sslSession)) {
+                return true;
+            }
+
+
+            try {
+                X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();
+                if (certificates.length > 0 && certificates[0] != null) {
+                    return true;
+                }
+            } catch (SSLPeerUnverifiedException e) {
+                Log.d(TAG, "Couldn't get certificate for host name verification");
+            }
+
+            return false;
+        }
+    }
+
 }
