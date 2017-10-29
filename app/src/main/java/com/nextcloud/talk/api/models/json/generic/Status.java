@@ -32,23 +32,23 @@ import lombok.Data;
 @JsonObject
 public class Status {
     @JsonField(name = "installed")
-    boolean installed;
+    public boolean installed;
 
     @JsonField(name = "maintenance")
-    boolean maintenance;
+    public boolean maintenance;
 
     @JsonField(name = "upgrade")
-    boolean needsUpgrade;
+    public boolean needsUpgrade;
 
     @JsonField(name = "version")
-    String version;
+    public String version;
 
     @JsonField(name = "versionstring")
-    String versionString;
+    public String versionString;
 
     @JsonField(name = "edition")
-    String edition;
+    public String edition;
 
     @JsonField(name = "productname")
-    String productName;
+    public String productName;
 }
