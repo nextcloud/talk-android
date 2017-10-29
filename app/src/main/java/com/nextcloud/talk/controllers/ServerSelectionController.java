@@ -169,6 +169,12 @@ public class ServerSelectionController extends BaseController {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dispose();
+    }
+
     private void dispose() {
         if (statusQueryDisposable != null && !statusQueryDisposable.isDisposed()) {
             statusQueryDisposable.dispose();

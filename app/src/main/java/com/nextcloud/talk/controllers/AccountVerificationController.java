@@ -212,6 +212,12 @@ public class AccountVerificationController extends BaseController {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dispose(null);
+    }
+
     private void abortVerification() {
         dispose(null);
 

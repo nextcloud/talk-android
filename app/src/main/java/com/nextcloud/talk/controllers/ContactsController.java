@@ -408,6 +408,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dispose(null);
+    }
+
+    @Override
     public boolean onQueryTextChange(String newText) {
         if (adapter.hasNewSearchText(newText) || !TextUtils.isEmpty(searchQuery)) {
 

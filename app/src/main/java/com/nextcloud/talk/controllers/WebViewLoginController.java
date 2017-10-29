@@ -275,6 +275,12 @@ public class WebViewLoginController extends BaseController {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dispose();
+    }
+
+    @Override
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
         if (getActivity() != null) {

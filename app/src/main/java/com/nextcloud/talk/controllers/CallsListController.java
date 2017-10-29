@@ -361,6 +361,12 @@ public class CallsListController extends BaseController implements SearchView.On
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dispose(null);
+    }
+
+    @Override
     public boolean onQueryTextChange(String newText) {
         if (adapter.hasNewSearchText(newText) || !TextUtils.isEmpty(searchQuery)) {
 
