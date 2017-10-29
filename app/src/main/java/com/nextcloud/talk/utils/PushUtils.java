@@ -36,8 +36,6 @@ import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -103,7 +101,6 @@ public class PushUtils {
         Signature signature = null;
         PushConfigurationState pushConfigurationState;
         PublicKey publicKey;
-        JSONObject jsonObject;
         SignatureVerification signatureVerification = new SignatureVerification();
         signatureVerification.setSignatureValid(false);
 

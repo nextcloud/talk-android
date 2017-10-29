@@ -46,12 +46,15 @@ import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.text.DateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -148,7 +151,9 @@ public class WebViewLoginController extends BaseController {
             @Override
             public void onPageFinished(WebView view, String url) {
                 if (!basePageLoaded) {
-                    progressBar.setVisibility(View.GONE);
+                    if (progressBar != null) {
+                        progressBar.setVisibility(View.GONE);
+                    }
                     webView.setVisibility(View.VISIBLE);
                     basePageLoaded = true;
                 }
@@ -171,8 +176,50 @@ public class WebViewLoginController extends BaseController {
                             magicTrustManager.checkServerTrusted(new X509Certificate[]{cert}, "generic");
                             handler.proceed();
                         } catch (CertificateException exception) {
-                            // cancel for now, as we don't have a way to accept custom certificates
-                            handler.cancel();
+                            DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG);
+                            String validFrom = formatter.format(cert.getNotBefore());
+                            String validUntil = formatter.format(cert.getNotAfter());
+
+                            String issuedBy = cert.getIssuerDN().toString();
+                            String issuedFor;
+
+                            if (cert.getSubjectAlternativeNames() != null) {
+                                StringBuilder stringBuilder = new StringBuilder();
+                                for (Object o : cert.getSubjectAlternativeNames()) {
+                                    List list = (List) o;
+                                    int type = (Integer) list.get(0);
+                                    if (type == 2) {
+                                        String name = (String) list.get(1);
+                                        stringBuilder.append("[").append(type).append("]").append(name).append(" ");
+                                    }
+                                }
+                                issuedFor = stringBuilder.toString();
+                            } else {
+                                issuedFor = cert.getSubjectDN().getName();
+                            }
+
+                            String dialogText = String.format(getResources()
+                                            .getString(R.string.nc_certificate_dialog_text), issuedBy, issuedFor,
+                                    validFrom, validUntil);
+
+                            new LovelyStandardDialog(getActivity())
+                                    .setTopColorRes(R.color.darkRed)
+                                    .setNegativeButtonColorRes(R.color.darkRed)
+                                    .setPositiveButtonColorRes(R.color.colorPrimaryDark)
+                                    .setIcon(R.drawable.ic_security_white_24dp)
+                                    .setTitle(R.string.nc_certificate_dialog_title)
+                                    .setMessage(dialogText)
+                                    .setPositiveButton(R.string.nc_yes, v -> {
+                                        magicTrustManager.addCertInTrustStore(cert);
+                                        handler.proceed();
+                                    })
+                                    .setNegativeButton(R.string.nc_no, view1 -> {
+                                        handler.cancel();
+                                        getRouter().setRoot(RouterTransaction.with(new
+                                                ServerSelectionController()));
+                                    })
+                                    .setCancelable(false)
+                                    .show();
                         }
                     }
                 } catch (Exception exception) {

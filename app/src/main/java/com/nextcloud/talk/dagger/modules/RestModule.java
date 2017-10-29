@@ -37,6 +37,7 @@ import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -58,6 +59,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 @Module(includes = DatabaseModule.class)
 public class RestModule {
+
+    private static final String TAG = "RestModule";
 
     @Provides
     @Singleton
@@ -98,7 +101,6 @@ public class RestModule {
     @Singleton
     MagicTrustManager provideMagicTrustManager() {
         return new MagicTrustManager();
-
     }
 
     @Provides
@@ -110,8 +112,13 @@ public class RestModule {
     @Provides
     @Singleton
     OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
-                                   MagicTrustManager magicTrustManager, SSLSocketFactoryCompat sslSocketFactoryCompat) {
+                                   MagicTrustManager magicTrustManager,
+                                   SSLSocketFactoryCompat sslSocketFactoryCompat) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+        httpClient.connectTimeout(30, TimeUnit.SECONDS);
+        httpClient.readTimeout(30, TimeUnit.SECONDS);
+        httpClient.writeTimeout(30, TimeUnit.SECONDS);
 
         int cacheSize = 128 * 1024 * 1024; // 128 MB
 
@@ -125,7 +132,8 @@ public class RestModule {
         }
 
         httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager);
-        httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE));
+        httpClient.retryOnConnectionFailure(true);
+        httpClient.hostnameVerifier(new MagicTrustManager().getHostnameVerifier(OkHostnameVerifier.INSTANCE));
 
         if (!Proxy.NO_PROXY.equals(proxy)) {
             httpClient.proxy(proxy);

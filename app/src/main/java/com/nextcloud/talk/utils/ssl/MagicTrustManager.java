@@ -26,6 +26,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.events.CertificateEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,10 +52,6 @@ public class MagicTrustManager implements X509TrustManager {
     private File keystoreFile;
     private X509TrustManager systemTrustManager = null;
     private KeyStore trustedKeyStore = null;
-
-    public HostnameVerifier getHostnameVerifier(HostnameVerifier defaultHostNameVerifier) {
-        return new MagicHostnameVerifier(defaultHostNameVerifier);
-    }
 
     public MagicTrustManager() {
         keystoreFile = new File(NextcloudTalkApplication.getSharedApplication().getDir("CertsKeystore",
@@ -89,15 +88,30 @@ public class MagicTrustManager implements X509TrustManager {
 
     }
 
+    public HostnameVerifier getHostnameVerifier(HostnameVerifier defaultHostNameVerifier) {
+        return new MagicHostnameVerifier(defaultHostNameVerifier);
+    }
+
     public boolean isCertInTrustStore(X509Certificate x509Certificate) {
         if (systemTrustManager != null) {
             try {
                 systemTrustManager.checkServerTrusted(new X509Certificate[]{x509Certificate}, "generic");
                 return true;
             } catch (CertificateException e) {
-                return isCertInMagicTrustStore(x509Certificate);
+                if (!isCertInMagicTrustStore(x509Certificate)) {
+                    EventBus.getDefault().post(new CertificateEvent(x509Certificate, this));
+                    long startTime = System.currentTimeMillis();
+                    while (!isCertInMagicTrustStore(x509Certificate) && System.currentTimeMillis() <=
+                            startTime + 15000) {
+                        //do nothing
+                    }
+                    return isCertInMagicTrustStore(x509Certificate);
+                } else {
+                    return true;
+                }
             }
         }
+
         return false;
     }
 
@@ -158,7 +172,6 @@ public class MagicTrustManager implements X509TrustManager {
             if (defaultHostNameVerifier.verify(s, sslSession)) {
                 return true;
             }
-
 
             try {
                 X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();

@@ -129,6 +129,8 @@ dependencies {
     implementation "com.google.android.gms:play-services-gcm:${googleLibraryVersion}"
     implementation "com.google.firebase:firebase-core:${googleLibraryVersion}"
 
+    implementation 'com.yarolegovich:lovely-dialog:1.0.7'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'

@@ -34,7 +34,19 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.BottomNavigationController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
+import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.ssl.MagicTrustManager;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.security.cert.CertificateParsingException;
+import java.security.cert.X509Certificate;
+import java.text.DateFormat;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -57,6 +69,9 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
     @Inject
     ReactiveEntityStore<Persistable> dataStore;
 
+    @Inject
+    EventBus eventBus;
+
     private Router router;
 
     @Override
@@ -71,7 +86,6 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         setSupportActionBar(toolbar);
 
         router = Conductor.attachRouter(this, container, savedInstanceState);
-
 
         if (!router.hasRootController() && userUtils.anyUserExists()) {
             router.setRoot(RouterTransaction.with(new BottomNavigationController(R.menu.menu_navigation))
@@ -89,5 +103,71 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         if (!router.handleBack()) {
             super.onBackPressed();
         }
+    }
+
+    private void showCertificateDialog(X509Certificate cert, MagicTrustManager magicTrustManager) {
+        DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG);
+        String validFrom = formatter.format(cert.getNotBefore());
+        String validUntil = formatter.format(cert.getNotAfter());
+
+        String issuedBy = cert.getIssuerDN().toString();
+        String issuedFor;
+
+        try {
+            if (cert.getSubjectAlternativeNames() != null) {
+                StringBuilder stringBuilder = new StringBuilder();
+                for (Object o : cert.getSubjectAlternativeNames()) {
+                    List list = (List) o;
+                    int type = (Integer) list.get(0);
+                    if (type == 2) {
+                        String name = (String) list.get(1);
+                        stringBuilder.append("[").append(type).append("]").append(name).append(" ");
+                    }
+                }
+                issuedFor = stringBuilder.toString();
+            } else {
+                issuedFor = cert.getSubjectDN().getName();
+            }
+
+            String dialogText = String.format(getResources()
+                            .getString(R.string.nc_certificate_dialog_text), issuedBy, issuedFor,
+                    validFrom, validUntil);
+
+            new LovelyStandardDialog(this)
+                    .setTopColorRes(R.color.darkRed)
+                    .setNegativeButtonColorRes(R.color.darkRed)
+                    .setPositiveButtonColorRes(R.color.colorPrimaryDark)
+                    .setIcon(R.drawable.ic_security_white_24dp)
+                    .setTitle(R.string.nc_certificate_dialog_title)
+                    .setMessage(dialogText)
+                    .setPositiveButton(R.string.nc_yes, v -> {
+                        magicTrustManager.addCertInTrustStore(cert);
+                    })
+                    .setNegativeButton(R.string.nc_no, view1 -> {
+                        router.setRoot(RouterTransaction.with(new
+                                ServerSelectionController()));
+                    })
+                    .show();
+
+        } catch (CertificateParsingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(CertificateEvent event) {
+        showCertificateDialog(event.getX509Certificate(), event.getMagicTrustManager());
+    };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        eventBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        eventBus.unregister(this);
     }
 }

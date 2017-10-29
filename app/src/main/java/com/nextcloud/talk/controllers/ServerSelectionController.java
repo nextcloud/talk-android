@@ -36,6 +36,8 @@ import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 
+import java.security.cert.CertificateException;
+
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
@@ -123,10 +125,12 @@ public class ServerSelectionController extends BaseController {
                                             true);
                                 } else if (status.isNeedsUpgrade()) {
                                     textFieldBoxes.setError(String.format(getResources().
-                                            getString(R.string.nc_server_db_upgrade_needed), productName), true);
+                                                    getString(R.string.nc_server_db_upgrade_needed),
+                                            productName), true);
                                 } else if (status.isMaintenance()) {
                                     textFieldBoxes.setError(String.format(getResources().
-                                                    getString(R.string.nc_server_maintenance), productName),
+                                                    getString(R.string.nc_server_maintenance),
+                                            productName),
                                             true);
                                 } else if (!status.getProductName().equals(
                                         getResources().getString(R.string.nc_server_product_name))) {
@@ -137,7 +141,12 @@ public class ServerSelectionController extends BaseController {
                                 }
 
                             }, throwable -> {
-                                textFieldBoxes.setError(throwable.getLocalizedMessage(), true);
+                                if (throwable.getLocalizedMessage() != null) {
+                                    textFieldBoxes.setError(throwable.getLocalizedMessage(), true);
+                                } else if (throwable.getCause() instanceof CertificateException) {
+                                    textFieldBoxes.setError(getResources().getString(R.string.nc_certificate_error),
+                                            true);
+                                }
                                 if (serverEntry != null) {
                                     serverEntry.setEnabled(true);
                                 }
