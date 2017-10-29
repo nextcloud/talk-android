@@ -36,29 +36,29 @@ import lombok.Data;
 @JsonObject
 public class Room {
     @JsonField(name = "id")
-    String roomId;
+    public String roomId;
     @JsonField(name = "token")
-    String token;
+    public String token;
     @JsonField(name = "name")
-    String name;
+    public String name;
     @JsonField(name = "displayName")
-    String displayName;
+    public String displayName;
     @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
-    RoomType type;
+    public RoomType type;
     @JsonField(name = "count")
-    long count;
+    public long count;
     @JsonField(name = "lastPing")
-    long lastPing;
+    public long lastPing;
     @JsonField(name = "numGuests")
-    long numberOfGuests;
+    public long numberOfGuests;
     @JsonField(name = "guestList")
-    List<User> guestList;
+    public List<User> guestList;
     @JsonField(name = "participants")
-    List<User> participants;
+    public List<User> participants;
     @JsonField(name = "hasPassword")
-    boolean hasPassword;
+    public boolean hasPassword;
     @JsonField(name = "sessionId")
-    String sessionId;
+    public String sessionId;
 
     public enum RoomType {
         DUMMY,
