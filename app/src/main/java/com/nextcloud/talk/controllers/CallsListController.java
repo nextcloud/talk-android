@@ -119,26 +119,28 @@ public class CallsListController extends BaseController implements SearchView.On
             new FlexibleAdapter.OnItemClickListener() {
                 @Override
                 public boolean onItemClick(int position) {
-                    RoomItem roomItem = roomItems.get(position);
-                    ncApi.joinCall(Credentials.basic(userEntity.getUsername(), userEntity.getToken()),
-                            ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomItem.getModel().getToken()))
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Consumer<CallOverall>() {
-                                @Override
-                                public void accept(CallOverall callOverall) throws Exception {
+                    if (roomItems.size() > position) {
+                        RoomItem roomItem = roomItems.get(position);
+                        ncApi.joinCall(Credentials.basic(userEntity.getUsername(), userEntity.getToken()),
+                                ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomItem.getModel().getToken()))
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Consumer<CallOverall>() {
+                                    @Override
+                                    public void accept(CallOverall callOverall) throws Exception {
 
-                                    overridePushHandler(new SimpleSwapChangeHandler());
-                                    overridePopHandler(new SimpleSwapChangeHandler());
+                                        overridePushHandler(new SimpleSwapChangeHandler());
+                                        overridePopHandler(new SimpleSwapChangeHandler());
 
-                                    Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                                    BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                                    bundleBuilder.putString("roomToken", roomItem.getModel().getToken());
-                                    bundleBuilder.putString("userDisplayName", userEntity.getDisplayName());
-                                    callIntent.putExtras(bundleBuilder.build());
-                                    startActivity(callIntent);
-                                }
-                            });
+                                        Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                                        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                                        bundleBuilder.putString("roomToken", roomItem.getModel().getToken());
+                                        bundleBuilder.putString("userDisplayName", userEntity.getDisplayName());
+                                        callIntent.putExtras(bundleBuilder.build());
+                                        startActivity(callIntent);
+                                    }
+                                });
+                    }
 
                     return true;
                 }
