@@ -24,6 +24,12 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.api.models.json.generic.GenericOCS;
 
+import org.parceler.Parcel;
+
+import lombok.Data;
+
+@Data
+@Parcel
 @JsonObject
 public class CallOCS extends GenericOCS {
     @JsonField(name = "data")

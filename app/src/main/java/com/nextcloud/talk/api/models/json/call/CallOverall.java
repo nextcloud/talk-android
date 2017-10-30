@@ -23,6 +23,12 @@ package com.nextcloud.talk.api.models.json.call;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import org.parceler.Parcel;
+
+import lombok.Data;
+
+@Data
+@Parcel
 @JsonObject
 public class CallOverall {
     @JsonField(name = "ocs")

@@ -28,7 +28,6 @@ import android.widget.TextView;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.rooms.Room;
@@ -122,7 +121,6 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
 
                     GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                             .asBitmap()
-                            .transition(BitmapTransitionOptions.withCrossFade())
                             .skipMemoryCache(true)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .load(glideUrl)

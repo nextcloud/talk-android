@@ -22,6 +22,7 @@ package com.nextcloud.talk.controllers;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -46,15 +47,19 @@ import android.view.inputmethod.EditorInfo;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.items.RoomItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.api.models.json.call.CallOverall;
 import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.database.cache.CacheUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -69,7 +74,9 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Credentials;
 import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -108,6 +115,35 @@ public class CallsListController extends BaseController implements SearchView.On
     private SearchView searchView;
     private String searchQuery;
 
+    private FlexibleAdapter.OnItemClickListener onItemClickListener =
+            new FlexibleAdapter.OnItemClickListener() {
+                @Override
+                public boolean onItemClick(int position) {
+                    RoomItem roomItem = roomItems.get(position);
+                    ncApi.joinCall(Credentials.basic(userEntity.getUsername(), userEntity.getToken()),
+                            ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomItem.getModel().getToken()))
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Consumer<CallOverall>() {
+                                @Override
+                                public void accept(CallOverall callOverall) throws Exception {
+
+                                    overridePushHandler(new SimpleSwapChangeHandler());
+                                    overridePopHandler(new SimpleSwapChangeHandler());
+
+                                    Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                                    BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                                    bundleBuilder.putString("roomToken", roomItem.getModel().getToken());
+                                    bundleBuilder.putString("userDisplayName", userEntity.getDisplayName());
+                                    callIntent.putExtras(bundleBuilder.build());
+                                    startActivity(callIntent);
+                                }
+                            });
+
+                    return true;
+                }
+            };
+
     public CallsListController() {
         super();
         setHasOptionsMenu(true);
@@ -131,6 +167,8 @@ public class CallsListController extends BaseController implements SearchView.On
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(roomItems, getActivity(), false);
         }
+
+        adapter.addListener(onItemClickListener);
 
         prepareViews();
 
@@ -391,4 +429,5 @@ public class CallsListController extends BaseController implements SearchView.On
     public boolean onQueryTextSubmit(String query) {
         return onQueryTextChange(query);
     }
+
 }

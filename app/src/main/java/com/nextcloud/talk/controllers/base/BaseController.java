@@ -21,6 +21,7 @@ package com.nextcloud.talk.controllers.base;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.View;
 
 import com.bluelinelabs.conductor.Controller;
@@ -28,6 +29,7 @@ import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
 
 public abstract class BaseController extends RefWatchingController {
 
+    private static final String TAG = "BaseController";
     protected BaseController() {
     }
 
@@ -38,7 +40,12 @@ public abstract class BaseController extends RefWatchingController {
     // Note: This is just a quick demo of how an ActionBar *can* be accessed, not necessarily how it *should*
     // be accessed. In a production app, this would use Dagger instead.
     protected ActionBar getActionBar() {
-        ActionBarProvider actionBarProvider = ((ActionBarProvider) getActivity());
+        ActionBarProvider actionBarProvider = null;
+        try {
+            actionBarProvider = ((ActionBarProvider) getActivity());
+        } catch (Exception exception) {
+            Log.d(TAG, "Failed to fetch the action bar provider");
+        }
         return actionBarProvider != null ? actionBarProvider.getSupportActionBar() : null;
     }
 
