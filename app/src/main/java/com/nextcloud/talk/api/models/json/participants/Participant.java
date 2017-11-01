@@ -39,4 +39,7 @@ public class Participant {
 
     @JsonField(name = "sessionId")
     String sessionId;
+
+    @JsonField(name = "roomId")
+    long roomId;
 }

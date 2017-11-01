@@ -28,6 +28,7 @@ import com.nextcloud.talk.api.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.api.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.api.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.api.models.json.sharees.ShareesOverall;
+import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.api.models.json.userprofile.UserProfileOverall;
 
 import java.util.Map;
@@ -162,7 +163,7 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
     */
     @GET
-    Observable<Integer> pullSignalingMessages(@Header("Authorization") String authorization, @Url String url);
+    Observable<SignalingOverall> pullSignalingMessages(@Header("Authorization") String authorization, @Url String url);
 
      /*
         QueryMap items are as follows:
