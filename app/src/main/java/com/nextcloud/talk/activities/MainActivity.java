@@ -169,8 +169,6 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         showCertificateDialog(event.getX509Certificate(), event.getMagicTrustManager(), event.getSslErrorHandler());
     }
 
-    ;
-
     @Override
     public void onStart() {
         super.onStart();

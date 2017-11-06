@@ -47,6 +47,8 @@
     <string name="nc_settings_reauthorize">Reauthorize</string>
     <string name="nc_settings_remove_account">Remove account</string>
     <string name="nc_settings_add_account">Add a new account</string>
+    <string name="nc_settings_wrong_account">Only current account can be reauthorized</string>
+    <string name="nc_settings_account_updated">We updated your existing account instead of adding a new one since it already exists</string>
 
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_username">Username</string>

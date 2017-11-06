@@ -26,6 +26,20 @@
                                               android:layout_height="match_parent">
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:id="@+id/message_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true">
+
+        <TextView
+            android:id="@+id/message_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/darkRed"/>
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+    <com.yarolegovich.mp.MaterialPreferenceCategory
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true">
@@ -56,30 +70,30 @@
                 android:id="@+id/settings_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                apc:mp_title="@string/nc_settings_switch_account"
                 android:layout_below="@id/display_name_text"
-                android:tag="switchAccountButton"/>
+                android:tag="switchAccountButton"
+                apc:mp_title="@string/nc_settings_switch_account"/>
 
             <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_reauthorize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                apc:mp_title="@string/nc_settings_reauthorize"
-                android:layout_below="@id/settings_switch"/>
+                android:layout_below="@id/settings_switch"
+                apc:mp_title="@string/nc_settings_reauthorize"/>
 
             <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_remove_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                apc:mp_title="@string/nc_settings_remove_account"
-                android:layout_below="@id/settings_reauthorize"/>
+                android:layout_below="@id/settings_reauthorize"
+                apc:mp_title="@string/nc_settings_remove_account"/>
 
             <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_add_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                apc:mp_title="@string/nc_settings_add_account"
-                android:layout_below="@id/settings_remove_account"/>
+                android:layout_below="@id/settings_remove_account"
+                apc:mp_title="@string/nc_settings_add_account"/>
 
         </RelativeLayout>
 

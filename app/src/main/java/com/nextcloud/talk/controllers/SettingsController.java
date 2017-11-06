@@ -20,6 +20,8 @@
 
 package com.nextcloud.talk.controllers;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -40,16 +42,20 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ColorUtils;
+import com.nextcloud.talk.utils.SettingsMessageHolder;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule;
 import com.yarolegovich.mp.MaterialChoicePreference;
 import com.yarolegovich.mp.MaterialEditTextPreference;
+import com.yarolegovich.mp.MaterialPreferenceCategory;
 import com.yarolegovich.mp.MaterialPreferenceScreen;
 import com.yarolegovich.mp.MaterialStandardPreference;
 
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,6 +110,15 @@ public class SettingsController extends BaseController {
 
     @BindView(R.id.settings_add_account)
     MaterialStandardPreference addAccountButton;
+
+    @BindView(R.id.message_view)
+    MaterialPreferenceCategory messageView;
+
+    @BindView(R.id.message_text)
+    TextView messageText;
+
+    @Inject
+    EventBus eventBus;
 
     @Inject
     AppPreferences appPreferences;
@@ -215,8 +230,8 @@ public class SettingsController extends BaseController {
             @Override
             public void onClick(View view) {
                 getParentController().getRouter().pushController(RouterTransaction.with(
-                        new WebViewLoginController(userEntity.getBaseUrl(),
-                                true)).pushChangeHandler(new VerticalChangeHandler())
+                        new WebViewLoginController(userEntity.getBaseUrl(), true))
+                        .pushChangeHandler(new VerticalChangeHandler())
                         .popChangeHandler(new VerticalChangeHandler()));
             }
         });
@@ -229,6 +244,39 @@ public class SettingsController extends BaseController {
                         .popChangeHandler(new VerticalChangeHandler()));
             }
         });
+
+        if (SettingsMessageHolder.getInstance().getMessageType() != null) {
+            switch (SettingsMessageHolder.getInstance().getMessageType()) {
+                case ACCOUNT_UPDATED_NOT_ADDED:
+                    messageText.setText(getResources().getString(R.string.nc_settings_account_updated));
+                    messageView.setVisibility(View.VISIBLE);
+                    break;
+                case WRONG_ACCOUNT:
+                    messageText.setText(getResources().getString(R.string.nc_settings_wrong_account));
+                    messageView.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    messageView.setVisibility(View.GONE);
+                    break;
+            }
+            SettingsMessageHolder.getInstance().setMessageType(null);
+
+            messageView.animate()
+                    .translationY(0)
+                    .alpha(0.0f)
+                    .setDuration(2000)
+                    .setStartDelay(5000)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            messageView.setVisibility(View.GONE);
+                        }
+                    });
+
+        } else {
+            messageView.setVisibility(View.GONE);
+        }
     }
 
     @Override

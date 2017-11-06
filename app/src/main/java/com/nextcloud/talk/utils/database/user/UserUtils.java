@@ -86,6 +86,13 @@ public class UserUtils {
         }
     }
 
+    public boolean getIfUserWithUsernameAndServer(String username, String server) {
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username)
+                .and(UserEntity.BASE_URL.eq(server.toLowerCase())))
+                .limit(1).get();
+
+        return findUserQueryResult.firstOrNull() != null;
+    }
     public Observable<UserEntity> createOrUpdateUser(String username, String token, String serverUrl,
                                                      @Nullable String displayName,
                                                      @Nullable String pushConfigurationState,
@@ -97,7 +104,7 @@ public class UserUtils {
 
         if (user == null) {
             user = new UserEntity();
-            user.setBaseUrl(serverUrl);
+            user.setBaseUrl(serverUrl.toLowerCase());
             user.setUsername(username);
             user.setToken(token);
 

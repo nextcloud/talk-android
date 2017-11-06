@@ -45,6 +45,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.SettingsMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -81,6 +82,8 @@ public class WebViewLoginController extends BaseController {
     ReactiveEntityStore<Persistable> dataStore;
     @Inject
     MagicTrustManager magicTrustManager;
+    @Inject
+    EventBus eventBus;
 
     @BindView(R.id.webview)
     WebView webView;
@@ -160,7 +163,10 @@ public class WebViewLoginController extends BaseController {
                     if (progressBar != null) {
                         progressBar.setVisibility(View.GONE);
                     }
-                    webView.setVisibility(View.VISIBLE);
+
+                    if (webView != null) {
+                        webView.setVisibility(View.VISIBLE);
+                    }
                     basePageLoaded = true;
                 }
 
@@ -182,7 +188,7 @@ public class WebViewLoginController extends BaseController {
                             magicTrustManager.checkServerTrusted(new X509Certificate[]{cert}, "generic");
                             handler.proceed();
                         } catch (CertificateException exception) {
-                            EventBus.getDefault().post(new CertificateEvent(cert, magicTrustManager, handler));
+                            eventBus.post(new CertificateEvent(cert, magicTrustManager, handler));
                         }
                     }
                 } catch (Exception exception) {
@@ -215,38 +221,40 @@ public class WebViewLoginController extends BaseController {
 
             UserEntity currentUser = userUtils.getCurrentUser();
 
-            String displayName = null;
-            String pushConfiguration = null;
+            SettingsMessageHolder.SettingsMessageType settingsMessageType = null;
+            if (currentUser != null && isPasswordUpdate &&
+                    !currentUser.getUsername().equals(loginData.getUsername())) {
+                SettingsMessageHolder.getInstance().setMessageType(
+                        SettingsMessageHolder.SettingsMessageType.WRONG_ACCOUNT);
+                getRouter().popToRoot();
+            } else {
 
-            if (currentUser != null) {
-                displayName = currentUser.getDisplayName();
-                pushConfiguration = currentUser.getPushConfigurationState();
-            }
+                if (!isPasswordUpdate && userUtils.getIfUserWithUsernameAndServer(loginData.getUsername(), baseUrl)) {
+                    settingsMessageType = SettingsMessageHolder.SettingsMessageType.ACCOUNT_UPDATED_NOT_ADDED;
+                }
 
-            // We use the URL user entered because one provided by the server is NOT reliable
-            userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
-                    baseUrl, displayName, pushConfiguration, true).
-                    subscribe(userEntity -> {
-                                if (!isPasswordUpdate) {
-                                    BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                                    bundleBuilder.putString(BundleKeys.KEY_USERNAME, userEntity.getUsername());
-                                    bundleBuilder.putString(BundleKeys.KEY_TOKEN, userEntity.getToken());
-                                    bundleBuilder.putString(BundleKeys.KEY_BASE_URL, userEntity.getBaseUrl());
-                                    getRouter().pushController(RouterTransaction.with(new AccountVerificationController
-                                            (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
-                                            .popChangeHandler(new HorizontalChangeHandler()));
-                                } else {
-                                    if (getRouter().hasRootController()) {
-                                        getRouter().popToRoot();
-                                    } else {
-                                        getRouter().setRoot(RouterTransaction.with(
-                                                new BottomNavigationController(R.menu.menu_navigation)
-                                        ).pushChangeHandler(new HorizontalChangeHandler())
+                // We use the URL user entered because one provided by the server is NOT reliable
+                SettingsMessageHolder.SettingsMessageType finalSettingsMessageType = settingsMessageType;
+                userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
+                        baseUrl, null, null, true).
+                        subscribe(userEntity -> {
+                                    if (!isPasswordUpdate && !userUtils.anyUserExists()) {
+                                        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                                        bundleBuilder.putString(BundleKeys.KEY_USERNAME, userEntity.getUsername());
+                                        bundleBuilder.putString(BundleKeys.KEY_TOKEN, userEntity.getToken());
+                                        bundleBuilder.putString(BundleKeys.KEY_BASE_URL, userEntity.getBaseUrl());
+                                        getRouter().pushController(RouterTransaction.with(new AccountVerificationController
+                                                (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
                                                 .popChangeHandler(new HorizontalChangeHandler()));
+                                    } else {
+                                        if (finalSettingsMessageType != null) {
+                                            SettingsMessageHolder.getInstance().setMessageType(finalSettingsMessageType);
+                                        }
+                                        getRouter().popToRoot();
                                     }
-                                }
-                            }, throwable -> dispose(),
-                            this::dispose);
+                                }, throwable -> dispose(),
+                                this::dispose);
+            }
         }
     }
 
