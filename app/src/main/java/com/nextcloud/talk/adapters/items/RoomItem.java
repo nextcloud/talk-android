@@ -33,6 +33,7 @@ import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
 import java.util.List;
@@ -113,6 +114,9 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
                 holder.avatarImageView.setVisibility(View.VISIBLE);
 
                 if (!TextUtils.isEmpty(room.getName())) {
+                    holder.avatarImageView.setTextAndColorSeed(String.valueOf(room.getName().
+                            toUpperCase().charAt(0)), ColorUtils.colorSeed);
+
                     GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                             room.getName()), new LazyHeaders.Builder()
                             .setHeader("Accept", "image/*")
@@ -124,13 +128,12 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
                             .skipMemoryCache(true)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .load(glideUrl)
-                            .placeholder(holder.avatarImageViewInvisible.getDrawable())
                             .circleCrop()
                             .centerInside()
                             .into(holder.avatarImageView);
 
                 } else {
-                    holder.avatarImageView.setDrawable(holder.avatarImageViewInvisible.getDrawable());
+                    holder.avatarImageView.setVisibility(View.GONE);
                 }
                 break;
             case ROOM_GROUP_CALL:
@@ -162,8 +165,6 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
         public TextView roomLastPing;
         @BindView(R.id.avatar_image)
         public AvatarImageView avatarImageView;
-        @BindView(R.id.avatar_image_invisible)
-        public AvatarImageView avatarImageViewInvisible;
 
         /**
          * Default constructor.

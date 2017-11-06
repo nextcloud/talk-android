@@ -109,7 +109,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 .asBitmap()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .placeholder(holder.avatarImageViewInvisible.getDrawable())
                 .load(glideUrl)
                 .circleCrop()
                 .centerInside()
@@ -128,8 +127,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         public TextView contactDisplayName;
         @BindView(R.id.avatar_image)
         public AvatarImageView avatarImageView;
-        @BindView(R.id.avatar_image_invisible)
-        public AvatarImageView avatarImageViewInvisible;
 
         /**
          * Default constructor.

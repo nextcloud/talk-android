@@ -35,17 +35,6 @@
             android:layout_height="wrap_content">
 
             <cn.carbs.android.avatarimageview.library.AvatarImageView
-                android:id="@+id/avatar_image_invisible"
-                android:layout_width="@dimen/avatar_size_big"
-                android:layout_height="@dimen/avatar_size_big"
-                android:layout_centerHorizontal="true"
-                android:scaleType="centerInside"
-                android:visibility="invisible"
-                apc:aiv_CornerRadius="@dimen/avatar_corner_radius"
-                apc:aiv_ShowBoarder="false"
-                apc:aiv_TextSizeRatio="0.5"/>
-
-            <cn.carbs.android.avatarimageview.library.AvatarImageView
                 android:id="@+id/avatar_image"
                 android:layout_width="@dimen/avatar_size_big"
                 android:layout_height="@dimen/avatar_size_big"

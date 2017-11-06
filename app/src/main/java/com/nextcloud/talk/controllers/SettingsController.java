@@ -90,9 +90,6 @@ public class SettingsController extends BaseController {
     @BindView(R.id.avatar_image)
     AvatarImageView avatarImageView;
 
-    @BindView(R.id.avatar_image_invisible)
-    AvatarImageView avatarImageViewInvisible;
-
     @BindView(R.id.display_name_text)
     TextView displayName;
 
@@ -191,7 +188,7 @@ public class SettingsController extends BaseController {
         UserEntity userEntity = userUtils.getCurrentUser();
         if (userEntity != null) {
             // Awful hack
-            avatarImageViewInvisible.setTextAndColorSeed(String.valueOf(userEntity.getDisplayName().
+            avatarImageView.setTextAndColorSeed(String.valueOf(userEntity.getDisplayName().
                     toUpperCase().charAt(0)), ColorUtils.colorSeed);
 
             GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
@@ -204,8 +201,7 @@ public class SettingsController extends BaseController {
                     .load(glideUrl)
                     .circleCrop()
                     .centerInside()
-                    .into(avatarImageView)
-                    .onLoadFailed(avatarImageViewInvisible.getDrawable());
+                    .into(avatarImageView);
 
             displayName.setText(userEntity.getDisplayName());
         }
