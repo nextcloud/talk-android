@@ -20,30 +20,93 @@
 
 package com.nextcloud.talk.utils.preferences;
 
-import com.nextcloud.talk.utils.preferences.json.ProxyPrefs;
-import com.nextcloud.talk.utils.preferences.json.ProxyTypeAdapter;
-
 import net.orange_box.storebox.annotations.method.ClearMethod;
 import net.orange_box.storebox.annotations.method.KeyByString;
+import net.orange_box.storebox.annotations.method.RegisterChangeListenerMethod;
 import net.orange_box.storebox.annotations.method.RemoveMethod;
-import net.orange_box.storebox.annotations.method.TypeAdapter;
+import net.orange_box.storebox.annotations.method.UnregisterChangeListenerMethod;
 import net.orange_box.storebox.annotations.option.SaveOption;
 import net.orange_box.storebox.enums.SaveMode;
+import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
 
 @SaveOption(SaveMode.APPLY)
 public interface AppPreferences {
 
-    @KeyByString("proxy_server")
-    @TypeAdapter(ProxyTypeAdapter.class)
-    ProxyPrefs getProxyServer();
+    @KeyByString("proxy_type")
+    @RegisterChangeListenerMethod
+    void registerProxyTypeListener(OnPreferenceValueChangedListener<String> listener);
 
-    @KeyByString("proxy_server")
-    @TypeAdapter(ProxyTypeAdapter.class)
-    void setProxyServer(ProxyPrefs proxyPrefsServer);
+    @KeyByString("proxy_type")
+    @UnregisterChangeListenerMethod
+    void unregisterProxyTypeListener(OnPreferenceValueChangedListener<String> listener);
+
+    @KeyByString("proxy_type")
+    String getProxyType();
+
+    @KeyByString("proxy_type")
+    void setProxyType(String proxyType);
 
     @KeyByString("proxy_server")
     @RemoveMethod
-    void removeProxyServer();
+    void removeProxyType();
+
+    @KeyByString("proxy_host")
+    String getProxyHost();
+
+    @KeyByString("proxy_host")
+    void setProxyHost(String proxyHost);
+
+    @KeyByString("proxy_host")
+    @RemoveMethod
+    void removeProxyHost();
+
+    @KeyByString("proxy_port")
+    String getProxyPort();
+
+    @KeyByString("proxy_port")
+    void setProxyPort(String proxyPort);
+
+    @KeyByString("proxy_port")
+    @RemoveMethod
+    void removeProxyPort();
+
+    @KeyByString("proxy_credentials")
+    @RegisterChangeListenerMethod
+    void registerProxyCredentialsListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByString("proxy_credentials")
+    @UnregisterChangeListenerMethod
+    void unregisterProxyCredentialsListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByString("proxy_credentials")
+    boolean getProxyCredentials();
+
+    @KeyByString("proxy_credentials")
+    void setProxyNeedsCredentials(boolean proxyNeedsCredentials);
+
+    @KeyByString("proxy_credentials")
+    @RemoveMethod
+    void removeProxyCredentials();
+
+    @KeyByString("proxy_username")
+    String getProxyUsername();
+
+    @KeyByString("proxy_username")
+    void setProxyUsername(String proxyUsername);
+
+    @KeyByString("proxy_username")
+    @RemoveMethod
+    void removeProxyUsername();
+
+    @KeyByString("proxy_password")
+    String getProxyPassword();
+
+    @KeyByString("proxy_password")
+    void setProxyPassword(String proxyPassword);
+
+    @KeyByString("proxy_password")
+    @RemoveMethod
+    void removeProxyPassword();
 
     @KeyByString("push_token")
     String getPushToken();

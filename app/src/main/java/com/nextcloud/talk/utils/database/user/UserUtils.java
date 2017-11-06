@@ -49,7 +49,7 @@ public class UserUtils {
         return (dataStore.count(User.class).limit(1).get().value() > 0);
     }
 
-    public List<UserEntity> getUsers() {
+    public List getUsers() {
         Result findUsersQueryResult = dataStore.select(User.class).get();
 
         return findUsersQueryResult.toList();
@@ -57,7 +57,8 @@ public class UserUtils {
 
     // temporary method while we only support 1 user
     public UserEntity getCurrentUser() {
-        Result findUserQueryResult = dataStore.select(User.class).limit(1).get();
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.CURRENT.eq(true))
+                .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();
     }
@@ -74,9 +75,21 @@ public class UserUtils {
 
     }
 
+    private void disableAllUsersWithoutId(long userId) {
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.notEqual(userId))
+                .and(UserEntity.CURRENT.eq(true)).get();
+
+        for (Object object : findUserQueryResult) {
+            UserEntity userEntity = (UserEntity) object;
+            userEntity.setCurrent(false);
+            dataStore.update(userEntity).blockingGet();
+        }
+    }
+
     public Observable<UserEntity> createOrUpdateUser(String username, String token, String serverUrl,
                                                      @Nullable String displayName,
-                                                     @Nullable String pushConfigurationState) {
+                                                     @Nullable String pushConfigurationState,
+                                                     @Nullable Boolean currentUser) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
                 and(UserEntity.BASE_URL.eq(serverUrl.toLowerCase()))).limit(1).get();
 
@@ -96,6 +109,8 @@ public class UserUtils {
                 user.setPushConfigurationState(pushConfigurationState);
             }
 
+            user.setCurrent(true);
+
         } else {
             if (!token.equals(user.getToken())) {
                 user.setToken(token);
@@ -107,6 +122,14 @@ public class UserUtils {
 
             if (pushConfigurationState != null && !pushConfigurationState.equals(user.getPushConfigurationState())) {
                 user.setPushConfigurationState(pushConfigurationState);
+            }
+
+            if (currentUser != null) {
+                user.setCurrent(currentUser);
+
+                if (currentUser) {
+                    disableAllUsersWithoutId(user.getId());
+                }
             }
         }
 

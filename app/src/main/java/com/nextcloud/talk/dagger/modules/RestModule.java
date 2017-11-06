@@ -30,7 +30,6 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
-import com.nextcloud.talk.utils.preferences.json.ProxyPrefs;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
 
@@ -71,14 +70,16 @@ public class RestModule {
     @Provides
     @Singleton
     Proxy provideProxy(AppPreferences appPreferences) {
-        ProxyPrefs proxyPrefs = appPreferences.getProxyServer();
-        if (!TextUtils.isEmpty(proxyPrefs.getProxyHost())) {
-            if (Proxy.Type.SOCKS.equals(Proxy.Type.valueOf(proxyPrefs.getProxyType()))) {
-                return (new Proxy(Proxy.Type.valueOf(proxyPrefs.getProxyType()),
-                        InetSocketAddress.createUnresolved(proxyPrefs.getProxyHost(), proxyPrefs.getProxyPort())));
+        if (!TextUtils.isEmpty(appPreferences.getProxyType()) && !"No proxy".equals(appPreferences.getProxyType())
+                && !TextUtils.isEmpty(appPreferences.getProxyHost())) {
+            if (Proxy.Type.SOCKS.equals(Proxy.Type.valueOf(appPreferences.getProxyType()))) {
+                return (new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
+                        InetSocketAddress.createUnresolved(appPreferences.getProxyHost(), Integer.parseInt(
+                                appPreferences.getProxyPort()))));
             } else {
-                return (new Proxy(Proxy.Type.valueOf(proxyPrefs.getProxyType()),
-                        new InetSocketAddress(proxyPrefs.getProxyHost(), proxyPrefs.getProxyPort())));
+                return (new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
+                        new InetSocketAddress(appPreferences.getProxyHost(),
+                                Integer.parseInt(appPreferences.getProxyPort()))));
             }
         } else {
             return Proxy.NO_PROXY;
@@ -138,11 +139,12 @@ public class RestModule {
         if (!Proxy.NO_PROXY.equals(proxy)) {
             httpClient.proxy(proxy);
 
-            if (!TextUtils.isEmpty(appPreferences.getProxyServer().getUsername()) &&
-                    !TextUtils.isEmpty(appPreferences.getProxyServer().getPassword())) {
+            if (appPreferences.getProxyCredentials() &&
+                    !TextUtils.isEmpty(appPreferences.getProxyUsername()) &&
+                    !TextUtils.isEmpty(appPreferences.getProxyPassword())) {
                 httpClient.proxyAuthenticator(new ProxyAuthenticator(Credentials.basic(
-                        appPreferences.getProxyServer().getUsername(),
-                        appPreferences.getProxyServer().getPassword())));
+                        appPreferences.getProxyUsername(),
+                        appPreferences.getProxyPassword())));
             }
         }
 

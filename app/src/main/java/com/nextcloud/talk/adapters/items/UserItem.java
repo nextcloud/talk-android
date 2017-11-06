@@ -101,7 +101,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                 user.getUserId()), new LazyHeaders.Builder()
-                .setHeader("Accept", "*/*")
+                .setHeader("Accept", "image/*")
                 .setHeader("User-Agent", ApiHelper.getUserAgent())
                 .build());
 

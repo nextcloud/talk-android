@@ -18,32 +18,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.utils.preferences.json;
-
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-
-import org.parceler.Parcel;
-
-import lombok.Data;
+package com.nextcloud.talk.jobs;
 
 
-@Data
-@Parcel
-@JsonObject
-public class ProxyPrefs {
-    @JsonField(name = "proxy_host")
-    String proxyHost;
+import android.support.annotation.NonNull;
 
-    @JsonField(name = "proxy_port")
-    int proxyPort;
+import com.evernote.android.job.Job;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.utils.database.user.UserUtils;
 
-    @JsonField(name = "proxy_type")
-    String proxyType;
+import javax.inject.Inject;
 
-    @JsonField(name = "username")
-    String username;
+import autodagger.AutoInjector;
 
-    @JsonField(name = "password")
-    String password;
+@AutoInjector(NextcloudTalkApplication.class)
+public class AccountRemovalJob extends Job {
+    public static final String TAG = "AccountRemovalJob";
+
+    @Inject
+    UserUtils userUtils;
+
+    @NonNull
+    @Override
+    protected Result onRunJob(Params params) {
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        return Result.SUCCESS;
+    }
 }

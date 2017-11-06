@@ -15,6 +15,7 @@
     <dimen name="padding_between_elements">8dp</dimen>
     <dimen name="margin_between_elements">8dp</dimen>
     <dimen name="avatar_size">40dp</dimen>
+    <dimen name="avatar_size_big">80dp</dimen>
     <dimen name="avatar_corner_radius">20dp</dimen>
 
 </resources>

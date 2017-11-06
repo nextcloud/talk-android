@@ -134,7 +134,7 @@ public class AccountVerificationController extends BaseController {
 
                                 if (!TextUtils.isEmpty(displayName)) {
                                     dbQueryDisposable = userUtils.createOrUpdateUser(username, token,
-                                            baseUrl, displayName, null)
+                                            baseUrl, displayName, null, true)
                                             .subscribeOn(Schedulers.newThread())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(userEntity -> {
@@ -146,10 +146,14 @@ public class AccountVerificationController extends BaseController {
                                                         new JobRequest.Builder(PushRegistrationJob.TAG).
                                                                 setUpdateCurrent(true).startNow().build().schedule();
 
-                                                        getRouter().setRoot(RouterTransaction.with(new
-                                                                BottomNavigationController(R.menu.menu_navigation))
-                                                                .pushChangeHandler(new HorizontalChangeHandler())
-                                                                .popChangeHandler(new HorizontalChangeHandler()));
+                                                        if (userUtils.getUsers().size() == 1) {
+                                                            getRouter().setRoot(RouterTransaction.with(new
+                                                                    BottomNavigationController(R.menu.menu_navigation))
+                                                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                                                    .popChangeHandler(new HorizontalChangeHandler()));
+                                                        } else {
+                                                            getRouter().popToRoot();
+                                                        }
                                                     },
                                                     throwable -> {
                                                         progressText.setText(progressText.getText().toString() +

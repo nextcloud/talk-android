@@ -31,4 +31,29 @@
     <string name="nc_details">Details</string>
     <string name="nc_certificate_error">Your SSL setup prevented us from connecting</string>
 
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_key">proxy_type</string>
+    <string name="nc_settings_proxy_type_title">Proxy type</string>
+    <string name="nc_settings_proxy_host_key">proxy_host</string>
+    <string name="nc_settings_proxy_host_title">Proxy host</string>
+    <string name="nc_settings_proxy_port_key">proxy_port</string>
+    <string name="nc_settings_proxy_port_title">Proxy port</string>
+    <string name="nc_settings_proxy_username_key">proxy_username</string>
+    <string name="nc_settings_proxy_password_key">proxy_password</string>
+    <string name="nc_settings_use_credentials_title">Use credentials</string>
+    <string name="nc_settings_use_credentials_key">proxy_credentials</string>
+    <string name="nc_settings_switch_account">Switch between accounts</string>
+    <string name="nc_settings_reauthorize">Reauthorize</string>
+    <string name="nc_settings_remove_account">Remove account</string>
+    <string name="nc_settings_add_account">Add a new account</string>
+
+    <string name="nc_no_proxy">No proxy</string>
+    <string name="nc_username">Username</string>
+    <string name="nc_password">Password</string>
+    <string name="nc_about">About</string>
+    <string name="nc_privacy">Privacy</string>
+    <string name="nc_get_source_code">Get source code</string>
+    <string name="nc_license_title">License</string>
+    <string name="nc_license_summary">GNU General Public License, Version 3</string>
 </resources>

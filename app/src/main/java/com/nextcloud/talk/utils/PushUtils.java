@@ -231,7 +231,8 @@ public class PushUtils {
                 if (userUtils.anyUserExists()) {
                     String providerValue;
                     PushConfigurationState accountPushData = null;
-                    for (UserEntity userEntity : userUtils.getUsers()) {
+                    for (Object userEntityObject : userUtils.getUsers()) {
+                        UserEntity userEntity = (UserEntity) userEntityObject;
                         providerValue = userEntity.getPushConfigurationState();
                         if (!TextUtils.isEmpty(providerValue)) {
                             try {
@@ -296,7 +297,7 @@ public class PushUtils {
                                                         userUtils.createOrUpdateUser(userEntity.getUsername(),
                                                                 userEntity.getToken(), userEntity.getBaseUrl(),
                                                                 userEntity.getDisplayName(),
-                                                                LoganSquare.serialize(pushConfigurationState))
+                                                                LoganSquare.serialize(pushConfigurationState), null)
                                                                 .subscribe(new Consumer<UserEntity>() {
                                                                     @Override
                                                                     public void accept(UserEntity userEntity) throws Exception {

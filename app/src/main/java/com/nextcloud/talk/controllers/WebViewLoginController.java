@@ -29,6 +29,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -132,6 +134,10 @@ public class WebViewLoginController extends BaseController {
         webView.getSettings().setSavePassword(false);
         webView.clearCache(true);
         webView.clearFormData();
+        webView.clearHistory();
+
+        CookieSyncManager.createInstance(getActivity());
+        CookieManager.getInstance().removeAllCookies(null);
 
         Map<String, String> headers = new HashMap<>();
         headers.put("OCS-APIRequest", "true");
@@ -219,7 +225,7 @@ public class WebViewLoginController extends BaseController {
 
             // We use the URL user entered because one provided by the server is NOT reliable
             userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
-                    baseUrl, displayName, pushConfiguration).
+                    baseUrl, displayName, pushConfiguration, true).
                     subscribe(userEntity -> {
                                 if (!isPasswordUpdate) {
                                     BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
@@ -230,9 +236,14 @@ public class WebViewLoginController extends BaseController {
                                             (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
                                             .popChangeHandler(new HorizontalChangeHandler()));
                                 } else {
-                                    getRouter().setRoot(RouterTransaction.with(new BottomNavigationController(R.menu.menu_navigation))
-                                            .pushChangeHandler(new HorizontalChangeHandler())
-                                            .popChangeHandler(new HorizontalChangeHandler()));
+                                    if (getRouter().hasRootController()) {
+                                        getRouter().popToRoot();
+                                    } else {
+                                        getRouter().setRoot(RouterTransaction.with(
+                                                new BottomNavigationController(R.menu.menu_navigation)
+                                        ).pushChangeHandler(new HorizontalChangeHandler())
+                                                .popChangeHandler(new HorizontalChangeHandler()));
+                                    }
                                 }
                             }, throwable -> dispose(),
                             this::dispose);

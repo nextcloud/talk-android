@@ -8,7 +8,10 @@
     <string name="nc_server_product_name">Nextcloud</string>
 
     <color name="nc_background_color">@color/per70white</color>
-
     <string name="nc_push_server_url">https://push-notifications.nextcloud.com</string>
 
+    <!-- Will not be shown if empty -->
+    <string name="nc_privacy_url">https://nextcloud.com/privacy/</string>
+    <string name="nc_gpl3_url">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
+    <string name="nc_source_code_url">https://github.com/nextcloud/talk-android</string>
 </resources>

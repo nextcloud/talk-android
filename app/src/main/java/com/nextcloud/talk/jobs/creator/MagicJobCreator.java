@@ -25,6 +25,7 @@ import android.support.annotation.Nullable;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
+import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 
 public class MagicJobCreator implements JobCreator {
@@ -36,6 +37,8 @@ public class MagicJobCreator implements JobCreator {
         switch (tag) {
             case PushRegistrationJob.TAG:
                 return new PushRegistrationJob();
+            case AccountRemovalJob.TAG:
+                return new AccountRemovalJob();
             default:
                 return null;
         }

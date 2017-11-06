@@ -44,4 +44,6 @@ public interface User extends Parcelable, Persistable, Serializable {
     String getDisplayName();
 
     String getPushConfigurationState();
+
+    boolean getCurrent();
 }
