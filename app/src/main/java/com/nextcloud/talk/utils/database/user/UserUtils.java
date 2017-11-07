@@ -46,18 +46,36 @@ public class UserUtils {
     }
 
     public boolean anyUserExists() {
-        return (dataStore.count(User.class).limit(1).get().value() > 0);
+        return (dataStore.count(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.eq(false)).
+                limit(1).get().value() > 0);
     }
 
     public List getUsers() {
-        Result findUsersQueryResult = dataStore.select(User.class).get();
+        Result findUsersQueryResult = dataStore.select(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.eq(false))
+                .get();
 
         return findUsersQueryResult.toList();
     }
 
-    // temporary method while we only support 1 user
+
+    public UserEntity getAnyUserAndSetAsActive() {
+        Result findUserQueryResult = dataStore.select(User.class)
+                .where(UserEntity.SCHEDULED_FOR_DELETION.eq(false))
+                .limit(1).get();
+
+        UserEntity userEntity;
+        if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
+            userEntity.setCurrent(true);
+            dataStore.update(userEntity).blockingGet();
+            return userEntity;
+        }
+
+        return null;
+    }
+
     public UserEntity getCurrentUser() {
-        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.CURRENT.eq(true))
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.CURRENT.eq(true)
+                .and(UserEntity.SCHEDULED_FOR_DELETION.eq(false)))
                 .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();
@@ -86,12 +104,40 @@ public class UserUtils {
         }
     }
 
+    public boolean checkIfUserIsScheduledForDeletion(String username, String server) {
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username))
+                .and(UserEntity.BASE_URL.eq(server))
+                .limit(1).get();
+
+        UserEntity userEntity;
+        if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
+            return userEntity.getScheduledForDeletion();
+        }
+
+        return false;
+
+    }
     public boolean getIfUserWithUsernameAndServer(String username, String server) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username)
                 .and(UserEntity.BASE_URL.eq(server.toLowerCase())))
                 .limit(1).get();
 
         return findUserQueryResult.firstOrNull() != null;
+    }
+
+    public boolean scheduleUserForDeletionWithId(long id) {
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id))
+                .limit(1).get();
+
+        UserEntity userEntity;
+        if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
+            userEntity.setScheduledForDeletion(true);
+            userEntity.setCurrent(false);
+            dataStore.update(userEntity).blockingGet();
+        }
+
+        return getAnyUserAndSetAsActive() != null;
+
     }
 
     public Observable<UserEntity> createOrUpdateUser(String username, String token, String serverUrl,

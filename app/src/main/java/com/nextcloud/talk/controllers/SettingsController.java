@@ -33,18 +33,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.evernote.android.job.JobRequest;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ColorUtils;
-import com.nextcloud.talk.utils.SettingsMessageHolder;
+import com.nextcloud.talk.utils.ErrorMessageHolder;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -306,14 +309,31 @@ public class SettingsController extends BaseController {
                         dispose(profileQueryDisposable);
                     }, () -> dispose(profileQueryDisposable));
 
+            removeAccountButton.setOnClickListener(view1 -> {
+                boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(userEntity.getId());
+                if (otherUserExists && getView() != null) {
+                    onViewBound(getView());
+                    onAttach(getView());
+                } else if (!otherUserExists) {
+                    getParentController().getRouter().setRoot(RouterTransaction.with(
+                            new ServerSelectionController())
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
+                }
+
+                new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true)
+                        .startNow().build().schedule();
+
+            });
+
         }
 
         if (userUtils.getUsers().size() <= 1) {
             switchAccountButton.setVisibility(View.GONE);
         }
 
-        if (SettingsMessageHolder.getInstance().getMessageType() != null) {
-            switch (SettingsMessageHolder.getInstance().getMessageType()) {
+        if (ErrorMessageHolder.getInstance().getMessageType() != null) {
+            switch (ErrorMessageHolder.getInstance().getMessageType()) {
                 case ACCOUNT_UPDATED_NOT_ADDED:
                     messageText.setTextColor(getResources().getColor(R.color.colorPrimary));
                     messageText.setText(getResources().getString(R.string.nc_settings_account_updated));
@@ -328,7 +348,7 @@ public class SettingsController extends BaseController {
                     messageView.setVisibility(View.GONE);
                     break;
             }
-            SettingsMessageHolder.getInstance().setMessageType(null);
+            ErrorMessageHolder.getInstance().setMessageType(null);
 
             messageView.animate()
                     .translationY(0)

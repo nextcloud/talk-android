@@ -46,4 +46,6 @@ public interface User extends Parcelable, Persistable, Serializable {
     String getPushConfigurationState();
 
     boolean getCurrent();
+
+    boolean getScheduledForDeletion();
 }

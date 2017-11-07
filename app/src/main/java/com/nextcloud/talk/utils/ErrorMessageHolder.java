@@ -22,24 +22,24 @@ package com.nextcloud.talk.utils;
 
 import android.support.annotation.Nullable;
 
-public class SettingsMessageHolder {
-    public enum SettingsMessageType {
-        WRONG_ACCOUNT, ACCOUNT_UPDATED_NOT_ADDED
+public class ErrorMessageHolder {
+    public enum ErrorMessageType {
+        WRONG_ACCOUNT, ACCOUNT_UPDATED_NOT_ADDED, ACCOUNT_SCHEDULED_FOR_DELETION
     }
 
-    private SettingsMessageType settingsMessageType;
+    private ErrorMessageType errorMessageType;
 
-    private static final SettingsMessageHolder holder = new SettingsMessageHolder();
-    public static SettingsMessageHolder getInstance() {
+    private static final ErrorMessageHolder holder = new ErrorMessageHolder();
+    public static ErrorMessageHolder getInstance() {
         return holder;
     }
 
-    public SettingsMessageType getMessageType() {
-        return settingsMessageType;
+    public ErrorMessageType getMessageType() {
+        return errorMessageType;
     }
 
-    public void setMessageType(@Nullable SettingsMessageType settingsMessageType) {
-        this.settingsMessageType = settingsMessageType;
+    public void setMessageType(@Nullable ErrorMessageType errorMessageType) {
+        this.errorMessageType = errorMessageType;
     }
 
 

@@ -45,7 +45,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.SettingsMessageHolder;
+import com.nextcloud.talk.utils.ErrorMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -221,24 +221,30 @@ public class WebViewLoginController extends BaseController {
 
             UserEntity currentUser = userUtils.getCurrentUser();
 
-            SettingsMessageHolder.SettingsMessageType settingsMessageType = null;
+            ErrorMessageHolder.ErrorMessageType errorMessageType = null;
             if (currentUser != null && isPasswordUpdate &&
                     !currentUser.getUsername().equals(loginData.getUsername())) {
-                SettingsMessageHolder.getInstance().setMessageType(
-                        SettingsMessageHolder.SettingsMessageType.WRONG_ACCOUNT);
+                ErrorMessageHolder.getInstance().setMessageType(
+                        ErrorMessageHolder.ErrorMessageType.WRONG_ACCOUNT);
                 getRouter().popToRoot();
             } else {
 
                 if (!isPasswordUpdate && userUtils.getIfUserWithUsernameAndServer(loginData.getUsername(), baseUrl)) {
-                    settingsMessageType = SettingsMessageHolder.SettingsMessageType.ACCOUNT_UPDATED_NOT_ADDED;
+                    errorMessageType = ErrorMessageHolder.ErrorMessageType.ACCOUNT_UPDATED_NOT_ADDED;
+                }
+
+                if (userUtils.checkIfUserIsScheduledForDeletion(loginData.getUsername(), baseUrl)) {
+                    ErrorMessageHolder.getInstance().setMessageType(
+                            ErrorMessageHolder.ErrorMessageType.ACCOUNT_SCHEDULED_FOR_DELETION);
+                            getRouter().popToRoot();
                 }
 
                 // We use the URL user entered because one provided by the server is NOT reliable
-                SettingsMessageHolder.SettingsMessageType finalSettingsMessageType = settingsMessageType;
+                ErrorMessageHolder.ErrorMessageType finalErrorMessageType = errorMessageType;
                 userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
                         baseUrl, null, null, true).
                         subscribe(userEntity -> {
-                                    if (!isPasswordUpdate && finalSettingsMessageType == null) {
+                                    if (!isPasswordUpdate && finalErrorMessageType == null) {
                                         BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
                                         bundleBuilder.putString(BundleKeys.KEY_USERNAME, userEntity.getUsername());
                                         bundleBuilder.putString(BundleKeys.KEY_TOKEN, userEntity.getToken());
@@ -247,8 +253,8 @@ public class WebViewLoginController extends BaseController {
                                                 (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
                                                 .popChangeHandler(new HorizontalChangeHandler()));
                                     } else {
-                                        if (finalSettingsMessageType != null) {
-                                            SettingsMessageHolder.getInstance().setMessageType(finalSettingsMessageType);
+                                        if (finalErrorMessageType != null) {
+                                            ErrorMessageHolder.getInstance().setMessageType(finalErrorMessageType);
                                         }
                                         getRouter().popToRoot();
                                     }

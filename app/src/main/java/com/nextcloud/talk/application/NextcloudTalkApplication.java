@@ -32,6 +32,7 @@ import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
 import com.nextcloud.talk.dagger.modules.DatabaseModule;
 import com.nextcloud.talk.dagger.modules.RestModule;
+import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 import com.nextcloud.talk.jobs.creator.MagicJobCreator;
 import com.nextcloud.talk.utils.database.user.UserModule;
@@ -96,7 +97,7 @@ public class NextcloudTalkApplication extends MultiDexApplication {
         refWatcher = LeakCanary.install(this);
 
         new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
-
+        new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
     }
 
 

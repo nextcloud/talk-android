@@ -35,6 +35,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.utils.ErrorMessageHolder;
 
 import java.security.cert.CertificateException;
 
@@ -168,6 +169,18 @@ public class ServerSelectionController extends BaseController {
 
             return false;
         });
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+        if (ErrorMessageHolder.getInstance().getMessageType() != null &&
+                ErrorMessageHolder.getInstance().getMessageType()
+                        .equals(ErrorMessageHolder.ErrorMessageType.ACCOUNT_SCHEDULED_FOR_DELETION)) {
+            textFieldBoxes.setError(getResources().getString(R.string.nc_account_scheduled_for_deletion),
+                    false);
+            ErrorMessageHolder.getInstance().setMessageType(null);
+        }
     }
 
     @Override
