@@ -43,9 +43,6 @@ public class PushConfigurationState {
     @JsonField(name = "userPublicKey")
     public String userPublicKey;
 
-    @JsonField(name = "shouldBeDeleted")
-    public boolean shouldBeDeleted;
-
     @JsonField(name = "usesRegularPass")
     public boolean usesRegularPass;
 }

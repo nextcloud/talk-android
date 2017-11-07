@@ -57,6 +57,14 @@ public class UserUtils {
         return findUsersQueryResult.toList();
     }
 
+    public List getUsersScheduledForDeletion() {
+        Result findUsersQueryResult = dataStore.select(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.eq(true))
+                .get();
+
+        return findUsersQueryResult.toList();
+    }
+
+
 
     public UserEntity getAnyUserAndSetAsActive() {
         Result findUserQueryResult = dataStore.select(User.class)

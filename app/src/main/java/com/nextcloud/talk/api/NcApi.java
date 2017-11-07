@@ -21,6 +21,7 @@
 package com.nextcloud.talk.api;
 
 import com.nextcloud.talk.api.models.json.call.CallOverall;
+import com.nextcloud.talk.api.models.json.generic.GenericOverall;
 import com.nextcloud.talk.api.models.json.generic.Status;
 import com.nextcloud.talk.api.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.api.models.json.participants.ParticipantsOverall;
@@ -199,10 +200,27 @@ public interface NcApi {
                                                                                     @QueryMap Map<String,
                                                                                             String> options);
 
+    @DELETE
+    Observable<GenericOverall> unregisterDeviceForNotificationsWithNextcloud(@Header("Authorization")
+                                                                                     String authorization,
+                                                                             @Url String url);
+
     @FormUrlEncoded
     @POST
     Observable<Void> registerDeviceForNotificationsWithProxy(@Header("Authorization") String authorization,
                                                              @Url String url,
                                                              @FieldMap Map<String, String> fields);
+
+
+    /*
+        QueryMap items are as follows:
+          - "deviceIdentifier": "{{deviceIdentifier}}",
+          - "deviceIdentifierSignature": "{{signature}}",
+          - "userPublicKey": "{{userPublicKey}}"
+    */
+    @DELETE
+    Observable<Void> unregisterDeviceForNotificationsWithProxy(@Header("Authorization") String authorization,
+                                                             @Url String url,
+                                                             @QueryMap Map<String, String> fields);
 
 }

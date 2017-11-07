@@ -22,14 +22,26 @@ package com.nextcloud.talk.jobs;
 
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.evernote.android.job.Job;
+import com.nextcloud.talk.api.NcApi;
+import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.api.models.json.generic.GenericOverall;
+import com.nextcloud.talk.api.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class AccountRemovalJob extends Job {
@@ -38,10 +50,82 @@ public class AccountRemovalJob extends Job {
     @Inject
     UserUtils userUtils;
 
+    @Inject
+    NcApi ncApi;
+
     @NonNull
     @Override
     protected Result onRunJob(Params params) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+
+        PushConfigurationState pushConfigurationState;
+        for(Object userEntityObject : userUtils.getUsersScheduledForDeletion()) {
+            UserEntity userEntity = (UserEntity) userEntityObject;
+            try {
+                pushConfigurationState = LoganSquare.parse(userEntity.getPushConfigurationState(),
+                        PushConfigurationState.class);
+                PushConfigurationState finalPushConfigurationState = pushConfigurationState;
+                ncApi.unregisterDeviceForNotificationsWithNextcloud(ApiHelper.getCredentials(userEntity.getUsername(),
+                        userEntity.getToken()), ApiHelper.getUrlNextcloudPush(userEntity.getBaseUrl()))
+                        .subscribe(new Observer<GenericOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(GenericOverall genericOverall) {
+                                if (genericOverall.getOcs().getMeta().getStatusCode().equals("200")
+                                        || genericOverall.getOcs().getMeta().getStatusCode().equals("202")) {
+                                    HashMap<String, String> queryMap = new HashMap<>();
+                                    queryMap.put("deviceIdentifier", finalPushConfigurationState.deviceIdentifier);
+                                    queryMap.put("userPublicKey", finalPushConfigurationState.getUserPublicKey());
+                                    queryMap.put("deviceIdentifierSignature",
+                                            finalPushConfigurationState.getDeviceIdentifierSignature());
+
+                                    ncApi.unregisterDeviceForNotificationsWithProxy
+                                            (ApiHelper.getCredentials(userEntity.getUsername(),
+                                            userEntity.getToken()), ApiHelper.getUrlPushProxy(), queryMap)
+                                            .subscribe(new Observer<Void>() {
+                                                @Override
+                                                public void onSubscribe(Disposable d) {
+
+                                                }
+
+                                                @Override
+                                                public void onNext(Void aVoid) {
+                                                    userUtils.deleteUser(userEntity.getUsername(),
+                                                            userEntity.getBaseUrl());
+                                                }
+
+                                                @Override
+                                                public void onError(Throwable e) {
+
+                                                }
+
+                                                @Override
+                                                public void onComplete() {
+
+                                                }
+                                            });
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            } catch (IOException e) {
+                Log.d(TAG, "Something went wrong while removing job at parsing PushConfigurationState");
+            }
+
+        }
         return Result.SUCCESS;
     }
 }

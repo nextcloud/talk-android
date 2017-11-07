@@ -145,7 +145,7 @@ public class ApiHelper {
         return baseUrl + ocsApiVersion + "/apps/notifications/api/v2/push";
     }
 
-    public static String getUrlPushProxy(String baseUrl) {
+    public static String getUrlPushProxy() {
         return NextcloudTalkApplication.getSharedApplication().
                 getApplicationContext().getResources().getString(R.string.nc_push_server_url) + "/devices";
     }

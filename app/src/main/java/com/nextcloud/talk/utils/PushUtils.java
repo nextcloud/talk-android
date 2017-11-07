@@ -178,9 +178,6 @@ public class PushUtils {
         return result.toString();
     }
 
-    private void deleteRegistrationForAccount(UserEntity userEntity) {
-    }
-
     public int generateRsa2048KeyPair() {
         if (!publicKeyFile.exists() && !privateKeyFile.exists()) {
             if (!keysFile.exists()) {
@@ -246,8 +243,8 @@ public class PushUtils {
                         }
 
                         if (accountPushData != null && !accountPushData.getPushToken().equals(token) &&
-                                !accountPushData.isShouldBeDeleted() ||
-                                TextUtils.isEmpty(providerValue)) {
+                                !userEntity.getScheduledForDeletion() ||
+                                TextUtils.isEmpty(providerValue) && !userEntity.getScheduledForDeletion()) {
 
 
                             Map<String, String> queryMap = new HashMap<>();
@@ -273,7 +270,7 @@ public class PushUtils {
 
                                         ncApi.registerDeviceForNotificationsWithProxy(ApiHelper.getCredentials
                                                         (userEntity.getUsername(), userEntity.getToken()),
-                                                ApiHelper.getUrlPushProxy(userEntity.getBaseUrl()), proxyMap)
+                                                ApiHelper.getUrlPushProxy(), proxyMap)
                                                 .subscribeOn(Schedulers.newThread())
                                                 .subscribe(new Consumer<Void>() {
                                                     @Override
@@ -291,7 +288,6 @@ public class PushUtils {
                                                         pushConfigurationState.setUserPublicKey(
                                                                 pushRegistrationOverall.getOcs()
                                                                         .getData().getPublicKey());
-                                                        pushConfigurationState.setShouldBeDeleted(false);
                                                         pushConfigurationState.setUsesRegularPass(false);
 
                                                         userUtils.createOrUpdateUser(userEntity.getUsername(),
