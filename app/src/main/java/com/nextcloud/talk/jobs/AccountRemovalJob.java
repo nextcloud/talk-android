@@ -22,6 +22,7 @@ package com.nextcloud.talk.jobs;
 
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -40,6 +41,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
+import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -62,69 +64,105 @@ public class AccountRemovalJob extends Job {
         for(Object userEntityObject : userUtils.getUsersScheduledForDeletion()) {
             UserEntity userEntity = (UserEntity) userEntityObject;
             try {
-                pushConfigurationState = LoganSquare.parse(userEntity.getPushConfigurationState(),
-                        PushConfigurationState.class);
-                PushConfigurationState finalPushConfigurationState = pushConfigurationState;
-                ncApi.unregisterDeviceForNotificationsWithNextcloud(ApiHelper.getCredentials(userEntity.getUsername(),
-                        userEntity.getToken()), ApiHelper.getUrlNextcloudPush(userEntity.getBaseUrl()))
-                        .subscribe(new Observer<GenericOverall>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                if (!TextUtils.isEmpty(userEntity.getPushConfigurationState())) {
+                    pushConfigurationState = LoganSquare.parse(userEntity.getPushConfigurationState(),
+                            PushConfigurationState.class);
+                    PushConfigurationState finalPushConfigurationState = pushConfigurationState;
+                    ncApi.unregisterDeviceForNotificationsWithNextcloud(ApiHelper.getCredentials(userEntity.getUsername(),
+                            userEntity.getToken()), ApiHelper.getUrlNextcloudPush(userEntity.getBaseUrl()))
+                            .subscribe(new Observer<GenericOverall>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
 
-                            }
-
-                            @Override
-                            public void onNext(GenericOverall genericOverall) {
-                                if (genericOverall.getOcs().getMeta().getStatusCode().equals("200")
-                                        || genericOverall.getOcs().getMeta().getStatusCode().equals("202")) {
-                                    HashMap<String, String> queryMap = new HashMap<>();
-                                    queryMap.put("deviceIdentifier", finalPushConfigurationState.deviceIdentifier);
-                                    queryMap.put("userPublicKey", finalPushConfigurationState.getUserPublicKey());
-                                    queryMap.put("deviceIdentifierSignature",
-                                            finalPushConfigurationState.getDeviceIdentifierSignature());
-
-                                    ncApi.unregisterDeviceForNotificationsWithProxy
-                                            (ApiHelper.getCredentials(userEntity.getUsername(),
-                                            userEntity.getToken()), ApiHelper.getUrlPushProxy(), queryMap)
-                                            .subscribe(new Observer<Void>() {
-                                                @Override
-                                                public void onSubscribe(Disposable d) {
-
-                                                }
-
-                                                @Override
-                                                public void onNext(Void aVoid) {
-                                                    userUtils.deleteUser(userEntity.getUsername(),
-                                                            userEntity.getBaseUrl());
-                                                }
-
-                                                @Override
-                                                public void onError(Throwable e) {
-
-                                                }
-
-                                                @Override
-                                                public void onComplete() {
-
-                                                }
-                                            });
                                 }
-                            }
 
-                            @Override
-                            public void onError(Throwable e) {
+                                @Override
+                                public void onNext(GenericOverall genericOverall) {
+                                    if (genericOverall.getOcs().getMeta().getStatusCode().equals("200")
+                                            || genericOverall.getOcs().getMeta().getStatusCode().equals("202")) {
+                                        HashMap<String, String> queryMap = new HashMap<>();
+                                        queryMap.put("deviceIdentifier", finalPushConfigurationState.deviceIdentifier);
+                                        queryMap.put("userPublicKey", finalPushConfigurationState.getUserPublicKey());
+                                        queryMap.put("deviceIdentifierSignature",
+                                                finalPushConfigurationState.getDeviceIdentifierSignature());
 
-                            }
+                                        ncApi.unregisterDeviceForNotificationsWithProxy
+                                                (ApiHelper.getCredentials(userEntity.getUsername(),
+                                                        userEntity.getToken()), ApiHelper.getUrlPushProxy(), queryMap)
+                                                .subscribe(new Observer<Void>() {
+                                                    @Override
+                                                    public void onSubscribe(Disposable d) {
 
-                            @Override
-                            public void onComplete() {
+                                                    }
 
-                            }
-                        });
-            } catch (IOException e) {
+                                                    @Override
+                                                    public void onNext(Void aVoid) {
+                                                        userUtils.deleteUser(userEntity.getUsername(),
+                                                                userEntity.getBaseUrl()).subscribe(new CompletableObserver() {
+                                                            @Override
+                                                            public void onSubscribe(Disposable d) {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onComplete() {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onError(Throwable e) {
+
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Throwable e) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onComplete() {
+
+                                                    }
+                                                });
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
+                } else {
+                    userUtils.deleteUser(userEntity.getUsername(),
+                            userEntity.getBaseUrl()).subscribe(new CompletableObserver() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+                    });
+                }
+            } catch(IOException e) {
                 Log.d(TAG, "Something went wrong while removing job at parsing PushConfigurationState");
+                userUtils.deleteUser(userEntity.getUsername(),
+                        userEntity.getBaseUrl());
             }
-
         }
         return Result.SUCCESS;
     }
