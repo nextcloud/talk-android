@@ -60,6 +60,7 @@ import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -248,6 +249,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     }
 
                                 }
+
+                                Collections.sort(contactItems, (userItem, t1) ->
+                                        userItem.getModel().getName().compareToIgnoreCase(t1.getModel().getName()));
 
                                 adapter.updateDataSet(contactItems, true);
                                 searchItem.setVisible(contactItems.size() > 0);

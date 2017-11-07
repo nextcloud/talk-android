@@ -62,6 +62,7 @@ import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -256,6 +257,10 @@ public class CallsListController extends BaseController implements SearchView.On
                         }
 
                         adapter.updateDataSet(roomItems, true);
+
+                        Collections.sort(roomItems, (roomItem, t1) ->
+                                Long.compare(t1.getModel().getLastPing(), roomItem.getModel().getLastPing()));
+
                         if (searchItem != null) {
                             searchItem.setVisible(roomItems.size() > 0);
                         }
