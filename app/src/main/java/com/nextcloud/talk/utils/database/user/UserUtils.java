@@ -75,7 +75,7 @@ public class UserUtils {
 
     }
 
-    private void disableAllUsersWithoutId(long userId) {
+    public void disableAllUsersWithoutId(long userId) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.notEqual(userId))
                 .and(UserEntity.CURRENT.eq(true)).get();
 
@@ -93,6 +93,7 @@ public class UserUtils {
 
         return findUserQueryResult.firstOrNull() != null;
     }
+
     public Observable<UserEntity> createOrUpdateUser(String username, String token, String serverUrl,
                                                      @Nullable String displayName,
                                                      @Nullable String pushConfigurationState,
@@ -133,10 +134,6 @@ public class UserUtils {
 
             if (currentUser != null) {
                 user.setCurrent(currentUser);
-
-                if (currentUser) {
-                    disableAllUsersWithoutId(user.getId());
-                }
             }
         }
 

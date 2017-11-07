@@ -238,7 +238,7 @@ public class WebViewLoginController extends BaseController {
                 userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
                         baseUrl, null, null, true).
                         subscribe(userEntity -> {
-                                    if (!isPasswordUpdate && !userUtils.anyUserExists()) {
+                                    if (!isPasswordUpdate && finalSettingsMessageType == null) {
                                         BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
                                         bundleBuilder.putString(BundleKeys.KEY_USERNAME, userEntity.getUsername());
                                         bundleBuilder.putString(BundleKeys.KEY_TOKEN, userEntity.getToken());
@@ -265,7 +265,7 @@ public class WebViewLoginController extends BaseController {
 
         LoginData loginData = new LoginData();
 
-        // format is xxx://login/server:xxx&user:xxx&password:xxx
+        // format is xxx://login/server1:xxx&user:xxx&password:xxx
         String data = dataString.substring(prefix.length());
 
         String[] values = data.split("&");

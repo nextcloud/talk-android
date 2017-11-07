@@ -48,19 +48,17 @@ import android.view.inputmethod.EditorInfo;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
-import com.bluelinelabs.logansquare.LoganSquare;
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.items.RoomItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.call.CallOverall;
-import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
-import com.nextcloud.talk.utils.database.cache.CacheUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.util.ArrayList;
@@ -84,15 +82,10 @@ public class CallsListController extends BaseController implements SearchView.On
 
     public static final String TAG = "CallsListController";
 
-    private static final String KEY_FROM_RESTORE_CONTROLLER = "CallsListController.fromRestoreController";
-    private static final String KEY_FROM_RESTORE_VIEW = "CallsListController.fromRestoreView";
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
 
     @Inject
     UserUtils userUtils;
-
-    @Inject
-    CacheUtils cacheUtils;
 
     @Inject
     NcApi ncApi;
@@ -104,12 +97,8 @@ public class CallsListController extends BaseController implements SearchView.On
 
     private UserEntity userEntity;
     private Disposable roomsQueryDisposable;
-    private Disposable cacheQueryDisposable;
     private FlexibleAdapter<RoomItem> adapter;
     private List<RoomItem> roomItems = new ArrayList<>();
-
-    private boolean isFromRestoreView;
-    private boolean isFromRestoreController;
 
     private MenuItem searchItem;
     private SearchView searchView;
@@ -160,30 +149,20 @@ public class CallsListController extends BaseController implements SearchView.On
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-    }
 
-    @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
+        userEntity = userUtils.getCurrentUser();
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(roomItems, getActivity(), false);
+            if (userEntity != null) {
+                fetchData();
+            }
         }
 
         adapter.addListener(onItemClickListener);
-
         prepareViews();
 
-        if ((userEntity = userUtils.getCurrentUser()) != null) {
-            if (!adapter.hasSearchText()) {
-                if (!cacheUtils.cacheExistsForContext(TAG) || !isFromRestoreView) {
-                    fetchData(true);
-                } else if (cacheUtils.cacheExistsForContext(TAG) && isFromRestoreController) {
-                    fetchData(false);
-                }
-            }
-        } else {
-            // Fallback to login if we have no users
+        if (userEntity == null) {
             if (getParentController() != null && getParentController().getRouter() != null) {
                 getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
                         .pushChangeHandler(new HorizontalChangeHandler())
@@ -191,6 +170,7 @@ public class CallsListController extends BaseController implements SearchView.On
             }
         }
     }
+
 
     private void initSearchView() {
         if (getActivity() != null) {
@@ -259,84 +239,56 @@ public class CallsListController extends BaseController implements SearchView.On
         }
     }
 
-    private void fetchData(boolean forceNew) {
+    private void fetchData() {
         dispose(null);
 
         roomItems = new ArrayList<>();
 
-        if (forceNew) {
-            roomsQueryDisposable = ncApi.getRooms(ApiHelper.getCredentials(userEntity.getUsername(),
-                    userEntity.getToken()), ApiHelper.getUrlForGetRooms(userEntity.getBaseUrl()))
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(roomsOverall -> {
+        roomsQueryDisposable = ncApi.getRooms(ApiHelper.getCredentials(userEntity.getUsername(),
+                userEntity.getToken()), ApiHelper.getUrlForGetRooms(userEntity.getBaseUrl()))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(roomsOverall -> {
 
-                        if (roomsOverall != null) {
-                            for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
-                                roomItems.add(new RoomItem(roomsOverall.getOcs().getData().get(i), userEntity));
-                            }
-
-                            adapter.updateDataSet(roomItems, true);
-                            if (searchItem != null) {
-                                searchItem.setVisible(roomItems.size() > 0);
-                            }
-
-                            cacheQueryDisposable = cacheUtils.createOrUpdateViewCache(
-                                    LoganSquare.serialize(roomsOverall.getOcs().getData()),
-                                    userEntity.getId(), TAG).subscribe(cacheEntity -> {
-                                        // do nothing
-                                    }, throwable -> dispose(cacheQueryDisposable),
-                                    () -> dispose(cacheQueryDisposable));
+                    if (roomsOverall != null) {
+                        for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
+                            roomItems.add(new RoomItem(roomsOverall.getOcs().getData().get(i), userEntity));
                         }
-                    }, throwable -> {
+
+                        adapter.updateDataSet(roomItems, true);
                         if (searchItem != null) {
-                            searchItem.setVisible(false);
+                            searchItem.setVisible(roomItems.size() > 0);
                         }
+                    }
+                }, throwable -> {
+                    if (searchItem != null) {
+                        searchItem.setVisible(false);
+                    }
 
-                        if (throwable instanceof HttpException) {
-                            HttpException exception = (HttpException) throwable;
-                            switch (exception.code()) {
-                                case 401:
-                                    if (getParentController() != null &&
-                                            getParentController().getRouter() != null) {
-                                        getParentController().getRouter().setRoot((RouterTransaction.with
-                                                (new WebViewLoginController(userEntity.getBaseUrl(),
-                                                        true))
-                                                .pushChangeHandler(new HorizontalChangeHandler())
-                                                .popChangeHandler(new HorizontalChangeHandler())));
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        dispose(roomsQueryDisposable);
-                    }, () -> {
-                        dispose(roomsQueryDisposable);
-                        if (swipeRefreshLayout != null) {
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-        } else {
-            cacheQueryDisposable = cacheUtils.getViewCache(userEntity.getId(), TAG)
-                    .subscribe(o -> {
-                                if (o != null) {
-                                    List<Room> rooms = LoganSquare.parseList(o.getValue(), Room.class);
-                                    for (Room room : rooms) {
-                                        roomItems.add(new RoomItem(room, userEntity));
-                                    }
-
-                                    adapter.updateDataSet(roomItems, true);
-                                    searchItem.setVisible(roomItems.size() > 0);
+                    if (throwable instanceof HttpException) {
+                        HttpException exception = (HttpException) throwable;
+                        switch (exception.code()) {
+                            case 401:
+                                if (getParentController() != null &&
+                                        getParentController().getRouter() != null) {
+                                    getParentController().getRouter().pushController((RouterTransaction.with
+                                            (new WebViewLoginController(userEntity.getBaseUrl(),
+                                                    true))
+                                            .pushChangeHandler(new VerticalChangeHandler())
+                                            .popChangeHandler(new VerticalChangeHandler())));
                                 }
-                            }, throwable -> {
-                                if (searchItem != null) {
-                                    searchItem.setVisible(false);
-                                }
-                                dispose(cacheQueryDisposable);
-                            },
-                            () -> dispose(cacheQueryDisposable));
-        }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    dispose(roomsQueryDisposable);
+                }, () -> {
+                    dispose(roomsQueryDisposable);
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
     }
 
     private void prepareViews() {
@@ -351,7 +303,7 @@ public class CallsListController extends BaseController implements SearchView.On
                 layoutManager.getOrientation()
         ));
 
-        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
+        swipeRefreshLayout.setOnRefreshListener(this::fetchData);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
     }
 
@@ -364,30 +316,12 @@ public class CallsListController extends BaseController implements SearchView.On
                 roomsQueryDisposable.dispose();
                 roomsQueryDisposable = null;
             }
-
-            if (cacheQueryDisposable != null && !cacheQueryDisposable.isDisposed()) {
-                cacheQueryDisposable.dispose();
-                cacheQueryDisposable = null;
-            }
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_FROM_RESTORE_CONTROLLER, true);
-    }
-
-    @Override
-    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        isFromRestoreController = savedInstanceState.getBoolean(KEY_FROM_RESTORE_CONTROLLER, false);
     }
 
     @Override
     public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
         super.onSaveViewState(view, outState);
-        outState.putBoolean(KEY_FROM_RESTORE_VIEW, true);
         if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
             outState.putString(KEY_SEARCH_QUERY, searchView.getQuery().toString());
         }
@@ -396,7 +330,6 @@ public class CallsListController extends BaseController implements SearchView.On
     @Override
     public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         super.onRestoreViewState(view, savedViewState);
-        isFromRestoreView = savedViewState.getBoolean(KEY_FROM_RESTORE_VIEW, false);
         searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
     }
 

@@ -25,6 +25,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -66,6 +68,10 @@ import javax.inject.Inject;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import cn.carbs.android.avatarimageview.library.AvatarImageView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.Credentials;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class SettingsController extends BaseController {
@@ -97,7 +103,7 @@ public class SettingsController extends BaseController {
     AvatarImageView avatarImageView;
 
     @BindView(R.id.display_name_text)
-    TextView displayName;
+    TextView displayNameTextView;
 
     @BindView(R.id.settings_remove_account)
     MaterialStandardPreference removeAccountButton;
@@ -124,10 +130,16 @@ public class SettingsController extends BaseController {
     AppPreferences appPreferences;
 
     @Inject
+    NcApi ncApi;
+
+    @Inject
     UserUtils userUtils;
 
     private OnPreferenceValueChangedListener<String> proxyTypeChangeListener;
     private OnPreferenceValueChangedListener<Boolean> proxyCredentialsChangeListener;
+
+    private Disposable profileQueryDisposable;
+    private Disposable dbQueryDisposable;
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
@@ -138,6 +150,86 @@ public class SettingsController extends BaseController {
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+
+        appPreferences.registerProxyTypeListener(proxyTypeChangeListener = new ProxyTypeChangeListener());
+        appPreferences.registerProxyCredentialsListener(proxyCredentialsChangeListener = new
+                ProxyCredentialsChangeListener());
+
+        List<String> listWithIntFields = new ArrayList<>();
+        listWithIntFields.add("proxy_port");
+
+        settingsScreen.setUserInputModule(new MagicUserInputModule(getActivity(), listWithIntFields));
+        settingsScreen.setVisibilityController(R.id.settings_proxy_use_credentials,
+                Arrays.asList(R.id.settings_proxy_username_edit, R.id.settings_proxy_password_edit),
+                true);
+
+        if (!TextUtils.isEmpty(getResources().getString(R.string.nc_gpl3_url))) {
+            licenceButton.setOnClickListener(view1 -> {
+                sourceCodeButton.setEnabled(false);
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
+                        getString(R.string.nc_gpl3_url)));
+                startActivity(browserIntent);
+                sourceCodeButton.setEnabled(true);
+            });
+        } else {
+            licenceButton.setVisibility(View.GONE);
+        }
+
+        if (!TextUtils.isEmpty(getResources().getString(R.string.nc_privacy_url))) {
+            privacyButton.setOnClickListener(view12 -> {
+                sourceCodeButton.setEnabled(false);
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
+                        getString(R.string.nc_privacy_url)));
+                startActivity(browserIntent);
+                sourceCodeButton.setEnabled(true);
+            });
+        } else {
+            privacyButton.setVisibility(View.GONE);
+        }
+
+        if (!TextUtils.isEmpty(getResources().getString(R.string.nc_source_code_url))) {
+            sourceCodeButton.setOnClickListener(view13 -> {
+                sourceCodeButton.setEnabled(false);
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
+                        getString(R.string.nc_source_code_url)));
+                startActivity(browserIntent);
+                sourceCodeButton.setEnabled(true);
+            });
+        } else {
+            sourceCodeButton.setVisibility(View.GONE);
+        }
+
+        versionInfo.setSummary("v" + BuildConfig.VERSION_NAME);
+
+        UserEntity userEntity = userUtils.getCurrentUser();
+        if (userEntity != null) {
+            reauthorizeButton.setOnClickListener(view14 -> {
+                reauthorizeButton.setEnabled(false);
+                getParentController().getRouter().pushController(RouterTransaction.with(
+                        new WebViewLoginController(userEntity.getBaseUrl(), true))
+                        .pushChangeHandler(new VerticalChangeHandler())
+                        .popChangeHandler(new VerticalChangeHandler()));
+                reauthorizeButton.setEnabled(true);
+            });
+        }
+
+        addAccountButton.setOnClickListener(view15 -> {
+            addAccountButton.setEnabled(false);
+            getParentController().getRouter().pushController(RouterTransaction.with(new
+                    ServerSelectionController()).pushChangeHandler(new VerticalChangeHandler())
+                    .popChangeHandler(new VerticalChangeHandler()));
+            addAccountButton.setEnabled(true);
+        });
+
+        switchAccountButton.setOnClickListener(view16 -> {
+            switchAccountButton.setEnabled(false);
+            getParentController().getRouter().pushController(RouterTransaction.with(new
+                    SwitchAccountController()).pushChangeHandler(new VerticalChangeHandler())
+                    .popChangeHandler(new VerticalChangeHandler()));
+            switchAccountButton.setEnabled(true);
+
+        });
+
     }
 
     @Override
@@ -156,55 +248,14 @@ public class SettingsController extends BaseController {
             hideProxyCredentials();
         }
 
-        appPreferences.registerProxyTypeListener(proxyTypeChangeListener = new ProxyTypeChangeListener());
-        appPreferences.registerProxyCredentialsListener(proxyCredentialsChangeListener = new
-                ProxyCredentialsChangeListener());
-
-        List<String> listWithIntFields = new ArrayList<>();
-        listWithIntFields.add("proxy_port");
-
-        settingsScreen.setUserInputModule(new MagicUserInputModule(getActivity(), listWithIntFields));
-        settingsScreen.setVisibilityController(R.id.settings_proxy_use_credentials,
-                Arrays.asList(R.id.settings_proxy_username_edit, R.id.settings_proxy_password_edit),
-                true);
-
-        if (!TextUtils.isEmpty(getResources().getString(R.string.nc_gpl3_url))) {
-            licenceButton.setOnClickListener(view1 -> {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
-                        getString(R.string.nc_gpl3_url)));
-                startActivity(browserIntent);
-            });
-        } else {
-            licenceButton.setVisibility(View.GONE);
-        }
-
-        if (!TextUtils.isEmpty(getResources().getString(R.string.nc_privacy_url))) {
-            privacyButton.setOnClickListener(view12 -> {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
-                        getString(R.string.nc_privacy_url)));
-                startActivity(browserIntent);
-            });
-        } else {
-            privacyButton.setVisibility(View.GONE);
-        }
-
-        if (!TextUtils.isEmpty(getResources().getString(R.string.nc_source_code_url))) {
-            sourceCodeButton.setOnClickListener(view13 -> {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
-                        getString(R.string.nc_source_code_url)));
-                startActivity(browserIntent);
-            });
-        } else {
-            sourceCodeButton.setVisibility(View.GONE);
-        }
-
-        versionInfo.setSummary("v" + BuildConfig.VERSION_NAME);
-
         UserEntity userEntity = userUtils.getCurrentUser();
         if (userEntity != null) {
             // Awful hack
-            avatarImageView.setTextAndColorSeed(String.valueOf(userEntity.getDisplayName().
-                    toUpperCase().charAt(0)), ColorUtils.colorSeed);
+            if (userEntity.getDisplayName() != null) {
+                avatarImageView.setTextAndColorSeed(String.valueOf(userEntity.getDisplayName().
+                        toUpperCase().charAt(0)), ColorUtils.colorSeed);
+                displayNameTextView.setText(userEntity.getDisplayName());
+            }
 
             GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                     userEntity.getUsername()), new LazyHeaders.Builder()
@@ -218,40 +269,58 @@ public class SettingsController extends BaseController {
                     .centerInside()
                     .into(avatarImageView);
 
-            displayName.setText(userEntity.getDisplayName());
+
+            profileQueryDisposable = ncApi.getUserProfile(Credentials.basic(userEntity.getUsername(),
+                    userEntity.getToken()),
+                    ApiHelper.getUrlForUserProfile(userEntity.getBaseUrl()))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(userProfileOverall -> {
+
+                        String displayName = null;
+                        if (!TextUtils.isEmpty(userProfileOverall.getOcs().getData()
+                                .getDisplayName())) {
+                            displayName = userProfileOverall.getOcs().getData()
+                                    .getDisplayName();
+                        } else if (!TextUtils.isEmpty(userProfileOverall.getOcs().getData()
+                                .getDisplayNameAlt())) {
+                            displayName = userProfileOverall.getOcs().getData()
+                                    .getDisplayNameAlt();
+                        }
+
+                        if (!TextUtils.isEmpty(displayName) && !displayName.equals(userEntity.getDisplayName())) {
+                            dbQueryDisposable = userUtils.createOrUpdateUser(userEntity.getUsername(),
+                                    userEntity.getToken(),
+                                    userEntity.getBaseUrl(), displayName, null, true)
+                                    .subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(userEntityResult -> {
+                                                displayNameTextView.setText(userEntityResult.getDisplayName());
+                                            },
+                                            throwable -> {
+                                                dispose(dbQueryDisposable);
+                                            }, () -> dispose(dbQueryDisposable));
+
+                        }
+                    }, throwable -> {
+                        dispose(profileQueryDisposable);
+                    }, () -> dispose(profileQueryDisposable));
+
         }
 
         if (userUtils.getUsers().size() <= 1) {
             switchAccountButton.setVisibility(View.GONE);
         }
 
-
-        reauthorizeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getParentController().getRouter().pushController(RouterTransaction.with(
-                        new WebViewLoginController(userEntity.getBaseUrl(), true))
-                        .pushChangeHandler(new VerticalChangeHandler())
-                        .popChangeHandler(new VerticalChangeHandler()));
-            }
-        });
-
-        addAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getParentController().getRouter().pushController(RouterTransaction.with(new
-                        ServerSelectionController()).pushChangeHandler(new VerticalChangeHandler())
-                        .popChangeHandler(new VerticalChangeHandler()));
-            }
-        });
-
         if (SettingsMessageHolder.getInstance().getMessageType() != null) {
             switch (SettingsMessageHolder.getInstance().getMessageType()) {
                 case ACCOUNT_UPDATED_NOT_ADDED:
+                    messageText.setTextColor(getResources().getColor(R.color.colorPrimary));
                     messageText.setText(getResources().getString(R.string.nc_settings_account_updated));
                     messageView.setVisibility(View.VISIBLE);
                     break;
                 case WRONG_ACCOUNT:
+                    messageText.setTextColor(getResources().getColor(R.color.darkRed));
                     messageText.setText(getResources().getString(R.string.nc_settings_wrong_account));
                     messageView.setVisibility(View.VISIBLE);
                     break;
@@ -264,7 +333,7 @@ public class SettingsController extends BaseController {
             messageView.animate()
                     .translationY(0)
                     .alpha(0.0f)
-                    .setDuration(2000)
+                    .setDuration(2500)
                     .setStartDelay(5000)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
@@ -318,6 +387,23 @@ public class SettingsController extends BaseController {
         settingsScreen.findViewById(R.id.settings_proxy_password_edit).setVisibility(View.GONE);
     }
 
+    private void dispose(@Nullable Disposable disposable) {
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        } else if (disposable == null) {
+
+            if (profileQueryDisposable != null && !profileQueryDisposable.isDisposed()) {
+                profileQueryDisposable.dispose();
+                profileQueryDisposable = null;
+            }
+
+            if (dbQueryDisposable != null && !dbQueryDisposable.isDisposed()) {
+                dbQueryDisposable.dispose();
+                dbQueryDisposable = null;
+            }
+        }
+    }
+
     private class ProxyCredentialsChangeListener implements OnPreferenceValueChangedListener<Boolean> {
 
         @Override
@@ -355,4 +441,10 @@ public class SettingsController extends BaseController {
             }
         }
     }
+
+    @Override
+    protected String getTitle() {
+        return getResources().getString(R.string.nc_app_name);
+    }
+
 }

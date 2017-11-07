@@ -146,6 +146,8 @@ public class AccountVerificationController extends BaseController {
                                                         new JobRequest.Builder(PushRegistrationJob.TAG).
                                                                 setUpdateCurrent(true).startNow().build().schedule();
 
+                                                        userUtils.disableAllUsersWithoutId(userEntity.getId());
+
                                                         if (userUtils.getUsers().size() == 1) {
                                                             getRouter().setRoot(RouterTransaction.with(new
                                                                     BottomNavigationController(R.menu.menu_navigation))

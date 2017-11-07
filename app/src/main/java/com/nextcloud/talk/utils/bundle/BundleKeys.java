@@ -24,4 +24,5 @@ public class BundleKeys {
     public static final String KEY_USERNAME = "KEY_USERNAME";
     public static final String KEY_TOKEN = "KEY_TOKEN";
     public static final String KEY_BASE_URL = "KEY_BASE_URL";
+    public static final String KEY_SETTINGS_MESSAGE = "KEY_SETTINGS_MESSAGE";
 }

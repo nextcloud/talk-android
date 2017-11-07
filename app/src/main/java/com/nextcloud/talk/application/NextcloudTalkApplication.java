@@ -34,7 +34,6 @@ import com.nextcloud.talk.dagger.modules.DatabaseModule;
 import com.nextcloud.talk.dagger.modules.RestModule;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 import com.nextcloud.talk.jobs.creator.MagicJobCreator;
-import com.nextcloud.talk.utils.database.cache.CacheModule;
 import com.nextcloud.talk.utils.database.user.UserModule;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -53,7 +52,6 @@ import autodagger.AutoInjector;
                 DatabaseModule.class,
                 RestModule.class,
                 UserModule.class,
-                CacheModule.class
         }
 )
 
@@ -123,7 +121,6 @@ public class NextcloudTalkApplication extends MultiDexApplication {
                 .databaseModule(new DatabaseModule())
                 .restModule(new RestModule())
                 .userModule(new UserModule())
-                .cacheModule(new CacheModule())
                 .build();
     }
 

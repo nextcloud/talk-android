@@ -35,8 +35,7 @@
             android:id="@+id/message_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:textColor="@color/darkRed"/>
+            android:gravity="center"/>
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
     <com.yarolegovich.mp.MaterialPreferenceCategory

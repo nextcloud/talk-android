@@ -77,6 +77,10 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         return user;
     }
 
+    public UserEntity getEntity() {
+        return userEntity;
+    }
+
     @Override
     public int getLayoutRes() {
         return R.layout.rv_item_contact;

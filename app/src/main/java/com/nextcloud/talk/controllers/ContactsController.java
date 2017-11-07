@@ -46,19 +46,17 @@ import android.view.inputmethod.EditorInfo;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.bluelinelabs.logansquare.LoganSquare;
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.User;
 import com.nextcloud.talk.api.models.json.sharees.Sharee;
-import com.nextcloud.talk.api.models.json.sharees.SharesData;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.database.cache.CacheUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.util.ArrayList;
@@ -82,15 +80,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     public static final String TAG = "ContactsController";
 
-    private static final String KEY_FROM_RESTORE_CONTROLLER = "ContactsController.fromRestoreController";
-    private static final String KEY_FROM_RESTORE_VIEW = "ContactsController.fromRestoreView";
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
 
     @Inject
     UserUtils userUtils;
-
-    @Inject
-    CacheUtils cacheUtils;
 
     @Inject
     NcApi ncApi;
@@ -105,9 +98,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private Disposable cacheQueryDisposable;
     private FlexibleAdapter<UserItem> adapter;
     private List<UserItem> contactItems = new ArrayList<>();
-
-    private boolean isFromRestoreController;
-    private boolean isFromRestoreView;
 
     private MenuItem searchItem;
     private SearchView searchView;
@@ -127,34 +117,31 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-    }
 
-    @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-
+        userEntity = userUtils.getCurrentUser();
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
+            if (userEntity != null) {
+                fetchData();
+            }
         }
 
         prepareViews();
 
-        if ((userEntity = userUtils.getCurrentUser()) != null) {
-            if (!adapter.hasSearchText()) {
-                if (!cacheUtils.cacheExistsForContext(TAG) || !isFromRestoreView) {
-                    fetchData(true);
-                } else if (cacheUtils.cacheExistsForContext(TAG) && isFromRestoreController) {
-                    fetchData(false);
-                }
-            }
-        } else {
-            // Fallback to login if we have no users
+        if (userEntity == null) {
             if (getParentController().getRouter() != null) {
                 getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
                         .pushChangeHandler(new HorizontalChangeHandler())
                         .popChangeHandler(new HorizontalChangeHandler())));
             }
         }
+
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+
     }
 
     private void initSearchView() {
@@ -224,127 +211,77 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
     }
 
-    private void fetchData(boolean forceNew) {
+    private void fetchData() {
         dispose(null);
 
         Set<Sharee> shareeHashSet = new HashSet<>();
 
         contactItems = new ArrayList<>();
 
-        if (forceNew) {
-            RetrofitBucket retrofitBucket = ApiHelper.getRetrofitBucketForContactsSearch(userEntity.getBaseUrl(),
-                    "");
-            contactsQueryDisposable = ncApi.getContactsWithSearchParam(
-                    ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                    retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(shareesOverall -> {
-                                if (shareesOverall != null) {
+        RetrofitBucket retrofitBucket = ApiHelper.getRetrofitBucketForContactsSearch(userEntity.getBaseUrl(),
+                "");
+        contactsQueryDisposable = ncApi.getContactsWithSearchParam(
+                ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(shareesOverall -> {
+                            if (shareesOverall != null) {
 
-                                    if (shareesOverall.getOcs().getData().getUsers() != null) {
-                                        shareeHashSet.addAll(shareesOverall.getOcs().getData().getUsers());
-                                    }
-
-                                    if (shareesOverall.getOcs().getData().getExactUsers() != null &&
-                                            shareesOverall.getOcs().getData().getExactUsers().getExactSharees() != null) {
-                                        shareeHashSet.addAll(shareesOverall.getOcs().getData().
-                                                getExactUsers().getExactSharees());
-                                    }
-
-                                    User user;
-                                    for (Sharee sharee : shareeHashSet) {
-                                        if (!sharee.getValue().getShareWith().equals(userEntity.getUsername())) {
-                                            user = new User();
-                                            user.setName(sharee.getLabel());
-                                            user.setUserId(sharee.getValue().getShareWith());
-                                            contactItems.add(new UserItem(user, userEntity));
-                                        }
-
-                                    }
-
-                                    adapter.updateDataSet(contactItems, true);
-                                    searchItem.setVisible(contactItems.size() > 0);
-
-                                    cacheQueryDisposable = cacheUtils.createOrUpdateViewCache(
-                                            LoganSquare.serialize(shareesOverall.getOcs().getData()),
-                                            userEntity.getId(), TAG).subscribe(cacheEntity -> {
-                                                // do nothing
-                                            }, throwable -> dispose(cacheQueryDisposable),
-                                            () -> dispose(cacheQueryDisposable));
+                                if (shareesOverall.getOcs().getData().getUsers() != null) {
+                                    shareeHashSet.addAll(shareesOverall.getOcs().getData().getUsers());
                                 }
 
-                            }, throwable -> {
-                                if (searchItem != null) {
-                                    searchItem.setVisible(false);
+                                if (shareesOverall.getOcs().getData().getExactUsers() != null &&
+                                        shareesOverall.getOcs().getData().getExactUsers().getExactSharees() != null) {
+                                    shareeHashSet.addAll(shareesOverall.getOcs().getData().
+                                            getExactUsers().getExactSharees());
                                 }
 
-                                if (throwable instanceof HttpException) {
-                                    HttpException exception = (HttpException) throwable;
-                                    switch (exception.code()) {
-                                        case 401:
-                                            if (getParentController() != null &&
-                                                    getParentController().getRouter() != null) {
-                                                getParentController().getRouter().setRoot((RouterTransaction.with
-                                                        (new WebViewLoginController(userEntity.getBaseUrl(),
-                                                                true))
-                                                        .pushChangeHandler(new HorizontalChangeHandler())
-                                                        .popChangeHandler(new HorizontalChangeHandler())));
-                                            }
-                                            break;
-                                        default:
-                                            break;
+                                User user;
+                                for (Sharee sharee : shareeHashSet) {
+                                    if (!sharee.getValue().getShareWith().equals(userEntity.getUsername())) {
+                                        user = new User();
+                                        user.setName(sharee.getLabel());
+                                        user.setUserId(sharee.getValue().getShareWith());
+                                        contactItems.add(new UserItem(user, userEntity));
                                     }
+
                                 }
 
-                                dispose(contactsQueryDisposable);
+                                adapter.updateDataSet(contactItems, true);
+                                searchItem.setVisible(contactItems.size() > 0);
                             }
-                            , () -> {
-                                swipeRefreshLayout.setRefreshing(false);
-                                dispose(contactsQueryDisposable);
-                            });
-        } else {
-            cacheQueryDisposable = cacheUtils.getViewCache(userEntity.getId(), TAG)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(o -> {
-                                if (o != null) {
-                                    SharesData sharesData = LoganSquare.parse(o.getValue(), SharesData.class);
 
-                                    if (sharesData.getUsers() != null) {
-                                        shareeHashSet.addAll(sharesData.getUsers());
-                                    }
+                        }, throwable -> {
+                            if (searchItem != null) {
+                                searchItem.setVisible(false);
+                            }
 
-                                    if (sharesData.getExactUsers() != null && sharesData.getExactUsers()
-                                            .getExactSharees() != null) {
-                                        shareeHashSet.addAll(sharesData.getExactUsers().getExactSharees());
-                                    }
-
-                                    User user;
-                                    for (Sharee sharee : shareeHashSet) {
-                                        if (!sharee.getValue().getShareWith().equals(userEntity.getUsername())) {
-                                            user = new User();
-                                            user.setName(sharee.getLabel());
-                                            user.setUserId(sharee.getValue().getShareWith());
-                                            contactItems.add(new UserItem(user, userEntity));
+                            if (throwable instanceof HttpException) {
+                                HttpException exception = (HttpException) throwable;
+                                switch (exception.code()) {
+                                    case 401:
+                                        if (getParentController() != null &&
+                                                getParentController().getRouter() != null) {
+                                            getParentController().getRouter().pushController((RouterTransaction.with
+                                                    (new WebViewLoginController(userEntity.getBaseUrl(),
+                                                            true))
+                                                    .pushChangeHandler(new VerticalChangeHandler())
+                                                    .popChangeHandler(new VerticalChangeHandler())));
                                         }
-
-                                    }
-
-                                    adapter.updateDataSet(contactItems, true);
-                                    searchItem.setVisible(contactItems.size() > 0);
-
+                                        break;
+                                    default:
+                                        break;
                                 }
-                            }, throwable -> {
-                                dispose(cacheQueryDisposable);
-                                if (searchItem != null) {
-                                    searchItem.setVisible(false);
-                                }
-                            },
-                            () -> {
-                                dispose(cacheQueryDisposable);
-                            });
-        }
+                            }
+
+                            dispose(contactsQueryDisposable);
+                        }
+                        , () -> {
+                            swipeRefreshLayout.setRefreshing(false);
+                            dispose(contactsQueryDisposable);
+                        });
     }
 
     private void prepareViews() {
@@ -358,7 +295,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 layoutManager.getOrientation()
         ));
 
-        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
+        swipeRefreshLayout.setOnRefreshListener(this::fetchData);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
     }
 
@@ -380,21 +317,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_FROM_RESTORE_CONTROLLER, true);
-    }
-
-    @Override
-    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        isFromRestoreController = savedInstanceState.getBoolean(KEY_FROM_RESTORE_CONTROLLER, false);
-    }
-
-    @Override
     public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
         super.onSaveViewState(view, outState);
-        outState.putBoolean(KEY_FROM_RESTORE_VIEW, true);
         if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
             outState.putString(KEY_SEARCH_QUERY, searchView.getQuery().toString());
         }
@@ -403,7 +327,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         super.onRestoreViewState(view, savedViewState);
-        isFromRestoreView = savedViewState.getBoolean(KEY_FROM_RESTORE_VIEW, false);
         searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
     }
 
