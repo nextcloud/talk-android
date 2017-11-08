@@ -138,6 +138,8 @@ dependencies {
     implementation 'com.yarolegovich:lovelyinput:1.0.2'
     implementation 'com.yarolegovich:mp:1.0.8'
 
+    compile 'gun0912.ted:tedpermission:2.0.3'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'

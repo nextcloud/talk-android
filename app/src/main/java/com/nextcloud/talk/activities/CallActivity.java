@@ -16,13 +16,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Inspired by:
+ *  - Google samples
+ *  - https://github.com/vivek1794/webrtc-android-codelab (MIT licence)
  */
 
 package com.nextcloud.talk.activities;
 
 import android.Manifest;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -38,6 +44,7 @@ import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.CameraEnumerator;
+import org.webrtc.EglBase;
 import org.webrtc.IceCandidate;
 import org.webrtc.Logging;
 import org.webrtc.MediaConstraints;
@@ -79,6 +86,7 @@ public class CallActivity extends AppCompatActivity {
     VideoTrack localVideoTrack;
     AudioSource audioSource;
     AudioTrack localAudioTrack;
+    VideoCapturer videoCapturer;
 
     VideoRenderer localRenderer;
     VideoRenderer remoteRenderer;
@@ -116,6 +124,8 @@ public class CallActivity extends AppCompatActivity {
             }
         };
 
+        initViews();
+
         TedPermission.with(this)
                 .setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
@@ -123,13 +133,13 @@ public class CallActivity extends AppCompatActivity {
                         Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.ACCESS_NETWORK_STATE,
                         Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.INTERNET)
                 .check();
+
     }
 
 
 
 
     private VideoCapturer createVideoCapturer() {
-        VideoCapturer videoCapturer;
         videoCapturer = createCameraCapturer(new Camera1Enumerator(false));
         return videoCapturer;
     }
@@ -166,6 +176,16 @@ public class CallActivity extends AppCompatActivity {
         return null;
     }
 
+    public void initViews() {
+        pipVideoView.setMirror(true);
+        fullScreenVideoView.setMirror(false);
+        EglBase rootEglBase = EglBase.create();
+        pipVideoView.init(rootEglBase.getEglBaseContext(), null);
+        pipVideoView.setZOrderMediaOverlay(true);
+        fullScreenVideoView.init(rootEglBase.getEglBaseContext(), null);
+        fullScreenVideoView.setZOrderMediaOverlay(true);
+    }
+
     public void start() {
         //Initialize PeerConnectionFactory globals.
         //Params are context, initAudio,initVideo and videoCodecHwAcceleration
@@ -191,11 +211,16 @@ public class CallActivity extends AppCompatActivity {
         audioSource = peerConnectionFactory.createAudioSource(audioConstraints);
         localAudioTrack = peerConnectionFactory.createAudioTrack("101", audioSource);
 
+        Resources r = getResources();
+        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, r.getDisplayMetrics());
+        videoCapturerAndroid.startCapture(px, px, 30);
+
         //create a videoRenderer based on SurfaceViewRenderer instance
         localRenderer = new VideoRenderer(pipVideoView);
         // And finally, with our VideoRenderer ready, we
         // can add our renderer to the VideoTrack.
         localVideoTrack.addRenderer(localRenderer);
+
 
     }
 
@@ -268,9 +293,9 @@ public class CallActivity extends AppCompatActivity {
                         localPeer.setRemoteDescription(new MagicSdpObserver(), sessionDescription);
 
                     }
-                },new MediaConstraints());
+                }, new MediaConstraints());
             }
-        },sdpConstraints);
+        }, sdpConstraints);
     }
 
 
@@ -284,6 +309,13 @@ public class CallActivity extends AppCompatActivity {
             remotePeer.close();
             remotePeer = null;
         }
+
+        if (videoCapturer != null) {
+            videoCapturer.dispose();
+        }
+
+        pipVideoView.release();
+        fullScreenVideoView.release();
     }
 
     private void gotRemoteStream(MediaStream stream) {
