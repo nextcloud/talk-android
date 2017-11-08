@@ -33,8 +33,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionObserver;
@@ -64,6 +62,7 @@ import java.util.List;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.alexbykov.nopermission.PermissionHelper;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends AppCompatActivity {
@@ -111,31 +110,25 @@ public class CallActivity extends AppCompatActivity {
         roomToken = getIntent().getExtras().getString("roomToken", "");
         userDisplayName = getIntent().getExtras().getString("userDisplayName", "");
 
-
-        PermissionListener permissionlistener = new PermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-                start();
-                call();
-            }
-
-            @Override
-            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-            }
-        };
-
         initViews();
 
-        TedPermission.with(this)
-                .setPermissionListener(permissionlistener)
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .setPermissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.ACCESS_NETWORK_STATE,
-                        Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.INTERNET)
-                .check();
+        PermissionHelper permissionHelper = new PermissionHelper(this);
+        permissionHelper.check(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.INTERNET)
+                .onSuccess(() -> {
+                    start();
+                    call();
+                })
+                .onDenied(new Runnable() {
+                    @Override
+                    public void run() {
+                        // do nothing
+                    }
+                })
+                .run();
 
     }
-
 
 
 
