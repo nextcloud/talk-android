@@ -49,6 +49,7 @@ import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
+import org.webrtc.RendererCommon;
 import org.webrtc.SessionDescription;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
@@ -177,6 +178,10 @@ public class CallActivity extends AppCompatActivity {
         pipVideoView.setZOrderMediaOverlay(true);
         fullScreenVideoView.init(rootEglBase.getEglBaseContext(), null);
         fullScreenVideoView.setZOrderMediaOverlay(true);
+        fullScreenVideoView.setEnableHardwareScaler(true);
+        pipVideoView.setEnableHardwareScaler(true);
+        pipVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+        fullScreenVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
     }
 
     public void start() {
