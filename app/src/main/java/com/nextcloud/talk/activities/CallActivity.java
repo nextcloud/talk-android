@@ -27,6 +27,7 @@ package com.nextcloud.talk.activities;
 import android.Manifest;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.View;
@@ -34,10 +35,15 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.api.NcApi;
+import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionObserver;
 import com.nextcloud.talk.webrtc.MagicSdpObserver;
 
+import org.parceler.Parcels;
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.Camera1Enumerator;
@@ -57,12 +63,20 @@ import org.webrtc.VideoRenderer;
 import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import io.reactivex.functions.BooleanSupplier;
+import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.alexbykov.nopermission.PermissionHelper;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -75,8 +89,11 @@ public class CallActivity extends AppCompatActivity {
     @BindView(R.id.fullscreen_video_view)
     SurfaceViewRenderer fullScreenVideoView;
 
+    @Inject
+    NcApi ncApi;
+
     private String roomToken;
-    private String userDisplayName;
+    private UserEntity userEntity;
 
     PeerConnectionFactory peerConnectionFactory;
     MediaConstraints audioConstraints;
@@ -92,6 +109,15 @@ public class CallActivity extends AppCompatActivity {
     VideoRenderer remoteRenderer;
 
     PeerConnection localPeer, remotePeer;
+
+    boolean inCall = true;
+
+    BooleanSupplier booleanSupplier = () -> inCall;
+
+    Disposable signalingDisposable;
+    Disposable pingDisposable;
+
+    List<PeerConnection.IceServer> iceServers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +135,7 @@ public class CallActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         roomToken = getIntent().getExtras().getString("roomToken", "");
-        userDisplayName = getIntent().getExtras().getString("userDisplayName", "");
+        userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable("userEntity"));
 
         initViews();
 
@@ -218,12 +244,9 @@ public class CallActivity extends AppCompatActivity {
         // And finally, with our VideoRenderer ready, we
         // can add our renderer to the VideoTrack.
         localVideoTrack.addRenderer(localRenderer);
-    }
 
-
-    private void call() {
         //we already have video and audio tracks. Now create peerconnections
-        List<PeerConnection.IceServer> iceServers = new ArrayList<>();
+        iceServers = new ArrayList<>();
         iceServers.add(new PeerConnection.IceServer("stun:stun.nextcloud.com:443"));
 
         //create sdpConstraints
@@ -232,6 +255,84 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("offerToReceiveVideo", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
+
+        //creating local mediastream
+        MediaStream stream = peerConnectionFactory.createLocalMediaStream("102");
+        stream.addTrack(localAudioTrack);
+        stream.addTrack(localVideoTrack);
+        localPeer.addStream(stream);
+
+        // Start pulling signaling messages
+        ncApi.pullSignalingMessages(ApiHelper.getCredentials(userEntity.getUsername(),
+                userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .repeatWhen(observable -> observable.delay(1500, TimeUnit.MILLISECONDS))
+                .repeatUntil(booleanSupplier)
+                .retry(3)
+                .subscribe(new Observer<SignalingOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        signalingDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(SignalingOverall signalingOverall) {
+                        if (signalingOverall.getOcs().getSignalings() != null) {
+                            for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
+                                try {
+                                    receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dispose(signalingDisposable);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dispose(signalingDisposable);
+                    }
+                });
+
+        // start pinging the call
+        ncApi.pingCall(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                ApiHelper.getUrlForCallPing(userEntity.getBaseUrl(), roomToken))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                .repeatUntil(booleanSupplier)
+                .retry(3)
+                .subscribe(new Observer<Void>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        pingDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dispose(pingDisposable);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dispose(pingDisposable);
+                    }
+                });
+
+    }
+
+    private void call() {
 
         //creating localPeer
         localPeer = peerConnectionFactory.createPeerConnection(iceServers, sdpConstraints,
@@ -265,11 +366,6 @@ public class CallActivity extends AppCompatActivity {
             }
         });
 
-        //creating local mediastream
-        MediaStream stream = peerConnectionFactory.createLocalMediaStream("102");
-        stream.addTrack(localAudioTrack);
-        stream.addTrack(localVideoTrack);
-        localPeer.addStream(stream);
 
         //creating Offer
         localPeer.createOffer(new MagicSdpObserver(){
@@ -296,6 +392,11 @@ public class CallActivity extends AppCompatActivity {
 
 
     private void hangup() {
+
+        inCall = false;
+
+        dispose(null);
+
         if (localPeer != null) {
             localPeer.close();
             localPeer = null;
@@ -343,12 +444,31 @@ public class CallActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         hangup();
+        super.onDestroy();
     }
+
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
         flags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         return flags;
     }
+
+    private void dispose(@Nullable Disposable disposable) {
+        if (disposable != null && !disposable.isDisposed()) {
+            disposable.dispose();
+        } else if (disposable == null) {
+
+            if (pingDisposable != null && !pingDisposable.isDisposed()) {
+                pingDisposable.dispose();
+                pingDisposable = null;
+            }
+
+            if (signalingDisposable != null && !signalingDisposable.isDisposed()) {
+                signalingDisposable.dispose();
+                signalingDisposable = null;
+            }
+        }
+    }
+
 }

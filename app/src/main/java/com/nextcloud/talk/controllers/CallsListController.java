@@ -125,7 +125,7 @@ public class CallsListController extends BaseController implements SearchView.On
                                         Intent callIntent = new Intent(getActivity(), CallActivity.class);
                                         BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
                                         bundleBuilder.putString("roomToken", roomItem.getModel().getToken());
-                                        bundleBuilder.putString("userDisplayName", userEntity.getDisplayName());
+                                        bundleBuilder.putParcelable("userEntity", userEntity);
                                         callIntent.putExtras(bundleBuilder.build());
                                         startActivity(callIntent);
                                     }
