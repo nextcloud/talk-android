@@ -218,8 +218,6 @@ public class CallActivity extends AppCompatActivity {
         // And finally, with our VideoRenderer ready, we
         // can add our renderer to the VideoTrack.
         localVideoTrack.addRenderer(localRenderer);
-
-
     }
 
 
@@ -291,7 +289,7 @@ public class CallActivity extends AppCompatActivity {
                         localPeer.setRemoteDescription(new MagicSdpObserver(), sessionDescription);
 
                     }
-                }, new MediaConstraints());
+                }, sdpConstraints);
             }
         }, sdpConstraints);
     }

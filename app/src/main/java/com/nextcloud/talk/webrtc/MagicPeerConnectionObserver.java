@@ -62,7 +62,6 @@ public class MagicPeerConnectionObserver implements PeerConnection.Observer {
 
     @Override
     public void onAddStream(MediaStream mediaStream) {
-
     }
 
     @Override

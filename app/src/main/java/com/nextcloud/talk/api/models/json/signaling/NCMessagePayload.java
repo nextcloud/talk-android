@@ -27,16 +27,16 @@ import lombok.Data;
 
 @Data
 @JsonObject
-public class NCSignalingMessage {
-    @JsonField(name = "from")
-    String from;
-    @JsonField(name = "to")
-    String to;
+public class NCMessagePayload {
     @JsonField(name = "type")
     String type;
-    @JsonField(name = "payload")
-    NCMessagePayload payload;
-    @JsonField(name = "roomType")
-    String roomType;
 
+    @JsonField(name = "sdp")
+    String sdp;
+
+    @JsonField(name = "nick")
+    String nick;
+
+    @JsonField(name = "candidate")
+    NCIceCandidate iceCandidate;
 }
