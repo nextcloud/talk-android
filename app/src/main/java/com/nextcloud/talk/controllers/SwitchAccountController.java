@@ -118,7 +118,7 @@ public class SwitchAccountController extends BaseController {
             User user;
             UserEntity currentUserEntity = userUtils.getCurrentUser();
 
-            for(Object userEntityObject : userUtils.getUsers()) {
+            for (Object userEntityObject : userUtils.getUsers()) {
                 userEntity = (UserEntity) userEntityObject;
                 if (!userEntity.equals(currentUserEntity)) {
                     user = new User();

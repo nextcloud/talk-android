@@ -111,7 +111,7 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
     }
 
     public void showCertificateDialog(X509Certificate cert, MagicTrustManager magicTrustManager,
-                                       @Nullable SslErrorHandler sslErrorHandler) {
+                                      @Nullable SslErrorHandler sslErrorHandler) {
         DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG);
         String validFrom = formatter.format(cert.getNotBefore());
         String validUntil = formatter.format(cert.getNotAfter());
@@ -140,8 +140,8 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
                     issuedBy, issuedFor, validFrom, validUntil);
 
             new LovelyStandardDialog(this)
-                    .setTopColorRes(R.color.darkRed)
-                    .setNegativeButtonColorRes(R.color.darkRed)
+                    .setTopColorRes(R.color.nc_darkRed)
+                    .setNegativeButtonColorRes(R.color.nc_darkRed)
                     .setPositiveButtonColorRes(R.color.colorPrimaryDark)
                     .setIcon(R.drawable.ic_security_white_24dp)
                     .setTitle(R.string.nc_certificate_dialog_title)

@@ -42,4 +42,7 @@ public class Participant {
 
     @JsonField(name = "roomId")
     long roomId;
+
+    @JsonField(name = "inCall")
+    boolean inCall;
 }

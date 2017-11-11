@@ -23,7 +23,16 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/nc_background_color">
+                android:background="@color/colorPrimary">
+
+    <ImageView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_above="@id/text_field_boxes"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/ic_logo"
+        />
 
     <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
         android:id="@+id/text_field_boxes"
@@ -34,16 +43,18 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        app:errorColor="@color/A400red"
+        app:errorColor="@color/nc_white_color_complete"
         app:helperText=" "
-        app:primaryColor="@color/colorPrimary">
+        app:primaryColor="@color/nc_white_color_complete"
+        >
 
         <studio.carbonylgroup.textfieldboxes.ExtendedEditText
             android:id="@+id/extended_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:textColor="@color/nc_white_color_complete"/>
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
@@ -59,7 +70,7 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/padding_between_elements"
         android:indeterminate="true"
-        android:progressTint="@color/colorPrimary"
+        android:progressTint="@color/nc_white_color"
         android:visibility="invisible"/>
 
 </RelativeLayout>

@@ -35,7 +35,7 @@ public class GenericMeta {
     String status;
 
     @JsonField(name = "statuscode")
-    String statusCode;
+    int statusCode;
 
     @JsonField(name = "message")
     String message;

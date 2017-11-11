@@ -29,21 +29,27 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.api.models.json.call.CallOverall;
+import com.nextcloud.talk.api.models.json.generic.GenericOverall;
+import com.nextcloud.talk.api.models.json.participants.Participant;
+import com.nextcloud.talk.api.models.json.signaling.NCMessageWrapper;
+import com.nextcloud.talk.api.models.json.signaling.Signaling;
 import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionObserver;
 import com.nextcloud.talk.webrtc.MagicSdpObserver;
 
-import org.parceler.Parcels;
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.Camera1Enumerator;
@@ -67,7 +73,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import io.reactivex.functions.BooleanSupplier;
+
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
@@ -76,6 +82,7 @@ import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.schedulers.Schedulers;
 import ru.alexbykov.nopermission.PermissionHelper;
 
@@ -91,10 +98,6 @@ public class CallActivity extends AppCompatActivity {
 
     @Inject
     NcApi ncApi;
-
-    private String roomToken;
-    private UserEntity userEntity;
-
     PeerConnectionFactory peerConnectionFactory;
     MediaConstraints audioConstraints;
     MediaConstraints videoConstraints;
@@ -104,20 +107,25 @@ public class CallActivity extends AppCompatActivity {
     AudioSource audioSource;
     AudioTrack localAudioTrack;
     VideoCapturer videoCapturer;
-
     VideoRenderer localRenderer;
     VideoRenderer remoteRenderer;
-
     PeerConnection localPeer, remotePeer;
-
-    boolean inCall = true;
-
-    BooleanSupplier booleanSupplier = () -> inCall;
-
+    boolean leavingCall = false;
+    BooleanSupplier booleanSupplier = () -> leavingCall;
     Disposable signalingDisposable;
     Disposable pingDisposable;
-
     List<PeerConnection.IceServer> iceServers;
+    private String roomToken;
+    private UserEntity userEntity;
+    private String callSession;
+
+    private String credentials;
+
+    private static int getSystemUiVisibility() {
+        int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        flags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        return flags;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,8 +143,10 @@ public class CallActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         roomToken = getIntent().getExtras().getString("roomToken", "");
-        userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable("userEntity"));
+        userEntity = getIntent().getExtras().getParcelable("userEntity");
+        callSession = getIntent().getExtras().getString("callSession", "");
 
+        credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
         initViews();
 
         PermissionHelper permissionHelper = new PermissionHelper(this);
@@ -156,8 +166,6 @@ public class CallActivity extends AppCompatActivity {
                 .run();
 
     }
-
-
 
     private VideoCapturer createVideoCapturer() {
         videoCapturer = createCameraCapturer(new Camera1Enumerator(false));
@@ -256,119 +264,202 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
+        //creating localPeer
+        localPeer = peerConnectionFactory.createPeerConnection(iceServers, sdpConstraints,
+                new MagicPeerConnectionObserver() {
+                    @Override
+                    public void onIceCandidate(IceCandidate iceCandidate) {
+                        super.onIceCandidate(iceCandidate);
+                        onIceCandidateReceived(localPeer, iceCandidate);
+                    }
+                });
+
         //creating local mediastream
         MediaStream stream = peerConnectionFactory.createLocalMediaStream("102");
         stream.addTrack(localAudioTrack);
         stream.addTrack(localVideoTrack);
         localPeer.addStream(stream);
 
-        // Start pulling signaling messages
-        ncApi.pullSignalingMessages(ApiHelper.getCredentials(userEntity.getUsername(),
-                userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
+        ncApi.joinRoom(credentials, ApiHelper.getUrlForJoinRoom(userEntity.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(observable -> observable.delay(1500, TimeUnit.MILLISECONDS))
-                .repeatUntil(booleanSupplier)
-                .retry(3)
-                .subscribe(new Observer<SignalingOverall>() {
+                .subscribe(new Observer<CallOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        signalingDisposable = d;
+
                     }
 
                     @Override
-                    public void onNext(SignalingOverall signalingOverall) {
-                        if (signalingOverall.getOcs().getSignalings() != null) {
-                            for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
-                                try {
-                                    receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
+                    public void onNext(CallOverall callOverall) {
+                        ncApi.joinCall(credentials,
+                                ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<GenericOverall>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+
+                                    }
+
+                                    @Override
+                                    public void onNext(GenericOverall genericOverall) {
+                                        callSession = callOverall.getOcs().getData().getSessionId();
+
+                                        // start pinging the call
+                                        ncApi.pingCall(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                                                ApiHelper.getUrlForCallPing(userEntity.getBaseUrl(), roomToken))
+                                                .subscribeOn(Schedulers.newThread())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                                                .repeatUntil(booleanSupplier)
+                                                .retry(3)
+                                                .subscribe(new Observer<GenericOverall>() {
+                                                    @Override
+                                                    public void onSubscribe(Disposable d) {
+                                                        pingDisposable = d;
+                                                    }
+
+                                                    @Override
+                                                    public void onNext(GenericOverall genericOverall) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Throwable e) {
+                                                        dispose(pingDisposable);
+                                                    }
+
+                                                    @Override
+                                                    public void onComplete() {
+                                                        dispose(pingDisposable);
+                                                    }
+                                                });
+
+                                        // Start pulling signaling messages
+                                        ncApi.pullSignalingMessages(ApiHelper.getCredentials(userEntity.getUsername(),
+                                                userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
+                                                .subscribeOn(Schedulers.newThread())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .repeatWhen(observable -> observable.delay(1500, TimeUnit.MILLISECONDS))
+                                                .repeatUntil(booleanSupplier)
+                                                .retry(3)
+                                                .subscribe(new Observer<SignalingOverall>() {
+                                                    @Override
+                                                    public void onSubscribe(Disposable d) {
+                                                        signalingDisposable = d;
+                                                    }
+
+                                                    @Override
+                                                    public void onNext(SignalingOverall signalingOverall) {
+                                                        if (signalingOverall.getOcs().getSignalings() != null) {
+                                                            for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
+                                                                try {
+                                                                    receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
+                                                                } catch (IOException e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Throwable e) {
+                                                        dispose(signalingDisposable);
+                                                    }
+
+                                                    @Override
+                                                    public void onComplete() {
+                                                        dispose(signalingDisposable);
+                                                    }
+                                                });
+
+
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+
+                                    }
+                                });
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        dispose(signalingDisposable);
+
                     }
 
                     @Override
                     public void onComplete() {
-                        dispose(signalingDisposable);
+
                     }
                 });
+    }
 
-        // start pinging the call
-        ncApi.pingCall(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                ApiHelper.getUrlForCallPing(userEntity.getBaseUrl(), roomToken))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                .repeatUntil(booleanSupplier)
-                .retry(3)
-                .subscribe(new Observer<Void>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        pingDisposable = d;
-                    }
+    private void receivedSignalingMessage(Signaling signaling) throws IOException {
+        String messageType = signaling.getType();
 
-                    @Override
-                    public void onNext(Void aVoid) {
+        if (leavingCall) {
+            return;
+        }
 
-                    }
+        if ("usersInRoom".equals(messageType)) {
+            processUsersInRoom((List<Participant>) signaling.getMessageWrapper());
+        } else if ("message".equals(messageType)) {
+            NCMessageWrapper ncSignalingMessage = LoganSquare.parse(signaling.getMessageWrapper().toString(),
+                    NCMessageWrapper.class);
+            if (ncSignalingMessage.getSignalingMessage().getRoomType().equals("video")) {
+                switch (ncSignalingMessage.getSignalingMessage().getType()) {
+                    case "offer":
+                        break;
+                    case "answer":
+                        break;
+                    case "candidate":
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } else {
+            Log.d(TAG, "Something went very very wrong");
+        }
+    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        dispose(pingDisposable);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        dispose(pingDisposable);
-                    }
-                });
-
+    private void processUsersInRoom(List<Participant> users) {
     }
 
     private void call() {
 
-        //creating localPeer
-        localPeer = peerConnectionFactory.createPeerConnection(iceServers, sdpConstraints,
-                new MagicPeerConnectionObserver() {
-            @Override
-            public void onIceCandidate(IceCandidate iceCandidate) {
-                super.onIceCandidate(iceCandidate);
-                onIceCandidateReceived(localPeer, iceCandidate);
-            }
-        });
 
         //creating remotePeer
         remotePeer = peerConnectionFactory.createPeerConnection(iceServers, sdpConstraints,
                 new MagicPeerConnectionObserver() {
 
-            @Override
-            public void onIceCandidate(IceCandidate iceCandidate) {
-                super.onIceCandidate(iceCandidate);
-                onIceCandidateReceived(remotePeer, iceCandidate);
-            }
+                    @Override
+                    public void onIceCandidate(IceCandidate iceCandidate) {
+                        super.onIceCandidate(iceCandidate);
+                        onIceCandidateReceived(remotePeer, iceCandidate);
+                    }
 
-            public void onAddStream(MediaStream mediaStream) {
-                super.onAddStream(mediaStream);
-                gotRemoteStream(mediaStream);
-            }
+                    public void onAddStream(MediaStream mediaStream) {
+                        super.onAddStream(mediaStream);
+                        gotRemoteStream(mediaStream);
+                    }
 
-            @Override
-            public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
-                super.onIceGatheringChange(iceGatheringState);
+                    @Override
+                    public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
+                        super.onIceGatheringChange(iceGatheringState);
 
-            }
-        });
+                    }
+                });
 
 
         //creating Offer
-        localPeer.createOffer(new MagicSdpObserver(){
+        localPeer.createOffer(new MagicSdpObserver() {
             @Override
             public void onCreateSuccess(SessionDescription sessionDescription) {
                 //we have localOffer. Set it as local desc for localpeer and remote desc for remote peer.
@@ -390,10 +481,9 @@ public class CallActivity extends AppCompatActivity {
         }, sdpConstraints);
     }
 
-
     private void hangup() {
 
-        inCall = false;
+        leavingCall = true;
 
         dispose(null);
 
@@ -413,6 +503,32 @@ public class CallActivity extends AppCompatActivity {
 
         pipVideoView.release();
         fullScreenVideoView.release();
+
+        String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
+        ncApi.leaveCall(credentials, ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GenericOverall genericOverall) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     private void gotRemoteStream(MediaStream stream) {
@@ -444,14 +560,8 @@ public class CallActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        hangup();
         super.onDestroy();
-    }
-
-    private static int getSystemUiVisibility() {
-        int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        flags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        return flags;
+        hangup();
     }
 
     private void dispose(@Nullable Disposable disposable) {

@@ -340,7 +340,7 @@ public class SettingsController extends BaseController {
                     messageView.setVisibility(View.VISIBLE);
                     break;
                 case WRONG_ACCOUNT:
-                    messageText.setTextColor(getResources().getColor(R.color.darkRed));
+                    messageText.setTextColor(getResources().getColor(R.color.nc_darkRed));
                     messageText.setText(getResources().getString(R.string.nc_settings_wrong_account));
                     messageView.setVisibility(View.VISIBLE);
                     break;
@@ -424,6 +424,11 @@ public class SettingsController extends BaseController {
         }
     }
 
+    @Override
+    protected String getTitle() {
+        return getResources().getString(R.string.nc_app_name);
+    }
+
     private class ProxyCredentialsChangeListener implements OnPreferenceValueChangedListener<Boolean> {
 
         @Override
@@ -460,11 +465,6 @@ public class SettingsController extends BaseController {
                 showProxySettings();
             }
         }
-    }
-
-    @Override
-    protected String getTitle() {
-        return getResources().getString(R.string.nc_app_name);
     }
 
 }

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0082c9</color>
+    <color name="colorPrimary">#0082C9</color>
     <color name="colorPrimaryDark">#006AA3</color>
     <color name="colorAccent">#007CC2</color>
 
-    <color name="darkRed">#D32F2F</color>
+    <color name="nc_darkRed">#D32F2F</color>
+    <color name="nc_white_color">@color/per70white</color>
+    <color name="nc_white_color_complete">#FFFFFF</color>
 </resources>
 

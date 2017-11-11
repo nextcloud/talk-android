@@ -98,6 +98,7 @@ public class NextcloudTalkApplication extends MultiDexApplication {
 
         new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
         new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
+
     }
 
 

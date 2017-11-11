@@ -65,7 +65,6 @@ public class UserUtils {
     }
 
 
-
     public UserEntity getAnyUserAndSetAsActive() {
         Result findUserQueryResult = dataStore.select(User.class)
                 .where(UserEntity.SCHEDULED_FOR_DELETION.eq(false))
@@ -125,6 +124,7 @@ public class UserUtils {
         return false;
 
     }
+
     public boolean getIfUserWithUsernameAndServer(String username, String server) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username)
                 .and(UserEntity.BASE_URL.eq(server.toLowerCase())))

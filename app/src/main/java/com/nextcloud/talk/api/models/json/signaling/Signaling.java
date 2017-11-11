@@ -34,7 +34,7 @@ import lombok.Data;
 public class Signaling {
     @JsonField(name = "type")
     String type;
-    //can be NCSignalingMessage or List<Participant>
+    //can be NCMessageWrapper or List<Participant>
     @JsonField(name = "data")
-    Object signalingMessage;
+    Object messageWrapper;
 }

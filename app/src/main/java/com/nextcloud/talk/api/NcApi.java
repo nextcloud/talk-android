@@ -133,23 +133,30 @@ public interface NcApi {
     @GET
     Observable<ParticipantsOverall> getPeersForCall(@Header("Authorization") String authorization, @Url String url);
 
+    @POST
+    Observable<CallOverall> joinRoom(@Header("Authorization") String authorization, @Url String url);
+
+    @DELETE
+    Observable<GenericOverall> leaveRoom(@Header("Authorization") String authorization, @Url String url);
+
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
     */
+
     @POST
-    Observable<CallOverall> joinCall(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> joinCall(@Header("Authorization") String authorization, @Url String url);
+
+    /*
+    Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
+    */
+    @DELETE
+    Observable<GenericOverall> leaveCall(@Header("Authorization") String authorization, @Url String url);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken/ping
     */
     @POST
-    Observable<Void> pingCall(@Header("Authorization") String authorization, @Url String url);
-
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
-    */
-    @DELETE
-    Observable<Void> leaveCall(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> pingCall(@Header("Authorization") String authorization, @Url String url);
 
     /*
         QueryMap items are as follows:
@@ -220,7 +227,7 @@ public interface NcApi {
     */
     @DELETE
     Observable<Void> unregisterDeviceForNotificationsWithProxy(@Header("Authorization") String authorization,
-                                                             @Url String url,
-                                                             @QueryMap Map<String, String> fields);
+                                                               @Url String url,
+                                                               @QueryMap Map<String, String> fields);
 
 }

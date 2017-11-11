@@ -61,7 +61,7 @@ public class AccountRemovalJob extends Job {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         PushConfigurationState pushConfigurationState;
-        for(Object userEntityObject : userUtils.getUsersScheduledForDeletion()) {
+        for (Object userEntityObject : userUtils.getUsersScheduledForDeletion()) {
             UserEntity userEntity = (UserEntity) userEntityObject;
             try {
                 if (!TextUtils.isEmpty(userEntity.getPushConfigurationState())) {
@@ -78,8 +78,8 @@ public class AccountRemovalJob extends Job {
 
                                 @Override
                                 public void onNext(GenericOverall genericOverall) {
-                                    if (genericOverall.getOcs().getMeta().getStatusCode().equals("200")
-                                            || genericOverall.getOcs().getMeta().getStatusCode().equals("202")) {
+                                    if (genericOverall.getOcs().getMeta().getStatusCode() == 200
+                                            || genericOverall.getOcs().getMeta().getStatusCode() == 202) {
                                         HashMap<String, String> queryMap = new HashMap<>();
                                         queryMap.put("deviceIdentifier", finalPushConfigurationState.deviceIdentifier);
                                         queryMap.put("userPublicKey", finalPushConfigurationState.getUserPublicKey());
@@ -158,7 +158,7 @@ public class AccountRemovalJob extends Job {
                         }
                     });
                 }
-            } catch(IOException e) {
+            } catch (IOException e) {
                 Log.d(TAG, "Something went wrong while removing job at parsing PushConfigurationState");
                 userUtils.deleteUser(userEntity.getUsername(),
                         userEntity.getBaseUrl());

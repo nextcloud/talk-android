@@ -57,6 +57,10 @@ public class ApiHelper {
         return retrofitBucket;
     }
 
+    public static String getUrlForJoinRoom(String baseUrl, String token) {
+        return getRoom(baseUrl, token) + "/participants/active";
+    }
+
     public static String getUrlForGetRooms(String baseUrl) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room";
     }
@@ -115,6 +119,7 @@ public class ApiHelper {
 
     public static String getUrlForCall(String baseUrl, String token) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/call/" + token;
+
     }
 
     public static String getUrlForCallPing(String baseUrl, String token) {

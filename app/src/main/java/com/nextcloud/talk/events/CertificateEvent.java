@@ -30,7 +30,8 @@ import java.security.cert.X509Certificate;
 public class CertificateEvent {
     private final X509Certificate x509Certificate;
     private final MagicTrustManager magicTrustManager;
-    @Nullable private final SslErrorHandler sslErrorHandler;
+    @Nullable
+    private final SslErrorHandler sslErrorHandler;
 
     public CertificateEvent(X509Certificate x509Certificate, MagicTrustManager magicTrustManager,
                             @Nullable SslErrorHandler sslErrorHandler) {

@@ -30,6 +30,7 @@ import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
 public abstract class BaseController extends RefWatchingController {
 
     private static final String TAG = "BaseController";
+
     protected BaseController() {
     }
 

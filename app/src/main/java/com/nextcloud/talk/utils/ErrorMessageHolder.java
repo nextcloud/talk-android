@@ -23,13 +23,9 @@ package com.nextcloud.talk.utils;
 import android.support.annotation.Nullable;
 
 public class ErrorMessageHolder {
-    public enum ErrorMessageType {
-        WRONG_ACCOUNT, ACCOUNT_UPDATED_NOT_ADDED, ACCOUNT_SCHEDULED_FOR_DELETION
-    }
-
+    private static final ErrorMessageHolder holder = new ErrorMessageHolder();
     private ErrorMessageType errorMessageType;
 
-    private static final ErrorMessageHolder holder = new ErrorMessageHolder();
     public static ErrorMessageHolder getInstance() {
         return holder;
     }
@@ -42,6 +38,9 @@ public class ErrorMessageHolder {
         this.errorMessageType = errorMessageType;
     }
 
+    public enum ErrorMessageType {
+        WRONG_ACCOUNT, ACCOUNT_UPDATED_NOT_ADDED, ACCOUNT_SCHEDULED_FOR_DELETION
+    }
 
 
 }

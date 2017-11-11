@@ -236,7 +236,7 @@ public class WebViewLoginController extends BaseController {
                 if (userUtils.checkIfUserIsScheduledForDeletion(loginData.getUsername(), baseUrl)) {
                     ErrorMessageHolder.getInstance().setMessageType(
                             ErrorMessageHolder.ErrorMessageType.ACCOUNT_SCHEDULED_FOR_DELETION);
-                            getRouter().popToRoot();
+                    getRouter().popToRoot();
                 }
 
                 // We use the URL user entered because one provided by the server is NOT reliable
