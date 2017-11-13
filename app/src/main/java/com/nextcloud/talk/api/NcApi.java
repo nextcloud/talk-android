@@ -29,12 +29,14 @@ import com.nextcloud.talk.api.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.api.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.api.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.api.models.json.sharees.ShareesOverall;
+import com.nextcloud.talk.api.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.api.models.json.userprofile.UserProfileOverall;
 
 import java.util.Map;
 
 import io.reactivex.Observable;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -165,7 +167,8 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
     */
     @POST
-    Observable<Integer> sendSignalingMessages(@Header("Authorization") String authorization, @Url String url);
+    Observable<Integer> sendSignalingMessages(@Header("Authorization") String authorization, @Url String url,
+                                              @Body NCMessageWrapper ncMessageWrapper);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling

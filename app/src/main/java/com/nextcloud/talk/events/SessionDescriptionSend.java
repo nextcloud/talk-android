@@ -18,25 +18,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.api.models.json.signaling;
+package com.nextcloud.talk.events;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+import android.support.annotation.Nullable;
+
+import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
+
+import org.webrtc.SessionDescription;
 
 import lombok.Data;
 
 @Data
-@JsonObject
-public class NCIceCandidate {
-    @JsonField(name = "sdpMLineIndex")
-    int sdpMLineIndex;
+public class SessionDescriptionSend {
+    @Nullable private final SessionDescription sessionDescription;
+    private final String peerId;
+    private final String type;
+    @Nullable private final NCIceCandidate ncIceCandidate;
 
-    @JsonField(name = "sdpMid")
-    String sdpMid;
-
-    @JsonField(name = "candidate")
-    String candidate;
-
-    @JsonField(name = "type")
-    String type;
+    public SessionDescriptionSend(@Nullable SessionDescription sessionDescription, String peerId, String type,
+                                  @Nullable NCIceCandidate ncIceCandidate) {
+        this.sessionDescription = sessionDescription;
+        this.peerId = peerId;
+        this.type = type;
+        this.ncIceCandidate = ncIceCandidate;
+    }
 }

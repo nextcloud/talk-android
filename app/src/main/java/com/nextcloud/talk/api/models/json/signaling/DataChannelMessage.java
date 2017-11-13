@@ -27,16 +27,10 @@ import lombok.Data;
 
 @Data
 @JsonObject
-public class NCIceCandidate {
-    @JsonField(name = "sdpMLineIndex")
-    int sdpMLineIndex;
-
-    @JsonField(name = "sdpMid")
-    String sdpMid;
-
-    @JsonField(name = "candidate")
-    String candidate;
-
+public class DataChannelMessage {
     @JsonField(name = "type")
     String type;
+
+    @JsonField(name = "payload")
+    String payload;
 }

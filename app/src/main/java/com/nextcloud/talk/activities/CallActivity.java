@@ -41,15 +41,22 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.call.CallOverall;
 import com.nextcloud.talk.api.models.json.generic.GenericOverall;
-import com.nextcloud.talk.api.models.json.participants.Participant;
+import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
+import com.nextcloud.talk.api.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.api.models.json.signaling.NCMessageWrapper;
+import com.nextcloud.talk.api.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.api.models.json.signaling.Signaling;
 import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.events.SessionDescriptionSend;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionObserver;
 import com.nextcloud.talk.webrtc.MagicSdpObserver;
+import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.Camera1Enumerator;
@@ -71,6 +78,7 @@ import org.webrtc.VideoTrack;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -98,6 +106,10 @@ public class CallActivity extends AppCompatActivity {
 
     @Inject
     NcApi ncApi;
+
+    @Inject
+    EventBus eventBus;
+
     PeerConnectionFactory peerConnectionFactory;
     MediaConstraints audioConstraints;
     MediaConstraints videoConstraints;
@@ -109,7 +121,7 @@ public class CallActivity extends AppCompatActivity {
     VideoCapturer videoCapturer;
     VideoRenderer localRenderer;
     VideoRenderer remoteRenderer;
-    PeerConnection localPeer, remotePeer;
+    PeerConnection localPeer;
     boolean leavingCall = false;
     BooleanSupplier booleanSupplier = () -> leavingCall;
     Disposable signalingDisposable;
@@ -120,6 +132,7 @@ public class CallActivity extends AppCompatActivity {
     private String callSession;
 
     private String credentials;
+    private List<PeerConnectionWrapper> peerConnectionWrapperList = new ArrayList<>();
 
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -130,6 +143,7 @@ public class CallActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -139,7 +153,6 @@ public class CallActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(getSystemUiVisibility());
 
         setContentView(R.layout.activity_call);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         ButterKnife.bind(this);
 
         roomToken = getIntent().getExtras().getString("roomToken", "");
@@ -155,7 +168,6 @@ public class CallActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.INTERNET)
                 .onSuccess(() -> {
                     start();
-                    call();
                 })
                 .onDenied(new Runnable() {
                     @Override
@@ -237,11 +249,11 @@ public class CallActivity extends AppCompatActivity {
 
         //Create a VideoSource instance
         videoSource = peerConnectionFactory.createVideoSource(videoCapturerAndroid);
-        localVideoTrack = peerConnectionFactory.createVideoTrack("100", videoSource);
+        localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
 
         //create an AudioSource instance
         audioSource = peerConnectionFactory.createAudioSource(audioConstraints);
-        localAudioTrack = peerConnectionFactory.createAudioTrack("101", audioSource);
+        localAudioTrack = peerConnectionFactory.createAudioTrack("NCa0", audioSource);
 
         Resources r = getResources();
         int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, r.getDisplayMetrics());
@@ -264,18 +276,13 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
-        //creating localPeer
-        localPeer = peerConnectionFactory.createPeerConnection(iceServers, sdpConstraints,
-                new MagicPeerConnectionObserver() {
-                    @Override
-                    public void onIceCandidate(IceCandidate iceCandidate) {
-                        super.onIceCandidate(iceCandidate);
-                        onIceCandidateReceived(localPeer, iceCandidate);
-                    }
-                });
+        PeerConnection localPeer = alwaysGetPeerConnectionWrapperForSessionId(callSession, true).
+                getPeerConnection();
+
+
 
         //creating local mediastream
-        MediaStream stream = peerConnectionFactory.createLocalMediaStream("102");
+        MediaStream stream = peerConnectionFactory.createLocalMediaStream("NCMS");
         stream.addTrack(localAudioTrack);
         stream.addTrack(localVideoTrack);
         localPeer.addStream(stream);
@@ -408,17 +415,29 @@ public class CallActivity extends AppCompatActivity {
         }
 
         if ("usersInRoom".equals(messageType)) {
-            processUsersInRoom((List<Participant>) signaling.getMessageWrapper());
+            processUsersInRoom((List<HashMap<String, String>>) signaling.getMessageWrapper());
         } else if ("message".equals(messageType)) {
-            NCMessageWrapper ncSignalingMessage = LoganSquare.parse(signaling.getMessageWrapper().toString(),
-                    NCMessageWrapper.class);
-            if (ncSignalingMessage.getSignalingMessage().getRoomType().equals("video")) {
-                switch (ncSignalingMessage.getSignalingMessage().getType()) {
+            NCSignalingMessage ncSignalingMessage = LoganSquare.parse(signaling.getMessageWrapper().toString(),
+                    NCSignalingMessage.class);
+            if (ncSignalingMessage.getRoomType().equals("video")) {
+                PeerConnectionWrapper peerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId
+                        (ncSignalingMessage.getFrom(), ncSignalingMessage.getFrom().equals(callSession));
+
+                switch (ncSignalingMessage.getType()) {
                     case "offer":
-                        break;
                     case "answer":
+                        peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
+                        peerConnectionWrapper.getPeerConnection().setLocalDescription(new MagicSdpObserver(),
+                                new SessionDescription(SessionDescription.Type.valueOf(ncSignalingMessage.getType()
+                                        .toUpperCase()),
+                                        ncSignalingMessage
+                                        .getPayload().getSdp()));
                         break;
                     case "candidate":
+                        NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
+                        IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
+                            ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
+                        peerConnectionWrapper.getPeerConnection().addIceCandidate(iceCandidate);
                         break;
                     default:
                         break;
@@ -429,20 +448,79 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private void processUsersInRoom(List<Participant> users) {
+    private void processUsersInRoom(List<HashMap<String, String>> users) {
+        List<String> newSessions = new ArrayList<>();
+        List<String> oldSesssions = new ArrayList<>();
+
+        for (HashMap<String, String> participant : users) {
+            if (participant.containsKey("sessionId") && !participant.get("sessionId").equals
+                    (callSession)) {
+                newSessions.add(participant.get("sessionId"));
+            }
+        }
+
+        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+            if (!peerConnectionWrapper.isLocal()) {
+                oldSesssions.add(peerConnectionWrapper.getSessionId());
+            }
+        }
+
+        // Calculate sessions that left the call
+        List<String> leftSessions = oldSesssions;
+        leftSessions.removeAll(newSessions);
+
+        // Calculate sessions that join the call
+        newSessions.removeAll(oldSesssions);
+
+        if (leavingCall) {
+            return;
+        }
+
+        PeerConnectionWrapper peerConnectionWrapper;
+
+        for (String sessionId : newSessions) {
+            if (getPeerConnectionWrapperForSessionId(sessionId) == null) {
+                if (sessionId.compareTo(callSession) > 0) {
+                    PeerConnectionWrapper connectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(sessionId,
+                            false);
+                    connectionWrapper.sendOffer();
+                } else {
+                    Log.d(TAG, "Waiting for offer");
+                }
+
+            }
+        }
+
+        for (String sessionId : leftSessions) {
+            if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
+                peerConnectionWrapper.getPeerConnection().close();
+                peerConnectionWrapperList.remove(peerConnectionWrapper);
+            }
+        }
     }
 
-    private void call() {
 
-
-        //creating remotePeer
-        remotePeer = peerConnectionFactory.createPeerConnection(iceServers, sdpConstraints,
-                new MagicPeerConnectionObserver() {
+    private PeerConnectionWrapper alwaysGetPeerConnectionWrapperForSessionId(String sessionId, boolean isLocalPeer) {
+        PeerConnectionWrapper peerConnectionWrapper;
+        if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
+            return peerConnectionWrapper;
+        } else {
+            MagicPeerConnectionObserver magicPeerConnectionObserver;
+            if (isLocalPeer) {
+                magicPeerConnectionObserver = new MagicPeerConnectionObserver() {
+                    @Override
+                    public void onIceCandidate(IceCandidate iceCandidate) {
+                        super.onIceCandidate(iceCandidate);
+                        onIceCandidateReceived(true, iceCandidate);
+                    }
+                };
+            } else {
+                magicPeerConnectionObserver = new MagicPeerConnectionObserver() {
 
                     @Override
                     public void onIceCandidate(IceCandidate iceCandidate) {
                         super.onIceCandidate(iceCandidate);
-                        onIceCandidateReceived(remotePeer, iceCandidate);
+                        onIceCandidateReceived(false, iceCandidate);
                     }
 
                     public void onAddStream(MediaStream mediaStream) {
@@ -455,30 +533,23 @@ public class CallActivity extends AppCompatActivity {
                         super.onIceGatheringChange(iceGatheringState);
 
                     }
-                });
-
-
-        //creating Offer
-        localPeer.createOffer(new MagicSdpObserver() {
-            @Override
-            public void onCreateSuccess(SessionDescription sessionDescription) {
-                //we have localOffer. Set it as local desc for localpeer and remote desc for remote peer.
-                //try to create answer from the remote peer.
-                super.onCreateSuccess(sessionDescription);
-                localPeer.setLocalDescription(new MagicSdpObserver(), sessionDescription);
-                remotePeer.setRemoteDescription(new MagicSdpObserver(), sessionDescription);
-                remotePeer.createAnswer(new MagicSdpObserver() {
-                    @Override
-                    public void onCreateSuccess(SessionDescription sessionDescription) {
-                        //remote answer generated. Now set it as local desc for remote peer and remote desc for local peer.
-                        super.onCreateSuccess(sessionDescription);
-                        remotePeer.setLocalDescription(new MagicSdpObserver(), sessionDescription);
-                        localPeer.setRemoteDescription(new MagicSdpObserver(), sessionDescription);
-
-                    }
-                }, sdpConstraints);
+                };
             }
-        }, sdpConstraints);
+
+            peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
+                    iceServers, sdpConstraints, magicPeerConnectionObserver, sessionId, isLocalPeer);
+            peerConnectionWrapperList.add(peerConnectionWrapper);
+            return peerConnectionWrapper;
+        }
+    }
+
+    private PeerConnectionWrapper getPeerConnectionWrapperForSessionId(String sessionId) {
+        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+            if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
+                return peerConnectionWrapper;
+            }
+        }
+        return null;
     }
 
     private void hangup() {
@@ -487,14 +558,10 @@ public class CallActivity extends AppCompatActivity {
 
         dispose(null);
 
-        if (localPeer != null) {
-            localPeer.close();
-            localPeer = null;
-        }
-
-        if (remotePeer != null) {
-            remotePeer.close();
-            remotePeer = null;
+        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+            if (peerConnectionWrapper.getPeerConnection() != null) {
+                peerConnectionWrapper.getPeerConnection().close();
+            }
         }
 
         if (videoCapturer != null) {
@@ -549,12 +616,17 @@ public class CallActivity extends AppCompatActivity {
 
     }
 
-    public void onIceCandidateReceived(PeerConnection peer, IceCandidate iceCandidate) {
+    public void onIceCandidateReceived(boolean isLocalPeer, IceCandidate iceCandidate) {
         //we have received ice candidate. We can set it to the other peer.
-        if (peer == localPeer) {
-            remotePeer.addIceCandidate(iceCandidate);
+        if (!isLocalPeer) {
+            for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+                if (!peerConnectionWrapper.isLocal()) {
+                    //peerConnectionWrapper.addCandidate(iceCandidate);
+                }
+            }
         } else {
-            localPeer.addIceCandidate(iceCandidate);
+            alwaysGetPeerConnectionWrapperForSessionId(callSession, true).getPeerConnection().addIceCandidate
+                    (iceCandidate);
         }
     }
 
@@ -580,5 +652,68 @@ public class CallActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        eventBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        eventBus.unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(SessionDescriptionSend sessionDescriptionSend) {
+        String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
+        NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
+        ncMessageWrapper.setEv("message");
+        ncMessageWrapper.setSessionId(callSession);
+        // Create signaling message and payload
+        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+        //ncSignalingMessage.setFrom(callSession);
+        ncSignalingMessage.setTo(sessionDescriptionSend.getPeerId());
+        ncSignalingMessage.setRoomType("video");
+        NCMessagePayload ncMessagePayload = new NCMessagePayload();
+        ncMessagePayload.setType(sessionDescriptionSend.getType());
+        if (!"candidate".equals(sessionDescriptionSend.getType())) {
+            ncMessagePayload.setSdp(sessionDescriptionSend.getSessionDescription().description);
+            ncMessagePayload.setNick(userEntity.getDisplayName());
+        } else {
+            ncMessagePayload.setIceCandidate(sessionDescriptionSend.getNcIceCandidate());
+        }
+
+        // Set all we need
+        ncSignalingMessage.setPayload(ncMessagePayload);
+        ncMessageWrapper.setSignalingMessage(ncSignalingMessage);
+
+        ncApi.sendSignalingMessages(credentials, ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()),
+                ncMessageWrapper)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
 
 }

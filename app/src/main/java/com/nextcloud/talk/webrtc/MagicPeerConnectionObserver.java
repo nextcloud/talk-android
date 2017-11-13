@@ -30,6 +30,7 @@ import org.webrtc.RtpReceiver;
 public class MagicPeerConnectionObserver implements PeerConnection.Observer {
     private static final String TAG = "MagicPeerConnectionObserver";
 
+
     @Override
     public void onSignalingChange(PeerConnection.SignalingState signalingState) {
 
