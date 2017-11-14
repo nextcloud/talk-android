@@ -43,6 +43,9 @@ import java.util.List;
 public class PeerConnectionWrapper {
     private static String TAG = "PeerConnectionWrapper";
     private static PeerConnection peerConnection;
+    List<IceCandidate> iceCandidates = new ArrayList<>();
+    List<PeerConnection.IceServer> iceServers;
+    List<IceCandidate> candidatesToSend = new ArrayList<>();
     private String sessionId;
     private String callToken;
     private String nick;
@@ -51,17 +54,31 @@ public class PeerConnectionWrapper {
     private DataChannel dataChannel;
     private MagicSdpObserver magicSdpObserver;
     private MagicPeerConnectionObserver magicPeerConnectionObserver;
-    List<IceCandidate> iceCandidates = new ArrayList<>();
+    private boolean isInitiator;
+    List<SessionDescription> sessionDescriptionsQueue = new ArrayList<>();
 
+    List<NCIceCandidate> localCandidates = new ArrayList<>();
+    List<SessionDescriptionSendEvent> sessionDescriptionSendEvents = new ArrayList<>();
     public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                  List<PeerConnection.IceServer> iceServerList,
                                  MediaConstraints mediaConstraints,
                                  String sessionId, boolean isLocalPeer, String callToken) {
 
+        this.iceServers = iceServerList;
+
         magicPeerConnectionObserver = new MagicPeerConnectionObserver() {
             @Override
+            public void onIceConnectionReceivingChange(boolean b) {
+
+            }
+
+            @Override
+            public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
+                Log.d("MARIO_ICE", iceConnectionState.name());
+            }
+
+            @Override
             public void onAddStream(MediaStream mediaStream) {
-                Log.d("MARIO", "MEDIA STREAM");
                 EventBus.getDefault().post(new MediaStreamEvent(mediaStream));
             }
 
@@ -70,15 +87,19 @@ public class PeerConnectionWrapper {
                 Log.d("MARIO", signalingState.name());
             }
 
+
+            @Override
+            public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
+            }
+
             @Override
             public void onIceCandidate(IceCandidate iceCandidate) {
-                NCIceCandidate ncIceCandidate = new NCIceCandidate();
-                ncIceCandidate.setCandidate(iceCandidate.sdp);
-                ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
-                ncIceCandidate.setSdpMid(iceCandidate.sdpMid);
-                EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId, "candidate",
-                        ncIceCandidate));
-                Log.d("MARIO", "SENDING REMOTE CANDIDATE");
+                Log.d("MARIO_GENERT", "BLA");
+                    NCIceCandidate ncIceCandidate = new NCIceCandidate();
+                    ncIceCandidate.setSdpMid(iceCandidate.sdpMid);
+                    ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
+                    ncIceCandidate.setCandidate(iceCandidate.sdp);
+                    localCandidates.add(ncIceCandidate);
             }
 
         };
@@ -89,7 +110,7 @@ public class PeerConnectionWrapper {
         this.local = isLocalPeer;
         this.mediaConstraints = mediaConstraints;
         this.callToken = callToken;
-        boolean isInitiator = this.sessionId.compareTo(callToken) < 0;
+        isInitiator = this.sessionId.compareTo(callToken) < 0;
 
         magicSdpObserver = new MagicSdpObserver() {
             @Override
@@ -120,24 +141,38 @@ public class PeerConnectionWrapper {
                     } else {
                         // We've just set remote description, so drain remote
                         // and send local ICE candidates.
-                        Log.d("MARIO", "DRAINING CANDIDATES");
                         drainIceCandidates();
                     }
                 } else {
-                    // For answering peer connection we set remote SDP and then
+                    // For anwering peer connection we set remote SDP and then
                     // create answer and set local SDP.
                     if (peerConnection.getLocalDescription() != null) {
                         // We've just set our local SDP so time to send it, drain
                         // remote and send local ICE candidates.
                         Log.d("MARIO", "SENDING ANSWER FROM OBSERVER");
-                        EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
+                        sendLocalCandidates();
+                        EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription
+                                (),
+                                sessionId,
                                 "answer", null));
-                        drainIceCandidates();
+
                     } else {
+                        peerConnection.createAnswer(new MagicSdpObserver() {
+                            @Override
+                            public void onCreateSuccess(SessionDescription sessionDescription) {
+                                super.onCreateSuccess(sessionDescription);
+                                peerConnection.setLocalDescription(magicSdpObserver, sessionDescription);
+                                sendLocalCandidates();
+                            }
+
+                        }, mediaConstraints);
+
                         // We've just set remote SDP - do nothing for now -
                         // answer will be created soon.
-                        Log.d("MARIO", "CREATING ANSWER");
-                        peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
+                        /*Log.d("MARIO", "CREATING ANSWER");
+                        drainIceCandidates();
+                        peerConnection.createAnswer(magicSdpObserver, mediaConstraints);*/
+
                     }
                 }
             }
@@ -146,12 +181,25 @@ public class PeerConnectionWrapper {
 
     }
 
-    private void drainIceCandidates() {
+
+
+    private void sendLocalCandidates() {
+        Log.d("MARIO", "SENDING LOCAL");
+        for (NCIceCandidate ncIceCandidate : localCandidates) {
+            EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
+                    "candidate", ncIceCandidate));
+        }
+    }
+
+    public void drainIceCandidates() {
+        Log.d("MARIO", "DRAINING");
+
         for (IceCandidate iceCandidate : iceCandidates) {
             peerConnection.addIceCandidate(iceCandidate);
         }
 
         iceCandidates = new ArrayList<>();
+
     }
 
     public MagicSdpObserver getMagicSdpObserver() {
@@ -159,20 +207,13 @@ public class PeerConnectionWrapper {
     }
 
     public void addCandidate(IceCandidate iceCandidate) {
+        Log.d("MARIO", "RECEIVING CANDIDATE");
         if (peerConnection.getRemoteDescription() != null) {
-            // queue
+            Log.d("MARIO", "DIRECT ADDING");
             peerConnection.addIceCandidate(iceCandidate);
         } else {
+            Log.d("MARIO", "DIRECT QUEUE");
             iceCandidates.add(iceCandidate);
-        }
-    }
-
-    public void sendMessage(boolean isAnswer) {
-
-        if (!isAnswer) {
-            peerConnection.createOffer(magicSdpObserver, mediaConstraints);
-        } else {
-            peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
         }
     }
 
@@ -181,54 +222,6 @@ public class PeerConnectionWrapper {
         dataChannel.send(new DataChannel.Buffer(buffer, false));
     }
 
-
-    public void sendOffer() {
-        DataChannel.Init dcInit = new DataChannel.Init();
-        dcInit.negotiated = false;
-        dataChannel = peerConnection.createDataChannel("status", dcInit);
-        dataChannel.registerObserver(new DataChannel.Observer() {
-            @Override
-            public void onBufferedAmountChange(long l) {
-
-            }
-
-            @Override
-            public void onStateChange() {
-                if (dataChannel.state() == DataChannel.State.OPEN && dataChannel.label().equals("status")) {
-                    DataChannelMessage dataChannelMessage = new DataChannelMessage();
-                    dataChannelMessage.setType("videoOn");
-                    sendChannelData(dataChannelMessage);
-                    dataChannelMessage.setType("audioOn");
-                    sendChannelData(dataChannelMessage);
-                }
-
-            }
-
-            @Override
-            public void onMessage(DataChannel.Buffer buffer) {
-                ByteBuffer data = buffer.data;
-                byte[] bytes = new byte[data.remaining()];
-                data.get(bytes);
-                final String command = new String(bytes);
-            }
-        });
-
-        MagicSdpObserver magicSdpObserver = new MagicSdpObserver() {
-            public void onCreateSuccess(SessionDescription sessionDescription) {
-                super.onCreateSuccess(sessionDescription);
-                peerConnection.setLocalDescription(new MagicSdpObserver(), sessionDescription);
-            }
-
-            @Override
-            public void onSetSuccess() {
-                EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
-                        "offer", null));
-            }
-
-        };
-
-        peerConnection.createOffer(magicSdpObserver, mediaConstraints);
-    }
 
     public boolean isLocal() {
         return local;

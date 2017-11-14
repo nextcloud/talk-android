@@ -60,6 +60,8 @@ import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -113,7 +115,7 @@ public class CallsListController extends BaseController implements SearchView.On
                         Intent callIntent = new Intent(getActivity(), CallActivity.class);
                         BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
                         bundleBuilder.putString("roomToken", roomItem.getModel().getToken());
-                        bundleBuilder.putParcelable("userEntity", userEntity);
+                        bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
                         callIntent.putExtras(bundleBuilder.build());
                         startActivity(callIntent);
                     }
