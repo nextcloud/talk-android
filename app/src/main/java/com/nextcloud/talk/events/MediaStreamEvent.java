@@ -20,26 +20,15 @@
 
 package com.nextcloud.talk.events;
 
-import android.support.annotation.Nullable;
-
-import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
-
-import org.webrtc.SessionDescription;
+import org.webrtc.MediaStream;
 
 import lombok.Data;
 
 @Data
-public class SessionDescriptionSend {
-    @Nullable private final SessionDescription sessionDescription;
-    private final String peerId;
-    private final String type;
-    @Nullable private final NCIceCandidate ncIceCandidate;
+public class MediaStreamEvent {
+    private final MediaStream mediaStream;
 
-    public SessionDescriptionSend(@Nullable SessionDescription sessionDescription, String peerId, String type,
-                                  @Nullable NCIceCandidate ncIceCandidate) {
-        this.sessionDescription = sessionDescription;
-        this.peerId = peerId;
-        this.type = type;
-        this.ncIceCandidate = ncIceCandidate;
+    public MediaStreamEvent(MediaStream mediaStream) {
+        this.mediaStream = mediaStream;
     }
 }

@@ -20,9 +20,10 @@
 
 package com.nextcloud.talk.webrtc;
 
+import android.util.Log;
+
 import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
-import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
-import com.nextcloud.talk.events.SessionDescriptionSend;
+import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.webrtc.DataChannel;
@@ -33,61 +34,102 @@ import org.webrtc.PeerConnectionFactory;
 import org.webrtc.SessionDescription;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PeerConnectionWrapper {
     private static PeerConnection peerConnection;
     private String sessionId;
+    private String callToken;
     private String nick;
     private boolean local;
     private MediaConstraints mediaConstraints;
     private DataChannel dataChannel;
+    private MagicSdpObserver magicSdpObserver;
+
+    List<IceCandidate> iceCandidates = new ArrayList<>();
 
     public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                  List<PeerConnection.IceServer> iceServerList,
                                  MediaConstraints mediaConstraints,
                                  MagicPeerConnectionObserver magicPeerConnectionObserver,
-                                 String sessionId, boolean isLocalPeer) {
+                                 String sessionId, boolean isLocalPeer, String callToken) {
         peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
                 magicPeerConnectionObserver);
         this.sessionId = sessionId;
         this.local = isLocalPeer;
         this.mediaConstraints = mediaConstraints;
+        this.callToken = callToken;
+        boolean isInitiator = this.sessionId.compareTo(callToken) < 0;
+
+        magicSdpObserver = new MagicSdpObserver() {
+            public void onCreateSuccess(SessionDescription sessionDescription) {
+                super.onCreateSuccess(sessionDescription);
+                peerConnection.setLocalDescription(magicSdpObserver, sessionDescription);
+            }
+
+            @Override
+            public void onSetSuccess() {
+                if (isInitiator) {
+                    // For offering peer connection we first create offer and set
+                    // local SDP, then after receiving answer set remote SDP.
+                    if (peerConnection.getRemoteDescription() == null) {
+                        // We've just set our local SDP so time to send it.
+                        EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
+                                "offer", null));
+                    } else {
+                        // We've just set remote description, so drain remote
+                        // and send local ICE candidates.
+                        drainIceCandidates();
+                    }
+                } else {
+                    // For answering peer connection we set remote SDP and then
+                    // create answer and set local SDP.
+                    if (peerConnection.getLocalDescription() != null) {
+                        // We've just set our local SDP so time to send it, drain
+                        // remote and send local ICE candidates.
+                        EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
+                                "answer", null));
+                        drainIceCandidates();
+                    } else {
+                        // We've just set remote SDP - do nothing for now -
+                        // answer will be created soon.
+                    }
+                }
+            }
+
+        };
+
+    }
+
+    private void drainIceCandidates() {
+        for (IceCandidate iceCandidate : iceCandidates) {
+            peerConnection.addIceCandidate(iceCandidate);
+        }
+
+        iceCandidates = new ArrayList<>();
     }
 
     public void addCandidate(IceCandidate iceCandidate) {
         if (peerConnection.getRemoteDescription() != null) {
             // queue
-        } else {
             peerConnection.addIceCandidate(iceCandidate);
+        } else {
+            iceCandidates.add(iceCandidate);
         }
-
-        peerConnection.addIceCandidate(iceCandidate);
-        NCIceCandidate ncIceCandidate = new NCIceCandidate();
-        ncIceCandidate.setType("candidate");
-        ncIceCandidate.setSdpMid(iceCandidate.sdpMid);
-        ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
-        ncIceCandidate.setCandidate(iceCandidate.sdp);
-        EventBus.getDefault().post(new SessionDescriptionSend(null, sessionId, "candidate",
-                ncIceCandidate));
     }
 
-    public void sendAnswer() {
+    public void sendMessage(boolean isAnswer) {
 
-        MagicSdpObserver magicSdpObserver = new MagicSdpObserver() {
-            public void onCreateSuccess(SessionDescription sessionDescription) {
-                super.onCreateSuccess(sessionDescription);
-                peerConnection.setLocalDescription(new MagicSdpObserver(), sessionDescription);
-                EventBus.getDefault().post(new SessionDescriptionSend(sessionDescription, sessionId, "answer",
-                        null));
-            }
-        };
-
-        peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
+        Log.d("MARIO", "PREPARING " + isAnswer);
+        if (!isAnswer) {
+            peerConnection.createOffer(magicSdpObserver, mediaConstraints);
+        } else {
+            peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
+        }
     }
 
     private void sendChannelData(DataChannelMessage dataChannelMessage) {
-
         ByteBuffer buffer = ByteBuffer.wrap(dataChannelMessage.toString().getBytes());
         dataChannel.send(new DataChannel.Buffer(buffer, false));
     }
@@ -128,8 +170,14 @@ public class PeerConnectionWrapper {
             public void onCreateSuccess(SessionDescription sessionDescription) {
                 super.onCreateSuccess(sessionDescription);
                 peerConnection.setLocalDescription(new MagicSdpObserver(), sessionDescription);
-                EventBus.getDefault().post(new SessionDescriptionSend(sessionDescription, sessionId, "offer", null));
             }
+
+            @Override
+            public void onSetSuccess() {
+                EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
+                        "offer", null));
+            }
+
         };
 
         peerConnection.createOffer(magicSdpObserver, mediaConstraints);

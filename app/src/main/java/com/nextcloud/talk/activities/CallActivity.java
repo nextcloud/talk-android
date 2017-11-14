@@ -48,7 +48,7 @@ import com.nextcloud.talk.api.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.api.models.json.signaling.Signaling;
 import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.events.SessionDescriptionSend;
+import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionObserver;
 import com.nextcloud.talk.webrtc.MagicSdpObserver;
@@ -423,21 +423,24 @@ public class CallActivity extends AppCompatActivity {
                 PeerConnectionWrapper peerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId
                         (ncSignalingMessage.getFrom(), ncSignalingMessage.getFrom().equals(callSession));
 
+                Log.d("MARIO_RECEIVING", ncSignalingMessage.getType());
                 switch (ncSignalingMessage.getType()) {
                     case "offer":
                     case "answer":
                         peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
-                        peerConnectionWrapper.getPeerConnection().setLocalDescription(new MagicSdpObserver(),
-                                new SessionDescription(SessionDescription.Type.valueOf(ncSignalingMessage.getType()
-                                        .toUpperCase()),
+                        peerConnectionWrapper.getPeerConnection().setRemoteDescription(new MagicSdpObserver(),
+                                new SessionDescription(SessionDescription.Type.fromCanonicalForm(ncSignalingMessage.getType()),
                                         ncSignalingMessage
                                         .getPayload().getSdp()));
+                        if (ncSignalingMessage.getType().equals("offer")) {
+                            peerConnectionWrapper.sendMessage(true);
+                        }
                         break;
                     case "candidate":
                         NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
                         IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
                             ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
-                        peerConnectionWrapper.getPeerConnection().addIceCandidate(iceCandidate);
+                        peerConnectionWrapper.addCandidate(iceCandidate);
                         break;
                     default:
                         break;
@@ -480,10 +483,10 @@ public class CallActivity extends AppCompatActivity {
 
         for (String sessionId : newSessions) {
             if (getPeerConnectionWrapperForSessionId(sessionId) == null) {
-                if (sessionId.compareTo(callSession) > 0) {
+                if (sessionId.compareTo(callSession) < 0) {
                     PeerConnectionWrapper connectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(sessionId,
                             false);
-                    connectionWrapper.sendOffer();
+                    connectionWrapper.sendMessage(false);
                 } else {
                     Log.d(TAG, "Waiting for offer");
                 }
@@ -537,7 +540,7 @@ public class CallActivity extends AppCompatActivity {
             }
 
             peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
-                    iceServers, sdpConstraints, magicPeerConnectionObserver, sessionId, isLocalPeer);
+                    iceServers, sdpConstraints, magicPeerConnectionObserver, sessionId, isLocalPeer, callSession);
             peerConnectionWrapperList.add(peerConnectionWrapper);
             return peerConnectionWrapper;
         }
@@ -666,7 +669,8 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(SessionDescriptionSend sessionDescriptionSend) {
+    public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) {
+        Log.d("MARIO SENDING", sessionDescriptionSend.getType());
         String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
         ncMessageWrapper.setEv("message");
