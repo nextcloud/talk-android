@@ -632,7 +632,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) {
+    public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
         Log.d("MARIO_123", "SENDING " + sessionDescriptionSend.getType());
         String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
@@ -656,8 +656,13 @@ public class CallActivity extends AppCompatActivity {
         ncSignalingMessage.setPayload(ncMessagePayload);
         ncMessageWrapper.setSignalingMessage(ncSignalingMessage);
 
+        List<NCMessageWrapper> ncMessageWrappers = new ArrayList<>();
+        ncMessageWrappers.add(ncMessageWrapper);
+
+        Log.d("MARIO_123", LoganSquare.serialize(ncMessageWrappers));
+
         ncApi.sendSignalingMessages(credentials, ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()),
-                ncMessageWrapper)
+                ncMessageWrappers)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Observer<Integer>() {
                     @Override

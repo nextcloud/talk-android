@@ -90,6 +90,9 @@ public class PeerConnectionWrapper {
 
             @Override
             public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
+                if (iceGatheringState.equals(PeerConnection.IceGatheringState.COMPLETE)) {
+                    sendLocalCandidates();
+                }
             }
 
             @Override
@@ -150,7 +153,6 @@ public class PeerConnectionWrapper {
                         // We've just set our local SDP so time to send it, drain
                         // remote and send local ICE candidates.
                         Log.d("MARIO", "SENDING ANSWER FROM OBSERVER");
-                        sendLocalCandidates();
                         EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription
                                 (),
                                 sessionId,
@@ -162,7 +164,6 @@ public class PeerConnectionWrapper {
                             public void onCreateSuccess(SessionDescription sessionDescription) {
                                 super.onCreateSuccess(sessionDescription);
                                 peerConnection.setLocalDescription(magicSdpObserver, sessionDescription);
-                                sendLocalCandidates();
                             }
 
                         }, mediaConstraints);

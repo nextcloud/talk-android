@@ -36,7 +36,4 @@ public class NCIceCandidate {
 
     @JsonField(name = "candidate")
     String candidate;
-
-    @JsonField(name = "type")
-    String type;
 }

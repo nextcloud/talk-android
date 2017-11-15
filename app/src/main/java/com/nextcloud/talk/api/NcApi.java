@@ -33,6 +33,7 @@ import com.nextcloud.talk.api.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.api.models.json.userprofile.UserProfileOverall;
 
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -168,7 +169,7 @@ public interface NcApi {
     */
     @POST
     Observable<Integer> sendSignalingMessages(@Header("Authorization") String authorization, @Url String url,
-                                              @Body NCMessageWrapper ncMessageWrapper);
+                                              @Body List<NCMessageWrapper> ncMessageWrapper);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
