@@ -138,7 +138,8 @@ dependencies {
     implementation 'com.yarolegovich:lovelyinput:1.0.2'
     implementation 'com.yarolegovich:mp:1.0.8'
 
-    compile 'ru.alexbykov:nopermission:1.1.1'
+    implementation 'ru.alexbykov:nopermission:1.1.1'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.1', {

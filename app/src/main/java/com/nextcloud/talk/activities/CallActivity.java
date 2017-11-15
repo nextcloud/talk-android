@@ -53,6 +53,7 @@ import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -488,7 +489,8 @@ public class CallActivity extends AppCompatActivity {
                 if (sessionId.compareTo(callSession) < 0) {
                     PeerConnectionWrapper connectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(sessionId,
                             false);
-                    connectionWrapper.getPeerConnection().createAnswer(connectionWrapper.getMagicSdpObserver(), sdpConstraints);
+                    connectionWrapper.getPeerConnection().createOffer(connectionWrapper.getMagicSdpObserver(),
+                            sdpConstraints);
                 } else {
                     Log.d(TAG, "Waiting for offer");
                 }
@@ -632,7 +634,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) {
+    public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
         Log.d("MARIO_123", "SENDING " + sessionDescriptionSend.getType());
         String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
@@ -656,13 +658,25 @@ public class CallActivity extends AppCompatActivity {
         ncSignalingMessage.setPayload(ncMessagePayload);
         ncMessageWrapper.setSignalingMessage(ncSignalingMessage);
 
-        List<String> awesomeJson = new ArrayList<>();
-        try {
-            awesomeJson.add(LoganSquare.serialize(ncMessageWrapper));
 
-            Log.d("MARIO_JSON", LoganSquare.serialize(ncMessageWrapper));
-            ncApi.sendSignalingMessages(credentials, ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()),
-                    awesomeJson)
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        stringBuilder.append("{");
+        stringBuilder.append("\"fn\":\"");
+        stringBuilder.append(StringEscapeUtils.escapeEcmaScript(LoganSquare.serialize(ncMessageWrapper
+                .getSignalingMessage())) + "\"");
+        stringBuilder.append(",");
+        stringBuilder.append("\"sessionId\":");
+        stringBuilder.append("\"").append(callSession).append("\"");
+        stringBuilder.append(",");
+        stringBuilder.append("\"ev\":\"message\"");
+        stringBuilder.append("}");
+        stringBuilder.append("]");
+
+        String stringToSend = stringBuilder.toString();
+        Log.d("MARIO", stringToSend);
+        ncApi.sendSignalingMessages(credentials, ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()),
+                    stringToSend)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(new Observer<GenericOverall>() {
                         @Override
@@ -685,12 +699,6 @@ public class CallActivity extends AppCompatActivity {
 
                         }
                     });
-
-        } catch (IOException exception) {
-            Log.d(TAG, exception.getLocalizedMessage());
-        }
-
-
     }
 
 
