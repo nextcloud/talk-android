@@ -46,6 +46,9 @@ public class PeerConnectionWrapper {
     List<IceCandidate> iceCandidates = new ArrayList<>();
     List<PeerConnection.IceServer> iceServers;
     List<IceCandidate> candidatesToSend = new ArrayList<>();
+    List<SessionDescription> sessionDescriptionsQueue = new ArrayList<>();
+    List<NCIceCandidate> localCandidates = new ArrayList<>();
+    List<SessionDescriptionSendEvent> sessionDescriptionSendEvents = new ArrayList<>();
     private String sessionId;
     private String callToken;
     private String nick;
@@ -55,10 +58,7 @@ public class PeerConnectionWrapper {
     private MagicSdpObserver magicSdpObserver;
     private MagicPeerConnectionObserver magicPeerConnectionObserver;
     private boolean isInitiator;
-    List<SessionDescription> sessionDescriptionsQueue = new ArrayList<>();
 
-    List<NCIceCandidate> localCandidates = new ArrayList<>();
-    List<SessionDescriptionSendEvent> sessionDescriptionSendEvents = new ArrayList<>();
     public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                  List<PeerConnection.IceServer> iceServerList,
                                  MediaConstraints mediaConstraints,
@@ -97,12 +97,11 @@ public class PeerConnectionWrapper {
 
             @Override
             public void onIceCandidate(IceCandidate iceCandidate) {
-                Log.d("MARIO_GENERT", "BLA");
-                    NCIceCandidate ncIceCandidate = new NCIceCandidate();
-                    ncIceCandidate.setSdpMid(iceCandidate.sdpMid);
-                    ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
-                    ncIceCandidate.setCandidate(iceCandidate.sdp);
-                    localCandidates.add(ncIceCandidate);
+                NCIceCandidate ncIceCandidate = new NCIceCandidate();
+                ncIceCandidate.setSdpMid(iceCandidate.sdpMid);
+                ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
+                ncIceCandidate.setCandidate(iceCandidate.sdp);
+                localCandidates.add(ncIceCandidate);
             }
 
         };
@@ -150,23 +149,15 @@ public class PeerConnectionWrapper {
                     // For anwering peer connection we set remote SDP and then
                     // create answer and set local SDP.
                     if (peerConnection.getLocalDescription() != null) {
-                        // We've just set our local SDP so time to send it, drain
-                        // remote and send local ICE candidates.
-                        Log.d("MARIO", "SENDING ANSWER FROM OBSERVER");
                         EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription
                                 (),
                                 sessionId,
                                 "answer", null));
+                        // We've just set our local SDP so time to send it, drain
+                        // remote and send local ICE candidates.
 
                     } else {
-                        peerConnection.createAnswer(new MagicSdpObserver() {
-                            @Override
-                            public void onCreateSuccess(SessionDescription sessionDescription) {
-                                super.onCreateSuccess(sessionDescription);
-                                peerConnection.setLocalDescription(magicSdpObserver, sessionDescription);
-                            }
-
-                        }, mediaConstraints);
+                        peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
 
                         // We've just set remote SDP - do nothing for now -
                         // answer will be created soon.
@@ -183,9 +174,7 @@ public class PeerConnectionWrapper {
     }
 
 
-
     private void sendLocalCandidates() {
-        Log.d("MARIO", "SENDING LOCAL");
         for (NCIceCandidate ncIceCandidate : localCandidates) {
             EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
                     "candidate", ncIceCandidate));

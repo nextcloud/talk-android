@@ -301,7 +301,7 @@ public class CallActivity extends AppCompatActivity {
                                     @Override
                                     public void onNext(GenericOverall genericOverall) {
                                         callSession = callOverall.getOcs().getData().getSessionId();
-                                         localPeer = alwaysGetPeerConnectionWrapperForSessionId(callSession, true).
+                                        localPeer = alwaysGetPeerConnectionWrapperForSessionId(callSession, true).
                                                 getPeerConnection();
 
                                         //creating local mediastream
@@ -437,7 +437,7 @@ public class CallActivity extends AppCompatActivity {
                     case "candidate":
                         NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
                         IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
-                            ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
+                                ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
                         peerConnectionWrapper.addCandidate(iceCandidate);
                         break;
                     case "endOfCandidates":
@@ -485,7 +485,7 @@ public class CallActivity extends AppCompatActivity {
 
         for (String sessionId : newSessions) {
             if (getPeerConnectionWrapperForSessionId(sessionId) == null) {
-                if (sessionId.compareTo(callSession) < 0 ) {
+                if (sessionId.compareTo(callSession) < 0) {
                     PeerConnectionWrapper connectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(sessionId,
                             false);
                     connectionWrapper.getPeerConnection().createAnswer(connectionWrapper.getMagicSdpObserver(), sdpConstraints);
@@ -632,7 +632,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
+    public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) {
         Log.d("MARIO_123", "SENDING " + sessionDescriptionSend.getType());
         String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
@@ -656,35 +656,41 @@ public class CallActivity extends AppCompatActivity {
         ncSignalingMessage.setPayload(ncMessagePayload);
         ncMessageWrapper.setSignalingMessage(ncSignalingMessage);
 
-        List<NCMessageWrapper> ncMessageWrappers = new ArrayList<>();
-        ncMessageWrappers.add(ncMessageWrapper);
+        List<String> awesomeJson = new ArrayList<>();
+        try {
+            awesomeJson.add(LoganSquare.serialize(ncMessageWrapper));
 
-        Log.d("MARIO_123", LoganSquare.serialize(ncMessageWrappers));
+            Log.d("MARIO_JSON", LoganSquare.serialize(ncMessageWrapper));
+            ncApi.sendSignalingMessages(credentials, ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()),
+                    awesomeJson)
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Observer<GenericOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-        ncApi.sendSignalingMessages(credentials, ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()),
-                ncMessageWrappers)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                        }
 
-                    }
+                        @Override
+                        public void onNext(GenericOverall genericOverall) {
 
-                    @Override
-                    public void onNext(Integer integer) {
+                        }
 
-                    }
+                        @Override
+                        public void onError(Throwable e) {
 
-                    @Override
-                    public void onError(Throwable e) {
+                        }
 
-                    }
+                        @Override
+                        public void onComplete() {
 
-                    @Override
-                    public void onComplete() {
+                        }
+                    });
 
-                    }
-                });
+        } catch (IOException exception) {
+            Log.d(TAG, exception.getLocalizedMessage());
+        }
+
+
     }
 
 

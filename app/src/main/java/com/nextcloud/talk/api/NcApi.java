@@ -29,7 +29,6 @@ import com.nextcloud.talk.api.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.api.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.api.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.api.models.json.sharees.ShareesOverall;
-import com.nextcloud.talk.api.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.api.models.json.userprofile.UserProfileOverall;
 
@@ -168,8 +167,8 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
     */
     @POST
-    Observable<Integer> sendSignalingMessages(@Header("Authorization") String authorization, @Url String url,
-                                              @Body List<NCMessageWrapper> ncMessageWrapper);
+    Observable<GenericOverall> sendSignalingMessages(@Header("Authorization") String authorization, @Url String url,
+                                                     @Body List<String> message);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling

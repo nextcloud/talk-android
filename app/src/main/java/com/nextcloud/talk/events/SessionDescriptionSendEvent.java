@@ -30,10 +30,12 @@ import lombok.Data;
 
 @Data
 public class SessionDescriptionSendEvent {
-    @Nullable private final SessionDescription sessionDescription;
+    @Nullable
+    private final SessionDescription sessionDescription;
     private final String peerId;
     private final String type;
-    @Nullable private final NCIceCandidate ncIceCandidate;
+    @Nullable
+    private final NCIceCandidate ncIceCandidate;
 
     public SessionDescriptionSendEvent(@Nullable SessionDescription sessionDescription, String peerId, String type,
                                        @Nullable NCIceCandidate ncIceCandidate) {
