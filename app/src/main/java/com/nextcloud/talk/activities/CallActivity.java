@@ -49,8 +49,10 @@ import com.nextcloud.talk.api.models.json.signaling.Signaling;
 import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
+import com.nextcloud.talk.events.PeerReadyEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.webrtc.MagicSdpObserver;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -268,7 +270,8 @@ public class CallActivity extends AppCompatActivity {
 
         //we already have video and audio tracks. Now create peerconnections
         iceServers = new ArrayList<>();
-        iceServers.add(new PeerConnection.IceServer("stun:stun.nextcloud.com:443"));
+        //iceServers.add(new PeerConnection.IceServer("stun:stun.l.google.com:19302"));
+        iceServers.add(new PeerConnection.IceServer("turn:172.104.225.9:3478"));
 
         //create sdpConstraints
         sdpConstraints = new MediaConstraints();
@@ -306,10 +309,6 @@ public class CallActivity extends AppCompatActivity {
                                                 getPeerConnection();
 
                                         //creating local mediastream
-                                        MediaStream stream = peerConnectionFactory.createLocalMediaStream("NCMS");
-                                        stream.addTrack(localAudioTrack);
-                                        stream.addTrack(localVideoTrack);
-                                        localPeer.addStream(stream);
 
                                         // start pinging the call
                                         ncApi.pingCall(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
@@ -422,32 +421,64 @@ public class CallActivity extends AppCompatActivity {
                 PeerConnectionWrapper peerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId
                         (ncSignalingMessage.getFrom(), ncSignalingMessage.getFrom().equals(callSession));
 
-                switch (ncSignalingMessage.getType()) {
-                    case "offer":
-                    case "answer":
-                        peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
-                        peerConnectionWrapper.getPeerConnection().setRemoteDescription(peerConnectionWrapper
-                                .getMagicSdpObserver(), new
-                                SessionDescription
-                                (SessionDescription.Type
-                                        .fromCanonicalForm(ncSignalingMessage.getType()),
-                                        ncSignalingMessage
-                                                .getPayload().getSdp()));
-
-                        break;
-                    case "candidate":
-                        NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
-                        IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
-                                ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
-                        peerConnectionWrapper.addCandidate(iceCandidate);
-                        break;
-                    case "endOfCandidates":
-                        Log.d("MARIO", "END CANDIDATES");
-                        peerConnectionWrapper.drainIceCandidates();
-                        break;
-                    default:
-                        break;
+                String type = null;
+                if (ncSignalingMessage.getType() != null) {
+                    type = ncSignalingMessage.getType();
+                } else if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() !=
+                        null) {
+                    type = ncSignalingMessage.getPayload().getType();
                 }
+
+                if (type != null) {
+                    switch (type) {
+                        case "offer":
+                        case "answer":
+                            peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
+                            peerConnectionWrapper.getPeerConnection().setRemoteDescription(new MagicSdpObserver() {
+
+                                @Override
+                                public void onSetSuccess() {
+                                    super.onSetSuccess();
+                                    peerConnectionWrapper.getPeerConnection().createAnswer(new MagicSdpObserver() {
+                                        @Override
+                                        public void onCreateSuccess(SessionDescription sessionDescription) {
+                                            super.onCreateSuccess(sessionDescription);
+                                            peerConnectionWrapper.getPeerConnection().setLocalDescription(new MagicSdpObserver(),
+                                                    sessionDescription);
+                                        }
+
+                                    }, sdpConstraints);
+                                }
+                            }, new SessionDescription(SessionDescription.Type.fromCanonicalForm(type),
+                                    ncSignalingMessage.getPayload().getSdp()));
+
+
+                            break;
+                        case "candidate":
+                            NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
+                            IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
+                                    ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
+                            peerConnectionWrapper.addCandidate(iceCandidate);
+                            break;
+                        case "endOfCandidates":
+                            peerConnectionWrapper.drainIceCandidates();
+                            if (peerConnectionWrapper.getPeerConnection().getLocalDescription() != null) {
+                                EventBus.getDefault().post(new SessionDescriptionSendEvent
+                                        (peerConnectionWrapper.getPeerConnection().getLocalDescription(), callSession,
+                                                peerConnectionWrapper.getPeerConnection().getLocalDescription().type.canonicalForm(),
+                                                null));
+                            } else {
+                                peerConnectionWrapper.getPeerConnection().createAnswer(peerConnectionWrapper
+                                        .getMagicSdpObserver(), sdpConstraints);
+                            }
+                            peerConnectionWrapper.sendLocalCandidates();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            } else {
+                Log.d(TAG, "Something went very very wrong");
             }
         } else {
             Log.d(TAG, "Something went very very wrong");
@@ -489,8 +520,10 @@ public class CallActivity extends AppCompatActivity {
                 if (sessionId.compareTo(callSession) < 0) {
                     PeerConnectionWrapper connectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(sessionId,
                             false);
-                    connectionWrapper.getPeerConnection().createOffer(connectionWrapper.getMagicSdpObserver(),
-                            sdpConstraints);
+                    if (connectionWrapper.getPeerConnection() != null) {
+                        connectionWrapper.getPeerConnection().createOffer(connectionWrapper.getMagicSdpObserver(),
+                                sdpConstraints);
+                    }
                 } else {
                     Log.d(TAG, "Waiting for offer");
                 }
@@ -500,11 +533,14 @@ public class CallActivity extends AppCompatActivity {
 
         for (String sessionId : leftSessions) {
             if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
-                peerConnectionWrapper.getPeerConnection().close();
+                if (peerConnectionWrapper.getPeerConnection() != null) {
+                    peerConnectionWrapper.getPeerConnection().close();
+                }
                 peerConnectionWrapperList.remove(peerConnectionWrapper);
             }
         }
     }
+
 
 
     private PeerConnectionWrapper alwaysGetPeerConnectionWrapperForSessionId(String sessionId, boolean isLocalPeer) {
@@ -512,9 +548,8 @@ public class CallActivity extends AppCompatActivity {
         if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
             return peerConnectionWrapper;
         } else {
-
-            peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
-                    iceServers, sdpConstraints, sessionId, isLocalPeer, callSession);
+                peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
+                        iceServers, sdpConstraints, sessionId, isLocalPeer, callSession);
             peerConnectionWrapperList.add(peerConnectionWrapper);
             return peerConnectionWrapper;
         }
@@ -629,6 +664,16 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(PeerReadyEvent peerReadyEvent) {
+        MediaStream stream = peerConnectionFactory.createLocalMediaStream("NCMS");
+        stream.addTrack(localAudioTrack);
+        stream.addTrack(localVideoTrack);
+        if (peerReadyEvent.getPeerConnection() != null) {
+            peerReadyEvent.getPeerConnection().addStream(stream);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
         gotRemoteStream(mediaStreamEvent.getMediaStream());
     }
@@ -660,38 +705,47 @@ public class CallActivity extends AppCompatActivity {
 
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("[");
         stringBuilder.append("{");
         stringBuilder.append("\"fn\":\"");
-        stringBuilder.append(StringEscapeUtils.escapeEcmaScript(LoganSquare.serialize(ncMessageWrapper
-                .getSignalingMessage())) + "\"");
+        stringBuilder.append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper
+                .getSignalingMessage()))).append("\"");
         stringBuilder.append(",");
         stringBuilder.append("\"sessionId\":");
-        stringBuilder.append("\"").append(callSession).append("\"");
+        stringBuilder.append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"");
         stringBuilder.append(",");
         stringBuilder.append("\"ev\":\"message\"");
         stringBuilder.append("}");
-        stringBuilder.append("]");
 
+        List<String> strings = new ArrayList<>();
         String stringToSend = stringBuilder.toString();
-        Log.d("MARIO", stringToSend);
+        strings.add(stringToSend);
+
+        List<NCMessageWrapper> wrappers = new ArrayList<>();
+        wrappers.add(ncMessageWrapper);
         ncApi.sendSignalingMessages(credentials, ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()),
-                    stringToSend)
+                strings.toString())
                     .subscribeOn(Schedulers.newThread())
-                    .subscribe(new Observer<GenericOverall>() {
+                    .subscribe(new Observer<SignalingOverall>() {
                         @Override
                         public void onSubscribe(Disposable d) {
 
                         }
 
                         @Override
-                        public void onNext(GenericOverall genericOverall) {
-
+                        public void onNext(SignalingOverall signalingOverall) {
+                            if (signalingOverall.getOcs().getSignalings() != null) {
+                                for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
+                                    try {
+                                        receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
                         }
 
                         @Override
                         public void onError(Throwable e) {
-
                         }
 
                         @Override
@@ -700,6 +754,5 @@ public class CallActivity extends AppCompatActivity {
                         }
                     });
     }
-
 
 }

@@ -55,8 +55,6 @@ public class MagicPeerConnectionObserver implements PeerConnection.Observer {
 
     @Override
     public void onIceCandidate(IceCandidate iceCandidate) {
-
-
     }
 
     @Override

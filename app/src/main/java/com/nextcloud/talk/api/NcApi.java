@@ -35,8 +35,8 @@ import com.nextcloud.talk.api.models.json.userprofile.UserProfileOverall;
 import java.util.Map;
 
 import io.reactivex.Observable;
-import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -165,9 +165,10 @@ public interface NcApi {
 
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
     */
+    @FormUrlEncoded
     @POST
-    Observable<GenericOverall> sendSignalingMessages(@Header("Authorization") String authorization, @Url String url,
-                                                     @Body String message);
+    Observable<SignalingOverall> sendSignalingMessages(@Header("Authorization") String authorization, @Url String url,
+                                             @Field("messages") String messages);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling

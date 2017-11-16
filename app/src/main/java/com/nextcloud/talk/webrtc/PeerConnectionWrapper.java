@@ -25,6 +25,7 @@ import android.util.Log;
 import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.events.MediaStreamEvent;
+import com.nextcloud.talk.events.PeerReadyEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -79,6 +80,7 @@ public class PeerConnectionWrapper {
 
             @Override
             public void onAddStream(MediaStream mediaStream) {
+                Log.d("MARIO", "MEDIA");
                 EventBus.getDefault().post(new MediaStreamEvent(mediaStream));
             }
 
@@ -90,9 +92,9 @@ public class PeerConnectionWrapper {
 
             @Override
             public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
-                if (iceGatheringState.equals(PeerConnection.IceGatheringState.COMPLETE)) {
+                /*if (iceGatheringState.equals(PeerConnection.IceGatheringState.COMPLETE)) {
                     sendLocalCandidates();
-                }
+                }*/
             }
 
             @Override
@@ -106,8 +108,13 @@ public class PeerConnectionWrapper {
 
         };
 
-        peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
-                magicPeerConnectionObserver);
+                peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
+                        magicPeerConnectionObserver);
+
+
+        if (isLocalPeer) {
+            EventBus.getDefault().post(new PeerReadyEvent(peerConnection));
+        }
         this.sessionId = sessionId;
         this.local = isLocalPeer;
         this.mediaConstraints = mediaConstraints;
@@ -139,11 +146,7 @@ public class PeerConnectionWrapper {
                     if (peerConnection.getRemoteDescription() == null) {
                         // We've just set our local SDP so time to send it.
                         EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
-                                "offer", null));
-                    } else {
-                        // We've just set remote description, so drain remote
-                        // and send local ICE candidates.
-                        drainIceCandidates();
+                                peerConnection.getLocalDescription().type.canonicalForm(), null));
                     }
                 } else {
                     // For anwering peer connection we set remote SDP and then
@@ -152,18 +155,13 @@ public class PeerConnectionWrapper {
                         EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription
                                 (),
                                 sessionId,
-                                "answer", null));
+                                peerConnection.getLocalDescription().type.canonicalForm(), null));
                         // We've just set our local SDP so time to send it, drain
                         // remote and send local ICE candidates.
 
                     } else {
-                        peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
-
                         // We've just set remote SDP - do nothing for now -
                         // answer will be created soon.
-                        /*Log.d("MARIO", "CREATING ANSWER");
-                        drainIceCandidates();
-                        peerConnection.createAnswer(magicSdpObserver, mediaConstraints);*/
 
                     }
                 }
@@ -174,11 +172,13 @@ public class PeerConnectionWrapper {
     }
 
 
-    private void sendLocalCandidates() {
+    public void sendLocalCandidates() {
         for (NCIceCandidate ncIceCandidate : localCandidates) {
             EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
                     "candidate", ncIceCandidate));
         }
+
+        localCandidates = new ArrayList<>();
     }
 
     public void drainIceCandidates() {
