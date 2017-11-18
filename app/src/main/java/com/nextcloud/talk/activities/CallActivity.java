@@ -612,19 +612,21 @@ public class CallActivity extends AppCompatActivity {
 
     private void gotRemoteStream(MediaStream stream) {
         //we have remote video stream. add to the renderer.
-        final VideoTrack videoTrack = stream.videoTracks.getFirst();
-        AudioTrack audioTrack = stream.audioTracks.getFirst();
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    remoteRenderer = new VideoRenderer(fullScreenVideoView);
-                    videoTrack.addRenderer(remoteRenderer);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        if (stream.videoTracks.size() == 1 && stream.audioTracks.size() == 1) {
+            final VideoTrack videoTrack = stream.videoTracks.get(0);
+                    AudioTrack audioTrack = stream.audioTracks.get(0);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        remoteRenderer = new VideoRenderer(fullScreenVideoView);
+                        videoTrack.addRenderer(remoteRenderer);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
 
     }
 

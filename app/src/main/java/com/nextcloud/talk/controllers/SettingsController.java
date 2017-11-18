@@ -108,6 +108,9 @@ public class SettingsController extends BaseController {
     @BindView(R.id.display_name_text)
     TextView displayNameTextView;
 
+    @BindView(R.id.base_url_text)
+    TextView baseUrlTextView;
+
     @BindView(R.id.settings_remove_account)
     MaterialStandardPreference removeAccountButton;
 
@@ -137,6 +140,8 @@ public class SettingsController extends BaseController {
 
     @Inject
     UserUtils userUtils;
+
+    private UserEntity userEntity;
 
     private OnPreferenceValueChangedListener<String> proxyTypeChangeListener;
     private OnPreferenceValueChangedListener<Boolean> proxyCredentialsChangeListener;
@@ -204,8 +209,11 @@ public class SettingsController extends BaseController {
 
         versionInfo.setSummary("v" + BuildConfig.VERSION_NAME);
 
-        UserEntity userEntity = userUtils.getCurrentUser();
+        userEntity = userUtils.getCurrentUser();
         if (userEntity != null) {
+
+            baseUrlTextView.setText(userEntity.getBaseUrl());
+
             reauthorizeButton.setOnClickListener(view14 -> {
                 reauthorizeButton.setEnabled(false);
                 getParentController().getRouter().pushController(RouterTransaction.with(
@@ -251,7 +259,7 @@ public class SettingsController extends BaseController {
             hideProxyCredentials();
         }
 
-        UserEntity userEntity = userUtils.getCurrentUser();
+        userEntity = userUtils.getCurrentUser();
         if (userEntity != null) {
             // Awful hack
             if (userEntity.getDisplayName() != null) {
