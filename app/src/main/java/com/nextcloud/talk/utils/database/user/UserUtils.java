@@ -46,12 +46,13 @@ public class UserUtils {
     }
 
     public boolean anyUserExists() {
-        return (dataStore.count(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.eq(false)).
-                limit(1).get().value() > 0);
+        return (dataStore.count(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true))
+                .limit(1).get().value() > 0);
     }
 
     public List getUsers() {
-        Result findUsersQueryResult = dataStore.select(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.eq(false))
+        Result findUsersQueryResult = dataStore.select(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.notEqual
+                (true))
                 .get();
 
         return findUsersQueryResult.toList();
@@ -67,7 +68,7 @@ public class UserUtils {
 
     public UserEntity getAnyUserAndSetAsActive() {
         Result findUserQueryResult = dataStore.select(User.class)
-                .where(UserEntity.SCHEDULED_FOR_DELETION.eq(false))
+                .where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true))
                 .limit(1).get();
 
         UserEntity userEntity;
@@ -82,7 +83,7 @@ public class UserUtils {
 
     public UserEntity getCurrentUser() {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.CURRENT.eq(true)
-                .and(UserEntity.SCHEDULED_FOR_DELETION.eq(false)))
+                .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true)))
                 .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();
@@ -101,8 +102,7 @@ public class UserUtils {
     }
 
     public void disableAllUsersWithoutId(long userId) {
-        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.notEqual(userId))
-                .and(UserEntity.CURRENT.eq(true)).get();
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.notEqual(userId)).get();
 
         for (Object object : findUserQueryResult) {
             UserEntity userEntity = (UserEntity) object;
@@ -178,7 +178,8 @@ public class UserUtils {
                 user.setToken(token);
             }
 
-            if (!TextUtils.isEmpty(displayName) && !displayName.equals(user.getDisplayName())) {
+            if ((displayName != null && user.getDisplayName() == null) || (displayName != null && user.getDisplayName()
+                    != null && !displayName.equals(user.getDisplayName()))) {
                 user.setDisplayName(displayName);
             }
 

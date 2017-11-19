@@ -159,6 +159,8 @@ public class SettingsController extends BaseController {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
+        userEntity = userUtils.getCurrentUser();
+
         appPreferences.registerProxyTypeListener(proxyTypeChangeListener = new ProxyTypeChangeListener());
         appPreferences.registerProxyCredentialsListener(proxyCredentialsChangeListener = new
                 ProxyCredentialsChangeListener());
@@ -209,21 +211,6 @@ public class SettingsController extends BaseController {
 
         versionInfo.setSummary("v" + BuildConfig.VERSION_NAME);
 
-        userEntity = userUtils.getCurrentUser();
-        if (userEntity != null) {
-
-            baseUrlTextView.setText(userEntity.getBaseUrl());
-
-            reauthorizeButton.setOnClickListener(view14 -> {
-                reauthorizeButton.setEnabled(false);
-                getParentController().getRouter().pushController(RouterTransaction.with(
-                        new WebViewLoginController(userEntity.getBaseUrl(), true))
-                        .pushChangeHandler(new VerticalChangeHandler())
-                        .popChangeHandler(new VerticalChangeHandler()));
-                reauthorizeButton.setEnabled(true);
-            });
-        }
-
         addAccountButton.setOnClickListener(view15 -> {
             addAccountButton.setEnabled(false);
             getParentController().getRouter().pushController(RouterTransaction.with(new
@@ -247,6 +234,9 @@ public class SettingsController extends BaseController {
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
 
+        dispose(null);
+        userEntity = userUtils.getCurrentUser();
+
         if ("No proxy".equals(appPreferences.getProxyType()) || appPreferences.getProxyType() == null) {
             hideProxySettings();
         } else {
@@ -259,8 +249,19 @@ public class SettingsController extends BaseController {
             hideProxyCredentials();
         }
 
-        userEntity = userUtils.getCurrentUser();
         if (userEntity != null) {
+
+            baseUrlTextView.setText(userEntity.getBaseUrl());
+
+            reauthorizeButton.setOnClickListener(view14 -> {
+                reauthorizeButton.setEnabled(false);
+                getParentController().getRouter().pushController(RouterTransaction.with(
+                        new WebViewLoginController(userEntity.getBaseUrl(), true))
+                        .pushChangeHandler(new VerticalChangeHandler())
+                        .popChangeHandler(new VerticalChangeHandler()));
+                reauthorizeButton.setEnabled(true);
+            });
+
             // Awful hack
             if (userEntity.getDisplayName() != null) {
                 avatarImageView.setTextAndColorSeed(String.valueOf(userEntity.getDisplayName().
@@ -300,6 +301,7 @@ public class SettingsController extends BaseController {
                         }
 
                         if (!TextUtils.isEmpty(displayName) && !displayName.equals(userEntity.getDisplayName())) {
+
                             dbQueryDisposable = userUtils.createOrUpdateUser(userEntity.getUsername(),
                                     userEntity.getToken(),
                                     userEntity.getBaseUrl(), displayName, null, true)
@@ -320,8 +322,8 @@ public class SettingsController extends BaseController {
             removeAccountButton.setOnClickListener(view1 -> {
                 boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(userEntity.getId());
                 if (otherUserExists && getView() != null) {
-                    onViewBound(getView());
                     onAttach(getView());
+                    onViewBound(getView());
                 } else if (!otherUserExists) {
                     getParentController().getRouter().setRoot(RouterTransaction.with(
                             new ServerSelectionController())
@@ -423,10 +425,14 @@ public class SettingsController extends BaseController {
             if (profileQueryDisposable != null && !profileQueryDisposable.isDisposed()) {
                 profileQueryDisposable.dispose();
                 profileQueryDisposable = null;
+            } else if (profileQueryDisposable != null) {
+                profileQueryDisposable = null;
             }
 
             if (dbQueryDisposable != null && !dbQueryDisposable.isDisposed()) {
                 dbQueryDisposable.dispose();
+                dbQueryDisposable = null;
+            } else if (dbQueryDisposable != null) {
                 dbQueryDisposable = null;
             }
         }

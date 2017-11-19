@@ -126,10 +126,6 @@ public class AccountVerificationController extends BaseController {
                                         .getDisplayName())) {
                                     displayName = userProfileOverall.getOcs().getData()
                                             .getDisplayName();
-                                } else if (!TextUtils.isEmpty(userProfileOverall.getOcs().getData()
-                                        .getDisplayNameAlt())) {
-                                    displayName = userProfileOverall.getOcs().getData()
-                                            .getDisplayNameAlt();
                                 }
 
                                 if (!TextUtils.isEmpty(displayName)) {

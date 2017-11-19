@@ -614,7 +614,7 @@ public class CallActivity extends AppCompatActivity {
         //we have remote video stream. add to the renderer.
         if (stream.videoTracks.size() == 1 && stream.audioTracks.size() == 1) {
             final VideoTrack videoTrack = stream.videoTracks.get(0);
-                    AudioTrack audioTrack = stream.audioTracks.get(0);
+            AudioTrack audioTrack = stream.audioTracks.get(0);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
