@@ -272,7 +272,6 @@ public class CallActivity extends AppCompatActivity {
         // can add our renderer to the VideoTrack.
         localVideoTrack.addRenderer(localRenderer);
 
-        //we already have video and audio tracks. Now create peerconnections
         iceServers = new ArrayList<>();
         iceServers.add(new PeerConnection.IceServer("stun:stun.nextcloud.com:443"));
 
@@ -518,15 +517,14 @@ public class CallActivity extends AppCompatActivity {
     }
 
 
-
     private PeerConnectionWrapper alwaysGetPeerConnectionWrapperForSessionId(String sessionId, boolean isLocalPeer) {
         PeerConnectionWrapper peerConnectionWrapper;
         if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
             return peerConnectionWrapper;
         } else {
-                peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraints, sessionId);
-                peerConnectionWrapper.getPeerConnection().addStream(localMediaStream);
+            peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
+                    iceServers, sdpConstraints, sessionId);
+            peerConnectionWrapper.getPeerConnection().addStream(localMediaStream);
             peerConnectionWrapperList.add(peerConnectionWrapper);
             return peerConnectionWrapper;
         }
@@ -699,35 +697,36 @@ public class CallActivity extends AppCompatActivity {
 
         ncApi.sendSignalingMessages(credentials, ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()),
                 strings.toString())
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribe(new Observer<SignalingOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+                .retry(3)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Observer<SignalingOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onNext(SignalingOverall signalingOverall) {
-                            if (signalingOverall.getOcs().getSignalings() != null) {
-                                for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
-                                    try {
-                                        receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                    @Override
+                    public void onNext(SignalingOverall signalingOverall) {
+                        if (signalingOverall.getOcs().getSignalings() != null) {
+                            for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
+                                try {
+                                    receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
                             }
                         }
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-                        @Override
-                        public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-                        }
-                    });
+                    }
+                });
     }
 
 }
