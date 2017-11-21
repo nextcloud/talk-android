@@ -473,7 +473,7 @@ public class CallActivity extends AppCompatActivity {
         }
 
         for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-            if (!peerConnectionWrapper.isLocal()) {
+            if (!peerConnectionWrapper.getSessionId().equals(callSession)) {
                 oldSesssions.add(peerConnectionWrapper.getSessionId());
             }
         }
@@ -525,7 +525,7 @@ public class CallActivity extends AppCompatActivity {
             return peerConnectionWrapper;
         } else {
                 peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraints, sessionId, isLocalPeer, callSession);
+                        iceServers, sdpConstraints, sessionId);
                 peerConnectionWrapper.getPeerConnection().addStream(localMediaStream);
             peerConnectionWrapperList.add(peerConnectionWrapper);
             return peerConnectionWrapper;
@@ -611,7 +611,6 @@ public class CallActivity extends AppCompatActivity {
 
             if (stream.audioTracks.size() == 1) {
                 AudioTrack audioTrack = stream.audioTracks.get(0);
-                Log.d("MARIO", "BL");
             }
         }
 
@@ -659,12 +658,10 @@ public class CallActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
-        Log.d("MARIO_123", "SENDING " + sessionDescriptionSend.getType());
         String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
         ncMessageWrapper.setEv("message");
         ncMessageWrapper.setSessionId(callSession);
-        // Create signaling message and payload
         NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
         ncSignalingMessage.setTo(sessionDescriptionSend.getPeerId());
         ncSignalingMessage.setRoomType("video");

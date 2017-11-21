@@ -45,24 +45,18 @@ public class PeerConnectionWrapper {
     private static PeerConnection peerConnection;
     List<IceCandidate> iceCandidates = new ArrayList<>();
     List<PeerConnection.IceServer> iceServers;
-    List<IceCandidate> candidatesToSend = new ArrayList<>();
-    List<SessionDescription> sessionDescriptionsQueue = new ArrayList<>();
     List<NCIceCandidate> localCandidates = new ArrayList<>();
-    List<SessionDescriptionSendEvent> sessionDescriptionSendEvents = new ArrayList<>();
     private String sessionId;
-    private String callToken;
     private String nick;
-    private boolean local;
     private MediaConstraints mediaConstraints;
     private DataChannel dataChannel;
     private MagicSdpObserver magicSdpObserver;
     private MagicPeerConnectionObserver magicPeerConnectionObserver;
-    private boolean isInitiator;
 
     public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                  List<PeerConnection.IceServer> iceServerList,
                                  MediaConstraints mediaConstraints,
-                                 String sessionId, boolean isLocalPeer, String callToken) {
+                                 String sessionId) {
 
         this.iceServers = iceServerList;
 
@@ -74,7 +68,6 @@ public class PeerConnectionWrapper {
 
             @Override
             public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
-                Log.d("MARIO_ICE", iceConnectionState.name());
             }
 
             @Override
@@ -84,15 +77,11 @@ public class PeerConnectionWrapper {
 
             @Override
             public void onSignalingChange(PeerConnection.SignalingState signalingState) {
-                Log.d("MARIO", signalingState.name());
             }
 
 
             @Override
             public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
-                /*if (iceGatheringState.equals(PeerConnection.IceGatheringState.COMPLETE)) {
-                    sendLocalCandidates();
-                }*/
             }
 
             @Override
@@ -115,10 +104,7 @@ public class PeerConnectionWrapper {
                 magicPeerConnectionObserver);
 
         this.sessionId = sessionId;
-        this.local = isLocalPeer;
         this.mediaConstraints = mediaConstraints;
-        this.callToken = callToken;
-        isInitiator = this.sessionId.compareTo(callToken) < 0;
 
         magicSdpObserver = new MagicSdpObserver() {
             @Override
@@ -173,7 +159,6 @@ public class PeerConnectionWrapper {
     }
 
     public void drainIceCandidates() {
-        Log.d("MARIO", "DRAINING");
 
         for (IceCandidate iceCandidate : iceCandidates) {
             peerConnection.addIceCandidate(iceCandidate);
@@ -188,12 +173,9 @@ public class PeerConnectionWrapper {
     }
 
     public void addCandidate(IceCandidate iceCandidate) {
-        Log.d("MARIO", "RECEIVING CANDIDATE");
         if (peerConnection.getRemoteDescription() != null) {
-            Log.d("MARIO", "DIRECT ADDING");
             peerConnection.addIceCandidate(iceCandidate);
         } else {
-            Log.d("MARIO", "DIRECT QUEUE");
             iceCandidates.add(iceCandidate);
         }
     }
@@ -203,14 +185,6 @@ public class PeerConnectionWrapper {
         dataChannel.send(new DataChannel.Buffer(buffer, false));
     }
 
-
-    public boolean isLocal() {
-        return local;
-    }
-
-    public void setLocal(boolean local) {
-        this.local = local;
-    }
 
     public PeerConnection getPeerConnection() {
         return peerConnection;
