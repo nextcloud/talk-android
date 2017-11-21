@@ -51,6 +51,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -81,6 +82,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -115,6 +117,7 @@ public class CallActivity extends AppCompatActivity {
     MediaConstraints audioConstraints;
     MediaConstraints videoConstraints;
     MediaConstraints sdpConstraints;
+    MagicAudioManager audioManager;
     VideoSource videoSource;
     VideoTrack localVideoTrack;
     AudioSource audioSource;
@@ -261,6 +264,20 @@ public class CallActivity extends AppCompatActivity {
         localMediaStream = peerConnectionFactory.createLocalMediaStream("NCMS");
         localMediaStream.addTrack(localAudioTrack);
         localMediaStream.addTrack(localVideoTrack);
+
+        // Create and audio manager that will take care of audio routing,
+        // audio modes, audio device enumeration etc.
+        audioManager = MagicAudioManager.create(getApplicationContext());
+        // Store existing audio settings and change audio mode to
+        // MODE_IN_COMMUNICATION for best possible VoIP performance.
+        Log.d(TAG, "Starting the audio manager...");
+        audioManager.start(new MagicAudioManager.AudioManagerEvents() {
+            @Override
+            public void onAudioDeviceChanged(MagicAudioManager.AudioDevice selectedAudioDevice,
+                                             Set<MagicAudioManager.AudioDevice> availableAudioDevices) {
+                onAudioManagerDevicesChanged(selectedAudioDevice, availableAudioDevices);
+            }
+        });
 
         Resources r = getResources();
         int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, r.getDisplayMetrics());
@@ -458,6 +475,14 @@ public class CallActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "Something went very very wrong");
         }
+    }
+
+    // This method is called when the audio manager reports audio device change,
+    // e.g. from wired headset to speakerphone.
+    private void onAudioManagerDevicesChanged(
+            final MagicAudioManager.AudioDevice device, final Set<MagicAudioManager.AudioDevice> availableDevices) {
+        Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
+                + "selected: " + device);
     }
 
     private void processUsersInRoom(List<HashMap<String, String>> users) {
