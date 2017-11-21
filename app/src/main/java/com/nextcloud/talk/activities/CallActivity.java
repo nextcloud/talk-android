@@ -274,10 +274,7 @@ public class CallActivity extends AppCompatActivity {
 
         //we already have video and audio tracks. Now create peerconnections
         iceServers = new ArrayList<>();
-        iceServers.add(new PeerConnection.IceServer("stun:stun.l.google.com:19302"));
-        //iceServers.add(new PeerConnection.IceServer("turn:mario:mario@172.104.225.9:3478"));
-        //iceServers.add(PeerConnection.IceServer.builder("http://172.104.225.9:3478").setUsername("mario").setPassword
-        //                ("mario").createIceServer());
+        iceServers.add(new PeerConnection.IceServer("stun:stun.nextcloud.com:443"));
 
         //create sdpConstraints
         sdpConstraints = new MediaConstraints();
