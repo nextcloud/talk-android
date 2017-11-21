@@ -152,11 +152,9 @@ public class PeerConnectionWrapper {
                                 ("offer"))) {
                     EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
                             peerConnection.getLocalDescription().type.canonicalForm(), null));
-                } else {
-                    if (peerConnection.getRemoteDescription() != null) {
-                        drainIceCandidates();
-                        sendLocalCandidates();
-                    }
+                } else if (peerConnection.getRemoteDescription() != null) {
+                    drainIceCandidates();
+                    sendLocalCandidates();
                 }
             }
 
