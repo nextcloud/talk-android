@@ -49,10 +49,8 @@ import com.nextcloud.talk.api.models.json.signaling.Signaling;
 import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
-import com.nextcloud.talk.events.PeerReadyEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.webrtc.MagicSdpObserver;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -133,6 +131,8 @@ public class CallActivity extends AppCompatActivity {
     private String roomToken;
     private UserEntity userEntity;
     private String callSession;
+
+    private MediaStream localMediaStream;
 
     private String credentials;
     private List<PeerConnectionWrapper> peerConnectionWrapperList = new ArrayList<>();
@@ -258,6 +258,10 @@ public class CallActivity extends AppCompatActivity {
         audioSource = peerConnectionFactory.createAudioSource(audioConstraints);
         localAudioTrack = peerConnectionFactory.createAudioTrack("NCa0", audioSource);
 
+        localMediaStream = peerConnectionFactory.createLocalMediaStream("NCMS");
+        localMediaStream.addTrack(localAudioTrack);
+        localMediaStream.addTrack(localVideoTrack);
+
         Resources r = getResources();
         int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, r.getDisplayMetrics());
         videoCapturerAndroid.startCapture(px, px, 30);
@@ -270,8 +274,10 @@ public class CallActivity extends AppCompatActivity {
 
         //we already have video and audio tracks. Now create peerconnections
         iceServers = new ArrayList<>();
-        //iceServers.add(new PeerConnection.IceServer("stun:stun.l.google.com:19302"));
-        iceServers.add(new PeerConnection.IceServer("turn:172.104.225.9:3478"));
+        iceServers.add(new PeerConnection.IceServer("stun:stun.l.google.com:19302"));
+        //iceServers.add(new PeerConnection.IceServer("turn:mario:mario@172.104.225.9:3478"));
+        //iceServers.add(PeerConnection.IceServer.builder("http://172.104.225.9:3478").setUsername("mario").setPassword
+        //                ("mario").createIceServer());
 
         //create sdpConstraints
         sdpConstraints = new MediaConstraints();
@@ -307,8 +313,6 @@ public class CallActivity extends AppCompatActivity {
                                         callSession = callOverall.getOcs().getData().getSessionId();
                                         localPeer = alwaysGetPeerConnectionWrapperForSessionId(callSession, true).
                                                 getPeerConnection();
-
-                                        //creating local mediastream
 
                                         // start pinging the call
                                         ncApi.pingCall(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
@@ -434,25 +438,9 @@ public class CallActivity extends AppCompatActivity {
                         case "offer":
                         case "answer":
                             peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
-                            peerConnectionWrapper.getPeerConnection().setRemoteDescription(new MagicSdpObserver() {
-
-                                @Override
-                                public void onSetSuccess() {
-                                    super.onSetSuccess();
-                                    peerConnectionWrapper.getPeerConnection().createAnswer(new MagicSdpObserver() {
-                                        @Override
-                                        public void onCreateSuccess(SessionDescription sessionDescription) {
-                                            super.onCreateSuccess(sessionDescription);
-                                            peerConnectionWrapper.getPeerConnection().setLocalDescription(new MagicSdpObserver(),
-                                                    sessionDescription);
-                                        }
-
-                                    }, sdpConstraints);
-                                }
-                            }, new SessionDescription(SessionDescription.Type.fromCanonicalForm(type),
+                            peerConnectionWrapper.getPeerConnection().setRemoteDescription(peerConnectionWrapper
+                                    .getMagicSdpObserver(), new SessionDescription(SessionDescription.Type.fromCanonicalForm(type),
                                     ncSignalingMessage.getPayload().getSdp()));
-
-
                             break;
                         case "candidate":
                             NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
@@ -461,17 +449,7 @@ public class CallActivity extends AppCompatActivity {
                             peerConnectionWrapper.addCandidate(iceCandidate);
                             break;
                         case "endOfCandidates":
-                            peerConnectionWrapper.drainIceCandidates();
-                            if (peerConnectionWrapper.getPeerConnection().getLocalDescription() != null) {
-                                EventBus.getDefault().post(new SessionDescriptionSendEvent
-                                        (peerConnectionWrapper.getPeerConnection().getLocalDescription(), callSession,
-                                                peerConnectionWrapper.getPeerConnection().getLocalDescription().type.canonicalForm(),
-                                                null));
-                            } else {
-                                peerConnectionWrapper.getPeerConnection().createAnswer(peerConnectionWrapper
-                                        .getMagicSdpObserver(), sdpConstraints);
-                            }
-                            peerConnectionWrapper.sendLocalCandidates();
+                            //peerConnectionWrapper.drainIceCandidates();
                             break;
                         default:
                             break;
@@ -550,6 +528,7 @@ public class CallActivity extends AppCompatActivity {
         } else {
                 peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
                         iceServers, sdpConstraints, sessionId, isLocalPeer, callSession);
+                peerConnectionWrapper.getPeerConnection().addStream(localMediaStream);
             peerConnectionWrapperList.add(peerConnectionWrapper);
             return peerConnectionWrapper;
         }
@@ -666,16 +645,6 @@ public class CallActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(PeerReadyEvent peerReadyEvent) {
-        MediaStream stream = peerConnectionFactory.createLocalMediaStream("NCMS");
-        stream.addTrack(localAudioTrack);
-        stream.addTrack(localVideoTrack);
-        if (peerReadyEvent.getPeerConnection() != null) {
-            peerReadyEvent.getPeerConnection().addStream(stream);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
         gotRemoteStream(mediaStreamEvent.getMediaStream());
     }
@@ -689,9 +658,9 @@ public class CallActivity extends AppCompatActivity {
         ncMessageWrapper.setSessionId(callSession);
         // Create signaling message and payload
         NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
-        //ncSignalingMessage.setFrom(callSession);
         ncSignalingMessage.setTo(sessionDescriptionSend.getPeerId());
         ncSignalingMessage.setRoomType("video");
+        ncSignalingMessage.setType(sessionDescriptionSend.getType());
         NCMessagePayload ncMessagePayload = new NCMessagePayload();
         ncMessagePayload.setType(sessionDescriptionSend.getType());
         if (!"candidate".equals(sessionDescriptionSend.getType())) {
@@ -700,6 +669,7 @@ public class CallActivity extends AppCompatActivity {
         } else {
             ncMessagePayload.setIceCandidate(sessionDescriptionSend.getNcIceCandidate());
         }
+
 
         // Set all we need
         ncSignalingMessage.setPayload(ncMessagePayload);
@@ -722,8 +692,6 @@ public class CallActivity extends AppCompatActivity {
         String stringToSend = stringBuilder.toString();
         strings.add(stringToSend);
 
-        List<NCMessageWrapper> wrappers = new ArrayList<>();
-        wrappers.add(ncMessageWrapper);
         ncApi.sendSignalingMessages(credentials, ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()),
                 strings.toString())
                     .subscribeOn(Schedulers.newThread())

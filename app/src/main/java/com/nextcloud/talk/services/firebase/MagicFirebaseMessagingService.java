@@ -66,6 +66,11 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                         byte[] decryptedSubject = cipher.doFinal(base64DecodedSubject);
                         DecryptedPushMessage decryptedPushMessage = LoganSquare.parse(new String(decryptedSubject),
                                 DecryptedPushMessage.class);
+
+                        if (decryptedPushMessage.getApp().equals("spreed") || decryptedPushMessage.getApp().equals
+                                ("talk")) {
+                            // process message
+                        }
                     }
                 } catch (NoSuchAlgorithmException e1) {
                     Log.d(TAG, "No proper algorithm to decrypt the message");

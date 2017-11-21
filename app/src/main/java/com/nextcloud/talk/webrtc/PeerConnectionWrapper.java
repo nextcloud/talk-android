@@ -25,7 +25,6 @@ import android.util.Log;
 import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.events.MediaStreamEvent;
-import com.nextcloud.talk.events.PeerReadyEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -80,7 +79,6 @@ public class PeerConnectionWrapper {
 
             @Override
             public void onAddStream(MediaStream mediaStream) {
-                Log.d("MARIO", "MEDIA");
                 EventBus.getDefault().post(new MediaStreamEvent(mediaStream));
             }
 
@@ -103,18 +101,19 @@ public class PeerConnectionWrapper {
                 ncIceCandidate.setSdpMid(iceCandidate.sdpMid);
                 ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
                 ncIceCandidate.setCandidate(iceCandidate.sdp);
-                localCandidates.add(ncIceCandidate);
+                if (peerConnection.getRemoteDescription() == null) {
+                    localCandidates.add(ncIceCandidate);
+                } else {
+                    EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
+                            "candidate", ncIceCandidate));
+                }
             }
 
         };
 
-                peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
-                        magicPeerConnectionObserver);
+        peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
+                magicPeerConnectionObserver);
 
-
-        if (isLocalPeer) {
-            EventBus.getDefault().post(new PeerReadyEvent(peerConnection));
-        }
         this.sessionId = sessionId;
         this.local = isLocalPeer;
         this.mediaConstraints = mediaConstraints;
@@ -140,30 +139,22 @@ public class PeerConnectionWrapper {
 
             @Override
             public void onSetSuccess() {
-                if (isInitiator) {
-                    // For offering peer connection we first create offer and set
-                    // local SDP, then after receiving answer set remote SDP.
-                    if (peerConnection.getRemoteDescription() == null) {
-                        // We've just set our local SDP so time to send it.
-                        EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
-                                peerConnection.getLocalDescription().type.canonicalForm(), null));
-                    }
+                if (peerConnection.getRemoteDescription() == null) {
+                    EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
+                            peerConnection.getLocalDescription().type.canonicalForm(), null));
+
+                } else if (peerConnection.getLocalDescription() == null && peerConnection.getRemoteDescription().type
+                        .canonicalForm().equals
+                                ("offer")) {
+                    peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
+                } else if ((peerConnection.getLocalDescription() != null && peerConnection.getRemoteDescription().type
+                        .canonicalForm().equals
+                                ("offer"))) {
+                    EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
+                            peerConnection.getLocalDescription().type.canonicalForm(), null));
                 } else {
-                    // For anwering peer connection we set remote SDP and then
-                    // create answer and set local SDP.
-                    if (peerConnection.getLocalDescription() != null) {
-                        EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription
-                                (),
-                                sessionId,
-                                peerConnection.getLocalDescription().type.canonicalForm(), null));
-                        // We've just set our local SDP so time to send it, drain
-                        // remote and send local ICE candidates.
-
-                    } else {
-                        // We've just set remote SDP - do nothing for now -
-                        // answer will be created soon.
-
-                    }
+                    drainIceCandidates();
+                    sendLocalCandidates();
                 }
             }
 
