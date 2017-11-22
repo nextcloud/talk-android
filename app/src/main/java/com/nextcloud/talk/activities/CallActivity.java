@@ -34,6 +34,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.GridLayout;
+import android.widget.RelativeLayout;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
@@ -52,7 +54,7 @@ import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
-import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
+import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -104,8 +106,8 @@ public class CallActivity extends AppCompatActivity {
     @BindView(R.id.pip_video_view)
     SurfaceViewRenderer pipVideoView;
 
-    @BindView(R.id.fullscreen_video_view)
-    SurfaceViewRenderer fullScreenVideoView;
+    @BindView(R.id.videos_grid_view)
+    GridLayout videosGrid;
 
     @Inject
     NcApi ncApi;
@@ -125,7 +127,9 @@ public class CallActivity extends AppCompatActivity {
     VideoCapturer videoCapturer;
     VideoRenderer localRenderer;
     VideoRenderer remoteRenderer;
+    HashMap<String, VideoRenderer> videoRendererHashMap = new HashMap<>();
     PeerConnection localPeer;
+    EglBase rootEglBase;
     boolean leavingCall = false;
     BooleanSupplier booleanSupplier = () -> leavingCall;
     Disposable signalingDisposable;
@@ -138,7 +142,7 @@ public class CallActivity extends AppCompatActivity {
     private MediaStream localMediaStream;
 
     private String credentials;
-    private List<PeerConnectionWrapper> peerConnectionWrapperList = new ArrayList<>();
+    private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
 
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -224,16 +228,11 @@ public class CallActivity extends AppCompatActivity {
 
     public void initViews() {
         pipVideoView.setMirror(true);
-        fullScreenVideoView.setMirror(false);
-        EglBase rootEglBase = EglBase.create();
+        rootEglBase = EglBase.create();
         pipVideoView.init(rootEglBase.getEglBaseContext(), null);
         pipVideoView.setZOrderMediaOverlay(true);
-        fullScreenVideoView.init(rootEglBase.getEglBaseContext(), null);
-        fullScreenVideoView.setZOrderMediaOverlay(true);
-        fullScreenVideoView.setEnableHardwareScaler(true);
         pipVideoView.setEnableHardwareScaler(true);
         pipVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
-        fullScreenVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
     }
 
     public void start() {
@@ -435,7 +434,7 @@ public class CallActivity extends AppCompatActivity {
             NCSignalingMessage ncSignalingMessage = LoganSquare.parse(signaling.getMessageWrapper().toString(),
                     NCSignalingMessage.class);
             if (ncSignalingMessage.getRoomType().equals("video")) {
-                PeerConnectionWrapper peerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId
+                MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId
                         (ncSignalingMessage.getFrom(), ncSignalingMessage.getFrom().equals(callSession));
 
                 String type = null;
@@ -450,8 +449,8 @@ public class CallActivity extends AppCompatActivity {
                     switch (type) {
                         case "offer":
                         case "answer":
-                            peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
-                            peerConnectionWrapper.getPeerConnection().setRemoteDescription(peerConnectionWrapper
+                            magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
+                            magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
                                     .getMagicSdpObserver(), new SessionDescription(SessionDescription.Type.fromCanonicalForm(type),
                                     ncSignalingMessage.getPayload().getSdp()));
                             break;
@@ -459,11 +458,11 @@ public class CallActivity extends AppCompatActivity {
                             NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
                             IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
                                     ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
-                            peerConnectionWrapper.addCandidate(iceCandidate);
+                            magicPeerConnectionWrapper.addCandidate(iceCandidate);
                             break;
                         case "endOfCandidates":
-                            peerConnectionWrapper.drainIceCandidates();
-                            peerConnectionWrapper.sendLocalCandidates();
+                            magicPeerConnectionWrapper.drainIceCandidates();
+                            magicPeerConnectionWrapper.sendLocalCandidates();
                             break;
                         default:
                             break;
@@ -496,9 +495,9 @@ public class CallActivity extends AppCompatActivity {
             }
         }
 
-        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-            if (!peerConnectionWrapper.getSessionId().equals(callSession)) {
-                oldSesssions.add(peerConnectionWrapper.getSessionId());
+        for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
+            if (!magicPeerConnectionWrapper.getSessionId().equals(callSession)) {
+                oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
             }
         }
 
@@ -513,12 +512,12 @@ public class CallActivity extends AppCompatActivity {
             return;
         }
 
-        PeerConnectionWrapper peerConnectionWrapper;
+        MagicPeerConnectionWrapper magicPeerConnectionWrapper;
 
         for (String sessionId : newSessions) {
             if (getPeerConnectionWrapperForSessionId(sessionId) == null) {
                 if (sessionId.compareTo(callSession) < 0) {
-                    PeerConnectionWrapper connectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(sessionId,
+                    MagicPeerConnectionWrapper connectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(sessionId,
                             false);
                     if (connectionWrapper.getPeerConnection() != null) {
                         connectionWrapper.getPeerConnection().createOffer(connectionWrapper.getMagicSdpObserver(),
@@ -532,33 +531,33 @@ public class CallActivity extends AppCompatActivity {
         }
 
         for (String sessionId : leftSessions) {
-            if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
-                if (peerConnectionWrapper.getPeerConnection() != null) {
-                    peerConnectionWrapper.getPeerConnection().close();
+            if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
+                if (magicPeerConnectionWrapper.getPeerConnection() != null) {
+                    magicPeerConnectionWrapper.getPeerConnection().close();
                 }
-                peerConnectionWrapperList.remove(peerConnectionWrapper);
+                magicPeerConnectionWrapperList.remove(magicPeerConnectionWrapper);
             }
         }
     }
 
 
-    private PeerConnectionWrapper alwaysGetPeerConnectionWrapperForSessionId(String sessionId, boolean isLocalPeer) {
-        PeerConnectionWrapper peerConnectionWrapper;
-        if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
-            return peerConnectionWrapper;
+    private MagicPeerConnectionWrapper alwaysGetPeerConnectionWrapperForSessionId(String sessionId, boolean isLocalPeer) {
+        MagicPeerConnectionWrapper magicPeerConnectionWrapper;
+        if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
+            return magicPeerConnectionWrapper;
         } else {
-            peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
+            magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
                     iceServers, sdpConstraints, sessionId);
-            peerConnectionWrapper.getPeerConnection().addStream(localMediaStream);
-            peerConnectionWrapperList.add(peerConnectionWrapper);
-            return peerConnectionWrapper;
+            magicPeerConnectionWrapper.getPeerConnection().addStream(localMediaStream);
+            magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
+            return magicPeerConnectionWrapper;
         }
     }
 
-    private PeerConnectionWrapper getPeerConnectionWrapperForSessionId(String sessionId) {
-        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-            if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
-                return peerConnectionWrapper;
+    private MagicPeerConnectionWrapper getPeerConnectionWrapperForSessionId(String sessionId) {
+        for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
+            if (magicPeerConnectionWrapper.getSessionId().equals(sessionId)) {
+                return magicPeerConnectionWrapper;
             }
         }
         return null;
@@ -570,9 +569,9 @@ public class CallActivity extends AppCompatActivity {
 
         dispose(null);
 
-        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
-            if (peerConnectionWrapper.getPeerConnection() != null) {
-                peerConnectionWrapper.getPeerConnection().close();
+        for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
+            if (magicPeerConnectionWrapper.getPeerConnection() != null) {
+                magicPeerConnectionWrapper.getPeerConnection().close();
             }
         }
 
@@ -581,7 +580,6 @@ public class CallActivity extends AppCompatActivity {
         }
 
         pipVideoView.release();
-        fullScreenVideoView.release();
 
         String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
         ncApi.leaveCall(credentials, ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
@@ -610,7 +608,7 @@ public class CallActivity extends AppCompatActivity {
                 });
     }
 
-    private void gotRemoteStream(MediaStream stream) {
+    private void gotRemoteStream(MediaStream stream, String session) {
         //we have remote video stream. add to the renderer.
         if (stream.videoTracks.size() < 2 && stream.audioTracks.size() < 2) {
             if (stream.videoTracks.size() == 1) {
@@ -621,8 +619,26 @@ public class CallActivity extends AppCompatActivity {
                     public void run() {
                         if (stream.videoTracks.size() == 1) {
                             try {
-                                remoteRenderer = new VideoRenderer(fullScreenVideoView);
+                                RelativeLayout relativeLayout = (RelativeLayout)
+                                        getLayoutInflater().inflate(R.layout.surface_renderer, videosGrid,
+                                        false);
+                                relativeLayout.setTag(session);
+                                SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id
+                                        .surface_view);
+                                surfaceViewRenderer.setMirror(false);
+                                surfaceViewRenderer.init(rootEglBase.getEglBaseContext(), null);
+                                surfaceViewRenderer.setZOrderMediaOverlay(true);
+                                surfaceViewRenderer.setEnableHardwareScaler(true);
+                                surfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+                                VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
+                                videoRendererHashMap.put(session, remoteRenderer);
                                 videoTrack.addRenderer(remoteRenderer);
+                                videosGrid.addView(relativeLayout);
+
+                                GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(
+                                        GridLayout.UNDEFINED,GridLayout.FILL,1f),
+                                        GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,1f));
+                                relativeLayout.setLayoutParams(param);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -676,7 +692,7 @@ public class CallActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
-        gotRemoteStream(mediaStreamEvent.getMediaStream());
+        gotRemoteStream(mediaStreamEvent.getMediaStream(), mediaStreamEvent.getSession());
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

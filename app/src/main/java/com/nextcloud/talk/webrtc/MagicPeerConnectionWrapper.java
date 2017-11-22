@@ -22,6 +22,7 @@ package com.nextcloud.talk.webrtc;
 
 import android.util.Log;
 
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.events.MediaStreamEvent;
@@ -36,12 +37,13 @@ import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.SessionDescription;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeerConnectionWrapper {
-    private static String TAG = "PeerConnectionWrapper";
+public class MagicPeerConnectionWrapper {
+    private static String TAG = "MagicPeerConnectionWrapper";
     private static PeerConnection peerConnection;
     List<IceCandidate> iceCandidates = new ArrayList<>();
     List<PeerConnection.IceServer> iceServers;
@@ -49,39 +51,21 @@ public class PeerConnectionWrapper {
     private String sessionId;
     private String nick;
     private MediaConstraints mediaConstraints;
-    private DataChannel dataChannel;
+    private DataChannel magicDataChannel;
     private MagicSdpObserver magicSdpObserver;
     private MagicPeerConnectionObserver magicPeerConnectionObserver;
 
-    public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
-                                 List<PeerConnection.IceServer> iceServerList,
-                                 MediaConstraints mediaConstraints,
-                                 String sessionId) {
+    public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
+                                      List<PeerConnection.IceServer> iceServerList,
+                                      MediaConstraints mediaConstraints,
+                                      String sessionId) {
 
         this.iceServers = iceServerList;
 
         magicPeerConnectionObserver = new MagicPeerConnectionObserver() {
             @Override
-            public void onIceConnectionReceivingChange(boolean b) {
-
-            }
-
-            @Override
-            public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
-            }
-
-            @Override
             public void onAddStream(MediaStream mediaStream) {
-                EventBus.getDefault().post(new MediaStreamEvent(mediaStream));
-            }
-
-            @Override
-            public void onSignalingChange(PeerConnection.SignalingState signalingState) {
-            }
-
-
-            @Override
-            public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {
+                EventBus.getDefault().post(new MediaStreamEvent(mediaStream, sessionId));
             }
 
             @Override
@@ -90,18 +74,26 @@ public class PeerConnectionWrapper {
                 ncIceCandidate.setSdpMid(iceCandidate.sdpMid);
                 ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
                 ncIceCandidate.setCandidate(iceCandidate.sdp);
-                if (peerConnection.getRemoteDescription() == null) {
+                /*if (peerConnection.getRemoteDescription() == null) {
                     localCandidates.add(ncIceCandidate);
                 } else {
                     EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
                             "candidate", ncIceCandidate));
-                }
+                }*/
+                EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
+                        "candidate", ncIceCandidate));
+
             }
 
         };
 
         peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
                 magicPeerConnectionObserver);
+
+        DataChannel.Init init = new DataChannel.Init();
+        init.negotiated = false;
+        magicDataChannel = peerConnection.createDataChannel("status", init);
+        magicDataChannel.registerObserver(new MagicDataChannelObserver());
 
         this.sessionId = sessionId;
         this.mediaConstraints = mediaConstraints;
@@ -120,6 +112,7 @@ public class PeerConnectionWrapper {
             @Override
             public void onCreateSuccess(SessionDescription sessionDescription) {
                 super.onCreateSuccess(sessionDescription);
+
                 peerConnection.setLocalDescription(magicSdpObserver, sessionDescription);
             }
 
@@ -181,8 +174,13 @@ public class PeerConnectionWrapper {
     }
 
     private void sendChannelData(DataChannelMessage dataChannelMessage) {
-        ByteBuffer buffer = ByteBuffer.wrap(dataChannelMessage.toString().getBytes());
-        dataChannel.send(new DataChannel.Buffer(buffer, false));
+        ByteBuffer buffer = null;
+        try {
+            buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
+            magicDataChannel.send(new DataChannel.Buffer(buffer, false));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -191,7 +189,7 @@ public class PeerConnectionWrapper {
     }
 
     public static void setPeerConnection(PeerConnection peerConnection) {
-        PeerConnectionWrapper.peerConnection = peerConnection;
+        MagicPeerConnectionWrapper.peerConnection = peerConnection;
     }
 
     public String getSessionId() {
@@ -208,5 +206,36 @@ public class PeerConnectionWrapper {
 
     public void setNick(String nick) {
         this.nick = nick;
+    }
+
+    private class MagicDataChannelObserver implements DataChannel.Observer {
+
+        @Override
+        public void onBufferedAmountChange(long l) {
+
+        }
+
+        @Override
+        public void onStateChange() {
+            if (magicDataChannel.state().equals(DataChannel.State.OPEN) &&
+                    magicDataChannel.label().equals("status")) {
+                sendChannelData(new DataChannelMessage("videoOn"));
+                sendChannelData(new DataChannelMessage("audioOn"));
+            }
+
+        }
+
+        @Override
+        public void onMessage(DataChannel.Buffer buffer) {
+            if (buffer.binary) {
+                Log.d(TAG, "Received binary msg over " + TAG + " " + sessionId);
+                return;
+            }
+            ByteBuffer data = buffer.data;
+            final byte[] bytes = new byte[data.capacity()];
+            data.get(bytes);
+            String strData = new String(bytes);
+            Log.d(TAG, "Got msg: " + strData + " over " + TAG + " " + sessionId);
+        }
     }
 }

@@ -27,8 +27,10 @@ import lombok.Data;
 @Data
 public class MediaStreamEvent {
     private final MediaStream mediaStream;
+    private final String session;
 
-    public MediaStreamEvent(MediaStream mediaStream) {
+    public MediaStreamEvent(MediaStream mediaStream, String session) {
         this.mediaStream = mediaStream;
+        this.session = session;
     }
 }

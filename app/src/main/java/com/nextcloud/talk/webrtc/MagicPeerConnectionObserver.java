@@ -20,8 +20,6 @@
 
 package com.nextcloud.talk.webrtc;
 
-import android.util.Log;
-
 import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
 import org.webrtc.MediaStream;
@@ -35,7 +33,6 @@ public class MagicPeerConnectionObserver implements PeerConnection.Observer {
 
     @Override
     public void onSignalingChange(PeerConnection.SignalingState signalingState) {
-        Log.d("MARIO", signalingState.name());
     }
 
     @Override

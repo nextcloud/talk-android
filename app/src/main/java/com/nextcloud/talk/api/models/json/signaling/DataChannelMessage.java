@@ -33,4 +33,11 @@ public class DataChannelMessage {
 
     @JsonField(name = "payload")
     String payload;
+
+    public DataChannelMessage(String type) {
+        this.type = type;
+    }
+
+    public DataChannelMessage() {
+    }
 }
