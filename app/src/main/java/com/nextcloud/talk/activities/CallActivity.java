@@ -634,11 +634,6 @@ public class CallActivity extends AppCompatActivity {
                                 videoRendererHashMap.put(session, remoteRenderer);
                                 videoTrack.addRenderer(remoteRenderer);
                                 videosGrid.addView(relativeLayout);
-
-                                GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(
-                                        GridLayout.UNDEFINED,GridLayout.FILL,1f),
-                                        GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,1f));
-                                relativeLayout.setLayoutParams(param);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
