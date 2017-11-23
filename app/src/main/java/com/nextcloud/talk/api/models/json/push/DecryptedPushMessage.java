@@ -34,6 +34,9 @@ public class DecryptedPushMessage {
     @JsonField(name = "app")
     String app;
 
+    @JsonField(name = "type")
+    String type;
+
     @JsonField(name = "subject")
     String subject;
 }

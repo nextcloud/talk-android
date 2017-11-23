@@ -21,12 +21,19 @@
 package com.nextcloud.talk.services.firebase;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
 import android.util.Base64;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.api.models.json.push.PushMessage;
 import com.nextcloud.talk.models.SignatureVerification;
@@ -35,6 +42,7 @@ import com.nextcloud.talk.utils.PushUtils;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.zip.CRC32;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -67,17 +75,55 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                         DecryptedPushMessage decryptedPushMessage = LoganSquare.parse(new String(decryptedSubject),
                                 DecryptedPushMessage.class);
 
-                        if (decryptedPushMessage.getApp().equals("spreed") || decryptedPushMessage.getApp().equals
-                                ("talk")) {
-                            // process message
+                        if (decryptedPushMessage.getApp().equals("spreed")) {
+                            int smallIcon;
+                            Bitmap largeIcon;
+                            switch (decryptedPushMessage.getType()) {
+                                case "call":
+                                    smallIcon = R.drawable.ic_call_black_24dp;
+                                    break;
+                                case "room":
+                                    smallIcon = R.drawable.ic_notifications_black_24dp;
+                                    break;
+                                case "chat":
+                                    smallIcon = R.drawable.ic_chat_black_24dp;
+                                    break;
+                                default:
+                                    smallIcon = R.drawable.ic_logo;
+                            }
+
+                            largeIcon = BitmapFactory.decodeResource(getResources(), smallIcon);
+
+                            Notification.Builder notificationBuilder = new Notification.Builder(this)
+                                    .setSmallIcon(smallIcon)
+                                    .setLargeIcon(largeIcon)
+                                    .setColor(getColor(R.color.colorPrimary))
+                                    .setContentTitle(decryptedPushMessage.getSubject())
+                                    .setContentText(signatureVerification.getUserEntity().getDisplayName())
+                                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                                    .setAutoCancel(true);
+
+                            NotificationManager notificationManager =
+                                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                            if (notificationManager != null) {
+                                String stringForCrc = decryptedPushMessage.getSubject() + " " + signatureVerification
+                                        .getUserEntity().getDisplayName() + " " + signatureVerification.getUserEntity
+                                        ().getBaseUrl();
+
+                                CRC32 crc32 = new CRC32();
+                                crc32.update(stringForCrc.getBytes());
+
+                                notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
+                            }
                         }
                     }
                 } catch (NoSuchAlgorithmException e1) {
-                    Log.d(TAG, "No proper algorithm to decrypt the message");
+                    Log.d(TAG, "No proper algorithm to decrypt the message " + e1.getLocalizedMessage());
                 } catch (NoSuchPaddingException e1) {
-                    Log.d(TAG, "No proper padding to decrypt the message");
+                    Log.d(TAG, "No proper padding to decrypt the message " + e1.getLocalizedMessage());
                 } catch (InvalidKeyException e1) {
-                    Log.d(TAG, "Invalid private key");
+                    Log.d(TAG, "Invalid private key " + e1.getLocalizedMessage());
                 }
             } catch (Exception exception) {
                 Log.d(TAG, "Something went very wrong" + exception.getLocalizedMessage());
