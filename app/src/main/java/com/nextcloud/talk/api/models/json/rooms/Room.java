@@ -22,8 +22,9 @@ package com.nextcloud.talk.api.models.json.rooms;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.api.models.User;
+import com.nextcloud.talk.api.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.api.models.json.converters.EnumRoomTypeConverter;
+import com.nextcloud.talk.api.models.json.participants.Participant;
 
 import org.parceler.Parcel;
 
@@ -52,9 +53,11 @@ public class Room {
     @JsonField(name = "numGuests")
     public long numberOfGuests;
     @JsonField(name = "guestList")
-    public List<User> guestList;
+    public List<Participant> guestList;
     @JsonField(name = "participants")
-    public List<User> participants;
+    public List<Participant> participants;
+    @JsonField(name = "participantType", typeConverter = EnumParticipantTypeConverter.class)
+    public Participant.ParticipantType participantType;
     @JsonField(name = "hasPassword")
     public boolean hasPassword;
     @JsonField(name = "sessionId")
@@ -66,4 +69,22 @@ public class Room {
         ROOM_GROUP_CALL,
         ROOM_PUBLIC_CALL
     }
+
+    public boolean isPublic() {
+        return (RoomType.ROOM_PUBLIC_CALL.equals(type));
+    }
+
+    public boolean canModerate() {
+        return (Participant.ParticipantType.OWNER.equals(participantType)
+                || Participant.ParticipantType.MODERATOR.equals(participantType));
+    }
+
+    public boolean isNameEditable() {
+        return (canModerate() && !RoomType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
+    }
+
+    public boolean isDeletable() {
+        return (canModerate() && ((participants != null && participants.size() > 2) || numberOfGuests > 0));
+    }
+
 }

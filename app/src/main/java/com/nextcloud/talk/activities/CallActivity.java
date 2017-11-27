@@ -764,5 +764,4 @@ public class CallActivity extends AppCompatActivity {
                     }
                 });
     }
-
 }

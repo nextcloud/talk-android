@@ -31,7 +31,7 @@ import android.view.ViewGroup;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.UserItem;
-import com.nextcloud.talk.api.models.User;
+import com.nextcloud.talk.api.models.json.participants.Participant;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.persistence.entities.UserEntity;
@@ -115,15 +115,15 @@ public class SwitchAccountController extends BaseController {
             adapter = new FlexibleAdapter<>(userItems, getActivity(), false);
 
             UserEntity userEntity;
-            User user;
+            Participant participant;
 
             for (Object userEntityObject : userUtils.getUsers()) {
                 userEntity = (UserEntity) userEntityObject;
                 if (!userEntity.getCurrent()) {
-                    user = new User();
-                    user.setName(userEntity.getDisplayName());
-                    user.setUserId(userEntity.getUsername());
-                    userItems.add(new UserItem(user, userEntity));
+                    participant = new Participant();
+                    participant.setName(userEntity.getDisplayName());
+                    participant.setUserId(userEntity.getUsername());
+                    userItems.add(new UserItem(participant, userEntity));
                 }
             }
 

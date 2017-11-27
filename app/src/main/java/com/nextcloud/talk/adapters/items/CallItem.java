@@ -23,6 +23,7 @@ package com.nextcloud.talk.adapters.items;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -32,9 +33,12 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -47,20 +51,20 @@ import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> implements IFilterable {
+public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements IFilterable {
 
     private Room room;
     private UserEntity userEntity;
 
-    public RoomItem(Room room, UserEntity userEntity) {
+    public CallItem(Room room, UserEntity userEntity) {
         this.room = room;
         this.userEntity = userEntity;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof RoomItem) {
-            RoomItem inItem = (RoomItem) o;
+        if (o instanceof CallItem) {
+            CallItem inItem = (CallItem) o;
             return room.equals(inItem.getModel());
         }
         return false;
@@ -148,6 +152,8 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
                 holder.avatarImageView.setVisibility(View.GONE);
 
         }
+
+        holder.moreMenuButton.setOnClickListener(view -> EventBus.getDefault().post(new MoreMenuClickEvent(room)));
     }
 
     @Override
@@ -165,6 +171,8 @@ public class RoomItem extends AbstractFlexibleItem<RoomItem.RoomItemViewHolder> 
         public TextView roomLastPing;
         @BindView(R.id.avatar_image)
         public AvatarImageView avatarImageView;
+        @BindView(R.id.more_menu)
+        public ImageButton moreMenuButton;
 
         /**
          * Default constructor.

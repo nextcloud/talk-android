@@ -32,7 +32,7 @@
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/margin_between_elements"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:scaleType="centerInside"
         app:aiv_CornerRadius="@dimen/avatar_corner_radius"
@@ -40,11 +40,12 @@
         app:aiv_TextSizeRatio="0.5"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/linear_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_toEndOf="@id/avatar_image"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_toStartOf="@+id/more_menu"
         android:orientation="vertical">
 
         <TextView
@@ -65,5 +66,15 @@
             tools:text="A week ago"/>
 
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/more_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/margin_between_elements"
+        android:background="@drawable/ic_more_horiz_black_24dp"/>
 
 </RelativeLayout>

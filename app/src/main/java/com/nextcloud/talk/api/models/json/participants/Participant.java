@@ -34,6 +34,12 @@ public class Participant {
     @JsonField(name = "userId")
     String userId;
 
+    @JsonField(name = "type")
+    ParticipantType type;
+
+    @JsonField(name = "name")
+    String name;
+
     @JsonField(name = "lastPing")
     long lastPing;
 
@@ -45,4 +51,13 @@ public class Participant {
 
     @JsonField(name = "inCall")
     boolean inCall;
+
+    public enum ParticipantType {
+        DUMMY,
+        OWNER,
+        MODERATOR,
+        USER,
+        GUEST,
+        USER_FOLLOWING_LINK
+    }
 }

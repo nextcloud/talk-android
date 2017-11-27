@@ -51,7 +51,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.User;
+import com.nextcloud.talk.api.models.json.participants.Participant;
 import com.nextcloud.talk.api.models.json.sharees.Sharee;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -239,13 +239,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                             getExactUsers().getExactSharees());
                                 }
 
-                                User user;
+                                Participant participant;
                                 for (Sharee sharee : shareeHashSet) {
                                     if (!sharee.getValue().getShareWith().equals(userEntity.getUsername())) {
-                                        user = new User();
-                                        user.setName(sharee.getLabel());
-                                        user.setUserId(sharee.getValue().getShareWith());
-                                        contactItems.add(new UserItem(user, userEntity));
+                                        participant = new Participant();
+                                        participant.setName(sharee.getLabel());
+                                        participant.setUserId(sharee.getValue().getShareWith());
+                                        contactItems.add(new UserItem(participant, userEntity));
                                     }
 
                                 }
@@ -255,6 +255,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                                 adapter.updateDataSet(contactItems, true);
                                 searchItem.setVisible(contactItems.size() > 0);
+                                swipeRefreshLayout.setRefreshing(false);
                             }
 
                         }, throwable -> {
@@ -280,6 +281,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 }
                             }
 
+                            swipeRefreshLayout.setRefreshing(false);
                             dispose(contactsQueryDisposable);
                         }
                         , () -> {

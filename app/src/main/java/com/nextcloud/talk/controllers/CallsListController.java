@@ -49,17 +49,23 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
+import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
-import com.nextcloud.talk.adapters.items.RoomItem;
+import com.nextcloud.talk.adapters.items.CallItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -88,6 +94,9 @@ public class CallsListController extends BaseController implements SearchView.On
     UserUtils userUtils;
 
     @Inject
+    EventBus eventBus;
+
+    @Inject
     NcApi ncApi;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -97,9 +106,10 @@ public class CallsListController extends BaseController implements SearchView.On
 
     private UserEntity userEntity;
     private Disposable roomsQueryDisposable;
-    private FlexibleAdapter<RoomItem> adapter;
-    private List<RoomItem> roomItems = new ArrayList<>();
+    private FlexibleAdapter<CallItem> adapter;
+    private List<CallItem> callItems = new ArrayList<>();
 
+    private BottomSheet bottomSheet;
     private MenuItem searchItem;
     private SearchView searchView;
     private String searchQuery;
@@ -108,13 +118,13 @@ public class CallsListController extends BaseController implements SearchView.On
             new FlexibleAdapter.OnItemClickListener() {
                 @Override
                 public boolean onItemClick(int position) {
-                    if (roomItems.size() > position) {
+                    if (callItems.size() > position) {
                         overridePushHandler(new NoOpControllerChangeHandler());
                         overridePopHandler(new NoOpControllerChangeHandler());
-                        RoomItem roomItem = roomItems.get(position);
+                        CallItem callItem = callItems.get(position);
                         Intent callIntent = new Intent(getActivity(), CallActivity.class);
                         BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                        bundleBuilder.putString("roomToken", roomItem.getModel().getToken());
+                        bundleBuilder.putString("roomToken", callItem.getModel().getToken());
                         bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
                         callIntent.putExtras(bundleBuilder.build());
                         startActivity(callIntent);
@@ -142,7 +152,7 @@ public class CallsListController extends BaseController implements SearchView.On
         userEntity = userUtils.getCurrentUser();
 
         if (adapter == null) {
-            adapter = new FlexibleAdapter<>(roomItems, getActivity(), false);
+            adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
             if (userEntity != null) {
                 fetchData();
             }
@@ -160,6 +170,17 @@ public class CallsListController extends BaseController implements SearchView.On
         }
     }
 
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+        eventBus.register(this);
+    }
+
+    @Override
+    protected void onDetach(@NonNull View view) {
+        super.onDetach(view);
+        eventBus.unregister(this);
+    }
 
     private void initSearchView() {
         if (getActivity() != null) {
@@ -198,7 +219,7 @@ public class CallsListController extends BaseController implements SearchView.On
                     } else {
                         handler.postDelayed(() -> {
                             bottomNavigationView.setVisibility(View.VISIBLE);
-                            searchItem.setVisible(roomItems.size() > 0);
+                            searchItem.setVisible(callItems.size() > 0);
                         }, 500);
                     }
 
@@ -221,7 +242,7 @@ public class CallsListController extends BaseController implements SearchView.On
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        searchItem.setVisible(roomItems.size() > 0);
+        searchItem.setVisible(callItems.size() > 0);
         if (adapter.hasSearchText()) {
             searchItem.expandActionView();
             searchView.setQuery(adapter.getSearchText(), false);
@@ -231,7 +252,7 @@ public class CallsListController extends BaseController implements SearchView.On
     private void fetchData() {
         dispose(null);
 
-        roomItems = new ArrayList<>();
+        callItems = new ArrayList<>();
 
         roomsQueryDisposable = ncApi.getRooms(ApiHelper.getCredentials(userEntity.getUsername(),
                 userEntity.getToken()), ApiHelper.getUrlForGetRooms(userEntity.getBaseUrl()))
@@ -241,18 +262,21 @@ public class CallsListController extends BaseController implements SearchView.On
 
                     if (roomsOverall != null) {
                         for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
-                            roomItems.add(new RoomItem(roomsOverall.getOcs().getData().get(i), userEntity));
+                            callItems.add(new CallItem(roomsOverall.getOcs().getData().get(i), userEntity));
                         }
 
-                        adapter.updateDataSet(roomItems, true);
+                        adapter.updateDataSet(callItems, true);
 
-                        Collections.sort(roomItems, (roomItem, t1) ->
-                                Long.compare(t1.getModel().getLastPing(), roomItem.getModel().getLastPing()));
+                        Collections.sort(callItems, (callItem, t1) ->
+                                Long.compare(t1.getModel().getLastPing(), callItem.getModel().getLastPing()));
 
                         if (searchItem != null) {
-                            searchItem.setVisible(roomItems.size() > 0);
+                            searchItem.setVisible(callItems.size() > 0);
                         }
                     }
+
+                    swipeRefreshLayout.setRefreshing(false);
+
                 }, throwable -> {
                     if (searchItem != null) {
                         searchItem.setVisible(false);
@@ -275,6 +299,7 @@ public class CallsListController extends BaseController implements SearchView.On
                                 break;
                         }
                     }
+                    swipeRefreshLayout.setRefreshing(false);
                     dispose(roomsQueryDisposable);
                 }, () -> {
                     dispose(roomsQueryDisposable);
@@ -357,5 +382,26 @@ public class CallsListController extends BaseController implements SearchView.On
     public boolean onQueryTextSubmit(String query) {
         return onQueryTextChange(query);
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MoreMenuClickEvent moreMenuClickEvent) {
+        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+        Room room = moreMenuClickEvent.getRoom();
+        bundleBuilder.putParcelable("room", Parcels.wrap(room));
+
+        View view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
+
+        getChildRouter((ViewGroup) view).setRoot(
+                RouterTransaction.with(new RoomMenuController(bundleBuilder.build()))
+                        .popChangeHandler(new HorizontalChangeHandler())
+                        .pushChangeHandler(new HorizontalChangeHandler()));
+
+        if (bottomSheet == null) {
+            bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
+        }
+
+        bottomSheet.show();
+    }
+
 
 }

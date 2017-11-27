@@ -28,7 +28,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.User;
+import com.nextcloud.talk.api.models.json.participants.Participant;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ColorUtils;
@@ -47,11 +47,11 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements IFilterable {
 
-    private User user;
+    private Participant participant;
     private UserEntity userEntity;
 
-    public UserItem(User user, UserEntity userEntity) {
-        this.user = user;
+    public UserItem(Participant participant, UserEntity userEntity) {
+        this.participant = participant;
         this.userEntity = userEntity;
     }
 
@@ -59,22 +59,22 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     public boolean equals(Object o) {
         if (o instanceof UserItem) {
             UserItem inItem = (UserItem) o;
-            return user.equals(inItem.getModel());
+            return participant.equals(inItem.getModel());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return user.hashCode();
+        return participant.hashCode();
     }
 
     /**
      * @return the model object
      */
 
-    public User getModel() {
-        return user;
+    public Participant getModel() {
+        return participant;
     }
 
     public UserEntity getEntity() {
@@ -94,17 +94,17 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
         if (adapter.hasSearchText()) {
-            FlexibleUtils.highlightText(holder.contactDisplayName, user.getName(), adapter.getSearchText());
+            FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(), adapter.getSearchText());
         } else {
-            holder.contactDisplayName.setText(user.getName());
+            holder.contactDisplayName.setText(participant.getName());
         }
 
         // Awful hack
-        holder.avatarImageView.setTextAndColorSeed(String.valueOf(user.getName().
+        holder.avatarImageView.setTextAndColorSeed(String.valueOf(participant.getName().
                 toUpperCase().charAt(0)), ColorUtils.colorSeed);
 
         GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                user.getUserId()), new LazyHeaders.Builder()
+                participant.getUserId()), new LazyHeaders.Builder()
                 .setHeader("Accept", "image/*")
                 .setHeader("User-Agent", ApiHelper.getUserAgent())
                 .build());
@@ -121,7 +121,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
     @Override
     public boolean filter(String constraint) {
-        return user.getName() != null && user.getName().toLowerCase().trim().contains(constraint.toLowerCase());
+        return participant.getName() != null && participant.getName().toLowerCase().trim().contains(constraint.toLowerCase());
     }
 
 
