@@ -147,6 +147,7 @@ public class CallsListController extends BaseController implements SearchView.On
             }
         }
 
+        adapter.addListener(this);
         prepareViews();
 
     }

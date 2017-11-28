@@ -35,6 +35,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -70,6 +71,7 @@ import javax.inject.Inject;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.SelectableAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -77,7 +79,8 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class ContactsController extends BaseController implements SearchView.OnQueryTextListener {
+public class ContactsController extends BaseController implements SearchView.OnQueryTextListener,
+        ActionMode.Callback, FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener {
 
     public static final String TAG = "ContactsController";
 
@@ -103,6 +106,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private MenuItem searchItem;
     private SearchView searchView;
     private String searchQuery;
+
+    private ActionMode actionMode;
 
     public ContactsController() {
         super();
@@ -136,6 +141,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         }
 
+        adapter.addListener(this);
         prepareViews();
     }
 
@@ -360,5 +366,84 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     public boolean onQueryTextSubmit(String query) {
         return onQueryTextChange(query);
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        adapter.setMode(SelectableAdapter.Mode.MULTI);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode actionMode) {
+        adapter.setMode(SelectableAdapter.Mode.IDLE);
+        actionMode = null;
+    }
+
+    @Override
+    public boolean onItemClick(int position) {
+        if (actionMode != null && position != RecyclerView.NO_POSITION) {
+            // Mark the position selected
+            toggleSelection(position);
+            return true;
+        } else {
+            // Handle the item click listener
+            // We don't need to activate anything
+            return false;
+        }
+    }
+
+    private void toggleSelection(int position) {
+        adapter.toggleSelection(position);
+
+        int count = adapter.getSelectedItemCount();
+
+        if (count == 0) {
+            actionMode.finish();
+        } else {
+            setContextTitle(count);
+        }
+    }
+
+    private void setContextTitle(int count) {
+        actionMode.setTitle(String.valueOf(count) + " " + (count == 1 ?
+                getResources().getString(R.string.one_contact_selected) :
+                getResources().getString(R.string.more_contacts_selected)));
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        adapter.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (adapter != null) {
+            adapter.onRestoreInstanceState(savedInstanceState);
+            if (adapter.getSelectedItemCount() > 0) {
+                actionMode = getActivity().startActionMode(this);
+                setContextTitle(adapter.getSelectedItemCount());
+            }
+        }
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        if (actionMode == null) {
+            actionMode = getActivity().startActionMode(this);
+        }
+        toggleSelection(position);
     }
 }

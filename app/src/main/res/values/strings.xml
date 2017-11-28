@@ -72,4 +72,8 @@
     <string name="nc_stop_sharing">Stop sharing the call</string>
     <string name="nc_delete_call">Delete call</string>
 
+    <!-- Contacts -->
+    <string name="one_contact_selected">contact selected</string>
+    <string name="more_contacts_selected">contacts selected</string>
+
 </resources>

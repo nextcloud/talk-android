@@ -81,6 +81,7 @@ public class RoomMenuController extends BaseController implements FlexibleAdapte
             adapter = new FlexibleAdapter<>(menuItems, getActivity(), false);
         }
 
+        adapter.addListener(this);
         recyclerView.setAdapter(adapter);
 
         recyclerView.addItemDecoration(new DividerItemDecoration(
