@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
-        tools:replace="label, icon, roundIcon, theme, name, allowBackup"
+        tools:replace="label, icon, theme, name, allowBackup"
         android:name=".application.NextcloudTalkApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_config"
