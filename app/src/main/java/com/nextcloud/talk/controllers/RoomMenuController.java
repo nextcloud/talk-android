@@ -92,6 +92,9 @@ public class RoomMenuController extends BaseController {
 
     private void prepareMenu() {
         menuItems = new ArrayList<>();
+
+        menuItems.add(new MenuItem(getResources().getString(R.string.nc_what)));
+
         menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave)));
 
         if (room.isNameEditable()) {

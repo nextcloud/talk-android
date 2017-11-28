@@ -21,10 +21,14 @@
 package com.nextcloud.talk.adapters.items;
 
 
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 
 import java.util.List;
 
@@ -66,7 +70,17 @@ public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> 
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, MenuItem.MenuItemViewHolder holder, int position, List payloads) {
-        holder.menuTitle.setText(title);
+        if (title.equals(NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_what))) {
+            Spannable spannableString = new SpannableString(NextcloudTalkApplication.getSharedApplication()
+                    .getString(R.string.nc_what));
+            spannableString.setSpan(new ForegroundColorSpan(NextcloudTalkApplication.getSharedApplication()
+                            .getResources().getColor(R.color.colorPrimary)), 0,
+                    spannableString.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.menuTitle.setText(spannableString);
+        } else {
+            holder.menuTitle.setText(title);
+        }
     }
 
     static class MenuItemViewHolder extends FlexibleViewHolder {
