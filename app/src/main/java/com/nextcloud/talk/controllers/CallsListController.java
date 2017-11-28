@@ -84,7 +84,8 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class CallsListController extends BaseController implements SearchView.OnQueryTextListener {
+public class CallsListController extends BaseController implements SearchView.OnQueryTextListener,
+        FlexibleAdapter.OnItemClickListener {
 
     public static final String TAG = "CallsListController";
 
@@ -146,7 +147,6 @@ public class CallsListController extends BaseController implements SearchView.On
             }
         }
 
-        adapter.addListener(new OnItemClickListener());
         prepareViews();
 
     }
@@ -384,25 +384,20 @@ public class CallsListController extends BaseController implements SearchView.On
         bottomSheet.show();
     }
 
-
-    private class OnItemClickListener implements FlexibleAdapter.OnItemClickListener {
-
-        @Override
-        public boolean onItemClick(int position) {
-            if (callItems.size() > position) {
-                overridePushHandler(new NoOpControllerChangeHandler());
-                overridePopHandler(new NoOpControllerChangeHandler());
-                CallItem callItem = callItems.get(position);
-                Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                bundleBuilder.putString("roomToken", callItem.getModel().getToken());
-                bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
-                callIntent.putExtras(bundleBuilder.build());
-                startActivity(callIntent);
-            }
-
-            return true;
+    @Override
+    public boolean onItemClick(int position) {
+        if (callItems.size() > position) {
+            overridePushHandler(new NoOpControllerChangeHandler());
+            overridePopHandler(new NoOpControllerChangeHandler());
+            CallItem callItem = callItems.get(position);
+            Intent callIntent = new Intent(getActivity(), CallActivity.class);
+            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+            bundleBuilder.putString("roomToken", callItem.getModel().getToken());
+            bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
+            callIntent.putExtras(bundleBuilder.build());
+            startActivity(callIntent);
         }
-    }
 
+        return true;
+    }
 }
