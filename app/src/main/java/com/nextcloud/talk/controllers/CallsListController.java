@@ -131,6 +131,14 @@ public class CallsListController extends BaseController implements SearchView.On
 
         userEntity = userUtils.getCurrentUser();
 
+        if (userEntity == null) {
+            if (getParentController() != null && getParentController().getRouter() != null) {
+                getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler())));
+            }
+        }
+
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
             if (userEntity != null) {
@@ -141,13 +149,6 @@ public class CallsListController extends BaseController implements SearchView.On
         adapter.addListener(new OnItemClickListener());
         prepareViews();
 
-        if (userEntity == null) {
-            if (getParentController() != null && getParentController().getRouter() != null) {
-                getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
-                        .pushChangeHandler(new HorizontalChangeHandler())
-                        .popChangeHandler(new HorizontalChangeHandler())));
-            }
-        }
     }
 
     @Override

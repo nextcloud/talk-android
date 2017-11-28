@@ -120,14 +120,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         userEntity = userUtils.getCurrentUser();
-        if (adapter == null) {
-            adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
-            if (userEntity != null) {
-                fetchData();
-            }
-        }
-
-        prepareViews();
 
         if (userEntity == null) {
             if (getParentController().getRouter() != null) {
@@ -137,12 +129,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         }
 
-    }
+        if (adapter == null) {
+            adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
+            if (userEntity != null) {
+                fetchData();
+            }
+        }
 
-    @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-
+        prepareViews();
     }
 
     private void initSearchView() {
