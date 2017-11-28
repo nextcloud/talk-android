@@ -114,7 +114,7 @@ public class AccountVerificationController extends BaseController {
                             R.string.nc_nextcloud_talk_app_installed), getResources().getString(R.string.nc_app_name)));
 
                     profileQueryDisposable = ncApi.getUserProfile(credentials,
-                            ApiHelper.getUrlForUserProfile(baseUrl))
+                            ApiHelper.getUrlForUserProfile(baseUrl, username))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(userProfileOverall -> {
@@ -126,6 +126,10 @@ public class AccountVerificationController extends BaseController {
                                         .getDisplayName())) {
                                     displayName = userProfileOverall.getOcs().getData()
                                             .getDisplayName();
+                                } else if (!TextUtils.isEmpty(userProfileOverall.getOcs().getData()
+                                        .getDisplayNameAlt())) {
+                                    displayName = userProfileOverall.getOcs().getData()
+                                            .getDisplayNameAlt();
                                 }
 
                                 if (!TextUtils.isEmpty(displayName)) {

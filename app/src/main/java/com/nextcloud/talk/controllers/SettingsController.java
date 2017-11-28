@@ -74,7 +74,6 @@ import cn.carbs.android.avatarimageview.library.AvatarImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Credentials;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class SettingsController extends BaseController {
@@ -281,10 +280,9 @@ public class SettingsController extends BaseController {
                     .centerInside()
                     .into(avatarImageView);
 
-
-            profileQueryDisposable = ncApi.getUserProfile(Credentials.basic(userEntity.getUsername(),
+            profileQueryDisposable = ncApi.getUserProfile(ApiHelper.getCredentials(userEntity.getUsername(),
                     userEntity.getToken()),
-                    ApiHelper.getUrlForUserProfile(userEntity.getBaseUrl()))
+                    ApiHelper.getUrlForUserProfile(userEntity.getBaseUrl(), userEntity.getUsername()))
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(userProfileOverall -> {

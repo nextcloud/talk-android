@@ -80,7 +80,7 @@ import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ContactsController extends BaseController implements SearchView.OnQueryTextListener,
-        ActionMode.Callback, FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener {
+        ActionMode.Callback, FlexibleAdapter.OnItemClickListener {
 
     public static final String TAG = "ContactsController";
 
@@ -411,14 +411,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (count == 0) {
             actionMode.finish();
         } else {
-            setContextTitle(count);
+            //setContextTitle(count);
         }
-    }
-
-    private void setContextTitle(int count) {
-        actionMode.setTitle(String.valueOf(count) + " " + (count == 1 ?
-                getResources().getString(R.string.one_contact_selected) :
-                getResources().getString(R.string.more_contacts_selected)));
     }
 
     @Override
@@ -432,18 +426,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         super.onRestoreInstanceState(savedInstanceState);
         if (adapter != null) {
             adapter.onRestoreInstanceState(savedInstanceState);
-            if (adapter.getSelectedItemCount() > 0) {
-                actionMode = getActivity().startActionMode(this);
-                setContextTitle(adapter.getSelectedItemCount());
-            }
         }
     }
 
-    @Override
-    public void onItemLongClick(int position) {
-        if (actionMode == null) {
-            actionMode = getActivity().startActionMode(this);
-        }
-        toggleSelection(position);
-    }
 }

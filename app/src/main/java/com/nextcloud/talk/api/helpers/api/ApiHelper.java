@@ -130,8 +130,8 @@ public class ApiHelper {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/signaling";
     }
 
-    public static String getUrlForUserProfile(String baseUrl) {
-        return baseUrl + ocsApiVersion + "/cloud/user";
+    public static String getUrlForUserProfile(String baseUrl, String username) {
+        return baseUrl + ocsApiVersion + "/cloud/users/" + username;
     }
 
     public static String getUrlPostfixForStatus() {
