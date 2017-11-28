@@ -48,11 +48,9 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class RoomMenuController extends BaseController {
-    private Room room;
-
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-
+    private Room room;
     private List<AbstractFlexibleItem> menuItems;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
 
@@ -84,6 +82,7 @@ public class RoomMenuController extends BaseController {
         }
 
         recyclerView.setAdapter(adapter);
+        adapter.addListener(new OnItemClickListener());
 
         recyclerView.addItemDecoration(new DividerItemDecoration(
                 recyclerView.getContext(),
@@ -118,4 +117,15 @@ public class RoomMenuController extends BaseController {
         }
     }
 
+    private class OnItemClickListener implements FlexibleAdapter.OnItemClickListener {
+
+        @Override
+        public boolean onItemClick(int position) {
+            if (menuItems.size() > position) {
+                MenuItem menuItem = (MenuItem) menuItems.get(position);
+            }
+
+            return true;
+        }
+    }
 }

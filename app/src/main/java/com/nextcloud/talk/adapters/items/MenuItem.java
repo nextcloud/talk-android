@@ -25,9 +25,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.events.MenuItemClickEvent;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -37,7 +34,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder>  {
+public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> {
     private String title;
 
     public MenuItem(String title) {
@@ -70,8 +67,6 @@ public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, MenuItem.MenuItemViewHolder holder, int position, List payloads) {
         holder.menuTitle.setText(title);
-
-        holder.menuTitle.setOnClickListener(view -> EventBus.getDefault().post(new MenuItemClickEvent(title)));
     }
 
     static class MenuItemViewHolder extends FlexibleViewHolder {

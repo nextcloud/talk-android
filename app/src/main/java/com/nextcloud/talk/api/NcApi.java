@@ -168,7 +168,7 @@ public interface NcApi {
     @FormUrlEncoded
     @POST
     Observable<SignalingOverall> sendSignalingMessages(@Header("Authorization") String authorization, @Url String url,
-                                             @Field("messages") String messages);
+                                                       @Field("messages") String messages);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling

@@ -63,13 +63,6 @@ public class Room {
     @JsonField(name = "sessionId")
     public String sessionId;
 
-    public enum RoomType {
-        DUMMY,
-        ROOM_TYPE_ONE_TO_ONE_CALL,
-        ROOM_GROUP_CALL,
-        ROOM_PUBLIC_CALL
-    }
-
     public boolean isPublic() {
         return (RoomType.ROOM_PUBLIC_CALL.equals(type));
     }
@@ -85,6 +78,13 @@ public class Room {
 
     public boolean isDeletable() {
         return (canModerate() && ((participants != null && participants.size() > 2) || numberOfGuests > 0));
+    }
+
+    public enum RoomType {
+        DUMMY,
+        ROOM_TYPE_ONE_TO_ONE_CALL,
+        ROOM_GROUP_CALL,
+        ROOM_PUBLIC_CALL
     }
 
 }

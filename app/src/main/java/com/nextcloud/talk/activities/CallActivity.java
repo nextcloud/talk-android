@@ -621,7 +621,7 @@ public class CallActivity extends AppCompatActivity {
                             try {
                                 RelativeLayout relativeLayout = (RelativeLayout)
                                         getLayoutInflater().inflate(R.layout.surface_renderer, videosGrid,
-                                        false);
+                                                false);
                                 relativeLayout.setTag(session);
                                 SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id
                                         .surface_view);

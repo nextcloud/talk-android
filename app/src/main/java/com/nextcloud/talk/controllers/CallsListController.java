@@ -114,26 +114,6 @@ public class CallsListController extends BaseController implements SearchView.On
     private SearchView searchView;
     private String searchQuery;
 
-    private FlexibleAdapter.OnItemClickListener onItemClickListener =
-            new FlexibleAdapter.OnItemClickListener() {
-                @Override
-                public boolean onItemClick(int position) {
-                    if (callItems.size() > position) {
-                        overridePushHandler(new NoOpControllerChangeHandler());
-                        overridePopHandler(new NoOpControllerChangeHandler());
-                        CallItem callItem = callItems.get(position);
-                        Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                        bundleBuilder.putString("roomToken", callItem.getModel().getToken());
-                        bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
-                        callIntent.putExtras(bundleBuilder.build());
-                        startActivity(callIntent);
-                    }
-
-                    return true;
-                }
-            };
-
     public CallsListController() {
         super();
         setHasOptionsMenu(true);
@@ -158,7 +138,7 @@ public class CallsListController extends BaseController implements SearchView.On
             }
         }
 
-        adapter.addListener(onItemClickListener);
+        adapter.addListener(new OnItemClickListener());
         prepareViews();
 
         if (userEntity == null) {
@@ -403,5 +383,25 @@ public class CallsListController extends BaseController implements SearchView.On
         bottomSheet.show();
     }
 
+
+    private class OnItemClickListener implements FlexibleAdapter.OnItemClickListener {
+
+        @Override
+        public boolean onItemClick(int position) {
+            if (callItems.size() > position) {
+                overridePushHandler(new NoOpControllerChangeHandler());
+                overridePopHandler(new NoOpControllerChangeHandler());
+                CallItem callItem = callItems.get(position);
+                Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                bundleBuilder.putString("roomToken", callItem.getModel().getToken());
+                bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
+                callIntent.putExtras(bundleBuilder.build());
+                startActivity(callIntent);
+            }
+
+            return true;
+        }
+    }
 
 }
