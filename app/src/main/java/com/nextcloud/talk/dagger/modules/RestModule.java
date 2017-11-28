@@ -114,20 +114,30 @@ public class RestModule {
 
     @Provides
     @Singleton
+    CookieManager provideCookieManager() {
+        return new CookieManager();
+    }
+    @Provides
+    @Singleton
+    Cache provideCache() {
+        int cacheSize = 128 * 1024 * 1024; // 128 MB
+        return new Cache(NextcloudTalkApplication.getSharedApplication().getCacheDir(), cacheSize);
+    }
+
+    @Provides
+    @Singleton
     OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
                                    MagicTrustManager magicTrustManager,
-                                   SSLSocketFactoryCompat sslSocketFactoryCompat) {
+                                   SSLSocketFactoryCompat sslSocketFactoryCompat, Cache cache,
+                                   CookieManager cookieManager) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         httpClient.connectTimeout(30, TimeUnit.SECONDS);
         httpClient.readTimeout(30, TimeUnit.SECONDS);
         httpClient.writeTimeout(30, TimeUnit.SECONDS);
 
-        httpClient.cookieJar(new JavaNetCookieJar(new CookieManager()));
-
-        int cacheSize = 128 * 1024 * 1024; // 128 MB
-
-        httpClient.cache(new Cache(NextcloudTalkApplication.getSharedApplication().getCacheDir(), cacheSize));
+        httpClient.cookieJar(new JavaNetCookieJar(cookieManager));
+        httpClient.cache(cache);
 
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();

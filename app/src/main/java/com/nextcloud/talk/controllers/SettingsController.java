@@ -33,7 +33,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
@@ -62,6 +61,7 @@ import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -139,6 +139,9 @@ public class SettingsController extends BaseController {
 
     @Inject
     UserUtils userUtils;
+
+    @Inject
+    CookieManager cookieManager;
 
     private UserEntity userEntity;
 
@@ -282,7 +285,7 @@ public class SettingsController extends BaseController {
 
             profileQueryDisposable = ncApi.getUserProfile(ApiHelper.getCredentials(userEntity.getUsername(),
                     userEntity.getToken()),
-                    ApiHelper.getUrlForUserProfile(userEntity.getBaseUrl(), userEntity.getUsername()))
+                    ApiHelper.getUrlForUserProfile(userEntity.getBaseUrl()))
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(userProfileOverall -> {
@@ -318,15 +321,16 @@ public class SettingsController extends BaseController {
                     }, () -> dispose(profileQueryDisposable));
 
             removeAccountButton.setOnClickListener(view1 -> {
+                cookieManager.getCookieStore().removeAll();
                 boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(userEntity.getId());
                 if (otherUserExists && getView() != null) {
-                    onAttach(getView());
                     onViewBound(getView());
+                    onAttach(getView());
                 } else if (!otherUserExists) {
                     getParentController().getRouter().setRoot(RouterTransaction.with(
                             new ServerSelectionController())
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler()));
+                            .pushChangeHandler(new VerticalChangeHandler())
+                            .popChangeHandler(new VerticalChangeHandler()));
                 }
 
                 new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true)

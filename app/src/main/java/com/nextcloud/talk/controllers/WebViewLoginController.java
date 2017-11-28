@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
@@ -84,6 +83,8 @@ public class WebViewLoginController extends BaseController {
     MagicTrustManager magicTrustManager;
     @Inject
     EventBus eventBus;
+    @Inject
+    java.net.CookieManager cookieManager;
 
     @BindView(R.id.webview)
     WebView webView;
@@ -140,7 +141,7 @@ public class WebViewLoginController extends BaseController {
         webView.clearHistory();
 
         CookieSyncManager.createInstance(getActivity());
-        CookieManager.getInstance().removeAllCookies(null);
+        android.webkit.CookieManager.getInstance().removeAllCookies(null);
 
         Map<String, String> headers = new HashMap<>();
         headers.put("OCS-APIRequest", "true");
@@ -244,6 +245,7 @@ public class WebViewLoginController extends BaseController {
                 userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
                         baseUrl, null, null, true).
                         subscribe(userEntity -> {
+                                    cookieManager.getCookieStore().removeAll();
                                     if (!isPasswordUpdate && finalErrorMessageType == null) {
                                         BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
                                         bundleBuilder.putString(BundleKeys.KEY_USERNAME, userEntity.getUsername());
