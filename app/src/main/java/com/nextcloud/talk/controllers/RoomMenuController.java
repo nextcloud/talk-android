@@ -121,7 +121,7 @@ public class RoomMenuController extends BaseController implements FlexibleAdapte
 
     @Override
     public boolean onItemClick(int position) {
-        if (menuItems.size() > position) {
+        if (menuItems.size() > position && position != 0) {
             MenuItem menuItem = (MenuItem) menuItems.get(position);
         }
 
