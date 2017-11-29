@@ -190,7 +190,6 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onSignalingChange(PeerConnection.SignalingState signalingState) {
-            Log.d("MARIO", signalingState.name());
         }
 
         @Override
@@ -243,7 +242,6 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onDataChannel(DataChannel dataChannel) {
-            Log.d("MARIO", "DATA");
             if (dataChannel.label().equals("status")) {
                 magicDataChannel = dataChannel;
                 magicDataChannel.registerObserver(new MagicDataChannelObserver());
