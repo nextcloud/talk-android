@@ -43,7 +43,7 @@ import org.webrtc.ThreadUtils;
 
 /**
  * MagicProximitySensor manages functions related to the proximity sensor in
- * the AppRTC demo.
+ * the app.
  * On most device, the proximity sensor is implemented as a boolean-sensor.
  * It returns just two values "NEAR" or "FAR". Thresholding is done on the LUX
  * value i.e. the LUX value of the light sensor is compared with a threshold.
