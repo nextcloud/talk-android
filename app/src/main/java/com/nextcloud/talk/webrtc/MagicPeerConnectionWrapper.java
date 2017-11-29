@@ -49,9 +49,7 @@ public class MagicPeerConnectionWrapper {
     private static PeerConnection peerConnection;
     List<IceCandidate> iceCandidates = new ArrayList<>();
     private List<PeerConnection.IceServer> iceServers;
-    private List<NCIceCandidate> localCandidates = new ArrayList<>();
     private String sessionId;
-    private String localSession;
     private String nick;
     private MediaConstraints mediaConstraints;
     private DataChannel magicDataChannel;
@@ -78,21 +76,10 @@ public class MagicPeerConnectionWrapper {
         }
 
         this.sessionId = sessionId;
-        this.localSession = localSession;
         this.mediaConstraints = mediaConstraints;
 
         magicSdpObserver = new MagicSdpObserver();
 
-    }
-
-
-    public void sendLocalCandidates() {
-        for (NCIceCandidate ncIceCandidate : localCandidates) {
-            EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
-                    "candidate", ncIceCandidate));
-        }
-
-        localCandidates = new ArrayList<>();
     }
 
     public void drainIceCandidates() {
@@ -212,12 +199,6 @@ public class MagicPeerConnectionWrapper {
             ncIceCandidate.setSdpMid(iceCandidate.sdpMid);
             ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
             ncIceCandidate.setCandidate(iceCandidate.sdp);
-                /*if (peerConnection.getRemoteDescription() == null) {
-                    localCandidates.add(ncIceCandidate);
-                } else {
-                    EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
-                            "candidate", ncIceCandidate));
-                }*/
             EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
                     "candidate", ncIceCandidate));
         }
@@ -229,15 +210,15 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onAddStream(MediaStream mediaStream) {
-            videoOn = mediaStream.videoTracks.size() == 1;
-            audioOn = mediaStream.audioTracks.size() == 1;
+            videoOn = mediaStream.videoTracks != null && mediaStream.videoTracks.size() == 1;
+            audioOn = mediaStream.audioTracks != null && mediaStream.audioTracks.size() == 1;
             EventBus.getDefault().post(new MediaStreamEvent(mediaStream, sessionId));
         }
 
         @Override
         public void onRemoveStream(MediaStream mediaStream) {
-            videoOn = mediaStream.videoTracks.size() == 1;
-            audioOn = mediaStream.audioTracks.size() == 1;
+            videoOn = mediaStream.videoTracks != null && mediaStream.videoTracks.size() == 1;
+            audioOn = mediaStream.audioTracks != null && mediaStream.audioTracks.size() == 1;
         }
 
         @Override
@@ -294,7 +275,6 @@ public class MagicPeerConnectionWrapper {
                         peerConnection.getLocalDescription().type.canonicalForm(), null));
             } else if (peerConnection.getRemoteDescription() != null) {
                 drainIceCandidates();
-                sendLocalCandidates();
             }
         }
     }
