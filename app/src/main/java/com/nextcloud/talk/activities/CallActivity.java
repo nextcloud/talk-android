@@ -34,8 +34,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.GridLayout;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
@@ -106,8 +105,8 @@ public class CallActivity extends AppCompatActivity {
     @BindView(R.id.pip_video_view)
     SurfaceViewRenderer pipVideoView;
 
-    @BindView(R.id.videos_grid_view)
-    GridLayout videosGrid;
+    @BindView(R.id.remote_renderers_layout)
+    LinearLayout remoteRenderersLayout;
 
     @Inject
     NcApi ncApi;
@@ -449,9 +448,14 @@ public class CallActivity extends AppCompatActivity {
                         case "offer":
                         case "answer":
                             magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
-                            magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
-                                    .getMagicSdpObserver(), new SessionDescription(SessionDescription.Type.fromCanonicalForm(type),
-                                    ncSignalingMessage.getPayload().getSdp()));
+                            if (!magicPeerConnectionWrapper.getPeerConnection().signalingState().equals
+                                    (PeerConnection.SignalingState.STABLE) &&
+                                    magicPeerConnectionWrapper.getPeerConnection().getRemoteDescription() == null ||
+                                    magicPeerConnectionWrapper.getPeerConnection().getLocalDescription() == null) {
+                                magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
+                                        .getMagicSdpObserver(), new SessionDescription(SessionDescription.Type.fromCanonicalForm(type),
+                                        ncSignalingMessage.getPayload().getSdp()));
+                            }
                             break;
                         case "candidate":
                             NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
@@ -617,11 +621,11 @@ public class CallActivity extends AppCompatActivity {
                     public void run() {
                         if (stream.videoTracks.size() == 1) {
                             try {
-                                RelativeLayout relativeLayout = (RelativeLayout)
-                                        getLayoutInflater().inflate(R.layout.surface_renderer, videosGrid,
+                                LinearLayout linearLayout = (LinearLayout)
+                                        getLayoutInflater().inflate(R.layout.surface_renderer, remoteRenderersLayout,
                                                 false);
-                                relativeLayout.setTag(session);
-                                SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id
+                                linearLayout.setTag(session);
+                                SurfaceViewRenderer surfaceViewRenderer = linearLayout.findViewById(R.id
                                         .surface_view);
                                 surfaceViewRenderer.setMirror(false);
                                 surfaceViewRenderer.init(rootEglBase.getEglBaseContext(), null);
@@ -631,7 +635,8 @@ public class CallActivity extends AppCompatActivity {
                                 VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
                                 videoRendererHashMap.put(session, remoteRenderer);
                                 videoTrack.addRenderer(remoteRenderer);
-                                videosGrid.addView(relativeLayout);
+                                remoteRenderersLayout.addView(linearLayout);
+                                linearLayout.invalidate();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

@@ -19,12 +19,11 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                 android:id="@+id/relative_layout"
-                                android:layout_width="0dp"
-                                android:layout_height="0dp"
-                                android:layout_columnWeight="1"
-                                android:layout_rowWeight="1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
                                 android:orientation="vertical">
 
     <org.webrtc.SurfaceViewRenderer
@@ -32,4 +31,4 @@
         android:layout_height="match_parent"
         android:id="@+id/surface_view"/>
 
-</RelativeLayout>
+</LinearLayout>

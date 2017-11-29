@@ -24,16 +24,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
+                android:id="@+id/relative_layout"
                 tools:context=".activities.CallActivity">
 
-    <GridLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/videos_grid_view"
-        android:columnCount="4"
-        android:rowCount="2">
-
-    </GridLayout>
+        android:layout_height="match_parent"
+        android:id="@+id/remote_renderers_layout"
+        android:orientation="vertical">
+    </LinearLayout>
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/pip_video_view"
