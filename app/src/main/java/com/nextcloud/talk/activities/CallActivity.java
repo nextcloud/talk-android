@@ -461,7 +461,6 @@ public class CallActivity extends AppCompatActivity {
                             break;
                         case "endOfCandidates":
                             magicPeerConnectionWrapper.drainIceCandidates();
-                            magicPeerConnectionWrapper.sendLocalCandidates();
                             break;
                         default:
                             break;
