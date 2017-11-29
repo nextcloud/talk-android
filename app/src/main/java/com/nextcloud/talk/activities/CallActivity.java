@@ -298,7 +298,6 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
-
         ncApi.joinRoom(credentials, ApiHelper.getUrlForJoinRoom(userEntity.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -547,7 +546,7 @@ public class CallActivity extends AppCompatActivity {
             return magicPeerConnectionWrapper;
         } else {
             magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                    iceServers, sdpConstraints, sessionId);
+                    iceServers, sdpConstraints, sessionId, callSession);
             magicPeerConnectionWrapper.getPeerConnection().addStream(localMediaStream);
             magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
             return magicPeerConnectionWrapper;

@@ -36,7 +36,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -237,7 +236,6 @@ public class CallsListController extends BaseController implements SearchView.On
 
         callItems = new ArrayList<>();
 
-        Log.d("MARIO", userEntity.getUsername());
         roomsQueryDisposable = ncApi.getRooms(ApiHelper.getCredentials(userEntity.getUsername(),
                 userEntity.getToken()), ApiHelper.getUrlForGetRooms(userEntity.getBaseUrl()))
                 .subscribeOn(Schedulers.newThread())

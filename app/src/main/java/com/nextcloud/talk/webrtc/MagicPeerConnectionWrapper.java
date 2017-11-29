@@ -48,9 +48,10 @@ public class MagicPeerConnectionWrapper {
     private static String TAG = "MagicPeerConnectionWrapper";
     private static PeerConnection peerConnection;
     List<IceCandidate> iceCandidates = new ArrayList<>();
-    List<PeerConnection.IceServer> iceServers;
-    List<NCIceCandidate> localCandidates = new ArrayList<>();
+    private List<PeerConnection.IceServer> iceServers;
+    private List<NCIceCandidate> localCandidates = new ArrayList<>();
     private String sessionId;
+    private String localSession;
     private String nick;
     private MediaConstraints mediaConstraints;
     private DataChannel magicDataChannel;
@@ -62,19 +63,22 @@ public class MagicPeerConnectionWrapper {
     public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                       List<PeerConnection.IceServer> iceServerList,
                                       MediaConstraints mediaConstraints,
-                                      String sessionId) {
+                                      String sessionId, String localSession) {
 
         this.iceServers = iceServerList;
 
         peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
                 new MagicPeerConnectionObserver());
 
-        DataChannel.Init init = new DataChannel.Init();
-        init.negotiated = false;
-        magicDataChannel = peerConnection.createDataChannel("status", init);
-        magicDataChannel.registerObserver(new MagicDataChannelObserver());
+        if (sessionId.compareTo(localSession) < 0) {
+            DataChannel.Init init = new DataChannel.Init();
+            init.negotiated = false;
+            magicDataChannel = peerConnection.createDataChannel("status", init);
+            magicDataChannel.registerObserver(new MagicDataChannelObserver());
+        }
 
         this.sessionId = sessionId;
+        this.localSession = localSession;
         this.mediaConstraints = mediaConstraints;
 
         magicSdpObserver = new MagicSdpObserver();
@@ -119,7 +123,7 @@ public class MagicPeerConnectionWrapper {
             buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
             magicDataChannel.send(new DataChannel.Buffer(buffer, false));
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.d(TAG, "Failed to send channel data");
         }
     }
 
@@ -162,7 +166,6 @@ public class MagicPeerConnectionWrapper {
                 sendChannelData(new DataChannelMessage("videoOn"));
                 sendChannelData(new DataChannelMessage("audioOn"));
             }
-
         }
 
         @Override
@@ -187,12 +190,11 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onSignalingChange(PeerConnection.SignalingState signalingState) {
-
+            Log.d("MARIO", signalingState.name());
         }
 
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
-
         }
 
         @Override
@@ -241,7 +243,11 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onDataChannel(DataChannel dataChannel) {
-
+            Log.d("MARIO", "DATA");
+            if (dataChannel.label().equals("status")) {
+                magicDataChannel = dataChannel;
+                magicDataChannel.registerObserver(new MagicDataChannelObserver());
+            }
         }
 
         @Override
