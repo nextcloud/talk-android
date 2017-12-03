@@ -21,16 +21,17 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
-                android:id="@+id/relative_layout"
                 tools:context=".activities.CallActivity">
 
     <LinearLayout
+        android:id="@+id/remote_renderers_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/remote_renderers_layout"
+        android:animateLayoutChanges="true"
         android:orientation="vertical">
     </LinearLayout>
 

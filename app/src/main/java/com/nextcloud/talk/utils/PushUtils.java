@@ -41,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.CookieManager;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -63,6 +64,9 @@ import javax.inject.Inject;
 import autodagger.AutoInjector;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class PushUtils {
@@ -75,6 +79,11 @@ public class PushUtils {
     AppPreferences appPreferences;
 
     @Inject
+    OkHttpClient okHttpClient;
+
+    @Inject
+    Retrofit retrofit;
+
     NcApi ncApi;
 
     private File keysFile;
@@ -93,7 +102,6 @@ public class PushUtils {
                 Context.MODE_PRIVATE), "push_key.priv");
         proxyServer = NextcloudTalkApplication.getSharedApplication().getResources().
                 getString(R.string.nc_push_server_url);
-
     }
 
 
@@ -252,6 +260,9 @@ public class PushUtils {
                             queryMap.put("pushTokenHash", pushTokenHash);
                             queryMap.put("devicePublicKey", publicKey);
                             queryMap.put("proxyServer", proxyServer);
+
+                            ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
+                                    JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
                             ncApi.registerDeviceForNotificationsWithNextcloud(
                                     ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),

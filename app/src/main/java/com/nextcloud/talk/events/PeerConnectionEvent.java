@@ -20,19 +20,13 @@
 
 package com.nextcloud.talk.events;
 
-import android.support.annotation.Nullable;
-
-import org.webrtc.MediaStream;
-
 import lombok.Data;
 
 @Data
-public class MediaStreamEvent {
-    private final MediaStream mediaStream;
-    private final String session;
+public class PeerConnectionEvent {
+    private final String sessionId;
 
-    public MediaStreamEvent(@Nullable  MediaStream mediaStream, String session) {
-        this.mediaStream = mediaStream;
-        this.session = session;
+    public PeerConnectionEvent(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

@@ -36,6 +36,7 @@ import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.io.IOException;
+import java.net.CookieManager;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -44,6 +45,9 @@ import autodagger.AutoInjector;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class AccountRemovalJob extends Job {
@@ -53,6 +57,11 @@ public class AccountRemovalJob extends Job {
     UserUtils userUtils;
 
     @Inject
+    Retrofit retrofit;
+
+    @Inject
+    OkHttpClient okHttpClient;
+
     NcApi ncApi;
 
     @NonNull
@@ -68,6 +77,10 @@ public class AccountRemovalJob extends Job {
                     pushConfigurationState = LoganSquare.parse(userEntity.getPushConfigurationState(),
                             PushConfigurationState.class);
                     PushConfigurationState finalPushConfigurationState = pushConfigurationState;
+
+                    ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
+                            JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
+
                     ncApi.unregisterDeviceForNotificationsWithNextcloud(ApiHelper.getCredentials(userEntity.getUsername(),
                             userEntity.getToken()), ApiHelper.getUrlNextcloudPush(userEntity.getBaseUrl()))
                             .subscribe(new Observer<GenericOverall>() {
@@ -161,7 +174,22 @@ public class AccountRemovalJob extends Job {
             } catch (IOException e) {
                 Log.d(TAG, "Something went wrong while removing job at parsing PushConfigurationState");
                 userUtils.deleteUser(userEntity.getUsername(),
-                        userEntity.getBaseUrl());
+                        userEntity.getBaseUrl()).subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
             }
         }
         return Result.SUCCESS;

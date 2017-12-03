@@ -26,6 +26,7 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.events.MediaStreamEvent;
+import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -50,6 +51,7 @@ public class MagicPeerConnectionWrapper {
     List<IceCandidate> iceCandidates = new ArrayList<>();
     private List<PeerConnection.IceServer> iceServers;
     private String sessionId;
+    private String localSession;
     private String nick;
     private MediaConstraints mediaConstraints;
     private DataChannel magicDataChannel;
@@ -64,21 +66,23 @@ public class MagicPeerConnectionWrapper {
                                       String sessionId, String localSession) {
 
         this.iceServers = iceServerList;
+        this.localSession = localSession;
 
         peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
                 new MagicPeerConnectionObserver());
+
+        this.sessionId = sessionId;
+        this.mediaConstraints = mediaConstraints;
+
+        magicSdpObserver = new MagicSdpObserver();
 
         if (sessionId.compareTo(localSession) < 0) {
             DataChannel.Init init = new DataChannel.Init();
             init.negotiated = false;
             magicDataChannel = peerConnection.createDataChannel("status", init);
             magicDataChannel.registerObserver(new MagicDataChannelObserver());
+            peerConnection.createOffer(magicSdpObserver, mediaConstraints);
         }
-
-        this.sessionId = sessionId;
-        this.mediaConstraints = mediaConstraints;
-
-        magicSdpObserver = new MagicSdpObserver();
 
     }
 
@@ -177,6 +181,9 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onSignalingChange(PeerConnection.SignalingState signalingState) {
+            if (signalingState.equals(PeerConnection.SignalingState.CLOSED)) {
+                EventBus.getDefault().post(new PeerConnectionEvent(sessionId));
+            }
         }
 
         @Override
@@ -219,6 +226,7 @@ public class MagicPeerConnectionWrapper {
         public void onRemoveStream(MediaStream mediaStream) {
             videoOn = mediaStream.videoTracks != null && mediaStream.videoTracks.size() == 1;
             audioOn = mediaStream.audioTracks != null && mediaStream.audioTracks.size() == 1;
+            EventBus.getDefault().post(new MediaStreamEvent(null, sessionId));
         }
 
         @Override
@@ -260,21 +268,20 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onSetSuccess() {
-            if (peerConnection.getRemoteDescription() == null) {
-                EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
-                        peerConnection.getLocalDescription().type.canonicalForm(), null));
+            if (peerConnection != null) {
+                if (peerConnection.getRemoteDescription() != null) {
+                    drainIceCandidates();
+                }
 
-            } else if (peerConnection.getLocalDescription() == null && peerConnection.getRemoteDescription().type
-                    .canonicalForm().equals
-                            ("offer")) {
-                peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
-            } else if ((peerConnection.getLocalDescription() != null && peerConnection.getRemoteDescription().type
-                    .canonicalForm().equals
-                            ("offer"))) {
-                EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
-                        peerConnection.getLocalDescription().type.canonicalForm(), null));
-            } else if (peerConnection.getRemoteDescription() != null) {
-                drainIceCandidates();
+                if (peerConnection.getRemoteDescription() == null) {
+                    EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
+                            peerConnection.getLocalDescription().type.canonicalForm(), null));
+                } else if (peerConnection.getLocalDescription() == null && sessionId.compareTo(localSession) > 0) {
+                    peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
+                } else if ((peerConnection.getLocalDescription() != null)) {
+                    EventBus.getDefault().post(new SessionDescriptionSendEvent(peerConnection.getLocalDescription(), sessionId,
+                            peerConnection.getLocalDescription().type.canonicalForm(), null));
+                }
             }
         }
     }
