@@ -112,7 +112,7 @@ public interface AppPreferences {
     String getPushToken();
 
     @KeyByString("push_token")
-    void setPushtoken(String pushToken);
+    void setPushToken(String pushToken);
 
     @KeyByString("push_token")
     void removePushToken();

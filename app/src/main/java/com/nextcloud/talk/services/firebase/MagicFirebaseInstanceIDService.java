@@ -46,8 +46,7 @@ public class MagicFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     @Override
     public void onTokenRefresh() {
-        appPreferences.setPushtoken(FirebaseInstanceId.getInstance().getToken());
-
+        appPreferences.setPushToken(FirebaseInstanceId.getInstance().getToken());
         new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
     }
 }
