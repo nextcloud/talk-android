@@ -298,7 +298,7 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
-        ncApi.joinRoom(credentials, ApiHelper.getUrlForJoinRoom(userEntity.getBaseUrl(), roomToken))
+        ncApi.joinRoom(credentials, ApiHelper.getUrlForRoom(userEntity.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<CallOverall>() {
@@ -554,18 +554,19 @@ public class CallActivity extends AppCompatActivity {
     private void hangup() {
 
         leavingCall = true;
-
         dispose(null);
 
         for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
-            if (magicPeerConnectionWrapper.getPeerConnection() != null) {
-                magicPeerConnectionWrapper.getPeerConnection().close();
-            }
+            endPeerConnection(magicPeerConnectionWrapper.getSessionId());
         }
 
         if (videoCapturer != null) {
             videoCapturer.dispose();
         }
+
+        localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
+        localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
+        localMediaStream = null;
 
         pipVideoView.release();
 
@@ -581,6 +582,30 @@ public class CallActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
+                        ncApi.leaveRoom(credentials, ApiHelper.getUrlForRoom(userEntity.getBaseUrl(), roomToken))
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<GenericOverall>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+
+                                    }
+
+                                    @Override
+                                    public void onNext(GenericOverall genericOverall) {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+
+                                    }
+                                });
 
                     }
 

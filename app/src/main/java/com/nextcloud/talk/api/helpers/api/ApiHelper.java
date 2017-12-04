@@ -57,7 +57,7 @@ public class ApiHelper {
         return retrofitBucket;
     }
 
-    public static String getUrlForJoinRoom(String baseUrl, String token) {
+    public static String getUrlForRoom(String baseUrl, String token) {
         return getRoom(baseUrl, token) + "/participants/active";
     }
 
