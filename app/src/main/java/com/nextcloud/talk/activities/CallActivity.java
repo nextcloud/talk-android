@@ -449,9 +449,9 @@ public class CallActivity extends AppCompatActivity {
                         case "offer":
                         case "answer":
                             magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
-                                magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
-                                        .getMagicSdpObserver(), new SessionDescription(SessionDescription.Type.fromCanonicalForm(type),
-                                        ncSignalingMessage.getPayload().getSdp()));
+                            magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
+                                    .getMagicSdpObserver(), new SessionDescription(SessionDescription.Type.fromCanonicalForm(type),
+                                    ncSignalingMessage.getPayload().getSdp()));
                             break;
                         case "candidate":
                             NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
@@ -487,12 +487,10 @@ public class CallActivity extends AppCompatActivity {
         List<String> oldSesssions = new ArrayList<>();
 
         for (HashMap<String, String> participant : users) {
-            if (participant.containsKey("sessionId") && !participant.get("sessionId").equals
-                    (callSession)) {
+            if (!participant.get("sessionId").equals(callSession) && Boolean.parseBoolean(participant.get("inCall"))) {
                 newSessions.add(participant.get("sessionId"));
             }
         }
-
 
 
         for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
@@ -531,8 +529,8 @@ public class CallActivity extends AppCompatActivity {
 
     private MagicPeerConnectionWrapper alwaysGetPeerConnectionWrapperForSessionId(String sessionId) {
         MagicPeerConnectionWrapper magicPeerConnectionWrapper;
-            if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
-                return magicPeerConnectionWrapper;
+        if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
+            return magicPeerConnectionWrapper;
         } else {
             magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
                     iceServers, sdpConstraints, sessionId, callSession);
