@@ -320,21 +320,31 @@ public class SettingsController extends BaseController {
                         dispose(profileQueryDisposable);
                     }, () -> dispose(profileQueryDisposable));
 
+            removeAccountButton.setEnabled(true);
+
             removeAccountButton.setOnClickListener(view1 -> {
+                removeAccountButton.setEnabled(false);
                 cookieManager.getCookieStore().removeAll();
                 boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(userEntity.getId());
+                new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true)
+                        .startNow().build().schedule();
+
                 if (otherUserExists && getView() != null) {
                     onViewBound(getView());
                     onAttach(getView());
                 } else if (!otherUserExists) {
-                    getParentController().getRouter().setRoot(RouterTransaction.with(
-                            new ServerSelectionController())
-                            .pushChangeHandler(new VerticalChangeHandler())
-                            .popChangeHandler(new VerticalChangeHandler()));
+                    if (getParentController() == null || getParentController().getRouter() == null) {
+                        if (getActivity() != null) {
+                            // Something went very wrong, finish the app
+                            getActivity().finish();
+                        }
+                    } else {
+                        getParentController().getRouter().setRoot(RouterTransaction.with(
+                                new ServerSelectionController())
+                                .pushChangeHandler(new VerticalChangeHandler())
+                                .popChangeHandler(new VerticalChangeHandler()));
+                    }
                 }
-
-                new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true)
-                        .startNow().build().schedule();
 
             });
 
