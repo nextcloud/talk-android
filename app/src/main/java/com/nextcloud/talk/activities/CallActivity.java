@@ -126,9 +126,7 @@ public class CallActivity extends AppCompatActivity {
     AudioTrack localAudioTrack;
     VideoCapturer videoCapturer;
     VideoRenderer localRenderer;
-    VideoRenderer remoteRenderer;
     HashMap<String, VideoRenderer> videoRendererHashMap = new HashMap<>();
-    PeerConnection localPeer;
     EglBase rootEglBase;
     boolean leavingCall = false;
     BooleanSupplier booleanSupplier = () -> leavingCall;
@@ -322,8 +320,6 @@ public class CallActivity extends AppCompatActivity {
                                     @Override
                                     public void onNext(GenericOverall genericOverall) {
                                         callSession = callOverall.getOcs().getData().getSessionId();
-                                        localPeer = alwaysGetPeerConnectionWrapperForSessionId(callSession).
-                                                getPeerConnection();
 
                                         // start pinging the call
                                         ncApi.pingCall(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
@@ -360,7 +356,8 @@ public class CallActivity extends AppCompatActivity {
                                                 userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
                                                 .subscribeOn(Schedulers.newThread())
                                                 .observeOn(AndroidSchedulers.mainThread())
-                                                .repeatWhen(observable -> observable.delay(1500, TimeUnit.MILLISECONDS))
+                                                .repeatWhen(observable -> observable.delay(1500, TimeUnit
+                                                        .MILLISECONDS))
                                                 .repeatUntil(booleanSupplier)
                                                 .retry(3)
                                                 .subscribe(new Observer<SignalingOverall>() {
@@ -487,7 +484,8 @@ public class CallActivity extends AppCompatActivity {
         List<String> oldSesssions = new ArrayList<>();
 
         for (HashMap<String, String> participant : users) {
-            if (!participant.get("sessionId").equals(callSession) && Boolean.parseBoolean(participant.get("inCall"))) {
+            Object inCallObject = participant.get("inCall");
+            if (!participant.get("sessionId").equals(callSession) && (boolean)inCallObject) {
                 newSessions.add(participant.get("sessionId"));
             }
         }
@@ -533,8 +531,7 @@ public class CallActivity extends AppCompatActivity {
             return magicPeerConnectionWrapper;
         } else {
             magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                    iceServers, sdpConstraints, sessionId, callSession);
-            magicPeerConnectionWrapper.getPeerConnection().addStream(localMediaStream);
+                    iceServers, sdpConstraints, sessionId, callSession, localMediaStream);
             magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
             return magicPeerConnectionWrapper;
         }
@@ -554,6 +551,10 @@ public class CallActivity extends AppCompatActivity {
         leavingCall = true;
         dispose(null);
 
+        for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
+            endPeerConnection(magicPeerConnectionWrapperList.get(i).getSessionId());
+
+        }
         for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
             endPeerConnection(magicPeerConnectionWrapper.getSessionId());
         }
@@ -665,8 +666,8 @@ public class CallActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         hangup();
+        super.onDestroy();
     }
 
     private void dispose(@Nullable Disposable disposable) {
@@ -739,12 +740,12 @@ public class CallActivity extends AppCompatActivity {
         ncMessageWrapper.setEv("message");
         ncMessageWrapper.setSessionId(callSession);
         NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
-        ncSignalingMessage.setFrom(callSession);
         ncSignalingMessage.setTo(sessionDescriptionSend.getPeerId());
         ncSignalingMessage.setRoomType("video");
         ncSignalingMessage.setType(sessionDescriptionSend.getType());
         NCMessagePayload ncMessagePayload = new NCMessagePayload();
         ncMessagePayload.setType(sessionDescriptionSend.getType());
+
         if (!"candidate".equals(sessionDescriptionSend.getType())) {
             ncMessagePayload.setSdp(sessionDescriptionSend.getSessionDescription().description);
             ncMessagePayload.setNick(userEntity.getDisplayName());
