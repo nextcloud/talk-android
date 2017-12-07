@@ -737,15 +737,12 @@ public class CallActivity extends AppCompatActivity {
 
     private void removeMediaStream(String sessionId) {
         if (remoteRenderersLayout.getChildCount() > 0) {
-            for (int i = 0; i < remoteRenderersLayout.getChildCount(); i++) {
-                if (remoteRenderersLayout.getChildAt(i).getTag().equals(sessionId)) {
-                    SurfaceViewRenderer surfaceViewRenderer = remoteRenderersLayout.getChildAt(i).findViewById(R.id
-                            .surface_view);
-                    surfaceViewRenderer.release();
-                    remoteRenderersLayout.removeViewAt(i);
-                    remoteRenderersLayout.invalidate();
-                    break;
-                }
+            RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionId);
+            if (relativeLayout != null) {
+                SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id.surface_view);
+                surfaceViewRenderer.release();
+                remoteRenderersLayout.removeView(relativeLayout);
+                remoteRenderersLayout.invalidate();
             }
         }
     }
