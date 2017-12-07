@@ -566,6 +566,7 @@ public class CallActivity extends AppCompatActivity {
             videoCapturer.dispose();
         }
 
+
         if (localMediaStream.videoTracks.size() > 0) {
             localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
         }
@@ -573,7 +574,13 @@ public class CallActivity extends AppCompatActivity {
         if (localMediaStream.audioTracks.size() > 0) {
             localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
         }
+        localVideoTrack = null;
+        localAudioTrack = null;
+        localRenderer = null;
         localMediaStream = null;
+
+        videoCapturer.dispose();
+        videoCapturer = null;
 
         pipVideoView.release();
 
