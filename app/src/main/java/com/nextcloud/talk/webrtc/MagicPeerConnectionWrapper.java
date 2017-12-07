@@ -52,7 +52,7 @@ public class MagicPeerConnectionWrapper {
     private List<PeerConnection.IceServer> iceServers;
     private String sessionId;
     private String localSession;
-    private String nick = "";
+    private String nick;
     private MediaConstraints mediaConstraints;
     private DataChannel magicDataChannel;
     private MagicSdpObserver magicSdpObserver;
@@ -133,7 +133,11 @@ public class MagicPeerConnectionWrapper {
     }
 
     public String getNick() {
-        return nick;
+        if (nick != null) {
+            return nick;
+        } else {
+            return "";
+        }
     }
 
     public void setNick(String nick) {
