@@ -83,6 +83,7 @@ import org.webrtc.VideoTrack;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -481,25 +482,24 @@ public class CallActivity extends AppCompatActivity {
 
     private void processUsersInRoom(List<HashMap<String, String>> users) {
         List<String> newSessions = new ArrayList<>();
-        List<String> oldSesssions = new ArrayList<>();
+        Set<String> oldSesssions = new HashSet<>();
 
         for (HashMap<String, String> participant : users) {
             Object inCallObject = participant.get("inCall");
             if (!participant.get("sessionId").equals(callSession) && (boolean)inCallObject) {
                 newSessions.add(participant.get("sessionId"));
+            } else if (!participant.get("sessionId").equals(callSession) && !(boolean)inCallObject) {
+                oldSesssions.add(participant.get("sessionId"));
             }
         }
 
 
         for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
-            if (!magicPeerConnectionWrapper.getSessionId().equals(callSession)) {
-                oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
-            }
+            oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
         }
 
         // Calculate sessions that left the call
-        List<String> leftSessions = oldSesssions;
-        leftSessions.removeAll(newSessions);
+        oldSesssions.removeAll(newSessions);
 
         // Calculate sessions that join the call
         newSessions.removeAll(oldSesssions);
@@ -512,7 +512,7 @@ public class CallActivity extends AppCompatActivity {
             alwaysGetPeerConnectionWrapperForSessionId(sessionId);
         }
 
-        for (String sessionId : leftSessions) {
+        for (String sessionId : oldSesssions) {
             endPeerConnection(sessionId);
         }
     }
