@@ -25,6 +25,7 @@
 package com.nextcloud.talk.activities;
 
 import android.Manifest;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -811,5 +812,18 @@ public class CallActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            remoteRenderersLayout.setOrientation(LinearLayout.HORIZONTAL);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            remoteRenderersLayout.setOrientation(LinearLayout.VERTICAL);
+        }
+
+        super.onConfigurationChanged(newConfig);
     }
 }

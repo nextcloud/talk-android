@@ -43,6 +43,7 @@
         <activity
             android:name=".activities.CallActivity"
             android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize"
             />
 
 
