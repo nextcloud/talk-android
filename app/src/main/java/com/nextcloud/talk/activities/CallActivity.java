@@ -171,7 +171,7 @@ public class CallActivity extends AppCompatActivity {
         initViews();
 
         PermissionHelper permissionHelper = new PermissionHelper(this);
-        permissionHelper.check(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO,
+        permissionHelper.check(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.ACCESS_NETWORK_STATE,
                 Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.INTERNET)
                 .onSuccess(() -> {
@@ -555,6 +555,7 @@ public class CallActivity extends AppCompatActivity {
             endPeerConnection(magicPeerConnectionWrapperList.get(i).getSessionId());
 
         }
+
         for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
             endPeerConnection(magicPeerConnectionWrapper.getSessionId());
         }
@@ -716,6 +717,9 @@ public class CallActivity extends AppCompatActivity {
         if (remoteRenderersLayout.getChildCount() > 0) {
             for (int i = 0; i < remoteRenderersLayout.getChildCount(); i++) {
                 if (remoteRenderersLayout.getChildAt(i).getTag().equals(sessionId)) {
+                    SurfaceViewRenderer surfaceViewRenderer = remoteRenderersLayout.getChildAt(i).findViewById(R.id
+                            .surface_view);
+                    surfaceViewRenderer.release();
                     remoteRenderersLayout.removeViewAt(i);
                     remoteRenderersLayout.invalidate();
                     break;
