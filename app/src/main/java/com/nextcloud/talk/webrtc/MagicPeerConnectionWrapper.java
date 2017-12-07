@@ -52,7 +52,7 @@ public class MagicPeerConnectionWrapper {
     private List<PeerConnection.IceServer> iceServers;
     private String sessionId;
     private String localSession;
-    private String nick;
+    private String nick = "";
     private MediaConstraints mediaConstraints;
     private DataChannel magicDataChannel;
     private MagicSdpObserver magicSdpObserver;

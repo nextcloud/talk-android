@@ -36,6 +36,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
@@ -128,7 +130,6 @@ public class CallActivity extends AppCompatActivity {
     AudioTrack localAudioTrack;
     VideoCapturer videoCapturer;
     VideoRenderer localRenderer;
-    HashMap<String, VideoRenderer> videoRendererHashMap = new HashMap<>();
     EglBase rootEglBase;
     boolean leavingCall = false;
     BooleanSupplier booleanSupplier = () -> leavingCall;
@@ -565,8 +566,13 @@ public class CallActivity extends AppCompatActivity {
             videoCapturer.dispose();
         }
 
-        localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
-        localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
+        if (localMediaStream.videoTracks.size() > 0) {
+            localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
+        }
+
+        if (localMediaStream.audioTracks.size() > 0) {
+            localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
+        }
         localMediaStream = null;
 
         pipVideoView.release();
@@ -622,6 +628,14 @@ public class CallActivity extends AppCompatActivity {
                 });
     }
 
+    private void gotNick(String sessionId, String nick) {
+        RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionId);
+        if (relativeLayout != null) {
+            TextView textView = relativeLayout.findViewById(R.id.peer_nick_text_view);
+            textView.setText(nick);
+        }
+    }
+
     private void gotRemoteStream(MediaStream stream, String session) {
         //we have remote video stream. add to the renderer.
         removeMediaStream(session);
@@ -634,11 +648,11 @@ public class CallActivity extends AppCompatActivity {
                     public void run() {
                         if (stream.videoTracks.size() == 1) {
                             try {
-                                LinearLayout linearLayout = (LinearLayout)
+                                RelativeLayout relativeLayout = (RelativeLayout)
                                         getLayoutInflater().inflate(R.layout.surface_renderer, remoteRenderersLayout,
                                                 false);
-                                linearLayout.setTag(session);
-                                SurfaceViewRenderer surfaceViewRenderer = linearLayout.findViewById(R.id
+                                relativeLayout.setTag(session);
+                                SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id
                                         .surface_view);
                                 surfaceViewRenderer.setMirror(false);
                                 surfaceViewRenderer.init(rootEglBase.getEglBaseContext(), null);
@@ -646,10 +660,10 @@ public class CallActivity extends AppCompatActivity {
                                 surfaceViewRenderer.setEnableHardwareScaler(true);
                                 surfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
                                 VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
-                                videoRendererHashMap.put(session, remoteRenderer);
                                 videoTrack.addRenderer(remoteRenderer);
-                                remoteRenderersLayout.addView(linearLayout);
-                                linearLayout.invalidate();
+                                remoteRenderersLayout.addView(relativeLayout);
+                                relativeLayout.invalidate();
+                                gotNick(session, getPeerConnectionWrapperForSessionId(session).getNick());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -816,7 +830,7 @@ public class CallActivity extends AppCompatActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        
+
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             remoteRenderersLayout.setOrientation(LinearLayout.HORIZONTAL);
