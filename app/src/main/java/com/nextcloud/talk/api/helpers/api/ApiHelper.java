@@ -130,6 +130,11 @@ public class ApiHelper {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/signaling";
     }
 
+    public static String getUrlForSignalingSettings(String baseUrl) {
+        return getUrlForSignaling(baseUrl) + "/settings";
+    }
+
+
     public static String getUrlForUserProfile(String baseUrl) {
         return baseUrl + ocsApiVersion + "/cloud/user";
     }

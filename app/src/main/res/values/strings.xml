@@ -75,7 +75,6 @@
     <!-- Contacts -->
     <string name="nc_one_contact_selected">contact selected</string>
     <string name="nc_more_contacts_selected">contacts selected</string>
-    <string name="nc_contacts_click">Call with %1$s was created</string>
 
 
 </resources>

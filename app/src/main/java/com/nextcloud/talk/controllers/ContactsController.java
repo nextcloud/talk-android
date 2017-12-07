@@ -22,6 +22,7 @@ package com.nextcloud.talk.controllers;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -44,12 +45,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Toast;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
+import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
@@ -60,7 +62,10 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -450,9 +455,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                         @Override
                         public void onNext(RoomOverall roomOverall) {
-                            Toast.makeText(getActivity(), String.format(getResources().getString(R.string
-                                    .nc_contacts_click), userItem.getModel().getName())
-                                    ,Toast.LENGTH_SHORT).show();
+                            overridePushHandler(new NoOpControllerChangeHandler());
+                            overridePopHandler(new NoOpControllerChangeHandler());
+                            Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                            bundleBuilder.putString("roomToken", roomOverall.getOcs().getRoomId());
+                            bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
+                            callIntent.putExtras(bundleBuilder.build());
+                            startActivity(callIntent);
                         }
 
                         @Override

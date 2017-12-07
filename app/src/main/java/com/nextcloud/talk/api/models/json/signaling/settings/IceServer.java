@@ -18,16 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.api.models.json.signaling;
+package com.nextcloud.talk.api.models.json.signaling.settings;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import lombok.Data;
 
-@JsonObject
 @Data
-public class SignalingOverall {
-    @JsonField(name = "ocs")
-    SignalingOCS ocs;
+@JsonObject
+public class IceServer {
+    @JsonField(name = "url")
+    String url;
+
+    @JsonField(name = "username")
+    String username;
+
+    @JsonField(name = "credential")
+    String credential;
 }

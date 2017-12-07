@@ -18,16 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.api.models.json.signaling;
+package com.nextcloud.talk.api.models.json.signaling.settings;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.api.models.json.generic.GenericOCS;
 
 import lombok.Data;
 
-@JsonObject
 @Data
-public class SignalingOverall {
-    @JsonField(name = "ocs")
-    SignalingOCS ocs;
+@JsonObject
+public class SignalingSettingsOcs extends GenericOCS {
+    @JsonField(name = "data")
+    Settings settings;
 }

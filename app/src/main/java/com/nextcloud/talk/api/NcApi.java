@@ -30,6 +30,7 @@ import com.nextcloud.talk.api.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.api.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.api.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
+import com.nextcloud.talk.api.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.api.models.json.userprofile.UserProfileOverall;
 
 import java.util.Map;
@@ -159,6 +160,9 @@ public interface NcApi {
     @POST
     Observable<GenericOverall> pingCall(@Header("Authorization") String authorization, @Url String url);
 
+    @GET
+    Observable<SignalingSettingsOverall> getSignalingSettings(@Header("Authorization") String authorization, @Url
+            String url);
     /*
         QueryMap items are as follows:
             - "messages" : "message"
