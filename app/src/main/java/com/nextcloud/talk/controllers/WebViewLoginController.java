@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -136,6 +137,7 @@ public class WebViewLoginController extends BaseController {
         webView.getSettings().setUserAgentString(ApiHelper.getUserAgent());
         webView.getSettings().setSaveFormData(false);
         webView.getSettings().setSavePassword(false);
+        webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
         webView.clearCache(true);
         webView.clearFormData();
         webView.clearHistory();
