@@ -73,7 +73,9 @@
     <string name="nc_delete_call">Delete call</string>
 
     <!-- Contacts -->
-    <string name="one_contact_selected">contact selected</string>
-    <string name="more_contacts_selected">contacts selected</string>
+    <string name="nc_one_contact_selected">contact selected</string>
+    <string name="nc_more_contacts_selected">contacts selected</string>
+    <string name="nc_contacts_click">Call with %1$s was created</string>
+
 
 </resources>

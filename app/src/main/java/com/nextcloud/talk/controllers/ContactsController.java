@@ -44,6 +44,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -53,6 +54,7 @@ import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.participants.Participant;
+import com.nextcloud.talk.api.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.api.models.json.sharees.Sharee;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -73,6 +75,7 @@ import butterknife.BindView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.SelectableAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -390,7 +393,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         actionMode = null;
     }
 
-    @Override
+    /*@Override
     public boolean onItemClick(int position) {
         if (actionMode != null && position != RecyclerView.NO_POSITION) {
             // Mark the position selected
@@ -401,7 +404,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             // We don't need to activate anything
             return false;
         }
-    }
+    }*/
 
     private void toggleSelection(int position) {
         adapter.toggleSelection(position);
@@ -427,6 +430,44 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (adapter != null) {
             adapter.onRestoreInstanceState(savedInstanceState);
         }
+    }
+
+    @Override
+    public boolean onItemClick(int position) {
+        if (contactItems.size() > position) {
+            UserItem userItem = contactItems.get(position);
+            RetrofitBucket retrofitBucket = ApiHelper.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
+                    userItem.getModel().getUserId());
+            ncApi.createRoom(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                    retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(RoomOverall roomOverall) {
+                            Toast.makeText(getActivity(), String.format(getResources().getString(R.string
+                                    .nc_contacts_click), userItem.getModel().getName())
+                                    ,Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
+
+        return true;
     }
 
 }
