@@ -382,7 +382,7 @@ public class CallActivity extends AppCompatActivity {
                                                 ApiHelper.getUrlForCallPing(userEntity.getBaseUrl(), roomToken))
                                                 .subscribeOn(Schedulers.newThread())
                                                 .observeOn(AndroidSchedulers.mainThread())
-                                                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                                                .repeatWhen(completed -> completed.delay(5000, TimeUnit.MILLISECONDS))
                                                 .repeatUntil(booleanSupplier)
                                                 .retry(3)
                                                 .subscribe(new Observer<GenericOverall>() {
@@ -412,8 +412,9 @@ public class CallActivity extends AppCompatActivity {
                                                 userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
                                                 .subscribeOn(Schedulers.newThread())
                                                 .observeOn(AndroidSchedulers.mainThread())
-                                                .repeatWhen(observable -> observable.delay(1500, TimeUnit
-                                                        .MILLISECONDS))
+                                                //.repeatWhen(observable -> observable.delay(1500, TimeUnit
+                                                //        .MILLISECONDS))
+                                                .repeatWhen(completed -> completed)
                                                 .repeatUntil(booleanSupplier)
                                                 .retry(3)
                                                 .subscribe(new Observer<SignalingOverall>() {
@@ -501,6 +502,7 @@ public class CallActivity extends AppCompatActivity {
                     switch (type) {
                         case "offer":
                         case "answer":
+                            Log.d("MARIO GOT ",  type + " " + ncSignalingMessage.getFrom());
                             magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
                             magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
                                     .getMagicSdpObserver(), new SessionDescription(SessionDescription.Type.fromCanonicalForm(type),
@@ -609,10 +611,6 @@ public class CallActivity extends AppCompatActivity {
         for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
             endPeerConnection(magicPeerConnectionWrapperList.get(i).getSessionId());
 
-        }
-
-        for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
-            endPeerConnection(magicPeerConnectionWrapper.getSessionId());
         }
 
         if (videoCapturer != null) {
