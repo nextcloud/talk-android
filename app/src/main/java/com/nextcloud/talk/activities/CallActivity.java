@@ -506,7 +506,7 @@ public class CallActivity extends AppCompatActivity {
                             magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
                             String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
                                     (ncSignalingMessage.getPayload().getSdp(),
-                                    "VP8", false);
+                                            "VP8", false);
 
                             SessionDescription sessionDescriptionWithPreferredCodec = new SessionDescription(
                                     SessionDescription.Type.fromCanonicalForm(type),
@@ -550,10 +550,12 @@ public class CallActivity extends AppCompatActivity {
 
         for (HashMap<String, String> participant : users) {
             Object inCallObject = participant.get("inCall");
-            if (!participant.get("sessionId").equals(callSession) && (boolean) inCallObject) {
-                newSessions.add(participant.get("sessionId"));
-            } else if (!participant.get("sessionId").equals(callSession) && !(boolean) inCallObject) {
-                oldSesssions.add(participant.get("sessionId"));
+            if (!participant.get("sessionId").equals(callSession)) {
+                if ((boolean) inCallObject) {
+                    newSessions.add(participant.get("sessionId"));
+                } else {
+                    oldSesssions.add(participant.get("sessionId"));
+                }
             }
         }
 
