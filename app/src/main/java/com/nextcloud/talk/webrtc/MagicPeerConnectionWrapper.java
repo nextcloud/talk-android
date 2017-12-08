@@ -16,6 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 package com.nextcloud.talk.webrtc;
@@ -272,9 +273,17 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onCreateSuccess(SessionDescription sessionDescription) {
-            EventBus.getDefault().post(new SessionDescriptionSendEvent(sessionDescription, sessionId,
+            String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
+                    (sessionDescription.description,
+                            "VP8", false);
+
+            SessionDescription sessionDescriptionWithPreferredCodec = new SessionDescription(
+                    sessionDescription.type,
+                    sessionDescriptionStringWithPreferredCodec);
+
+            EventBus.getDefault().post(new SessionDescriptionSendEvent(sessionDescriptionWithPreferredCodec, sessionId,
                     sessionDescription.type.canonicalForm().toLowerCase(), null));
-            peerConnection.setLocalDescription(magicSdpObserver, sessionDescription);
+            peerConnection.setLocalDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
         }
 
         @Override
@@ -290,4 +299,5 @@ public class MagicPeerConnectionWrapper {
             }
         }
     }
+
 }

@@ -61,6 +61,7 @@ import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
+import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -502,11 +503,17 @@ public class CallActivity extends AppCompatActivity {
                     switch (type) {
                         case "offer":
                         case "answer":
-                            Log.d("MARIO GOT ",  type + " " + ncSignalingMessage.getFrom());
                             magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
+                            String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
+                                    (ncSignalingMessage.getPayload().getSdp(),
+                                    "VP8", false);
+
+                            SessionDescription sessionDescriptionWithPreferredCodec = new SessionDescription(
+                                    SessionDescription.Type.fromCanonicalForm(type),
+                                    sessionDescriptionStringWithPreferredCodec);
+
                             magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
-                                    .getMagicSdpObserver(), new SessionDescription(SessionDescription.Type.fromCanonicalForm(type),
-                                    ncSignalingMessage.getPayload().getSdp()));
+                                    .getMagicSdpObserver(), sessionDescriptionWithPreferredCodec);
                             break;
                         case "candidate":
                             NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
