@@ -459,7 +459,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             overridePopHandler(new NoOpControllerChangeHandler());
                             Intent callIntent = new Intent(getActivity(), CallActivity.class);
                             BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                            bundleBuilder.putString("roomToken", roomOverall.getOcs().getRoomId());
+                            bundleBuilder.putString("roomToken", roomOverall.getOcs().getData().getToken());
                             bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
                             callIntent.putExtras(bundleBuilder.build());
                             startActivity(callIntent);

@@ -116,6 +116,8 @@ public class CallActivity extends AppCompatActivity {
     @BindView(R.id.full_screen_surface_view)
     SurfaceViewRenderer fullScreenVideoView;
 
+    @BindView(R.id.relative_layout)
+    RelativeLayout relativeLayout;
 
     @BindView(R.id.remote_renderers_layout)
     LinearLayout remoteRenderersLayout;
@@ -695,16 +697,13 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void gotRemoteStream(MediaStream stream, String session) {
-        if (fullScreenVideoView.getVisibility() != View.GONE) {
-            fullScreenVideoView.setVisibility(View.GONE);
+        if (fullScreenVideoView != null) {
             remoteRenderersLayout.setVisibility(View.VISIBLE);
             pipVideoView.setVisibility(View.VISIBLE);
-            localRenderer = new VideoRenderer(pipVideoView);
             localVideoTrack.removeRenderer(localRenderer);
             localRenderer = new VideoRenderer(pipVideoView);
             localVideoTrack.addRenderer(localRenderer);
-            fullScreenVideoView.setVisibility(View.GONE);
-
+            relativeLayout.removeView(fullScreenVideoView);
         }
 
         removeMediaStream(session);

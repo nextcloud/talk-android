@@ -24,6 +24,9 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.api.models.json.generic.GenericOCS;
 
+import lombok.Data;
+
+@Data
 @JsonObject
 public class RoomOCS extends GenericOCS {
     @JsonField(name = "data")
