@@ -30,6 +30,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -51,6 +52,8 @@ import com.nextcloud.talk.api.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.api.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.api.models.json.signaling.Signaling;
 import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
+import com.nextcloud.talk.api.models.json.signaling.settings.IceServer;
+import com.nextcloud.talk.api.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
@@ -174,16 +177,12 @@ public class CallActivity extends AppCompatActivity {
         initViews();
 
         PermissionHelper permissionHelper = new PermissionHelper(this);
-        permissionHelper.check(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.ACCESS_NETWORK_STATE,
-                Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.INTERNET)
-                .onSuccess(() -> {
-                    start();
-                })
+        permissionHelper.check(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+                .onSuccess(this::start)
                 .onDenied(new Runnable() {
                     @Override
                     public void run() {
-                        // do nothing
+                        finish();
                     }
                 })
                 .run();
@@ -290,7 +289,6 @@ public class CallActivity extends AppCompatActivity {
         localVideoTrack.addRenderer(localRenderer);
 
         iceServers = new ArrayList<>();
-        iceServers.add(new PeerConnection.IceServer("stun:stun.nextcloud.com:443"));
 
         //create sdpConstraints
         sdpConstraints = new MediaConstraints();
@@ -299,6 +297,48 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
+
+        ncApi.getSignalingSettings(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                ApiHelper.getUrlForSignalingSettings(userEntity.getBaseUrl()))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<SignalingSettingsOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(SignalingSettingsOverall signalingSettingsOverall) {
+                        IceServer iceServer;
+                        for(int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
+                            i++) {
+                            iceServer = signalingSettingsOverall.getOcs().getSettings().getStunServers().get(i);
+                            if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
+                                    .getCredential())) {
+                                iceServers.add(new PeerConnection.IceServer(iceServer.getUrl()));
+                            } else {
+                                iceServers.add(new PeerConnection.IceServer(iceServer.getUrl(),
+                                        iceServer.getUsername(), iceServer.getCredential()));
+                            }
+                        }
+
+                        joinRoomAndCall();
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private void joinRoomAndCall() {
         ncApi.joinRoom(credentials, ApiHelper.getUrlForRoom(userEntity.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

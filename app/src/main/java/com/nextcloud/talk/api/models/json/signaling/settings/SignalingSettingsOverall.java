@@ -22,7 +22,6 @@ package com.nextcloud.talk.api.models.json.signaling.settings;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.api.models.json.signaling.SignalingOCS;
 
 import lombok.Data;
 
@@ -30,5 +29,5 @@ import lombok.Data;
 @JsonObject
 public class SignalingSettingsOverall {
     @JsonField(name = "ocs")
-    SignalingOCS ocs;
+    SignalingSettingsOcs ocs;
 }
