@@ -113,6 +113,10 @@ public class CallActivity extends AppCompatActivity {
     @BindView(R.id.pip_video_view)
     SurfaceViewRenderer pipVideoView;
 
+    @BindView(R.id.full_screen_surface_view)
+    SurfaceViewRenderer fullScreenVideoView;
+
+
     @BindView(R.id.remote_renderers_layout)
     LinearLayout remoteRenderersLayout;
 
@@ -233,6 +237,13 @@ public class CallActivity extends AppCompatActivity {
         pipVideoView.setZOrderMediaOverlay(true);
         pipVideoView.setEnableHardwareScaler(true);
         pipVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+
+        fullScreenVideoView.setMirror(true);
+        fullScreenVideoView.init(rootEglBase.getEglBaseContext(), null);
+        fullScreenVideoView.setZOrderMediaOverlay(true);
+        fullScreenVideoView.setEnableHardwareScaler(true);
+        fullScreenVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
+
     }
 
     public void start() {
@@ -283,7 +294,7 @@ public class CallActivity extends AppCompatActivity {
         videoCapturerAndroid.startCapture(px, px, 30);
 
         //create a videoRenderer based on SurfaceViewRenderer instance
-        localRenderer = new VideoRenderer(pipVideoView);
+        localRenderer = new VideoRenderer(fullScreenVideoView);
         // And finally, with our VideoRenderer ready, we
         // can add our renderer to the VideoTrack.
         localVideoTrack.addRenderer(localRenderer);
@@ -311,8 +322,8 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onNext(SignalingSettingsOverall signalingSettingsOverall) {
                         IceServer iceServer;
-                        for(int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
-                            i++) {
+                        for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
+                             i++) {
                             iceServer = signalingSettingsOverall.getOcs().getSettings().getStunServers().get(i);
                             if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
                                     .getCredential())) {
@@ -528,9 +539,9 @@ public class CallActivity extends AppCompatActivity {
 
         for (HashMap<String, String> participant : users) {
             Object inCallObject = participant.get("inCall");
-            if (!participant.get("sessionId").equals(callSession) && (boolean)inCallObject) {
+            if (!participant.get("sessionId").equals(callSession) && (boolean) inCallObject) {
                 newSessions.add(participant.get("sessionId"));
-            } else if (!participant.get("sessionId").equals(callSession) && !(boolean)inCallObject) {
+            } else if (!participant.get("sessionId").equals(callSession) && !(boolean) inCallObject) {
                 oldSesssions.add(participant.get("sessionId"));
             }
         }
@@ -684,47 +695,43 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void gotRemoteStream(MediaStream stream, String session) {
-        //we have remote video stream. add to the renderer.
-        removeMediaStream(session);
-        if (stream.videoTracks.size() < 2 && stream.audioTracks.size() < 2) {
-            if (stream.videoTracks.size() == 1) {
+        if (fullScreenVideoView.getVisibility() != View.GONE) {
+            fullScreenVideoView.setVisibility(View.GONE);
+            remoteRenderersLayout.setVisibility(View.VISIBLE);
+            pipVideoView.setVisibility(View.VISIBLE);
+            localRenderer = new VideoRenderer(pipVideoView);
+            localVideoTrack.removeRenderer(localRenderer);
+            localRenderer = new VideoRenderer(pipVideoView);
+            localVideoTrack.addRenderer(localRenderer);
+            fullScreenVideoView.setVisibility(View.GONE);
 
-                VideoTrack videoTrack = stream.videoTracks.get(0);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (stream.videoTracks.size() == 1) {
-                            try {
-                                RelativeLayout relativeLayout = (RelativeLayout)
-                                        getLayoutInflater().inflate(R.layout.surface_renderer, remoteRenderersLayout,
-                                                false);
-                                relativeLayout.setTag(session);
-                                SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id
-                                        .surface_view);
-                                surfaceViewRenderer.setMirror(false);
-                                surfaceViewRenderer.init(rootEglBase.getEglBaseContext(), null);
-                                surfaceViewRenderer.setZOrderMediaOverlay(true);
-                                surfaceViewRenderer.setEnableHardwareScaler(true);
-                                surfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
-                                VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
-                                videoTrack.addRenderer(remoteRenderer);
-                                remoteRenderersLayout.addView(relativeLayout);
-                                relativeLayout.invalidate();
-                                gotNick(session, getPeerConnectionWrapperForSessionId(session).getNick());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });
-
-            }
-
-            if (stream.audioTracks.size() == 1) {
-                AudioTrack audioTrack = stream.audioTracks.get(0);
-            }
         }
 
+        removeMediaStream(session);
+
+        if (stream.videoTracks.size() == 1) {
+            VideoTrack videoTrack = stream.videoTracks.get(0);
+            try {
+                RelativeLayout relativeLayout = (RelativeLayout)
+                        getLayoutInflater().inflate(R.layout.surface_renderer, remoteRenderersLayout,
+                                false);
+                relativeLayout.setTag(session);
+                SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id
+                        .surface_view);
+                surfaceViewRenderer.setMirror(false);
+                surfaceViewRenderer.init(rootEglBase.getEglBaseContext(), null);
+                surfaceViewRenderer.setZOrderMediaOverlay(true);
+                surfaceViewRenderer.setEnableHardwareScaler(true);
+                surfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+                VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
+                videoTrack.addRenderer(remoteRenderer);
+                remoteRenderersLayout.addView(relativeLayout);
+                relativeLayout.invalidate();
+                gotNick(session, getPeerConnectionWrapperForSessionId(session).getNick());
+            } catch (Exception e) {
+                Log.d(TAG, "Failed to create a new video view");
+            }
+        }
     }
 
     @Override
@@ -787,7 +794,7 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
         if (mediaStreamEvent.getMediaStream() != null) {
             gotRemoteStream(mediaStreamEvent.getMediaStream(), mediaStreamEvent.getSession());
@@ -878,7 +885,7 @@ public class CallActivity extends AppCompatActivity {
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             remoteRenderersLayout.setOrientation(LinearLayout.HORIZONTAL);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             remoteRenderersLayout.setOrientation(LinearLayout.VERTICAL);
         }
 
