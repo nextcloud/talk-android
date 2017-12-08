@@ -248,6 +248,7 @@ public class MagicAudioManager {
         // the proximity sensor.
         updateAudioDeviceState();
 
+        proximitySensor.start();
         // Register receiver for broadcast intents related to adding/removing a
         // wired headset.
         registerReceiver(wiredHeadsetReceiver, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
