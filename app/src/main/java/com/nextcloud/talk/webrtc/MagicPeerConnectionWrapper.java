@@ -194,9 +194,6 @@ public class MagicPeerConnectionWrapper {
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED) && hasInitiated) {
                 sendChannelData(new DataChannelMessage("videoOn"));
                 sendChannelData(new DataChannelMessage("audioOn"));
-            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .CLOSE_PEER, sessionId));
             }
         }
 
@@ -285,9 +282,9 @@ public class MagicPeerConnectionWrapper {
                     sessionDescription.type,
                     sessionDescriptionStringWithPreferredCodec);
 
-            EventBus.getDefault().post(new SessionDescriptionSendEvent(sessionDescription, sessionId,
+            EventBus.getDefault().post(new SessionDescriptionSendEvent(sessionDescriptionWithPreferredCodec, sessionId,
                     sessionDescription.type.canonicalForm().toLowerCase(), null));
-            peerConnection.setLocalDescription(magicSdpObserver, sessionDescription);
+            peerConnection.setLocalDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
         }
 
         @Override

@@ -510,7 +510,7 @@ public class CallActivity extends AppCompatActivity {
 
                             SessionDescription sessionDescriptionWithPreferredCodec = new SessionDescription(
                                     SessionDescription.Type.fromCanonicalForm(type),
-                                    ncSignalingMessage.getPayload().getSdp());
+                                    sessionDescriptionStringWithPreferredCodec);
 
                             magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
                                     .getMagicSdpObserver(), sessionDescriptionWithPreferredCodec);
