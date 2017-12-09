@@ -194,6 +194,9 @@ public class MagicPeerConnectionWrapper {
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED) && hasInitiated) {
                 sendChannelData(new DataChannelMessage("videoOn"));
                 sendChannelData(new DataChannelMessage("audioOn"));
+            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                        .CLOSE_PEER, sessionId));
             }
         }
 
