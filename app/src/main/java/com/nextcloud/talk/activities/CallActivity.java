@@ -777,7 +777,26 @@ public class CallActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
-        endPeerConnection(peerConnectionEvent.getSessionId());
+        if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
+                .CLOSE_PEER)) {
+            endPeerConnection(peerConnectionEvent.getSessionId());
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.SENSOR_FAR) ||
+                peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.SENSOR_NEAR)) {
+
+            /*boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                    .PeerConnectionEventType.SENSOR_FAR);
+            String videoMessage = "videoOff";
+            if (enableVideo) {
+                videoMessage = "videoOn";
+            }
+
+            localMediaStream.videoTracks.get(0).setEnabled(enableVideo);
+            for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
+                magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(videoMessage));
+            }*/
+        }
     }
 
     private void endPeerConnection(String sessionId) {

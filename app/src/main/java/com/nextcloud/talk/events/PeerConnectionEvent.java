@@ -20,13 +20,21 @@
 
 package com.nextcloud.talk.events;
 
+import android.support.annotation.Nullable;
+
 import lombok.Data;
 
 @Data
 public class PeerConnectionEvent {
+    public enum PeerConnectionEventType {
+        CLOSE_PEER, SENSOR_FAR, SENSOR_NEAR
+    }
+
+    private final PeerConnectionEventType peerConnectionEventType;
     private final String sessionId;
 
-    public PeerConnectionEvent(String sessionId) {
+    public PeerConnectionEvent(PeerConnectionEventType peerConnectionEventType, @Nullable String sessionId) {
+        this.peerConnectionEventType = peerConnectionEventType;
         this.sessionId = sessionId;
     }
 }

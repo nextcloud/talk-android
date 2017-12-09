@@ -41,6 +41,9 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.util.Log;
 
+import com.nextcloud.talk.events.PeerConnectionEvent;
+
+import org.greenrobot.eventbus.EventBus;
 import org.webrtc.ThreadUtils;
 
 import java.util.Collections;
@@ -137,6 +140,15 @@ public class MagicAudioManager {
      * e.g. from "NEAR to FAR" or from "FAR to NEAR".
      */
     private void onProximitySensorChangedState() {
+
+        if (proximitySensor.sensorReportsNearState()) {
+            EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                    .SENSOR_NEAR, null));
+        } else {
+            EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                    .SENSOR_FAR, null));
+        }
+
         if (!useSpeakerphone.equals(SPEAKERPHONE_AUTO)) {
             return;
         }
