@@ -381,12 +381,16 @@ public class SettingsController extends BaseController {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            messageView.setVisibility(View.GONE);
+                            if (messageView != null) {
+                                messageView.setVisibility(View.GONE);
+                            }
                         }
                     });
 
         } else {
-            messageView.setVisibility(View.GONE);
+            if (messageView != null) {
+                messageView.setVisibility(View.GONE);
+            }
         }
     }
 

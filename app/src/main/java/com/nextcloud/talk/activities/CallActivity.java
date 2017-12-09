@@ -549,8 +549,8 @@ public class CallActivity extends AppCompatActivity {
         Set<String> oldSesssions = new HashSet<>();
 
         for (HashMap<String, String> participant : users) {
-            Object inCallObject = participant.get("inCall");
             if (!participant.get("sessionId").equals(callSession)) {
+                Object inCallObject = participant.get("inCall");
                 if ((boolean) inCallObject) {
                     newSessions.add(participant.get("sessionId"));
                 } else {
