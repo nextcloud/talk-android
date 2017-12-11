@@ -24,7 +24,6 @@
 
 package com.nextcloud.talk.activities;
 
-import android.Manifest;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -105,7 +104,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.schedulers.Schedulers;
-import ru.alexbykov.nopermission.PermissionHelper;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends AppCompatActivity {
@@ -183,17 +181,7 @@ public class CallActivity extends AppCompatActivity {
         credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
         initViews();
 
-        PermissionHelper permissionHelper = new PermissionHelper(this);
-        permissionHelper.check(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
-                .onSuccess(this::start)
-                .onDenied(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                })
-                .run();
-
+        start();
     }
 
     private VideoCapturer createVideoCapturer() {
