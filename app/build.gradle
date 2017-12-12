@@ -1,14 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'eu.davidea.grabver'
 
-versioning {
-    major 0
-    minor 1
-    //preRelease "rc1"
-}
-
-version = versioning.name
 
 android {
     compileSdkVersion 27
@@ -19,6 +11,9 @@ android {
         minSdkVersion 21
         targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        versionCode 1
+        versionName "0.1.0"
 
         // Enabling multidex support.
         multiDexEnabled true
