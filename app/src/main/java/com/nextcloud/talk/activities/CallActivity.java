@@ -369,9 +369,11 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void startVideoCapture() {
-        Resources r = getResources();
-        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, r.getDisplayMetrics());
-        videoCapturerAndroid.startCapture(px, px, 30);
+        if (videoCapturer != null) {
+            Resources r = getResources();
+            int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, r.getDisplayMetrics());
+            videoCapturerAndroid.startCapture(px, px, 30);
+        }
     }
 
     private void joinRoomAndCall() {
@@ -796,10 +798,12 @@ public class CallActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         eventBus.unregister(this);
-        try {
-            videoCapturer.stopCapture();
-        } catch (InterruptedException e) {
-            Log.e(TAG, "Failed to stop the capturing process");
+        if (videoCapturer != null) {
+            try {
+                videoCapturer.stopCapture();
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Failed to stop the capturing process");
+            }
         }
     }
 
