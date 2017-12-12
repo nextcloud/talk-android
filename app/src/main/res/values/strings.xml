@@ -80,7 +80,7 @@
     <string name="nc_permissions">We need certain permissions to establish a video call. Please click \"ALLOW\" in
         the upcoming system dialog.</string>
     <string name="nc_permissions_permanently_denied">We need certain permissions to establish a video call. Please
-        grant the \"Camera\" and  \"Record audio\" permission in system settings.</string>
+        grant the \"Camera\" and  \"Microphone\" permission in system settings.</string>
     <string name="nc_permissions_settings">Open settings</string>
 
 </resources>

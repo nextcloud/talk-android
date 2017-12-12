@@ -651,14 +651,16 @@ public class CallActivity extends AppCompatActivity {
         }
 
 
-        if (localMediaStream.videoTracks != null && localMediaStream.videoTracks.size() > 0) {
-            localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
+        if (localMediaStream != null) {
+            if (localMediaStream.videoTracks != null && localMediaStream.videoTracks.size() > 0) {
+                localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
+            }
+
+            if (localMediaStream.audioTracks != null && localMediaStream.audioTracks.size() > 0) {
+                localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
+            }
         }
 
-        if (localMediaStream.audioTracks != null && localMediaStream.audioTracks.size() > 0) {
-            localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
-        }
-        
         localVideoTrack = null;
         localAudioTrack = null;
         localRenderer = null;
