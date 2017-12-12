@@ -12,7 +12,7 @@ android {
         targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        versionCode 1
+        versionCode 3
         versionName "0.1.0"
 
         // Enabling multidex support.
