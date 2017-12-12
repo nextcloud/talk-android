@@ -27,6 +27,7 @@ package com.nextcloud.talk.activities;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -104,6 +105,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.schedulers.Schedulers;
+import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
+import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
+import pub.devrel.easypermissions.AfterPermissionGranted;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends AppCompatActivity {
@@ -148,10 +152,17 @@ public class CallActivity extends AppCompatActivity {
     private UserEntity userEntity;
     private String callSession;
 
+    private VideoCapturer videoCapturerAndroid;
+
     private MediaStream localMediaStream;
 
     private String credentials;
     private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
+
+    private static final String[] PERMISSIONS_CALL = {
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.RECORD_AUDIO
+    };
 
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -181,7 +192,8 @@ public class CallActivity extends AppCompatActivity {
         credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
         initViews();
 
-        start();
+        checkPermissions();
+
     }
 
     private VideoCapturer createVideoCapturer() {
@@ -237,18 +249,36 @@ public class CallActivity extends AppCompatActivity {
 
     }
 
+    @AfterPermissionGranted(100)
+    private void checkPermissions() {
+        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
+            start();
+        } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this,
+                PERMISSIONS_CALL)) {
+            // Some permission is permanently denied so we cannot request them normally.
+            OpenAppDetailsDialogFragment.show(
+                    R.string.nc_permissions_permanently_denied,
+                    R.string.nc_permissions_settings , this);
+        } else {
+            EffortlessPermissions.requestPermissions(this, R.string.nc_permissions,
+                    100, PERMISSIONS_CALL);
+        }
+    }
+
     public void start() {
         //Initialize PeerConnectionFactory globals.
-        //Params are context, initAudio,initVideo and videoCodecHwAcceleration
-        PeerConnectionFactory.initializeAndroidGlobals(this, true, true,
-                false);
+        PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions
+                .builder(this)
+                .setEnableVideoHwAcceleration(false)
+                .createInitializationOptions();
+        PeerConnectionFactory.initialize(initializationOptions);
 
         //Create a new PeerConnectionFactory instance.
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
         peerConnectionFactory = new PeerConnectionFactory(options);
 
         //Now create a VideoCapturer instance. Callback methods are there if you want to do something! Duh!
-        VideoCapturer videoCapturerAndroid = createVideoCapturer();
+        videoCapturerAndroid = createVideoCapturer();
 
         //Create MediaConstraints - Will be useful for specifying video and audio constraints.
         audioConstraints = new MediaConstraints();
@@ -280,9 +310,7 @@ public class CallActivity extends AppCompatActivity {
             }
         });
 
-        Resources r = getResources();
-        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, r.getDisplayMetrics());
-        videoCapturerAndroid.startCapture(px, px, 30);
+        startVideoCapture();
 
         //create a videoRenderer based on SurfaceViewRenderer instance
         localRenderer = new VideoRenderer(fullScreenVideoView);
@@ -338,6 +366,12 @@ public class CallActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void startVideoCapture() {
+        Resources r = getResources();
+        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, r.getDisplayMetrics());
+        videoCapturerAndroid.startCapture(px, px, 30);
     }
 
     private void joinRoomAndCall() {
@@ -755,12 +789,18 @@ public class CallActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         eventBus.register(this);
+        startVideoCapture();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         eventBus.unregister(this);
+        try {
+            videoCapturer.stopCapture();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Failed to stop the capturing process");
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -903,5 +943,14 @@ public class CallActivity extends AppCompatActivity {
         }
 
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        EffortlessPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults,
+                this);
     }
 }

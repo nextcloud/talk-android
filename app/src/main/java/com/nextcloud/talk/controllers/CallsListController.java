@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.controllers;
 
-import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -83,7 +82,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
-import ru.alexbykov.nopermission.PermissionHelper;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallsListController extends BaseController implements SearchView.OnQueryTextListener,
@@ -390,29 +388,15 @@ public class CallsListController extends BaseController implements SearchView.On
     @Override
     public boolean onItemClick(int position) {
         if (callItems.size() > position) {
-
-            PermissionHelper permissionHelper = new PermissionHelper(getActivity());
-            permissionHelper.check(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
-                    .onSuccess(new Runnable() {
-                        @Override
-                        public void run() {
-                            overridePushHandler(new NoOpControllerChangeHandler());
-                            overridePopHandler(new NoOpControllerChangeHandler());
-                            CallItem callItem = callItems.get(position);
-                            Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                            bundleBuilder.putString("roomToken", callItem.getModel().getToken());
-                            bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
-                            callIntent.putExtras(bundleBuilder.build());
-                            startActivity(callIntent);
-                        }
-                    })
-                    .onDenied(new Runnable() {
-                        @Override
-                        public void run() {
-                        }
-                    })
-                    .run();
+            overridePushHandler(new NoOpControllerChangeHandler());
+            overridePopHandler(new NoOpControllerChangeHandler());
+            CallItem callItem = callItems.get(position);
+            Intent callIntent = new Intent(getActivity(), CallActivity.class);
+            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+            bundleBuilder.putString("roomToken", callItem.getModel().getToken());
+            bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
+            callIntent.putExtras(bundleBuilder.build());
+            startActivity(callIntent);
         }
 
         return true;
