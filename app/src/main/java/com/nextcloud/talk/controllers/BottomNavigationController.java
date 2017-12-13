@@ -19,7 +19,7 @@
  *
  * The bottom navigation was taken from a PR to Conductor by Chris6647@gmail.com
  * https://github.com/bluelinelabs/Conductor/pull/316
- * and of course modified by yours truly.      v v      xzcs     an
+ * and of course modified by yours truly.
  */
 
 package com.nextcloud.talk.controllers;
