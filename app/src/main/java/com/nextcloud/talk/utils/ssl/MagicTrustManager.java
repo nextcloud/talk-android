@@ -157,7 +157,6 @@ public class MagicTrustManager implements X509TrustManager {
 
     @Override
     public X509Certificate[] getAcceptedIssuers() {
-        X509Certificate[] bla = systemTrustManager.getAcceptedIssuers();
         return systemTrustManager.getAcceptedIssuers();
     }
 
