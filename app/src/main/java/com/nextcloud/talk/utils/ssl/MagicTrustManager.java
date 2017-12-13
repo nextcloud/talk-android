@@ -176,7 +176,7 @@ public class MagicTrustManager implements X509TrustManager {
 
             try {
                 X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();
-                if (certificates.length > 0 && certificates[0] != null && isCertInMagicTrustStore(certificates[0])) {
+                if (certificates.length > 0 && certificates[0] != null && isCertInTrustStore(certificates[0])) {
                     return true;
                 }
             } catch (SSLPeerUnverifiedException e) {
