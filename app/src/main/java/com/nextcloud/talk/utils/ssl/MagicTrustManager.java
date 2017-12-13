@@ -92,10 +92,11 @@ public class MagicTrustManager implements X509TrustManager {
         return new MagicHostnameVerifier(defaultHostNameVerifier);
     }
 
-    public boolean isCertInTrustStore(X509Certificate x509Certificate) {
+    public boolean isCertInTrustStore(X509Certificate[] x509Certificates, String s) {
         if (systemTrustManager != null) {
+            X509Certificate x509Certificate = x509Certificates[0];
             try {
-                systemTrustManager.checkServerTrusted(new X509Certificate[]{x509Certificate}, "generic");
+                systemTrustManager.checkServerTrusted(x509Certificates, s);
                 return true;
             } catch (CertificateException e) {
                 if (!isCertInMagicTrustStore(x509Certificate)) {
@@ -149,14 +150,15 @@ public class MagicTrustManager implements X509TrustManager {
 
     @Override
     public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-        if (!isCertInTrustStore(x509Certificates[0])) {
+        if (!isCertInTrustStore(x509Certificates, s)) {
             throw new CertificateException();
         }
     }
 
     @Override
     public X509Certificate[] getAcceptedIssuers() {
-        return new X509Certificate[0];
+        X509Certificate[] bla = systemTrustManager.getAcceptedIssuers();
+        return systemTrustManager.getAcceptedIssuers();
     }
 
     private class MagicHostnameVerifier implements HostnameVerifier {
@@ -176,7 +178,7 @@ public class MagicTrustManager implements X509TrustManager {
 
             try {
                 X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();
-                if (certificates.length > 0 && certificates[0] != null && isCertInTrustStore(certificates[0])) {
+                if (certificates.length > 0 && certificates[0] != null && isCertInTrustStore(certificates, s)) {
                     return true;
                 }
             } catch (SSLPeerUnverifiedException e) {
