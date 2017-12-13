@@ -52,6 +52,7 @@
             android:id="@+id/extended_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="5dp"
             android:imeOptions="actionDone"
             android:singleLine="true"
             android:textColor="@color/nc_white_color_complete"/>
