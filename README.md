@@ -18,7 +18,7 @@ For more information please review the [guidelines for contributing](https://git
 
 So you would like to contribute by testing? Awesome, we appreciate that very much. Right now our testing
 is conducted through the Google Play Beta channel, so if you'd like to receive the newest dough, sign
-up over at [Google Play Beta channel](https://play.google.com/apps/testing/com.nextcloud.talk).
+up over at the [Google Play Beta channel](https://play.google.com/apps/testing/com.nextcloud.talk).
 
 ### Apply a license
 
