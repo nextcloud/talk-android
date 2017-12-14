@@ -10,7 +10,7 @@
     <string name="nc_server_not_installed">Please finish your %1$s installation</string>
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
     <string name="nc_server_maintenance">Please bring your %1$s out of maintenance</string>
-    <string name="nc_server_not_nc">%1$s! only works with %2$s servers</string>
+    <string name="nc_server_version">%1$s! only works with %2$s 13 and up</string>
 
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Display name fetched</string>

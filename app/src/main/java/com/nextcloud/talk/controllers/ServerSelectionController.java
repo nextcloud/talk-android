@@ -113,8 +113,7 @@ public class ServerSelectionController extends BaseController {
 
                                 if (status.isInstalled() && !status.isMaintenance() &&
                                         !status.isNeedsUpgrade() &&
-                                        status.getProductName().equals(
-                                                getResources().getString(R.string.nc_server_product_name))) {
+                                        status.getVersion().startsWith("13.")) {
 
                                     getRouter().pushController(RouterTransaction.with(
                                             new WebViewLoginController(finalServerUrl, false))
@@ -133,10 +132,9 @@ public class ServerSelectionController extends BaseController {
                                                     getString(R.string.nc_server_maintenance),
                                             productName),
                                             true);
-                                } else if (!status.getProductName().equals(
-                                        getResources().getString(R.string.nc_server_product_name))) {
+                                } else if (!status.getVersion().startsWith("13.")) {
                                     textFieldBoxes.setError(String.format(getResources().
-                                                    getString(R.string.nc_server_not_nc),
+                                                    getString(R.string.nc_server_version),
                                             getResources().getString(R.string.nc_app_name)
                                             , productName), true);
                                 }
