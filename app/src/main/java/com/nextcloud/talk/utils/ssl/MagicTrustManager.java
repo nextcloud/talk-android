@@ -92,7 +92,7 @@ public class MagicTrustManager implements X509TrustManager {
         return new MagicHostnameVerifier(defaultHostNameVerifier);
     }
 
-    public boolean isCertInTrustStore(X509Certificate[] x509Certificates, String s) {
+    private boolean isCertInTrustStore(X509Certificate[] x509Certificates, String s) {
         if (systemTrustManager != null) {
             X509Certificate x509Certificate = x509Certificates[0];
             try {
@@ -164,7 +164,7 @@ public class MagicTrustManager implements X509TrustManager {
         private static final String TAG = "MagicHostnameVerifier";
         private HostnameVerifier defaultHostNameVerifier;
 
-        public MagicHostnameVerifier(HostnameVerifier defaultHostNameVerifier) {
+        private MagicHostnameVerifier(HostnameVerifier defaultHostNameVerifier) {
             this.defaultHostNameVerifier = defaultHostNameVerifier;
         }
 
