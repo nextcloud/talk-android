@@ -5,7 +5,7 @@
     <string name="nc_bottom_navigation_title_settings">Settings</string>
 
     <!-- Server selection -->
-    <string name="nc_appended_server_url">server URL</string>
+    <string name="nc_appended_server_url">server address</string>
     <string name="nc_server_url_prefix">Please enter http:// or https:// before the hostname</string>
     <string name="nc_server_not_installed">Please finish your %1$s installation</string>
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
