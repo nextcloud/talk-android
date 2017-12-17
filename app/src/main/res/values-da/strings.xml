@@ -1,0 +1,82 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">Opkald</string>
+    <string name="nc_bottom_navigation_title_contacts">Kontakter</string>
+    <string name="nc_bottom_navigation_title_settings">Indstillinger</string>
+
+    <string name="nc_server_url_prefix">Venligst sæt http:// eller https:// inden hostnavnet</string>
+    <string name="nc_server_not_installed">Venligst slutfør %1$s din installation</string>
+    <string name="nc_server_db_upgrade_needed">Venligst opdatere din %1$s databas</string>
+    <string name="nc_server_maintenance">Venligst få  %1$s ud fra vedligeholdelse </string>
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Visningsnavn hentet</string>
+    <string name="nc_display_name_not_fetched">Display navn kunne ikke hentes, afbrydes</string>
+    <string name="nc_nextcloud_talk_app_installed">%1$sapp fundet</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s app ikke installeret, afbryder</string>
+    <string name="nc_display_name_stored">Display navn gemt</string>
+    <string name="nc_display_name_not_stored">Display navn ikke gemt, afbryder</string>
+
+    <string name="nc_never">Aldrig ansluttet</string>
+    <string name="nc_search">Søg</string>
+
+    <string name="nc_certificate_dialog_title">Tjek certifikatet</string>
+    <string name="nc_certificate_dialog_text">Vi stødte på et tidligere ukendt SSL certifikat udstedt af %1$s for %2$sgyltig fra %3$s til %4$s Stole på det?</string>
+    <string name="nc_yes">Ja</string>
+    <string name="nc_no">Nej</string>
+    <string name="nc_details">Detaljer</string>
+    <string name="nc_certificate_error">Din SSL indstilling forhindrer os fra kontakt</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_key">proxy_type</string>
+    <string name="nc_settings_proxy_type_title">Proxy type</string>
+    <string name="nc_settings_proxy_host_key">proxy_host</string>
+    <string name="nc_settings_proxy_host_title">Proxy host</string>
+    <string name="nc_settings_proxy_port_key">proxy_port</string>
+    <string name="nc_settings_proxy_port_title">Proxy port</string>
+    <string name="nc_settings_proxy_username_key">proxy_username</string>
+    <string name="nc_settings_proxy_password_key">proxy_password</string>
+    <string name="nc_settings_use_credentials_title">Brug brugeroplysning</string>
+    <string name="nc_settings_use_credentials_key">proxy_credentials</string>
+    <string name="nc_settings_switch_account">Skift mellem konto</string>
+    <string name="nc_settings_reauthorize">Genautorisere</string>
+    <string name="nc_settings_remove_account">Fjern konto</string>
+    <string name="nc_settings_add_account">Tilføj en konto</string>
+    <string name="nc_settings_wrong_account">Kun nuværende konto kan gen autoriseres</string>
+    <string name="nc_settings_account_updated">Vi har opdateret din eksisterende konto i stedet for at tilføje en ny, da den allerede eksisterer</string>
+    <string name="nc_account_scheduled_for_deletion">Kontoen er planlagt til sletning, og kan ikke betjenes på</string>
+
+    <string name="nc_no_proxy">Ikke proxy</string>
+    <string name="nc_username">Brugernavn</string>
+    <string name="nc_password">Adgangskode</string>
+    <string name="nc_about">Om</string>
+    <string name="nc_privacy">Privatliv</string>
+    <string name="nc_get_source_code">Hent kildekode</string>
+    <string name="nc_license_title">Licens</string>
+    <string name="nc_license_summary">GNU General Public License, Version 3</string>
+
+    <string name="nc_select_an_account">Vælg konto</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">Hvad ønsker du lave idag?</string>
+    <string name="nc_leave">Forlad opkald</string>
+    <string name="nc_rename">Omdøb opkald</string>
+    <string name="nc_set_password">Sæt password</string>
+    <string name="nc_change_password">Skift kodeord</string>
+    <string name="nc_share_link">Del link</string>
+    <string name="nc_make_call_public">Lav et offentligt opkald</string>
+    <string name="nc_stop_sharing">Stop deling af opkald</string>
+    <string name="nc_delete_call">Slet opkald</string>
+
+    <!-- Contacts -->
+    <string name="nc_one_contact_selected">kontakt valgt</string>
+    <string name="nc_more_contacts_selected">kontakt valgt</string>
+
+    <!-- Permissions -->
+    <string name="nc_permissions">Vi har brug for specielle tilladelser til at etablere et videoopkald. Klik venligst på \"ALLOW\" 
+i den kommende system dialog</string>
+    <string name="nc_permissions_permanently_denied">Vi har brug for visse tilladelser til at etablere et videoopkald. Vær venlig 
+Tillad \"Camera\" og \"Microphone\" i tilladelser under systemindstillinger.</string>
+    <string name="nc_permissions_settings">Indstillinger</string>
+
+</resources>

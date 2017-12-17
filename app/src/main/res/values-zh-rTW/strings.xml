@@ -1,0 +1,80 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">通話</string>
+    <string name="nc_bottom_navigation_title_contacts">聯絡人</string>
+    <string name="nc_bottom_navigation_title_settings">設定</string>
+
+    <string name="nc_server_url_prefix">請在主機名稱的開頭輸入http://或https://</string>
+    <string name="nc_server_not_installed">請將%1$s完整安裝</string>
+    <string name="nc_server_db_upgrade_needed">請升級你的%1$s資料庫</string>
+    <string name="nc_server_maintenance">請維護您的%1$s</string>
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">已取得顯示名稱</string>
+    <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止動作。</string>
+    <string name="nc_nextcloud_talk_app_installed">%1$s個app已找到</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$sapp無法安裝，將停止動作。</string>
+    <string name="nc_display_name_stored">顯示名稱已儲存</string>
+    <string name="nc_display_name_not_stored">顯示名稱無法儲存，將停止動作。</string>
+
+    <string name="nc_never">從未加入</string>
+    <string name="nc_search">搜尋</string>
+
+    <string name="nc_certificate_dialog_title">請檢查憑證</string>
+    <string name="nc_certificate_dialog_text">我們遭遇一個未知來源%1$s發佈給%2$s的SSL憑證證書，有效期間為%3$s至%4$s，是否信任？</string>
+    <string name="nc_yes">是</string>
+    <string name="nc_no">否</string>
+    <string name="nc_details">詳細資料</string>
+    <string name="nc_certificate_error">你的SSL設定阻斷我們的連線</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">proxy代理</string>
+    <string name="nc_settings_proxy_type_key">proxy_類型</string>
+    <string name="nc_settings_proxy_type_title">proxy類型</string>
+    <string name="nc_settings_proxy_host_key">proxy代理主機</string>
+    <string name="nc_settings_proxy_host_title">proxy代理主機</string>
+    <string name="nc_settings_proxy_port_key">proxy_連接埠</string>
+    <string name="nc_settings_proxy_port_title">proxy連接埠</string>
+    <string name="nc_settings_proxy_username_key">proxy使用者</string>
+    <string name="nc_settings_proxy_password_key">proxy密碼</string>
+    <string name="nc_settings_use_credentials_title">使用憑證</string>
+    <string name="nc_settings_use_credentials_key">proxy憑證</string>
+    <string name="nc_settings_switch_account">切換帳號</string>
+    <string name="nc_settings_reauthorize">重新授權</string>
+    <string name="nc_settings_remove_account">移除帳號</string>
+    <string name="nc_settings_add_account">新增一個帳號</string>
+    <string name="nc_settings_wrong_account">只有特定帳號可以被重新授權</string>
+    <string name="nc_settings_account_updated">我們更新您已存在的帳號，而不是新增一個已存在的帳號。</string>
+    <string name="nc_account_scheduled_for_deletion">帳號已經被安排刪除，無法進行操作。</string>
+
+    <string name="nc_no_proxy">無proxy代理</string>
+    <string name="nc_username">使用者</string>
+    <string name="nc_password">密碼</string>
+    <string name="nc_about">關於</string>
+    <string name="nc_privacy">隱私全條款</string>
+    <string name="nc_get_source_code">取得原始碼</string>
+    <string name="nc_license_title">授權</string>
+    <string name="nc_license_summary">GNU產生公開授權，第3版</string>
+
+    <string name="nc_select_an_account">選擇一個帳號</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">您今天想做什麼？</string>
+    <string name="nc_leave">離開通話</string>
+    <string name="nc_rename">重新命名通話</string>
+    <string name="nc_set_password">設定密碼</string>
+    <string name="nc_change_password">更改密碼</string>
+    <string name="nc_share_link">分享連結</string>
+    <string name="nc_make_call_public">公開通話</string>
+    <string name="nc_stop_sharing">停止分享通話</string>
+    <string name="nc_delete_call">刪除通話</string>
+
+    <!-- Contacts -->
+    <string name="nc_one_contact_selected">聯絡人已選</string>
+    <string name="nc_more_contacts_selected">聯絡人已選</string>
+
+    <!-- Permissions -->
+    <string name="nc_permissions">我們需要特定的權限才能建立視訊通話，請在接下來的系統跳出的視窗點選\"允許\"</string>
+    <string name="nc_permissions_permanently_denied">我們需要特定的權限才能建立視訊通話，請在系統設定中允許\"相機鏡頭\"與\"麥克風\"的權限</string>
+    <string name="nc_permissions_settings">開啟設定</string>
+
+</resources>

@@ -1,0 +1,82 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">Chamadas</string>
+    <string name="nc_bottom_navigation_title_contacts">Contatos</string>
+    <string name="nc_bottom_navigation_title_settings">Configurações</string>
+
+    <string name="nc_server_url_prefix">Entre http:// ou https:// antes do endereço do host</string>
+    <string name="nc_server_not_installed">Termine sua instalação %1$s</string>
+    <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
+    <string name="nc_server_maintenance">Coloque sua %1$s em manutenção</string>
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Nome de exibição obtido</string>
+    <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
+    <string name="nc_nextcloud_talk_app_installed">%1$s aplicativo encontrado</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s aplicativo não instalado, interrompendo</string>
+    <string name="nc_display_name_stored">Nome de exibição armazenado</string>
+    <string name="nc_display_name_not_stored">Nome de exibição não armazenado, interrompendo</string>
+
+    <string name="nc_never">Nunca juntado</string>
+    <string name="nc_search">Persquisar</string>
+
+    <string name="nc_certificate_dialog_title">Confira o certificado</string>
+    <string name="nc_certificate_dialog_text">Encontramos uma versão anterior de um certificado SSL desconhecido emitido por %1$s para %2$s válido de %3$s a %4$s. Confiar nele?</string>
+    <string name="nc_yes">Sim</string>
+    <string name="nc_no">Não</string>
+    <string name="nc_details">Detalhes</string>
+    <string name="nc_certificate_error">Sua configuração SSL previne-nos de conectar</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_key">proxy_type</string>
+    <string name="nc_settings_proxy_type_title">Tipo de Proxy</string>
+    <string name="nc_settings_proxy_host_key">proxy_host</string>
+    <string name="nc_settings_proxy_host_title">Endereço do proxy</string>
+    <string name="nc_settings_proxy_port_key">proxy_port</string>
+    <string name="nc_settings_proxy_port_title">Porta do proxy</string>
+    <string name="nc_settings_proxy_username_key">proxy_username</string>
+    <string name="nc_settings_proxy_password_key">proxy_password</string>
+    <string name="nc_settings_use_credentials_title">Usar autenticação</string>
+    <string name="nc_settings_use_credentials_key">proxy_credentials</string>
+    <string name="nc_settings_switch_account">Alternar entre contas</string>
+    <string name="nc_settings_reauthorize">Reautorizar</string>
+    <string name="nc_settings_remove_account">Excluir conta</string>
+    <string name="nc_settings_add_account">Adicionar uma conta</string>
+    <string name="nc_settings_wrong_account">Somente a conta atual pode ser reautorizada</string>
+    <string name="nc_settings_account_updated">Atualizamos sua conta ao invés de criar uma nova pois ela já existe</string>
+    <string name="nc_account_scheduled_for_deletion">Conta programada para exclusão e não pode ser operada</string>
+
+    <string name="nc_no_proxy">Sem proxy</string>
+    <string name="nc_username">Usuário</string>
+    <string name="nc_password">Senha</string>
+    <string name="nc_about">Sobre</string>
+    <string name="nc_privacy">Privacidade</string>
+    <string name="nc_get_source_code">Obtenha o código fonte</string>
+    <string name="nc_license_title">Licença</string>
+    <string name="nc_license_summary">GNU General Public License, Versão 3</string>
+
+    <string name="nc_select_an_account">Selecionar uma conta</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">O que deseja fazer hoje?</string>
+    <string name="nc_leave">Deixar uma chamada</string>
+    <string name="nc_rename">Renomear uma chamada</string>
+    <string name="nc_set_password">Definir a senha</string>
+    <string name="nc_change_password">Mudar a senha</string>
+    <string name="nc_share_link">Compartilhar um link</string>
+    <string name="nc_make_call_public">Fazer uma chamada pública</string>
+    <string name="nc_stop_sharing">Parar de compartilhar a chamada</string>
+    <string name="nc_delete_call">Excluir a chamada</string>
+
+    <!-- Contacts -->
+    <string name="nc_one_contact_selected">contato selecionado</string>
+    <string name="nc_more_contacts_selected">contatos selecionados</string>
+
+    <!-- Permissions -->
+    <string name="nc_permissions">Precisamos de certas permissões para estabelecer uma chamada de vídeo.
+Clique em \"PERMITIR\" no próximo diálogo do sistema.</string>
+    <string name="nc_permissions_permanently_denied">Precisamos de certas permissões para estabelecer uma chamada de vídeo.
+Garanta as permissões para \"Câmera\" e \"Microfone\" nas configurações do sistema.</string>
+    <string name="nc_permissions_settings">Abrir as configurações</string>
+
+</resources>

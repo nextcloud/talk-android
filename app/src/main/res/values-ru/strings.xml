@@ -1,0 +1,80 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">Звонки</string>
+    <string name="nc_bottom_navigation_title_contacts">Контакты</string>
+    <string name="nc_bottom_navigation_title_settings">Настройки</string>
+
+    <string name="nc_server_url_prefix">Укажите протокол (http:// или https://) перед именем сервера</string>
+    <string name="nc_server_not_installed">Завершите установку %1$s</string>
+    <string name="nc_server_db_upgrade_needed">Обновите базу данных %1$s</string>
+    <string name="nc_server_maintenance">Сервер %1$s находится в режиме обслуживания</string>
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Отображаемое имя получено</string>
+    <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
+    <string name="nc_nextcloud_talk_app_installed">Найдено приложение %1$s</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s не найдено, продолжение невозможно</string>
+    <string name="nc_display_name_stored">Отображаемое имя сохранено</string>
+    <string name="nc_display_name_not_stored">Отображаемое имя не сохранено, продолжение невозможно</string>
+
+    <string name="nc_never">Никогда не использовался</string>
+    <string name="nc_search">Поиск</string>
+
+    <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
+    <string name="nc_certificate_dialog_text">Получен новый сертификат SSL, выпущенный %1$s на имя %2$s, действительный с %3$s по %4$s. Доверять ему?</string>
+    <string name="nc_yes">Да</string>
+    <string name="nc_no">Нет</string>
+    <string name="nc_details">Подробности</string>
+    <string name="nc_certificate_error">Действующие настройки SSL не позволяют подключиться</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Прокси-сервер</string>
+    <string name="nc_settings_proxy_type_key">proxy_type</string>
+    <string name="nc_settings_proxy_type_title">Тип прокси-сервера</string>
+    <string name="nc_settings_proxy_host_key">proxy_host</string>
+    <string name="nc_settings_proxy_host_title">Узел прокси-сервера</string>
+    <string name="nc_settings_proxy_port_key">proxy_port</string>
+    <string name="nc_settings_proxy_port_title">Порт прокси-сервера</string>
+    <string name="nc_settings_proxy_username_key">proxy_username</string>
+    <string name="nc_settings_proxy_password_key">proxy_password</string>
+    <string name="nc_settings_use_credentials_title">Использовать учётные данные</string>
+    <string name="nc_settings_use_credentials_key">proxy_credentials</string>
+    <string name="nc_settings_switch_account">Переключение учётных записей</string>
+    <string name="nc_settings_reauthorize">Повторный вход в систему</string>
+    <string name="nc_settings_remove_account">Удалить аккаунт</string>
+    <string name="nc_settings_add_account">Добавить новый аккаунт</string>
+    <string name="nc_settings_wrong_account">Повторный вход может быть выполнен только в текущую учётную запись</string>
+    <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>
+    <string name="nc_account_scheduled_for_deletion">Учётная запись запланирована к удалению и не может быть использована</string>
+
+    <string name="nc_no_proxy">Без прокси-сервера</string>
+    <string name="nc_username">Имя пользователя</string>
+    <string name="nc_password">Пароль</string>
+    <string name="nc_about">О программе</string>
+    <string name="nc_privacy">Конфиденциальность</string>
+    <string name="nc_get_source_code">Исходный код</string>
+    <string name="nc_license_title">Лицензия</string>
+    <string name="nc_license_summary">Открытое лицензионное соглашение GNU, версия 3</string>
+
+    <string name="nc_select_an_account">Выберите учётную запись</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">Что бы вы хотели сегодня сделать?</string>
+    <string name="nc_leave">Завершить звонок</string>
+    <string name="nc_rename">Переименовать звонок</string>
+    <string name="nc_set_password">Задать пароль</string>
+    <string name="nc_change_password">Сменить пароль</string>
+    <string name="nc_share_link">Поделиться ссылкой</string>
+    <string name="nc_make_call_public">Сделать звонок общедоступным</string>
+    <string name="nc_stop_sharing">Закрыть общий доступ к звонку</string>
+    <string name="nc_delete_call">Удалить звонок</string>
+
+    <!-- Contacts -->
+    <string name="nc_one_contact_selected">контакт выбран</string>
+    <string name="nc_more_contacts_selected">контакта(ов) выбрано</string>
+
+    <!-- Permissions -->
+    <string name="nc_permissions">Для выполнения видеозвонка требуется получение дополнительных системных разрешений. Нажмите «Разрешить» в системном окне, которое будет сейчас открыто.</string>
+    <string name="nc_permissions_permanently_denied">Для выполнения видеозвонка требуется получение дополнительных системных разрешений. Разрешите приложению доступ к камере и микрофону в системных настройках.</string>
+    <string name="nc_permissions_settings">Открыть настройки</string>
+
+</resources>

@@ -1,0 +1,82 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">Çağrılar</string>
+    <string name="nc_bottom_navigation_title_contacts">Kişiler</string>
+    <string name="nc_bottom_navigation_title_settings">Ayarlar</string>
+
+    <string name="nc_server_url_prefix">Lütfen sunucu adının önüne http:// ya da https:// ekleyin</string>
+    <string name="nc_server_not_installed">Lütfen %1$s kurulumunuzu tamamlayın</string>
+    <string name="nc_server_db_upgrade_needed">Lütfen %1$s veritabanınızı güncelleyin</string>
+    <string name="nc_server_maintenance">Lütfen %1$s kopyanızı bakım kipinden çıkarın</string>
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Görüntülenecek ad alındı</string>
+    <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>
+    <string name="nc_nextcloud_talk_app_installed">%1$s uygulama bulundu</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s uygulama kurulmadı, vazgeçiliyor</string>
+    <string name="nc_display_name_stored">Görüntülenecek ad kaydedildi</string>
+    <string name="nc_display_name_not_stored">Görüntülenecek ad kaydedilmedi, vazgeçiliyor</string>
+
+    <string name="nc_never">Asls katılmadı</string>
+    <string name="nc_search">Arama</string>
+
+    <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
+    <string name="nc_certificate_dialog_text">Daha önce bilinmeyen %1$s tarafından %2$s için yayınlanmış %3$s ile %4$s tarihleri arasında geçerli bir SSL sertifikası bulundu. Bu sertifikaya güvenilsin mi?</string>
+    <string name="nc_yes">Evet</string>
+    <string name="nc_no">Hayır</string>
+    <string name="nc_details">Ayrıntılar</string>
+    <string name="nc_certificate_error">SSL kurulumunuz bağlantı kurulmasını engelliyor</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Vekil Sunucu</string>
+    <string name="nc_settings_proxy_type_key">vekil_sunucu_turu</string>
+    <string name="nc_settings_proxy_type_title">Vekil sunucu türü</string>
+    <string name="nc_settings_proxy_host_key">vekil_sunucu_adi</string>
+    <string name="nc_settings_proxy_host_title">Vekil Sunucu Adı</string>
+    <string name="nc_settings_proxy_port_key">vekil_sunucu_kapi_no</string>
+    <string name="nc_settings_proxy_port_title">Vekil sunucu kapı numarası</string>
+    <string name="nc_settings_proxy_username_key">vekil_sunucu_kullanici_adi</string>
+    <string name="nc_settings_proxy_password_key">vekil_sunucu_parolasi</string>
+    <string name="nc_settings_use_credentials_title">Kullanıcı bilgileri</string>
+    <string name="nc_settings_use_credentials_key">vekil_sunucu_kullanici_bilgileri</string>
+    <string name="nc_settings_switch_account">Hesaplar arasında geçiş yap</string>
+    <string name="nc_settings_reauthorize">Yeniden izin ver</string>
+    <string name="nc_settings_remove_account">Hesabı sil</string>
+    <string name="nc_settings_add_account">Hesap ekle</string>
+    <string name="nc_settings_wrong_account">Yalnız geçerli hesaba yeniden izin verilebilir</string>
+    <string name="nc_settings_account_updated">Zaten bir hesabınız bulunduğundan yeni hesap eklenmesi yerine geçerli hesap güncellendi</string>
+    <string name="nc_account_scheduled_for_deletion">Hesap silinmek üzere zamanlandı ve üzerinde işlem yapılamaz</string>
+
+    <string name="nc_no_proxy">Vekil sunucu yok</string>
+    <string name="nc_username">Kullanıcı adı</string>
+    <string name="nc_password">Parola</string>
+    <string name="nc_about">Hakkında</string>
+    <string name="nc_privacy">Gizlilik</string>
+    <string name="nc_get_source_code">Kaynak kodu alın</string>
+    <string name="nc_license_title">Lisans</string>
+    <string name="nc_license_summary">GNU Genel Kamu Lisansı, 3. Sürüm</string>
+
+    <string name="nc_select_an_account">Bir hesap seçin</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">Bugün ne yapmak istersiniz?</string>
+    <string name="nc_leave">Çağrıdan ayrıl</string>
+    <string name="nc_rename">Çağrıyı yeniden adlandır</string>
+    <string name="nc_set_password">Parola ayarla</string>
+    <string name="nc_change_password">Parolayı değiştir</string>
+    <string name="nc_share_link">Bağlantıyı paylaş</string>
+    <string name="nc_make_call_public">Çağrıyı herkese aç</string>
+    <string name="nc_stop_sharing">Çağrıyı paylaşmayı durdur</string>
+    <string name="nc_delete_call">Çağrıyı sil</string>
+
+    <!-- Contacts -->
+    <string name="nc_one_contact_selected">kişi seçilmiş</string>
+    <string name="nc_more_contacts_selected">kişi seçilmiş</string>
+
+    <!-- Permissions -->
+    <string name="nc_permissions">Görüntülü çağrı başlatmak için belirli izinler gereklidir. Lütfen açılan pencerede
+  \"ONAYLA\" üzerine tıklayın.</string>
+    <string name="nc_permissions_permanently_denied">Görüntülü çağrı başlatmak için belirli izinler gereklidir. Lütfen sistem ayarlarından
+ \"Kamera\" ve \"Mikrofon\" izinlerini verin.</string>
+    <string name="nc_permissions_settings">Ayarları aç</string>
+
+</resources>

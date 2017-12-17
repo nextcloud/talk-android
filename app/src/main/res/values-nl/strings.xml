@@ -1,0 +1,69 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">Oproepen</string>
+    <string name="nc_bottom_navigation_title_contacts">Contactpersonen</string>
+    <string name="nc_bottom_navigation_title_settings">Instellingen</string>
+
+    <string name="nc_server_url_prefix">Geef http:// of https:// op voor de domeinnaam</string>
+    <string name="nc_server_not_installed">Beëindig je %1$s installatie</string>
+    <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
+    <string name="nc_server_maintenance">Haal je %1$s uit de onderhoudsmodus</string>
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Weergavenaam opgehaald</string>
+    <string name="nc_display_name_not_fetched">Weergave kon niet worden opgehaald, afgebroken</string>
+    <string name="nc_nextcloud_talk_app_installed">%1$s app gevonden</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s app niet geïnstalleerd, afgebroken</string>
+    <string name="nc_display_name_stored">Weergavenaam opgeslagen</string>
+    <string name="nc_display_name_not_stored">Weergavenaam niet opgeslagen, afgebroken</string>
+
+    <string name="nc_never">Nooit deelgenomen</string>
+    <string name="nc_search">Zoeken</string>
+
+    <string name="nc_certificate_dialog_title">Verifieer het certificaat</string>
+    <string name="nc_yes">Ja</string>
+    <string name="nc_no">Nee</string>
+    <string name="nc_details">Details</string>
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_key">proxy_type</string>
+    <string name="nc_settings_proxy_type_title">Proxy type</string>
+    <string name="nc_settings_proxy_host_key">proxy_host</string>
+    <string name="nc_settings_proxy_host_title">Proxy host</string>
+    <string name="nc_settings_proxy_port_key">proxy_port</string>
+    <string name="nc_settings_proxy_port_title">Proxy poort</string>
+    <string name="nc_settings_proxy_username_key">proxy_username</string>
+    <string name="nc_settings_proxy_password_key">proxy_password</string>
+    <string name="nc_settings_use_credentials_title">Gebruik inloggegevens</string>
+    <string name="nc_settings_use_credentials_key">proxy_credentials</string>
+    <string name="nc_settings_switch_account">Omschakelen tussen accounts</string>
+    <string name="nc_settings_reauthorize">Opnieuw autoriseren</string>
+    <string name="nc_settings_remove_account">Verwijder account</string>
+    <string name="nc_settings_add_account">Toevoegen nieuw account</string>
+    <string name="nc_settings_wrong_account">Alleen het huidige account kan opnieuw worden geautoriseerd</string>
+    <string name="nc_no_proxy">geen proxy</string>
+    <string name="nc_username">Gebruikersnaam</string>
+    <string name="nc_password">Wachtwoord</string>
+    <string name="nc_about">Over</string>
+    <string name="nc_privacy">Privacy</string>
+    <string name="nc_get_source_code">Download sourcecode</string>
+    <string name="nc_license_title">Licentie</string>
+    <string name="nc_license_summary">GNU General Public Licence, versie 3</string>
+
+    <string name="nc_select_an_account">Selecteer een account</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">Wat wil je vandaag doen?</string>
+    <string name="nc_leave">Verlaat gesprek</string>
+    <string name="nc_rename">Hernoem gesprek</string>
+    <string name="nc_set_password">Instellen wachtwoord</string>
+    <string name="nc_change_password">Wijzig wachtwoord</string>
+    <string name="nc_share_link">Deel link</string>
+    <string name="nc_delete_call">Verwijder gesprek</string>
+
+    <!-- Contacts -->
+    <string name="nc_one_contact_selected">contact geselecteerd</string>
+    <string name="nc_more_contacts_selected">contacten geselecteerd</string>
+
+    <string name="nc_permissions_settings">Openen instellingen</string>
+
+</resources>
