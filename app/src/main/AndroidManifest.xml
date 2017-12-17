@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         tools:replace="label, icon, theme, name, allowBackup"
@@ -44,7 +45,6 @@
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize"
             />
-
 
         <service
             android:name=".services.firebase.MagicFirebaseMessagingService">

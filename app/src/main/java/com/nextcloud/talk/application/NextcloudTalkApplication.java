@@ -20,9 +20,13 @@
  */
 package com.nextcloud.talk.application;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import android.support.v7.widget.AppCompatDrawableManager;
+import android.util.Log;
 
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
@@ -39,6 +43,9 @@ import com.nextcloud.talk.utils.database.user.UserModule;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.GeneralSecurityException;
 
 import javax.inject.Singleton;
@@ -76,6 +83,32 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     }
     //endregion
 
+    //region private methods
+    // Solution inspired by https://stackoverflow.com/questions/34936590/why-isnt-my-vector-drawable-scaling-as-expected
+    private void useCompatVectorIfNeeded() {
+        int sdkInt = Build.VERSION.SDK_INT;
+        if (sdkInt == 21 || sdkInt == 22) {
+            try {
+                @SuppressLint("RestrictedApi") AppCompatDrawableManager drawableManager = AppCompatDrawableManager.get();
+                Class<?> inflateDelegateClass = Class.forName("android.support.v7.widget.AppCompatDrawableManager$InflateDelegate");
+                Class<?> vdcInflateDelegateClass = Class.forName("android.support.v7.widget.AppCompatDrawableManager$VdcInflateDelegate");
+
+                Constructor<?> constructor = vdcInflateDelegateClass.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                Object vdcInflateDelegate = constructor.newInstance();
+
+                Class<?> args[] = {String.class, inflateDelegateClass};
+                Method addDelegate = AppCompatDrawableManager.class.getDeclaredMethod("addDelegate", args);
+                addDelegate.setAccessible(true);
+                addDelegate.invoke(drawableManager, "vector", vdcInflateDelegate);
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
+                    InvocationTargetException | IllegalAccessException e) {
+                Log.d(TAG, "Failed to use reflection to enable proper vector scaling");
+            }
+        }
+    }
+    //endregion
+
     //region Overridden methods
     @Override
     public void onCreate() {
@@ -83,6 +116,8 @@ public class NextcloudTalkApplication extends MultiDexApplication {
         JobManager.create(this).addJobCreator(new MagicJobCreator());
         FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false);
         sharedApplication = this;
+
+        useCompatVectorIfNeeded();
 
 
         try {

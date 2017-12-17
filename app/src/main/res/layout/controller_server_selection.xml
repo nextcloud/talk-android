@@ -23,7 +23,8 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimary"
+                android:fitsSystemWindows="true">
 
     <ImageView
         android:layout_width="96dp"
@@ -31,29 +32,31 @@
         android:layout_above="@id/text_field_boxes"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="36dp"
-        android:background="@drawable/ic_logo"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/ic_logo"
         />
 
     <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
         android:id="@+id/text_field_boxes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="72dp"
+        android:layout_centerInParent="true"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         app:errorColor="@color/nc_white_color_complete"
         app:helperText=" "
-        app:primaryColor="@color/nc_white_color_complete"
-        >
+        app:panelBackgroundColor="@color/colorPrimary"
+        app:primaryColor="@color/nc_white_color_complete">
 
         <studio.carbonylgroup.textfieldboxes.ExtendedEditText
             android:id="@+id/extended_edit_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:imeOptions="actionDone"
             android:inputType="textUri"
+            android:textSize="12sp"
             android:minWidth="5dp"
             android:singleLine="true"
             android:textColor="@color/nc_white_color_complete"/>
@@ -65,14 +68,15 @@
         android:layout_width="@dimen/small_item_height"
         android:layout_height="@dimen/small_item_height"
         android:layout_below="@id/text_field_boxes"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/padding_between_elements"
+        android:layout_marginTop="24dp"
         android:indeterminate="true"
-        android:progressTint="@color/nc_white_color"
+        android:progressDrawable="@color/nc_white_color_complete"
+        android:progressTint="@color/nc_white_color_complete"
         android:visibility="invisible"/>
 
 </RelativeLayout>

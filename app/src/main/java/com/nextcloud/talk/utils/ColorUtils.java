@@ -20,6 +20,19 @@
 
 package com.nextcloud.talk.utils;
 
+import android.content.res.Resources;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+
 public class ColorUtils {
     public static String colorSeed = "ballast butte permute doxy graham rummage grateful songbook pledge escapade";
+
+    public static Drawable getTintedDrawable(Resources res, @DrawableRes int drawableResId, @ColorRes int colorResId) {
+        Drawable drawable = res.getDrawable(drawableResId);
+        int color = res.getColor(colorResId);
+        drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        return drawable;
+    }
 }

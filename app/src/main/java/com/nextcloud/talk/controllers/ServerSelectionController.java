@@ -22,6 +22,9 @@ package com.nextcloud.talk.controllers;
 
 import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,89 +87,128 @@ public class ServerSelectionController extends BaseController {
             getActionBar().hide();
         }
 
-        textFieldBoxes.setLabelText(getResources().getString(R.string.nc_app_name) + " " + getResources().getString(R.string.nc_appended_server_url));
+        textFieldBoxes.setLabelText(getResources().getString(R.string.nc_server_url));
+        textFieldBoxes.getEndIconImageButton().setBackgroundDrawable(getResources().getDrawable(R.drawable
+                .ic_arrow_forward_white_24px));
+        textFieldBoxes.getEndIconImageButton().setAlpha(0.5f);
+        textFieldBoxes.getEndIconImageButton().setEnabled(false);
+        textFieldBoxes.getEndIconImageButton().setVisibility(View.VISIBLE);
+        textFieldBoxes.getEndIconImageButton().setOnClickListener(view1 -> checkServerAndProceed());
 
         serverEntry.requestFocus();
 
+        serverEntry.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!textFieldBoxes.isOnError() && !TextUtils.isEmpty(serverEntry.getText())) {
+                    textFieldBoxes.getEndIconImageButton().setEnabled(true);
+                    textFieldBoxes.getEndIconImageButton().setAlpha(1f);
+
+                } else {
+                    textFieldBoxes.getEndIconImageButton().setEnabled(false);
+                    textFieldBoxes.getEndIconImageButton().setAlpha(0.5f);
+                }
+            }
+        });
+
         serverEntry.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_DONE) {
-                dispose();
-
-                String url = serverEntry.getText().toString().trim();
-
-                if (url.startsWith("http://") || url.startsWith("https://")) {
-                    serverEntry.setEnabled(false);
-                    progressBar.setVisibility(View.VISIBLE);
-
-                    if (url.endsWith("/")) {
-                        url = url.substring(0, url.length() - 1);
-                    }
-
-                    String queryUrl = url + ApiHelper.getUrlPostfixForStatus();
-                    final String finalServerUrl = url;
-
-                    statusQueryDisposable = ncApi.getServerStatus(queryUrl)
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(status -> {
-                                String productName = getResources().getString(R.string.nc_server_product_name);
-
-                                if (status.isInstalled() && !status.isMaintenance() &&
-                                        !status.isNeedsUpgrade() &&
-                                        status.getVersion().startsWith("13.")) {
-
-                                    getRouter().pushController(RouterTransaction.with(
-                                            new WebViewLoginController(finalServerUrl, false))
-                                            .pushChangeHandler(new HorizontalChangeHandler())
-                                            .popChangeHandler(new HorizontalChangeHandler()));
-                                } else if (!status.isInstalled()) {
-                                    textFieldBoxes.setError(String.format(
-                                            getResources().getString(R.string.nc_server_not_installed), productName),
-                                            true);
-                                } else if (status.isNeedsUpgrade()) {
-                                    textFieldBoxes.setError(String.format(getResources().
-                                                    getString(R.string.nc_server_db_upgrade_needed),
-                                            productName), true);
-                                } else if (status.isMaintenance()) {
-                                    textFieldBoxes.setError(String.format(getResources().
-                                                    getString(R.string.nc_server_maintenance),
-                                            productName),
-                                            true);
-                                } else if (!status.getVersion().startsWith("13.")) {
-                                    textFieldBoxes.setError(String.format(getResources().
-                                                    getString(R.string.nc_server_version),
-                                            getResources().getString(R.string.nc_app_name)
-                                            , productName), true);
-                                }
-
-                            }, throwable -> {
-                                if (throwable.getLocalizedMessage() != null) {
-                                    textFieldBoxes.setError(throwable.getLocalizedMessage(), true);
-                                } else if (throwable.getCause() instanceof CertificateException) {
-                                    textFieldBoxes.setError(getResources().getString(R.string.nc_certificate_error),
-                                            true);
-                                }
-                                if (serverEntry != null) {
-                                    serverEntry.setEnabled(true);
-                                }
-                                progressBar.setVisibility(View.GONE);
-
-                                dispose();
-
-                            }, () -> {
-                                progressBar.setVisibility(View.GONE);
-                                dispose();
-                            });
-                } else {
-                    textFieldBoxes.setError(getResources().getString(R.string.nc_server_url_prefix), true);
-                    serverEntry.setEnabled(true);
-                    return true;
-                }
-
+                checkServerAndProceed();
             }
 
             return false;
         });
+    }
+
+    private void checkServerAndProceed() {
+        dispose();
+
+        String url = serverEntry.getText().toString().trim();
+
+        serverEntry.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
+
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+
+        String queryUrl = url + ApiHelper.getUrlPostfixForStatus();
+
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            checkServer(queryUrl, false);
+        } else {
+            checkServer("https://" + queryUrl, true);
+        }
+    }
+
+    private void checkServer(String queryUrl, boolean checkForcedHttps) {
+        statusQueryDisposable = ncApi.getServerStatus(queryUrl)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(status -> {
+                    String productName = getResources().getString(R.string.nc_server_product_name);
+
+                    if (status.isInstalled() && !status.isMaintenance() &&
+                            !status.isNeedsUpgrade() &&
+                            status.getVersion().startsWith("13.")) {
+
+                        getRouter().pushController(RouterTransaction.with(
+                                new WebViewLoginController(queryUrl.replace("/status.php", ""),
+                                        false))
+                                .pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()));
+                    } else if (!status.isInstalled()) {
+                        textFieldBoxes.setError(String.format(
+                                getResources().getString(R.string.nc_server_not_installed), productName),
+                                true);
+                    } else if (status.isNeedsUpgrade()) {
+                        textFieldBoxes.setError(String.format(getResources().
+                                        getString(R.string.nc_server_db_upgrade_needed),
+                                productName), true);
+                    } else if (status.isMaintenance()) {
+                        textFieldBoxes.setError(String.format(getResources().
+                                        getString(R.string.nc_server_maintenance),
+                                productName),
+                                true);
+                    } else if (!status.getVersion().startsWith("13.")) {
+                        textFieldBoxes.setError(String.format(getResources().
+                                        getString(R.string.nc_server_version),
+                                getResources().getString(R.string.nc_app_name)
+                                , productName), true);
+                    }
+
+                }, throwable -> {
+                    if (checkForcedHttps && (throwable instanceof Exception)) {
+                        checkServer(queryUrl.replace("https://", "http://"), false);
+                    } else {
+                        if (throwable.getLocalizedMessage() != null) {
+                            textFieldBoxes.setError(throwable.getLocalizedMessage(), true);
+                        } else if (throwable.getCause() instanceof CertificateException) {
+                            textFieldBoxes.setError(getResources().getString(R.string.nc_certificate_error),
+                                    true);
+                        }
+
+                        if (serverEntry != null) {
+                            serverEntry.setEnabled(true);
+                        }
+                        progressBar.setVisibility(View.GONE);
+
+                        dispose();
+                    }
+                }, () -> {
+                    progressBar.setVisibility(View.GONE);
+                    dispose();
+                });
     }
 
     @Override
