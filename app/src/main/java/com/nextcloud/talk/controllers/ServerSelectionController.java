@@ -87,7 +87,6 @@ public class ServerSelectionController extends BaseController {
             getActionBar().hide();
         }
 
-        textFieldBoxes.setLabelText(getResources().getString(R.string.nc_server_url));
         textFieldBoxes.getEndIconImageButton().setBackgroundDrawable(getResources().getDrawable(R.drawable
                 .ic_arrow_forward_white_24px));
         textFieldBoxes.getEndIconImageButton().setAlpha(0.5f);
@@ -111,12 +110,9 @@ public class ServerSelectionController extends BaseController {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!textFieldBoxes.isOnError() && !TextUtils.isEmpty(serverEntry.getText())) {
-                    textFieldBoxes.getEndIconImageButton().setEnabled(true);
-                    textFieldBoxes.getEndIconImageButton().setAlpha(1f);
-
+                    toggleProceedButton(true);
                 } else {
-                    textFieldBoxes.getEndIconImageButton().setEnabled(false);
-                    textFieldBoxes.getEndIconImageButton().setAlpha(0.5f);
+                    toggleProceedButton(false);
                 }
             }
         });
@@ -130,6 +126,15 @@ public class ServerSelectionController extends BaseController {
         });
     }
 
+    private void toggleProceedButton(boolean show) {
+        textFieldBoxes.getEndIconImageButton().setEnabled(show);
+
+        if (show) {
+            textFieldBoxes.getEndIconImageButton().setAlpha(1f);
+        } else {
+            textFieldBoxes.getEndIconImageButton().setAlpha(0.5f);
+        }
+    }
     private void checkServerAndProceed() {
         dispose();
 
@@ -188,20 +193,22 @@ public class ServerSelectionController extends BaseController {
                     }
 
                 }, throwable -> {
-                    if (checkForcedHttps && (throwable instanceof Exception)) {
+                    if (checkForcedHttps) {
                         checkServer(queryUrl.replace("https://", "http://"), false);
                     } else {
                         if (throwable.getLocalizedMessage() != null) {
                             textFieldBoxes.setError(throwable.getLocalizedMessage(), true);
                         } else if (throwable.getCause() instanceof CertificateException) {
                             textFieldBoxes.setError(getResources().getString(R.string.nc_certificate_error),
-                                    true);
+                                    false);
                         }
 
                         if (serverEntry != null) {
                             serverEntry.setEnabled(true);
                         }
+
                         progressBar.setVisibility(View.GONE);
+                        toggleProceedButton(false);
 
                         dispose();
                     }
