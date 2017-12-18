@@ -31,7 +31,7 @@ public class MediaStreamEvent {
     private final MediaStream mediaStream;
     private final String session;
 
-    public MediaStreamEvent(@Nullable  MediaStream mediaStream, String session) {
+    public MediaStreamEvent(@Nullable MediaStream mediaStream, String session) {
         this.mediaStream = mediaStream;
         this.session = session;
     }

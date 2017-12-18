@@ -117,6 +117,7 @@ public class RestModule {
     CookieManager provideCookieManager() {
         return new CookieManager();
     }
+
     @Provides
     @Singleton
     Cache provideCache() {

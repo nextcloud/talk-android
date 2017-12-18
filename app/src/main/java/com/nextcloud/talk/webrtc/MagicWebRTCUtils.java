@@ -75,7 +75,9 @@ public class MagicWebRTCUtils {
         return joinString(Arrays.asList(lines), "\r\n", true /* delimiterAtEnd */);
     }
 
-    /** Returns the line number containing "m=audio|video", or -1 if no such line exists. */
+    /**
+     * Returns the line number containing "m=audio|video", or -1 if no such line exists.
+     */
     private static int findMediaDescriptionLine(boolean isAudio, String[] sdpLines) {
         final String mediaDescription = isAudio ? "m=audio " : "m=video ";
         for (int i = 0; i < sdpLines.length; ++i) {

@@ -150,6 +150,7 @@ public class ServerSelectionController extends BaseController {
             textFieldBoxes.getEndIconImageButton().setAlpha(0.5f);
         }
     }
+
     private void checkServerAndProceed() {
         dispose();
 

@@ -163,6 +163,7 @@ public interface NcApi {
     @GET
     Observable<SignalingSettingsOverall> getSignalingSettings(@Header("Authorization") String authorization, @Url
             String url);
+
     /*
         QueryMap items are as follows:
             - "messages" : "message"

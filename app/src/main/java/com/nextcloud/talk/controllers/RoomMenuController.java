@@ -47,7 +47,7 @@ import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class RoomMenuController extends BaseController implements FlexibleAdapter.OnItemClickListener{
+public class RoomMenuController extends BaseController implements FlexibleAdapter.OnItemClickListener {
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     private Room room;

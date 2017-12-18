@@ -90,6 +90,6 @@
         android:text="@string/nc_get_from_provider"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="@color/nc_white_color_complete"/>
+        android:textColor="@color/nc_light_blue_color"/>
 
 </RelativeLayout>

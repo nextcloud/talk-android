@@ -112,25 +112,22 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends AppCompatActivity {
     private static final String TAG = "CallActivity";
-
+    private static final String[] PERMISSIONS_CALL = {
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.RECORD_AUDIO
+    };
     @BindView(R.id.pip_video_view)
     SurfaceViewRenderer pipVideoView;
-
     @BindView(R.id.full_screen_surface_view)
     SurfaceViewRenderer fullScreenVideoView;
-
     @BindView(R.id.relative_layout)
     RelativeLayout relativeLayout;
-
     @BindView(R.id.remote_renderers_layout)
     LinearLayout remoteRenderersLayout;
-
     @Inject
     NcApi ncApi;
-
     @Inject
     EventBus eventBus;
-
     PeerConnectionFactory peerConnectionFactory;
     MediaConstraints audioConstraints;
     MediaConstraints videoConstraints;
@@ -151,18 +148,10 @@ public class CallActivity extends AppCompatActivity {
     private String roomToken;
     private UserEntity userEntity;
     private String callSession;
-
     private VideoCapturer videoCapturerAndroid;
-
     private MediaStream localMediaStream;
-
     private String credentials;
     private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
-
-    private static final String[] PERMISSIONS_CALL = {
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.RECORD_AUDIO
-    };
 
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -258,7 +247,7 @@ public class CallActivity extends AppCompatActivity {
             // Some permission is permanently denied so we cannot request them normally.
             OpenAppDetailsDialogFragment.show(
                     R.string.nc_permissions_permanently_denied,
-                    R.string.nc_permissions_settings , this);
+                    R.string.nc_permissions_settings, this);
         } else {
             EffortlessPermissions.requestPermissions(this, R.string.nc_permissions,
                     100, PERMISSIONS_CALL);
@@ -820,7 +809,7 @@ public class CallActivity extends AppCompatActivity {
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.SENSOR_FAR) ||
                 peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
-                .PeerConnectionEventType.SENSOR_NEAR)) {
+                        .PeerConnectionEventType.SENSOR_NEAR)) {
 
             /*boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                     .PeerConnectionEventType.SENSOR_FAR);

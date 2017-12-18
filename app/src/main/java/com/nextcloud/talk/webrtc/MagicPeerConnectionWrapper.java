@@ -48,8 +48,8 @@ import java.util.List;
 
 public class MagicPeerConnectionWrapper {
     private static String TAG = "MagicPeerConnectionWrapper";
-    private PeerConnection peerConnection;
     List<IceCandidate> iceCandidates = new ArrayList<>();
+    private PeerConnection peerConnection;
     private List<PeerConnection.IceServer> iceServers;
     private String sessionId;
     private String localSession;
