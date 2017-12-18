@@ -20,7 +20,9 @@
 
 package com.nextcloud.talk.controllers;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -30,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -63,6 +66,8 @@ public class ServerSelectionController extends BaseController {
     TextFieldBoxes textFieldBoxes;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+    @BindView(R.id.providers_text_view)
+    TextView providersTextView;
 
     @Inject
     NcApi ncApi;
@@ -93,6 +98,16 @@ public class ServerSelectionController extends BaseController {
         textFieldBoxes.getEndIconImageButton().setEnabled(false);
         textFieldBoxes.getEndIconImageButton().setVisibility(View.VISIBLE);
         textFieldBoxes.getEndIconImageButton().setOnClickListener(view1 -> checkServerAndProceed());
+
+        if (TextUtils.isEmpty(getResources().getString(R.string.nc_providers_url))) {
+            providersTextView.setVisibility(View.GONE);
+        } else {
+            providersTextView.setOnClickListener(view12 -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources()
+                        .getString(R.string.nc_providers_url)));
+                startActivity(browserIntent);
+            });
+        }
 
         serverEntry.requestFocus();
 
@@ -142,6 +157,7 @@ public class ServerSelectionController extends BaseController {
 
         serverEntry.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
+        providersTextView.setVisibility(View.INVISIBLE);
 
         if (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);
@@ -176,20 +192,24 @@ public class ServerSelectionController extends BaseController {
                         textFieldBoxes.setError(String.format(
                                 getResources().getString(R.string.nc_server_not_installed), productName),
                                 true);
+                        toggleProceedButton(false);
                     } else if (status.isNeedsUpgrade()) {
                         textFieldBoxes.setError(String.format(getResources().
                                         getString(R.string.nc_server_db_upgrade_needed),
                                 productName), true);
+                        toggleProceedButton(false);
                     } else if (status.isMaintenance()) {
                         textFieldBoxes.setError(String.format(getResources().
                                         getString(R.string.nc_server_maintenance),
                                 productName),
                                 true);
+                        toggleProceedButton(false);
                     } else if (!status.getVersion().startsWith("13.")) {
                         textFieldBoxes.setError(String.format(getResources().
                                         getString(R.string.nc_server_version),
                                 getResources().getString(R.string.nc_app_name)
                                 , productName), true);
+                        toggleProceedButton(false);
                     }
 
                 }, throwable -> {
@@ -208,12 +228,14 @@ public class ServerSelectionController extends BaseController {
                         }
 
                         progressBar.setVisibility(View.GONE);
+                        providersTextView.setVisibility(View.VISIBLE);
                         toggleProceedButton(false);
 
                         dispose();
                     }
                 }, () -> {
                     progressBar.setVisibility(View.GONE);
+                    providersTextView.setVisibility(View.VISIBLE);
                     dispose();
                 });
     }

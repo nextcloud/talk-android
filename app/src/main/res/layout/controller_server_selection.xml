@@ -45,9 +45,9 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        app:labelText="@string/nc_server_url"
         app:errorColor="@color/nc_white_color_complete"
         app:helperText=" "
+        app:labelText="@string/nc_server_url"
         app:panelBackgroundColor="@color/colorPrimary"
         app:primaryColor="@color/nc_white_color_complete">
 
@@ -75,8 +75,21 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="24dp"
         android:indeterminate="true"
-        android:indeterminateTintMode="src_in"
         android:indeterminateTint="@color/nc_white_color_complete"
+        android:indeterminateTintMode="src_in"
         android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/providers_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progress_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="56dp"
+        android:lines="2"
+        android:text="@string/nc_get_from_provider"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/nc_white_color_complete"/>
 
 </RelativeLayout>
