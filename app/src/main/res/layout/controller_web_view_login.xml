@@ -34,7 +34,8 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:indeterminate="true"
-        android:progressTint="@color/colorPrimary"/>
+        android:indeterminateTintMode="src_in"
+        android:indeterminateTint="@color/colorPrimary"/>
 
     <WebView
         android:id="@+id/webview"
