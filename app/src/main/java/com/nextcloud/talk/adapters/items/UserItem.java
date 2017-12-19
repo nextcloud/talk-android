@@ -34,6 +34,8 @@ import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -121,7 +123,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
     @Override
     public boolean filter(String constraint) {
-        return participant.getName() != null && participant.getName().toLowerCase().trim().contains(constraint.toLowerCase());
+        return participant.getName() != null &&
+                StringUtils.containsIgnoreCase(participant.getName().trim(), constraint);
     }
 
 

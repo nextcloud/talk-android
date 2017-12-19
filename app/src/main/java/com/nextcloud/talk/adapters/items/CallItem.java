@@ -38,6 +38,7 @@ import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
+import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
@@ -158,8 +159,8 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
 
     @Override
     public boolean filter(String constraint) {
-        return room.getDisplayName() != null && room.getDisplayName().toLowerCase().trim().contains(
-                constraint.toLowerCase());
+        return room.getDisplayName() != null &&
+                StringUtils.containsIgnoreCase(room.getDisplayName().trim(), constraint);
 
     }
 

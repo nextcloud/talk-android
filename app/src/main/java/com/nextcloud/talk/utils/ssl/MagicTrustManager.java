@@ -145,7 +145,7 @@ public class MagicTrustManager implements X509TrustManager {
 
     @Override
     public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-        Log.d(TAG, "We don't validate client certificates just yet");
+        systemTrustManager.checkClientTrusted(x509Certificates, s);
     }
 
     @Override

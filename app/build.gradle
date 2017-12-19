@@ -113,7 +113,8 @@ dependencies {
 
     implementation 'com.github.HITGIF:TextFieldBoxes:1.3.7'
 
-    implementation 'eu.davidea:flexible-adapter:5.0.0-rc3'
+    implementation 'eu.davidea:flexible-adapter:5.0.0-rc4'
+    implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b1'
 
     implementation 'cn.carbs.android:AvatarImageView:1.0.4'
 
