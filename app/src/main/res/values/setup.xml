@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Set before a release -->
-    <string name="nc_talk_database_encryption_key">mario</string>
-    <string name="nc_talk_login_scheme">nc</string>
+    <string name="nc_talk_database_encryption_key" translatable="false">mario</string>
+    <string name="nc_talk_login_scheme" translatable="false">nc</string>
 
     <string name="nc_app_name">Nextcloud Talk</string>
     <string name="nc_server_product_name">Nextcloud</string>
 
-    <string name="nc_push_server_url">https://push-notifications.nextcloud.com</string>
+    <string name="nc_push_server_url" translatable="false">https://push-notifications.nextcloud.com</string>
 
     <!-- Will not be shown if empty -->
-    <string name="nc_privacy_url">https://nextcloud.com/privacy/</string>
-    <string name="nc_gpl3_url">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
-    <string name="nc_source_code_url">https://github.com/nextcloud/talk-android</string>
-    <string name="nc_providers_url">https://nextcloud.com/providers</string>
+    <string name="nc_privacy_url" translatable="false">https://nextcloud.com/privacy/</string>
+    <string name="nc_gpl3_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
+    <string name="nc_source_code_url" translatable="false">https://github.com/nextcloud/talk-android</string>
+    <string name="nc_providers_url" translatable="false">https://nextcloud.com/providers</string>
 </resources>

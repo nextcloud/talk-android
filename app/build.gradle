@@ -12,7 +12,7 @@ android {
         targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        versionCode 5
+        versionCode 6
         versionName "0.1.2"
 
         // Enabling multidex support.
@@ -22,8 +22,8 @@ android {
 
         lintOptions {
             disable 'InvalidPackage'
+            disable 'MissingTranslation'
         }
-
     }
 
     buildTypes {
