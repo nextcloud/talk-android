@@ -20,12 +20,9 @@
     <string name="nc_search">搜尋</string>
 
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
-    <string name="nc_certificate_dialog_text">我們遭遇一個未知來源%1$s發佈給%2$s的SSL憑證證書，有效期間為%3$s至%4$s，是否信任？</string>
     <string name="nc_yes">是</string>
     <string name="nc_no">否</string>
     <string name="nc_details">詳細資料</string>
-    <string name="nc_certificate_error">你的SSL設定阻斷我們的連線</string>
-
     <!-- Settings -->
     <string name="nc_settings_proxy_title">proxy代理</string>
     <string name="nc_settings_proxy_type_key">proxy_類型</string>
@@ -43,9 +40,6 @@
     <string name="nc_settings_remove_account">移除帳號</string>
     <string name="nc_settings_add_account">新增一個帳號</string>
     <string name="nc_settings_wrong_account">只有特定帳號可以被重新授權</string>
-    <string name="nc_settings_account_updated">我們更新您已存在的帳號，而不是新增一個已存在的帳號。</string>
-    <string name="nc_account_scheduled_for_deletion">帳號已經被安排刪除，無法進行操作。</string>
-
     <string name="nc_no_proxy">無proxy代理</string>
     <string name="nc_username">使用者</string>
     <string name="nc_password">密碼</string>
@@ -72,9 +66,6 @@
     <string name="nc_one_contact_selected">聯絡人已選</string>
     <string name="nc_more_contacts_selected">聯絡人已選</string>
 
-    <!-- Permissions -->
-    <string name="nc_permissions">我們需要特定的權限才能建立視訊通話，請在接下來的系統跳出的視窗點選\"允許\"</string>
-    <string name="nc_permissions_permanently_denied">我們需要特定的權限才能建立視訊通話，請在系統設定中允許\"相機鏡頭\"與\"麥克風\"的權限</string>
     <string name="nc_permissions_settings">開啟設定</string>
 
 </resources>

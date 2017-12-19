@@ -4,10 +4,13 @@
     <string name="nc_bottom_navigation_title_contacts">Контакты</string>
     <string name="nc_bottom_navigation_title_settings">Настройки</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">Адрес сервера</string>
     <string name="nc_server_url_prefix">Укажите протокол (http:// или https://) перед именем сервера</string>
     <string name="nc_server_not_installed">Завершите установку %1$s</string>
     <string name="nc_server_db_upgrade_needed">Обновите базу данных %1$s</string>
     <string name="nc_server_maintenance">Сервер %1$s находится в режиме обслуживания</string>
+    <string name="nc_server_version">Работоспособность %1$s обеспечивается только серверами %2$s версии 13 или более новой</string>
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Отображаемое имя получено</string>
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>

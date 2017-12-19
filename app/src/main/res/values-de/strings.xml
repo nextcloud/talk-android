@@ -4,10 +4,13 @@
     <string name="nc_bottom_navigation_title_contacts">Kontakte</string>
     <string name="nc_bottom_navigation_title_settings">Einstellungen</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">Serveradresse</string>
     <string name="nc_server_url_prefix">Bitte gebe http:// oder https:// vor dem Hostnamen ein</string>
     <string name="nc_server_not_installed">Bitte beende deine %1$s Installation</string>
     <string name="nc_server_db_upgrade_needed">Bitte aktualisiere deine %1$s Datenbank</string>
     <string name="nc_server_maintenance">Bitte bringe %1$s aus der Wartung</string>
+    <string name="nc_server_version">%1$sfunktioniert nur mit %2$s 13 und höher</string>
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Anzeigename abgerufen</string>
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden, Abbruch</string>
@@ -20,12 +23,9 @@
     <string name="nc_search">Suche</string>
 
     <string name="nc_certificate_dialog_title">Überprüfe das Zertifikat</string>
-    <string name="nc_certificate_dialog_text">Wir haben ein bisher unbekanntes SSL-Zertifikat gefunden, ausgestellt von %1$s für %2$s, gültig von %3$s bis %4$s. Diesem Zertifikat vertrauen?</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nein</string>
     <string name="nc_details">Details</string>
-    <string name="nc_certificate_error">Deine SSL Konfiguration hat uns daran gehindert, eine Verbindung herzustellen</string>
-
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_key">proxy_typ</string>
@@ -43,9 +43,6 @@
     <string name="nc_settings_remove_account">Konto entfernen</string>
     <string name="nc_settings_add_account">Konto hinzufügen</string>
     <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
-    <string name="nc_settings_account_updated">Wir haben dein existierendes Konto aktualsiert, anstelle ein neues hinzuzufügen, da es bereits existiert</string>
-    <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann nicht benutzt werden</string>
-
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Nutzername</string>
     <string name="nc_password">Passwort</string>
@@ -72,9 +69,6 @@
     <string name="nc_one_contact_selected">Kontakt ausgewählt</string>
     <string name="nc_more_contacts_selected">Kontakte ausgewählt</string>
 
-    <!-- Permissions -->
-    <string name="nc_permissions">Wir brauchen bestimmte Berechtigungen, um einen Videoanruf herzustellen. Bitte klicke im nachfolgenden Systemdialog auf \"ZULASSEN\".</string>
-    <string name="nc_permissions_permanently_denied">Wir brauchen bestimmte Berechtigungen, um einen Videoanruf herzustellen. Bitte erlaube die \"Kamera\" und \"Mikrofon\" Berechtigung in den Systemeinstellungen.</string>
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
 </resources>

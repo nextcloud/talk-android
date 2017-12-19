@@ -58,6 +58,8 @@
     <string name="nc_set_password">Instellen wachtwoord</string>
     <string name="nc_change_password">Wijzig wachtwoord</string>
     <string name="nc_share_link">Deel link</string>
+    <string name="nc_make_call_public">Maak gesprek openbaar</string>
+    <string name="nc_stop_sharing">Stop delen van het gesprek</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
 
     <!-- Contacts -->

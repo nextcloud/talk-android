@@ -4,10 +4,13 @@
     <string name="nc_bottom_navigation_title_contacts">Contactos</string>
     <string name="nc_bottom_navigation_title_settings">Configuraciones</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">Dirección del servidor</string>
     <string name="nc_server_url_prefix">Por favor teclea http:// o https:// antes del nombre del servidor</string>
     <string name="nc_server_not_installed">Por favor termina tu instalación de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza tu base de datos %1$s</string>
     <string name="nc_server_maintenance">Por favor saca a tu %1$s de mantenimiento</string>
+    <string name="nc_server_version">%1$s solo funciona con %2$s 13 y posteriores</string>
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Se obtuvo el nombre a desplegar</string>
     <string name="nc_display_name_not_fetched">No se pudo obtener el nombre a desplegar, abortando</string>
@@ -20,11 +23,11 @@
     <string name="nc_search">Buscar</string>
 
     <string name="nc_certificate_dialog_title">Verifica el certificado</string>
-    <string name="nc_certificate_dialog_text">Encontramos un certificado SSL previamente desconocido emitido por %1$s para %2$s con validez desde el %3$s al %4$s. ¿Confiamos en él?</string>
+    <string name="nc_certificate_dialog_text">Encontramos un certificado SSL previamente desconocido, emitido por %1$s para %2$s con validez desde el %3$s al %4$s. ¿Confiamos en él? </string>
     <string name="nc_yes">Sí</string>
     <string name="nc_no">No</string>
     <string name="nc_details">Detalles</string>
-    <string name="nc_certificate_error">Tu configuración de SSL nos ha impedido conectarnos</string>
+    <string name="nc_certificate_error">Tu configuración de SSL impidió la conexión</string>
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
@@ -43,8 +46,8 @@
     <string name="nc_settings_remove_account">Eliminar cuenta</string>
     <string name="nc_settings_add_account">Agregar una cuenta nueva</string>
     <string name="nc_settings_wrong_account">Solo la cuenta actual se puede volver a autorizar</string>
-    <string name="nc_settings_account_updated">Actualizamos tu cuenta existente en lugar de agregar una nueva debido a que ya existe</string>
-    <string name="nc_account_scheduled_for_deletion">La cuenta está calendarizada para su borrado, y no se puede usar</string>
+    <string name="nc_settings_account_updated">Tu cuenta existente ha sido actualizada, en lugar de agregar una nueva</string>
+    <string name="nc_account_scheduled_for_deletion">La cuenta está calendarizada para ser borrada, y no puede ser modificada</string>
 
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Usuario</string>
@@ -73,9 +76,10 @@
     <string name="nc_more_contacts_selected">contactos seleccionados</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Necesitamos ciertos privilegios para establecer una video llamada. Por favor haz click en \"PERMITIR\" en la siguiente pantalla de diálogo del sistema. </string>
-    <string name="nc_permissions_permanently_denied">Necesitamos de ciertos permisos para establecer la llamada de video. Por favor 
-da los permisos de \"Cámara\" y \"Micrófono\" en las configuraciones del sistema. </string>
+    <string name="nc_permissions">Es posible que se requieran de más privilegios para establecer la video llamada. Por favor haz click en \"PERMITIR\" en
+ la siguiente ventana de diálogo. </string>
+    <string name="nc_permissions_permanently_denied">Para establecer la video llamada,
+ da los permisos de \"Cámara\" y \"Micrófono\" en las configuraciones de sistema.</string>
     <string name="nc_permissions_settings">Abrir configuraciones</string>
 
 </resources>

@@ -4,10 +4,13 @@
     <string name="nc_bottom_navigation_title_contacts">Contacts</string>
     <string name="nc_bottom_navigation_title_settings">Paramètres</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">Adresse du serveur</string>
     <string name="nc_server_url_prefix">Veuillez saisir http:// ou https:// avant le nom de l\'hôte</string>
     <string name="nc_server_not_installed">Veuillez terminer votre installation de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
     <string name="nc_server_maintenance">S’il vous plaît désactivez la maintenance de %1$s</string>
+    <string name="nc_server_version">%1$s ne fonctionne qu\'avec %2$s 13 et supérieur</string>
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Nom affiché récupéré</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
@@ -20,11 +23,11 @@
     <string name="nc_search">Recherche</string>
 
     <string name="nc_certificate_dialog_title">Vérifier le certificat</string>
-    <string name="nc_certificate_dialog_text">Le certificat SSL utilisé, émis par %1$s pour %2$s , valide du %3$s au %4$s, est inconnu. Lui faire confiance?</string>
+    <string name="nc_certificate_dialog_text">Certificat SSL inconnu détecté. Il a été émis par %1$s pour%2$s, et est valide du %3$s au %4$s. Lui faire confiance ?</string>
     <string name="nc_yes">Oui</string>
     <string name="nc_no">Non</string>
     <string name="nc_details">Détails</string>
-    <string name="nc_certificate_error">Votre configuration SSL nous a empêché de nous connecter</string>
+    <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
@@ -43,7 +46,7 @@
     <string name="nc_settings_remove_account">Supprimer le compte</string>
     <string name="nc_settings_add_account">Ajouter un nouveau compte</string>
     <string name="nc_settings_wrong_account">Seul le compte courant peut être ré-autorisé</string>
-    <string name="nc_settings_account_updated">Nous avons mis à jour votre compte existant au lieu d’en ajouter un nouveau puisqu’il existe déjà</string>
+    <string name="nc_settings_account_updated">Nous avons mis à jour votre compte existant au lieu d’en ajouter un nouveau</string>
     <string name="nc_account_scheduled_for_deletion">Le compte va être supprimé et ne peut donc pas être utilisé</string>
 
     <string name="nc_no_proxy">Aucun proxy</string>
@@ -73,8 +76,8 @@
     <string name="nc_more_contacts_selected">contacts sélectionnés</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Nous avons besoin de certaines autorisations pour établir un appel vidéo. Veuillez cliquer sur “autoriser“ dans
-la  boîte de dialogue.</string>
+    <string name="nc_permissions">Nous avons besoin de certaines autorisations pour établir un appel vidéo.
+Veuillez cliquer sur “autoriser“ dans la prochaine boîte de dialogue du système.</string>
     <string name="nc_permissions_permanently_denied">Nous avons besoin de certaines autorisations pour établir un appel vidéo.
 Veuillez autoriser l’utilisation de la camera et du microphone dans les paramètres du système.</string>
     <string name="nc_permissions_settings">Ouvrir les paramètres</string>

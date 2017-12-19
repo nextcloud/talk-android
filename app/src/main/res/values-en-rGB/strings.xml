@@ -4,10 +4,13 @@
     <string name="nc_bottom_navigation_title_contacts">Contacts</string>
     <string name="nc_bottom_navigation_title_settings">Settings</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">Server address</string>
     <string name="nc_server_url_prefix">Please enter http:// or https:// before the hostname</string>
     <string name="nc_server_not_installed">Please finish your %1$s installation</string>
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
     <string name="nc_server_maintenance">Please bring your %1$s out of maintenance</string>
+    <string name="nc_server_version">%1$s only works with %2$s 13 and up</string>
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Display name fetched</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
@@ -20,11 +23,11 @@
     <string name="nc_search">Search</string>
 
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
-    <string name="nc_certificate_dialog_text">We encountered a previously unknown SSL certificate issued by %1$s for %2$s valid from %3$s to %4$s. Trust it?</string>
+    <string name="nc_certificate_dialog_text">Previously unknown SSL certificate encountered, issued by %1$s for %2$s valid from %3$s to %4$s. Trust it?</string>
     <string name="nc_yes">Yes</string>
     <string name="nc_no">No</string>
     <string name="nc_details">Details</string>
-    <string name="nc_certificate_error">Your SSL setup prevented us from connecting</string>
+    <string name="nc_certificate_error">Your SSL setup prevented connection</string>
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
@@ -43,8 +46,8 @@
     <string name="nc_settings_remove_account">Remove account</string>
     <string name="nc_settings_add_account">Add a new account</string>
     <string name="nc_settings_wrong_account">Only current account can be reauthorised</string>
-    <string name="nc_settings_account_updated">We updated your existing account instead of adding a new one since it already exists</string>
-    <string name="nc_account_scheduled_for_deletion">Account is scheduled for deletion, and cannot be operated on</string>
+    <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
+    <string name="nc_account_scheduled_for_deletion">The account is scheduled for deletion, and cannot be changed</string>
 
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_username">Username</string>
@@ -73,10 +76,10 @@
     <string name="nc_more_contacts_selected">contacts selected</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">We need certain permissions to establish a video call. Please click \"ALLOW\" in
-        the upcoming system dialogue.</string>
-    <string name="nc_permissions_permanently_denied">We need certain permissions to establish a video call. Please
-        grant the \"Camera\" and  \"Microphone\" permission in system settings.</string>
+    <string name="nc_permissions">Permissions may need to be granted to establish a video call. Please click \"ALLOW\" in
+        the upcoming system dialog.</string>
+    <string name="nc_permissions_permanently_denied">To establish a video call,
+        grant \"Camera\" and  \"Microphone\" permissions in system settings.</string>
     <string name="nc_permissions_settings">Open settings</string>
 
 </resources>

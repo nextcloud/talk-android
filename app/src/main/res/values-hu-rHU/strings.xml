@@ -4,10 +4,13 @@
     <string name="nc_bottom_navigation_title_contacts">Kapcsolatok</string>
     <string name="nc_bottom_navigation_title_settings">Beállítások</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">szervercím</string>
     <string name="nc_server_url_prefix">Kérlek írj http://-t vagy https://-t a gazdanév elé</string>
     <string name="nc_server_not_installed">Kérlek fejezd be a(z) %1$s telepítésedet</string>
     <string name="nc_server_db_upgrade_needed">Kérlek frissítsd a(z) %1$s adatbázisod</string>
     <string name="nc_server_maintenance">Kérlek hozd ki a(z) %1$s-t karbantartási módból</string>
+    <string name="nc_server_version">%1$s csak %2$s 13-al vagy nagyobbal működik</string>
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Megjelenítendő név beszerezve</string>
     <string name="nc_display_name_not_fetched">Megjelenítendő név nem beszerezhető, megszakítás</string>
@@ -20,7 +23,7 @@
     <string name="nc_search">Keresés</string>
 
     <string name="nc_certificate_dialog_title">Tanúsítvány ellenőrzése</string>
-    <string name="nc_certificate_dialog_text">Találkoztunk egy korábbról nem ismert SSL tanúsítvánnyal, melyet %1$s adott ki %2$s számára %3$s-tól %4$s-ig érvényesen. Megbízol benne?</string>
+    <string name="nc_certificate_dialog_text">Korábban ismeretlen SSL tanúsítvány érkezett. %1$s bocsátotta ki %2$s részére, %3$s és %4$s között érvényes. Megbízható?</string>
     <string name="nc_yes">Igen</string>
     <string name="nc_no">Nem</string>
     <string name="nc_details">Részletek</string>
@@ -44,7 +47,7 @@
     <string name="nc_settings_add_account">Új fiók létrehozása</string>
     <string name="nc_settings_wrong_account">Csak az aktuális fiókot lehet újraengedélyezni</string>
     <string name="nc_settings_account_updated">Új fiók hozzáadása helyett frissítettük a már létező fiókot</string>
-    <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, nem kezelhető</string>
+    <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
 
     <string name="nc_no_proxy">Nincs proxy</string>
     <string name="nc_username">Felhasználónév</string>
@@ -74,7 +77,7 @@
 
     <!-- Permissions -->
     <string name="nc_permissions">Videohívás létrehozásához bizonyos engedélyek szükségesek. A következő párbeszédablakban az „ENGEDÉLYEZÉS”-re kell kattintani.</string>
-    <string name="nc_permissions_permanently_denied">Videohívás létrehozásához bizonyos engedélyek szükségesek. A rendszerbeállításokban engedélyezni kell a „Kamera” és a „Mikrofon” engedélyeket.</string>
+    <string name="nc_permissions_permanently_denied">Videohívás létrehozásához a rendszerbeállításokban meg kell adni a „Kamera” és a „Mikrofon” engedélyeket.</string>
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
 
 </resources>

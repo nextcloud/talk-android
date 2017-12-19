@@ -4,10 +4,13 @@
     <string name="nc_bottom_navigation_title_contacts">Kişiler</string>
     <string name="nc_bottom_navigation_title_settings">Ayarlar</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">Sunucu adresi</string>
     <string name="nc_server_url_prefix">Lütfen sunucu adının önüne http:// ya da https:// ekleyin</string>
     <string name="nc_server_not_installed">Lütfen %1$s kurulumunuzu tamamlayın</string>
     <string name="nc_server_db_upgrade_needed">Lütfen %1$s veritabanınızı güncelleyin</string>
     <string name="nc_server_maintenance">Lütfen %1$s kopyanızı bakım kipinden çıkarın</string>
+    <string name="nc_server_version">%1$s yalnız %2$s 13 ve üzerinde çalışır</string>
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Görüntülenecek ad alındı</string>
     <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>
@@ -73,10 +76,10 @@
     <string name="nc_more_contacts_selected">kişi seçilmiş</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Görüntülü çağrı başlatmak için belirli izinler gereklidir. Lütfen açılan pencerede
+    <string name="nc_permissions">Görüntülü çağrı başlatmak için belirli izinler gereklidir. Lütfen açılan sistem penceresinde
   \"ONAYLA\" üzerine tıklayın.</string>
-    <string name="nc_permissions_permanently_denied">Görüntülü çağrı başlatmak için belirli izinler gereklidir. Lütfen sistem ayarlarından
- \"Kamera\" ve \"Mikrofon\" izinlerini verin.</string>
+    <string name="nc_permissions_permanently_denied">Görüntülü çağrı başlatmak için
+  sistem ayarlarından \"Kamera\" ve \"Mikrofon\" izinlerini verin.</string>
     <string name="nc_permissions_settings">Ayarları aç</string>
 
 </resources>

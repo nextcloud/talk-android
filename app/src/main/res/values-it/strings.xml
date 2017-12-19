@@ -1,0 +1,71 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">Chiamate</string>
+    <string name="nc_bottom_navigation_title_contacts">Contatti</string>
+    <string name="nc_bottom_navigation_title_settings">Impostazioni</string>
+
+    <string name="nc_server_url_prefix">Digita http:// o https:// prima del nome host</string>
+    <string name="nc_server_not_installed">Termina l\'installazione di %1$s</string>
+    <string name="nc_server_db_upgrade_needed">Aggiorna il tuo database %1$s</string>
+    <string name="nc_server_maintenance">Esci dalla manutenzione di %1$s</string>
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Nome visualizzato recuperato</string>
+    <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
+    <string name="nc_nextcloud_talk_app_installed"> Applicazione %1$s trovate</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Applicazione %1$s non installata, interruzione in corso</string>
+    <string name="nc_display_name_stored">Nome visualizzato memorizzato</string>
+    <string name="nc_display_name_not_stored">Nome visualizzato non memorizzato, interruzione in corso</string>
+
+    <string name="nc_never">Mai partecipato</string>
+    <string name="nc_search">Cerca</string>
+
+    <string name="nc_certificate_dialog_title">Controlla il certificato</string>
+    <string name="nc_yes">Sì</string>
+    <string name="nc_no">No</string>
+    <string name="nc_details">Dettagli</string>
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_key">tipo_proxy</string>
+    <string name="nc_settings_proxy_type_title">Tipo proxy</string>
+    <string name="nc_settings_proxy_host_key">host_proxy</string>
+    <string name="nc_settings_proxy_host_title">Host proxy</string>
+    <string name="nc_settings_proxy_port_key">porta_proxy</string>
+    <string name="nc_settings_proxy_port_title">Porta proxy</string>
+    <string name="nc_settings_proxy_username_key">nomeutente_proxy</string>
+    <string name="nc_settings_proxy_password_key">password_proxy</string>
+    <string name="nc_settings_use_credentials_title">Usa credenziali</string>
+    <string name="nc_settings_use_credentials_key">credenziali_proxy</string>
+    <string name="nc_settings_switch_account">Cambia account</string>
+    <string name="nc_settings_reauthorize">Autorizza nuovamente</string>
+    <string name="nc_settings_remove_account">Rimuovi account</string>
+    <string name="nc_settings_add_account">Aggiungi un nuovo account</string>
+    <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
+    <string name="nc_no_proxy">Nessun proxy</string>
+    <string name="nc_username">Nome utente</string>
+    <string name="nc_password">Password</string>
+    <string name="nc_about">Informazioni</string>
+    <string name="nc_privacy">Riservatezza</string>
+    <string name="nc_get_source_code">Ottieni codice sorgente</string>
+    <string name="nc_license_title">Licenza</string>
+    <string name="nc_license_summary">GNU General Public License, versione 3</string>
+
+    <string name="nc_select_an_account">Seleziona account</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">Cosa vorresti fare oggi?</string>
+    <string name="nc_leave">Lascia la chiamata</string>
+    <string name="nc_rename">Rinomina chiamata</string>
+    <string name="nc_set_password">Imposta la password</string>
+    <string name="nc_change_password">Cambia la password</string>
+    <string name="nc_share_link">Condividi collegamento</string>
+    <string name="nc_make_call_public">Rendi pubblica la chiamata</string>
+    <string name="nc_stop_sharing">Interrompi la condivisione della chiamata</string>
+    <string name="nc_delete_call">Elimina chiamata</string>
+
+    <!-- Contacts -->
+    <string name="nc_one_contact_selected">contatto selezionato</string>
+    <string name="nc_more_contacts_selected">contatti selezionati</string>
+
+    <string name="nc_permissions_settings">Apri impostazioni</string>
+
+</resources>
