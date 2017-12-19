@@ -442,9 +442,8 @@ public class CallActivity extends AppCompatActivity {
                                                 userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
                                                 .subscribeOn(Schedulers.newThread())
                                                 .observeOn(AndroidSchedulers.mainThread())
-                                                //.repeatWhen(observable -> observable.delay(1500, TimeUnit
-                                                //        .MILLISECONDS))
-                                                .repeatWhen(completed -> completed)
+                                                .repeatWhen(observable -> observable.delay(1500,
+                                                        TimeUnit.MILLISECONDS))
                                                 .repeatUntil(booleanSupplier)
                                                 .retry(3)
                                                 .subscribe(new Observer<SignalingOverall>() {

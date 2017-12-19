@@ -150,7 +150,7 @@ public class AccountVerificationController extends BaseController {
 
                                                         if (userUtils.getUsers().size() == 1) {
                                                             getRouter().setRoot(RouterTransaction.with(new
-                                                                    BottomNavigationController(R.menu.menu_navigation))
+                                                                    MagicBottomNavigationController())
                                                                     .pushChangeHandler(new HorizontalChangeHandler())
                                                                     .popChangeHandler(new HorizontalChangeHandler()));
                                                         } else {

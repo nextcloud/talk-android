@@ -34,7 +34,7 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.controllers.BottomNavigationController;
+import com.nextcloud.talk.controllers.MagicBottomNavigationController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
 import com.nextcloud.talk.events.CertificateEvent;
@@ -93,7 +93,7 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         router = Conductor.attachRouter(this, container, savedInstanceState);
 
         if (!router.hasRootController() && userUtils.anyUserExists()) {
-            router.setRoot(RouterTransaction.with(new BottomNavigationController(R.menu.menu_navigation))
+            router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
         } else if (!router.hasRootController()) {
