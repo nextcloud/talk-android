@@ -23,6 +23,8 @@ package com.nextcloud.talk.api.models.json.signaling.settings;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -30,6 +32,9 @@ import lombok.Data;
 public class IceServer {
     @JsonField(name = "url")
     String url;
+
+    @JsonField(name = "urls")
+    List<String> urls;
 
     @JsonField(name = "username")
     String username;

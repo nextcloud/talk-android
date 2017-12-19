@@ -27,6 +27,7 @@ package com.nextcloud.talk.activities;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -175,7 +176,7 @@ public class CallActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         roomToken = getIntent().getExtras().getString("roomToken", "");
-        userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable("userEntity"));
+        userEntity = Parcels.unwrap((Parcelable) getIntent().getExtras().get("userEntity"));
         callSession = "0";
 
         credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
@@ -341,6 +342,21 @@ public class CallActivity extends AppCompatActivity {
                                         iceServer.getUsername(), iceServer.getCredential()));
                             }
                         }
+
+                        for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getTurnServers().size();
+                             i++) {
+                            iceServer = signalingSettingsOverall.getOcs().getSettings().getTurnServers().get(i);
+                            for (int j = 0; j < iceServer.getUrls().size(); j++) {
+                                if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
+                                        .getCredential())) {
+                                    iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j)));
+                                } else {
+                                    iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j),
+                                            iceServer.getUsername(), iceServer.getCredential()));
+                                }
+                            }
+                        }
+
 
                         joinRoomAndCall();
 
