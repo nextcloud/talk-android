@@ -48,6 +48,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.call.CallOverall;
 import com.nextcloud.talk.api.models.json.generic.GenericOverall;
+import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.api.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.api.models.json.signaling.NCMessageWrapper;
@@ -75,6 +76,7 @@ import org.webrtc.AudioTrack;
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.CameraEnumerator;
+import org.webrtc.CameraVideoCapturer;
 import org.webrtc.EglBase;
 import org.webrtc.IceCandidate;
 import org.webrtc.Logging;
@@ -189,6 +191,41 @@ public class CallActivity extends AppCompatActivity {
 
     }
 
+    private void toggleMedia(boolean enable, boolean video) {
+        String message;
+        if (video) {
+            message = "videoOff";
+            if (enable) {
+                message = "videoOn";
+                startVideoCapture();
+            } else {
+                try {
+                    videoCapturer.stopCapture();
+                } catch (InterruptedException e) {
+                    Log.d(TAG, "Failed to stop capturing video while sensor is near the ear");
+                }
+            }
+
+            localMediaStream.videoTracks.get(0).setEnabled(enable);
+        } else {
+            message = "audioOff";
+            if (enable) {
+                message = "audioOn";
+            }
+
+            localMediaStream.audioTracks.get(0).setEnabled(enable);
+        }
+
+        for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
+            magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
+        }
+    }
+
+    private void switchCamera() {
+        CameraVideoCapturer cameraVideoCapturer = (CameraVideoCapturer) videoCapturer;
+        cameraVideoCapturer.switchCamera(null);
+    }
+
     private VideoCapturer createVideoCapturer() {
         CameraEnumerator cameraEnumerator;
 
@@ -197,8 +234,8 @@ public class CallActivity extends AppCompatActivity {
         } else {
             cameraEnumerator = new Camera1Enumerator(false);
         }
-
         videoCapturer = createCameraCapturer(cameraEnumerator);
+
         return videoCapturer;
     }
 
@@ -235,6 +272,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     public void initViews() {
+        // setting this to true because it's not shown by default
         pipVideoView.setMirror(true);
         rootEglBase = EglBase.create();
         pipVideoView.init(rootEglBase.getEglBaseContext(), null);
@@ -837,17 +875,10 @@ public class CallActivity extends AppCompatActivity {
                 peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                         .PeerConnectionEventType.SENSOR_NEAR)) {
 
-            /*boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+            boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                     .PeerConnectionEventType.SENSOR_FAR);
-            String videoMessage = "videoOff";
-            if (enableVideo) {
-                videoMessage = "videoOn";
-            }
 
-            localMediaStream.videoTracks.get(0).setEnabled(enableVideo);
-            for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
-                magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(videoMessage));
-            }*/
+            toggleMedia(enableVideo, true);
         }
     }
 
