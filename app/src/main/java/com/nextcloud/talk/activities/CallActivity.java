@@ -270,7 +270,7 @@ public class CallActivity extends AppCompatActivity {
         //Initialize PeerConnectionFactory globals.
         PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions
                 .builder(this)
-                .setEnableVideoHwAcceleration(false)
+                .setEnableVideoHwAcceleration(true)
                 .createInitializationOptions();
         PeerConnectionFactory.initialize(initializationOptions);
 
