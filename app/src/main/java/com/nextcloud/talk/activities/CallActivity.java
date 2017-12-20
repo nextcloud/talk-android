@@ -25,6 +25,10 @@
 package com.nextcloud.talk.activities;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -43,6 +47,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.evernote.android.job.JobRequest;
+import com.evernote.android.job.util.Device;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
@@ -291,7 +297,7 @@ public class CallActivity extends AppCompatActivity {
     @AfterPermissionGranted(100)
     private void checkPermissions() {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
-            start();
+            initializeEverything();
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this,
                 PERMISSIONS_CALL)) {
             // Some permission is permanently denied so we cannot request them normally.
@@ -304,7 +310,7 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    public void start() {
+    private void initializeEverything() {
         //Initialize PeerConnectionFactory globals.
         PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions
                 .builder(this)
@@ -366,6 +372,17 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
+        startPullingSignalingMessages(false);
+        registerNetworkReceiver();
+    }
+
+    public void startPullingSignalingMessages(boolean restart) {
+
+        if (restart) {
+            dispose(null);
+        }
+
+        leavingCall = false;
 
         ncApi.getSignalingSettings(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
                 ApiHelper.getUrlForSignalingSettings(userEntity.getBaseUrl()))
@@ -689,7 +706,7 @@ public class CallActivity extends AppCompatActivity {
         return null;
     }
 
-    private void hangup() {
+    private void hangup(boolean dueToNetworkChange) {
 
         leavingCall = true;
         dispose(null);
@@ -726,55 +743,57 @@ public class CallActivity extends AppCompatActivity {
 
         pipVideoView.release();
 
-        String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
-        ncApi.leaveCall(credentials, ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+        if (!dueToNetworkChange) {
+            String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
+            ncApi.leaveCall(credentials, ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<GenericOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onNext(GenericOverall genericOverall) {
-                        ncApi.leaveRoom(credentials, ApiHelper.getUrlForRoom(userEntity.getBaseUrl(), roomToken))
-                                .subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Observer<GenericOverall>() {
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
+                        @Override
+                        public void onNext(GenericOverall genericOverall) {
+                            ncApi.leaveRoom(credentials, ApiHelper.getUrlForRoom(userEntity.getBaseUrl(), roomToken))
+                                    .subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<GenericOverall>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
 
-                                    }
+                                        }
 
-                                    @Override
-                                    public void onNext(GenericOverall genericOverall) {
+                                        @Override
+                                        public void onNext(GenericOverall genericOverall) {
 
-                                    }
+                                        }
 
-                                    @Override
-                                    public void onError(Throwable e) {
+                                        @Override
+                                        public void onError(Throwable e) {
 
-                                    }
+                                        }
 
-                                    @Override
-                                    public void onComplete() {
+                                        @Override
+                                        public void onComplete() {
 
-                                    }
-                                });
+                                        }
+                                    });
 
-                    }
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
+                        @Override
+                        public void onError(Throwable e) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onComplete() {
+                        @Override
+                        public void onComplete() {
 
-                    }
-                });
+                        }
+                    });
+        }
     }
 
     private void gotNick(String sessionId, String nick) {
@@ -824,7 +843,7 @@ public class CallActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        hangup();
+        hangup(false);
         super.onDestroy();
     }
 
@@ -1007,5 +1026,24 @@ public class CallActivity extends AppCompatActivity {
 
         EffortlessPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults,
                 this);
+    }
+
+    private void registerNetworkReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        intentFilter.addAction("android.net.wifi.STATE_CHANGE");
+
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && leavingCall) {
+                    startPullingSignalingMessages(true);
+                } else if (Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && !leavingCall){
+                    hangup(true);
+                }
+            }
+        };
+
+        this.registerReceiver(broadcastReceiver, intentFilter);
     }
 }
