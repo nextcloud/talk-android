@@ -369,8 +369,4 @@ public abstract class BottomNavigationController extends BaseController {
      * @return the {@link Controller} instance to navigate to
      */
     protected abstract Controller getControllerFor(int itemId);
-
-    private boolean equals(Object a, Object b) {
-        return (a == b) || (a != null && a.equals(b));
-    }
 }
