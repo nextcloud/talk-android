@@ -14,8 +14,6 @@
     <string name="nc_nextcloud_talk_app_installed"> Applicazione %1$s trovate</string>
     <string name="nc_nextcloud_talk_app_not_installed">Applicazione %1$s non installata, interruzione in corso</string>
     <string name="nc_display_name_stored">Nome visualizzato memorizzato</string>
-    <string name="nc_display_name_not_stored">Nome visualizzato non memorizzato, interruzione in corso</string>
-
     <string name="nc_never">Mai partecipato</string>
     <string name="nc_search">Cerca</string>
 

@@ -4,17 +4,28 @@
     <string name="nc_bottom_navigation_title_contacts">Kontakter</string>
     <string name="nc_bottom_navigation_title_settings">Innstillinger</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">Tjeneradresse</string>
     <string name="nc_server_url_prefix">Skriv http:// eller https:// før vertsnavnet</string>
     <string name="nc_server_not_installed">Fullført din %1$s-installasjon</string>
     <string name="nc_server_db_upgrade_needed">Oppgrader din %1$s-database</string>
     <string name="nc_server_maintenance">Ta din %1$s ut av vedlikehold</string>
+    <string name="nc_server_version">%1$s fungerer bare med %2$s 13 og høyere</string>
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Visningsnavn hentet</string>
+    <string name="nc_display_name_not_fetched">Kunne ikke hente visningsnavn, avbryter</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s program funnet</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s-program ikke installert, avbryter</string>
+    <string name="nc_display_name_stored">Visningsnavn lagret</string>
+    <string name="nc_never">Har aldri deltatt</string>
     <string name="nc_search">Søk</string>
 
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nei</string>
     <string name="nc_details">Detaljer</string>
+    <string name="nc_certificate_error">Ditt SSL-oppsett forhindret tilkobling</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Mellomtjener</string>
     <string name="nc_settings_proxy_type_key">proxy_type</string>

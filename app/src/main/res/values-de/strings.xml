@@ -10,15 +10,15 @@
     <string name="nc_server_not_installed">Bitte beende deine %1$s Installation</string>
     <string name="nc_server_db_upgrade_needed">Bitte aktualisiere deine %1$s Datenbank</string>
     <string name="nc_server_maintenance">Bitte bringe %1$s aus der Wartung</string>
-    <string name="nc_server_version">%1$sfunktioniert nur mit %2$s 13 und höher</string>
+    <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
+    <string name="nc_get_from_provider">Du hast noch keinen Server?\nKlicke hier um Server-Anbieter zu finden</string>
+
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Anzeigename abgerufen</string>
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden, Abbruch</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s App gefunden</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s App nicht installiert, Abbruch</string>
     <string name="nc_display_name_stored">Anzeigename gespeichert</string>
-    <string name="nc_display_name_not_stored">Anzeigename nicht gespeichert, Abbruch</string>
-
     <string name="nc_never">Nie beigetreten</string>
     <string name="nc_search">Suche</string>
 
@@ -26,6 +26,8 @@
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nein</string>
     <string name="nc_details">Details</string>
+    <string name="nc_certificate_error">Deine SSL Konfiguration hat die Verbindung verhindert</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_key">proxy_typ</string>
@@ -43,6 +45,9 @@
     <string name="nc_settings_remove_account">Konto entfernen</string>
     <string name="nc_settings_add_account">Konto hinzufügen</string>
     <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
+    <string name="nc_settings_account_updated">Dein bereits existierendes Konto wurde aktualisiert, anstelle ein Neues hinzuzufügen</string>
+    <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann nicht verändert werden</string>
+
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Nutzername</string>
     <string name="nc_password">Passwort</string>
@@ -69,6 +74,11 @@
     <string name="nc_one_contact_selected">Kontakt ausgewählt</string>
     <string name="nc_more_contacts_selected">Kontakte ausgewählt</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Eventuell müssen Berechtigungen erteilt werden, um einen Videoanruf herzustellen.
+Bitte klicke im nachfolgenden Systemdialog auf \"ZULASSEN\".</string>
+    <string name="nc_permissions_permanently_denied">Um einen Videoanruf herzustellen,
+erteile die \"Kamera\" und \"Mikrofon\" Berechtigungen in den Systemeinstellungen.</string>
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
 </resources>

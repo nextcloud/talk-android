@@ -11,19 +11,18 @@
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_maintenance">Coloque sua %1$s em manutenção</string>
     <string name="nc_server_version">%1$s somente funciona com%2$s 13 e acima</string>
+    <string name="nc_get_from_provider">Não tem servidor ainda?\nClique aqui para obter um</string>
+
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Nome de exibição obtido</string>
     <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s aplicativo encontrado</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s aplicativo não instalado, interrompendo</string>
     <string name="nc_display_name_stored">Nome de exibição armazenado</string>
-    <string name="nc_display_name_not_stored">Nome de exibição não armazenado, interrompendo</string>
-
     <string name="nc_never">Nunca juntado</string>
     <string name="nc_search">Persquisar</string>
 
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
-    <string name="nc_certificate_dialog_text">Um certificado SSL desconhecido foi encontrado, publicado por %1$s para %2$s válido de %3$s a %4$s. Confiar nele?</string>
     <string name="nc_yes">Sim</string>
     <string name="nc_no">Não</string>
     <string name="nc_details">Detalhes</string>

@@ -14,8 +14,6 @@
     <string name="nc_nextcloud_talk_app_installed">%1$sapp fundet</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app ikke installeret, afbryder</string>
     <string name="nc_display_name_stored">Display navn gemt</string>
-    <string name="nc_display_name_not_stored">Display navn ikke gemt, afbryder</string>
-
     <string name="nc_never">Aldrig ansluttet</string>
     <string name="nc_search">Søg</string>
 

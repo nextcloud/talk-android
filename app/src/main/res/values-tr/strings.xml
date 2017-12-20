@@ -17,13 +17,10 @@
     <string name="nc_nextcloud_talk_app_installed">%1$s uygulama bulundu</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s uygulama kurulmadı, vazgeçiliyor</string>
     <string name="nc_display_name_stored">Görüntülenecek ad kaydedildi</string>
-    <string name="nc_display_name_not_stored">Görüntülenecek ad kaydedilmedi, vazgeçiliyor</string>
-
     <string name="nc_never">Asls katılmadı</string>
     <string name="nc_search">Arama</string>
 
     <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
-    <string name="nc_certificate_dialog_text">Daha önce bilinmeyen %1$s tarafından %2$s için yayınlanmış %3$s ile %4$s tarihleri arasında geçerli bir SSL sertifikası bulundu. Bu sertifikaya güvenilsin mi?</string>
     <string name="nc_yes">Evet</string>
     <string name="nc_no">Hayır</string>
     <string name="nc_details">Ayrıntılar</string>
