@@ -24,6 +24,7 @@
 
 package com.nextcloud.talk.activities;
 
+import android.Manifest;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -72,6 +73,7 @@ import org.parceler.Parcels;
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.Camera1Enumerator;
+import org.webrtc.Camera2Enumerator;
 import org.webrtc.CameraEnumerator;
 import org.webrtc.EglBase;
 import org.webrtc.IceCandidate;
@@ -115,7 +117,8 @@ public class CallActivity extends AppCompatActivity {
     private static final String TAG = "CallActivity";
     private static final String[] PERMISSIONS_CALL = {
             android.Manifest.permission.CAMERA,
-            android.Manifest.permission.RECORD_AUDIO
+            android.Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.MODIFY_AUDIO_SETTINGS
     };
     @BindView(R.id.pip_video_view)
     SurfaceViewRenderer pipVideoView;
@@ -187,7 +190,15 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private VideoCapturer createVideoCapturer() {
-        videoCapturer = createCameraCapturer(new Camera1Enumerator(false));
+        CameraEnumerator cameraEnumerator;
+
+        if (Camera2Enumerator.isSupported(this)) {
+            cameraEnumerator = new Camera2Enumerator(this);
+        } else {
+            cameraEnumerator = new Camera1Enumerator(false);
+        }
+
+        videoCapturer = createCameraCapturer(cameraEnumerator);
         return videoCapturer;
     }
 
