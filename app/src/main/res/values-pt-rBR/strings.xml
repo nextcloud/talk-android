@@ -19,10 +19,13 @@
     <string name="nc_nextcloud_talk_app_installed">%1$s aplicativo encontrado</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s aplicativo não instalado, interrompendo</string>
     <string name="nc_display_name_stored">Nome de exibição armazenado</string>
+    <string name="nc_display_name_not_stored">Não foi possível armazenar o nome de exibição, cancelando</string>
+
     <string name="nc_never">Nunca juntado</string>
     <string name="nc_search">Persquisar</string>
 
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
+    <string name="nc_certificate_dialog_text">Quer confiar em um certificado SSL desconhecido, emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
     <string name="nc_yes">Sim</string>
     <string name="nc_no">Não</string>
     <string name="nc_details">Detalhes</string>
@@ -77,8 +80,6 @@
     <!-- Permissions -->
     <string name="nc_permissions">Podem ser necessárias permissões para estabelecer uma chamada de vídeo.
 Clique em \"PERMITIR\" na caixa de diálogo seguinte.</string>
-    <string name="nc_permissions_permanently_denied">Para estabelecer uma chamada de vídeo,
-conceda permissões para \"Câmera\" e \"Microfone\" nas configurações do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
 </resources>

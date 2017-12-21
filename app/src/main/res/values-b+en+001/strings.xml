@@ -75,8 +75,6 @@
     <!-- Permissions -->
     <string name="nc_permissions">Permissions may need to be granted to establish a video call. Please click \"ALLOW\" in
         the upcoming system dialog.</string>
-    <string name="nc_permissions_permanently_denied">To establish a video call,
-        grant \"Camera\" and  \"Microphone\" permissions in system settings.</string>
     <string name="nc_permissions_settings">Open settings</string>
 
 </resources>

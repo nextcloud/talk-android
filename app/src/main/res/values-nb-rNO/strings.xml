@@ -17,10 +17,13 @@
     <string name="nc_nextcloud_talk_app_installed">%1$s program funnet</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s-program ikke installert, avbryter</string>
     <string name="nc_display_name_stored">Visningsnavn lagret</string>
+    <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
+
     <string name="nc_never">Har aldri deltatt</string>
     <string name="nc_search">Søk</string>
 
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
+    <string name="nc_certificate_dialog_text">Ønsker du å stole på det hittil ukjente SSL-sertifikatet, utstedt av %1$s for %2$s gyldig fra %3$s til %4$s?</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nei</string>
     <string name="nc_details">Detaljer</string>
