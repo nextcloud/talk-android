@@ -74,7 +74,6 @@
 
     <!-- Permissions -->
     <string name="nc_permissions">Videohívás létrehozásához bizonyos engedélyek szükségesek. A következő párbeszédablakban az „ENGEDÉLYEZÉS”-re kell kattintani.</string>
-    <string name="nc_permissions_permanently_denied">Videohívás létrehozásához a rendszerbeállításokban meg kell adni a „Kamera” és a „Mikrofon” engedélyeket.</string>
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
 
 </resources>
