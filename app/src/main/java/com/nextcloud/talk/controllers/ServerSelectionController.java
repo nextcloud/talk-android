@@ -180,9 +180,12 @@ public class ServerSelectionController extends BaseController {
                 .subscribe(status -> {
                     String productName = getResources().getString(R.string.nc_server_product_name);
 
+                    String versionString = status.getVersion().substring(0, status.getVersion().indexOf("."));
+                    int version = Integer.parseInt(versionString);
+
                     if (status.isInstalled() && !status.isMaintenance() &&
                             !status.isNeedsUpgrade() &&
-                            status.getVersion().startsWith("13.")) {
+                            version >= 13) {
 
                         getRouter().pushController(RouterTransaction.with(
                                 new WebViewLoginController(queryUrl.replace("/status.php", ""),
