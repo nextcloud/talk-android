@@ -75,8 +75,6 @@
     <!-- Permissions -->
     <string name="nc_permissions">Görüntülü çağrı başlatmak için belirli izinler gereklidir. Lütfen açılan sistem penceresinde
   \"ONAYLA\" üzerine tıklayın.</string>
-    <string name="nc_permissions_permanently_denied">Görüntülü çağrı başlatmak için
-  sistem ayarlarından \"Kamera\" ve \"Mikrofon\" izinlerini verin.</string>
     <string name="nc_permissions_settings">Ayarları aç</string>
 
 </resources>

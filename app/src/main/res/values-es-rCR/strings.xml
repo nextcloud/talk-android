@@ -77,8 +77,6 @@
     <!-- Permissions -->
     <string name="nc_permissions">Es posible que se requieran de más privilegios para establecer la video llamada. Por favor haz click en \"PERMITIR\" en
  la siguiente ventana de diálogo. </string>
-    <string name="nc_permissions_permanently_denied">Para establecer la video llamada,
- da los permisos de \"Cámara\" y \"Micrófono\" en las configuraciones de sistema.</string>
     <string name="nc_permissions_settings">Abrir configuraciones</string>
 
 </resources>
