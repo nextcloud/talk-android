@@ -28,13 +28,18 @@ import lombok.Data;
 public class PeerConnectionEvent {
     private final PeerConnectionEventType peerConnectionEventType;
     private final String sessionId;
+    private final String nick;
+    private final Boolean changeValue;
 
-    public PeerConnectionEvent(PeerConnectionEventType peerConnectionEventType, @Nullable String sessionId) {
+    public PeerConnectionEvent(PeerConnectionEventType peerConnectionEventType, @Nullable String sessionId,
+                               @Nullable String nick, Boolean changeValue) {
         this.peerConnectionEventType = peerConnectionEventType;
+        this.nick = nick;
+        this.changeValue = changeValue;
         this.sessionId = sessionId;
     }
 
     public enum PeerConnectionEventType {
-        CLOSE_PEER, SENSOR_FAR, SENSOR_NEAR
+        CLOSE_PEER, SENSOR_FAR, SENSOR_NEAR, NICK_CHANGE, AUDIO_CHANGE, VIDEO_CHANGE
     }
 }

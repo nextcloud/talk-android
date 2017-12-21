@@ -25,6 +25,8 @@
 package com.nextcloud.talk.activities;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +44,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -111,6 +115,7 @@ import javax.inject.Inject;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -136,6 +141,16 @@ public class CallActivity extends AppCompatActivity {
     RelativeLayout relativeLayout;
     @BindView(R.id.remote_renderers_layout)
     LinearLayout remoteRenderersLayout;
+
+    @BindView(R.id.call_controls)
+    RelativeLayout callControls;
+    @BindView(R.id.call_control_microphone)
+    ImageButton microphoneControlButton;
+    @BindView(R.id.call_control_camera)
+    ImageButton cameraControlButton;
+    @BindView(R.id.call_control_switch_camera)
+    ImageButton cameraSwitchButton;
+
     @Inject
     NcApi ncApi;
     @Inject
@@ -157,6 +172,7 @@ public class CallActivity extends AppCompatActivity {
     Disposable signalingDisposable;
     Disposable pingDisposable;
     List<PeerConnection.IceServer> iceServers;
+    private CameraEnumerator cameraEnumerator;
     private String roomToken;
     private UserEntity userEntity;
     private String callSession;
@@ -164,6 +180,9 @@ public class CallActivity extends AppCompatActivity {
     private MediaStream localMediaStream;
     private String credentials;
     private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
+
+    private boolean videoOn = true;
+    private boolean audioOn = true;
 
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -213,6 +232,12 @@ public class CallActivity extends AppCompatActivity {
             }
 
             localMediaStream.videoTracks.get(0).setEnabled(enable);
+
+            if (enable) {
+                pipVideoView.setVisibility(View.VISIBLE);
+            } else {
+                pipVideoView.setVisibility(View.INVISIBLE);
+            }
         } else {
             message = "audioOff";
             if (enable) {
@@ -227,21 +252,55 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private void switchCamera() {
+    @OnClick(R.id.call_control_microphone)
+    public void onMicrophoneClick() {
+        audioOn = !audioOn;
+
+        if (audioOn) {
+            microphoneControlButton.setImageResource(R.drawable.ic_mic_white_24px);
+        } else {
+            microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+        }
+
+        toggleMedia(audioOn, false);
+    }
+
+    @OnClick(R.id.call_control_hangup)
+    public void onHangupClick() {
+        hangup(false);
+        finish();
+    }
+
+    @OnClick(R.id.call_control_camera)
+    public void onCameraClick() {
+        videoOn = !videoOn;
+
+        if (videoOn) {
+            cameraControlButton.setImageResource(R.drawable.ic_videocam_white_24px);
+        } else {
+            cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
+        }
+
+        toggleMedia(videoOn, true);
+    }
+
+
+    @OnClick(R.id.call_control_switch_camera)
+    public void switchCamera() {
         CameraVideoCapturer cameraVideoCapturer = (CameraVideoCapturer) videoCapturer;
         cameraVideoCapturer.switchCamera(null);
     }
 
-    private VideoCapturer createVideoCapturer() {
-        CameraEnumerator cameraEnumerator;
-
+    private void createCameraEnumerator() {
         if (Camera2Enumerator.isSupported(this)) {
             cameraEnumerator = new Camera2Enumerator(this);
         } else {
             cameraEnumerator = new Camera1Enumerator(false);
         }
-        videoCapturer = createCameraCapturer(cameraEnumerator);
+    }
 
+    private VideoCapturer createVideoCapturer() {
+        videoCapturer = createCameraCapturer(cameraEnumerator);
         return videoCapturer;
     }
 
@@ -278,6 +337,12 @@ public class CallActivity extends AppCompatActivity {
     }
 
     public void initViews() {
+        createCameraEnumerator();
+
+        if (cameraEnumerator.getDeviceNames().length < 2) {
+            cameraSwitchButton.setVisibility(View.GONE);
+        }
+
         // setting this to true because it's not shown by default
         pipVideoView.setMirror(true);
         rootEglBase = EglBase.create();
@@ -372,14 +437,24 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
+        animateCallControls(false, 5000);
         startPullingSignalingMessages(false);
         registerNetworkReceiver();
+    }
+
+
+    @OnClick({R.id.full_screen_surface_view, R.id.remote_renderers_layout})
+    public void showCallControls() {
+        if (callControls.getVisibility() != View.VISIBLE) {
+            animateCallControls(true, 0);
+        }
     }
 
     public void startPullingSignalingMessages(boolean restart) {
 
         if (restart) {
             dispose(null);
+            hangupNetworkCalls();
         }
 
         leavingCall = false;
@@ -744,56 +819,60 @@ public class CallActivity extends AppCompatActivity {
         pipVideoView.release();
 
         if (!dueToNetworkChange) {
-            String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
-            ncApi.leaveCall(credentials, ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<GenericOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(GenericOverall genericOverall) {
-                            ncApi.leaveRoom(credentials, ApiHelper.getUrlForRoom(userEntity.getBaseUrl(), roomToken))
-                                    .subscribeOn(Schedulers.newThread())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Observer<GenericOverall>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-
-                                        }
-
-                                        @Override
-                                        public void onNext(GenericOverall genericOverall) {
-
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-
-                                        }
-                                    });
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
+            hangupNetworkCalls();
         }
+    }
+
+    private void hangupNetworkCalls() {
+        String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
+        ncApi.leaveCall(credentials, ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GenericOverall genericOverall) {
+                        ncApi.leaveRoom(credentials, ApiHelper.getUrlForRoom(userEntity.getBaseUrl(), roomToken))
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<GenericOverall>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+
+                                    }
+
+                                    @Override
+                                    public void onNext(GenericOverall genericOverall) {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+
+                                    }
+                                });
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     private void gotNick(String sessionId, String nick) {
@@ -801,6 +880,24 @@ public class CallActivity extends AppCompatActivity {
         if (relativeLayout != null) {
             TextView textView = relativeLayout.findViewById(R.id.peer_nick_text_view);
             textView.setText(nick);
+        }
+    }
+
+    private void gotAudioOrVideoChange(boolean video, String sessionId, boolean change) {
+        RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionId);
+        if (relativeLayout != null) {
+            ImageView imageView;
+            if (video) {
+                imageView = relativeLayout.findViewById(R.id.remote_video_off);
+            } else {
+                imageView = relativeLayout.findViewById(R.id.remote_audio_off);
+            }
+
+            if (change && imageView.getVisibility() != View.INVISIBLE) {
+                imageView.setVisibility(View.INVISIBLE);
+            } else if (!change && imageView.getVisibility() != View.VISIBLE) {
+                imageView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -893,11 +990,20 @@ public class CallActivity extends AppCompatActivity {
                 .PeerConnectionEventType.SENSOR_FAR) ||
                 peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                         .PeerConnectionEventType.SENSOR_NEAR)) {
-
             boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                     .PeerConnectionEventType.SENSOR_FAR);
-
             toggleMedia(enableVideo, true);
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.NICK_CHANGE)) {
+            runOnUiThread(() -> gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick()));
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.VIDEO_CHANGE)) {
+            runOnUiThread(() -> gotAudioOrVideoChange(true, peerConnectionEvent.getSessionId(),
+                    peerConnectionEvent.getChangeValue()));
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.AUDIO_CHANGE)) {
+            runOnUiThread(() -> gotAudioOrVideoChange(false, peerConnectionEvent.getSessionId(),
+                    peerConnectionEvent.getChangeValue()));
         }
     }
 
@@ -1045,5 +1151,39 @@ public class CallActivity extends AppCompatActivity {
         };
 
         this.registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    private void animateCallControls(boolean show, long startDelay) {
+        float alpha;
+        long duration;
+
+        if (show) {
+            alpha = 1.0f;
+            duration = 500;
+        } else {
+            alpha = 0.0f;
+            duration = 2500;
+        }
+
+        callControls.animate()
+                .translationY(0)
+                .alpha(alpha)
+                .setDuration(duration)
+                .setStartDelay(startDelay)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        if (callControls != null) {
+                            if (!show) {
+                                callControls.setVisibility(View.INVISIBLE);
+                            } else {
+                                callControls.setVisibility(View.VISIBLE);
+                                animateCallControls(false, 10000);
+                            }
+                        }
+                    }
+                });
+
     }
 }
