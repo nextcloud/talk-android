@@ -32,7 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -40,7 +39,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -176,7 +174,6 @@ public class CallActivity extends AppCompatActivity {
     private String roomToken;
     private UserEntity userEntity;
     private String callSession;
-    private VideoCapturer videoCapturerAndroid;
     private MediaStream localMediaStream;
     private String credentials;
     private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
@@ -299,11 +296,6 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private VideoCapturer createVideoCapturer() {
-        videoCapturer = createCameraCapturer(cameraEnumerator);
-        return videoCapturer;
-    }
-
     private VideoCapturer createCameraCapturer(CameraEnumerator enumerator) {
         final String[] deviceNames = enumerator.getDeviceNames();
 
@@ -387,15 +379,14 @@ public class CallActivity extends AppCompatActivity {
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
         peerConnectionFactory = new PeerConnectionFactory(options);
 
-        //Now create a VideoCapturer instance. Callback methods are there if you want to do something! Duh!
-        videoCapturerAndroid = createVideoCapturer();
+        videoCapturer = createCameraCapturer(cameraEnumerator);
 
         //Create MediaConstraints - Will be useful for specifying video and audio constraints.
         audioConstraints = new MediaConstraints();
         videoConstraints = new MediaConstraints();
 
         //Create a VideoSource instance
-        videoSource = peerConnectionFactory.createVideoSource(videoCapturerAndroid);
+        videoSource = peerConnectionFactory.createVideoSource(videoCapturer);
         localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
 
         //create an AudioSource instance
@@ -516,9 +507,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void startVideoCapture() {
         if (videoCapturer != null) {
-            Resources r = getResources();
-            int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, r.getDisplayMetrics());
-            videoCapturerAndroid.startCapture(px, px, 30);
+            videoCapturer.startCapture(1280, 720, 30);
         }
     }
 
