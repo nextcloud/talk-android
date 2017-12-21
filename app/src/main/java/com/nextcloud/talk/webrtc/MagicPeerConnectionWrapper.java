@@ -58,8 +58,8 @@ public class MagicPeerConnectionWrapper {
     private DataChannel magicDataChannel;
     private MagicSdpObserver magicSdpObserver;
 
-    private boolean audioOn;
-    private boolean videoOn;
+    private boolean remoteVideoOn;
+    private boolean remoteAudioOn;
 
     private boolean hasInitiated;
 
@@ -167,14 +167,41 @@ public class MagicPeerConnectionWrapper {
                 Log.d(TAG, "Received binary msg over " + TAG + " " + sessionId);
                 return;
             }
+
             ByteBuffer data = buffer.data;
             final byte[] bytes = new byte[data.capacity()];
             data.get(bytes);
             String strData = new String(bytes);
             Log.d(TAG, "Got msg: " + strData + " over " + TAG + " " + sessionId);
 
-            // We use media stream to determine if audio or video is on rather than data
-            // channel messages
+            try {
+                DataChannelMessage dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
+
+                if ("nickChanged".equals(dataChannelMessage.getType())) {
+                    nick = dataChannelMessage.getPayload();
+                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                            .NICK_CHANGE, sessionId, nick, null));
+                } else if ("audioOn".equals(dataChannelMessage.getType())) {
+                    remoteAudioOn = true;
+                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                            .AUDIO_CHANGE, sessionId, null, remoteAudioOn));
+                } else if ("audioOff".equals(dataChannelMessage.getType())) {
+                    remoteAudioOn = false;
+                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                            .AUDIO_CHANGE, sessionId, null, remoteAudioOn));
+                } else if ("videoOn".equals(dataChannelMessage.getType())) {
+                    remoteVideoOn = true;
+                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                            .VIDEO_CHANGE, sessionId, null, remoteVideoOn));
+                } else if ("videoOff".equals(dataChannelMessage.getType())) {
+                    remoteVideoOn = false;
+                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                            .VIDEO_CHANGE, sessionId, null, remoteVideoOn));
+                }
+
+                } catch (IOException e) {
+                Log.d(TAG, "Failed to parse data channel message");
+            }
         }
     }
 
@@ -185,7 +212,7 @@ public class MagicPeerConnectionWrapper {
         public void onSignalingChange(PeerConnection.SignalingState signalingState) {
             if (signalingState.equals(PeerConnection.SignalingState.CLOSED)) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .CLOSE_PEER, sessionId));
+                        .CLOSE_PEER, sessionId, null, null));
             }
         }
 
@@ -196,7 +223,7 @@ public class MagicPeerConnectionWrapper {
                 sendChannelData(new DataChannelMessage("audioOn"));
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .CLOSE_PEER, sessionId));
+                        .CLOSE_PEER, sessionId, null, null));
             }
         }
 
@@ -227,20 +254,12 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onAddStream(MediaStream mediaStream) {
-            videoOn = mediaStream.videoTracks != null && mediaStream.videoTracks.size() == 1;
-            audioOn = mediaStream.audioTracks != null && mediaStream.audioTracks.size() == 1;
-            if (!sessionId.equals(localSession)) {
-                EventBus.getDefault().post(new MediaStreamEvent(mediaStream, sessionId));
-            }
+            EventBus.getDefault().post(new MediaStreamEvent(mediaStream, sessionId));
         }
 
         @Override
         public void onRemoveStream(MediaStream mediaStream) {
-            videoOn = mediaStream.videoTracks != null && mediaStream.videoTracks.size() == 1;
-            audioOn = mediaStream.audioTracks != null && mediaStream.audioTracks.size() == 1;
-            if (!sessionId.equals(localSession)) {
-                EventBus.getDefault().post(new MediaStreamEvent(null, sessionId));
-            }
+            EventBus.getDefault().post(new MediaStreamEvent(null, sessionId));
         }
 
         @Override
