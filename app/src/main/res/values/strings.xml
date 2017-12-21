@@ -17,7 +17,7 @@
     <string name="nc_display_name_fetched">Display name fetched</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s app found</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s app not installed, aborting</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s app not installed on the server, aborting</string>
     <string name="nc_display_name_stored">Display name stored</string>
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
 
@@ -48,6 +48,8 @@
     <string name="nc_settings_remove_account">Remove account</string>
     <string name="nc_settings_add_account">Add a new account</string>
     <string name="nc_settings_wrong_account">Only current account can be reauthorized</string>
+    <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authorize
+        against</string>
     <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
     <string name="nc_account_scheduled_for_deletion">The account is scheduled for deletion, and cannot be changed</string>
 

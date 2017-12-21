@@ -247,11 +247,17 @@ public class ServerSelectionController extends BaseController {
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        if (ErrorMessageHolder.getInstance().getMessageType() != null &&
-                ErrorMessageHolder.getInstance().getMessageType()
-                        .equals(ErrorMessageHolder.ErrorMessageType.ACCOUNT_SCHEDULED_FOR_DELETION)) {
-            textFieldBoxes.setError(getResources().getString(R.string.nc_account_scheduled_for_deletion),
-                    false);
+        if (ErrorMessageHolder.getInstance().getMessageType() != null) {
+            if (ErrorMessageHolder.getInstance().getMessageType()
+                    .equals(ErrorMessageHolder.ErrorMessageType.ACCOUNT_SCHEDULED_FOR_DELETION)) {
+                textFieldBoxes.setError(getResources().getString(R.string.nc_account_scheduled_for_deletion),
+                        false);
+                ErrorMessageHolder.getInstance().setMessageType(null);
+            } else if (ErrorMessageHolder.getInstance().getMessageType()
+                    .equals(ErrorMessageHolder.ErrorMessageType.SERVER_WITHOUT_TALK)) {
+                textFieldBoxes.setError(getResources().getString(R.string.nc_settings_no_talk_installed),
+                        false);
+            }
             ErrorMessageHolder.getInstance().setMessageType(null);
         }
     }

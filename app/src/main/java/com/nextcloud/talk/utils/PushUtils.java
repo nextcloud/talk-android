@@ -96,6 +96,7 @@ public class PushUtils {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         keysFile = NextcloudTalkApplication.getSharedApplication().getDir("PushKeyStore", Context.MODE_PRIVATE);
+
         publicKeyFile = new File(NextcloudTalkApplication.getSharedApplication().getDir("PushKeystore",
                 Context.MODE_PRIVATE), "push_key.pub");
         privateKeyFile = new File(NextcloudTalkApplication.getSharedApplication().getDir("PushKeystore",

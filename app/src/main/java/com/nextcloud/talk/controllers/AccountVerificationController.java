@@ -40,6 +40,7 @@ import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
+import com.nextcloud.talk.utils.ErrorMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -180,6 +181,9 @@ public class AccountVerificationController extends BaseController {
                 }, throwable -> {
                     progressText.setText(String.format(getResources().getString(
                             R.string.nc_nextcloud_talk_app_not_installed), getResources().getString(R.string.nc_app_name)));
+                    ErrorMessageHolder.getInstance().setMessageType(
+                            ErrorMessageHolder.ErrorMessageType.SERVER_WITHOUT_TALK);
+
                     abortVerification();
                 }, () -> dispose(roomsQueryDisposable));
 

@@ -56,6 +56,7 @@ public class MagicTrustManager implements X509TrustManager {
     public MagicTrustManager() {
         keystoreFile = new File(NextcloudTalkApplication.getSharedApplication().getDir("CertsKeystore",
                 Context.MODE_PRIVATE), "keystore.bks");
+
         try {
             trustedKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             FileInputStream fileInputStream = new FileInputStream(keystoreFile);
