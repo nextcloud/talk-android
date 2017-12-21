@@ -1144,7 +1144,7 @@ public class CallActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 if (!Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && leavingCall) {
                     startPullingSignalingMessages(true);
-                } else if (Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && !leavingCall){
+                } else if (Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && !leavingCall) {
                     hangup(true);
                 }
             }

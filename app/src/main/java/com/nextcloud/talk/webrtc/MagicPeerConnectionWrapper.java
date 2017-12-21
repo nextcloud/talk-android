@@ -198,8 +198,7 @@ public class MagicPeerConnectionWrapper {
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                             .VIDEO_CHANGE, sessionId, null, remoteVideoOn));
                 }
-
-                } catch (IOException e) {
+            } catch (IOException e) {
                 Log.d(TAG, "Failed to parse data channel message");
             }
         }
