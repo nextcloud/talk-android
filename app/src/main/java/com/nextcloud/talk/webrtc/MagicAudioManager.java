@@ -143,10 +143,10 @@ public class MagicAudioManager {
 
         if (proximitySensor.sensorReportsNearState()) {
             EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                    .SENSOR_NEAR, null));
+                    .SENSOR_NEAR, null, null, null));
         } else {
             EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                    .SENSOR_FAR, null));
+                    .SENSOR_FAR, null, null, null));
         }
 
         if (!useSpeakerphone.equals(SPEAKERPHONE_AUTO)) {

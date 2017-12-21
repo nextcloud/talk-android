@@ -24,6 +24,13 @@
 
 package com.nextcloud.talk.activities;
 
+import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -37,16 +44,21 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.evernote.android.job.JobRequest;
+import com.evernote.android.job.util.Device;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.call.CallOverall;
 import com.nextcloud.talk.api.models.json.generic.GenericOverall;
+import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.api.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.api.models.json.signaling.NCMessageWrapper;
@@ -72,7 +84,9 @@ import org.parceler.Parcels;
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.Camera1Enumerator;
+import org.webrtc.Camera2Enumerator;
 import org.webrtc.CameraEnumerator;
+import org.webrtc.CameraVideoCapturer;
 import org.webrtc.EglBase;
 import org.webrtc.IceCandidate;
 import org.webrtc.Logging;
@@ -101,6 +115,7 @@ import javax.inject.Inject;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -115,7 +130,8 @@ public class CallActivity extends AppCompatActivity {
     private static final String TAG = "CallActivity";
     private static final String[] PERMISSIONS_CALL = {
             android.Manifest.permission.CAMERA,
-            android.Manifest.permission.RECORD_AUDIO
+            android.Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.MODIFY_AUDIO_SETTINGS
     };
     @BindView(R.id.pip_video_view)
     SurfaceViewRenderer pipVideoView;
@@ -125,6 +141,16 @@ public class CallActivity extends AppCompatActivity {
     RelativeLayout relativeLayout;
     @BindView(R.id.remote_renderers_layout)
     LinearLayout remoteRenderersLayout;
+
+    @BindView(R.id.call_controls)
+    RelativeLayout callControls;
+    @BindView(R.id.call_control_microphone)
+    ImageButton microphoneControlButton;
+    @BindView(R.id.call_control_camera)
+    ImageButton cameraControlButton;
+    @BindView(R.id.call_control_switch_camera)
+    ImageButton cameraSwitchButton;
+
     @Inject
     NcApi ncApi;
     @Inject
@@ -146,6 +172,7 @@ public class CallActivity extends AppCompatActivity {
     Disposable signalingDisposable;
     Disposable pingDisposable;
     List<PeerConnection.IceServer> iceServers;
+    private CameraEnumerator cameraEnumerator;
     private String roomToken;
     private UserEntity userEntity;
     private String callSession;
@@ -153,6 +180,9 @@ public class CallActivity extends AppCompatActivity {
     private MediaStream localMediaStream;
     private String credentials;
     private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
+
+    private boolean videoOn = true;
+    private boolean audioOn = true;
 
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -186,8 +216,91 @@ public class CallActivity extends AppCompatActivity {
 
     }
 
+    private void toggleMedia(boolean enable, boolean video) {
+        String message;
+        if (video) {
+            message = "videoOff";
+            if (enable) {
+                message = "videoOn";
+                startVideoCapture();
+            } else {
+                try {
+                    videoCapturer.stopCapture();
+                } catch (InterruptedException e) {
+                    Log.d(TAG, "Failed to stop capturing video while sensor is near the ear");
+                }
+            }
+
+            localMediaStream.videoTracks.get(0).setEnabled(enable);
+
+            if (enable) {
+                pipVideoView.setVisibility(View.VISIBLE);
+            } else {
+                pipVideoView.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            message = "audioOff";
+            if (enable) {
+                message = "audioOn";
+            }
+
+            localMediaStream.audioTracks.get(0).setEnabled(enable);
+        }
+
+        for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
+            magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
+        }
+    }
+
+    @OnClick(R.id.call_control_microphone)
+    public void onMicrophoneClick() {
+        audioOn = !audioOn;
+
+        if (audioOn) {
+            microphoneControlButton.setImageResource(R.drawable.ic_mic_white_24px);
+        } else {
+            microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+        }
+
+        toggleMedia(audioOn, false);
+    }
+
+    @OnClick(R.id.call_control_hangup)
+    public void onHangupClick() {
+        hangup(false);
+        finish();
+    }
+
+    @OnClick(R.id.call_control_camera)
+    public void onCameraClick() {
+        videoOn = !videoOn;
+
+        if (videoOn) {
+            cameraControlButton.setImageResource(R.drawable.ic_videocam_white_24px);
+        } else {
+            cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
+        }
+
+        toggleMedia(videoOn, true);
+    }
+
+
+    @OnClick(R.id.call_control_switch_camera)
+    public void switchCamera() {
+        CameraVideoCapturer cameraVideoCapturer = (CameraVideoCapturer) videoCapturer;
+        cameraVideoCapturer.switchCamera(null);
+    }
+
+    private void createCameraEnumerator() {
+        if (Camera2Enumerator.isSupported(this)) {
+            cameraEnumerator = new Camera2Enumerator(this);
+        } else {
+            cameraEnumerator = new Camera1Enumerator(false);
+        }
+    }
+
     private VideoCapturer createVideoCapturer() {
-        videoCapturer = createCameraCapturer(new Camera1Enumerator(false));
+        videoCapturer = createCameraCapturer(cameraEnumerator);
         return videoCapturer;
     }
 
@@ -224,6 +337,13 @@ public class CallActivity extends AppCompatActivity {
     }
 
     public void initViews() {
+        createCameraEnumerator();
+
+        if (cameraEnumerator.getDeviceNames().length < 2) {
+            cameraSwitchButton.setVisibility(View.GONE);
+        }
+
+        // setting this to true because it's not shown by default
         pipVideoView.setMirror(true);
         rootEglBase = EglBase.create();
         pipVideoView.init(rootEglBase.getEglBaseContext(), null);
@@ -242,7 +362,7 @@ public class CallActivity extends AppCompatActivity {
     @AfterPermissionGranted(100)
     private void checkPermissions() {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
-            start();
+            initializeEverything();
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this,
                 PERMISSIONS_CALL)) {
             // Some permission is permanently denied so we cannot request them normally.
@@ -255,11 +375,11 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    public void start() {
+    private void initializeEverything() {
         //Initialize PeerConnectionFactory globals.
         PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions
                 .builder(this)
-                .setEnableVideoHwAcceleration(false)
+                .setEnableVideoHwAcceleration(true)
                 .createInitializationOptions();
         PeerConnectionFactory.initialize(initializationOptions);
 
@@ -317,6 +437,27 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
+        animateCallControls(false, 5000);
+        startPullingSignalingMessages(false);
+        registerNetworkReceiver();
+    }
+
+
+    @OnClick({R.id.full_screen_surface_view, R.id.remote_renderers_layout})
+    public void showCallControls() {
+        if (callControls.getVisibility() != View.VISIBLE) {
+            animateCallControls(true, 0);
+        }
+    }
+
+    public void startPullingSignalingMessages(boolean restart) {
+
+        if (restart) {
+            dispose(null);
+            hangupNetworkCalls();
+        }
+
+        leavingCall = false;
 
         ncApi.getSignalingSettings(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
                 ApiHelper.getUrlForSignalingSettings(userEntity.getBaseUrl()))
@@ -640,7 +781,7 @@ public class CallActivity extends AppCompatActivity {
         return null;
     }
 
-    private void hangup() {
+    private void hangup(boolean dueToNetworkChange) {
 
         leavingCall = true;
         dispose(null);
@@ -677,6 +818,12 @@ public class CallActivity extends AppCompatActivity {
 
         pipVideoView.release();
 
+        if (!dueToNetworkChange) {
+            hangupNetworkCalls();
+        }
+    }
+
+    private void hangupNetworkCalls() {
         String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
         ncApi.leaveCall(credentials, ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.newThread())
@@ -736,6 +883,24 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    private void gotAudioOrVideoChange(boolean video, String sessionId, boolean change) {
+        RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionId);
+        if (relativeLayout != null) {
+            ImageView imageView;
+            if (video) {
+                imageView = relativeLayout.findViewById(R.id.remote_video_off);
+            } else {
+                imageView = relativeLayout.findViewById(R.id.remote_audio_off);
+            }
+
+            if (change && imageView.getVisibility() != View.INVISIBLE) {
+                imageView.setVisibility(View.INVISIBLE);
+            } else if (!change && imageView.getVisibility() != View.VISIBLE) {
+                imageView.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     private void gotRemoteStream(MediaStream stream, String session) {
         if (fullScreenVideoView != null) {
             remoteRenderersLayout.setVisibility(View.VISIBLE);
@@ -775,7 +940,7 @@ public class CallActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        hangup();
+        hangup(false);
         super.onDestroy();
     }
 
@@ -825,18 +990,20 @@ public class CallActivity extends AppCompatActivity {
                 .PeerConnectionEventType.SENSOR_FAR) ||
                 peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                         .PeerConnectionEventType.SENSOR_NEAR)) {
-
-            /*boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+            boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                     .PeerConnectionEventType.SENSOR_FAR);
-            String videoMessage = "videoOff";
-            if (enableVideo) {
-                videoMessage = "videoOn";
-            }
-
-            localMediaStream.videoTracks.get(0).setEnabled(enableVideo);
-            for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
-                magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(videoMessage));
-            }*/
+            toggleMedia(enableVideo, true);
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.NICK_CHANGE)) {
+            runOnUiThread(() -> gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick()));
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.VIDEO_CHANGE)) {
+            runOnUiThread(() -> gotAudioOrVideoChange(true, peerConnectionEvent.getSessionId(),
+                    peerConnectionEvent.getChangeValue()));
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.AUDIO_CHANGE)) {
+            runOnUiThread(() -> gotAudioOrVideoChange(false, peerConnectionEvent.getSessionId(),
+                    peerConnectionEvent.getChangeValue()));
         }
     }
 
@@ -965,5 +1132,58 @@ public class CallActivity extends AppCompatActivity {
 
         EffortlessPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults,
                 this);
+    }
+
+    private void registerNetworkReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        intentFilter.addAction("android.net.wifi.STATE_CHANGE");
+
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && leavingCall) {
+                    startPullingSignalingMessages(true);
+                } else if (Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && !leavingCall) {
+                    hangup(true);
+                }
+            }
+        };
+
+        this.registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    private void animateCallControls(boolean show, long startDelay) {
+        float alpha;
+        long duration;
+
+        if (show) {
+            alpha = 1.0f;
+            duration = 500;
+        } else {
+            alpha = 0.0f;
+            duration = 2500;
+        }
+
+        callControls.animate()
+                .translationY(0)
+                .alpha(alpha)
+                .setDuration(duration)
+                .setStartDelay(startDelay)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        if (callControls != null) {
+                            if (!show) {
+                                callControls.setVisibility(View.INVISIBLE);
+                            } else {
+                                callControls.setVisibility(View.VISIBLE);
+                                animateCallControls(false, 10000);
+                            }
+                        }
+                    }
+                });
+
     }
 }
