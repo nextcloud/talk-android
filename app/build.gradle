@@ -48,7 +48,7 @@ android {
 
 ext {
     supportLibraryVersion = '27.0.2'
-    googleLibraryVersion = '11.6.2'
+    googleLibraryVersion = '11.8.0'
 }
 
 
