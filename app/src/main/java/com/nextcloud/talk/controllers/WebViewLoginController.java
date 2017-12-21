@@ -24,11 +24,15 @@ import android.content.pm.ActivityInfo;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.security.KeyChain;
+import android.security.KeyChainException;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ClientCertRequest;
 import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
@@ -54,7 +58,10 @@ import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
+import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -177,6 +184,32 @@ public class WebViewLoginController extends BaseController {
             }
 
             @Override
+            public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
+                String host = null;
+
+                try {
+                    URL url = new URL(webView.getUrl());
+                    host = url.getHost();
+                } catch (MalformedURLException e) {
+                    Log.d(TAG, "Failed to create url");
+                }
+
+                KeyChain.choosePrivateKeyAlias(getActivity(), alias -> {
+                    try {
+                        PrivateKey changPrivateKey = KeyChain.getPrivateKey(getActivity(), alias);
+                        X509Certificate[] certificates = KeyChain.getCertificateChain(getActivity(), alias);
+                        request.proceed(changPrivateKey, certificates);
+                    } catch (KeyChainException e) {
+                        Log.e(TAG, "Failed to get keys via keychain exception");
+                        request.cancel();
+                    } catch (InterruptedException e) {
+                        Log.e(TAG, "Failed to get keys due to interruption");
+                        request.cancel();
+                    }
+                }, new String[]{"RSA"}, null, host, -1, null);
+            }
+
+            @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
                 try {
                     SslCertificate sslCertificate = error.getCertificate();
@@ -199,6 +232,7 @@ public class WebViewLoginController extends BaseController {
                 }
             }
 
+            @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
             }
