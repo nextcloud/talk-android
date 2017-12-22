@@ -70,6 +70,7 @@ import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
@@ -101,6 +102,7 @@ import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
 
 import java.io.IOException;
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -153,6 +155,11 @@ public class CallActivity extends AppCompatActivity {
     NcApi ncApi;
     @Inject
     EventBus eventBus;
+    @Inject
+    UserUtils userUtils;
+    @Inject
+    CookieManager cookieManager;
+
     PeerConnectionFactory peerConnectionFactory;
     MediaConstraints audioConstraints;
     MediaConstraints videoConstraints;
@@ -205,11 +212,41 @@ public class CallActivity extends AppCompatActivity {
         roomToken = getIntent().getExtras().getString("roomToken", "");
         userEntity = Parcels.unwrap((Parcelable) getIntent().getExtras().get("userEntity"));
         callSession = "0";
-
         credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
-        initViews();
 
-        checkPermissions();
+        if (userUtils.getCurrentUser() != null && userUtils.getCurrentUser() != userEntity) {
+            userUtils.createOrUpdateUser(userEntity.getUsername(),
+                    userEntity.getToken(), userEntity.getBaseUrl(), null,
+                    null, true)
+                    .subscribe(new Observer<UserEntity>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(UserEntity userEntity) {
+                            cookieManager.getCookieStore().removeAll();
+                            userUtils.disableAllUsersWithoutId(userEntity.getId());
+                            initViews();
+                            checkPermissions();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
+        } else {
+            initViews();
+            checkPermissions();
+        }
 
     }
 
