@@ -15,7 +15,6 @@
     <string name="nc_display_name_fetched">Megjelenítendő név beszerezve</string>
     <string name="nc_display_name_not_fetched">Megjelenítendő név nem beszerezhető, megszakítás</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s app megtalálva</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s app nincs telepítve, megszakítás</string>
     <string name="nc_display_name_stored">Megjelenítendő név tárolva</string>
     <string name="nc_never">Soha nem csatlakozott</string>
     <string name="nc_search">Keresés</string>

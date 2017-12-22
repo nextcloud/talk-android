@@ -15,7 +15,6 @@
     <string name="nc_display_name_fetched">Visningsnavn hentet</string>
     <string name="nc_display_name_not_fetched">Kunne ikke hente visningsnavn, avbryter</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s program funnet</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s-program ikke installert, avbryter</string>
     <string name="nc_display_name_stored">Visningsnavn lagret</string>
     <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
 

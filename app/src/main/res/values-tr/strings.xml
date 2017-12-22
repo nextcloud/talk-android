@@ -15,7 +15,6 @@
     <string name="nc_display_name_fetched">Görüntülenecek ad alındı</string>
     <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s uygulama bulundu</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s uygulama kurulmadı, vazgeçiliyor</string>
     <string name="nc_display_name_stored">Görüntülenecek ad kaydedildi</string>
     <string name="nc_never">Asls katılmadı</string>
     <string name="nc_search">Arama</string>

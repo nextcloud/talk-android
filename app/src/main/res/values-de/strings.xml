@@ -17,7 +17,6 @@
     <string name="nc_display_name_fetched">Anzeigename abgerufen</string>
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden, Abbruch</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s App gefunden</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s App nicht installiert, Abbruch</string>
     <string name="nc_display_name_stored">Anzeigename gespeichert</string>
     <string name="nc_display_name_not_stored">Der Anzeigename konnte nicht gespeichert werden, Abbruch</string>
 
@@ -80,6 +79,7 @@
     <!-- Permissions -->
     <string name="nc_permissions">Eventuell müssen Berechtigungen erteilt werden, um einen Videoanruf herzustellen.
 Bitte klicke im nachfolgenden Systemdialog auf \"ZULASSEN\".</string>
+    <string name="nc_permissions_permanently_denied">Um einen Videoanruf zu tätigen, erteile die \"Kamera\" und \"Mikrofon\" Berechtigungen in den Systemeinstellungen.</string>
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
 </resources>

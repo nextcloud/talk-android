@@ -11,16 +11,20 @@
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
     <string name="nc_server_maintenance">Please bring your %1$s out of maintenance</string>
     <string name="nc_server_version">%1$s only works with %2$s 13 and up</string>
+    <string name="nc_get_from_provider">Do you not have a server yet?\nClick here to get one from a provider</string>
+
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Display name fetched</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s app found</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s app not installed, aborting</string>
     <string name="nc_display_name_stored">Display name stored</string>
+    <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
+
     <string name="nc_never">Never joined</string>
     <string name="nc_search">Search</string>
 
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
+    <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
     <string name="nc_yes">Yes</string>
     <string name="nc_no">No</string>
     <string name="nc_details">Details</string>
@@ -75,6 +79,7 @@
     <!-- Permissions -->
     <string name="nc_permissions">Permissions may need to be granted to establish a video call. Please click \"ALLOW\" in
         the upcoming system dialog.</string>
+    <string name="nc_permissions_permanently_denied">To make video calls, grant \"Camera\" and \"Microphone\" permissions in the system settings.</string>
     <string name="nc_permissions_settings">Open settings</string>
 
 </resources>

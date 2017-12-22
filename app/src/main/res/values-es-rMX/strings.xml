@@ -17,7 +17,6 @@
     <string name="nc_display_name_fetched">Se obtuvo el nombre a desplegar</string>
     <string name="nc_display_name_not_fetched">No se pudo obtener el nombre a desplegar, abortando</string>
     <string name="nc_nextcloud_talk_app_installed">Aplicación %1$s encontrada</string>
-    <string name="nc_nextcloud_talk_app_not_installed">La aplicación %1$s no está instalada, abortando</string>
     <string name="nc_display_name_stored">Nombre a mostrar almacenado</string>
     <string name="nc_display_name_not_stored">No se pudo almacenar el nombre a desplegar, abortando</string>
 

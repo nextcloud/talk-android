@@ -17,7 +17,6 @@
     <string name="nc_display_name_fetched">Nome de exibição obtido</string>
     <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s aplicativo encontrado</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s aplicativo não instalado, interrompendo</string>
     <string name="nc_display_name_stored">Nome de exibição armazenado</string>
     <string name="nc_display_name_not_stored">Não foi possível armazenar o nome de exibição, cancelando</string>
 
@@ -80,6 +79,7 @@
     <!-- Permissions -->
     <string name="nc_permissions">Podem ser necessárias permissões para estabelecer uma chamada de vídeo.
 Clique em \"PERMITIR\" na caixa de diálogo seguinte.</string>
+    <string name="nc_permissions_permanently_denied">Para fazer chamadas de vídeo, conceda permissões de \"Câmera\" e \"Microfone\" nas configurações do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
 </resources>

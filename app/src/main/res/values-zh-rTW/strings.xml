@@ -12,7 +12,6 @@
     <string name="nc_display_name_fetched">已取得顯示名稱</string>
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止動作。</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s個app已找到</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$sapp無法安裝，將停止動作。</string>
     <string name="nc_display_name_stored">顯示名稱已儲存</string>
     <string name="nc_never">從未加入</string>
     <string name="nc_search">搜尋</string>

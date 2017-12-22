@@ -12,7 +12,6 @@
     <string name="nc_display_name_fetched">Nome visualizzato recuperato</string>
     <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
     <string name="nc_nextcloud_talk_app_installed"> Applicazione %1$s trovate</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Applicazione %1$s non installata, interruzione in corso</string>
     <string name="nc_display_name_stored">Nome visualizzato memorizzato</string>
     <string name="nc_never">Mai partecipato</string>
     <string name="nc_search">Cerca</string>
