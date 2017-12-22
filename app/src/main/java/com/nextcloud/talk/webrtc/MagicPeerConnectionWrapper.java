@@ -63,6 +63,8 @@ public class MagicPeerConnectionWrapper {
 
     private boolean hasInitiated;
 
+    private MediaStream localMediaStream;
+
     public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                       List<PeerConnection.IceServer> iceServerList,
                                       MediaConstraints mediaConstraints,
@@ -70,6 +72,7 @@ public class MagicPeerConnectionWrapper {
 
         this.iceServers = iceServerList;
         this.localSession = localSession;
+        this.localMediaStream = mediaStream;
 
         peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
                 new MagicPeerConnectionObserver());
@@ -113,11 +116,13 @@ public class MagicPeerConnectionWrapper {
 
     public void sendChannelData(DataChannelMessage dataChannelMessage) {
         ByteBuffer buffer = null;
-        try {
-            buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
-            magicDataChannel.send(new DataChannel.Buffer(buffer, false));
-        } catch (IOException e) {
-            Log.d(TAG, "Failed to send channel data");
+        if (magicDataChannel != null) {
+            try {
+                buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
+                magicDataChannel.send(new DataChannel.Buffer(buffer, false));
+            } catch (IOException e) {
+                Log.d(TAG, "Failed to send channel data");
+            }
         }
     }
 
@@ -145,6 +150,20 @@ public class MagicPeerConnectionWrapper {
         this.nick = nick;
     }
 
+    private void sendInitialMediaStatus() {
+        if (localMediaStream.videoTracks.size() == 1 && localMediaStream.videoTracks.get(0).enabled()) {
+            sendChannelData(new DataChannelMessage("videoOn"));
+        } else {
+            sendChannelData(new DataChannelMessage("videoOff"));
+        }
+
+        if (localMediaStream.audioTracks.size() == 1 && localMediaStream.audioTracks.get(0).enabled()) {
+            sendChannelData(new DataChannelMessage("audioOn"));
+        } else {
+            sendChannelData(new DataChannelMessage("audioOff"));
+        }
+    }
+
     private class MagicDataChannelObserver implements DataChannel.Observer {
 
         @Override
@@ -156,8 +175,7 @@ public class MagicPeerConnectionWrapper {
         public void onStateChange() {
             if (magicDataChannel.state().equals(DataChannel.State.OPEN) &&
                     magicDataChannel.label().equals("status")) {
-                sendChannelData(new DataChannelMessage("videoOn"));
-                sendChannelData(new DataChannelMessage("audioOn"));
+                sendInitialMediaStatus();
             }
         }
 
@@ -218,8 +236,7 @@ public class MagicPeerConnectionWrapper {
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED) && hasInitiated) {
-                sendChannelData(new DataChannelMessage("videoOn"));
-                sendChannelData(new DataChannelMessage("audioOn"));
+                sendInitialMediaStatus();
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .CLOSE_PEER, sessionId, null, null));
@@ -321,5 +338,4 @@ public class MagicPeerConnectionWrapper {
             }
         }
     }
-
 }
