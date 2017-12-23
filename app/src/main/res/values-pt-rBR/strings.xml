@@ -17,6 +17,7 @@
     <string name="nc_display_name_fetched">Nome de exibição obtido</string>
     <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s aplicativo encontrado</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Aplicativo %1$s não instalado no servidor, cancelando</string>
     <string name="nc_display_name_stored">Nome de exibição armazenado</string>
     <string name="nc_display_name_not_stored">Não foi possível armazenar o nome de exibição, cancelando</string>
 
@@ -47,6 +48,8 @@
     <string name="nc_settings_remove_account">Excluir conta</string>
     <string name="nc_settings_add_account">Adicionar uma conta</string>
     <string name="nc_settings_wrong_account">Somente a conta atual pode ser reautorizada</string>
+    <string name="nc_settings_no_talk_installed">O Aplicativo Talk não está instalado no servidor que
+você tentou autorizar</string>
     <string name="nc_settings_account_updated">Sua conta atual foi atualizada, em vez de adicionar uma nova</string>
     <string name="nc_account_scheduled_for_deletion">A conta está agendada para exclusão e não pode ser alterada</string>
 
