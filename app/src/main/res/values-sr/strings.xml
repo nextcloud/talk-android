@@ -1,0 +1,80 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">Позиви</string>
+    <string name="nc_bottom_navigation_title_contacts">Контакти</string>
+    <string name="nc_bottom_navigation_title_settings">Поставке</string>
+
+    <!-- Server selection -->
+    <string name="nc_server_url">Адреса сервера</string>
+    <string name="nc_server_url_prefix">Унесите http:// или https:// пре имена домаћина</string>
+    <string name="nc_server_not_installed">Довршите своју %1$s инсталацију</string>
+    <string name="nc_server_db_upgrade_needed">Ажурирајте своју %1$s базу</string>
+    <string name="nc_server_maintenance">Прекините %1$s режим одржавања</string>
+    <string name="nc_server_version">%1$s ради само са%2$s верзије 13 и већом</string>
+    <string name="nc_get_from_provider">Имате ли сервер?nКликните овде да направите један код провајдера</string>
+
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Име за приказ добављено</string>
+    <string name="nc_display_name_not_fetched">Име за приказ се не може добавити. Прекидам</string>
+    <string name="nc_display_name_stored">Име за приказ сачувано</string>
+    <string name="nc_display_name_not_stored">Не могу да сачувам име за приказ. Прекидам</string>
+
+    <string name="nc_never">Никад придружен</string>
+    <string name="nc_search">Тражи</string>
+
+    <string name="nc_certificate_dialog_title">Провери сертификат</string>
+    <string name="nc_yes">Да</string>
+    <string name="nc_no">Не</string>
+    <string name="nc_details">Детаљи</string>
+    <string name="nc_certificate_error">Ваша ССЛ постава је онемогућила повезивање</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Посредник</string>
+    <string name="nc_settings_proxy_type_key">proxy_type</string>
+    <string name="nc_settings_proxy_type_title">Тип посредника</string>
+    <string name="nc_settings_proxy_host_key">proxy_host</string>
+    <string name="nc_settings_proxy_host_title">Домаћин</string>
+    <string name="nc_settings_proxy_port_key">proxy_port</string>
+    <string name="nc_settings_proxy_port_title">Порт посредника</string>
+    <string name="nc_settings_proxy_username_key">proxy_username</string>
+    <string name="nc_settings_proxy_password_key">proxy_password</string>
+    <string name="nc_settings_use_credentials_title">Користи акредитиве</string>
+    <string name="nc_settings_use_credentials_key">proxy_credentials</string>
+    <string name="nc_settings_switch_account">Пребацивање између налога</string>
+    <string name="nc_settings_reauthorize">Понови ауторизацију</string>
+    <string name="nc_settings_remove_account">Уклони налог</string>
+    <string name="nc_settings_add_account">Додај нови налог</string>
+    <string name="nc_settings_wrong_account">Само тренутни налог се може поново ауторизовати</string>
+    <string name="nc_no_proxy">Без посредника</string>
+    <string name="nc_username">Корисничко име</string>
+    <string name="nc_password">Лозинка</string>
+    <string name="nc_about">О програму</string>
+    <string name="nc_privacy">Приватност</string>
+    <string name="nc_get_source_code">Изворни кôд</string>
+    <string name="nc_license_title">Лиценца</string>
+    <string name="nc_license_summary">ГНУ општа јавна лиценца, верзија 3</string>
+
+    <string name="nc_select_an_account">Изаберите налог</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">Шта желите да радите данас?</string>
+    <string name="nc_leave">Напусти разговор</string>
+    <string name="nc_rename">Преименуј разговор</string>
+    <string name="nc_set_password">Постави лозинку</string>
+    <string name="nc_change_password">Измени лозинку</string>
+    <string name="nc_share_link">Подели везу</string>
+    <string name="nc_make_call_public">Учини разговор јавним</string>
+    <string name="nc_stop_sharing">Заустави дељење разговора</string>
+    <string name="nc_delete_call">Обриши позив</string>
+
+    <!-- Contacts -->
+    <string name="nc_one_contact_selected">контакт означен</string>
+    <string name="nc_more_contacts_selected">контакта означено</string>
+
+    <!-- Permissions -->
+    <string name="nc_permissions">Потребно је дати дозволе за успостављање видео позива. Изаберите „ДОЗВОЛИ“ на
+        следећем системском дијалогу.</string>
+    <string name="nc_permissions_permanently_denied">Да бисте омогућили видео позиве, дозволите приступ камери и микрофону у системским поставкама.</string>
+    <string name="nc_permissions_settings">Отвори поставке</string>
+
+</resources>
