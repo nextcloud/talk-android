@@ -4,22 +4,34 @@
     <string name="nc_bottom_navigation_title_contacts">Contactpersonen</string>
     <string name="nc_bottom_navigation_title_settings">Instellingen</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">Serveradres</string>
     <string name="nc_server_url_prefix">Geef http:// of https:// op voor de domeinnaam</string>
     <string name="nc_server_not_installed">Beëindig je %1$s installatie</string>
     <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
     <string name="nc_server_maintenance">Haal je %1$s uit de onderhoudsmodus</string>
+    <string name="nc_server_version">%1$s werkt alleen met %2$s 13 en hoger</string>
+    <string name="nc_get_from_provider">Heb je nog geen server?\n
+Kies er eentje van een provider.</string>
+
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Weergavenaam opgehaald</string>
     <string name="nc_display_name_not_fetched">Weergave kon niet worden opgehaald, afgebroken</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s app gevonden</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s app is niet geïnstalleerd op de server, afbreken</string>
     <string name="nc_display_name_stored">Weergavenaam opgeslagen</string>
+    <string name="nc_display_name_not_stored">Kon weergavenaam niet opslaan, afbreken</string>
+
     <string name="nc_never">Nooit deelgenomen</string>
     <string name="nc_search">Zoeken</string>
 
     <string name="nc_certificate_dialog_title">Verifieer het certificaat</string>
+    <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nee</string>
     <string name="nc_details">Details</string>
+    <string name="nc_certificate_error">Je SSL-instellingen voorkomen verbinding</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_key">proxy_type</string>
@@ -37,6 +49,11 @@
     <string name="nc_settings_remove_account">Verwijder account</string>
     <string name="nc_settings_add_account">Toevoegen nieuw account</string>
     <string name="nc_settings_wrong_account">Alleen het huidige account kan opnieuw worden geautoriseerd</string>
+    <string name="nc_settings_no_talk_installed">Talk app is niet geïnstalleerd op de server waartegen je wilde 
+        autoriseren</string>
+    <string name="nc_settings_account_updated">Je al bestaande account werd bijgewerkt, in plaats van een nieuwe aan te maken</string>
+    <string name="nc_account_scheduled_for_deletion">Het account is gemarkeerd voor verwijdering en kan niet worden gewijzigd</string>
+
     <string name="nc_no_proxy">geen proxy</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
@@ -63,6 +80,10 @@
     <string name="nc_one_contact_selected">contact geselecteerd</string>
     <string name="nc_more_contacts_selected">contacten geselecteerd</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Er kunnen permissies nodig zijn om een videogesprek te starten. Druk op \"TOESTAAN\" in
+        de volgende systeemdialoog.</string>
+    <string name="nc_permissions_permanently_denied">Om videogesprekken te houden, verleen \"Camera\" en \"Microfoon\" permissies in de systeeminstellingen.</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
 
 </resources>
