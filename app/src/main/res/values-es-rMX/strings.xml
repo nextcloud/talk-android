@@ -17,6 +17,7 @@
     <string name="nc_display_name_fetched">Se obtuvo el nombre a desplegar</string>
     <string name="nc_display_name_not_fetched">No se pudo obtener el nombre a desplegar, abortando</string>
     <string name="nc_nextcloud_talk_app_installed">Aplicación %1$s encontrada</string>
+    <string name="nc_nextcloud_talk_app_not_installed">La aplicación %1$s no está instalada en el servidor, abortando</string>
     <string name="nc_display_name_stored">Nombre a mostrar almacenado</string>
     <string name="nc_display_name_not_stored">No se pudo almacenar el nombre a desplegar, abortando</string>
 
@@ -47,6 +48,8 @@
     <string name="nc_settings_remove_account">Eliminar cuenta</string>
     <string name="nc_settings_add_account">Agregar una cuenta nueva</string>
     <string name="nc_settings_wrong_account">Solo la cuenta actual se puede volver a autorizar</string>
+    <string name="nc_settings_no_talk_installed">La aplicación Talk no está instalada en el servidor contra el cual 
+ intentaste autorizar</string>
     <string name="nc_settings_account_updated">Tu cuenta existente ha sido actualizada, en lugar de agregar una nueva</string>
     <string name="nc_account_scheduled_for_deletion">La cuenta está calendarizada para ser borrada, y no puede ser modificada</string>
 
@@ -79,6 +82,7 @@
     <!-- Permissions -->
     <string name="nc_permissions">Es posible que se requieran de más privilegios para establecer la video llamada. Por favor haz click en \"PERMITIR\" en
  la siguiente ventana de diálogo. </string>
+    <string name="nc_permissions_permanently_denied">Para hacer video llamadas, otorga los privilegios de \"Cámara\"  y \"Micrófono\" en las configuraciones del sistema. </string>
     <string name="nc_permissions_settings">Abrir configuraciones</string>
 
 </resources>

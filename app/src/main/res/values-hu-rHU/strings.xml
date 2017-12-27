@@ -11,16 +11,21 @@
     <string name="nc_server_db_upgrade_needed">Kérlek frissítsd a(z) %1$s adatbázisod</string>
     <string name="nc_server_maintenance">Kérlek hozd ki a(z) %1$s-t karbantartási módból</string>
     <string name="nc_server_version">%1$s csak %2$s 13-al vagy nagyobbal működik</string>
+    <string name="nc_get_from_provider">Nincs még saját szervere?\nKattintson ide a beszerzéshez az egyik szolgáltatótól</string>
+
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Megjelenítendő név beszerezve</string>
     <string name="nc_display_name_not_fetched">Megjelenítendő név nem beszerezhető, megszakítás</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s app megtalálva</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app nincs telepítve a szerveren, megszakítás</string>
     <string name="nc_display_name_stored">Megjelenítendő név tárolva</string>
+    <string name="nc_display_name_not_stored">Megjelenítendő név nincs tárolva, megszakítás</string>
+
     <string name="nc_never">Soha nem csatlakozott</string>
     <string name="nc_search">Keresés</string>
 
     <string name="nc_certificate_dialog_title">Tanúsítvány ellenőrzése</string>
+    <string name="nc_certificate_dialog_text">Korábban ismeretlen SSL tanúsítvány érkezett. %1$s bocsátotta ki %2$s részére, %3$s és %4$s között érvényes. Megbízható?</string>
     <string name="nc_yes">Igen</string>
     <string name="nc_no">Nem</string>
     <string name="nc_details">Részletek</string>
@@ -43,6 +48,8 @@
     <string name="nc_settings_remove_account">Fiók törlése</string>
     <string name="nc_settings_add_account">Új fiók létrehozása</string>
     <string name="nc_settings_wrong_account">Csak az aktuális fiókot lehet újraengedélyezni</string>
+    <string name="nc_settings_no_talk_installed">A Talk app nincs telepítve a szerveren amibe be próbáltál jelentkezni
+        </string>
     <string name="nc_settings_account_updated">Új fiók hozzáadása helyett frissítettük a már létező fiókot</string>
     <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
 

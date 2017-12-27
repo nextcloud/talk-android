@@ -1,0 +1,51 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">שיחות</string>
+    <string name="nc_bottom_navigation_title_contacts">אנשי קשר</string>
+    <string name="nc_bottom_navigation_title_settings">הגדרות</string>
+
+    <!-- Server selection -->
+    <string name="nc_server_url">כתובת השרת</string>
+    <string name="nc_server_url_prefix">נא להקליד http://‎ או https://‎ לפני שם המארח</string>
+    <string name="nc_server_not_installed">נא לסיים את ההתקנה של %1$s אצלך</string>
+    <string name="nc_server_db_upgrade_needed">נא לשדרג את מסד הנתונים שלך מסוג %1$s</string>
+    <string name="nc_server_maintenance">נא להוציא את השרת %1$s ממצב תחזוקה</string>
+    <string name="nc_search">חיפוש</string>
+
+    <string name="nc_certificate_dialog_title">חקירת האישור</string>
+    <string name="nc_yes">כן</string>
+    <string name="nc_no">לא</string>
+    <string name="nc_details">פרטים</string>
+    <string name="nc_certificate_error">הגדרות ה־SSL שלך מנעו חיבור</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">מתווך</string>
+    <string name="nc_settings_remove_account">הסרת חשבון</string>
+    <string name="nc_settings_add_account">הוספת חשבון חדש</string>
+    <string name="nc_no_proxy">אין מתווך</string>
+    <string name="nc_username">שם משתמש</string>
+    <string name="nc_password">ססמה</string>
+    <string name="nc_about">על אודות</string>
+    <string name="nc_privacy">פרטיות</string>
+    <string name="nc_get_source_code">קבלת קוד המקור</string>
+    <string name="nc_license_title">רשיון</string>
+    <string name="nc_select_an_account">בחירת חשבון</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">מה ברצונך לעשות היום?</string>
+    <string name="nc_leave">לעזוב את השיחה</string>
+    <string name="nc_rename">לשנות את שם השיחה</string>
+    <string name="nc_set_password">להגדיר את הססמה</string>
+    <string name="nc_change_password">לשנות את הססמה</string>
+    <string name="nc_share_link">לשתף קישור</string>
+    <string name="nc_make_call_public">להפוך את השיחה לציבורית</string>
+    <string name="nc_stop_sharing">להפסיק לשתף את השיחה</string>
+    <string name="nc_delete_call">מחיקת שיחה</string>
+
+    <!-- Contacts -->
+    <string name="nc_one_contact_selected">נבחר איש קשר</string>
+    <string name="nc_more_contacts_selected">נבחרו אנשי קשר</string>
+
+    <string name="nc_permissions_settings">פתיחת הגדרות</string>
+
+</resources>
