@@ -74,7 +74,7 @@
             android:layout_marginEnd="@dimen/margin_between_elements"
             android:layout_toEndOf="@id/call_control_hangup"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_videocam_white_24px"/>
+            android:src="@drawable/ic_videocam_off_white_24px"/>
 
         <ImageButton
             android:id="@+id/call_control_microphone"
@@ -83,7 +83,7 @@
             android:layout_marginEnd="@dimen/margin_between_elements"
             android:layout_toEndOf="@id/call_control_camera"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_mic_white_24px"/>
+            android:src="@drawable/ic_mic_off_white_24px"/>
 
         <ImageButton
             android:id="@+id/call_control_switch_camera"

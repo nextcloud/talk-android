@@ -121,6 +121,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.schedulers.Schedulers;
+import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied;
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
 import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -131,8 +132,16 @@ public class CallActivity extends AppCompatActivity {
     private static final String[] PERMISSIONS_CALL = {
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.MODIFY_AUDIO_SETTINGS
     };
+
+    private static final String[] PERMISSIONS_CAMERA = {
+            Manifest.permission.CAMERA
+    };
+
+    private static final String[] PERMISSIONS_MICROPHONE = {
+            Manifest.permission.RECORD_AUDIO
+    };
+
     @BindView(R.id.pip_video_view)
     SurfaceViewRenderer pipVideoView;
     @BindView(R.id.full_screen_surface_view)
@@ -173,6 +182,7 @@ public class CallActivity extends AppCompatActivity {
     VideoRenderer localRenderer;
     EglBase rootEglBase;
     boolean leavingCall = false;
+    boolean inCall = false;
     BooleanSupplier booleanSupplier = () -> leavingCall;
     Disposable signalingDisposable;
     Disposable pingDisposable;
@@ -185,8 +195,11 @@ public class CallActivity extends AppCompatActivity {
     private String credentials;
     private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
 
-    private boolean videoOn = true;
-    private boolean audioOn = true;
+    private boolean videoOn = false;
+    private boolean audioOn = false;
+
+    private boolean cameraInitialized = false;
+    private boolean microphoneInitialized = false;
 
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -213,6 +226,8 @@ public class CallActivity extends AppCompatActivity {
         userEntity = Parcels.unwrap((Parcelable) getIntent().getExtras().get("userEntity"));
         callSession = "0";
         credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
+
+        basicInitialization();
 
         if (userUtils.getCurrentUser() != null && userUtils.getCurrentUser() != userEntity) {
             userUtils.createOrUpdateUser(userEntity.getUsername(),
@@ -265,7 +280,9 @@ public class CallActivity extends AppCompatActivity {
                 }
             }
 
-            localMediaStream.videoTracks.get(0).setEnabled(enable);
+            if (localMediaStream.videoTracks.size() > 0) {
+                localMediaStream.videoTracks.get(0).setEnabled(enable);
+            }
 
             if (enable) {
                 pipVideoView.setVisibility(View.VISIBLE);
@@ -278,7 +295,9 @@ public class CallActivity extends AppCompatActivity {
                 message = "audioOn";
             }
 
-            localMediaStream.audioTracks.get(0).setEnabled(enable);
+            if (localMediaStream.audioTracks.size() > 0) {
+                localMediaStream.audioTracks.get(0).setEnabled(enable);
+            }
         }
 
         for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
@@ -288,15 +307,25 @@ public class CallActivity extends AppCompatActivity {
 
     @OnClick(R.id.call_control_microphone)
     public void onMicrophoneClick() {
-        audioOn = !audioOn;
+        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+            audioOn = !audioOn;
 
-        if (audioOn) {
-            microphoneControlButton.setImageResource(R.drawable.ic_mic_white_24px);
+            if (audioOn) {
+                microphoneControlButton.setImageResource(R.drawable.ic_mic_white_24px);
+            } else {
+                microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+            }
+
+            toggleMedia(audioOn, false);
+        } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_MICROPHONE)) {
+            // Some permission is permanently denied so we cannot request them normally.
+            OpenAppDetailsDialogFragment.show(
+                    R.string.nc_microphone_permission_permanently_denied,
+                    R.string.nc_permissions_settings, this);
         } else {
-            microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+            EffortlessPermissions.requestPermissions(this, R.string.nc_permissions_audio,
+                    100, PERMISSIONS_MICROPHONE);
         }
-
-        toggleMedia(audioOn, false);
     }
 
     @OnClick(R.id.call_control_hangup)
@@ -307,15 +336,26 @@ public class CallActivity extends AppCompatActivity {
 
     @OnClick(R.id.call_control_camera)
     public void onCameraClick() {
-        videoOn = !videoOn;
+        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
+            videoOn = !videoOn;
 
-        if (videoOn) {
-            cameraControlButton.setImageResource(R.drawable.ic_videocam_white_24px);
+            if (videoOn) {
+                cameraControlButton.setImageResource(R.drawable.ic_videocam_white_24px);
+            } else {
+                cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
+            }
+
+            toggleMedia(videoOn, true);
+        } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_CAMERA)) {
+            // Some permission is permanently denied so we cannot request them normally.
+            OpenAppDetailsDialogFragment.show(
+                    R.string.nc_camera_permission_permanently_denied,
+                    R.string.nc_permissions_settings, this);
         } else {
-            cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
+            EffortlessPermissions.requestPermissions(this, R.string.nc_permissions_video,
+                    100, PERMISSIONS_CAMERA);
         }
 
-        toggleMedia(videoOn, true);
     }
 
 
@@ -391,20 +431,53 @@ public class CallActivity extends AppCompatActivity {
     @AfterPermissionGranted(100)
     private void checkPermissions() {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
-            initializeEverything();
+            if (!cameraInitialized) {
+                cameraInitialization();
+            }
+
+            if (!microphoneInitialized) {
+                microphoneInitialization();
+            }
+
+            if (!inCall) {
+                startCall();
+            }
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this,
                 PERMISSIONS_CALL)) {
-            // Some permission is permanently denied so we cannot request them normally.
-            OpenAppDetailsDialogFragment.show(
-                    R.string.nc_permissions_permanently_denied,
-                    R.string.nc_permissions_settings, this);
+            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
+                cameraInitialization();
+                onCameraClick();
+            } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
+                cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
+                cameraSwitchButton.setEnabled(false);
+                cameraSwitchButton.setAlpha(0.5f);
+            }
+
+            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+                microphoneInitialization();
+                onMicrophoneClick();
+            } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+                microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+            }
+
+            if (!inCall) {
+                startCall();
+            }
+
         } else {
             EffortlessPermissions.requestPermissions(this, R.string.nc_permissions,
                     100, PERMISSIONS_CALL);
         }
     }
 
-    private void initializeEverything() {
+    @AfterPermissionDenied(100)
+    private void onPermissionsDenied() {
+        if (!inCall) {
+            startCall();
+        }
+    }
+
+    private void basicInitialization() {
         //Initialize PeerConnectionFactory globals.
         PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions
                 .builder(this)
@@ -416,23 +489,11 @@ public class CallActivity extends AppCompatActivity {
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
         peerConnectionFactory = new PeerConnectionFactory(options);
 
-        videoCapturer = createCameraCapturer(cameraEnumerator);
-
         //Create MediaConstraints - Will be useful for specifying video and audio constraints.
         audioConstraints = new MediaConstraints();
         videoConstraints = new MediaConstraints();
 
-        //Create a VideoSource instance
-        videoSource = peerConnectionFactory.createVideoSource(videoCapturer);
-        localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
-
-        //create an AudioSource instance
-        audioSource = peerConnectionFactory.createAudioSource(audioConstraints);
-        localAudioTrack = peerConnectionFactory.createAudioTrack("NCa0", audioSource);
-
         localMediaStream = peerConnectionFactory.createLocalMediaStream("NCMS");
-        localMediaStream.addTrack(localAudioTrack);
-        localMediaStream.addTrack(localVideoTrack);
 
         // Create and audio manager that will take care of audio routing,
         // audio modes, audio device enumeration etc.
@@ -448,14 +509,6 @@ public class CallActivity extends AppCompatActivity {
             }
         });
 
-        startVideoCapture();
-
-        //create a videoRenderer based on SurfaceViewRenderer instance
-        localRenderer = new VideoRenderer(fullScreenVideoView);
-        // And finally, with our VideoRenderer ready, we
-        // can add our renderer to the VideoTrack.
-        localVideoTrack.addRenderer(localRenderer);
-
         iceServers = new ArrayList<>();
 
         //create sdpConstraints
@@ -464,12 +517,40 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
+    }
 
+    private void cameraInitialization() {
+        videoCapturer = createCameraCapturer(cameraEnumerator);
+
+        //Create a VideoSource instance
+        videoSource = peerConnectionFactory.createVideoSource(videoCapturer);
+        localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
+        localMediaStream.addTrack(localVideoTrack);
+
+        //create a videoRenderer based on SurfaceViewRenderer instance
+        localRenderer = new VideoRenderer(fullScreenVideoView);
+        // And finally, with our VideoRenderer ready, we
+        // can add our renderer to the VideoTrack.
+        localVideoTrack.addRenderer(localRenderer);
+
+        cameraInitialized = true;
+    }
+
+    private void microphoneInitialization() {
+        //create an AudioSource instance
+        audioSource = peerConnectionFactory.createAudioSource(audioConstraints);
+        localAudioTrack = peerConnectionFactory.createAudioTrack("NCa0", audioSource);
+        localMediaStream.addTrack(localAudioTrack);
+
+        microphoneInitialized = true;
+    }
+
+    private void startCall() {
+        inCall = true;
         animateCallControls(false, 5000);
         startPullingSignalingMessages(false);
         registerNetworkReceiver();
     }
-
 
     @OnClick({R.id.full_screen_surface_view, R.id.remote_renderers_layout})
     public void showCallControls() {
@@ -810,6 +891,7 @@ public class CallActivity extends AppCompatActivity {
     private void hangup(boolean dueToNetworkChange) {
 
         leavingCall = true;
+        inCall = false;
         dispose(null);
 
         for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
