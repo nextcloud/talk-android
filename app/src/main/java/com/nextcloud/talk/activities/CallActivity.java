@@ -51,6 +51,7 @@ import android.widget.TextView;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.Device;
+import com.google.android.flexbox.FlexboxLayout;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
@@ -147,7 +148,7 @@ public class CallActivity extends AppCompatActivity {
     @BindView(R.id.relative_layout)
     RelativeLayout relativeLayout;
     @BindView(R.id.remote_renderers_layout)
-    LinearLayout remoteRenderersLayout;
+    FlexboxLayout remoteRenderersLayout;
 
     @BindView(R.id.call_controls)
     RelativeLayout callControls;
@@ -1217,14 +1218,6 @@ public class CallActivity extends AppCompatActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            remoteRenderersLayout.setOrientation(LinearLayout.HORIZONTAL);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            remoteRenderersLayout.setOrientation(LinearLayout.VERTICAL);
-        }
-
         super.onConfigurationChanged(newConfig);
     }
 
