@@ -26,15 +26,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
+                android:background="#000000"
                 tools:context=".activities.CallActivity">
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/remote_renderers_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
         android:animateLayoutChanges="true"
-        android:background="#000000"
-        android:visibility="invisible"
         app:flexWrap="wrap"
         app:alignItems="flex_end"
         app:alignContent="flex_end"/>
