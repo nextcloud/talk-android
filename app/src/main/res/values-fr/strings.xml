@@ -73,9 +73,6 @@
     <string name="nc_one_contact_selected">contact sélectionné</string>
     <string name="nc_more_contacts_selected">contacts sélectionnés</string>
 
-    <!-- Permissions -->
-    <string name="nc_permissions">Nous avons besoin de certaines autorisations pour établir un appel vidéo.
-Veuillez cliquer sur “autoriser“ dans la prochaine boîte de dialogue du système.</string>
     <string name="nc_permissions_settings">Ouvrir les paramètres</string>
 
 </resources>

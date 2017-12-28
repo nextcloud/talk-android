@@ -79,9 +79,6 @@ você tentou autorizar</string>
     <string name="nc_one_contact_selected">contato selecionado</string>
     <string name="nc_more_contacts_selected">contatos selecionados</string>
 
-    <!-- Permissions -->
-    <string name="nc_permissions">Podem ser necessárias permissões para estabelecer uma chamada de vídeo.
-Clique em \"PERMITIR\" na caixa de diálogo seguinte.</string>
     <string name="nc_permissions_permanently_denied">Para fazer chamadas de vídeo, conceda permissões de \"Câmera\" e \"Microfone\" nas configurações do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
