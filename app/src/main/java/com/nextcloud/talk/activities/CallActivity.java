@@ -1262,7 +1262,7 @@ public class CallActivity extends AppCompatActivity {
 
         if (show) {
             alpha = 1.0f;
-            duration = 500;
+            duration = 1000;
         } else {
             alpha = 0.0f;
             duration = 2500;
