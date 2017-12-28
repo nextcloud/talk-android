@@ -219,11 +219,11 @@ public abstract class BottomNavigationController extends BaseController {
      * BottomNavigationController#getControllerFor(int)}, using a {@link FadeChangeHandler}.
      */
     protected void resetCurrentBackstack() {
-        lastActiveChildRouter
-                .setRoot(
-                        RouterTransaction.with(this.getControllerFor(currentlySelectedItemId))
-                                .pushChangeHandler(new FadeChangeHandler())
-                                .popChangeHandler(new FadeChangeHandler()));
+        if (lastActiveChildRouter != null) {
+            lastActiveChildRouter.setRoot(RouterTransaction.with(this.getControllerFor(currentlySelectedItemId))
+                                    .pushChangeHandler(new FadeChangeHandler())
+                                    .popChangeHandler(new FadeChangeHandler()));
+        }
     }
 
     /**
