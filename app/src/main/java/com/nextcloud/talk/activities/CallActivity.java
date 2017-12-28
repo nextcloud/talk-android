@@ -225,6 +225,7 @@ public class CallActivity extends AppCompatActivity {
         callSession = "0";
         credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
 
+        callControls.setZ(100.0f);
         basicInitialization();
 
         if (userUtils.getCurrentUser() != null && userUtils.getCurrentUser() != userEntity) {
@@ -298,10 +299,10 @@ public class CallActivity extends AppCompatActivity {
             }
         }
 
-        MagicPeerConnectionWrapper magicPeerConnectionWrapper;
-        for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
-            magicPeerConnectionWrapper = magicPeerConnectionWrapperList.get(i);
-            magicPeerConnectionWrapper.sendChannelData(new DataChannelMessage(message));
+        if (inCall) {
+            for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
+                magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
+            }
         }
     }
 
@@ -406,8 +407,6 @@ public class CallActivity extends AppCompatActivity {
     }
 
     public void initViews() {
-        createCameraEnumerator();
-
         if (cameraEnumerator.getDeviceNames().length < 2) {
             cameraSwitchButton.setVisibility(View.GONE);
         }
@@ -423,14 +422,16 @@ public class CallActivity extends AppCompatActivity {
     @AfterPermissionGranted(100)
     private void checkPermissions() {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
-            if (!cameraInitialized) {
-                cameraInitialization();
+            if (!videoOn) {
                 onCameraClick();
             }
 
-            if (!microphoneInitialized) {
-                microphoneInitialization();
+            if (!audioOn) {
                 onMicrophoneClick();
+            }
+
+            if (cameraSwitchButton != null && cameraEnumerator.getDeviceNames().length > 1) {
+                cameraSwitchButton.setVisibility(View.VISIBLE);
             }
 
             if (!inCall) {
@@ -439,18 +440,26 @@ public class CallActivity extends AppCompatActivity {
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this,
                 PERMISSIONS_CALL)) {
             if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
-                cameraInitialization();
-                onCameraClick();
+                if (!videoOn) {
+                    onCameraClick();
+                }
+
+                if (cameraSwitchButton != null && cameraEnumerator.getDeviceNames().length > 1) {
+                    cameraSwitchButton.setVisibility(View.VISIBLE);
+                }
             } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
-                cameraControlButton.setVisibility(View.GONE);
-                cameraSwitchButton.setVisibility(View.GONE);
+                cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
+                if (cameraSwitchButton != null) {
+                    cameraSwitchButton.setVisibility(View.INVISIBLE);
+                }
             }
 
             if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
-                microphoneInitialization();
-                onMicrophoneClick();
+                if (!audioOn) {
+                    onMicrophoneClick();
+                }
             } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
-                microphoneControlButton.setVisibility(View.GONE);
+                microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
             }
 
             if (!inCall) {
@@ -465,9 +474,9 @@ public class CallActivity extends AppCompatActivity {
 
     @AfterPermissionDenied(100)
     private void onPermissionsDenied() {
-        microphoneControlButton.setVisibility(View.GONE);
-        cameraControlButton.setVisibility(View.GONE);
-        cameraSwitchButton.setVisibility(View.GONE);
+        if (cameraSwitchButton != null) {
+            cameraSwitchButton.setVisibility(View.INVISIBLE);
+        }
         if (!inCall) {
             startCall();
         }
@@ -475,6 +484,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void basicInitialization() {
         rootEglBase = EglBase.create();
+        createCameraEnumerator();
 
         //Initialize PeerConnectionFactory globals.
         PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions
@@ -518,6 +528,9 @@ public class CallActivity extends AppCompatActivity {
         sdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
+
+        cameraInitialization();
+        microphoneInitialization();
     }
 
     private void cameraInitialization() {
@@ -527,14 +540,13 @@ public class CallActivity extends AppCompatActivity {
         videoSource = peerConnectionFactory.createVideoSource(videoCapturer);
         localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
         localMediaStream.addTrack(localVideoTrack);
+        localVideoTrack.setEnabled(false);
 
         //create a videoRenderer based on SurfaceViewRenderer instance
         localRenderer = new VideoRenderer(pipVideoView);
         // And finally, with our VideoRenderer ready, we
         // can add our renderer to the VideoTrack.
         localVideoTrack.addRenderer(localRenderer);
-
-        cameraSwitchButton.setVisibility(View.VISIBLE);
 
         cameraInitialized = true;
     }
@@ -543,6 +555,7 @@ public class CallActivity extends AppCompatActivity {
         //create an AudioSource instance
         audioSource = peerConnectionFactory.createAudioSource(audioConstraints);
         localAudioTrack = peerConnectionFactory.createAudioTrack("NCa0", audioSource);
+        localAudioTrack.setEnabled(false);
         localMediaStream.addTrack(localAudioTrack);
 
         microphoneInitialized = true;
@@ -1066,7 +1079,7 @@ public class CallActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         eventBus.register(this);
-        if (videoOn && cameraInitialized) {
+        if (videoOn && EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
             startVideoCapture();
         }
     }
@@ -1075,7 +1088,7 @@ public class CallActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         eventBus.unregister(this);
-        if (videoCapturer != null && videoOn && cameraInitialized) {
+        if (videoCapturer != null && EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
             try {
                 videoCapturer.stopCapture();
             } catch (InterruptedException e) {
@@ -1094,8 +1107,10 @@ public class CallActivity extends AppCompatActivity {
                 peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                         .PeerConnectionEventType.SENSOR_NEAR)) {
             boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
-                    .PeerConnectionEventType.SENSOR_FAR);
-            toggleMedia(enableVideo, true);
+                    .PeerConnectionEventType.SENSOR_FAR) && videoOn;
+            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) && inCall) {
+                toggleMedia(enableVideo, true);
+            }
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.NICK_CHANGE)) {
             runOnUiThread(() -> gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick()));
