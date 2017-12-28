@@ -144,8 +144,6 @@ public class CallActivity extends AppCompatActivity {
 
     @BindView(R.id.pip_video_view)
     SurfaceViewRenderer pipVideoView;
-    @BindView(R.id.full_screen_surface_view)
-    SurfaceViewRenderer fullScreenVideoView;
     @BindView(R.id.relative_layout)
     RelativeLayout relativeLayout;
     @BindView(R.id.remote_renderers_layout)
@@ -300,8 +298,10 @@ public class CallActivity extends AppCompatActivity {
             }
         }
 
+        MagicPeerConnectionWrapper magicPeerConnectionWrapper;
         for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
-            magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
+            magicPeerConnectionWrapper = magicPeerConnectionWrapperList.get(i);
+            magicPeerConnectionWrapper.sendChannelData(new DataChannelMessage(message));
         }
     }
 
@@ -318,7 +318,7 @@ public class CallActivity extends AppCompatActivity {
 
             toggleMedia(audioOn, false);
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_MICROPHONE)) {
-            // Some permission is permanently denied so we cannot request them normally.
+            // Microphone permission is permanently denied so we cannot request it normally.
             OpenAppDetailsDialogFragment.show(
                     R.string.nc_microphone_permission_permanently_denied,
                     R.string.nc_permissions_settings, this);
@@ -347,7 +347,7 @@ public class CallActivity extends AppCompatActivity {
 
             toggleMedia(videoOn, true);
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_CAMERA)) {
-            // Some permission is permanently denied so we cannot request them normally.
+            // Camera permission is permanently denied so we cannot request it normally.
             OpenAppDetailsDialogFragment.show(
                     R.string.nc_camera_permission_permanently_denied,
                     R.string.nc_permissions_settings, this);
@@ -414,18 +414,10 @@ public class CallActivity extends AppCompatActivity {
 
         // setting this to true because it's not shown by default
         pipVideoView.setMirror(true);
-        rootEglBase = EglBase.create();
         pipVideoView.init(rootEglBase.getEglBaseContext(), null);
         pipVideoView.setZOrderMediaOverlay(true);
         pipVideoView.setEnableHardwareScaler(true);
         pipVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
-
-        fullScreenVideoView.setMirror(true);
-        fullScreenVideoView.init(rootEglBase.getEglBaseContext(), null);
-        fullScreenVideoView.setZOrderMediaOverlay(true);
-        fullScreenVideoView.setEnableHardwareScaler(true);
-        fullScreenVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
-
     }
 
     @AfterPermissionGranted(100)
@@ -433,10 +425,12 @@ public class CallActivity extends AppCompatActivity {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
             if (!cameraInitialized) {
                 cameraInitialization();
+                onCameraClick();
             }
 
             if (!microphoneInitialized) {
                 microphoneInitialization();
+                onMicrophoneClick();
             }
 
             if (!inCall) {
@@ -448,16 +442,15 @@ public class CallActivity extends AppCompatActivity {
                 cameraInitialization();
                 onCameraClick();
             } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
-                cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
-                cameraSwitchButton.setEnabled(false);
-                cameraSwitchButton.setAlpha(0.5f);
+                cameraControlButton.setVisibility(View.GONE);
+                cameraSwitchButton.setVisibility(View.GONE);
             }
 
             if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
                 microphoneInitialization();
                 onMicrophoneClick();
             } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
-                microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+                microphoneControlButton.setVisibility(View.GONE);
             }
 
             if (!inCall) {
@@ -472,12 +465,17 @@ public class CallActivity extends AppCompatActivity {
 
     @AfterPermissionDenied(100)
     private void onPermissionsDenied() {
+        microphoneControlButton.setVisibility(View.GONE);
+        cameraControlButton.setVisibility(View.GONE);
+        cameraSwitchButton.setVisibility(View.GONE);
         if (!inCall) {
             startCall();
         }
     }
 
     private void basicInitialization() {
+        rootEglBase = EglBase.create();
+
         //Initialize PeerConnectionFactory globals.
         PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions
                 .builder(this)
@@ -488,6 +486,9 @@ public class CallActivity extends AppCompatActivity {
         //Create a new PeerConnectionFactory instance.
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
         peerConnectionFactory = new PeerConnectionFactory(options);
+
+        peerConnectionFactory.setVideoHwAccelerationOptions(rootEglBase.getEglBaseContext(),
+                rootEglBase.getEglBaseContext());
 
         //Create MediaConstraints - Will be useful for specifying video and audio constraints.
         audioConstraints = new MediaConstraints();
@@ -528,10 +529,12 @@ public class CallActivity extends AppCompatActivity {
         localMediaStream.addTrack(localVideoTrack);
 
         //create a videoRenderer based on SurfaceViewRenderer instance
-        localRenderer = new VideoRenderer(fullScreenVideoView);
+        localRenderer = new VideoRenderer(pipVideoView);
         // And finally, with our VideoRenderer ready, we
         // can add our renderer to the VideoTrack.
         localVideoTrack.addRenderer(localRenderer);
+
+        cameraSwitchButton.setVisibility(View.VISIBLE);
 
         cameraInitialized = true;
     }
@@ -552,7 +555,7 @@ public class CallActivity extends AppCompatActivity {
         registerNetworkReceiver();
     }
 
-    @OnClick({R.id.full_screen_surface_view, R.id.remote_renderers_layout})
+    @OnClick({R.id.pip_video_view, R.id.remote_renderers_layout})
     public void showCallControls() {
         if (callControls.getVisibility() != View.VISIBLE) {
             animateCallControls(true, 0);
@@ -1010,15 +1013,6 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void gotRemoteStream(MediaStream stream, String session) {
-        if (fullScreenVideoView != null) {
-            remoteRenderersLayout.setVisibility(View.VISIBLE);
-            pipVideoView.setVisibility(View.VISIBLE);
-            localVideoTrack.removeRenderer(localRenderer);
-            localRenderer = new VideoRenderer(pipVideoView);
-            localVideoTrack.addRenderer(localRenderer);
-            relativeLayout.removeView(fullScreenVideoView);
-        }
-
         removeMediaStream(session);
 
         if (stream.videoTracks.size() == 1) {
@@ -1032,13 +1026,12 @@ public class CallActivity extends AppCompatActivity {
                         .surface_view);
                 surfaceViewRenderer.setMirror(false);
                 surfaceViewRenderer.init(rootEglBase.getEglBaseContext(), null);
-                surfaceViewRenderer.setZOrderMediaOverlay(true);
+                surfaceViewRenderer.setZOrderMediaOverlay(false);
                 surfaceViewRenderer.setEnableHardwareScaler(true);
                 surfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
                 VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
                 videoTrack.addRenderer(remoteRenderer);
                 remoteRenderersLayout.addView(relativeLayout);
-                relativeLayout.invalidate();
                 gotNick(session, getPeerConnectionWrapperForSessionId(session).getNick());
             } catch (Exception e) {
                 Log.d(TAG, "Failed to create a new video view");
@@ -1073,14 +1066,16 @@ public class CallActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         eventBus.register(this);
-        startVideoCapture();
+        if (videoOn && cameraInitialized) {
+            startVideoCapture();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
         eventBus.unregister(this);
-        if (videoCapturer != null) {
+        if (videoCapturer != null && videoOn && cameraInitialized) {
             try {
                 videoCapturer.stopCapture();
             } catch (InterruptedException e) {

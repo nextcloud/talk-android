@@ -76,7 +76,7 @@ public class MagicPeerConnectionWrapper {
 
         peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
                 new MagicPeerConnectionObserver());
-        peerConnection.addStream(mediaStream);
+        peerConnection.addStream(localMediaStream);
 
         this.sessionId = sessionId;
         this.mediaConstraints = mediaConstraints;
@@ -293,7 +293,6 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onAddTrack(RtpReceiver rtpReceiver, MediaStream[] mediaStreams) {
-
         }
     }
 
