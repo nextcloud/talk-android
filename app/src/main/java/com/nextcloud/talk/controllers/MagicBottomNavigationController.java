@@ -73,15 +73,4 @@ public class MagicBottomNavigationController extends BottomNavigationController 
         }
         return controller;
     }
-
-    /**
-     * Supplied Controller must match a MenuItemId as defined in {@link BottomNavigationMenuItem} or
-     * an {@link IllegalArgumentException} will be thrown.
-     *
-     * @param controller
-     */
-    public void navigateTo(Controller controller) {
-        BottomNavigationMenuItem item = BottomNavigationMenuItem.getEnum(controller.getClass());
-        navigateTo(item.getMenuResId(), controller);
-    }
 }

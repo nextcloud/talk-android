@@ -123,6 +123,20 @@ public abstract class BottomNavigationController extends BaseController {
     /* Setup the BottomNavigationView with the constructor supplied Menu resource */
         bottomNavigationView.inflateMenu(getMenuResource());
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        navigateTo(item.getItemId(), getControllerFor(item.getItemId()));
+                        return true;
+                    }
+                });
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+
     /* Fresh start, setup everything */
         if (routerSavedStateBundles == null) {
             Menu menu = bottomNavigationView.getMenu();
@@ -154,21 +168,6 @@ public abstract class BottomNavigationController extends BaseController {
             childRouter.rebindIfNeeded();
             lastActiveChildRouter = childRouter;
         }
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        if (currentlySelectedItemId != item.getItemId()) {
-                            BottomNavigationController.this.destroyChildRouter(BottomNavigationController.this.getChildRouter(currentlySelectedItemId), currentlySelectedItemId);
-                            currentlySelectedItemId = item.getItemId();
-                            BottomNavigationController.this.configureRouter(BottomNavigationController.this.getChildRouter(currentlySelectedItemId), currentlySelectedItemId);
-                        } else {
-                            BottomNavigationController.this.resetCurrentBackstack();
-                        }
-                        return true;
-                    }
-                });
     }
 
     /**
@@ -219,11 +218,9 @@ public abstract class BottomNavigationController extends BaseController {
      * BottomNavigationController#getControllerFor(int)}, using a {@link FadeChangeHandler}.
      */
     protected void resetCurrentBackstack() {
-        if (lastActiveChildRouter != null) {
-            lastActiveChildRouter.setRoot(RouterTransaction.with(this.getControllerFor(currentlySelectedItemId))
-                                    .pushChangeHandler(new FadeChangeHandler())
-                                    .popChangeHandler(new FadeChangeHandler()));
-        }
+        lastActiveChildRouter.setRoot(RouterTransaction.with(this.getControllerFor(currentlySelectedItemId))
+                .pushChangeHandler(new FadeChangeHandler())
+                .popChangeHandler(new FadeChangeHandler()));
     }
 
     /**
@@ -350,7 +347,7 @@ public abstract class BottomNavigationController extends BaseController {
      * The childRouter should handleBack,
      * as this BottomNavigationController doesn't have a back step sensible to the user.
      */
-        return lastActiveChildRouter != null && lastActiveChildRouter.handleBack();
+        return lastActiveChildRouter.handleBack();
     }
 
     /**
