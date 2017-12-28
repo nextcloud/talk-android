@@ -86,12 +86,10 @@
         click \"ALLOW\" in the upcoming system dialog.</string>
     <string name="nc_permissions_video">Camera permission needs to be granted to enable video calls. Please
         click \"ALLOW\" in the upcoming system dialog.</string>
-    <string name="nc_permissions_permanently_denied">To make video calls, grant \"Camera\" and \"Microphone\" permissions in the system settings.</string>
     <string name="nc_camera_permission_permanently_denied">To enable video communication, grant \"Camera\" permission
-        the system
-        settings.</string>
+        in the system settings.</string>
     <string name="nc_microphone_permission_permanently_denied">To enable voice communication, grant \"Microphone\"
-        permission the system settings.</string>
+        permission in the system settings.</string>
     <string name="nc_permissions_settings">Open settings</string>
 
 </resources>
