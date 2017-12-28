@@ -2,7 +2,7 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.nextcloud.talk">
 
-    <uses-feature android:name="android.hardware.camera.any"/>
+    <uses-feature android:name="android.hardware.camera.any" android:required="false"/>
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <uses-feature
         android:glEsVersion="0x00020000"
