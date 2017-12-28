@@ -130,6 +130,8 @@ public class CallsListController extends BaseController implements SearchView.On
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
+        getActionBar().show();
+
         userEntity = userUtils.getCurrentUser();
 
         if (userEntity == null) {
