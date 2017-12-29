@@ -23,10 +23,13 @@ package com.nextcloud.talk.services.firebase;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 
@@ -34,14 +37,17 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.api.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.api.models.json.push.PushMessage;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.utils.PushUtils;
+import com.nextcloud.talk.utils.bundle.BundleBuilder;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.Calendar;
 import java.util.zip.CRC32;
 
 import javax.crypto.Cipher;
@@ -78,15 +84,32 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                         if (decryptedPushMessage.getApp().equals("spreed")) {
                             int smallIcon;
                             Bitmap largeIcon;
+                            String category = "";
+                            int priority = Notification.PRIORITY_DEFAULT;
+
+                            Intent intent = new Intent(this, CallActivity.class);
+                            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                            bundleBuilder.putString("roomToken", decryptedPushMessage.getId());
+                            bundleBuilder.putParcelable("userEntity", signatureVerification.getUserEntity());
+                            intent.putExtras(bundleBuilder.build());
+
+                            PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                                    0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
                                     smallIcon = R.drawable.ic_call_black_24dp;
+                                    category = Notification.CATEGORY_CALL;
+                                    priority = Notification.PRIORITY_HIGH;
                                     break;
                                 case "room":
                                     smallIcon = R.drawable.ic_notifications_black_24dp;
+                                    category = Notification.CATEGORY_CALL;
+                                    priority = Notification.PRIORITY_HIGH;
                                     break;
                                 case "chat":
                                     smallIcon = R.drawable.ic_chat_black_24dp;
+                                    category = Notification.CATEGORY_MESSAGE;
                                     break;
                                 default:
                                     smallIcon = R.drawable.ic_logo;
@@ -98,10 +121,20 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                                     .setSmallIcon(smallIcon)
                                     .setLargeIcon(largeIcon)
                                     .setColor(getColor(R.color.colorPrimary))
+                                    .setCategory(category)
+                                    .setPriority(priority)
+                                    .setWhen(Calendar.getInstance().getTimeInMillis())
+                                    .setShowWhen(true)
+                                    .setSubText(signatureVerification.getUserEntity().getDisplayName())
                                     .setContentTitle(decryptedPushMessage.getSubject())
-                                    .setContentText(signatureVerification.getUserEntity().getDisplayName())
                                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                                     .setAutoCancel(true);
+
+                            if (!"call".equals(decryptedPushMessage.getType())) {
+                                notificationBuilder.setContentIntent(pendingIntent);
+                            } else {
+                                notificationBuilder.setFullScreenIntent(pendingIntent, true);
+                            }
 
                             NotificationManager notificationManager =
                                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
