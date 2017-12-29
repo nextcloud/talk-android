@@ -16,6 +16,8 @@
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Име за приказ добављено</string>
     <string name="nc_display_name_not_fetched">Име за приказ се не може добавити. Прекидам</string>
+    <string name="nc_nextcloud_talk_app_installed">%1$s апликација нађено</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s апликација није инсталирана на серверу, прекидам</string>
     <string name="nc_display_name_stored">Име за приказ сачувано</string>
     <string name="nc_display_name_not_stored">Не могу да сачувам име за приказ. Прекидам</string>
 
@@ -71,7 +73,6 @@
     <string name="nc_one_contact_selected">контакт означен</string>
     <string name="nc_more_contacts_selected">контакта означено</string>
 
-    <string name="nc_permissions_permanently_denied">Да бисте омогућили видео позиве, дозволите приступ камери и микрофону у системским поставкама.</string>
     <string name="nc_permissions_settings">Отвори поставке</string>
 
 </resources>

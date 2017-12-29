@@ -79,7 +79,6 @@
     <string name="nc_one_contact_selected">kapcsolat kiválasztva</string>
     <string name="nc_more_contacts_selected">kapcsolatok kiválasztva</string>
 
-    <string name="nc_permissions_permanently_denied">Videohívás létrehozásához a rendszerbeállításokban meg kell adni a „Kamera” és a „Mikrofon” engedélyeket.</string>
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
 
 </resources>

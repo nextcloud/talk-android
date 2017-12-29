@@ -80,7 +80,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_one_contact_selected">contact geselecteerd</string>
     <string name="nc_more_contacts_selected">contacten geselecteerd</string>
 
-    <string name="nc_permissions_permanently_denied">Om videogesprekken te houden, verleen \"Camera\" en \"Microfoon\" permissies in de systeeminstellingen.</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
 
 </resources>
