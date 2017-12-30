@@ -215,12 +215,12 @@ public class SettingsController extends BaseController {
 
         versionInfo.setSummary("v" + BuildConfig.VERSION_NAME);
 
+
         addAccountButton.setOnClickListener(view15 -> {
             addAccountButton.setEnabled(false);
             getParentController().getRouter().pushController(RouterTransaction.with(new
                     ServerSelectionController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
-            addAccountButton.setEnabled(true);
         });
 
         switchAccountButton.setOnClickListener(view16 -> {
@@ -228,7 +228,6 @@ public class SettingsController extends BaseController {
             getParentController().getRouter().pushController(RouterTransaction.with(new
                     SwitchAccountController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
-            switchAccountButton.setEnabled(true);
 
         });
 
@@ -350,9 +349,14 @@ public class SettingsController extends BaseController {
 
         }
 
+
         if (userUtils.getUsers().size() <= 1) {
             switchAccountButton.setVisibility(View.GONE);
+        } else {
+            switchAccountButton.setEnabled(true);
         }
+
+        addAccountButton.setEnabled(true);
 
         if (ErrorMessageHolder.getInstance().getMessageType() != null) {
             switch (ErrorMessageHolder.getInstance().getMessageType()) {
