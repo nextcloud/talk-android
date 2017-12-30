@@ -237,22 +237,12 @@ public class SwitchAccountController extends BaseController {
                         Log.e(TAG, "Access was denied");
                         ErrorMessageHolder.getInstance().setMessageType(
                                 ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT);
-                        new Handler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                getRouter().popToRoot();
-                            }
-                        });
+                        new Handler().post(() -> getRouter().popToRoot());
                     } catch (Exception e) {
                         Log.e(TAG, "Something went wrong while accessing token");
                         ErrorMessageHolder.getInstance().setMessageType(
                                 ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT);
-                        new Handler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                getRouter().popToRoot();
-                            }
-                        });
+                        new Handler().post(() -> getRouter().popToRoot());
                     }
                 }, handler
         );
