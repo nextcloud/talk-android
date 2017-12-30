@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -86,6 +87,7 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                             Bitmap largeIcon;
                             String category = "";
                             int priority = Notification.PRIORITY_DEFAULT;
+                            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
                             Intent intent = new Intent(this, CallActivity.class);
                             BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
@@ -101,6 +103,7 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                                     smallIcon = R.drawable.ic_call_black_24dp;
                                     category = Notification.CATEGORY_CALL;
                                     priority = Notification.PRIORITY_HIGH;
+                                    soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                                     break;
                                 case "room":
                                     smallIcon = R.drawable.ic_notifications_black_24dp;
@@ -127,14 +130,10 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                                     .setShowWhen(true)
                                     .setSubText(signatureVerification.getUserEntity().getDisplayName())
                                     .setContentTitle(decryptedPushMessage.getSubject())
-                                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                                    .setSound(soundUri)
                                     .setAutoCancel(true);
 
-                            if (!"call".equals(decryptedPushMessage.getType())) {
-                                notificationBuilder.setContentIntent(pendingIntent);
-                            } else {
-                                notificationBuilder.setFullScreenIntent(pendingIntent, true);
-                            }
+                            notificationBuilder.setContentIntent(pendingIntent);
 
                             NotificationManager notificationManager =
                                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

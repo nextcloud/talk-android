@@ -92,4 +92,7 @@
         permission in the system settings.</string>
     <string name="nc_permissions_settings">Open settings</string>
 
+    <!-- Call -->
+    <string name="nc_incoming_call">Incoming call</string>
+
 </resources>
