@@ -86,6 +86,10 @@ você tentou autorizar</string>
         Clique \"PERMITIR\" na janela de diálogo a seguir.</string>
     <string name="nc_permissions_video">Permissões de câmera são necessárias para habilitar chamadas de vídeo.
         Clique \"PERMITIR\" na janela de diálogo a seguir.</string>
+    <string name="nc_camera_permission_permanently_denied">Para ativar a comunicação por vídeo, dê permissão para \"Câmera\"
+      nas configurações do sistema.</string>
+    <string name="nc_microphone_permission_permanently_denied">Para ativar a comunicação por voz, dê permissão para \"Microfone\"
+        nas configurações do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
 </resources>

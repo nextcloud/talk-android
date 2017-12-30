@@ -79,6 +79,17 @@
     <string name="nc_one_contact_selected">contact selected</string>
     <string name="nc_more_contacts_selected">contacts selected</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Permissions need to be granted to establish a video and/or audio call. Please
+        click \"ALLOW\" in the upcoming system dialog.</string>
+    <string name="nc_permissions_audio">Microphone permission needs to be granted to enable audio calls. Please
+        click \"ALLOW\" in the upcoming system dialog.</string>
+    <string name="nc_permissions_video">Camera permission needs to be granted to enable video calls. Please
+        click \"ALLOW\" in the upcoming system dialog.</string>
+    <string name="nc_camera_permission_permanently_denied">To enable video communication, grant \"Camera\" permission
+        in the system settings.</string>
+    <string name="nc_microphone_permission_permanently_denied">To enable voice communication, grant \"Microphone\"
+        permission in the system settings.</string>
     <string name="nc_permissions_settings">Open settings</string>
 
 </resources>
