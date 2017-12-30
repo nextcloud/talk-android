@@ -222,7 +222,6 @@ public class SwitchAccountController extends BaseController {
         final Handler handler = new Handler();
         accMgr.getAuthToken(account, authTokenType, true,
                 future -> {
-
                     try {
                         ImportAccount importAccount = AccountUtils.getInformationFromAccount(account, future
                                 .getResult());
@@ -256,9 +255,7 @@ public class SwitchAccountController extends BaseController {
                         });
                     }
                 }, handler
-
         );
-
     }
 
     @Override
