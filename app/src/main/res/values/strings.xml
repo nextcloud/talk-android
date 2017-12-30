@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Server address</string>
-    <string name="nc_server_url_prefix">Please enter http:// or https:// before the hostname</string>
     <string name="nc_server_not_installed">Please finish your %1$s installation</string>
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
     <string name="nc_server_maintenance">Please bring your %1$s out of maintenance</string>
@@ -17,8 +16,6 @@
     <string name="nc_server_import_accounts">Import accounts from the %1$s app</string>
     <string name="nc_server_failed_to_import_account">Failed to import selected account</string>
     <string name="nc_Server_account_imported">Selected account is now imported and available</string>
-    <string name="nc_server_import_account_notification">Please grant access to the selected account in the
-        notification bar!"</string>
     <string name="nc_get_from_provider">Do you not have a server yet?\nClick here to get one from a provider</string>
 
     <!-- Account verification -->

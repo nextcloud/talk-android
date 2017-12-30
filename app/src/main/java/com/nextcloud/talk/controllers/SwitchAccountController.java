@@ -30,7 +30,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -218,19 +217,11 @@ public class SwitchAccountController extends BaseController {
     private void getAuthTokenForAccount(Account account) {
         final AccountManager accMgr = AccountManager.get(getActivity());
 
-        final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                .setTitle(getResources().getString(R.string.nc_server_import_account_plain))
-                .setMessage(getResources().getString(R.string.nc_server_import_account_notification))
-                .create();
-
-        alertDialog.show();
-
         String authTokenType = getResources().getString(R.string.nc_import_account_type) + ".password";
 
         final Handler handler = new Handler();
         accMgr.getAuthToken(account, authTokenType, true,
                 future -> {
-                    alertDialog.dismiss();
 
                     try {
                         ImportAccount importAccount = AccountUtils.getInformationFromAccount(account, future
@@ -244,7 +235,6 @@ public class SwitchAccountController extends BaseController {
                                 (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
                                 .popChangeHandler(new HorizontalChangeHandler()));
                     } catch (OperationCanceledException e) {
-                        alertDialog.dismiss();
                         Log.e(TAG, "Access was denied");
                         ErrorMessageHolder.getInstance().setMessageType(
                                 ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT);
@@ -255,7 +245,6 @@ public class SwitchAccountController extends BaseController {
                             }
                         });
                     } catch (Exception e) {
-                        alertDialog.dismiss();
                         Log.e(TAG, "Something went wrong while accessing token");
                         ErrorMessageHolder.getInstance().setMessageType(
                                 ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT);
