@@ -25,8 +25,6 @@ package com.nextcloud.talk.controllers;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.accounts.OperationCanceledException;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +49,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.ImportAccount;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.AccountUtils;
+import com.nextcloud.talk.utils.ErrorMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -230,31 +229,42 @@ public class SwitchAccountController extends BaseController {
 
         final Handler handler = new Handler();
         accMgr.getAuthToken(account, authTokenType, true,
-                new AccountManagerCallback<Bundle>() {
+                future -> {
+                    alertDialog.dismiss();
 
-                    @Override
-                    public void run(AccountManagerFuture<Bundle> future) {
-
-                        try {
-                            ImportAccount importAccount = AccountUtils.getInformationFromAccount(account, future
-                                    .getResult());
-                            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                            bundleBuilder.putString(BundleKeys.KEY_USERNAME, importAccount.getUsername());
-                            bundleBuilder.putString(BundleKeys.KEY_TOKEN, importAccount.getToken());
-                            bundleBuilder.putString(BundleKeys.KEY_BASE_URL, importAccount.getBaseUrl());
-                            bundleBuilder.putBoolean(BundleKeys.KEY_IS_ACCOUNT_IMPORT, true);
-                            getRouter().pushController(RouterTransaction.with(new AccountVerificationController
-                                    (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
-                                    .popChangeHandler(new HorizontalChangeHandler()));
-                        } catch (OperationCanceledException e) {
-                            Log.e(TAG, "Access was denied");
-                            // TODO: The user has denied you access to the API, handle this later on
-                        } catch (Exception e) {
-                            Log.e(TAG, "Something went wrong while accessing token");
-                        }
-
+                    try {
+                        ImportAccount importAccount = AccountUtils.getInformationFromAccount(account, future
+                                .getResult());
+                        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                        bundleBuilder.putString(BundleKeys.KEY_USERNAME, importAccount.getUsername());
+                        bundleBuilder.putString(BundleKeys.KEY_TOKEN, importAccount.getToken());
+                        bundleBuilder.putString(BundleKeys.KEY_BASE_URL, importAccount.getBaseUrl());
+                        bundleBuilder.putBoolean(BundleKeys.KEY_IS_ACCOUNT_IMPORT, true);
+                        getRouter().pushController(RouterTransaction.with(new AccountVerificationController
+                                (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()));
+                    } catch (OperationCanceledException e) {
                         alertDialog.dismiss();
-
+                        Log.e(TAG, "Access was denied");
+                        ErrorMessageHolder.getInstance().setMessageType(
+                                ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT);
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                getRouter().popToRoot();
+                            }
+                        });
+                    } catch (Exception e) {
+                        alertDialog.dismiss();
+                        Log.e(TAG, "Something went wrong while accessing token");
+                        ErrorMessageHolder.getInstance().setMessageType(
+                                ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT);
+                        new Handler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                getRouter().popToRoot();
+                            }
+                        });
                     }
                 }, handler
 
