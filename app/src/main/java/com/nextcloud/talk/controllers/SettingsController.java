@@ -30,12 +30,15 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.evernote.android.job.JobRequest;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
@@ -45,7 +48,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.ErrorMessageHolder;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
@@ -70,7 +72,6 @@ import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 import butterknife.BindView;
-import cn.carbs.android.avatarimageview.library.AvatarImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -102,7 +103,7 @@ public class SettingsController extends BaseController {
     MaterialStandardPreference versionInfo;
 
     @BindView(R.id.avatar_image)
-    AvatarImageView avatarImageView;
+    ImageView avatarImageView;
 
     @BindView(R.id.display_name_text)
     TextView displayNameTextView;
@@ -264,10 +265,7 @@ public class SettingsController extends BaseController {
                 reauthorizeButton.setEnabled(true);
             });
 
-            // Awful hack
             if (userEntity.getDisplayName() != null) {
-                avatarImageView.setTextAndColorSeed(String.valueOf(userEntity.getDisplayName().
-                        toUpperCase().charAt(0)), ColorUtils.colorSeed);
                 displayNameTextView.setText(userEntity.getDisplayName());
             }
 
@@ -279,8 +277,8 @@ public class SettingsController extends BaseController {
 
             GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                     .load(glideUrl)
-                    .circleCrop()
                     .centerInside()
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                     .into(avatarImageView);
 
             profileQueryDisposable = ncApi.getUserProfile(ApiHelper.getCredentials(userEntity.getUsername(),

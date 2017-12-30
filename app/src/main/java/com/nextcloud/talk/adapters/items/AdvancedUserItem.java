@@ -48,12 +48,12 @@ import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements IFilterable {
+public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.UserItemViewHolder> implements IFilterable {
 
     private Participant participant;
     private UserEntity userEntity;
 
-    public UserItem(Participant participant, UserEntity userEntity) {
+    public AdvancedUserItem(Participant participant, UserEntity userEntity) {
         this.participant = participant;
         this.userEntity = userEntity;
     }
@@ -86,7 +86,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
     @Override
     public int getLayoutRes() {
-        return R.layout.rv_item_contact;
+        return R.layout.rv_item_call;
     }
 
     @Override
@@ -102,6 +102,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             holder.contactDisplayName.setText(participant.getName());
         }
 
+        holder.serverUrl.setText(userEntity.getBaseUrl());
+
         GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                 participant.getUserId()), new LazyHeaders.Builder()
                 .setHeader("Accept", "image/*")
@@ -115,7 +117,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 .load(glideUrl)
                 .centerInside()
                 .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                .into(holder.avatarImageView);
+                .into(holder.avatarImageView)
+        ;
     }
 
     @Override
@@ -129,6 +132,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         @BindView(R.id.name_text)
         public TextView contactDisplayName;
+        @BindView(R.id.secondary_text)
+        public TextView serverUrl;
         @BindView(R.id.avatar_image)
         public ImageView avatarImageView;
 

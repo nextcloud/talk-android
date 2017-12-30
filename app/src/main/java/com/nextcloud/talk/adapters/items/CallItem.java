@@ -24,18 +24,20 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +47,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.carbs.android.avatarimageview.library.AvatarImageView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
@@ -119,9 +120,6 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 holder.avatarImageView.setVisibility(View.VISIBLE);
 
                 if (!TextUtils.isEmpty(room.getName())) {
-                    holder.avatarImageView.setTextAndColorSeed(String.valueOf(room.getName().
-                            toUpperCase().charAt(0)), ColorUtils.colorSeed);
-
                     GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                             room.getName()), new LazyHeaders.Builder()
                             .setHeader("Accept", "image/*")
@@ -133,8 +131,8 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                             .skipMemoryCache(true)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .load(glideUrl)
-                            .circleCrop()
                             .centerInside()
+                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                             .into(holder.avatarImageView);
 
                 } else {
@@ -168,10 +166,10 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
 
         @BindView(R.id.name_text)
         public TextView roomDisplayName;
-        @BindView(R.id.timestamp_text)
+        @BindView(R.id.secondary_text)
         public TextView roomLastPing;
         @BindView(R.id.avatar_image)
-        public AvatarImageView avatarImageView;
+        public ImageView avatarImageView;
         @BindView(R.id.more_menu)
         public ImageButton moreMenuButton;
 

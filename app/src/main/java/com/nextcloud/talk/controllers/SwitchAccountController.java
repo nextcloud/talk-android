@@ -30,7 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.adapters.items.UserItem;
+import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.models.json.participants.Participant;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -47,6 +47,7 @@ import autodagger.AutoInjector;
 import butterknife.BindView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -64,15 +65,15 @@ public class SwitchAccountController extends BaseController {
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-    private FlexibleAdapter<UserItem> adapter;
-    private List<UserItem> userItems = new ArrayList<>();
+    private FlexibleAdapter<AbstractFlexibleItem> adapter;
+    private List<AbstractFlexibleItem> userItems = new ArrayList<>();
 
     private FlexibleAdapter.OnItemClickListener onItemClickListener =
             new FlexibleAdapter.OnItemClickListener() {
                 @Override
                 public boolean onItemClick(int position) {
                     if (userItems.size() > position) {
-                        UserEntity userEntity = userItems.get(position).getEntity();
+                        UserEntity userEntity = ((AdvancedUserItem) userItems.get(position)).getEntity();
                         userUtils.createOrUpdateUser(userEntity.getUsername(),
                                 userEntity.getToken(), userEntity.getBaseUrl(), null,
                                 null, true)
@@ -128,7 +129,7 @@ public class SwitchAccountController extends BaseController {
                     participant = new Participant();
                     participant.setName(userEntity.getDisplayName());
                     participant.setUserId(userEntity.getUsername());
-                    userItems.add(new UserItem(participant, userEntity));
+                    userItems.add(new AdvancedUserItem(participant, userEntity));
                 }
             }
 

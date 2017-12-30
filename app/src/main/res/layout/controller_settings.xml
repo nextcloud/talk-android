@@ -47,15 +47,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <cn.carbs.android.avatarimageview.library.AvatarImageView
+            <ImageView
                 android:id="@+id/avatar_image"
                 android:layout_width="@dimen/avatar_size_big"
                 android:layout_height="@dimen/avatar_size_big"
-                android:layout_centerHorizontal="true"
-                android:scaleType="centerInside"
-                apc:aiv_CornerRadius="@dimen/avatar_corner_radius"
-                apc:aiv_ShowBoarder="false"
-                apc:aiv_TextSizeRatio="0.5"/>
+                android:layout_centerHorizontal="true"/>
 
             <TextView
                 android:id="@+id/display_name_text"
