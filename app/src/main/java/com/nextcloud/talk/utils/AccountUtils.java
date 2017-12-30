@@ -62,7 +62,7 @@ public class AccountUtils {
                     internalUserEntity = userEntitiesList.get(i);
                     importAccount = getInformationFromAccount(account, null);
                     if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
-                            internalUserEntity.getBaseUrl().equals(importAccount.getServerUrl())) {
+                            internalUserEntity.getBaseUrl().equals(importAccount.getBaseUrl())) {
                         accountFound = true;
                         break;
                     }
@@ -95,10 +95,12 @@ public class AccountUtils {
         String urlString = account.name.substring(lastAtPos + 1);
         String username = account.name.substring(0, lastAtPos);
 
-        if (!urlString.startsWith("http"))
-            urlString = "https://" + urlString;
+        if (!urlString.startsWith("http")) {
+            urlString = "http://" + urlString;
+        }
 
         String password = null;
+
         if (data != null) {
             password = data.getString(AccountManager.KEY_AUTHTOKEN);
         }
@@ -109,6 +111,8 @@ public class AccountUtils {
             urlString = url.getProtocol() + "://" + url.getHost();
             if (url.getPath().contains("/owncloud")) {
                 urlString += url.getPath().substring(0, url.getPath().indexOf("/owncloud") + 9);
+            } else if (url.getPath().contains("/nextcloud")) {
+                urlString += url.getPath().substring(0, url.getPath().indexOf("/nextcloud") + 10);
             } else if (url.getPath().contains("/")) {
                 urlString += url.getPath().substring(0, url.getPath().indexOf("/"));
             }

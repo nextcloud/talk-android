@@ -50,6 +50,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/padding_between_elements"
+        android:textAlignment="center"
         android:textSize="18sp"
         tools:text="Verifying..."/>
 

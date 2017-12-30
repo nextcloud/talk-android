@@ -28,11 +28,11 @@ import lombok.Data;
 public class ImportAccount {
     public String username;
     @Nullable public String token;
-    public String serverUrl;
+    public String baseUrl;
 
-    public ImportAccount(String username, @Nullable String token, String serverUrl) {
+    public ImportAccount(String username, @Nullable String token, String baseUrl) {
         this.username = username;
         this.token = token;
-        this.serverUrl = serverUrl;
+        this.baseUrl = baseUrl;
     }
 }

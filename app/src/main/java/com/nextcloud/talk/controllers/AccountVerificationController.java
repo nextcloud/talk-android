@@ -44,6 +44,8 @@ import com.nextcloud.talk.utils.ErrorMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
+import java.net.CookieManager;
+
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
@@ -65,6 +67,9 @@ public class AccountVerificationController extends BaseController {
     @Inject
     UserUtils userUtils;
 
+    @Inject
+    CookieManager cookieManager;
+
     @BindView(R.id.progress_text)
     TextView progressText;
 
@@ -75,6 +80,7 @@ public class AccountVerificationController extends BaseController {
     private String baseUrl;
     private String username;
     private String token;
+    private boolean isAccountImport;
 
     public AccountVerificationController(Bundle args) {
         super(args);
@@ -82,6 +88,9 @@ public class AccountVerificationController extends BaseController {
             baseUrl = args.getString(BundleKeys.KEY_BASE_URL);
             username = args.getString(BundleKeys.KEY_USERNAME);
             token = args.getString(BundleKeys.KEY_TOKEN);
+            if (args.containsKey(BundleKeys.KEY_IS_ACCOUNT_IMPORT)) {
+                isAccountImport = true;
+            }
         }
     }
 
@@ -106,6 +115,7 @@ public class AccountVerificationController extends BaseController {
         dispose(null);
 
         String credentials = ApiHelper.getCredentials(username, token);
+        cookieManager.getCookieStore().removeAll();
 
         roomsQueryDisposable = ncApi.getRooms(credentials, ApiHelper.getUrlForGetRooms(baseUrl))
                 .subscribeOn(Schedulers.newThread())
@@ -147,6 +157,7 @@ public class AccountVerificationController extends BaseController {
                                                         new JobRequest.Builder(PushRegistrationJob.TAG).
                                                                 setUpdateCurrent(true).startNow().build().schedule();
 
+                                                        cookieManager.getCookieStore().removeAll();
                                                         userUtils.disableAllUsersWithoutId(userEntity.getId());
 
                                                         if (userUtils.getUsers().size() == 1) {
@@ -155,6 +166,8 @@ public class AccountVerificationController extends BaseController {
                                                                     .pushChangeHandler(new HorizontalChangeHandler())
                                                                     .popChangeHandler(new HorizontalChangeHandler()));
                                                         } else {
+                                                            ErrorMessageHolder.getInstance().setMessageType(
+                                                                    ErrorMessageHolder.ErrorMessageType.ACCOUNT_WAS_IMPORTED);
                                                             getRouter().popToRoot();
                                                         }
                                                     },
@@ -231,22 +244,28 @@ public class AccountVerificationController extends BaseController {
     private void abortVerification() {
         dispose(null);
 
-        userUtils.deleteUser(username, baseUrl).subscribe(new CompletableObserver() {
-            @Override
-            public void onSubscribe(Disposable d) {
+        if (!isAccountImport) {
+            userUtils.deleteUser(username, baseUrl).subscribe(new CompletableObserver() {
+                @Override
+                public void onSubscribe(Disposable d) {
 
-            }
+                }
 
-            @Override
-            public void onComplete() {
-                new Handler().postDelayed(() -> getRouter().popToRoot(), 7500);
-            }
+                @Override
+                public void onComplete() {
+                    new Handler().postDelayed(() -> getRouter().popToRoot(), 10000);
+                }
 
-            @Override
-            public void onError(Throwable e) {
+                @Override
+                public void onError(Throwable e) {
 
-            }
-        });
+                }
+            });
+        } else {
+            ErrorMessageHolder.getInstance().setMessageType(
+                    ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT);
+            new Handler().postDelayed(() -> getRouter().popToRoot(), 10000);
+        }
     }
 
 }

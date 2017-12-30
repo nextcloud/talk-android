@@ -160,6 +160,7 @@ public class SettingsController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
+
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         userEntity = userUtils.getCurrentUser();
@@ -236,6 +237,7 @@ public class SettingsController extends BaseController {
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
+        getActionBar().show();
 
         dispose(null);
         userEntity = userUtils.getCurrentUser();
@@ -368,6 +370,16 @@ public class SettingsController extends BaseController {
                     messageText.setTextColor(getResources().getColor(R.color.nc_darkRed));
                     messageText.setText(getResources().getString(R.string.nc_settings_wrong_account));
                     messageView.setVisibility(View.VISIBLE);
+                case ACCOUNT_WAS_IMPORTED:
+                    messageText.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    messageText.setText(getResources().getString(R.string.nc_Server_account_imported));
+                    messageView.setVisibility(View.VISIBLE);
+                    break;
+                case FAILED_TO_IMPORT_ACCOUNT:
+                    messageText.setTextColor(getResources().getColor(R.color.nc_darkRed));
+                    messageText.setText(getResources().getString(R.string.nc_server_failed_to_import_account));
+                    messageView.setVisibility(View.VISIBLE);
+                    break;
                 default:
                     messageView.setVisibility(View.GONE);
                     break;

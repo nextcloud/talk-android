@@ -41,6 +41,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.models.json.participants.Participant;
@@ -49,6 +51,8 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.ImportAccount;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.AccountUtils;
+import com.nextcloud.talk.utils.bundle.BundleBuilder;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.net.CookieManager;
@@ -85,16 +89,13 @@ public class SwitchAccountController extends BaseController {
 
     private boolean isAccountImport = false;
 
-    private FlexibleAdapter.OnItemClickListener onImportItemClickListener = new FlexibleAdapter.OnItemClickListener() {
-        @Override
-        public boolean onItemClick(int position) {
-            if (userItems.size() > position) {
-                Account account = ((AdvancedUserItem) userItems.get(position)).getAccount();
-                getAuthTokenForAccount(account);
-            }
-
-            return true;
+    private FlexibleAdapter.OnItemClickListener onImportItemClickListener = position -> {
+        if (userItems.size() > position) {
+            Account account = ((AdvancedUserItem) userItems.get(position)).getAccount();
+            getAuthTokenForAccount(account);
         }
+
+        return true;
     };
 
     private FlexibleAdapter.OnItemClickListener onSwitchItemClickListener =
@@ -141,7 +142,7 @@ public class SwitchAccountController extends BaseController {
     public SwitchAccountController(Bundle args) {
         super(args);
 
-        if (args.containsKey("isAccountImport")) {
+        if (args.containsKey(BundleKeys.KEY_IS_ACCOUNT_IMPORT)) {
             isAccountImport = true;
         }
     }
@@ -188,13 +189,14 @@ public class SwitchAccountController extends BaseController {
                         participant.setName(importAccount.getUsername());
                         participant.setUserId(importAccount.getUsername());
                         userEntity = new UserEntity();
-                        userEntity.setBaseUrl(importAccount.getServerUrl());
+                        userEntity.setBaseUrl(importAccount.getBaseUrl());
                         userItems.add(new AdvancedUserItem(participant, userEntity, account));
                     }
-                }
 
-                adapter.addListener(onSwitchItemClickListener);
+                adapter.addListener(onImportItemClickListener);
                 adapter.updateDataSet(userItems, false);
+            }
+
             }
 
         prepareViews();
@@ -218,7 +220,7 @@ public class SwitchAccountController extends BaseController {
         final AccountManager accMgr = AccountManager.get(getActivity());
 
         final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                .setTitle(getResources().getString(R.string.nc_server_import_accounts_plain_singular))
+                .setTitle(getResources().getString(R.string.nc_server_import_account_plain))
                 .setMessage(getResources().getString(R.string.nc_server_import_account_notification))
                 .create();
 
@@ -236,6 +238,14 @@ public class SwitchAccountController extends BaseController {
                         try {
                             ImportAccount importAccount = AccountUtils.getInformationFromAccount(account, future
                                     .getResult());
+                            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                            bundleBuilder.putString(BundleKeys.KEY_USERNAME, importAccount.getUsername());
+                            bundleBuilder.putString(BundleKeys.KEY_TOKEN, importAccount.getToken());
+                            bundleBuilder.putString(BundleKeys.KEY_BASE_URL, importAccount.getBaseUrl());
+                            bundleBuilder.putBoolean(BundleKeys.KEY_IS_ACCOUNT_IMPORT, true);
+                            getRouter().pushController(RouterTransaction.with(new AccountVerificationController
+                                    (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
                         } catch (OperationCanceledException e) {
                             Log.e(TAG, "Access was denied");
                             // TODO: The user has denied you access to the API, handle this later on

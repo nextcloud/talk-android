@@ -11,10 +11,14 @@
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
     <string name="nc_server_maintenance">Please bring your %1$s out of maintenance</string>
     <string name="nc_server_version">%1$s only works with %2$s 13 and up</string>
-    <string name="nc_server_import_accounts_plain_singular">Import account</string>
-    <string name="nc_server_import_accounts_plain_plural">Import accounts</string>
+    <string name="nc_server_import_account_plain">Import account</string>
+    <string name="nc_server_import_accounts_plain">Import accounts</string>
+    <string name="nc_server_import_account">Import account from the %1$s app</string>
     <string name="nc_server_import_accounts">Import accounts from the %1$s app</string>
-    <string name="nc_server_import_account_notification">Please grant access to the selected account in the notification bar!"</string>
+    <string name="nc_server_failed_to_import_account">Failed to import selected account</string>
+    <string name="nc_Server_account_imported">Selected account is now imported and available</string>
+    <string name="nc_server_import_account_notification">Please grant access to the selected account in the
+        notification bar!"</string>
     <string name="nc_get_from_provider">Do you not have a server yet?\nClick here to get one from a provider</string>
 
     <!-- Account verification -->
