@@ -23,6 +23,7 @@ package com.nextcloud.talk.controllers;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -41,7 +42,9 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.utils.AccountUtils;
 import com.nextcloud.talk.utils.ErrorMessageHolder;
+import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.security.cert.CertificateException;
 
@@ -66,11 +69,14 @@ public class ServerSelectionController extends BaseController {
     TextFieldBoxes textFieldBoxes;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
-    @BindView(R.id.providers_text_view)
+    @BindView(R.id.helper_text_view)
     TextView providersTextView;
 
     @Inject
     NcApi ncApi;
+
+    @Inject
+    UserUtils userUtils;
 
     private Disposable statusQueryDisposable;
 
@@ -99,14 +105,41 @@ public class ServerSelectionController extends BaseController {
         textFieldBoxes.getEndIconImageButton().setVisibility(View.VISIBLE);
         textFieldBoxes.getEndIconImageButton().setOnClickListener(view1 -> checkServerAndProceed());
 
-        if (TextUtils.isEmpty(getResources().getString(R.string.nc_providers_url))) {
+        if (TextUtils.isEmpty(getResources().getString(R.string.nc_providers_url)) && (TextUtils.isEmpty(getResources
+                ().getString(R.string.nc_import_account_type)))) {
             providersTextView.setVisibility(View.GONE);
         } else {
-            providersTextView.setOnClickListener(view12 -> {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources()
-                        .getString(R.string.nc_providers_url)));
-                startActivity(browserIntent);
-            });
+            if ((TextUtils.isEmpty(getResources
+                    ().getString(R.string.nc_import_account_type)) || AccountUtils.findAccounts().size() == 0) &&
+                    userUtils.getUsers().size() == 0) {
+
+                providersTextView.setText(R.string.nc_get_from_provider);
+                providersTextView.setOnClickListener(view12 -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources()
+                            .getString(R.string.nc_providers_url)));
+                    startActivity(browserIntent);
+                });
+            } else if (AccountUtils.findAccounts().size() > 0) {
+                if (!TextUtils.isEmpty(AccountUtils.getAppNameBasedOnPackage(getResources()
+                                .getString(R.string.nc_import_accounts_from)))) {
+                    providersTextView.setText(String.format(getResources().getString(R.string
+                            .nc_server_import_accounts), AccountUtils.getAppNameBasedOnPackage(getResources()
+                            .getString(R.string.nc_import_accounts_from))));
+                } else {
+                    providersTextView.setText(getResources().getString(R.string.nc_server_import_accounts_plain_plural));
+                }
+
+                providersTextView.setOnClickListener(view13 -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("isAccountImport", true);
+                    getRouter().pushController(RouterTransaction.with(
+                            new SwitchAccountController(bundle))
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
+                });
+            } else {
+                providersTextView.setVisibility(View.GONE);
+            }
         }
 
         serverEntry.requestFocus();

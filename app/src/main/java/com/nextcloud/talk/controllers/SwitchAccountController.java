@@ -16,15 +16,27 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Parts related to account import were either copied from or inspired by the great work done by David Luhmer at:
+ * https://github.com/nextcloud/ownCloud-Account-Importer
  */
 
 package com.nextcloud.talk.controllers;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
+import android.accounts.OperationCanceledException;
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +46,9 @@ import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.models.json.participants.Participant;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.models.ImportAccount;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.AccountUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.net.CookieManager;
@@ -54,6 +68,7 @@ import io.reactivex.disposables.Disposable;
 @AutoInjector(NextcloudTalkApplication.class)
 public class SwitchAccountController extends BaseController {
 
+    private static final String TAG = "SwitchAccountController";
     @Inject
     UserUtils userUtils;
 
@@ -68,7 +83,21 @@ public class SwitchAccountController extends BaseController {
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
     private List<AbstractFlexibleItem> userItems = new ArrayList<>();
 
-    private FlexibleAdapter.OnItemClickListener onItemClickListener =
+    private boolean isAccountImport = false;
+
+    private FlexibleAdapter.OnItemClickListener onImportItemClickListener = new FlexibleAdapter.OnItemClickListener() {
+        @Override
+        public boolean onItemClick(int position) {
+            if (userItems.size() > position) {
+                Account account = ((AdvancedUserItem) userItems.get(position)).getAccount();
+                getAuthTokenForAccount(account);
+            }
+
+            return true;
+        }
+    };
+
+    private FlexibleAdapter.OnItemClickListener onSwitchItemClickListener =
             new FlexibleAdapter.OnItemClickListener() {
                 @Override
                 public boolean onItemClick(int position) {
@@ -106,6 +135,17 @@ public class SwitchAccountController extends BaseController {
                 }
             };
 
+    public SwitchAccountController() {
+    }
+
+    public SwitchAccountController(Bundle args) {
+        super(args);
+
+        if (args.containsKey("isAccountImport")) {
+            isAccountImport = true;
+        }
+    }
+
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_generic_rv, container, false);
@@ -123,19 +163,39 @@ public class SwitchAccountController extends BaseController {
             UserEntity userEntity;
             Participant participant;
 
-            for (Object userEntityObject : userUtils.getUsers()) {
-                userEntity = (UserEntity) userEntityObject;
-                if (!userEntity.getCurrent()) {
-                    participant = new Participant();
-                    participant.setName(userEntity.getDisplayName());
-                    participant.setUserId(userEntity.getUsername());
-                    userItems.add(new AdvancedUserItem(participant, userEntity));
+            if (!isAccountImport) {
+                for (Object userEntityObject : userUtils.getUsers()) {
+                    userEntity = (UserEntity) userEntityObject;
+                    if (!userEntity.getCurrent()) {
+                        participant = new Participant();
+                        participant.setName(userEntity.getDisplayName());
+                        participant.setUserId(userEntity.getUsername());
+                        userItems.add(new AdvancedUserItem(participant, userEntity, null));
+                    }
                 }
-            }
 
-            adapter.addListener(onItemClickListener);
-            adapter.updateDataSet(userItems, false);
-        }
+                adapter.addListener(onSwitchItemClickListener);
+                adapter.updateDataSet(userItems, false);
+            } else {
+                getActionBar().show();
+                Account account;
+                ImportAccount importAccount;
+                for (Object accountObject : AccountUtils.findAccounts(userUtils.getUsers())) {
+                        account = (Account) accountObject;
+                        importAccount = AccountUtils.getInformationFromAccount(account, null);
+
+                        participant = new Participant();
+                        participant.setName(importAccount.getUsername());
+                        participant.setUserId(importAccount.getUsername());
+                        userEntity = new UserEntity();
+                        userEntity.setBaseUrl(importAccount.getServerUrl());
+                        userItems.add(new AdvancedUserItem(participant, userEntity, account));
+                    }
+                }
+
+                adapter.addListener(onSwitchItemClickListener);
+                adapter.updateDataSet(userItems, false);
+            }
 
         prepareViews();
     }
@@ -154,10 +214,46 @@ public class SwitchAccountController extends BaseController {
         swipeRefreshLayout.setEnabled(false);
     }
 
+    private void getAuthTokenForAccount(Account account) {
+        final AccountManager accMgr = AccountManager.get(getActivity());
+
+        final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle(getResources().getString(R.string.nc_server_import_accounts_plain_singular))
+                .setMessage(getResources().getString(R.string.nc_server_import_account_notification))
+                .create();
+
+        alertDialog.show();
+
+        String authTokenType = getResources().getString(R.string.nc_import_account_type) + ".password";
+
+        final Handler handler = new Handler();
+        accMgr.getAuthToken(account, authTokenType, true,
+                new AccountManagerCallback<Bundle>() {
+
+                    @Override
+                    public void run(AccountManagerFuture<Bundle> future) {
+
+                        try {
+                            ImportAccount importAccount = AccountUtils.getInformationFromAccount(account, future
+                                    .getResult());
+                        } catch (OperationCanceledException e) {
+                            Log.e(TAG, "Access was denied");
+                            // TODO: The user has denied you access to the API, handle this later on
+                        } catch (Exception e) {
+                            Log.e(TAG, "Something went wrong while accessing token");
+                        }
+
+                        alertDialog.dismiss();
+
+                    }
+                }, handler
+
+        );
+
+    }
+
     @Override
     protected String getTitle() {
         return getResources().getString(R.string.nc_select_an_account);
     }
-
-
 }

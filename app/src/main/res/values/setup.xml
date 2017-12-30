@@ -14,4 +14,8 @@
     <string name="nc_gpl3_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
     <string name="nc_source_code_url" translatable="false">https://github.com/nextcloud/talk-android</string>
     <string name="nc_providers_url" translatable="false">https://nextcloud.com/providers</string>
+
+    <!-- Package name from which to import accounts - if empty, won't ever be shown -->
+    <string name="nc_import_accounts_from" translatable="false">com.nextcloud.client</string>
+    <string name="nc_import_account_type" translatable="false">nextcloud</string>
 </resources>

@@ -20,6 +20,8 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.accounts.Account;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,10 +54,12 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     private Participant participant;
     private UserEntity userEntity;
+    @Nullable private Account account;
 
-    public AdvancedUserItem(Participant participant, UserEntity userEntity) {
+    public AdvancedUserItem(Participant participant, UserEntity userEntity, @Nullable Account account) {
         this.participant = participant;
         this.userEntity = userEntity;
+        this.account = account;
     }
 
     @Override
@@ -82,6 +86,11 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     public UserEntity getEntity() {
         return userEntity;
+    }
+
+    @Nullable
+    public Account getAccount() {
+        return account;
     }
 
     @Override
