@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Endereço do servidor</string>
-    <string name="nc_server_url_prefix">Entre http:// ou https:// antes do endereço do host</string>
     <string name="nc_server_not_installed">Termine sua instalação %1$s</string>
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_maintenance">Coloque sua %1$s em manutenção</string>
@@ -86,10 +85,6 @@ você tentou autorizar</string>
         Clique \"PERMITIR\" na janela de diálogo a seguir.</string>
     <string name="nc_permissions_video">Permissões de câmera são necessárias para habilitar chamadas de vídeo.
         Clique \"PERMITIR\" na janela de diálogo a seguir.</string>
-    <string name="nc_camera_permission_permanently_denied">Para ativar a comunicação por vídeo, dê permissão para \"Câmera\"
-      nas configurações do sistema.</string>
-    <string name="nc_microphone_permission_permanently_denied">Para ativar a comunicação por voz, dê permissão para \"Microfone\"
-        nas configurações do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
-</resources>
+    </resources>

@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Адрес сервера</string>
-    <string name="nc_server_url_prefix">Укажите протокол (http:// или https://) перед именем сервера</string>
     <string name="nc_server_not_installed">Завершите установку %1$s</string>
     <string name="nc_server_db_upgrade_needed">Обновите базу данных %1$s</string>
     <string name="nc_server_maintenance">Сервер %1$s находится в режиме обслуживания</string>
@@ -75,4 +74,4 @@
 
     <string name="nc_permissions_settings">Открыть настройки</string>
 
-</resources>
+    </resources>

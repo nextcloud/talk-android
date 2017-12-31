@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Tjeneradresse</string>
-    <string name="nc_server_url_prefix">Skriv http:// eller https:// før vertsnavnet</string>
     <string name="nc_server_not_installed">Fullført din %1$s-installasjon</string>
     <string name="nc_server_db_upgrade_needed">Oppgrader din %1$s-database</string>
     <string name="nc_server_maintenance">Ta din %1$s ut av vedlikehold</string>
@@ -71,4 +70,4 @@
 
     <string name="nc_permissions_settings">Åpne innstillinger</string>
 
-</resources>
+    </resources>

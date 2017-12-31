@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Serveradres</string>
-    <string name="nc_server_url_prefix">Geef http:// of https:// op voor de domeinnaam</string>
     <string name="nc_server_not_installed">Beëindig je %1$s installatie</string>
     <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
     <string name="nc_server_maintenance">Haal je %1$s uit de onderhoudsmodus</string>
@@ -90,10 +89,6 @@ op
     <string name="nc_permissions_video">Er zijn camera permissies nodig zijn om een videogesprek te starten. Druk 
 op
        \"TOESTAAN\" in de volgende systeemdialoog.</string>
-    <string name="nc_camera_permission_permanently_denied">Om videogesprekken te houden, verleen \"Camera\"  permissies
-  in de systeeminstellingen.</string>
-    <string name="nc_microphone_permission_permanently_denied">Om videogesprekken te houden, verleen \"Microfoon\"
-  permissies in de systeeminstellingen.</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
 
-</resources>
+    </resources>

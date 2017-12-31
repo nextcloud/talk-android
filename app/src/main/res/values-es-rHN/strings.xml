@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Dirección del servidor</string>
-    <string name="nc_server_url_prefix">Por favor teclea http:// o https:// antes del nombre del servidor</string>
     <string name="nc_server_not_installed">Por favor termina tu instalación de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza tu base de datos %1$s</string>
     <string name="nc_server_maintenance">Por favor saca a tu %1$s de mantenimiento</string>
@@ -75,4 +74,4 @@
 
     <string name="nc_permissions_settings">Abrir configuraciones</string>
 
-</resources>
+    </resources>

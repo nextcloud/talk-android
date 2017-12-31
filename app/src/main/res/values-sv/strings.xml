@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Serveradress</string>
-    <string name="nc_server_url_prefix">Var god ange http:// eller https:// före ditt värdnamn</string>
     <string name="nc_server_not_installed">Vänligen slutför din %1$s-installation</string>
     <string name="nc_server_db_upgrade_needed">Vänligen uppgradera din %1$s-databas</string>
     <string name="nc_server_maintenance">Vänligen inaktivera underhållningsläge för din %1$s </string>
@@ -73,4 +72,4 @@
 
     <string name="nc_permissions_settings">Öppna inställningar</string>
 
-</resources>
+    </resources>

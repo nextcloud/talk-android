@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Adresse du serveur</string>
-    <string name="nc_server_url_prefix">Veuillez saisir http:// ou https:// avant le nom de l\'hôte</string>
     <string name="nc_server_not_installed">Veuillez terminer votre installation de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
     <string name="nc_server_maintenance">S’il vous plaît désactivez la maintenance de %1$s</string>
@@ -75,4 +74,4 @@
 
     <string name="nc_permissions_settings">Ouvrir les paramètres</string>
 
-</resources>
+    </resources>

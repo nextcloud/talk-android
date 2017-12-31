@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">szervercím</string>
-    <string name="nc_server_url_prefix">Kérlek írj http://-t vagy https://-t a gazdanév elé</string>
     <string name="nc_server_not_installed">Kérlek fejezd be a(z) %1$s telepítésedet</string>
     <string name="nc_server_db_upgrade_needed">Kérlek frissítsd a(z) %1$s adatbázisod</string>
     <string name="nc_server_maintenance">Kérlek hozd ki a(z) %1$s-t karbantartási módból</string>
@@ -81,4 +80,4 @@
 
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
 
-</resources>
+    </resources>

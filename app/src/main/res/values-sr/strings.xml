@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Адреса сервера</string>
-    <string name="nc_server_url_prefix">Унесите http:// или https:// пре имена домаћина</string>
     <string name="nc_server_not_installed">Довршите своју %1$s инсталацију</string>
     <string name="nc_server_db_upgrade_needed">Ажурирајте своју %1$s базу</string>
     <string name="nc_server_maintenance">Прекините %1$s режим одржавања</string>
@@ -75,4 +74,4 @@
 
     <string name="nc_permissions_settings">Отвори поставке</string>
 
-</resources>
+    </resources>

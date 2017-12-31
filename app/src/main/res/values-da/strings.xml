@@ -4,7 +4,6 @@
     <string name="nc_bottom_navigation_title_contacts">Kontakter</string>
     <string name="nc_bottom_navigation_title_settings">Indstillinger</string>
 
-    <string name="nc_server_url_prefix">Venligst sæt http:// eller https:// inden hostnavnet</string>
     <string name="nc_server_not_installed">Venligst slutfør %1$s din installation</string>
     <string name="nc_server_db_upgrade_needed">Venligst opdatere din %1$s databas</string>
     <string name="nc_server_maintenance">Venligst få  %1$s ud fra vedligeholdelse </string>
@@ -65,4 +64,4 @@
 
     <string name="nc_permissions_settings">Indstillinger</string>
 
-</resources>
+    </resources>

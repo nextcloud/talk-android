@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Adresa e serverit</string>
-    <string name="nc_server_url_prefix">Ju lutem vendosni http:// ose https:// përpara emrit të hostit</string>
     <string name="nc_server_not_installed">Ju lutem përfundoni %1$s instalimin tuaj</string>
     <string name="nc_server_db_upgrade_needed">Ju lutem bëjini upgrade databazës tuaj %1$s</string>
     <string name="nc_server_maintenance">Ju lutem sillni %1$s jashtë perfomances</string>
@@ -78,4 +77,4 @@
 
     <string name="nc_permissions_settings">Hap rregullimet</string>
 
-</resources>
+    </resources>

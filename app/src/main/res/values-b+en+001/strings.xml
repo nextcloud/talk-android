@@ -6,7 +6,6 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Server address</string>
-    <string name="nc_server_url_prefix">Please enter http:// or https:// before the hostname</string>
     <string name="nc_server_not_installed">Please finish your %1$s installation</string>
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
     <string name="nc_server_maintenance">Please bring your %1$s out of maintenance</string>
@@ -86,10 +85,6 @@
         click \"ALLOW\" in the upcoming system dialog.</string>
     <string name="nc_permissions_video">Camera permission needs to be granted to enable video calls. Please
         click \"ALLOW\" in the upcoming system dialog.</string>
-    <string name="nc_camera_permission_permanently_denied">To enable video communication, grant \"Camera\" permission
-        in the system settings.</string>
-    <string name="nc_microphone_permission_permanently_denied">To enable voice communication, grant \"Microphone\"
-        permission in the system settings.</string>
     <string name="nc_permissions_settings">Open settings</string>
 
-</resources>
+    </resources>

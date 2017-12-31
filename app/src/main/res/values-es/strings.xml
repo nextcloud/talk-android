@@ -4,7 +4,6 @@
     <string name="nc_bottom_navigation_title_contacts">Contactos</string>
     <string name="nc_bottom_navigation_title_settings">Configuración</string>
 
-    <string name="nc_server_url_prefix">Por favor introduce http:// o https:// antes del nombre del servidor</string>
     <string name="nc_server_not_installed">Por favor finaliza la instalación de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza la base de datos de %1$s</string>
     <string name="nc_server_maintenance">Por favor pon %1$s fuera de mantenimiento</string>
@@ -65,4 +64,4 @@
 
     <string name="nc_permissions_settings">Abrir configuración</string>
 
-</resources>
+    </resources>
