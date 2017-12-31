@@ -277,14 +277,14 @@ public class ServerSelectionController extends BaseController {
                             serverEntry.setEnabled(true);
                         }
 
-                        progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.INVISIBLE);
                         providersTextView.setVisibility(View.VISIBLE);
                         toggleProceedButton(false);
 
                         dispose();
                     }
                 }, () -> {
-                    progressBar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.INVISIBLE);
                     providersTextView.setVisibility(View.VISIBLE);
                     dispose();
                 });
