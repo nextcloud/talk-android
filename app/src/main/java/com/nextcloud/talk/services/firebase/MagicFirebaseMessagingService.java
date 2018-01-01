@@ -42,6 +42,7 @@ import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.api.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.api.models.json.push.PushMessage;
 import com.nextcloud.talk.models.SignatureVerification;
+import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 
@@ -98,6 +99,9 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                             PendingIntent pendingIntent = PendingIntent.getActivity(this,
                                     0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+                            NotificationManager notificationManager =
+                                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
                                     smallIcon = R.drawable.ic_call_black_24dp;
@@ -119,6 +123,8 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                             }
 
                             largeIcon = BitmapFactory.decodeResource(getResources(), smallIcon);
+                            CRC32 crc32 = new CRC32();
+
 
                             Notification.Builder notificationBuilder = new Notification.Builder(this)
                                     .setSmallIcon(smallIcon)
@@ -133,17 +139,48 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                                     .setSound(soundUri)
                                     .setAutoCancel(true);
 
-                            notificationBuilder.setContentIntent(pendingIntent);
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
-                            NotificationManager notificationManager =
-                                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                String usernameAndServerCrc32 = signatureVerification.getUserEntity().getUsername() +
+                                        "@" + signatureVerification.getUserEntity().getBaseUrl();
+                                crc32.update(usernameAndServerCrc32.getBytes());
+                                String groupName = String.format(getResources().getString(R.string
+                                        .nc_notification_channel), signatureVerification.getUserEntity()
+                                        .getDisplayName(),  signatureVerification.getUserEntity().getBaseUrl());
+
+                                NotificationUtils.createNotificationChannelGroup(notificationManager,
+                                        Long.toString(crc32.getValue()),
+                                        groupName);
+
+                                if (category.equals(Notification.CATEGORY_CALL)) {
+                                    NotificationUtils.createNotificationChannel(notificationManager,
+                                            NotificationUtils.NOTIFICATION_CHANNEL_CALLS, getResources().getString(R
+                                                    .string.nc_notification_channel_calls), getResources().getString
+                                                    (R.string.nc_notification_channel_calls_description), true,
+                                            NotificationManager.IMPORTANCE_HIGH);
+
+                                    notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_CALLS);
+                                } else {
+                                    NotificationUtils.createNotificationChannel(notificationManager,
+                                            NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES, getResources().getString(R
+                                                    .string.nc_notification_channel_messages), getResources().getString
+                                                    (R.string.nc_notification_channel_messages_description), true,
+                                            NotificationManager.IMPORTANCE_DEFAULT);
+
+                                    notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES);
+                                }
+
+                                notificationBuilder.setGroup(Long.toString(crc32.getValue()));
+                            }
+
+                            notificationBuilder.setContentIntent(pendingIntent);
 
                             if (notificationManager != null) {
                                 String stringForCrc = decryptedPushMessage.getSubject() + " " + signatureVerification
                                         .getUserEntity().getDisplayName() + " " + signatureVerification.getUserEntity
                                         ().getBaseUrl();
 
-                                CRC32 crc32 = new CRC32();
+                                crc32 = new CRC32();
                                 crc32.update(stringForCrc.getBytes());
 
                                 notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());

@@ -105,7 +105,6 @@ public class PushUtils {
                 getString(R.string.nc_push_server_url);
     }
 
-
     public SignatureVerification verifySignature(byte[] signatureBytes, byte[] subjectBytes) {
         Signature signature = null;
         PushConfigurationState pushConfigurationState;
@@ -412,5 +411,4 @@ public class PushUtils {
 
         return null;
     }
-
 }
