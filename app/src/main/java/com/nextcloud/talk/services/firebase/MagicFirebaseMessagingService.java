@@ -141,12 +141,10 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
 
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
-                                String usernameAndServerCrc32 = signatureVerification.getUserEntity().getUsername() +
-                                        "@" + signatureVerification.getUserEntity().getBaseUrl();
-                                crc32.update(usernameAndServerCrc32.getBytes());
                                 String groupName = String.format(getResources().getString(R.string
                                         .nc_notification_channel), signatureVerification.getUserEntity()
-                                        .getDisplayName(),  signatureVerification.getUserEntity().getBaseUrl());
+                                        .getDisplayName(), signatureVerification.getUserEntity().getBaseUrl());
+                                crc32.update(groupName.getBytes());
 
                                 NotificationUtils.createNotificationChannelGroup(notificationManager,
                                         Long.toString(crc32.getValue()),
@@ -175,17 +173,16 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
 
                             notificationBuilder.setContentIntent(pendingIntent);
 
-                            if (notificationManager != null) {
-                                String stringForCrc = decryptedPushMessage.getSubject() + " " + signatureVerification
-                                        .getUserEntity().getDisplayName() + " " + signatureVerification.getUserEntity
-                                        ().getBaseUrl();
+                            String stringForCrc = decryptedPushMessage.getSubject() + " " + signatureVerification
+                                    .getUserEntity().getDisplayName() + " " + signatureVerification.getUserEntity
+                                    ().getBaseUrl();
 
-                                crc32 = new CRC32();
-                                crc32.update(stringForCrc.getBytes());
+                            crc32 = new CRC32();
+                            crc32.update(stringForCrc.getBytes());
 
-                                notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
-                            }
+                            notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
                         }
+
                     }
                 } catch (NoSuchAlgorithmException e1) {
                     Log.d(TAG, "No proper algorithm to decrypt the message " + e1.getLocalizedMessage());
