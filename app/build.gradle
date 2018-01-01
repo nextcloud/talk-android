@@ -6,7 +6,7 @@ android {
     compileSdkVersion 27
     buildToolsVersion '27.0.2'
     defaultConfig {
-        applicationId "com.nextcloud.talk"
+        applicationId "com.nextcloud.talk2"
         versionName version
         minSdkVersion 21
         targetSdkVersion 27

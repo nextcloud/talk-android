@@ -47,7 +47,7 @@
               "client_id": "",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.nextcloud.talk"
+                "bundle_id": "com.nextcloud.talk2"
               }
             }
           ]
@@ -61,7 +61,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:111111111111:android:111a1a1a11111111",
         "android_client_info": {
-          "package_name": "com.nextcloud.talk"
+          "package_name": "com.nextcloud.talk2"
         }
       },
       "oauth_client": [
