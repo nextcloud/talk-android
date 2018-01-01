@@ -24,6 +24,8 @@ import android.accounts.Account;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -113,21 +115,34 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
         holder.serverUrl.setText(userEntity.getBaseUrl());
 
-        GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                participant.getUserId()), new LazyHeaders.Builder()
-                .setHeader("Accept", "image/*")
-                .setHeader("User-Agent", ApiHelper.getUserAgent())
-                .build());
+        if (userEntity.getBaseUrl().startsWith("http://") || userEntity.getBaseUrl().startsWith("https://")) {
+            holder.avatarImageView.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.linearLayout.getLayoutParams();
+            layoutParams.setMarginStart(0);
+            layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_START);
+            holder.linearLayout.setLayoutParams(layoutParams);
+            GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                    participant.getUserId()), new LazyHeaders.Builder()
+                    .setHeader("Accept", "image/*")
+                    .setHeader("User-Agent", ApiHelper.getUserAgent())
+                    .build());
 
-        GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                .asBitmap()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .load(glideUrl)
-                .centerInside()
-                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                .into(holder.avatarImageView)
-        ;
+            GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                    .asBitmap()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .load(glideUrl)
+                    .centerInside()
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                    .into(holder.avatarImageView);
+        } else {
+            holder.avatarImageView.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.linearLayout.getLayoutParams();
+            layoutParams.setMarginStart((int) NextcloudTalkApplication.getSharedApplication().getApplicationContext()
+                    .getResources().getDimension(R.dimen.activity_horizontal_margin));
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+            holder.linearLayout.setLayoutParams(layoutParams);
+        }
     }
 
     @Override
@@ -145,6 +160,8 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         public TextView serverUrl;
         @BindView(R.id.avatar_image)
         public ImageView avatarImageView;
+        @BindView(R.id.linear_layout)
+        LinearLayout linearLayout;
 
         /**
          * Default constructor.

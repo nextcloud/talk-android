@@ -36,7 +36,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.ImportAccount;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,10 +60,22 @@ public class AccountUtils {
                 for (int i = 0; i < userEntitiesList.size(); i++) {
                     internalUserEntity = userEntitiesList.get(i);
                     importAccount = getInformationFromAccount(account, null);
-                    if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
-                            internalUserEntity.getBaseUrl().equals(importAccount.getBaseUrl())) {
-                        accountFound = true;
-                        break;
+                    if (importAccount.getBaseUrl().startsWith("http://") ||
+                            importAccount.getBaseUrl().startsWith("https://")) {
+                        if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
+                                internalUserEntity.getBaseUrl().equals(importAccount.getBaseUrl())) {
+                            accountFound = true;
+                            break;
+                        }
+                    } else {
+                        if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
+                                (internalUserEntity.getBaseUrl().equals("http://" + importAccount.getBaseUrl()) ||
+                                        internalUserEntity.getBaseUrl().equals("https://" +
+                                                importAccount.getBaseUrl()))) {
+                            accountFound = true;
+                            break;
+                        }
+
                     }
                 }
 
@@ -95,29 +106,14 @@ public class AccountUtils {
         String urlString = account.name.substring(lastAtPos + 1);
         String username = account.name.substring(0, lastAtPos);
 
-        if (!urlString.startsWith("http")) {
-            urlString = "http://" + urlString;
-        }
-
         String password = null;
 
         if (data != null) {
             password = data.getString(AccountManager.KEY_AUTHTOKEN);
         }
 
-        try {
-            final String urlStringOrig = urlString;
-            URL url = new URL(urlStringOrig);
-            urlString = url.getProtocol() + "://" + url.getHost();
-            if (url.getPath().contains("/owncloud")) {
-                urlString += url.getPath().substring(0, url.getPath().indexOf("/owncloud") + 9);
-            } else if (url.getPath().contains("/nextcloud")) {
-                urlString += url.getPath().substring(0, url.getPath().indexOf("/nextcloud") + 10);
-            } else if (url.getPath().contains("/")) {
-                urlString += url.getPath().substring(0, url.getPath().indexOf("/"));
-            }
-        } catch (Exception ex) {
-            Log.e(TAG, "Something went wrong while trying to create url string");
+        if (urlString.endsWith("/")) {
+            urlString = urlString.substring(0, urlString.length() - 1);
         }
 
         return new ImportAccount(username, password, urlString);

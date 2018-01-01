@@ -303,6 +303,10 @@ public class ServerSelectionController extends BaseController {
                     .equals(ErrorMessageHolder.ErrorMessageType.SERVER_WITHOUT_TALK)) {
                 textFieldBoxes.setError(getResources().getString(R.string.nc_settings_no_talk_installed),
                         false);
+            } else if (ErrorMessageHolder.getInstance().getMessageType()
+                    .equals(ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT)) {
+                textFieldBoxes.setError(getResources().getString(R.string.nc_server_failed_to_import_account),
+                        false);
             }
             ErrorMessageHolder.getInstance().setMessageType(null);
         }
