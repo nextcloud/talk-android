@@ -10,6 +10,12 @@
     <string name="nc_server_db_upgrade_needed">Lütfen %1$s veritabanınızı güncelleyin</string>
     <string name="nc_server_maintenance">Lütfen %1$s kopyanızı bakım kipinden çıkarın</string>
     <string name="nc_server_version">%1$s yalnız %2$s 13 ve üzerinde çalışır</string>
+    <string name="nc_server_import_account_plain">Hesabı içe aktar</string>
+    <string name="nc_server_import_accounts_plain">Hesapları içe aktar</string>
+    <string name="nc_server_import_account">%1$s uygulamasındaki hesabı içe aktar</string>
+    <string name="nc_server_import_accounts">%1$s uygulamasındaki hesapları içe aktar</string>
+    <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
+    <string name="nc_Server_account_imported">Seçilmiş hesap içe aktarıldı ve kullanılabilir</string>
     <string name="nc_get_from_provider">Henüz bir sunucunuz yok mu?\Hizmet sağlayıcılardan yararlanabilirsiniz</string>
 
     <!-- Account verification -->
@@ -85,6 +91,13 @@
  açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
     <string name="nc_permissions_video">Görüntülü çağrı başlatmak için kameraya erişme izni verilmesi gereklidir. Lütfen
  açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
+    <string name="nc_camera_permission_permanently_denied">Görüntülü çağrı yapabilmek için sistem ayarlarından
+ \"Kamera\" erişme iznini verin.</string>
+    <string name="nc_microphone_permission_permanently_denied">Sesli çağrı yapabilmek için sistem ayarlarından
+ \"Mikrofon\" erişme iznini verin.</string>
     <string name="nc_permissions_settings">Ayarları aç</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Gelen çağrı</string>
+
+</resources>

@@ -10,6 +10,12 @@
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_maintenance">Coloque sua %1$s em manutenção</string>
     <string name="nc_server_version">%1$s somente funciona com%2$s 13 e acima</string>
+    <string name="nc_server_import_account_plain">Importar conta</string>
+    <string name="nc_server_import_accounts_plain">Importar contas</string>
+    <string name="nc_server_import_account">Importar conta do aplicativo %1$s</string>
+    <string name="nc_server_import_accounts">Importar contas do aplicativo %1$s</string>
+    <string name="nc_server_failed_to_import_account">Falha ao importar a conta</string>
+    <string name="nc_Server_account_imported">A conta selecionada foi importada e está disponível</string>
     <string name="nc_get_from_provider">Não tem servidor ainda?\nClique aqui para obter um</string>
 
     <!-- Account verification -->
@@ -85,6 +91,13 @@ você tentou autorizar</string>
         Clique \"PERMITIR\" na janela de diálogo a seguir.</string>
     <string name="nc_permissions_video">Permissões de câmera são necessárias para habilitar chamadas de vídeo.
         Clique \"PERMITIR\" na janela de diálogo a seguir.</string>
+    <string name="nc_camera_permission_permanently_denied">Para ativar a comunicação por vídeo, ative a
+        permissão \"Câmera\" na configuração do sistema.</string>
+    <string name="nc_microphone_permission_permanently_denied">Para ativar a comunicação por voz, ative a
+        permissão \"Microfone\" na configuração do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Chamada solicitada</string>
+
+</resources>

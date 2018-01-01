@@ -10,6 +10,12 @@
     <string name="nc_server_db_upgrade_needed">Kérlek frissítsd a(z) %1$s adatbázisod</string>
     <string name="nc_server_maintenance">Kérlek hozd ki a(z) %1$s-t karbantartási módból</string>
     <string name="nc_server_version">%1$s csak %2$s 13-al vagy nagyobbal működik</string>
+    <string name="nc_server_import_account_plain">Fiók importálása</string>
+    <string name="nc_server_import_accounts_plain">Fiókok importálása</string>
+    <string name="nc_server_import_account">Fiók importálása %1$s alkalmazásból</string>
+    <string name="nc_server_import_accounts">Fiókok importálása %1$s almalmazásból</string>
+    <string name="nc_server_failed_to_import_account">Nem sikerült importálni a kiválasztott fiókot</string>
+    <string name="nc_Server_account_imported">A kiválasztott fiók importálása sikerült és használatra kész</string>
     <string name="nc_get_from_provider">Nincs még saját szervere?\nKattintson ide a beszerzéshez az egyik szolgáltatótól</string>
 
     <!-- Account verification -->
@@ -80,4 +86,7 @@
 
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Bejövő hívás</string>
+
+</resources>
