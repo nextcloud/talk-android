@@ -74,15 +74,9 @@ public class RestModule {
     Proxy provideProxy(AppPreferences appPreferences) {
         if (!TextUtils.isEmpty(appPreferences.getProxyType()) && !"No proxy".equals(appPreferences.getProxyType())
                 && !TextUtils.isEmpty(appPreferences.getProxyHost())) {
-            if (Proxy.Type.SOCKS.equals(Proxy.Type.valueOf(appPreferences.getProxyType()))) {
-                return (new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
-                        InetSocketAddress.createUnresolved(appPreferences.getProxyHost(), Integer.parseInt(
-                                appPreferences.getProxyPort()))));
-            } else {
-                return (new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
-                        new InetSocketAddress(appPreferences.getProxyHost(),
-                                Integer.parseInt(appPreferences.getProxyPort()))));
-            }
+            GetProxyRunnable getProxyRunnable = new GetProxyRunnable(appPreferences);
+            new Thread(getProxyRunnable).start();
+            return getProxyRunnable.getProxyValue();
         } else {
             return Proxy.NO_PROXY;
         }
@@ -213,6 +207,32 @@ public class RestModule {
                     .build();
 
             return chain.proceed(request);
+        }
+    }
+
+    private class GetProxyRunnable implements Runnable {
+        private volatile Proxy proxy;
+        private AppPreferences appPreferences;
+
+        public GetProxyRunnable(AppPreferences appPreferences) {
+            this.appPreferences = appPreferences;
+        }
+
+        @Override
+        public void run() {
+            if (Proxy.Type.SOCKS.equals(Proxy.Type.valueOf(appPreferences.getProxyType()))) {
+                proxy = new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
+                        InetSocketAddress.createUnresolved(appPreferences.getProxyHost(), Integer.parseInt(
+                                appPreferences.getProxyPort())));
+            } else {
+                proxy = new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
+                        new InetSocketAddress(appPreferences.getProxyHost(),
+                                Integer.parseInt(appPreferences.getProxyPort())));
+            }
+        }
+
+        public Proxy getProxyValue() {
+            return proxy;
         }
     }
 }
