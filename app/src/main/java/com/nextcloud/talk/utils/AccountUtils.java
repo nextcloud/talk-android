@@ -27,8 +27,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.nextcloud.talk.R;
@@ -46,7 +44,7 @@ public class AccountUtils {
     public static List<Account> findAccounts(List<UserEntity> userEntitiesList) {
         Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
         final AccountManager accMgr = AccountManager.get(context);
-        final Account[] accounts = accMgr.getAccounts();
+        final Account[] accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type));
 
         List<Account> accountsAvailable = new ArrayList<>();
         ImportAccount importAccount;
@@ -54,34 +52,31 @@ public class AccountUtils {
         boolean accountFound;
         for (Account account : accounts) {
             accountFound = false;
-            String accountType = account.type.intern();
 
-            if (context.getResources().getString(R.string.nc_import_account_type).equals(accountType)) {
-                for (int i = 0; i < userEntitiesList.size(); i++) {
-                    internalUserEntity = userEntitiesList.get(i);
-                    importAccount = getInformationFromAccount(account, null);
-                    if (importAccount.getBaseUrl().startsWith("http://") ||
-                            importAccount.getBaseUrl().startsWith("https://")) {
-                        if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
-                                internalUserEntity.getBaseUrl().equals(importAccount.getBaseUrl())) {
-                            accountFound = true;
-                            break;
-                        }
-                    } else {
-                        if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
-                                (internalUserEntity.getBaseUrl().equals("http://" + importAccount.getBaseUrl()) ||
-                                        internalUserEntity.getBaseUrl().equals("https://" +
-                                                importAccount.getBaseUrl()))) {
-                            accountFound = true;
-                            break;
-                        }
-
+            for (int i = 0; i < userEntitiesList.size(); i++) {
+                internalUserEntity = userEntitiesList.get(i);
+                importAccount = getInformationFromAccount(account);
+                if (importAccount.getBaseUrl().startsWith("http://") ||
+                        importAccount.getBaseUrl().startsWith("https://")) {
+                    if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
+                            internalUserEntity.getBaseUrl().equals(importAccount.getBaseUrl())) {
+                        accountFound = true;
+                        break;
                     }
-                }
+                } else {
+                    if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
+                            (internalUserEntity.getBaseUrl().equals("http://" + importAccount.getBaseUrl()) ||
+                                    internalUserEntity.getBaseUrl().equals("https://" +
+                                            importAccount.getBaseUrl()))) {
+                        accountFound = true;
+                        break;
+                    }
 
-                if (!accountFound) {
-                    accountsAvailable.add(account);
                 }
+            }
+
+            if (!accountFound) {
+                accountsAvailable.add(account);
             }
         }
 
@@ -101,16 +96,15 @@ public class AccountUtils {
         return appName;
     }
 
-    public static ImportAccount getInformationFromAccount(Account account, @Nullable Bundle data) {
+    public static ImportAccount getInformationFromAccount(Account account) {
         int lastAtPos = account.name.lastIndexOf("@");
         String urlString = account.name.substring(lastAtPos + 1);
         String username = account.name.substring(0, lastAtPos);
 
-        String password = null;
+        Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+        final AccountManager accMgr = AccountManager.get(context);
 
-        if (data != null) {
-            password = data.getString(AccountManager.KEY_AUTHTOKEN);
-        }
+        String password = accMgr.getPassword(account);
 
         if (urlString.endsWith("/")) {
             urlString = urlString.substring(0, urlString.length() - 1);
