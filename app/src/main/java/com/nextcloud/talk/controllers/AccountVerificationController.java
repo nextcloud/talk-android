@@ -76,6 +76,7 @@ public class AccountVerificationController extends BaseController {
     private Disposable roomsQueryDisposable;
     private Disposable profileQueryDisposable;
     private Disposable dbQueryDisposable;
+    private Disposable statusQueryDisposable;
 
     private String baseUrl;
     private String username;
@@ -114,6 +115,47 @@ public class AccountVerificationController extends BaseController {
 
         dispose(null);
 
+        if (isAccountImport && !baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+            determineBaseUrlProtocol(true);
+        } else {
+            checkEverything();
+        }
+
+    }
+
+    private void determineBaseUrlProtocol(boolean checkForcedHttps) {
+        cookieManager.getCookieStore().removeAll();
+
+        String queryUrl;
+        if (checkForcedHttps) {
+            queryUrl = "https://" + baseUrl + ApiHelper.getUrlPostfixForStatus();
+        } else {
+            queryUrl = "http://" + baseUrl + ApiHelper.getUrlPostfixForStatus();
+        }
+
+        statusQueryDisposable = ncApi.getServerStatus(queryUrl)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(status -> {
+                    if (checkForcedHttps) {
+                        baseUrl = "https://" + baseUrl;
+                    } else {
+                        baseUrl = "http://" + baseUrl;
+                    }
+
+                    checkEverything();
+                }, throwable -> {
+                    if (checkForcedHttps) {
+                        determineBaseUrlProtocol(false);
+                    } else {
+                        abortVerification();
+                    }
+                }, () -> {
+                    statusQueryDisposable.dispose();
+                });
+    }
+
+    private void checkEverything() {
         String credentials = ApiHelper.getCredentials(username, token);
         cookieManager.getCookieStore().removeAll();
 
@@ -199,8 +241,6 @@ public class AccountVerificationController extends BaseController {
 
                     abortVerification();
                 }, () -> dispose(roomsQueryDisposable));
-
-
     }
 
     private void dispose(@Nullable Disposable disposable) {
@@ -222,6 +262,10 @@ public class AccountVerificationController extends BaseController {
                 dbQueryDisposable = null;
             }
 
+            if (statusQueryDisposable != null && !statusQueryDisposable.isDisposed()) {
+                statusQueryDisposable.dispose();
+                statusQueryDisposable = null;
+            }
         }
 
         disposable = null;
