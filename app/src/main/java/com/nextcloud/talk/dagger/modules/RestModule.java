@@ -23,6 +23,7 @@ package com.nextcloud.talk.dagger.modules;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.github.aurae.retrofit2.LoganSquareConverterFactory;
 import com.nextcloud.talk.BuildConfig;
@@ -75,8 +76,15 @@ public class RestModule {
         if (!TextUtils.isEmpty(appPreferences.getProxyType()) && !"No proxy".equals(appPreferences.getProxyType())
                 && !TextUtils.isEmpty(appPreferences.getProxyHost())) {
             GetProxyRunnable getProxyRunnable = new GetProxyRunnable(appPreferences);
-            new Thread(getProxyRunnable).start();
-            return getProxyRunnable.getProxyValue();
+            Thread getProxyThread = new Thread(getProxyRunnable);
+            getProxyThread.start();
+            try {
+                getProxyThread.join();
+                return getProxyRunnable.getProxyValue();
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Failed to join the thread while getting proxy: " + e.getLocalizedMessage());
+                return Proxy.NO_PROXY;
+            }
         } else {
             return Proxy.NO_PROXY;
         }
