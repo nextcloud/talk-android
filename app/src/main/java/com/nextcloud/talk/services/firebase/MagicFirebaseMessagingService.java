@@ -46,6 +46,8 @@ import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 
+import org.parceler.Parcels;
+
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -93,7 +95,9 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                             Intent intent = new Intent(this, CallActivity.class);
                             BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
                             bundleBuilder.putString("roomToken", decryptedPushMessage.getId());
-                            bundleBuilder.putParcelable("userEntity", signatureVerification.getUserEntity());
+                            bundleBuilder.putParcelable("userEntity", Parcels.wrap(signatureVerification
+                                    .getUserEntity()));
+                            bundleBuilder.putBoolean("fromNotification", true);
                             intent.putExtras(bundleBuilder.build());
 
                             PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -155,7 +159,7 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                                             NotificationUtils.NOTIFICATION_CHANNEL_CALLS, getResources().getString(R
                                                     .string.nc_notification_channel_calls), getResources().getString
                                                     (R.string.nc_notification_channel_calls_description), true,
-                                            NotificationManager.IMPORTANCE_HIGH);
+                                            NotificationManager.IMPORTANCE_HIGH, soundUri);
 
                                     notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_CALLS);
                                 } else {
@@ -163,7 +167,7 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                                             NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES, getResources().getString(R
                                                     .string.nc_notification_channel_messages), getResources().getString
                                                     (R.string.nc_notification_channel_messages_description), true,
-                                            NotificationManager.IMPORTANCE_DEFAULT);
+                                            NotificationManager.IMPORTANCE_DEFAULT, soundUri);
 
                                     notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES);
                                 }

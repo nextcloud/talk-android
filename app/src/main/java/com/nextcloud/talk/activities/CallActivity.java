@@ -33,7 +33,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -56,6 +55,8 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.call.CallOverall;
 import com.nextcloud.talk.api.models.json.generic.GenericOverall;
+import com.nextcloud.talk.api.models.json.rooms.Room;
+import com.nextcloud.talk.api.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.api.models.json.signaling.NCMessagePayload;
@@ -221,14 +222,14 @@ public class CallActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         roomToken = getIntent().getExtras().getString("roomToken", "");
-        userEntity = Parcels.unwrap((Parcelable) getIntent().getExtras().get("userEntity"));
+        userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable("userEntity"));
         callSession = "0";
         credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
 
         callControls.setZ(100.0f);
         basicInitialization();
 
-        if (userUtils.getCurrentUser() != null && userUtils.getCurrentUser() != userEntity) {
+        if (!userEntity.getCurrent()) {
             userUtils.createOrUpdateUser(userEntity.getUsername(),
                     userEntity.getToken(), userEntity.getBaseUrl(), null,
                     null, true)
@@ -242,8 +243,12 @@ public class CallActivity extends AppCompatActivity {
                         public void onNext(UserEntity userEntity) {
                             cookieManager.getCookieStore().removeAll();
                             userUtils.disableAllUsersWithoutId(userEntity.getId());
-                            initViews();
-                            checkPermissions();
+                            if (getIntent().getExtras().containsKey("fromNotification")) {
+                                handleFromNotification();
+                            } else {
+                                initViews();
+                                checkPermissions();
+                            }
                         }
 
                         @Override
@@ -257,12 +262,49 @@ public class CallActivity extends AppCompatActivity {
                         }
                     });
 
+        } else if (getIntent().getExtras().containsKey("fromNotification")) {
+            handleFromNotification();
         } else {
             initViews();
             checkPermissions();
         }
-
     }
+
+    private void handleFromNotification() {
+        ncApi.getRooms(credentials, ApiHelper.getUrlForGetRooms(userEntity.getBaseUrl()))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<RoomsOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(RoomsOverall roomsOverall) {
+                        for (Room room : roomsOverall.getOcs().getData()) {
+                            if (roomToken.equals(room.getRoomId())) {
+                                roomToken = room.getToken();
+                                break;
+                            }
+                        }
+
+                        initViews();
+                        checkPermissions();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
 
     private void toggleMedia(boolean enable, boolean video) {
         String message;
@@ -731,6 +773,7 @@ public class CallActivity extends AppCompatActivity {
 
                                                     @Override
                                                     public void onError(Throwable e) {
+                                                        Log.d("MARIO_DEBUG", e.getLocalizedMessage());
                                                         dispose(signalingDisposable);
                                                     }
 
@@ -745,7 +788,7 @@ public class CallActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onError(Throwable e) {
-
+                                        Log.d("MARIO_DEBUG", e.getLocalizedMessage());
                                     }
 
                                     @Override
