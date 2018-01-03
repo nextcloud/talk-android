@@ -200,6 +200,8 @@ public class CallActivity extends AppCompatActivity {
     private boolean cameraInitialized = false;
     private boolean microphoneInitialized = false;
 
+    private BroadcastReceiver networkBroadcastReceier;
+
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
         flags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
@@ -225,6 +227,17 @@ public class CallActivity extends AppCompatActivity {
         userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable("userEntity"));
         callSession = "0";
         credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
+
+        networkBroadcastReceier = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && !leavingCall) {
+                    startPullingSignalingMessages(true);
+                } else if (Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && leavingCall) {
+                    hangup(true);
+                }
+            }
+        };
 
         callControls.setZ(100.0f);
         basicInitialization();
@@ -1098,6 +1111,7 @@ public class CallActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         hangup(false);
+        this.unregisterReceiver(networkBroadcastReceier);
         super.onDestroy();
     }
 
@@ -1301,18 +1315,7 @@ public class CallActivity extends AppCompatActivity {
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         intentFilter.addAction("android.net.wifi.STATE_CHANGE");
 
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (!Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && leavingCall) {
-                    startPullingSignalingMessages(true);
-                } else if (Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && !leavingCall) {
-                    hangup(true);
-                }
-            }
-        };
-
-        this.registerReceiver(broadcastReceiver, intentFilter);
+        this.registerReceiver(networkBroadcastReceier, intentFilter);
     }
 
     private void animateCallControls(boolean show, long startDelay) {
