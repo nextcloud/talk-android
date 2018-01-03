@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Звонки</string>
+    <string name="nc_bottom_navigation_title_calls">Вызовы</string>
     <string name="nc_bottom_navigation_title_contacts">Контакты</string>
     <string name="nc_bottom_navigation_title_settings">Настройки</string>
 
@@ -10,17 +10,25 @@
     <string name="nc_server_db_upgrade_needed">Обновите базу данных %1$s</string>
     <string name="nc_server_maintenance">Сервер %1$s находится в режиме обслуживания</string>
     <string name="nc_server_version">Работоспособность %1$s обеспечивается только серверами %2$s версии 13 или более новой</string>
+    <string name="nc_server_import_account_plain">Импортировать учётную запись</string>
+    <string name="nc_server_import_accounts_plain">Импортировать учётные записи</string>
+    <string name="nc_server_import_account">Импортировать учётную запись из приложения %1$s </string>
+    <string name="nc_server_import_accounts">Импортировать учётные записи из приложения %1$s </string>
+    <string name="nc_server_failed_to_import_account">Не удалось импортировать выбранную учетную запись</string>
+    <string name="nc_Server_account_imported">Выбранная учетная запись теперь доступна</string>
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
 
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Отображаемое имя получено</string>
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
     <string name="nc_nextcloud_talk_app_installed">Найдено приложение %1$s</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s не установлено на сервере. Действие отменено.</string>
     <string name="nc_display_name_stored">Отображаемое имя сохранено</string>
     <string name="nc_never">Никогда не использовался</string>
     <string name="nc_search">Поиск</string>
 
     <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
+    <string name="nc_certificate_dialog_text">Вы доверяете неизвестному SSL-сертификату, выпущенному %1$s для %2$s, действителен с %3$s по %4$s?</string>
     <string name="nc_yes">Да</string>
     <string name="nc_no">Нет</string>
     <string name="nc_details">Подробности</string>
@@ -72,6 +80,26 @@
     <string name="nc_one_contact_selected">контакт выбран</string>
     <string name="nc_more_contacts_selected">контакта(ов) выбрано</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Необходимо предоставить разрешения для  осуществления
+видеозвонка и/или голосового вызова. Пожалуйста,
+нажмите \"РАЗРЕШИТЬ\" в появившемся окне.</string>
+    <string name="nc_permissions_audio">Чтобы включить голосовые вызовы, необходимо предоставить доступ к микрофону.
+Пожалуйста, нажмите \"РАЗРЕШИТЬ\" в появившемся окне. </string>
+    <string name="nc_permissions_video">Чтобы включить видеозвонки, необходимо предоставить доступ к видеокамере.
+Пожалуйста, нажмите \"РАЗРЕШИТЬ\" в появившемся окне. </string>
+    <string name="nc_camera_permission_permanently_denied">Для включения видеосвязи необходимо предоставить доступ
+к видеокамере в настройках системы.</string>
+    <string name="nc_microphone_permission_permanently_denied">Для включения голосовой связи необходимо предоставить доступ
+к микрофону в настройках системы.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Входящий вызов</string>
+
+    <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>
+    <string name="nc_notification_channel_messages">Способ уведомления о сообщении</string>
+    <string name="nc_notification_channel_calls_description">Показывает входящие вызовы</string>
+    <string name="nc_notification_channel_messages_description">Показывает входящие сообщения</string>
+
+</resources>

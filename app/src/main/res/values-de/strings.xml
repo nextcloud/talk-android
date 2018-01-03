@@ -10,6 +10,12 @@
     <string name="nc_server_db_upgrade_needed">Bitte aktualisiere deine %1$s Datenbank</string>
     <string name="nc_server_maintenance">Bitte bringe %1$s aus der Wartung</string>
     <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
+    <string name="nc_server_import_account_plain">Konto importieren</string>
+    <string name="nc_server_import_accounts_plain">Konten importieren</string>
+    <string name="nc_server_import_account">Importiere ein Konto aus der App %1$s</string>
+    <string name="nc_server_import_accounts">Importiere Konten aus der App %1$s</string>
+    <string name="nc_server_failed_to_import_account">Das importieren des ausgewählten Kontos ist fehlgeschlagen</string>
+    <string name="nc_Server_account_imported">Das ausgewählte Konto ist nun importiert und verfügbar</string>
     <string name="nc_get_from_provider">Du hast noch keinen Server?\nKlicke hier um Server-Anbieter zu finden</string>
 
     <!-- Account verification -->
@@ -79,4 +85,10 @@
 
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Eingehender Anruf</string>
+
+    <string name="nc_notification_channel_calls_description">Eingehende Anrufe anzeigen</string>
+    <string name="nc_notification_channel_messages_description">Eingehende Nachrichten anzeigen</string>
+
+</resources>

@@ -4,14 +4,28 @@
     <string name="nc_bottom_navigation_title_contacts">Contatti</string>
     <string name="nc_bottom_navigation_title_settings">Impostazioni</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">Indirizzo del server</string>
     <string name="nc_server_not_installed">Termina l\'installazione di %1$s</string>
     <string name="nc_server_db_upgrade_needed">Aggiorna il tuo database %1$s</string>
     <string name="nc_server_maintenance">Esci dalla manutenzione di %1$s</string>
+    <string name="nc_server_version">%1$s funziona solo con %2$s 13 e successivi</string>
+    <string name="nc_server_import_account_plain">Importa account</string>
+    <string name="nc_server_import_accounts_plain">Importa account</string>
+    <string name="nc_server_import_account">Importa account dall\'applicazione %1$s</string>
+    <string name="nc_server_import_accounts">Importa account dall\'applicazione %1$s</string>
+    <string name="nc_server_failed_to_import_account">Importazione dell\'account selezionato non riuscita</string>
+    <string name="nc_Server_account_imported">L\'account selezionato è ora importato e disponibile</string>
+    <string name="nc_get_from_provider">Non hai ancora un server?\nFai clic qui per ottenerne uno da un fornitore</string>
+
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Nome visualizzato recuperato</string>
     <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
     <string name="nc_nextcloud_talk_app_installed"> Applicazione %1$s trovate</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Applicazione %1$s non installata, interruzione in corso</string>
     <string name="nc_display_name_stored">Nome visualizzato memorizzato</string>
+    <string name="nc_display_name_not_stored">Nome visualizzato non memorizzato, interruzione in corso</string>
+
     <string name="nc_never">Mai partecipato</string>
     <string name="nc_search">Cerca</string>
 
@@ -19,6 +33,8 @@
     <string name="nc_yes">Sì</string>
     <string name="nc_no">No</string>
     <string name="nc_details">Dettagli</string>
+    <string name="nc_certificate_error">La tua configurazione SSL ha impedito la connessione</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_key">tipo_proxy</string>
@@ -62,6 +78,19 @@
     <string name="nc_one_contact_selected">contatto selezionato</string>
     <string name="nc_more_contacts_selected">contatti selezionati</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">È necessario accordare alcuni permessi per stabilire una chiamata video e/o audio. 
+Fai clic su \"PERMETTI\" nella finestra successiva.</string>
     <string name="nc_permissions_settings">Apri impostazioni</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Chiamata in ingresso</string>
+
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s sul canale di notifica %2$s</string>
+    <string name="nc_notification_channel_calls">Canale di notifica delle chiamate</string>
+    <string name="nc_notification_channel_messages">Canale di notifica dei messaggi</string>
+    <string name="nc_notification_channel_calls_description">Mostra le chiamate in ingresso</string>
+    <string name="nc_notification_channel_messages_description">Mostra i messaggi in ingresso</string>
+
+</resources>

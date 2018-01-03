@@ -95,4 +95,9 @@
     <!-- Call -->
     <string name="nc_incoming_call">Bejövő hívás</string>
 
-    </resources>
+    <string name="nc_notification_channel_calls">Hívások értesítési csatornája</string>
+    <string name="nc_notification_channel_messages">Üzenetek értesítési csatornája</string>
+    <string name="nc_notification_channel_calls_description">Bejövõ hívások megjelenítése</string>
+    <string name="nc_notification_channel_messages_description">Beérkező üzenetek megjelenítése</string>
+
+</resources>
