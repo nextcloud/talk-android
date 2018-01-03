@@ -231,10 +231,12 @@ public class CallActivity extends AppCompatActivity {
         networkBroadcastReceier = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (!Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && !leavingCall) {
-                    startPullingSignalingMessages(true);
-                } else if (Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY) && leavingCall) {
-                    hangup(true);
+                if (!Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY)) {
+                    if (!leavingCall) {
+                        startPullingSignalingMessages(true);
+                    } else {
+                        hangup(true);
+                    }
                 }
             }
         };
