@@ -10,10 +10,19 @@
     <string name="nc_server_db_upgrade_needed">Oppgrader din %1$s-database</string>
     <string name="nc_server_maintenance">Ta din %1$s ut av vedlikehold</string>
     <string name="nc_server_version">%1$s fungerer bare med %2$s 13 og høyere</string>
+    <string name="nc_server_import_account_plain">Importer konto</string>
+    <string name="nc_server_import_accounts_plain">Importer kontoer</string>
+    <string name="nc_server_import_account">Importer konto fra %1$s-programmet</string>
+    <string name="nc_server_import_accounts">Importer kontoer fra %1$s-programmet</string>
+    <string name="nc_server_failed_to_import_account">Klarte ikke å importere valgt konto</string>
+    <string name="nc_Server_account_imported">Valgt konto er nå importert og tilgjengelig</string>
+    <string name="nc_get_from_provider">Har du ingen tjener enda?\nKlikk her for å opprette en hos en tilbyder</string>
+
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Visningsnavn hentet</string>
     <string name="nc_display_name_not_fetched">Kunne ikke hente visningsnavn, avbryter</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s program funnet</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s-programmet er ikke installert på tjeneren, avbryter</string>
     <string name="nc_display_name_stored">Visningsnavn lagret</string>
     <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
 
@@ -70,4 +79,12 @@
 
     <string name="nc_permissions_settings">Åpne innstillinger</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Innkommende anrop</string>
+
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s på %2$s merknadskanal</string>
+    <string name="nc_notification_channel_calls_description">Viser innkommende anrop</string>
+    <string name="nc_notification_channel_messages_description">Viser innkommende meldinger</string>
+
+</resources>

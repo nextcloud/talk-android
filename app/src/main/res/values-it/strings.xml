@@ -30,6 +30,7 @@
     <string name="nc_search">Cerca</string>
 
     <string name="nc_certificate_dialog_title">Controlla il certificato</string>
+    <string name="nc_certificate_dialog_text">Ti fidi del certificato SSL fino ad ora sconosciuto, rilasciato da %1$s per %2$s, valido da %3$s a %4$s?</string>
     <string name="nc_yes">Sì</string>
     <string name="nc_no">No</string>
     <string name="nc_details">Dettagli</string>
@@ -52,6 +53,11 @@
     <string name="nc_settings_remove_account">Rimuovi account</string>
     <string name="nc_settings_add_account">Aggiungi un nuovo account</string>
     <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
+    <string name="nc_settings_no_talk_installed">L\'applicazione Talk non è installata sul server a cui hai dato
+ l\'autorizzazione</string>
+    <string name="nc_settings_account_updated">Il tuo account preesistente è stato aggiornato, invece di aggiungerne un nuovo</string>
+    <string name="nc_account_scheduled_for_deletion">È stata programmata l\'eliminazione dell\'account, e non può essere modificato</string>
+
     <string name="nc_no_proxy">Nessun proxy</string>
     <string name="nc_username">Nome utente</string>
     <string name="nc_password">Password</string>
@@ -81,6 +87,16 @@
     <!-- Permissions -->
     <string name="nc_permissions">È necessario accordare alcuni permessi per stabilire una chiamata video e/o audio. 
 Fai clic su \"PERMETTI\" nella finestra successiva.</string>
+    <string name="nc_permissions_audio">Il permesso di accesso al microfono deve essere garantito per abilitare
+ le chiamate audio. Si prega di premere \"CONSENTO\" nella finestra di
+ sistema che apparirà.</string>
+    <string name="nc_permissions_video">Il permesso di accedere alla videocamera deve essere garantito
+ per abilitare le chiamate video. Si prega di premere \"CONSENTO\"
+ nella finestra di sistema che apparirà.</string>
+    <string name="nc_camera_permission_permanently_denied">Per abilitare la comunicazione video si prega di garantire
+ il permesso per la \"Camera\" nelle impostazioni di sistema.</string>
+    <string name="nc_microphone_permission_permanently_denied">Per abilitare la comunicazione audio si prega di garantire
+ il permesso per il \"Microfono\" nelle impostazioni di sistema.</string>
     <string name="nc_permissions_settings">Apri impostazioni</string>
 
     <!-- Call -->

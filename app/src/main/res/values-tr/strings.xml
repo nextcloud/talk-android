@@ -100,7 +100,11 @@
     <!-- Call -->
     <string name="nc_incoming_call">Gelen çağrı</string>
 
-    <string name="nc_notification_channel_calls_description">Gelen çağrıları gösterir</string>
-    <string name="nc_notification_channel_messages_description">Gelen mesajları gösterir</string>
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
+    <string name="nc_notification_channel_calls">Bildirim kanalındaki çağrı</string>
+    <string name="nc_notification_channel_messages">Bildirim kanalındaki ileti</string>
+    <string name="nc_notification_channel_calls_description">Gelen çağrıları görüntüler</string>
+    <string name="nc_notification_channel_messages_description">Gelen iletileri görüntüler</string>
 
 </resources>
