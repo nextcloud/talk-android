@@ -10,6 +10,12 @@
     <string name="nc_server_db_upgrade_needed">Por favor actualiza tu base de datos %1$s</string>
     <string name="nc_server_maintenance">Por favor saca a tu %1$s de mantenimiento</string>
     <string name="nc_server_version">%1$s solo funciona con %2$s 13 y posteriores</string>
+    <string name="nc_server_import_account_plain">Importar cuenta</string>
+    <string name="nc_server_import_accounts_plain">Importar cuentas</string>
+    <string name="nc_server_import_account">Importar cuenta de la aplicación %1$s</string>
+    <string name="nc_server_import_accounts">Importar cuentas de la aplicación %1$s</string>
+    <string name="nc_server_failed_to_import_account">Se presentó una falla al importar la cuenta seleccionada</string>
+    <string name="nc_Server_account_imported">La cuenta seleccionada ha sido importada y está disponible</string>
     <string name="nc_get_from_provider">¿Aún no cuentas con un servidor?\nHaz click aquí para obtener uno de un proveedor</string>
 
     <!-- Account verification -->
@@ -78,6 +84,27 @@
     <string name="nc_one_contact_selected">contacto seleccionado</string>
     <string name="nc_more_contacts_selected">contactos seleccionados</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Se requiere que se den permisos para establecer una audio/video llamada. Por favor
+haz click en \"PERMITIR\" en la siguiente ventana de diálogo del sistema.</string>
+    <string name="nc_permissions_audio">El permiso de microfono debe ser dado para habilitar las llamadas con audio. Por favor 
+haz click en \"PERMIITR\" en la siguiente ventana de diálogo del sistema.</string>
+    <string name="nc_permissions_video">El permiso de cámara deber ser dado para habilitar video llamadas. Por favor
+haz click en \"PERMITIR\" en la siguiente ventana de diálogo del sistema</string>
+    <string name="nc_camera_permission_permanently_denied">Para habilitar la comunicación con video por favor da el permiso a la \"Camara\"
+en la configuración del sistema.</string>
+    <string name="nc_microphone_permission_permanently_denied">Para habilitar la comunicación con audio por favor da el permiso al \"Micrófono\"
+en la configuración del sistema.</string>
     <string name="nc_permissions_settings">Abrir configuraciones</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Llamada entrando</string>
+
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s en el canal de notifcación %2$s</string>
+    <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
+    <string name="nc_notification_channel_messages">Canal de notificación de mensajes </string>
+    <string name="nc_notification_channel_calls_description">Muestra las llamadas entrantes</string>
+    <string name="nc_notification_channel_messages_description">Muestra los mensajes entrantes</string>
+
+</resources>
