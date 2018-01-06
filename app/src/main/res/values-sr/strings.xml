@@ -10,6 +10,12 @@
     <string name="nc_server_db_upgrade_needed">Ажурирајте своју %1$s базу</string>
     <string name="nc_server_maintenance">Прекините %1$s режим одржавања</string>
     <string name="nc_server_version">%1$s ради само са%2$s верзије 13 и већом</string>
+    <string name="nc_server_import_account_plain">Увези налог</string>
+    <string name="nc_server_import_accounts_plain">Увези налоге</string>
+    <string name="nc_server_import_account">Увези налог из апликације %1$s</string>
+    <string name="nc_server_import_accounts">Увези налоге из апликације %1$s</string>
+    <string name="nc_server_failed_to_import_account">Грешка при учитавању одабраног налога</string>
+    <string name="nc_Server_account_imported">Одабрани налог је сада увезен и доступан</string>
     <string name="nc_get_from_provider">Имате ли сервер?nКликните овде да направите један код провајдера</string>
 
     <!-- Account verification -->
@@ -24,6 +30,7 @@
     <string name="nc_search">Тражи</string>
 
     <string name="nc_certificate_dialog_title">Провери сертификат</string>
+    <string name="nc_certificate_dialog_text">Да ли верујете, до сада непознатом, SSL сертификату, који је издао %1$s на %2$s, валидним од %3$s до %4$s?</string>
     <string name="nc_yes">Да</string>
     <string name="nc_no">Не</string>
     <string name="nc_details">Детаљи</string>
@@ -46,6 +53,10 @@
     <string name="nc_settings_remove_account">Уклони налог</string>
     <string name="nc_settings_add_account">Додај нови налог</string>
     <string name="nc_settings_wrong_account">Само тренутни налог се може поново ауторизовати</string>
+    <string name="nc_settings_no_talk_installed">Апликација за разговор није инсталирана на серверу на који сте пробали пријаву</string>
+    <string name="nc_settings_account_updated">Ваш постојећи налог је ажуриран, уместо што је додат нови налог</string>
+    <string name="nc_account_scheduled_for_deletion">Налогу је заказано брисање и то не може да се промени</string>
+
     <string name="nc_no_proxy">Без посредника</string>
     <string name="nc_username">Корисничко име</string>
     <string name="nc_password">Лозинка</string>
@@ -72,6 +83,27 @@
     <string name="nc_one_contact_selected">контакт означен</string>
     <string name="nc_more_contacts_selected">контакта означено</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Да бисте успоставили видео и/или аудио позив, морате одобрити дозволе. Молимо
+        кликните \"Дозволи\" на следећем системском дијалогу.</string>
+    <string name="nc_permissions_audio">Да бисте успоставили аудио позив, морате одобрити дозволе за коришћење микрофона. Молимо
+        кликните \"Дозволи\" на следећем системском дијалогу.</string>
+    <string name="nc_permissions_video">Да бисте успоставили видео позив, морате одобрити дозволе за коришћење камере. Молимо
+        кликните \"Дозволи\" на следећем системском дијалогу.</string>
+    <string name="nc_camera_permission_permanently_denied">Да бисте омогућили видео комуникацију, дозволите приступ камери
+        у системским поставкама.</string>
+    <string name="nc_microphone_permission_permanently_denied">Да бисте омогућили звучну комуникацију, дозволите приступ микрофону
+        у системским поставкама.</string>
     <string name="nc_permissions_settings">Отвори поставке</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Долазни позив</string>
+
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s на каналу за обавештење о %2$s</string>
+    <string name="nc_notification_channel_calls">Канал обавештења о позивима</string>
+    <string name="nc_notification_channel_messages">Канал обавештења о порукама</string>
+    <string name="nc_notification_channel_calls_description">Прикажи долазне позиве</string>
+    <string name="nc_notification_channel_messages_description">Прикажи долазне поруке</string>
+
+</resources>
