@@ -35,6 +35,8 @@ public interface User extends Parcelable, Persistable, Serializable {
     @Generated
     long getId();
 
+    String getUserId();
+
     String getUsername();
 
     String getBaseUrl();

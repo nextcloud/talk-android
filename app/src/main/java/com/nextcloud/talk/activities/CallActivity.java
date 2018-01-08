@@ -247,7 +247,7 @@ public class CallActivity extends AppCompatActivity {
         if (!userEntity.getCurrent()) {
             userUtils.createOrUpdateUser(userEntity.getUsername(),
                     userEntity.getToken(), userEntity.getBaseUrl(), null,
-                    null, true)
+                    null, true, null)
                     .subscribe(new Observer<UserEntity>() {
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -1169,7 +1169,7 @@ public class CallActivity extends AppCompatActivity {
                     .PeerConnectionEventType.SENSOR_FAR) && videoOn;
             if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) && inCall &&
                     enableVideo != videoOn) {
-                toggleMedia(enableVideo, true);
+                runOnUiThread(() -> toggleMedia(enableVideo, true));
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.NICK_CHANGE)) {

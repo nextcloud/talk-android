@@ -270,17 +270,7 @@ public class SettingsController extends BaseController {
                 displayNameTextView.setText(userEntity.getDisplayName());
             }
 
-            GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                    userEntity.getUsername()), new LazyHeaders.Builder()
-                    .setHeader("Accept", "image/*")
-                    .setHeader("User-Agent", ApiHelper.getUserAgent())
-                    .build());
-
-            GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                    .load(glideUrl)
-                    .centerInside()
-                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                    .into(avatarImageView);
+            loadAvatarImage();
 
             profileQueryDisposable = ncApi.getUserProfile(ApiHelper.getCredentials(userEntity.getUsername(),
                     userEntity.getToken()),
@@ -300,15 +290,23 @@ public class SettingsController extends BaseController {
                                     .getDisplayNameAlt();
                         }
 
-                        if (!TextUtils.isEmpty(displayName) && !displayName.equals(userEntity.getDisplayName())) {
+
+                        boolean needsToUpdateUserId = !TextUtils.isEmpty(userProfileOverall.getOcs().getData().getUserId()) &&
+                                !userProfileOverall.getOcs().getData().getUserId().equals(userEntity.getUserId());
+                        if ((!TextUtils.isEmpty(displayName) && !displayName.equals(userEntity.getDisplayName())) ||
+                                needsToUpdateUserId) {
 
                             dbQueryDisposable = userUtils.createOrUpdateUser(userEntity.getUsername(),
                                     userEntity.getToken(),
-                                    userEntity.getBaseUrl(), displayName, null, true)
+                                    userEntity.getBaseUrl(), displayName, null, true,
+                                    userProfileOverall.getOcs().getData().getUserId())
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(userEntityResult -> {
                                                 displayNameTextView.setText(userEntityResult.getDisplayName());
+                                                if (needsToUpdateUserId) {
+                                                    loadAvatarImage();
+                                                }
                                             },
                                             throwable -> {
                                                 dispose(dbQueryDisposable);
@@ -410,6 +408,27 @@ public class SettingsController extends BaseController {
                 messageView.setVisibility(View.GONE);
             }
         }
+    }
+
+    private void loadAvatarImage() {
+        String avatarId;
+        if (!TextUtils.isEmpty(userEntity.getUserId())) {
+            avatarId = userEntity.getUserId();
+        } else {
+            avatarId = userEntity.getUsername();
+        }
+
+        GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                avatarId), new LazyHeaders.Builder()
+                .setHeader("Accept", "image/*")
+                .setHeader("User-Agent", ApiHelper.getUserAgent())
+                .build());
+
+        GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                .load(glideUrl)
+                .centerInside()
+                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                .into(avatarImageView);
     }
 
     @Override

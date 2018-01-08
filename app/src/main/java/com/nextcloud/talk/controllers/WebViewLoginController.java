@@ -279,7 +279,8 @@ public class WebViewLoginController extends BaseController {
                 // We use the URL user entered because one provided by the server is NOT reliable
                 ErrorMessageHolder.ErrorMessageType finalErrorMessageType = errorMessageType;
                 userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
-                        loginData.getServerUrl(), null, null, true).
+                        loginData.getServerUrl(), null, null, true,
+                        null).
                         subscribe(userEntity -> {
                                     cookieManager.getCookieStore().removeAll();
                                     if (!isPasswordUpdate && finalErrorMessageType == null) {

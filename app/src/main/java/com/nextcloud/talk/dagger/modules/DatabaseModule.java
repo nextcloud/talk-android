@@ -50,7 +50,7 @@ public class DatabaseModule {
         final SqlCipherDatabaseSource source = new SqlCipherDatabaseSource(context, Models.DEFAULT,
                 context.getResources().getString(R.string.nc_app_name).toLowerCase()
                         .replace(" ", "_").trim() + ".sqlite",
-                context.getString(R.string.nc_talk_database_encryption_key), 1);
+                context.getString(R.string.nc_talk_database_encryption_key), 2);
         final Configuration configuration = source.getConfiguration();
         return ReactiveSupport.toReactiveStore(new EntityDataStore<Persistable>(configuration));
     }

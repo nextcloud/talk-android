@@ -100,7 +100,7 @@ public class SwitchAccountController extends BaseController {
                         UserEntity userEntity = ((AdvancedUserItem) userItems.get(position)).getEntity();
                         userUtils.createOrUpdateUser(userEntity.getUsername(),
                                 userEntity.getToken(), userEntity.getBaseUrl(), null,
-                                null, true)
+                                null, true, null)
                                 .subscribe(new Observer<UserEntity>() {
                                     @Override
                                     public void onSubscribe(Disposable d) {
@@ -164,7 +164,15 @@ public class SwitchAccountController extends BaseController {
                     if (!userEntity.getCurrent()) {
                         participant = new Participant();
                         participant.setName(userEntity.getDisplayName());
-                        participant.setUserId(userEntity.getUsername());
+
+                        String userId;
+
+                        if (userEntity.getUserId() != null) {
+                            userId = userEntity.getUserId();
+                        } else {
+                            userId = userEntity.getUsername();
+                        }
+                        participant.setUserId(userId);
                         userItems.add(new AdvancedUserItem(participant, userEntity, null));
                     }
                 }

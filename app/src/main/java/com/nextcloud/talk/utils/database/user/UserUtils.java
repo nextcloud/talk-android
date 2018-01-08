@@ -151,7 +151,8 @@ public class UserUtils {
     public Observable<UserEntity> createOrUpdateUser(String username, String token, String serverUrl,
                                                      @Nullable String displayName,
                                                      @Nullable String pushConfigurationState,
-                                                     @Nullable Boolean currentUser) {
+                                                     @Nullable Boolean currentUser,
+                                                     @Nullable String userId) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
                 and(UserEntity.BASE_URL.eq(serverUrl.toLowerCase()))).limit(1).get();
 
@@ -171,9 +172,17 @@ public class UserUtils {
                 user.setPushConfigurationState(pushConfigurationState);
             }
 
+            if (!TextUtils.isEmpty(userId)) {
+                user.setUserId(userId);
+            }
+
             user.setCurrent(true);
 
         } else {
+            if (userId != null && (user.getUserId() == null || !user.getUserId().equals(userId))) {
+                user.setUserId(userId);
+            }
+
             if (!token.equals(user.getToken())) {
                 user.setToken(token);
             }
