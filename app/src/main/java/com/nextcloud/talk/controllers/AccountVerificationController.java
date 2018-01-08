@@ -209,8 +209,10 @@ public class AccountVerificationController extends BaseController {
                                                                     .pushChangeHandler(new HorizontalChangeHandler())
                                                                     .popChangeHandler(new HorizontalChangeHandler()));
                                                         } else {
-                                                            ErrorMessageHolder.getInstance().setMessageType(
-                                                                    ErrorMessageHolder.ErrorMessageType.ACCOUNT_WAS_IMPORTED);
+                                                            if (isAccountImport) {
+                                                                ErrorMessageHolder.getInstance().setMessageType(
+                                                                        ErrorMessageHolder.ErrorMessageType.ACCOUNT_WAS_IMPORTED);
+                                                            }
                                                             getRouter().popToRoot();
                                                         }
                                                     },
