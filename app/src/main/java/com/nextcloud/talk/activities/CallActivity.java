@@ -197,9 +197,6 @@ public class CallActivity extends AppCompatActivity {
     private boolean videoOn = false;
     private boolean audioOn = false;
 
-    private boolean cameraInitialized = false;
-    private boolean microphoneInitialized = false;
-
     private BroadcastReceiver networkBroadcastReceier;
 
     private static int getSystemUiVisibility() {
@@ -231,11 +228,11 @@ public class CallActivity extends AppCompatActivity {
         networkBroadcastReceier = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (!Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY)) {
-                    if (!leavingCall) {
+                if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
+                    if (!Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY)) {
                         startPullingSignalingMessages(true);
                     } else {
-                        hangup(true);
+                        //hangup(true);
                     }
                 }
             }
@@ -282,6 +279,14 @@ public class CallActivity extends AppCompatActivity {
         } else {
             initViews();
             checkPermissions();
+        }
+    }
+
+    private void performIceRestart() {
+        for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
+            sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("IceRestart", "true"));
+            PeerConnection.RTCConfiguration rtcConfiguration = new PeerConnection.RTCConfiguration(iceServers);
+            magicPeerConnectionWrapperList.get(i).getPeerConnection().setConfiguration(rtcConfiguration);
         }
     }
 
@@ -604,8 +609,6 @@ public class CallActivity extends AppCompatActivity {
         // And finally, with our VideoRenderer ready, we
         // can add our renderer to the VideoTrack.
         localVideoTrack.addRenderer(localRenderer);
-
-        cameraInitialized = true;
     }
 
     private void microphoneInitialization() {
@@ -614,15 +617,13 @@ public class CallActivity extends AppCompatActivity {
         localAudioTrack = peerConnectionFactory.createAudioTrack("NCa0", audioSource);
         localAudioTrack.setEnabled(false);
         localMediaStream.addTrack(localAudioTrack);
-
-        microphoneInitialized = true;
     }
 
     private void startCall() {
         inCall = true;
         animateCallControls(false, 5000);
         startPullingSignalingMessages(false);
-        registerNetworkReceiver();
+        //registerNetworkReceiver();
     }
 
     @OnClick({R.id.pip_video_view, R.id.remote_renderers_layout})
@@ -636,7 +637,7 @@ public class CallActivity extends AppCompatActivity {
 
         if (restart) {
             dispose(null);
-            hangupNetworkCalls();
+            //hangupNetworkCalls();
         }
 
         leavingCall = false;
@@ -680,9 +681,11 @@ public class CallActivity extends AppCompatActivity {
                             }
                         }
 
-
-                        joinRoomAndCall();
-
+                        if (restart) {
+                            performIceRestart();
+                        } else {
+                            joinRoomAndCall();
+                        }
                     }
 
                     @Override
@@ -973,35 +976,36 @@ public class CallActivity extends AppCompatActivity {
 
         }
 
-        if (videoCapturer != null) {
-            videoCapturer.dispose();
-        }
-
-
-        if (localMediaStream != null) {
-            if (localMediaStream.videoTracks != null && localMediaStream.videoTracks.size() > 0) {
-                localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
-            }
-
-            if (localMediaStream.audioTracks != null && localMediaStream.audioTracks.size() > 0) {
-                localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
-            }
-        }
-
-        localVideoTrack = null;
-        localAudioTrack = null;
-        localRenderer = null;
-        localMediaStream = null;
-
-        if (videoCapturer != null) {
-            videoCapturer.dispose();
-            videoCapturer = null;
-        }
-
-        pipVideoView.release();
 
         if (!dueToNetworkChange) {
+            pipVideoView.release();
+
+            if (videoCapturer != null) {
+                videoCapturer.dispose();
+            }
+
+            if (localMediaStream != null) {
+                if (localMediaStream.videoTracks != null && localMediaStream.videoTracks.size() > 0) {
+                    localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
+                }
+
+                if (localMediaStream.audioTracks != null && localMediaStream.audioTracks.size() > 0) {
+                    localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
+                }
+            }
+
+            localVideoTrack = null;
+            localAudioTrack = null;
+            localRenderer = null;
+            localMediaStream = null;
+
+            if (videoCapturer != null) {
+                videoCapturer.dispose();
+                videoCapturer = null;
+            }
+
             hangupNetworkCalls();
+
         }
     }
 
@@ -1113,7 +1117,7 @@ public class CallActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         hangup(false);
-        this.unregisterReceiver(networkBroadcastReceier);
+        //this.unregisterReceiver(networkBroadcastReceier);
         super.onDestroy();
     }
 
