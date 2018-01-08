@@ -432,7 +432,7 @@ public class CallActivity extends AppCompatActivity {
         if (Camera2Enumerator.isSupported(this)) {
             cameraEnumerator = new Camera2Enumerator(this);
         } else {
-            cameraEnumerator = new Camera1Enumerator(false);
+            cameraEnumerator = new Camera1Enumerator(true);
         }
     }
 
