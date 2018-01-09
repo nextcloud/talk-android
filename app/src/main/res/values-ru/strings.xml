@@ -24,6 +24,8 @@
     <string name="nc_nextcloud_talk_app_installed">Найдено приложение %1$s</string>
     <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s не установлено на сервере. Действие отменено.</string>
     <string name="nc_display_name_stored">Отображаемое имя сохранено</string>
+    <string name="nc_display_name_not_stored">Отображаемое имя не сохранено, продолжение невозможно</string>
+
     <string name="nc_never">Никогда не использовался</string>
     <string name="nc_search">Поиск</string>
 

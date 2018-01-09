@@ -83,6 +83,17 @@
     <string name="nc_one_contact_selected">Kontakt ausgewählt</string>
     <string name="nc_more_contacts_selected">Kontakte ausgewählt</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Für das Starten eines Audio-/Videoanrufes müssen Berechtigungen erteilt werden. Bitte 
+        klicke auf \"ALLOW\" im folgenden Systemdialog.</string>
+    <string name="nc_permissions_audio">Für die Nutzung des Mikrofons für Audioanrufe muss eine Berechtigungen erteilt werden. Bitte
+         klicke auf \"ALLOW\" im folgenden Systemdialog.</string>
+    <string name="nc_permissions_video">Für die Nutzung der Kamera für Videoanrufe muss eine Berechtigungen erteilt werden. Bitte
+         klicke auf \"ALLOW\" im folgenden Systemdialog.</string>
+    <string name="nc_camera_permission_permanently_denied">Bitte gewähre Zugriff auf die \"Kamera\" 
+        in den Systemeinstellungen für Videoanrufe .</string>
+    <string name="nc_microphone_permission_permanently_denied">Bitte gewähre Zugriff auf das \"Mikrofon\"
+        in den Systemeinstellungen für Audioanrufe .</string>
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
     <!-- Call -->

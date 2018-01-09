@@ -10,6 +10,12 @@
     <string name="nc_server_db_upgrade_needed">Bitte aktualisieren Sie Ihre %1$s Datenbank</string>
     <string name="nc_server_maintenance">Bitte bringen Sie %1$s aus der Wartung</string>
     <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
+    <string name="nc_server_import_account_plain">Konto importieren</string>
+    <string name="nc_server_import_accounts_plain">Konten importieren</string>
+    <string name="nc_server_import_account">Importiere ein Konto aus der App %1$s</string>
+    <string name="nc_server_import_accounts">Importiere Konten aus der App %1$s</string>
+    <string name="nc_server_failed_to_import_account">Das importieren des ausgewählten Kontos ist fehlgeschlagen</string>
+    <string name="nc_Server_account_imported">Das ausgewählte Konto ist nun importiert und verfügbar</string>
     <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier um Server-Anbieter zu finden</string>
 
     <!-- Account verification -->
@@ -77,6 +83,23 @@
     <string name="nc_one_contact_selected">Kontakt ausgewählt</string>
     <string name="nc_more_contacts_selected">Kontakte ausgewählt</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Für das Starten eines Audio-/Videoanrufes müssen Berechtigungen erteilt werden. Bitte
+        klicken Sie auf \"ALLOW\" im folgenden Systemdialog.</string>
+    <string name="nc_permissions_audio">Für die Nutzung des Mikrophons für Audioanrufe muss eine Berechtigungen erteilt werden. Bitte
+        klicke auf \"ALLOW\" im folgenden Systemdialog.</string>
+    <string name="nc_permissions_video">Für die Nutzung der Kamera für Videoanrufe muss eine Berechtigungen erteilt werden. Bitte
+         klicke auf \"ALLOW\" im folgenden Systemdialog.</string>
+    <string name="nc_camera_permission_permanently_denied">Bitte gewähren Sie Zugriff auf die \"Kamera\"
+         in den Systemeinstellungen für Videoanrufe .</string>
+    <string name="nc_microphone_permission_permanently_denied">Bitte gewähren Sie Zugriff auf das \"Mikrofon\"
+        in den Systemeinstellungen für Audioanrufe .</string>
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Eingehender Anruf</string>
+
+    <string name="nc_notification_channel_calls_description">Eingehende Anrufe anzeigen</string>
+    <string name="nc_notification_channel_messages_description">Eingehende Nachrichten anzeigen</string>
+
+</resources>

@@ -4,21 +4,38 @@
     <string name="nc_bottom_navigation_title_contacts">Contactos</string>
     <string name="nc_bottom_navigation_title_settings">Configuración</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">Dirección del servidor</string>
     <string name="nc_server_not_installed">Por favor finaliza la instalación de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza la base de datos de %1$s</string>
     <string name="nc_server_maintenance">Por favor pon %1$s fuera de mantenimiento</string>
+    <string name="nc_server_version">%1$s sólo trabaja con %2$s 13 y superior</string>
+    <string name="nc_server_import_account_plain">Importa cuenta</string>
+    <string name="nc_server_import_accounts_plain">Importar cuentas</string>
+    <string name="nc_server_import_account">Importar cuenta desde la app %1$s</string>
+    <string name="nc_server_import_accounts">Importar cuentas desde la app %1$s</string>
+    <string name="nc_server_failed_to_import_account">No se ha podido importar la cuenta seleccionada</string>
+    <string name="nc_Server_account_imported">La cuenta seleccionada ha sido importada y ya está disponible</string>
+    <string name="nc_get_from_provider">¿No tienes todavía un servidor?\nClic aquí para conseguir uno de un proveedor</string>
+
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Nombre para mostrar obtenido</string>
     <string name="nc_display_name_not_fetched">Nombre para mostrar no pudo ser obtenido, abortando</string>
     <string name="nc_nextcloud_talk_app_installed">aplicación %1$s encontrada</string>
+    <string name="nc_nextcloud_talk_app_not_installed">La app %1$s no está instalada en el servidor. Abortando</string>
     <string name="nc_display_name_stored">Nombre para mostrar almacenado</string>
+    <string name="nc_display_name_not_stored">No se ha podido almacenar el nombre para mostrar. Abortando</string>
+
     <string name="nc_never">Nunca unido</string>
     <string name="nc_search">Buscar</string>
 
     <string name="nc_certificate_dialog_title">Comprobar el certificado</string>
+    <string name="nc_certificate_dialog_text">¿Confías en el certificado SSL antes desconocido emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
     <string name="nc_yes">Sí</string>
     <string name="nc_no">No</string>
     <string name="nc_details">Detalles</string>
+    <string name="nc_certificate_error">Tu configuración SSL impidió la conexión</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_key">proxy_type</string>
@@ -36,6 +53,11 @@
     <string name="nc_settings_remove_account">Eliminar cuenta</string>
     <string name="nc_settings_add_account">Añadir nueva cuenta</string>
     <string name="nc_settings_wrong_account">Solo la cuenta actual puede ser reautorizada</string>
+    <string name="nc_settings_no_talk_installed">La app Talk no está instalada en el servidor contra el que has querido
+    autorizarte</string>
+    <string name="nc_settings_account_updated">Tu cuenta ya existente ha sido actualizada en lugar de añadir una nueva</string>
+    <string name="nc_account_scheduled_for_deletion">La cuenta está programada para borrado y no se puede operar con ella</string>
+
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Nombre de usuario</string>
     <string name="nc_password">Contraseña</string>
@@ -62,6 +84,24 @@
     <string name="nc_one_contact_selected">contacto seleccionado</string>
     <string name="nc_more_contacts_selected">contactos seleccionados</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Necesitamos ciertos permisos para establecer una videollamada. Por favor,
+     pulsa \"ACEPTAR\" en el mensaje de sistema que va a aparecer.</string>
+    <string name="nc_permissions_audio">Se necesita conceder el permiso de micrófono para activar las llamadas de audio. Por favor,
+     pusa \"ACEPTAR\" en el mensaje de sistema que va a aparecer.</string>
+    <string name="nc_permissions_video">Se necesita conceder el permiso de cámara para activar las videollamadas. Por favor, pusa \"ACEPTAR\" en el mensaje de sistema que va a aparecer.</string>
+    <string name="nc_camera_permission_permanently_denied">Para permitir la comunicación de vídeo, concede el permiso de \"Cámara\" en la configuración del sistema, por favor.</string>
+    <string name="nc_microphone_permission_permanently_denied">Para permitir la comunicación de voz, concede el permiso de \"Micrófono\" en la configuración del sistema, por favor.</string>
     <string name="nc_permissions_settings">Abrir configuración</string>
 
-    </resources>
+    <!-- Call -->
+    <string name="nc_incoming_call">Llamada entrante</string>
+
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s en el canal de notificación %2$s</string>
+    <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
+    <string name="nc_notification_channel_messages">Canal de notificación de mensajes</string>
+    <string name="nc_notification_channel_calls_description">Muestra las llamadas entrantes</string>
+    <string name="nc_notification_channel_messages_description">Muestra los mensajes entrantes</string>
+
+</resources>
