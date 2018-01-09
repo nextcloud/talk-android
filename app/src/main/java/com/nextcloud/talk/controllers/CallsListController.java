@@ -403,4 +403,9 @@ public class CallsListController extends BaseController implements SearchView.On
 
         return true;
     }
+
+    @Override
+    protected String getTitle() {
+        return getResources().getString(R.string.nc_app_name);
+    }
 }

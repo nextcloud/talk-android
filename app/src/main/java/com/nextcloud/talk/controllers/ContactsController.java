@@ -480,4 +480,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         return true;
     }
 
+    @Override
+    protected String getTitle() {
+        return getResources().getString(R.string.nc_app_name);
+    }
+
 }

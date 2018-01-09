@@ -533,5 +533,4 @@ public class SettingsController extends BaseController {
             }
         }
     }
-
 }

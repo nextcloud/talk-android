@@ -36,7 +36,8 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:indeterminate="true"
         android:indeterminateTint="@color/colorPrimary"
-        android:indeterminateTintMode="src_in"/>
+        android:indeterminateTintMode="src_in"
+        android:keepScreenOn="true"/>
 
     <TextView
         android:id="@+id/progress_text"
