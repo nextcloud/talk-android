@@ -980,11 +980,7 @@ public class CallActivity extends AppCompatActivity {
 
         if (!dueToNetworkChange) {
             pipVideoView.release();
-
-            if (videoCapturer != null) {
-                videoCapturer.dispose();
-            }
-
+            
             if (localMediaStream != null) {
                 if (localMediaStream.videoTracks != null && localMediaStream.videoTracks.size() > 0) {
                     localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
