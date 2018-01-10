@@ -14,6 +14,7 @@
     <string name="nc_server_import_accounts_plain">Importer les comptes</string>
     <string name="nc_server_import_account">Importer le compte depuis l\'application %1$s</string>
     <string name="nc_server_import_accounts">Importer les comptes depuis l\'application %1$s</string>
+    <string name="nc_server_failed_to_import_account">Échec lors de l\'importation des comptes sélectionnés</string>
     <string name="nc_Server_account_imported">Le compte sélectionné est maintenant importé et disponible</string>
     <string name="nc_get_from_provider">Vous n\'avez pas encore de serveur?\nCliquez-ici pour en obtenir un chez un fournisseur d\'accès.</string>
 
@@ -21,7 +22,10 @@
     <string name="nc_display_name_fetched">Nom affiché récupéré</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_nextcloud_talk_app_installed">Application %1$s trouvée</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Application %1$s non installée sur le serveur, abandon</string>
     <string name="nc_display_name_stored">Nom à afficher enregistré</string>
+    <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
+
     <string name="nc_never">Jamais contacté</string>
     <string name="nc_search">Recherche</string>
 

@@ -4,14 +4,28 @@
     <string name="nc_bottom_navigation_title_contacts">聯絡人</string>
     <string name="nc_bottom_navigation_title_settings">設定</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_url">伺服器位址</string>
     <string name="nc_server_not_installed">請將%1$s完整安裝</string>
     <string name="nc_server_db_upgrade_needed">請升級你的%1$s資料庫</string>
     <string name="nc_server_maintenance">請維護您的%1$s</string>
+    <string name="nc_server_version">%1$s!只能在%2$s13版以上運作</string>
+    <string name="nc_server_import_account_plain">匯入帳戶</string>
+    <string name="nc_server_import_accounts_plain">匯入帳戶</string>
+    <string name="nc_server_import_account">從%1$s應用程式匯入帳戶</string>
+    <string name="nc_server_import_accounts">從%1$s應用程式匯入帳戶</string>
+    <string name="nc_server_failed_to_import_account">無法匯入所選的帳戶</string>
+    <string name="nc_Server_account_imported">選擇已匯入且可用的帳戶</string>
+    <string name="nc_get_from_provider">您沒有自己的伺服器嗎？\n點這裡向服務供應商購買</string>
+
     <!-- Account verification -->
     <string name="nc_display_name_fetched">已取得顯示名稱</string>
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止動作。</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s個app已找到</string>
+    <string name="nc_nextcloud_talk_app_not_installed">此伺服器並未安裝%1$s應用，操作中斷。</string>
     <string name="nc_display_name_stored">顯示名稱已儲存</string>
+    <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
+
     <string name="nc_never">從未加入</string>
     <string name="nc_search">搜尋</string>
 
