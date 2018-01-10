@@ -24,7 +24,6 @@
 package com.nextcloud.talk.controllers;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -86,7 +85,7 @@ public class SwitchAccountController extends BaseController {
     private FlexibleAdapter.OnItemClickListener onImportItemClickListener = position -> {
         if (userItems.size() > position) {
             Account account = ((AdvancedUserItem) userItems.get(position)).getAccount();
-            getAuthTokenForAccount(account);
+            verifyAccount(account);
         }
 
         return true;
@@ -218,9 +217,7 @@ public class SwitchAccountController extends BaseController {
         swipeRefreshLayout.setEnabled(false);
     }
 
-    private void getAuthTokenForAccount(Account account) {
-        final AccountManager accMgr = AccountManager.get(getActivity());
-
+    private void verifyAccount(Account account) {
         ImportAccount importAccount = AccountUtils.getInformationFromAccount(account);
         BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
         bundleBuilder.putString(BundleKeys.KEY_USERNAME, importAccount.getUsername());
@@ -230,7 +227,6 @@ public class SwitchAccountController extends BaseController {
         getRouter().pushController(RouterTransaction.with(new AccountVerificationController
                 (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler()));
-
     }
 
     @Override
