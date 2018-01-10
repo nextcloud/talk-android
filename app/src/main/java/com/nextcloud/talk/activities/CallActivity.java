@@ -552,6 +552,7 @@ public class CallActivity extends AppCompatActivity {
         PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions
                 .builder(this)
                 .setEnableVideoHwAcceleration(true)
+                .setFieldTrials(null)
                 .createInitializationOptions();
         PeerConnectionFactory.initialize(initializationOptions);
 
@@ -998,6 +999,11 @@ public class CallActivity extends AppCompatActivity {
             localAudioTrack = null;
             localRenderer = null;
             localMediaStream = null;
+
+            if (peerConnectionFactory != null) {
+                peerConnectionFactory.dispose();
+                peerConnectionFactory = null;
+            }
 
             if (videoCapturer != null) {
                 videoCapturer.dispose();
