@@ -122,7 +122,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
             layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_START);
             holder.linearLayout.setLayoutParams(layoutParams);
             GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                    participant.getUserId()), new LazyHeaders.Builder()
+                    participant.getUserId(), false), new LazyHeaders.Builder()
                     .setHeader("Accept", "image/*")
                     .setHeader("User-Agent", ApiHelper.getUserAgent())
                     .build());

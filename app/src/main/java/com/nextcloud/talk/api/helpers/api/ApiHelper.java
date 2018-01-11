@@ -143,8 +143,18 @@ public class ApiHelper {
         return "/status.php";
     }
 
-    public static String getUrlForAvatarWithName(String baseUrl, String name) {
-        return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/128";
+    public static String getUrlForAvatarWithName(String baseUrl, String name, boolean isLargeAvatar) {
+        int avatarSize;
+
+        if (isLargeAvatar) {
+            avatarSize = Math.round(NextcloudTalkApplication
+                    .getSharedApplication().getResources().getDimension(R.dimen.avatar_size_big));
+        } else {
+            avatarSize = Math.round(NextcloudTalkApplication
+                    .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
+        }
+
+        return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize;
     }
 
     public static String getCredentials(String username, String token) {

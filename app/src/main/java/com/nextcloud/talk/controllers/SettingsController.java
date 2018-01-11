@@ -419,7 +419,7 @@ public class SettingsController extends BaseController {
         }
 
         GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                avatarId), new LazyHeaders.Builder()
+                avatarId, true), new LazyHeaders.Builder()
                 .setHeader("Accept", "image/*")
                 .setHeader("User-Agent", ApiHelper.getUserAgent())
                 .build());
