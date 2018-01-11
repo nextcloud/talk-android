@@ -940,7 +940,9 @@ public class CallActivity extends AppCompatActivity {
 
     private void deleteMagicPeerConnection(MagicPeerConnectionWrapper magicPeerConnectionWrapper) {
         if (magicPeerConnectionWrapper.getPeerConnection() != null) {
+            magicPeerConnectionWrapper.removeMediaStream();
             magicPeerConnectionWrapper.getPeerConnection().close();
+            magicPeerConnectionWrapper.getPeerConnection().dispose();
         }
         magicPeerConnectionWrapperList.remove(magicPeerConnectionWrapper);
     }
@@ -977,7 +979,6 @@ public class CallActivity extends AppCompatActivity {
 
         }
 
-
         if (!dueToNetworkChange) {
             pipVideoView.release();
             
@@ -989,7 +990,12 @@ public class CallActivity extends AppCompatActivity {
                 if (localMediaStream.audioTracks != null && localMediaStream.audioTracks.size() > 0) {
                     localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
                 }
+
+                localMediaStream.dispose();
             }
+
+            localVideoTrack.dispose();
+            localAudioTrack.dispose();
 
             localVideoTrack = null;
             localAudioTrack = null;

@@ -92,6 +92,12 @@ public class MagicPeerConnectionWrapper {
         }
     }
 
+    public void removeMediaStream() {
+        if (peerConnection != null && localMediaStream != null) {
+            peerConnection.removeStream(localMediaStream);
+        }
+    }
+
     public void drainIceCandidates() {
 
         for (IceCandidate iceCandidate : iceCandidates) {
