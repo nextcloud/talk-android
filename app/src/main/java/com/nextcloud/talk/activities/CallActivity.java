@@ -1362,6 +1362,10 @@ public class CallActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
 
+    @Override
+    public void onBackPressed() {
+        onHangupClick();
     }
 }
