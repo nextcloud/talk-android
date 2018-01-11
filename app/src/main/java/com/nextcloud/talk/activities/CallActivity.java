@@ -1124,7 +1124,9 @@ public class CallActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        hangup(false);
+        if (inCall) {
+            hangup(false);
+        }
         //this.unregisterReceiver(networkBroadcastReceier);
         super.onDestroy();
     }
