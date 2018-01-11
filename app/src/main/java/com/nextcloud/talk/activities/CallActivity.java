@@ -394,7 +394,6 @@ public class CallActivity extends AppCompatActivity {
     @OnClick(R.id.call_control_hangup)
     public void onHangupClick() {
         hangup(false);
-        finish();
     }
 
     @OnClick(R.id.call_control_camera)
@@ -943,7 +942,6 @@ public class CallActivity extends AppCompatActivity {
         if (magicPeerConnectionWrapper.getPeerConnection() != null) {
             magicPeerConnectionWrapper.removeMediaStream();
             magicPeerConnectionWrapper.getPeerConnection().close();
-            magicPeerConnectionWrapper.getPeerConnection().dispose();
         }
         magicPeerConnectionWrapperList.remove(magicPeerConnectionWrapper);
     }
@@ -982,7 +980,7 @@ public class CallActivity extends AppCompatActivity {
 
         if (!dueToNetworkChange) {
             pipVideoView.release();
-            
+
             if (localMediaStream != null) {
                 if (localMediaStream.videoTracks != null && localMediaStream.videoTracks.size() > 0) {
                     localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
@@ -1042,7 +1040,7 @@ public class CallActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onNext(GenericOverall genericOverall) {
-
+                                        finish();
                                     }
 
                                     @Override
@@ -1370,6 +1368,6 @@ public class CallActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        onHangupClick();
+        hangup(false);
     }
 }
