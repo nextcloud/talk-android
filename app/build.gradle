@@ -131,7 +131,7 @@ dependencies {
 
     implementation 'com.yarolegovich:lovely-dialog:1.0.7'
     implementation 'com.yarolegovich:lovelyinput:1.0.2'
-    implementation 'com.yarolegovich:mp:1.0.8'
+    implementation 'com.github.mario:MaterialPreferences:master-SNAPSHOT'
 
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.0.2'
 
