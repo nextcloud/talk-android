@@ -477,7 +477,8 @@ public class CallActivity extends AppCompatActivity {
         pipVideoView.setMirror(true);
         pipVideoView.init(rootEglBase.getEglBaseContext(), null);
         pipVideoView.setZOrderMediaOverlay(true);
-        pipVideoView.setEnableHardwareScaler(true);
+        // disabled because it causes some devices to crash
+        pipVideoView.setEnableHardwareScaler(false);
         pipVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
     }
 
@@ -1110,7 +1111,8 @@ public class CallActivity extends AppCompatActivity {
                 surfaceViewRenderer.setMirror(false);
                 surfaceViewRenderer.init(rootEglBase.getEglBaseContext(), null);
                 surfaceViewRenderer.setZOrderMediaOverlay(false);
-                surfaceViewRenderer.setEnableHardwareScaler(true);
+                // disabled because it causes some devices to crash
+                surfaceViewRenderer.setEnableHardwareScaler(false);
                 surfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
                 VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
                 videoTrack.addRenderer(remoteRenderer);
