@@ -53,6 +53,8 @@
     <string name="nc_settings_remove_account">Удалить аккаунт</string>
     <string name="nc_settings_add_account">Добавить новый аккаунт</string>
     <string name="nc_settings_wrong_account">Повторный вход может быть выполнен только в текущую учётную запись</string>
+    <string name="nc_settings_no_talk_installed">Приложение «Беседа»  не установлено на сервере, 
+к которому вы пытаетесь получить доступ</string>
     <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>
     <string name="nc_account_scheduled_for_deletion">Учётная запись запланирована к удалению и не может быть использована</string>
 
@@ -99,6 +101,8 @@
     <!-- Call -->
     <string name="nc_incoming_call">Входящий вызов</string>
 
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">канал уведомлений %1$s на %2$s</string>
     <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>
     <string name="nc_notification_channel_messages">Способ уведомления о сообщении</string>
     <string name="nc_notification_channel_calls_description">Показывает входящие вызовы</string>

@@ -85,6 +85,10 @@
 
     <!-- Permissions -->
     <string name="nc_permissions">L\'autorisation est requises pour établir un appel video et/ou audio. Merci de cliquer sur \"AUTORISER\" dans la boite de dialogue système.</string>
+    <string name="nc_permissions_audio">L\'autorisation du microphone est requise pour établir un appel audio. Merci de cliquer sur \"AUTORISER\" dans la prochaine boîte de dialogue système.</string>
+    <string name="nc_permissions_video">L\'autorisation de la caméra est requise pour établir un appel vidéo. Merci de cliquer sur \"AUTORISER\" dans la prochaine boîte de dialogue système.</string>
+    <string name="nc_camera_permission_permanently_denied">Pour établir une communication vidéo, veuillez autoriser l’utilisation de la caméra dans les paramètres du système.</string>
+    <string name="nc_microphone_permission_permanently_denied">Pour établir une communication audio, veuillez autoriser l’utilisation du microphone dans les paramètres du système.</string>
     <string name="nc_permissions_settings">Ouvrir les paramètres</string>
 
     <!-- Call -->
