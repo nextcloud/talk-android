@@ -784,7 +784,8 @@ public class CallActivity extends AppCompatActivity {
                                                                 try {
                                                                     receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
                                                                 } catch (IOException e) {
-                                                                    e.printStackTrace();
+                                                                    Log.e(TAG, "Filed to process received signaling " +
+                                                                            "message");
                                                                 }
                                                             }
                                                         }
@@ -792,7 +793,6 @@ public class CallActivity extends AppCompatActivity {
 
                                                     @Override
                                                     public void onError(Throwable e) {
-                                                        Log.d("MARIO_DEBUG", e.getLocalizedMessage());
                                                         dispose(signalingDisposable);
                                                     }
 
@@ -939,7 +939,7 @@ public class CallActivity extends AppCompatActivity {
 
 
     private void deleteMagicPeerConnection(MagicPeerConnectionWrapper magicPeerConnectionWrapper) {
-        magicPeerConnectionWrapper.removePeerConnection(magicPeerConnectionWrapperList.size() == 1);
+        magicPeerConnectionWrapper.removePeerConnection();
         magicPeerConnectionWrapperList.remove(magicPeerConnectionWrapper);
     }
 
