@@ -31,6 +31,7 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Base64;
 import android.util.Log;
 
@@ -130,9 +131,9 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                             CRC32 crc32 = new CRC32();
 
 
-                            Notification.Builder notificationBuilder = new Notification.Builder(this)
-                                    .setSmallIcon(smallIcon)
+                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                                     .setLargeIcon(largeIcon)
+                                    .setSmallIcon(smallIcon)
                                     .setColor(getColor(R.color.colorPrimary))
                                     .setCategory(category)
                                     .setPriority(priority)
