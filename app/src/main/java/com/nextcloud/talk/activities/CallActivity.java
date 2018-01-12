@@ -341,7 +341,7 @@ public class CallActivity extends AppCompatActivity {
                 }
             }
 
-            if (localMediaStream.videoTracks.size() > 0) {
+            if (localMediaStream != null && localMediaStream.videoTracks.size() > 0) {
                 localMediaStream.videoTracks.get(0).setEnabled(enable);
             }
 
@@ -356,7 +356,7 @@ public class CallActivity extends AppCompatActivity {
                 message = "audioOn";
             }
 
-            if (localMediaStream.audioTracks.size() > 0) {
+            if (localMediaStream != null && localMediaStream.audioTracks.size() > 0) {
                 localMediaStream.audioTracks.get(0).setEnabled(enable);
             }
         }
