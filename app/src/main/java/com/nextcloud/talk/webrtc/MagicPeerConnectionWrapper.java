@@ -99,7 +99,7 @@ public class MagicPeerConnectionWrapper {
         }
 
         if (peerConnection != null) {
-            peerConnection.dispose();
+            peerConnection.close();
             peerConnection = null;
         }
     }
@@ -185,7 +185,7 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onStateChange() {
-            if (magicDataChannel.state().equals(DataChannel.State.OPEN) &&
+            if (magicDataChannel != null && magicDataChannel.state().equals(DataChannel.State.OPEN) &&
                     magicDataChannel.label().equals("status")) {
                 sendInitialMediaStatus();
             }

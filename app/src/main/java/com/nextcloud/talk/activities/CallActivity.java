@@ -1009,9 +1009,7 @@ public class CallActivity extends AppCompatActivity {
                 peerConnectionFactory = null;
             }
 
-
             hangupNetworkCalls();
-
         }
     }
 
