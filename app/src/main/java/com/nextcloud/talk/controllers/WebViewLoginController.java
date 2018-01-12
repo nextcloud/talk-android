@@ -196,9 +196,13 @@ public class WebViewLoginController extends BaseController {
 
                 KeyChain.choosePrivateKeyAlias(getActivity(), alias -> {
                     try {
-                        PrivateKey changPrivateKey = KeyChain.getPrivateKey(getActivity(), alias);
-                        X509Certificate[] certificates = KeyChain.getCertificateChain(getActivity(), alias);
-                        request.proceed(changPrivateKey, certificates);
+                        if (alias != null) {
+                            PrivateKey privateKey = KeyChain.getPrivateKey(getActivity(), alias);
+                            X509Certificate[] certificates = KeyChain.getCertificateChain(getActivity(), alias);
+                            request.proceed(privateKey, certificates);
+                        } else {
+                            request.cancel();
+                        }
                     } catch (KeyChainException e) {
                         Log.e(TAG, "Failed to get keys via keychain exception");
                         request.cancel();
