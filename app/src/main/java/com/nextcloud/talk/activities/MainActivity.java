@@ -96,8 +96,15 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
 
         router = Conductor.attachRouter(this, container, savedInstanceState);
 
-        if (!router.hasRootController() && sqlCipherDatabaseSource.getWritableDatabase() != null &&
-                userUtils.anyUserExists()) {
+        boolean hasDb = true;
+
+        try {
+            sqlCipherDatabaseSource.getWritableDatabase();
+        } catch (Exception exception) {
+            hasDb = false;
+        }
+
+        if (!router.hasRootController() && hasDb && userUtils.anyUserExists()) {
             router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
