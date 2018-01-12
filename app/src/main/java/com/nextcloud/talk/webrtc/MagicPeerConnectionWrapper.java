@@ -99,6 +99,7 @@ public class MagicPeerConnectionWrapper {
         }
 
         if (peerConnection != null) {
+            peerConnection.removeStream(localMediaStream);
             peerConnection.close();
             peerConnection = null;
         }

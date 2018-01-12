@@ -1009,6 +1009,12 @@ public class CallActivity extends AppCompatActivity {
                 peerConnectionFactory = null;
             }
 
+            localMediaStream.removeTrack(localAudioTrack);
+            localMediaStream.removeTrack(localVideoTrack);
+            localMediaStream = null;
+            localAudioTrack = null;
+            localVideoTrack = null;
+
             hangupNetworkCalls();
         }
     }
