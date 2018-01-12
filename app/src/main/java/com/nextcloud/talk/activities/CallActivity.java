@@ -993,8 +993,13 @@ public class CallActivity extends AppCompatActivity {
                 localMediaStream.dispose();
             }
 
-            localVideoTrack.dispose();
-            localAudioTrack.dispose();
+            if (localVideoTrack != null) {
+                localVideoTrack.dispose();
+            }
+
+            if (localAudioTrack != null) {
+                localAudioTrack.dispose();
+            }
 
             localVideoTrack = null;
             localAudioTrack = null;
