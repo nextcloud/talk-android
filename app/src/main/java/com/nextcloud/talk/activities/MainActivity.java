@@ -20,6 +20,7 @@
  */
 package com.nextcloud.talk.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -57,6 +58,7 @@ import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.requery.Persistable;
+import io.requery.android.sqlcipher.SqlCipherDatabaseSource;
 import io.requery.reactivex.ReactiveEntityStore;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -73,6 +75,8 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
     UserUtils userUtils;
     @Inject
     ReactiveEntityStore<Persistable> dataStore;
+    @Inject
+    SqlCipherDatabaseSource sqlCipherDatabaseSource;
 
     @Inject
     EventBus eventBus;
@@ -92,7 +96,8 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
 
         router = Conductor.attachRouter(this, container, savedInstanceState);
 
-        if (!router.hasRootController() && userUtils.anyUserExists()) {
+        if (!router.hasRootController() && sqlCipherDatabaseSource.getWritableDatabase() != null &&
+                userUtils.anyUserExists()) {
             router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
@@ -135,7 +140,7 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
                 issuedFor = cert.getSubjectDN().getName();
             }
 
-            String dialogText = String.format(getResources()
+            @SuppressLint("StringFormatMatches") String dialogText = String.format(getResources()
                             .getString(R.string.nc_certificate_dialog_text),
                     issuedBy, issuedFor, validFrom, validUntil);
 
