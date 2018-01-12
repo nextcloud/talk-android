@@ -228,9 +228,7 @@ public class SettingsController extends BaseController {
             getParentController().getRouter().pushController(RouterTransaction.with(new
                     SwitchAccountController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
-
         });
-
     }
 
     @Override
@@ -296,10 +294,10 @@ public class SettingsController extends BaseController {
                         if ((!TextUtils.isEmpty(displayName) && !displayName.equals(userEntity.getDisplayName())) ||
                                 needsToUpdateUserId) {
 
-                            dbQueryDisposable = userUtils.createOrUpdateUser(userEntity.getUsername(),
-                                    userEntity.getToken(),
-                                    userEntity.getBaseUrl(), displayName, null, true,
-                                    userProfileOverall.getOcs().getData().getUserId())
+                            dbQueryDisposable = userUtils.createOrUpdateUser(null,
+                                    null,
+                                    null, displayName, null, true,
+                                    userProfileOverall.getOcs().getData().getUserId(), userEntity.getId())
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(userEntityResult -> {
@@ -344,7 +342,6 @@ public class SettingsController extends BaseController {
                 }
 
             });
-
         }
 
 
