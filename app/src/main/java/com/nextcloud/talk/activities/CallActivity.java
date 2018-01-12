@@ -939,10 +939,7 @@ public class CallActivity extends AppCompatActivity {
 
 
     private void deleteMagicPeerConnection(MagicPeerConnectionWrapper magicPeerConnectionWrapper) {
-        if (magicPeerConnectionWrapper.getPeerConnection() != null) {
-            magicPeerConnectionWrapper.removeMediaStream();
-            magicPeerConnectionWrapper.getPeerConnection().close();
-        }
+        magicPeerConnectionWrapper.removePeerConnection(magicPeerConnectionWrapperList.size() == 1);
         magicPeerConnectionWrapperList.remove(magicPeerConnectionWrapper);
     }
 
@@ -1209,8 +1206,6 @@ public class CallActivity extends AppCompatActivity {
         MagicPeerConnectionWrapper magicPeerConnectionWrapper;
         if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
             runOnUiThread(() -> removeMediaStream(sessionId));
-            magicPeerConnectionWrapper.removeMediaStream();
-            magicPeerConnectionWrapper.removePeerConnection();
             deleteMagicPeerConnection(magicPeerConnectionWrapper);
         }
     }

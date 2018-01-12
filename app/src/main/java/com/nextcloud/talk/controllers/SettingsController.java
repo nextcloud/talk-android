@@ -178,7 +178,7 @@ public class SettingsController extends BaseController {
                 true);
 
         if (!TextUtils.isEmpty(getResources().getString(R.string.nc_gpl3_url))) {
-            licenceButton.setOnClickListener(view1 -> {
+            licenceButton.addPreferenceClickListener(view1 -> {
                 sourceCodeButton.setEnabled(false);
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
                         getString(R.string.nc_gpl3_url)));
@@ -190,7 +190,7 @@ public class SettingsController extends BaseController {
         }
 
         if (!TextUtils.isEmpty(getResources().getString(R.string.nc_privacy_url))) {
-            privacyButton.setOnClickListener(view12 -> {
+            privacyButton.addPreferenceClickListener(view12 -> {
                 sourceCodeButton.setEnabled(false);
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
                         getString(R.string.nc_privacy_url)));
@@ -202,7 +202,7 @@ public class SettingsController extends BaseController {
         }
 
         if (!TextUtils.isEmpty(getResources().getString(R.string.nc_source_code_url))) {
-            sourceCodeButton.setOnClickListener(view13 -> {
+            sourceCodeButton.addPreferenceClickListener(view13 -> {
                 sourceCodeButton.setEnabled(false);
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
                         getString(R.string.nc_source_code_url)));
@@ -216,14 +216,14 @@ public class SettingsController extends BaseController {
         versionInfo.setSummary("v" + BuildConfig.VERSION_NAME);
 
 
-        addAccountButton.setOnClickListener(view15 -> {
+        addAccountButton.addPreferenceClickListener(view15 -> {
             addAccountButton.setEnabled(false);
             getParentController().getRouter().pushController(RouterTransaction.with(new
                     ServerSelectionController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
         });
 
-        switchAccountButton.setOnClickListener(view16 -> {
+        switchAccountButton.addPreferenceClickListener(view16 -> {
             switchAccountButton.setEnabled(false);
             getParentController().getRouter().pushController(RouterTransaction.with(new
                     SwitchAccountController()).pushChangeHandler(new VerticalChangeHandler())
@@ -255,7 +255,7 @@ public class SettingsController extends BaseController {
 
             baseUrlTextView.setText(userEntity.getBaseUrl());
 
-            reauthorizeButton.setOnClickListener(view14 -> {
+            reauthorizeButton.addPreferenceClickListener(view14 -> {
                 reauthorizeButton.setEnabled(false);
                 getParentController().getRouter().pushController(RouterTransaction.with(
                         new WebViewLoginController(userEntity.getBaseUrl(), true))
@@ -317,7 +317,7 @@ public class SettingsController extends BaseController {
 
             removeAccountButton.setEnabled(true);
 
-            removeAccountButton.setOnClickListener(view1 -> {
+            removeAccountButton.addPreferenceClickListener(view1 -> {
                 removeAccountButton.setEnabled(false);
                 cookieManager.getCookieStore().removeAll();
                 boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(userEntity.getId());
