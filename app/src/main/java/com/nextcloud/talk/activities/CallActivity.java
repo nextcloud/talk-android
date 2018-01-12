@@ -986,17 +986,8 @@ public class CallActivity extends AppCompatActivity {
                 if (localMediaStream.audioTracks != null && localMediaStream.audioTracks.size() > 0) {
                     localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
                 }
-
-                localMediaStream.dispose();
             }
 
-            if (localVideoTrack != null) {
-                localVideoTrack.dispose();
-            }
-
-            if (localAudioTrack != null) {
-                localAudioTrack.dispose();
-            }
 
             localVideoTrack = null;
             localAudioTrack = null;
