@@ -347,7 +347,11 @@ public abstract class BottomNavigationController extends BaseController {
      * The childRouter should handleBack,
      * as this BottomNavigationController doesn't have a back step sensible to the user.
      */
-        return lastActiveChildRouter.handleBack();
+        if (lastActiveChildRouter != null) {
+            return lastActiveChildRouter.handleBack();
+        } else {
+            return false;
+        }
     }
 
     /**
