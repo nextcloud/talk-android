@@ -1016,6 +1016,8 @@ public class CallActivity extends AppCompatActivity {
                 videoCapturer = null;
             }
 
+            rootEglBase.release();
+
             hangupNetworkCalls();
 
         }
@@ -1207,6 +1209,8 @@ public class CallActivity extends AppCompatActivity {
         MagicPeerConnectionWrapper magicPeerConnectionWrapper;
         if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
             runOnUiThread(() -> removeMediaStream(sessionId));
+            magicPeerConnectionWrapper.removeMediaStream();
+            magicPeerConnectionWrapper.removePeerConnection();
             deleteMagicPeerConnection(magicPeerConnectionWrapper);
         }
     }
