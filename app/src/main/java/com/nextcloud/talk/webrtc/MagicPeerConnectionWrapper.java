@@ -93,8 +93,13 @@ public class MagicPeerConnectionWrapper {
     }
 
     public void removePeerConnection() {
+        if (magicDataChannel != null) {
+            magicDataChannel.dispose();
+            magicDataChannel = null;
+        }
+
         if (peerConnection != null) {
-            peerConnection.close();
+            peerConnection.dispose();
             peerConnection = null;
         }
     }

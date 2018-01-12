@@ -978,31 +978,37 @@ public class CallActivity extends AppCompatActivity {
         if (!dueToNetworkChange) {
             pipVideoView.release();
 
-            if (localMediaStream != null) {
-                if (localMediaStream.videoTracks != null && localMediaStream.videoTracks.size() > 0) {
-                    localMediaStream.removeTrack(localMediaStream.videoTracks.get(0));
-                }
-
-                if (localMediaStream.audioTracks != null && localMediaStream.audioTracks.size() > 0) {
-                    localMediaStream.removeTrack(localMediaStream.audioTracks.get(0));
-                }
+            if (audioSource != null) {
+                audioSource.dispose();
+                audioSource = null;
             }
 
+            if (audioManager != null) {
+                audioManager.stop();
+                audioManager = null;
+            }
 
-            localVideoTrack = null;
-            localAudioTrack = null;
-            localRenderer = null;
-            localMediaStream = null;
+            if (videoCapturer != null) {
+                try {
+                    videoCapturer.stopCapture();
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Failed to stop capturing while hanging up");
+                }
+                videoCapturer.dispose();
+                videoCapturer = null;
+            }
+
+            Log.d(TAG, "Closing video source.");
+            if (videoSource != null) {
+                videoSource.dispose();
+                videoSource = null;
+            }
 
             if (peerConnectionFactory != null) {
                 peerConnectionFactory.dispose();
                 peerConnectionFactory = null;
             }
 
-            if (videoCapturer != null) {
-                videoCapturer.dispose();
-                videoCapturer = null;
-            }
 
             hangupNetworkCalls();
 
