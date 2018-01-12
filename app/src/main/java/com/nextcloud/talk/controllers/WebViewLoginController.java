@@ -314,7 +314,7 @@ public class WebViewLoginController extends BaseController {
 
         LoginData loginData = new LoginData();
 
-        // format is xxx://login/server1:xxx&user:xxx&password:xxx
+        // format is xxx://login/server:xxx&user:xxx&password:xxx
         String data = dataString.substring(prefix.length());
 
         String[] values = data.split("&");
