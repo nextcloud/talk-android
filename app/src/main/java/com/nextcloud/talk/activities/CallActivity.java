@@ -1004,8 +1004,6 @@ public class CallActivity extends AppCompatActivity {
                 videoCapturer = null;
             }
 
-            rootEglBase.release();
-
             hangupNetworkCalls();
 
         }
