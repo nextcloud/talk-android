@@ -82,6 +82,7 @@ public class AccountVerificationController extends BaseController {
     private String username;
     private String token;
     private boolean isAccountImport;
+    private String originalProtocol;
 
     public AccountVerificationController(Bundle args) {
         super(args);
@@ -91,6 +92,9 @@ public class AccountVerificationController extends BaseController {
             token = args.getString(BundleKeys.KEY_TOKEN);
             if (args.containsKey(BundleKeys.KEY_IS_ACCOUNT_IMPORT)) {
                 isAccountImport = true;
+            }
+            if (args.containsKey(BundleKeys.KEY_ORIGINAL_PROTOCOL)) {
+                originalProtocol = args.getString(BundleKeys.KEY_ORIGINAL_PROTOCOL);
             }
         }
     }
@@ -115,7 +119,8 @@ public class AccountVerificationController extends BaseController {
 
         dispose(null);
 
-        if (isAccountImport && !baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+        if (isAccountImport && !baseUrl.startsWith("http://") && !baseUrl.startsWith("https://") || (!TextUtils
+                .isEmpty(originalProtocol) && !baseUrl.startsWith(originalProtocol))) {
             determineBaseUrlProtocol(true);
         } else {
             checkEverything();
@@ -127,6 +132,9 @@ public class AccountVerificationController extends BaseController {
         cookieManager.getCookieStore().removeAll();
 
         String queryUrl;
+
+        baseUrl = baseUrl.replace("http://", "").replace("https://", "");
+
         if (checkForcedHttps) {
             queryUrl = "https://" + baseUrl + ApiHelper.getUrlPostfixForStatus();
         } else {
@@ -188,7 +196,7 @@ public class AccountVerificationController extends BaseController {
                                 if (!TextUtils.isEmpty(displayName)) {
                                     dbQueryDisposable = userUtils.createOrUpdateUser(username, token,
                                             baseUrl, displayName, null, true,
-                                            userProfileOverall.getOcs().getData().getUserId())
+                                            userProfileOverall.getOcs().getData().getUserId(), null)
                                             .subscribeOn(Schedulers.newThread())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(userEntity -> {
@@ -300,7 +308,7 @@ public class AccountVerificationController extends BaseController {
 
                 @Override
                 public void onComplete() {
-                    new Handler().postDelayed(() -> getRouter().popToRoot(), 10000);
+                    new Handler().postDelayed(() -> getRouter().popToRoot(), 7500);
                 }
 
                 @Override
@@ -311,7 +319,7 @@ public class AccountVerificationController extends BaseController {
         } else {
             ErrorMessageHolder.getInstance().setMessageType(
                     ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT);
-            new Handler().postDelayed(() -> getRouter().popToRoot(), 10000);
+            new Handler().postDelayed(() -> getRouter().popToRoot(), 7500);
         }
     }
 

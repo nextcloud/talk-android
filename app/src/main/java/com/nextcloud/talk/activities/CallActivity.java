@@ -242,9 +242,9 @@ public class CallActivity extends AppCompatActivity {
         basicInitialization();
 
         if (!userEntity.getCurrent()) {
-            userUtils.createOrUpdateUser(userEntity.getUsername(),
-                    userEntity.getToken(), userEntity.getBaseUrl(), null,
-                    null, true, null)
+            userUtils.createOrUpdateUser(null,
+                    null, null, null,
+                    null, true, null, userEntity.getId())
                     .subscribe(new Observer<UserEntity>() {
                         @Override
                         public void onSubscribe(Disposable d) {

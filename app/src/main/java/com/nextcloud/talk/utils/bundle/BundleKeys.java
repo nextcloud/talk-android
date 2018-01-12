@@ -25,4 +25,5 @@ public class BundleKeys {
     public static final String KEY_TOKEN = "KEY_TOKEN";
     public static final String KEY_BASE_URL = "KEY_BASE_URL";
     public static final String KEY_IS_ACCOUNT_IMPORT = "IS_ACCOUNT_IMPORT";
+    public static final String KEY_ORIGINAL_PROTOCOL = "ORIGINAL_PROTOCOL";
 }

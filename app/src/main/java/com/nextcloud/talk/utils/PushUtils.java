@@ -301,11 +301,11 @@ public class PushUtils {
                                                                         .getData().getPublicKey());
                                                         pushConfigurationState.setUsesRegularPass(false);
 
-                                                        userUtils.createOrUpdateUser(userEntity.getUsername(),
-                                                                userEntity.getToken(), userEntity.getBaseUrl(),
+                                                        userUtils.createOrUpdateUser(null,
+                                                                null, null,
                                                                 userEntity.getDisplayName(),
                                                                 LoganSquare.serialize(pushConfigurationState), null,
-                                                                null)
+                                                                null, userEntity.getId())
                                                                 .subscribe(new Consumer<UserEntity>() {
                                                                     @Override
                                                                     public void accept(UserEntity userEntity) throws Exception {

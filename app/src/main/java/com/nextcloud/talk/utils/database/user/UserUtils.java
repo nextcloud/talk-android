@@ -148,13 +148,20 @@ public class UserUtils {
 
     }
 
-    public Observable<UserEntity> createOrUpdateUser(String username, String token, String serverUrl,
+    public Observable<UserEntity> createOrUpdateUser(@Nullable String username, @Nullable String token, @Nullable String
+                                                     serverUrl,
                                                      @Nullable String displayName,
                                                      @Nullable String pushConfigurationState,
                                                      @Nullable Boolean currentUser,
-                                                     @Nullable String userId) {
-        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
-                and(UserEntity.BASE_URL.eq(serverUrl.toLowerCase()))).limit(1).get();
+                                                     @Nullable String userId,
+                                                     @Nullable Long internalId) {
+        Result findUserQueryResult;
+        if (internalId == null) {
+            findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
+                    and(UserEntity.BASE_URL.eq(serverUrl.toLowerCase()))).limit(1).get();
+        } else {
+            findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)).get();
+        }
 
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
 
@@ -183,7 +190,7 @@ public class UserUtils {
                 user.setUserId(userId);
             }
 
-            if (!token.equals(user.getToken())) {
+            if (token != null && !token.equals(user.getToken())) {
                 user.setToken(token);
             }
 

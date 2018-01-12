@@ -20,9 +20,9 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -34,13 +34,14 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:indeterminate="true"
-        android:indeterminateTintMode="src_in"
-        android:indeterminateTint="@color/colorPrimary"/>
+        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTintMode="src_in"/>
 
     <WebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:keepScreenOn="true"
         android:visibility="invisible">
 
     </WebView>

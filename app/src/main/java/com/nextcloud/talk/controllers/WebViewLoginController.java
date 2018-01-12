@@ -280,29 +280,50 @@ public class WebViewLoginController extends BaseController {
                     getRouter().popToRoot();
                 }
 
-                // We use the URL user entered because one provided by the server is NOT reliable
                 ErrorMessageHolder.ErrorMessageType finalErrorMessageType = errorMessageType;
-                userQueryDisposable = userUtils.createOrUpdateUser(loginData.getUsername(), loginData.getToken(),
-                        loginData.getServerUrl(), null, null, true,
-                        null).
-                        subscribe(userEntity -> {
-                                    cookieManager.getCookieStore().removeAll();
-                                    if (!isPasswordUpdate && finalErrorMessageType == null) {
-                                        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                                        bundleBuilder.putString(BundleKeys.KEY_USERNAME, userEntity.getUsername());
-                                        bundleBuilder.putString(BundleKeys.KEY_TOKEN, userEntity.getToken());
-                                        bundleBuilder.putString(BundleKeys.KEY_BASE_URL, userEntity.getBaseUrl());
-                                        getRouter().pushController(RouterTransaction.with(new AccountVerificationController
-                                                (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
-                                                .popChangeHandler(new HorizontalChangeHandler()));
-                                    } else {
-                                        if (finalErrorMessageType != null) {
-                                            ErrorMessageHolder.getInstance().setMessageType(finalErrorMessageType);
-                                        }
-                                        getRouter().popToRoot();
-                                    }
-                                }, throwable -> dispose(),
-                                this::dispose);
+                cookieManager.getCookieStore().removeAll();
+
+                if (!isPasswordUpdate && finalErrorMessageType == null) {
+                    BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                    bundleBuilder.putString(BundleKeys.KEY_USERNAME, loginData.getUsername());
+                    bundleBuilder.putString(BundleKeys.KEY_TOKEN, loginData.getToken());
+                    bundleBuilder.putString(BundleKeys.KEY_BASE_URL, loginData.getServerUrl());
+                    String protocol = "";
+
+                    if (baseUrl.startsWith("http://")) {
+                        protocol = "http://";
+                    } else if (baseUrl.startsWith("https://")) {
+                        protocol = "https://";
+                    }
+
+                    if (!TextUtils.isEmpty(protocol)) {
+                        bundleBuilder.putString(BundleKeys.KEY_ORIGINAL_PROTOCOL, protocol);
+                    }
+                    getRouter().pushController(RouterTransaction.with(new AccountVerificationController
+                            (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
+                } else {
+                    if (isPasswordUpdate) {
+                        if (currentUser != null) {
+                            userQueryDisposable = userUtils.createOrUpdateUser(null, null,
+                                    null, null, null, true,
+                                    null, currentUser.getId()).
+                                    subscribe(userEntity -> {
+                                                if (finalErrorMessageType != null) {
+                                                    ErrorMessageHolder.getInstance().setMessageType(finalErrorMessageType);
+                                                }
+                                                getRouter().popToRoot();
+                                            }, throwable -> dispose(),
+                                            this::dispose);
+                        }
+                    } else {
+                        if (finalErrorMessageType != null) {
+                            ErrorMessageHolder.getInstance().setMessageType(finalErrorMessageType);
+                        }
+                        getRouter().popToRoot();
+
+                    }
+                }
             }
         }
     }
