@@ -428,7 +428,14 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void createCameraEnumerator() {
-        if (Camera2Enumerator.isSupported(this)) {
+        boolean camera2EnumeratorIsSupported = false;
+        try {
+            camera2EnumeratorIsSupported = Camera2Enumerator.isSupported(this);
+        } catch (final Throwable throwable) {
+            Log.w(TAG, "Camera2Enumator threw an error");
+        }
+
+        if (camera2EnumeratorIsSupported) {
             cameraEnumerator = new Camera2Enumerator(this);
         } else {
             cameraEnumerator = new Camera1Enumerator(true);
@@ -547,14 +554,6 @@ public class CallActivity extends AppCompatActivity {
     private void basicInitialization() {
         rootEglBase = EglBase.create();
         createCameraEnumerator();
-
-        //Initialize PeerConnectionFactory globals.
-        PeerConnectionFactory.InitializationOptions initializationOptions = PeerConnectionFactory.InitializationOptions
-                .builder(this)
-                .setEnableVideoHwAcceleration(true)
-                .setFieldTrials(null)
-                .createInitializationOptions();
-        PeerConnectionFactory.initialize(initializationOptions);
 
         //Create a new PeerConnectionFactory instance.
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
@@ -968,55 +967,48 @@ public class CallActivity extends AppCompatActivity {
 
         leavingCall = true;
         inCall = false;
-        dispose(null);
+
+        if (videoCapturer != null) {
+            try {
+                videoCapturer.stopCapture();
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Failed to stop capturing while hanging up");
+            }
+            videoCapturer.dispose();
+            videoCapturer = null;
+        }
 
         for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
             endPeerConnection(magicPeerConnectionWrapperList.get(i).getSessionId());
 
         }
 
-        if (!dueToNetworkChange) {
-            pipVideoView.release();
+        pipVideoView.release();
 
-            if (audioSource != null) {
-                audioSource.dispose();
-                audioSource = null;
-            }
-
-            if (audioManager != null) {
-                audioManager.stop();
-                audioManager = null;
-            }
-
-            if (videoCapturer != null) {
-                try {
-                    videoCapturer.stopCapture();
-                } catch (InterruptedException e) {
-                    Log.e(TAG, "Failed to stop capturing while hanging up");
-                }
-                videoCapturer.dispose();
-                videoCapturer = null;
-            }
-
-            Log.d(TAG, "Closing video source.");
-            if (videoSource != null) {
-                videoSource.dispose();
-                videoSource = null;
-            }
-
-            if (peerConnectionFactory != null) {
-                peerConnectionFactory.dispose();
-                peerConnectionFactory = null;
-            }
-
-            localMediaStream.removeTrack(localAudioTrack);
-            localMediaStream.removeTrack(localVideoTrack);
-            localMediaStream = null;
-            localAudioTrack = null;
-            localVideoTrack = null;
-
-            hangupNetworkCalls();
+        if (audioSource != null) {
+            audioSource.dispose();
+            audioSource = null;
         }
+
+        if (audioManager != null) {
+            audioManager.stop();
+            audioManager = null;
+        }
+
+        if (videoSource != null) {
+            videoSource = null;
+        }
+
+        if (peerConnectionFactory != null) {
+            peerConnectionFactory.dispose();
+            peerConnectionFactory = null;
+        }
+
+        localMediaStream = null;
+        localAudioTrack = null;
+        localVideoTrack = null;
+
+        hangupNetworkCalls();
     }
 
     private void hangupNetworkCalls() {
@@ -1131,6 +1123,7 @@ public class CallActivity extends AppCompatActivity {
             hangup(false);
         }
         //this.unregisterReceiver(networkBroadcastReceier);
+        rootEglBase.release();
         super.onDestroy();
     }
 
