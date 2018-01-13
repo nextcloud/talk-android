@@ -54,6 +54,9 @@ public class MagicWebRtcLists {
     }};
 
     public static Set<String> HARDWARE_ACCELERATION_DEVICE_BLACKLIST = new HashSet<String>() {{
+        add("GT-I9100"); // Samsung Galaxy S2
+        add("GT-N8013"); // Samsung Galaxy Note 10.1
+        add("SM-G930F"); // Samsung Galaxy S7
     }};
 
     public static Set<String> HARDWARE_ACCELERATION_VENDOR_BLACKLIST = new HashSet<String>() {{
