@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -75,6 +76,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
+import com.nextcloud.talk.webrtc.MagicWebRtcLists;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -438,7 +440,8 @@ public class CallActivity extends AppCompatActivity {
         if (camera2EnumeratorIsSupported) {
             cameraEnumerator = new Camera2Enumerator(this);
         } else {
-            cameraEnumerator = new Camera1Enumerator(true);
+            cameraEnumerator = new Camera1Enumerator(!MagicWebRtcLists.HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build
+                    .MANUFACTURER.toLowerCase()));
         }
     }
 
@@ -559,8 +562,10 @@ public class CallActivity extends AppCompatActivity {
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
         peerConnectionFactory = new PeerConnectionFactory(options);
 
-        peerConnectionFactory.setVideoHwAccelerationOptions(rootEglBase.getEglBaseContext(),
-                rootEglBase.getEglBaseContext());
+        if (!MagicWebRtcLists.HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build.MANUFACTURER.toLowerCase())) {
+            peerConnectionFactory.setVideoHwAccelerationOptions(rootEglBase.getEglBaseContext(),
+                    rootEglBase.getEglBaseContext());
+        }
 
         //Create MediaConstraints - Will be useful for specifying video and audio constraints.
         audioConstraints = new MediaConstraints();
@@ -1000,7 +1005,6 @@ public class CallActivity extends AppCompatActivity {
         }
 
         if (peerConnectionFactory != null) {
-            peerConnectionFactory.dispose();
             peerConnectionFactory = null;
         }
 
@@ -1115,6 +1119,8 @@ public class CallActivity extends AppCompatActivity {
                 Log.d(TAG, "Failed to create a new video view");
             }
         }
+
+        callControls.setZ(100.0f);
     }
 
     @Override
@@ -1212,6 +1218,8 @@ public class CallActivity extends AppCompatActivity {
                 remoteRenderersLayout.invalidate();
             }
         }
+
+        callControls.setZ(100.0f);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
