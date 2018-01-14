@@ -504,6 +504,10 @@ public class CallActivity extends AppCompatActivity {
                 onMicrophoneClick();
             }
 
+            if (cameraEnumerator.getDeviceNames().length == 0) {
+                cameraControlButton.setVisibility(View.GONE);
+            }
+
             if (cameraSwitchButton != null && cameraEnumerator.getDeviceNames().length > 1) {
                 cameraSwitchButton.setVisibility(View.VISIBLE);
             }
@@ -516,6 +520,10 @@ public class CallActivity extends AppCompatActivity {
             if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
                 if (!videoOn) {
                     onCameraClick();
+                }
+
+                if (cameraEnumerator.getDeviceNames().length == 0) {
+                    cameraControlButton.setVisibility(View.GONE);
                 }
 
                 if (cameraSwitchButton != null && cameraEnumerator.getDeviceNames().length > 1) {
@@ -606,16 +614,19 @@ public class CallActivity extends AppCompatActivity {
         videoCapturer = createCameraCapturer(cameraEnumerator);
 
         //Create a VideoSource instance
-        videoSource = peerConnectionFactory.createVideoSource(videoCapturer);
-        localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
-        localMediaStream.addTrack(localVideoTrack);
-        localVideoTrack.setEnabled(false);
+        if (videoCapturer != null) {
+            videoSource = peerConnectionFactory.createVideoSource(videoCapturer);
+            localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
+            localMediaStream.addTrack(localVideoTrack);
+            localVideoTrack.setEnabled(false);
 
-        //create a videoRenderer based on SurfaceViewRenderer instance
-        localRenderer = new VideoRenderer(pipVideoView);
-        // And finally, with our VideoRenderer ready, we
-        // can add our renderer to the VideoTrack.
-        localVideoTrack.addRenderer(localRenderer);
+            //create a videoRenderer based on SurfaceViewRenderer instance
+            localRenderer = new VideoRenderer(pipVideoView);
+            // And finally, with our VideoRenderer ready, we
+            // can add our renderer to the VideoTrack.
+            localVideoTrack.addRenderer(localRenderer);
+        }
+
     }
 
     private void microphoneInitialization() {
