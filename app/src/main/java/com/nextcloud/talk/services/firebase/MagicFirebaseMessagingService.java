@@ -145,6 +145,8 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                                     .setAutoCancel(true);
 
                             if (Build.VERSION.SDK_INT >= 23) {
+                                // This method should exist since API 21, but some phones don't have it
+                                // So as a safeguard, we don't use it until 23
                                 notificationBuilder.setColor(getResources().getColor(R.color.colorPrimary));
                             } else {
                                 BitmapDrawable tintedDrawable = (BitmapDrawable) ColorUtils.getTintedDrawable(getResources(), smallIcon,
