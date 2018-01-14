@@ -336,10 +336,12 @@ public class CallActivity extends AppCompatActivity {
                 message = "videoOn";
                 startVideoCapture();
             } else {
-                try {
-                    videoCapturer.stopCapture();
-                } catch (InterruptedException e) {
-                    Log.d(TAG, "Failed to stop capturing video while sensor is near the ear");
+                if (videoCapturer != null) {
+                    try {
+                        videoCapturer.stopCapture();
+                    } catch (InterruptedException e) {
+                        Log.d(TAG, "Failed to stop capturing video while sensor is near the ear");
+                    }
                 }
             }
 
