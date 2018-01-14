@@ -22,6 +22,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:keepScreenOn="true"
                 android:orientation="vertical">
 
     <ProgressBar
@@ -41,7 +42,6 @@
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:keepScreenOn="true"
         android:visibility="invisible">
 
     </WebView>
