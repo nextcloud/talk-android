@@ -28,10 +28,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Base64;
 import android.util.Log;
 
@@ -43,6 +44,7 @@ import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.api.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.api.models.json.push.PushMessage;
 import com.nextcloud.talk.models.SignatureVerification;
+import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
@@ -130,11 +132,9 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                             largeIcon = BitmapFactory.decodeResource(getResources(), smallIcon);
                             CRC32 crc32 = new CRC32();
 
-
-                            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                            Notification.Builder notificationBuilder = new Notification.Builder(this)
                                     .setLargeIcon(largeIcon)
                                     .setSmallIcon(smallIcon)
-                                    .setColor(getColor(R.color.colorPrimary))
                                     .setCategory(category)
                                     .setPriority(priority)
                                     .setWhen(Calendar.getInstance().getTimeInMillis())
@@ -143,6 +143,14 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                                     .setContentTitle(decryptedPushMessage.getSubject())
                                     .setSound(soundUri)
                                     .setAutoCancel(true);
+
+                            if (Build.VERSION.SDK_INT >= 23) {
+                                notificationBuilder.setColor(getResources().getColor(R.color.colorPrimary));
+                            } else {
+                                BitmapDrawable tintedDrawable = (BitmapDrawable) ColorUtils.getTintedDrawable(getResources(), smallIcon,
+                                        R.color.colorPrimary);
+                                notificationBuilder.setLargeIcon(tintedDrawable.getBitmap());
+                            }
 
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 

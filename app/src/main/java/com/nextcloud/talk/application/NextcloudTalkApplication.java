@@ -91,8 +91,7 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     //region private methods
     // Solution inspired by https://stackoverflow.com/questions/34936590/why-isnt-my-vector-drawable-scaling-as-expected
     private void useCompatVectorIfNeeded() {
-        int sdkInt = Build.VERSION.SDK_INT;
-        if (sdkInt == 21 || sdkInt == 22) {
+        if (Build.VERSION.SDK_INT < 23) {
             try {
                 @SuppressLint("RestrictedApi") AppCompatDrawableManager drawableManager = AppCompatDrawableManager.get();
                 Class<?> inflateDelegateClass = Class.forName("android.support.v7.widget.AppCompatDrawableManager$InflateDelegate");
