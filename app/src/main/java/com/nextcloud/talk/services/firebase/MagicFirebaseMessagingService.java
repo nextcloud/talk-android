@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -44,7 +43,6 @@ import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.api.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.api.models.json.push.PushMessage;
 import com.nextcloud.talk.models.SignatureVerification;
-import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
@@ -148,10 +146,6 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                                 // This method should exist since API 21, but some phones don't have it
                                 // So as a safeguard, we don't use it until 23
                                 notificationBuilder.setColor(getResources().getColor(R.color.colorPrimary));
-                            } else {
-                                BitmapDrawable tintedDrawable = (BitmapDrawable) ColorUtils.getTintedDrawable(getResources(), smallIcon,
-                                        R.color.colorPrimary);
-                                notificationBuilder.setLargeIcon(tintedDrawable.getBitmap());
                             }
 
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
