@@ -195,7 +195,9 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                             crc32 = new CRC32();
                             crc32.update(stringForCrc.getBytes());
 
-                            notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
+                            if (notificationManager != null) {
+                                notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
+                            }
                         }
 
                     }
