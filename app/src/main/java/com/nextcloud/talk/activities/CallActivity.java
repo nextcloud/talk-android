@@ -517,13 +517,14 @@ public class CallActivity extends AppCompatActivity {
             }
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this,
                 PERMISSIONS_CALL)) {
+
+            if (cameraEnumerator.getDeviceNames().length == 0) {
+                cameraControlButton.setVisibility(View.GONE);
+            }
+
             if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
                 if (!videoOn) {
                     onCameraClick();
-                }
-
-                if (cameraEnumerator.getDeviceNames().length == 0) {
-                    cameraControlButton.setVisibility(View.GONE);
                 }
 
                 if (cameraSwitchButton != null && cameraEnumerator.getDeviceNames().length > 1) {
@@ -534,6 +535,8 @@ public class CallActivity extends AppCompatActivity {
                 if (cameraSwitchButton != null) {
                     cameraSwitchButton.setVisibility(View.INVISIBLE);
                 }
+
+                cameraControlButton.setVisibility(View.GONE);
             }
 
             if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
@@ -559,6 +562,11 @@ public class CallActivity extends AppCompatActivity {
         if (cameraSwitchButton != null) {
             cameraSwitchButton.setVisibility(View.INVISIBLE);
         }
+
+        if (cameraEnumerator.getDeviceNames().length == 0) {
+            cameraControlButton.setVisibility(View.GONE);
+        }
+
         if (!inCall) {
             startCall();
         }
