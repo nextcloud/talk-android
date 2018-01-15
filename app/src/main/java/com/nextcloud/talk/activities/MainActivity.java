@@ -104,15 +104,23 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
             hasDb = false;
         }
 
-        if (!router.hasRootController() && hasDb && userUtils.anyUserExists()) {
-            sqlCipherDatabaseSource.close();
-            router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler()));
-        } else if (!router.hasRootController()) {
-            router.setRoot(RouterTransaction.with(new ServerSelectionController())
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler()));
+        if (!router.hasRootController()) {
+            if (hasDb) {
+                if (userUtils.anyUserExists()) {
+                    router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
+                } else {
+                    router.setRoot(RouterTransaction.with(new ServerSelectionController())
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
+                }
+            } else {
+                router.setRoot(RouterTransaction.with(new ServerSelectionController())
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler()));
+
+            }
         }
     }
 

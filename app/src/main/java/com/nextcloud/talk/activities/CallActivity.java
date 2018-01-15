@@ -493,8 +493,13 @@ public class CallActivity extends AppCompatActivity {
         pipVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
     }
 
-    @AfterPermissionGranted(100)
     private void checkPermissions() {
+        EffortlessPermissions.requestPermissions(this, R.string.nc_permissions,
+                100, PERMISSIONS_CALL);
+    }
+
+    @AfterPermissionGranted(100)
+    private void onPermissionsGranted() {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
             if (!videoOn) {
                 onCameraClick();
@@ -517,58 +522,57 @@ public class CallActivity extends AppCompatActivity {
             }
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this,
                 PERMISSIONS_CALL)) {
+            checkIfSomeAreApproved();
+        }
+    }
 
-            if (cameraEnumerator.getDeviceNames().length == 0) {
-                cameraControlButton.setVisibility(View.GONE);
+    private void checkIfSomeAreApproved() {
+        if (cameraEnumerator.getDeviceNames().length == 0) {
+            cameraControlButton.setVisibility(View.GONE);
+        }
+
+        if (cameraSwitchButton != null && cameraEnumerator.getDeviceNames().length > 1) {
+            cameraSwitchButton.setVisibility(View.VISIBLE);
+        }
+
+        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
+            if (!videoOn) {
+                onCameraClick();
             }
 
-            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
-                if (!videoOn) {
-                    onCameraClick();
-                }
-
-                if (cameraSwitchButton != null && cameraEnumerator.getDeviceNames().length > 1) {
-                    cameraSwitchButton.setVisibility(View.VISIBLE);
-                }
-            } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
-                cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
-                if (cameraSwitchButton != null) {
-                    cameraSwitchButton.setVisibility(View.INVISIBLE);
-                }
-
-                cameraControlButton.setVisibility(View.GONE);
+        } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
+            cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
+            if (cameraSwitchButton != null) {
+                cameraSwitchButton.setVisibility(View.INVISIBLE);
             }
 
-            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
-                if (!audioOn) {
-                    onMicrophoneClick();
-                }
-            } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
-                microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
-            }
+            cameraControlButton.setVisibility(View.GONE);
+        }
 
-            if (!inCall) {
-                startCall();
+        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+            if (!audioOn) {
+                onMicrophoneClick();
             }
+        } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+            microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+        }
 
-        } else {
-            EffortlessPermissions.requestPermissions(this, R.string.nc_permissions,
-                    100, PERMISSIONS_CALL);
+        if (!inCall) {
+            startCall();
         }
     }
 
     @AfterPermissionDenied(100)
     private void onPermissionsDenied() {
-        if (cameraSwitchButton != null) {
+        if (cameraEnumerator.getDeviceNames().length == 0) {
+            cameraControlButton.setVisibility(View.GONE);
+        } else if (cameraEnumerator.getDeviceNames().length == 1) {
             cameraSwitchButton.setVisibility(View.INVISIBLE);
         }
 
-        if (cameraEnumerator.getDeviceNames().length == 0) {
-            cameraControlButton.setVisibility(View.GONE);
-        }
-
-        if (!inCall) {
-            startCall();
+        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) ||
+                EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+            checkIfSomeAreApproved();
         }
     }
 
