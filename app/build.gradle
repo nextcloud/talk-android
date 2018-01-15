@@ -92,7 +92,7 @@ dependencies {
 
     implementation 'io.requery:requery:1.4.1'
     implementation 'io.requery:requery-android:1.4.1'
-    implementation 'net.zetetic:android-database-sqlcipher:3.5.7'
+    implementation 'net.zetetic:android-database-sqlcipher:3.5.9'
     annotationProcessor 'io.requery:requery-processor:1.4.1'
 
     compile 'org.parceler:parceler-api:1.1.9'

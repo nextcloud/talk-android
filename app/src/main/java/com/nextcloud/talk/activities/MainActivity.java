@@ -105,6 +105,7 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         }
 
         if (!router.hasRootController() && hasDb && userUtils.anyUserExists()) {
+            sqlCipherDatabaseSource.close();
             router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
