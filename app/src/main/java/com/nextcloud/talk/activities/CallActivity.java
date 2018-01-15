@@ -542,7 +542,7 @@ public class CallActivity extends AppCompatActivity {
                 onCameraClick();
             }
 
-        } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
+        } else {
             cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
             if (cameraSwitchButton != null) {
                 cameraSwitchButton.setVisibility(View.INVISIBLE);
@@ -555,7 +555,7 @@ public class CallActivity extends AppCompatActivity {
             if (!audioOn) {
                 onMicrophoneClick();
             }
-        } else if (!EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+        } else {
             microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
         }
 
