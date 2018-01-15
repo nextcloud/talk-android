@@ -428,7 +428,9 @@ public class CallActivity extends AppCompatActivity {
     @OnClick(R.id.call_control_switch_camera)
     public void switchCamera() {
         CameraVideoCapturer cameraVideoCapturer = (CameraVideoCapturer) videoCapturer;
-        cameraVideoCapturer.switchCamera(null);
+        if (cameraVideoCapturer != null) {
+            cameraVideoCapturer.switchCamera(null);
+        }
     }
 
     private void createCameraEnumerator() {
