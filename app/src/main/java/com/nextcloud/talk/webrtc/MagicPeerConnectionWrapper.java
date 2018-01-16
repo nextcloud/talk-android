@@ -111,12 +111,13 @@ public class MagicPeerConnectionWrapper {
 
     public void drainIceCandidates() {
 
-        for (IceCandidate iceCandidate : iceCandidates) {
-            peerConnection.addIceCandidate(iceCandidate);
+        if (peerConnection != null) {
+            for (IceCandidate iceCandidate : iceCandidates) {
+                peerConnection.addIceCandidate(iceCandidate);
+            }
+
+            iceCandidates = new ArrayList<>();
         }
-
-        iceCandidates = new ArrayList<>();
-
     }
 
     public MagicSdpObserver getMagicSdpObserver() {
@@ -124,10 +125,12 @@ public class MagicPeerConnectionWrapper {
     }
 
     public void addCandidate(IceCandidate iceCandidate) {
-        if (peerConnection.getRemoteDescription() != null) {
-            peerConnection.addIceCandidate(iceCandidate);
-        } else {
-            iceCandidates.add(iceCandidate);
+        if (peerConnection != null) {
+            if (peerConnection.getRemoteDescription() != null) {
+                peerConnection.addIceCandidate(iceCandidate);
+            } else {
+                iceCandidates.add(iceCandidate);
+            }
         }
     }
 
@@ -338,7 +341,9 @@ public class MagicPeerConnectionWrapper {
 
             EventBus.getDefault().post(new SessionDescriptionSendEvent(sessionDescriptionWithPreferredCodec, sessionId,
                     sessionDescription.type.canonicalForm().toLowerCase(), null));
-            peerConnection.setLocalDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
+            if (peerConnection != null) {
+                peerConnection.setLocalDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
+            }
         }
 
         @Override
