@@ -838,7 +838,6 @@ public class CallActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        Log.d("MARIO_DEBUG", e.getLocalizedMessage());
                                     }
 
                                     @Override
