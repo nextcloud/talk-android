@@ -204,7 +204,9 @@ public class ServerSelectionController extends BaseController {
 
         serverEntry.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
-        providersTextView.setVisibility(View.INVISIBLE);
+        if (providersTextView.getVisibility() != View.GONE) {
+            providersTextView.setVisibility(View.INVISIBLE);
+        }
 
         if (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);
@@ -228,7 +230,6 @@ public class ServerSelectionController extends BaseController {
 
                     String versionString = status.getVersion().substring(0, status.getVersion().indexOf("."));
                     int version = Integer.parseInt(versionString);
-
                     if (status.isInstalled() && !status.isMaintenance() &&
                             !status.isNeedsUpgrade() &&
                             version >= 13) {
@@ -278,14 +279,18 @@ public class ServerSelectionController extends BaseController {
                         }
 
                         progressBar.setVisibility(View.INVISIBLE);
-                        providersTextView.setVisibility(View.VISIBLE);
+                        if (providersTextView.getVisibility() != View.GONE) {
+                            providersTextView.setVisibility(View.VISIBLE);
+                        }
                         toggleProceedButton(false);
 
                         dispose();
                     }
                 }, () -> {
                     progressBar.setVisibility(View.INVISIBLE);
-                    providersTextView.setVisibility(View.VISIBLE);
+                    if (providersTextView.getVisibility() != View.GONE) {
+                        providersTextView.setVisibility(View.VISIBLE);
+                    }
                     dispose();
                 });
     }
