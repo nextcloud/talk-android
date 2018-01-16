@@ -34,6 +34,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -201,6 +202,8 @@ public class CallActivity extends AppCompatActivity {
 
     private BroadcastReceiver networkBroadcastReceier;
 
+    private Handler handler = new Handler();
+
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
         flags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
@@ -333,9 +336,11 @@ public class CallActivity extends AppCompatActivity {
         if (video) {
             message = "videoOff";
             if (enable) {
+                microphoneControlButton.setAlpha(1.0f);
                 message = "videoOn";
                 startVideoCapture();
             } else {
+                cameraControlButton.setAlpha(0.7f);
                 if (videoCapturer != null) {
                     try {
                         videoCapturer.stopCapture();
@@ -358,6 +363,9 @@ public class CallActivity extends AppCompatActivity {
             message = "audioOff";
             if (enable) {
                 message = "audioOn";
+                microphoneControlButton.setAlpha(1.0f);
+            } else {
+                microphoneControlButton.setAlpha(0.7f);
             }
 
             if (localMediaStream != null && localMediaStream.audioTracks.size() > 0) {
@@ -541,14 +549,11 @@ public class CallActivity extends AppCompatActivity {
             if (!videoOn) {
                 onCameraClick();
             }
-
         } else {
             cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
             if (cameraSwitchButton != null) {
-                cameraSwitchButton.setVisibility(View.INVISIBLE);
+                cameraSwitchButton.setVisibility(View.GONE);
             }
-
-            cameraControlButton.setVisibility(View.GONE);
         }
 
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
@@ -569,7 +574,7 @@ public class CallActivity extends AppCompatActivity {
         if (cameraEnumerator.getDeviceNames().length == 0) {
             cameraControlButton.setVisibility(View.GONE);
         } else if (cameraEnumerator.getDeviceNames().length == 1) {
-            cameraSwitchButton.setVisibility(View.INVISIBLE);
+            cameraSwitchButton.setVisibility(View.GONE);
         }
 
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) ||
@@ -653,16 +658,14 @@ public class CallActivity extends AppCompatActivity {
 
     private void startCall() {
         inCall = true;
-        animateCallControls(false, 5000);
+        animateCallControls(false, 7500);
         startPullingSignalingMessages(false);
         //registerNetworkReceiver();
     }
 
     @OnClick({R.id.pip_video_view, R.id.remote_renderers_layout})
     public void showCallControls() {
-        if (callControls.getVisibility() != View.VISIBLE) {
-            animateCallControls(true, 0);
-        }
+        animateCallControls(true, 0);
     }
 
     public void startPullingSignalingMessages(boolean restart) {
@@ -1368,11 +1371,19 @@ public class CallActivity extends AppCompatActivity {
         long duration;
 
         if (show) {
+            handler.removeCallbacksAndMessages(null);
             alpha = 1.0f;
             duration = 1000;
+            if (callControls.getVisibility() != View.VISIBLE) {
+                callControls.setAlpha(0.0f);
+                callControls.setVisibility(View.VISIBLE);
+            } else {
+                handler.postDelayed(() -> animateCallControls(false, 0), 5000);
+                return;
+            }
         } else {
             alpha = 0.0f;
-            duration = 2500;
+            duration = 1000;
         }
 
         callControls.animate()
@@ -1388,8 +1399,7 @@ public class CallActivity extends AppCompatActivity {
                             if (!show) {
                                 callControls.setVisibility(View.INVISIBLE);
                             } else {
-                                callControls.setVisibility(View.VISIBLE);
-                                animateCallControls(false, 10000);
+                                handler.postDelayed(() -> animateCallControls(false, 0), 5000);
                             }
                         }
                     }
