@@ -74,21 +74,25 @@ public class MagicPeerConnectionWrapper {
         this.localSession = localSession;
         this.localMediaStream = mediaStream;
 
-        peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
-                new MagicPeerConnectionObserver());
-        peerConnection.addStream(localMediaStream);
-
         this.sessionId = sessionId;
         this.mediaConstraints = mediaConstraints;
 
         magicSdpObserver = new MagicSdpObserver();
         hasInitiated = sessionId.compareTo(localSession) < 0;
-        if (hasInitiated) {
-            DataChannel.Init init = new DataChannel.Init();
-            init.negotiated = false;
-            magicDataChannel = peerConnection.createDataChannel("status", init);
-            magicDataChannel.registerObserver(new MagicDataChannelObserver());
-            peerConnection.createOffer(magicSdpObserver, mediaConstraints);
+
+        peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
+                new MagicPeerConnectionObserver());
+
+        if (peerConnection != null) {
+            peerConnection.addStream(localMediaStream);
+
+            if (hasInitiated) {
+                DataChannel.Init init = new DataChannel.Init();
+                init.negotiated = false;
+                magicDataChannel = peerConnection.createDataChannel("status", init);
+                magicDataChannel.registerObserver(new MagicDataChannelObserver());
+                peerConnection.createOffer(magicSdpObserver, mediaConstraints);
+            }
         }
     }
 
