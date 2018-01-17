@@ -125,12 +125,10 @@ public class MagicPeerConnectionWrapper {
     }
 
     public void addCandidate(IceCandidate iceCandidate) {
-        if (peerConnection != null) {
-            if (peerConnection.getRemoteDescription() != null) {
-                peerConnection.addIceCandidate(iceCandidate);
-            } else {
-                iceCandidates.add(iceCandidate);
-            }
+        if (peerConnection != null && peerConnection.getRemoteDescription() != null) {
+            peerConnection.addIceCandidate(iceCandidate);
+        } else {
+            iceCandidates.add(iceCandidate);
         }
     }
 
