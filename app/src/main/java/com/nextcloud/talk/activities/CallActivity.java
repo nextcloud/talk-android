@@ -336,7 +336,7 @@ public class CallActivity extends AppCompatActivity {
         if (video) {
             message = "videoOff";
             if (enable) {
-                microphoneControlButton.setAlpha(1.0f);
+                cameraControlButton.setAlpha(1.0f);
                 message = "videoOn";
                 startVideoCapture();
             } else {
