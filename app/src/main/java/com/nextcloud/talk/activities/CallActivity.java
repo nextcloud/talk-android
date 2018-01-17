@@ -27,6 +27,7 @@ package com.nextcloud.talk.activities;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +41,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -73,6 +75,7 @@ import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
@@ -120,6 +123,7 @@ import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -204,12 +208,16 @@ public class CallActivity extends AppCompatActivity {
 
     private Handler handler = new Handler();
 
+    private boolean isPTTActive = false;
+    private PulseAnimation pulseAnimation;
+
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
         flags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         return flags;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,6 +232,12 @@ public class CallActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_call);
         ButterKnife.bind(this);
+
+        microphoneControlButton.setOnTouchListener(new microphoneButtonTouchListener());
+        pulseAnimation = PulseAnimation.create().with(microphoneControlButton)
+                .setDuration(310)
+                .setRepeatCount(PulseAnimation.INFINITE)
+                .setRepeatMode(PulseAnimation.REVERSE);
 
         roomToken = getIntent().getExtras().getString("roomToken", "");
         userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable("userEntity"));
@@ -380,18 +394,37 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    @OnLongClick(R.id.call_control_microphone)
+    public boolean onMicrophoneLongClick() {
+        if (!audioOn) {
+            handler.removeCallbacksAndMessages(null);
+            isPTTActive = true;
+            callControls.setVisibility(View.VISIBLE);
+        }
+
+        onMicrophoneClick();
+        return true;
+    }
+
     @OnClick(R.id.call_control_microphone)
     public void onMicrophoneClick() {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
-            audioOn = !audioOn;
+            if (!isPTTActive) {
+                audioOn = !audioOn;
 
-            if (audioOn) {
-                microphoneControlButton.setImageResource(R.drawable.ic_mic_white_24px);
+                if (audioOn) {
+                    microphoneControlButton.setImageResource(R.drawable.ic_mic_white_24px);
+                } else {
+                    microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+                }
+
+                toggleMedia(audioOn, false);
             } else {
-                microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+                microphoneControlButton.setImageResource(R.drawable.ic_mic_white_24px);
+                pulseAnimation.start();
+                toggleMedia(true, false);
             }
 
-            toggleMedia(audioOn, false);
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_MICROPHONE)) {
             // Microphone permission is permanently denied so we cannot request it normally.
             OpenAppDetailsDialogFragment.show(
@@ -658,7 +691,9 @@ public class CallActivity extends AppCompatActivity {
 
     private void startCall() {
         inCall = true;
-        animateCallControls(false, 7500);
+        if (!isPTTActive) {
+            animateCallControls(false, 7500);
+        }
         startPullingSignalingMessages(false);
         //registerNetworkReceiver();
     }
@@ -1367,47 +1402,76 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void animateCallControls(boolean show, long startDelay) {
-        float alpha;
-        long duration;
+        if (!isPTTActive) {
+            float alpha;
+            long duration;
 
-        if (show) {
-            handler.removeCallbacksAndMessages(null);
-            alpha = 1.0f;
-            duration = 1000;
-            if (callControls.getVisibility() != View.VISIBLE) {
-                callControls.setAlpha(0.0f);
-                callControls.setVisibility(View.VISIBLE);
+            if (show) {
+                handler.removeCallbacksAndMessages(null);
+                alpha = 1.0f;
+                duration = 1000;
+                if (callControls.getVisibility() != View.VISIBLE) {
+                    callControls.setAlpha(0.0f);
+                    callControls.setVisibility(View.VISIBLE);
+                } else {
+                    handler.postDelayed(() -> animateCallControls(false, 0), 5000);
+                    return;
+                }
             } else {
-                handler.postDelayed(() -> animateCallControls(false, 0), 5000);
-                return;
+                alpha = 0.0f;
+                duration = 1000;
             }
-        } else {
-            alpha = 0.0f;
-            duration = 1000;
-        }
 
-        callControls.animate()
-                .translationY(0)
-                .alpha(alpha)
-                .setDuration(duration)
-                .setStartDelay(startDelay)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        if (callControls != null) {
-                            if (!show) {
-                                callControls.setVisibility(View.INVISIBLE);
-                            } else {
-                                handler.postDelayed(() -> animateCallControls(false, 0), 5000);
+            callControls.setEnabled(false);
+            callControls.animate()
+                    .translationY(0)
+                    .alpha(alpha)
+                    .setDuration(duration)
+                    .setStartDelay(startDelay)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            if (callControls != null) {
+                                if (!show) {
+                                    callControls.setVisibility(View.INVISIBLE);
+                                } else {
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isPTTActive) {
+                                                animateCallControls(false, 0);
+                                            }
+                                        }
+                                    }, 7500);
+                                }
+
+                                callControls.setEnabled(true);
                             }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     @Override
     public void onBackPressed() {
         hangup(false);
+    }
+
+    private class microphoneButtonTouchListener implements View.OnTouchListener {
+
+        @SuppressLint("ClickableViewAccessibility")
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            v.onTouchEvent(event);
+            if (event.getAction() == MotionEvent.ACTION_UP && isPTTActive) {
+                isPTTActive = false;
+                microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+                pulseAnimation.stop();
+                toggleMedia(false, false);
+                animateCallControls(false, 5000);
+            }
+            return true;
+        }
     }
 }
