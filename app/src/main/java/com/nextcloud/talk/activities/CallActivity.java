@@ -624,10 +624,8 @@ public class CallActivity extends AppCompatActivity {
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
         peerConnectionFactory = new PeerConnectionFactory(options);
 
-        if (!MagicWebRtcLists.HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build.MANUFACTURER.toLowerCase())) {
-            peerConnectionFactory.setVideoHwAccelerationOptions(rootEglBase.getEglBaseContext(),
-                    rootEglBase.getEglBaseContext());
-        }
+        peerConnectionFactory.setVideoHwAccelerationOptions(rootEglBase.getEglBaseContext(),
+                rootEglBase.getEglBaseContext());
 
         //Create MediaConstraints - Will be useful for specifying video and audio constraints.
         audioConstraints = new MediaConstraints();
