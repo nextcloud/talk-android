@@ -439,43 +439,41 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     public boolean onItemClick(int position) {
-        if (contactItems.size() > position) {
-            UserItem userItem = contactItems.get(position);
-            RetrofitBucket retrofitBucket = ApiHelper.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
-                    userItem.getModel().getUserId());
-            ncApi.createRoom(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                    retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<RoomOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+        UserItem userItem = adapter.getItem(position);
+        RetrofitBucket retrofitBucket = ApiHelper.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
+                userItem.getModel().getUserId());
+        ncApi.createRoom(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<RoomOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onNext(RoomOverall roomOverall) {
-                            overridePushHandler(new NoOpControllerChangeHandler());
-                            overridePopHandler(new NoOpControllerChangeHandler());
-                            Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                            bundleBuilder.putString("roomToken", roomOverall.getOcs().getData().getToken());
-                            bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
-                            callIntent.putExtras(bundleBuilder.build());
-                            startActivity(callIntent);
-                        }
+                    @Override
+                    public void onNext(RoomOverall roomOverall) {
+                        overridePushHandler(new NoOpControllerChangeHandler());
+                        overridePopHandler(new NoOpControllerChangeHandler());
+                        Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                        bundleBuilder.putString("roomToken", roomOverall.getOcs().getData().getToken());
+                        bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
+                        callIntent.putExtras(bundleBuilder.build());
+                        startActivity(callIntent);
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-                        }
-                    });
-        }
+                    }
+                });
 
         return true;
     }
