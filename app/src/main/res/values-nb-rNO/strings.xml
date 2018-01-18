@@ -51,6 +51,7 @@
     <string name="nc_settings_switch_account">Bytt mellom kontoer</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
     <string name="nc_settings_add_account">Legg til ny konto</string>
+    <string name="nc_settings_account_updated">Din allerede eksisterende konto ble oppdatert, istedenfor å legge til en ny</string>
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Brukernavn</string>
     <string name="nc_password">Passord</string>
