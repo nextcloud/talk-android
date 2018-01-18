@@ -123,7 +123,6 @@ import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnLongClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -233,7 +232,7 @@ public class CallActivity extends AppCompatActivity {
         setContentView(R.layout.activity_call);
         ButterKnife.bind(this);
 
-        microphoneControlButton.setOnTouchListener(new microphoneButtonTouchListener());
+        //microphoneControlButton.setOnTouchListener(new microphoneButtonTouchListener());
         pulseAnimation = PulseAnimation.create().with(microphoneControlButton)
                 .setDuration(310)
                 .setRepeatCount(PulseAnimation.INFINITE)
@@ -394,7 +393,7 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    @OnLongClick(R.id.call_control_microphone)
+    //@OnLongClick(R.id.call_control_microphone)
     public boolean onMicrophoneLongClick() {
         if (!audioOn) {
             handler.removeCallbacksAndMessages(null);
