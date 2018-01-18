@@ -1246,7 +1246,7 @@ public class CallActivity extends AppCompatActivity {
             boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                     .PeerConnectionEventType.SENSOR_FAR) && videoOn;
             if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) && inCall && videoOn
-                    && !localVideoTrack.enabled()) {
+                    && enableVideo != localVideoTrack.enabled()) {
                 runOnUiThread(() -> toggleMedia(enableVideo, true));
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
