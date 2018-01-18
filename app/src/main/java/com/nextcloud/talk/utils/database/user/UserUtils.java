@@ -91,7 +91,7 @@ public class UserUtils {
 
     public Completable deleteUser(String username, String serverUrl) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
-                and(UserEntity.BASE_URL.eq(serverUrl.toLowerCase()))).limit(1).get();
+                and(UserEntity.BASE_URL.eq(serverUrl))).limit(1).get();
 
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
 
@@ -127,7 +127,7 @@ public class UserUtils {
 
     public boolean getIfUserWithUsernameAndServer(String username, String server) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username)
-                .and(UserEntity.BASE_URL.eq(server.toLowerCase())))
+                .and(UserEntity.BASE_URL.eq(server)))
                 .limit(1).get();
 
         return findUserQueryResult.firstOrNull() != null;
@@ -158,7 +158,7 @@ public class UserUtils {
         Result findUserQueryResult;
         if (internalId == null) {
             findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
-                    and(UserEntity.BASE_URL.eq(serverUrl.toLowerCase()))).limit(1).get();
+                    and(UserEntity.BASE_URL.eq(serverUrl))).limit(1).get();
         } else {
             findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)).get();
         }
@@ -167,7 +167,7 @@ public class UserUtils {
 
         if (user == null) {
             user = new UserEntity();
-            user.setBaseUrl(serverUrl.toLowerCase());
+            user.setBaseUrl(serverUrl);
             user.setUsername(username);
             user.setToken(token);
 
