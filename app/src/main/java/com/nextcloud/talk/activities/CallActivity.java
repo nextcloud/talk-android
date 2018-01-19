@@ -834,8 +834,6 @@ public class CallActivity extends AppCompatActivity {
                                                 userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
                                                 .subscribeOn(Schedulers.newThread())
                                                 .observeOn(AndroidSchedulers.mainThread())
-                                                .repeatWhen(observable -> observable.delay(1500,
-                                                        TimeUnit.MILLISECONDS))
                                                 .repeatUntil(booleanSupplier)
                                                 .retry(3)
                                                 .subscribe(new Observer<SignalingOverall>() {
@@ -860,12 +858,10 @@ public class CallActivity extends AppCompatActivity {
 
                                                     @Override
                                                     public void onError(Throwable e) {
-                                                        dispose(signalingDisposable);
                                                     }
 
                                                     @Override
                                                     public void onComplete() {
-                                                        dispose(signalingDisposable);
                                                     }
                                                 });
 
@@ -969,7 +965,8 @@ public class CallActivity extends AppCompatActivity {
         Set<String> oldSesssions = new HashSet<>();
 
         for (HashMap<String, String> participant : users) {
-            if (!participant.get("sessionId").equals(callSession)) {
+            if (!participant.get("sessionId").equals(callSession) && !participant.get("userId").equals(userEntity
+                    .getUserId())) {
                 Object inCallObject = participant.get("inCall");
                 if ((boolean) inCallObject) {
                     newSessions.add(participant.get("sessionId"));
@@ -978,7 +975,6 @@ public class CallActivity extends AppCompatActivity {
                 }
             }
         }
-
 
         for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
             oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
@@ -1394,7 +1390,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void registerNetworkReceiver() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANxGE");
         intentFilter.addAction("android.net.wifi.STATE_CHANGE");
 
         this.registerReceiver(networkBroadcastReceier, intentFilter);

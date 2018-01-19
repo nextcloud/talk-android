@@ -133,7 +133,7 @@ public class MagicPeerConnectionWrapper {
     }
 
     public void sendChannelData(DataChannelMessage dataChannelMessage) {
-        ByteBuffer buffer = null;
+        ByteBuffer buffer;
         if (magicDataChannel != null) {
             try {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
@@ -245,17 +245,13 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onSignalingChange(PeerConnection.SignalingState signalingState) {
-            if (signalingState.equals(PeerConnection.SignalingState.CLOSED)) {
-                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .CLOSE_PEER, sessionId, null, null));
-            }
         }
 
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED) && hasInitiated) {
                 sendInitialMediaStatus();
-            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
+            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.CLOSED)) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .CLOSE_PEER, sessionId, null, null));
             }
