@@ -53,8 +53,6 @@
     <string name="nc_settings_remove_account">Eliminar cuenta</string>
     <string name="nc_settings_add_account">Añadir nueva cuenta</string>
     <string name="nc_settings_wrong_account">Solo la cuenta actual puede ser reautorizada</string>
-    <string name="nc_settings_no_talk_installed">La app Talk no está instalada en el servidor contra el que has querido
-    autorizarte</string>
     <string name="nc_settings_account_updated">Tu cuenta ya existente ha sido actualizada en lugar de añadir una nueva</string>
     <string name="nc_account_scheduled_for_deletion">La cuenta está programada para borrado y no se puede operar con ella</string>
 
@@ -84,14 +82,6 @@
     <string name="nc_one_contact_selected">contacto seleccionado</string>
     <string name="nc_more_contacts_selected">contactos seleccionados</string>
 
-    <!-- Permissions -->
-    <string name="nc_permissions">Necesitamos ciertos permisos para establecer una videollamada. Por favor,
-     pulsa \"ACEPTAR\" en el mensaje de sistema que va a aparecer.</string>
-    <string name="nc_permissions_audio">Se necesita conceder el permiso de micrófono para activar las llamadas de audio. Por favor,
-     pusa \"ACEPTAR\" en el mensaje de sistema que va a aparecer.</string>
-    <string name="nc_permissions_video">Se necesita conceder el permiso de cámara para activar las videollamadas. Por favor, pusa \"ACEPTAR\" en el mensaje de sistema que va a aparecer.</string>
-    <string name="nc_camera_permission_permanently_denied">Para permitir la comunicación de vídeo, concede el permiso de \"Cámara\" en la configuración del sistema, por favor.</string>
-    <string name="nc_microphone_permission_permanently_denied">Para permitir la comunicación de voz, concede el permiso de \"Micrófono\" en la configuración del sistema, por favor.</string>
     <string name="nc_permissions_settings">Abrir configuración</string>
 
     <!-- Call -->

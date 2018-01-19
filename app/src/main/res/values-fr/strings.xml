@@ -53,7 +53,6 @@
     <string name="nc_settings_remove_account">Supprimer le compte</string>
     <string name="nc_settings_add_account">Ajouter un nouveau compte</string>
     <string name="nc_settings_wrong_account">Seul le compte courant peut être ré-autorisé</string>
-    <string name="nc_settings_no_talk_installed">L\'application Talk n\'est pas installée sur le serveur que vous avez tenté d\'autoriser.</string>
     <string name="nc_settings_account_updated">Nous avons mis à jour votre compte existant au lieu d’en ajouter un nouveau</string>
     <string name="nc_account_scheduled_for_deletion">Le compte va être supprimé et ne peut donc pas être utilisé</string>
 
@@ -83,12 +82,6 @@
     <string name="nc_one_contact_selected">contact sélectionné</string>
     <string name="nc_more_contacts_selected">contacts sélectionnés</string>
 
-    <!-- Permissions -->
-    <string name="nc_permissions">L\'autorisation est requises pour établir un appel video et/ou audio. Merci de cliquer sur \"AUTORISER\" dans la boite de dialogue système.</string>
-    <string name="nc_permissions_audio">L\'autorisation du microphone est requise pour établir un appel audio. Merci de cliquer sur \"AUTORISER\" dans la prochaine boîte de dialogue système.</string>
-    <string name="nc_permissions_video">L\'autorisation de la caméra est requise pour établir un appel vidéo. Merci de cliquer sur \"AUTORISER\" dans la prochaine boîte de dialogue système.</string>
-    <string name="nc_camera_permission_permanently_denied">Pour établir une communication vidéo, veuillez autoriser l’utilisation de la caméra dans les paramètres du système.</string>
-    <string name="nc_microphone_permission_permanently_denied">Pour établir une communication audio, veuillez autoriser l’utilisation du microphone dans les paramètres du système.</string>
     <string name="nc_permissions_settings">Ouvrir les paramètres</string>
 
     <!-- Call -->

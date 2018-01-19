@@ -53,8 +53,6 @@
     <string name="nc_settings_remove_account">Excluir conta</string>
     <string name="nc_settings_add_account">Adicionar uma conta</string>
     <string name="nc_settings_wrong_account">Somente a conta atual pode ser reautorizada</string>
-    <string name="nc_settings_no_talk_installed">O Aplicativo Talk não está instalado no servidor que
-você tentou autorizar</string>
     <string name="nc_settings_account_updated">Sua conta atual foi atualizada, em vez de adicionar uma nova</string>
     <string name="nc_account_scheduled_for_deletion">A conta está agendada para exclusão e não pode ser alterada</string>
 
@@ -84,17 +82,6 @@ você tentou autorizar</string>
     <string name="nc_one_contact_selected">contato selecionado</string>
     <string name="nc_more_contacts_selected">contatos selecionados</string>
 
-    <!-- Permissions -->
-    <string name="nc_permissions">Permissões são necessárias para estabelecer uma chamada de áudio e/ou vídeo.
-        Clique \"PERMITIR\" na janela de diálogo a seguir.</string>
-    <string name="nc_permissions_audio">Permissões de microfone são necessárias para habilitar chamadas de áudio.
-        Clique \"PERMITIR\" na janela de diálogo a seguir.</string>
-    <string name="nc_permissions_video">Permissões de câmera são necessárias para habilitar chamadas de vídeo.
-        Clique \"PERMITIR\" na janela de diálogo a seguir.</string>
-    <string name="nc_camera_permission_permanently_denied">Para ativar a comunicação por vídeo, ative a
-        permissão \"Câmera\" na configuração do sistema.</string>
-    <string name="nc_microphone_permission_permanently_denied">Para ativar a comunicação por voz, ative a
-        permissão \"Microfone\" na configuração do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
     <!-- Call -->

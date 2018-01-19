@@ -53,7 +53,6 @@
     <string name="nc_settings_remove_account">계정 삭제</string>
     <string name="nc_settings_add_account">새 계정 추가</string>
     <string name="nc_settings_wrong_account">현재 계정만 다시 인증할 수 있음</string>
-    <string name="nc_settings_no_talk_installed">인증하려고 하는 서버에 토크 앱이 설치되어 있지 않음</string>
     <string name="nc_settings_account_updated">새 계정을 추가하는 대신 기존 계정이 업데이트됨</string>
     <string name="nc_account_scheduled_for_deletion">이 계정이 삭제 예정이며 변경할 수 없음</string>
 
@@ -83,12 +82,6 @@
     <string name="nc_one_contact_selected">명 연락처 선택됨</string>
     <string name="nc_more_contacts_selected">명 연락처 선택됨</string>
 
-    <!-- Permissions -->
-    <string name="nc_permissions">음성 및 영상 통화를 하려면 권한이 필요합니다. 시스템 대화 상자에서 \"허용\"을 누르십시오.</string>
-    <string name="nc_permissions_audio">음성 통화를 하려면 마이크 권한이 필요합니다. 시스템 대화 상자에서 \"허용\"을 누르십시오.</string>
-    <string name="nc_permissions_video">영상 통화를 하려면 카메라 권한이 필요합니다. 시스템 대화 상자에서 \"허용\"을 누르십시오.</string>
-    <string name="nc_camera_permission_permanently_denied">영상 통화를 하려면 시스템 설정에서 \"카메라\" 권한을 허용하십시오.</string>
-    <string name="nc_microphone_permission_permanently_denied">음성 통화를 하려면 시스템 설정에서 \"마이크\" 권한을 허용하십시오.</string>
     <string name="nc_permissions_settings">설정 열기</string>
 
     <!-- Call -->
