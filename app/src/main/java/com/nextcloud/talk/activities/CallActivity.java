@@ -210,6 +210,7 @@ public class CallActivity extends AppCompatActivity {
 
     private boolean isPTTActive = false;
     private PulseAnimation pulseAnimation;
+    private View.OnClickListener videoOnClickListener;
 
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -234,6 +235,8 @@ public class CallActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         microphoneControlButton.setOnTouchListener(new microphoneButtonTouchListener());
+        videoOnClickListener = new videoClickListener();
+
         pulseAnimation = PulseAnimation.create().with(microphoneControlButton)
                 .setDuration(310)
                 .setRepeatCount(PulseAnimation.INFINITE)
@@ -1169,6 +1172,7 @@ public class CallActivity extends AppCompatActivity {
                 // disabled because it causes some devices to crash
                 surfaceViewRenderer.setEnableHardwareScaler(false);
                 surfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+                surfaceViewRenderer.setOnClickListener(videoOnClickListener);
                 VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
                 videoTrack.addRenderer(remoteRenderer);
                 remoteRenderersLayout.addView(relativeLayout);
@@ -1467,6 +1471,14 @@ public class CallActivity extends AppCompatActivity {
                 animateCallControls(false, 5000);
             }
             return true;
+        }
+    }
+
+    private class videoClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            showCallControls();
         }
     }
 }
