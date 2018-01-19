@@ -127,7 +127,6 @@ import butterknife.OnLongClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.schedulers.Schedulers;
 import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied;
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
@@ -189,7 +188,6 @@ public class CallActivity extends AppCompatActivity {
     EglBase rootEglBase;
     boolean leavingCall = false;
     boolean inCall = false;
-    BooleanSupplier booleanSupplier = () -> leavingCall;
     Disposable signalingDisposable;
     Disposable pingDisposable;
     List<PeerConnection.IceServer> iceServers;
@@ -691,7 +689,6 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void startCall() {
-        inCall = true;
         if (!isPTTActive) {
             animateCallControls(false, 7500);
         }
@@ -800,6 +797,8 @@ public class CallActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onNext(GenericOverall genericOverall) {
+                                        inCall = true;
+
                                         callSession = callOverall.getOcs().getData().getSessionId();
 
                                         // start pinging the call
@@ -807,8 +806,8 @@ public class CallActivity extends AppCompatActivity {
                                                 ApiHelper.getUrlForCallPing(userEntity.getBaseUrl(), roomToken))
                                                 .subscribeOn(Schedulers.newThread())
                                                 .observeOn(AndroidSchedulers.mainThread())
-                                                .repeatWhen(completed -> completed.delay(5000, TimeUnit.MILLISECONDS))
-                                                .repeatUntil(booleanSupplier)
+                                                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                                                .takeWhile(observable -> inCall)
                                                 .retry(3)
                                                 .subscribe(new Observer<GenericOverall>() {
                                                     @Override
@@ -837,7 +836,7 @@ public class CallActivity extends AppCompatActivity {
                                                 userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
                                                 .subscribeOn(Schedulers.newThread())
                                                 .observeOn(AndroidSchedulers.mainThread())
-                                                .repeatUntil(booleanSupplier)
+                                                .takeWhile(observable -> inCall)
                                                 .retry(3)
                                                 .subscribe(new Observer<SignalingOverall>() {
                                                     @Override
