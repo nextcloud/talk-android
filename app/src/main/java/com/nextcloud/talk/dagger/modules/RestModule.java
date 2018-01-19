@@ -135,9 +135,9 @@ public class RestModule {
                                    CookieManager cookieManager) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-        httpClient.connectTimeout(30, TimeUnit.SECONDS);
-        httpClient.readTimeout(30, TimeUnit.SECONDS);
-        httpClient.writeTimeout(30, TimeUnit.SECONDS);
+        httpClient.connectTimeout(45, TimeUnit.SECONDS);
+        httpClient.readTimeout(45, TimeUnit.SECONDS);
+        httpClient.writeTimeout(45, TimeUnit.SECONDS);
 
         httpClient.cookieJar(new JavaNetCookieJar(cookieManager));
         httpClient.cache(cache);
