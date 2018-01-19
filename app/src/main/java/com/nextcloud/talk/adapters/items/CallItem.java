@@ -145,7 +145,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 break;
             case ROOM_PUBLIC_CALL:
                 holder.avatarImageView.setVisibility(View.VISIBLE);
-                holder.avatarImageView.setImageResource(R.drawable.ic_public_black_24dp);
+                holder.avatarImageView.setImageResource(R.drawable.ic_link_black_24dp);
                 break;
             default:
                 holder.avatarImageView.setVisibility(View.GONE);
