@@ -851,8 +851,8 @@ public class CallActivity extends AppCompatActivity {
                                                                 try {
                                                                     receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
                                                                 } catch (IOException e) {
-                                                                    Log.e(TAG, "Filed to process received signaling " +
-                                                                            "message");
+                                                                    Log.e(TAG, "Failed to process received signaling" +
+                                                                            " message");
                                                                 }
                                                             }
                                                         }
