@@ -777,6 +777,7 @@ public class CallActivity extends AppCompatActivity {
         ncApi.joinRoom(credentials, ApiHelper.getUrlForRoom(userEntity.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry(3)
                 .subscribe(new Observer<CallOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -788,6 +789,7 @@ public class CallActivity extends AppCompatActivity {
                         ncApi.joinCall(credentials,
                                 ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
                                 .subscribeOn(Schedulers.newThread())
+                                .retry(3)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Observer<GenericOverall>() {
                                     @Override
@@ -808,7 +810,7 @@ public class CallActivity extends AppCompatActivity {
                                                 .observeOn(AndroidSchedulers.mainThread())
                                                 .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
                                                 .takeWhile(observable -> inCall)
-                                                .retry(3)
+                                                .retry(3, observable -> inCall)
                                                 .subscribe(new Observer<GenericOverall>() {
                                                     @Override
                                                     public void onSubscribe(Disposable d) {
@@ -836,8 +838,9 @@ public class CallActivity extends AppCompatActivity {
                                                 userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
                                                 .subscribeOn(Schedulers.newThread())
                                                 .observeOn(AndroidSchedulers.mainThread())
+                                                .repeatWhen(observable -> observable)
                                                 .takeWhile(observable -> inCall)
-                                                .retry(3)
+                                                .retry(3, observable -> inCall)
                                                 .subscribe(new Observer<SignalingOverall>() {
                                                     @Override
                                                     public void onSubscribe(Disposable d) {
@@ -860,10 +863,12 @@ public class CallActivity extends AppCompatActivity {
 
                                                     @Override
                                                     public void onError(Throwable e) {
+                                                        dispose(signalingDisposable);
                                                     }
 
                                                     @Override
                                                     public void onComplete() {
+                                                        dispose(signalingDisposable);
                                                     }
                                                 });
 
