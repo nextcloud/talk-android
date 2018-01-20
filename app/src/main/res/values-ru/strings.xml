@@ -82,6 +82,10 @@
     <string name="nc_one_contact_selected">контакт выбран</string>
     <string name="nc_more_contacts_selected">контакта(ов) выбрано</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Для выполнения звонка или видеоконференции необходимо предоставить дополнительные разрешения этому приложению. Выберите «Разрешить» в открывшемся диалоге.</string>
+    <string name="nc_permissions_audio">Для выполнения звонка необходимо предоставить этому приложению доступ к микрофону. Выберите «Разрешить» в открывшемся диалоге.</string>
+    <string name="nc_permissions_video">Для выполнения видеозвонка необходимо предоставить этому приложению доступ к камере. Выберите «Разрешить» в открывшемся диалоге.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
 
     <!-- Call -->

@@ -53,6 +53,7 @@
     <string name="nc_settings_remove_account">ანგარიშის გაუქმება</string>
     <string name="nc_settings_add_account">ახალი ანგარიშის დამატება</string>
     <string name="nc_settings_wrong_account">რეავტორიზაცია შესაძლებელია მხოლოდ მიმდინარე ანგარიშზე</string>
+    <string name="nc_settings_no_talk_installed">Talk აპლიკაცია სერვერზე, რომლის მიმართაც სცადეთ ავტორიზაცია, დაყენებული არაა</string>
     <string name="nc_settings_account_updated">ახლის დამატების სანაცვლოდ, განახლდა არსებული ანგარიში</string>
     <string name="nc_account_scheduled_for_deletion">დაიგეგმა ანგარიშის გაუქმება, ეს ვერ შეიცვლება</string>
 
@@ -82,6 +83,12 @@
     <string name="nc_one_contact_selected">კონტაქტი იქნა არჩეულ</string>
     <string name="nc_more_contacts_selected">კონტაქტი იქნა არჩეულ</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">ვიდეო და/ან აუდიო ზარის გასახორციელებლად საჭიროა უფლებების მინიჭება. გთხოვთ ამომავალ სისტემურ დიალოგში დააწკაპუნოთ \"ნების დართვას\".</string>
+    <string name="nc_permissions_audio">აუდიო ზარების გასახორციელებლად საჭიროა მიკროფონის უფლებების მინიჭება. გთხოვთ ამომავალ სისტემურ დიალოგში დააწკაპუნოთ \"ნების დართვას\".</string>
+    <string name="nc_permissions_video">ვიდეო ზარების გასახორციელებლად საჭიროა კამერის უფლებების მინიჭება. გთხოვთ ამომავალ სისტემურ დიალოგში დააწკაპუნოთ \"ნების დართვას\".</string>
+    <string name="nc_camera_permission_permanently_denied">ვიდეო კომუნიკაციის ამოქმედებისთვის, გთხოვთ სისტემურ პარამეტრებში უფლება მიანიჭოთ \"კამერას\".</string>
+    <string name="nc_microphone_permission_permanently_denied">ხმოვანი კომუნიკაციის ამოქმედებისთვის, გთხოვთ სისტემურ პარამეტრებში უფლება მიანიჭოთ \"მიკროფონს\".</string>
     <string name="nc_permissions_settings">პარამეტრების გახსნა</string>
 
     <!-- Call -->

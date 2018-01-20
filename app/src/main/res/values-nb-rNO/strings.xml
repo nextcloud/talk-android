@@ -53,7 +53,10 @@
     <string name="nc_settings_remove_account">Fjern konto</string>
     <string name="nc_settings_add_account">Legg til ny konto</string>
     <string name="nc_settings_wrong_account">Bare gjeldende konto kan reautoriseres</string>
+    <string name="nc_settings_no_talk_installed">Talk-programmet er ikke installert på tjeneren du prøvde å logge inn på</string>
     <string name="nc_settings_account_updated">Din allerede eksisterende konto ble oppdatert, istedenfor å legge til en ny</string>
+    <string name="nc_account_scheduled_for_deletion">Kontoen er planlagt slettet, og kan ikke endres.</string>
+
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Brukernavn</string>
     <string name="nc_password">Passord</string>
@@ -80,6 +83,12 @@
     <string name="nc_one_contact_selected">kontakt valgt</string>
     <string name="nc_more_contacts_selected">kontakter valgt</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Tilganger må innvilges for å etablere video og/eller lydsamtaler. Klikk \"TILLAT\" i neste vindu.</string>
+    <string name="nc_permissions_audio">Mikrofontilganger må innvilges for å etablere lydsamtaler. Klikk \"TILLAT\" i neste vindu.</string>
+    <string name="nc_permissions_video">Kameratilgang må innvilges for å etablere video og/eller lydsamtaler. Klikk \"TILLAT\" i neste vindu.</string>
+    <string name="nc_camera_permission_permanently_denied">For å skru på videokommunikasjon, innvilg \"Kamera\"-tilgang i systeminnstillingene.</string>
+    <string name="nc_microphone_permission_permanently_denied">For å skru på stemmekommunikasjon, innvilg \"Mikrofon\"-tilgang i systeminnstillingene.</string>
     <string name="nc_permissions_settings">Åpne innstillinger</string>
 
     <!-- Call -->
