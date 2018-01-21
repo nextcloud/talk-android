@@ -53,6 +53,7 @@
     <string name="nc_settings_remove_account">Rimuovi account</string>
     <string name="nc_settings_add_account">Aggiungi un nuovo account</string>
     <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
+    <string name="nc_settings_no_talk_installed">L\'applicazione Talk non è installata sul server sul quale hai provato l\'autorizzazione</string>
     <string name="nc_settings_account_updated">Il tuo account preesistente è stato aggiornato, invece di aggiungerne un nuovo</string>
     <string name="nc_account_scheduled_for_deletion">È stata programmata l\'eliminazione dell\'account, e non può essere modificato</string>
 
@@ -82,6 +83,12 @@
     <string name="nc_one_contact_selected">contatto selezionato</string>
     <string name="nc_more_contacts_selected">contatti selezionati</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">È necessario accordare permessi per stabilire una chiamata audio/video. Fai clic su \"CONSENTI\" nella finestra di sistema che apparirà.</string>
+    <string name="nc_permissions_audio">Il permesso per il microfono deve essere accordato per abilitare le chiamate audio. Fai clic su \"CONSENTI\" nella finestra di sistema che apparirà.</string>
+    <string name="nc_permissions_video">Il permesso per la fotocamera deve essere accordato per abilitare le chiamate video. Fai clic su \\"CONSENTI\\" nella finestra di sistema che apparirà.</string>
+    <string name="nc_camera_permission_permanently_denied">Per abilitare la comunicazione video devi accordare il permesso per la \"Fotocamera\" nelle impostazioni di sistema.</string>
+    <string name="nc_microphone_permission_permanently_denied">Per abilitare la comunicazione vocale devi accordare il permesso per  \"Microfono\" nelle impostazioni di sistema.</string>
     <string name="nc_permissions_settings">Apri impostazioni</string>
 
     <!-- Call -->

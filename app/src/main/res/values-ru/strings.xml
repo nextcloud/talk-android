@@ -53,6 +53,7 @@
     <string name="nc_settings_remove_account">Удалить аккаунт</string>
     <string name="nc_settings_add_account">Добавить новый аккаунт</string>
     <string name="nc_settings_wrong_account">Повторный вход может быть выполнен только в текущую учётную запись</string>
+    <string name="nc_settings_no_talk_installed">На сервере, к которому вы пытаетесь подключиться, не установлено приложение «Вызовы»</string>
     <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>
     <string name="nc_account_scheduled_for_deletion">Учётная запись запланирована к удалению и не может быть использована</string>
 
@@ -86,6 +87,8 @@
     <string name="nc_permissions">Для выполнения звонка или видеоконференции необходимо предоставить дополнительные разрешения этому приложению. Выберите «Разрешить» в открывшемся диалоге.</string>
     <string name="nc_permissions_audio">Для выполнения звонка необходимо предоставить этому приложению доступ к микрофону. Выберите «Разрешить» в открывшемся диалоге.</string>
     <string name="nc_permissions_video">Для выполнения видеозвонка необходимо предоставить этому приложению доступ к камере. Выберите «Разрешить» в открывшемся диалоге.</string>
+    <string name="nc_camera_permission_permanently_denied">Для выполнения видеозвонка требуется получение дополнительных системных разрешений. Разрешите приложению доступ к камере в системных настройках.</string>
+    <string name="nc_microphone_permission_permanently_denied">Для выполнения звонка требуется получение дополнительных системных разрешений. Разрешите приложению доступ к микрофону  в системных настройках.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
 
     <!-- Call -->
