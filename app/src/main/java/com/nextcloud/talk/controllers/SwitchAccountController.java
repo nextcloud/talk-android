@@ -179,7 +179,9 @@ public class SwitchAccountController extends BaseController {
                 adapter.addListener(onSwitchItemClickListener);
                 adapter.updateDataSet(userItems, false);
             } else {
-                getActionBar().show();
+                if (getActionBar() != null) {
+                    getActionBar().show();
+                }
                 Account account;
                 ImportAccount importAccount;
                 for (Object accountObject : AccountUtils.findAccounts(userUtils.getUsers())) {

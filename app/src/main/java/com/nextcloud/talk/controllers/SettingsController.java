@@ -234,7 +234,10 @@ public class SettingsController extends BaseController {
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        getActionBar().show();
+
+        if (getActionBar() != null) {
+            getActionBar().show();
+        }
 
         dispose(null);
         userEntity = userUtils.getCurrentUser();
