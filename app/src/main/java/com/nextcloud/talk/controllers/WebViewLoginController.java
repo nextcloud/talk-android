@@ -23,6 +23,7 @@ package com.nextcloud.talk.controllers;
 import android.content.pm.ActivityInfo;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.security.KeyChain;
 import android.security.KeyChainException;
@@ -43,7 +44,6 @@ import android.widget.ProgressBar;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.CertificateEvent;
@@ -65,6 +65,7 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -116,6 +117,11 @@ public class WebViewLoginController extends BaseController {
         super(args);
     }
 
+    private static String getWebLoginUserAgent() {
+        return Build.MANUFACTURER.substring(0, 1).toUpperCase(Locale.getDefault()) +
+                Build.MANUFACTURER.substring(1).toLowerCase(Locale.getDefault()) + " " + Build.MODEL;
+    }
+
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_web_view_login, container, false);
@@ -141,7 +147,7 @@ public class WebViewLoginController extends BaseController {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
         webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setUserAgentString(ApiHelper.getUserAgent());
+        webView.getSettings().setUserAgentString(getWebLoginUserAgent());
         webView.getSettings().setSaveFormData(false);
         webView.getSettings().setSavePassword(false);
         webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
@@ -244,7 +250,6 @@ public class WebViewLoginController extends BaseController {
 
         webView.loadUrl(baseUrl + "/index.php/login/flow", headers);
     }
-
 
     private void dispose() {
         if (userQueryDisposable != null && !userQueryDisposable.isDisposed()) {
@@ -380,5 +385,4 @@ public class WebViewLoginController extends BaseController {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
     }
-
 }
