@@ -319,7 +319,24 @@ public class AccountVerificationController extends BaseController {
         } else {
             ErrorMessageHolder.getInstance().setMessageType(
                     ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT);
-            new Handler().postDelayed(() -> getRouter().popToRoot(), 7500);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (getRouter().hasRootController()) {
+                        getRouter().popToRoot();
+                    } else {
+                        if (userUtils.anyUserExists()) {
+                            getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        } else {
+                            getRouter().setRoot(RouterTransaction.with(new ServerSelectionController())
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        }
+                    }
+                }
+            }, 7500);
         }
     }
 
