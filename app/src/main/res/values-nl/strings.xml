@@ -54,6 +54,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_remove_account">Verwijder account</string>
     <string name="nc_settings_add_account">Toevoegen nieuw account</string>
     <string name="nc_settings_wrong_account">Alleen het huidige account kan opnieuw worden geautoriseerd</string>
+    <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waarmee je probeert te verbinden.</string>
     <string name="nc_settings_account_updated">Je al bestaande account werd bijgewerkt, in plaats van een nieuwe aan te maken</string>
     <string name="nc_account_scheduled_for_deletion">Het account is gemarkeerd voor verwijdering en kan niet worden gewijzigd</string>
 
