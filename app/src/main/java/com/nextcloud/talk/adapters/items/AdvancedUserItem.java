@@ -23,6 +23,7 @@ package com.nextcloud.talk.adapters.items;
 import android.accounts.Account;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -162,6 +163,8 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         public ImageView avatarImageView;
         @BindView(R.id.linear_layout)
         LinearLayout linearLayout;
+        @BindView(R.id.more_menu)
+        ImageButton moreMenuButton;
 
         /**
          * Default constructor.
@@ -169,6 +172,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         UserItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             ButterKnife.bind(this, view);
+            moreMenuButton.setVisibility(View.GONE);
         }
     }
 

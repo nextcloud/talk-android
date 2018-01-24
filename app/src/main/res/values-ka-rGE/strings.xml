@@ -76,7 +76,7 @@
     <string name="nc_change_password">პაროლის ცვლილება</string>
     <string name="nc_share_link">ბმულის გაზიარება</string>
     <string name="nc_make_call_public">ღია ზარის წამოწყება</string>
-    <string name="nc_stop_sharing">ზარის გაზიარების შეწყვეტა</string>
+    <string name="nc_make_call_private">ზარის გაზიარების შეწყვეტა</string>
     <string name="nc_delete_call">ზარის გაუქმება</string>
 
     <!-- Contacts -->

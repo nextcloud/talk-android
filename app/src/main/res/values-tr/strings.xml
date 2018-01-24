@@ -76,7 +76,7 @@
     <string name="nc_change_password">Parolayı değiştir</string>
     <string name="nc_share_link">Bağlantıyı paylaş</string>
     <string name="nc_make_call_public">Çağrıyı herkese aç</string>
-    <string name="nc_stop_sharing">Çağrıyı paylaşmayı durdur</string>
+    <string name="nc_make_call_private">Çağrıyı paylaşmayı durdur</string>
     <string name="nc_delete_call">Çağrıyı sil</string>
 
     <!-- Contacts -->

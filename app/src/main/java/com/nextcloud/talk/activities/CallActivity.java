@@ -774,7 +774,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void joinRoomAndCall() {
-        ncApi.joinRoom(credentials, ApiHelper.getUrlForRoom(userEntity.getBaseUrl(), roomToken))
+        ncApi.joinRoom(credentials, ApiHelper.getUrlForRoomParticipants(userEntity.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
@@ -1093,7 +1093,7 @@ public class CallActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        ncApi.leaveRoom(credentials, ApiHelper.getUrlForRoom(userEntity.getBaseUrl(), roomToken))
+                        ncApi.leaveRoom(credentials, ApiHelper.getUrlForRoomParticipants(userEntity.getBaseUrl(), roomToken))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Observer<GenericOverall>() {

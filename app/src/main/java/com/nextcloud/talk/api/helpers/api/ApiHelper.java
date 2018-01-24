@@ -57,7 +57,7 @@ public class ApiHelper {
         return retrofitBucket;
     }
 
-    public static String getUrlForRoom(String baseUrl, String token) {
+    public static String getUrlForRoomParticipants(String baseUrl, String token) {
         return getRoom(baseUrl, token) + "/participants/active";
     }
 
@@ -155,6 +155,10 @@ public class ApiHelper {
         }
 
         return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize;
+    }
+
+    public static String getUrlForPassword(String baseUrl, String token) {
+        return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/password";
     }
 
     public static String getCredentials(String username, String token) {

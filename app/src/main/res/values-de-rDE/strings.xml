@@ -75,7 +75,7 @@
     <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_share_link">Link teilen</string>
     <string name="nc_make_call_public">Anruf öffentlich machen</string>
-    <string name="nc_stop_sharing">Teilen des Anrufs beenden</string>
+    <string name="nc_make_call_private">Teilen des Anrufs beenden</string>
     <string name="nc_delete_call">Anruf löschen</string>
 
     <!-- Contacts -->

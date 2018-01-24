@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.controllers;
+package com.nextcloud.talk.controllers.bottomsheet;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,16 +29,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bluelinelabs.conductor.RouterTransaction;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.MenuItem;
 import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 
+import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 import butterknife.BindView;
@@ -47,21 +53,25 @@ import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class RoomMenuController extends BaseController implements FlexibleAdapter.OnItemClickListener {
+public class CallMenuController extends BaseController implements FlexibleAdapter.OnItemClickListener {
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+
+    @Inject
+    EventBus eventBus;
+
     private Room room;
     private List<AbstractFlexibleItem> menuItems;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
 
-    public RoomMenuController(Bundle args) {
+    public CallMenuController(Bundle args) {
         super(args);
-        this.room = Parcels.unwrap(args.getParcelable("room"));
+        this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
     }
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        return inflater.inflate(R.layout.controller_room_menu, container, false);
+        return inflater.inflate(R.layout.controller_call_menu, container, false);
     }
 
     @Override
@@ -93,37 +103,52 @@ public class RoomMenuController extends BaseController implements FlexibleAdapte
     private void prepareMenu() {
         menuItems = new ArrayList<>();
 
-        menuItems.add(new MenuItem(getResources().getString(R.string.nc_what)));
+        menuItems.add(new MenuItem(getResources().getString(R.string.nc_what), 0));
 
-        menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave)));
+        menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1));
 
         if (room.isNameEditable()) {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename)));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename), 2));
         }
 
-        if (!room.isPublic()) {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public)));
-        } else {
-            if (room.isHasPassword()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password)));
+        if (room.canModerate()) {
+            if (!room.isPublic()) {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public), 3));
             } else {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password)));
+                if (room.isHasPassword()) {
+                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password), 4));
+                } else {
+                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password), 5));
+                }
             }
+        }
 
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link)));
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_stop_sharing)));
-
+        if (room.isPublic()) {
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link), 6));
+            if (room.canModerate()) {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private), 7));
+            }
         }
 
         if (room.isDeletable()) {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call)));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 8));
         }
     }
 
     @Override
     public boolean onItemClick(int position) {
-        if (menuItems.size() > position && position != 0) {
-            MenuItem menuItem = (MenuItem) menuItems.get(position);
+        MenuItem menuItem = (MenuItem) adapter.getItem(position);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+        if (menuItem != null) {
+            int tag = menuItem.getTag();
+            if (tag > 0 && tag < 9) {
+                eventBus.post(new BottomSheetLockEvent(false, 0));
+                bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
+                if (tag != 6 && tag != 2) {
+                    getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
+                }
+            }
         }
 
         return true;

@@ -63,7 +63,7 @@
     <string name="nc_change_password">Byt lösenordet</string>
     <string name="nc_share_link">Dela länk</string>
     <string name="nc_make_call_public">Gör samtal offentligt</string>
-    <string name="nc_stop_sharing">Stoppa delning av samtalet</string>
+    <string name="nc_make_call_private">Stoppa delning av samtalet</string>
     <string name="nc_delete_call">Radera samtal</string>
 
     <!-- Contacts -->

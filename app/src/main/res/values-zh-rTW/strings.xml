@@ -69,7 +69,7 @@
     <string name="nc_change_password">更改密碼</string>
     <string name="nc_share_link">分享連結</string>
     <string name="nc_make_call_public">公開通話</string>
-    <string name="nc_stop_sharing">停止分享通話</string>
+    <string name="nc_make_call_private">停止分享通話</string>
     <string name="nc_delete_call">刪除通話</string>
 
     <!-- Contacts -->

@@ -44,6 +44,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 
@@ -115,19 +116,22 @@ public interface NcApi {
      */
 
     @DELETE
-    Observable<Void> removeSelfFromRoom(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> removeSelfFromRoom(@Header("Authorization") String authorization, @Url String url);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/public
     */
     @POST
-    Observable<Void> makeRoomPublic(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> makeRoomPublic(@Header("Authorization") String authorization, @Url String url);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/public
     */
     @DELETE
-    Observable<Void> makeRoomPrivate(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> makeRoomPrivate(@Header("Authorization") String authorization, @Url String url);
+
+    @DELETE
+    Observable<GenericOverall> deleteRoom(@Header("Authorization") String authorization, @Url String url);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
@@ -237,5 +241,9 @@ public interface NcApi {
     Observable<Void> unregisterDeviceForNotificationsWithProxy(@Header("Authorization") String authorization,
                                                                @Url String url,
                                                                @QueryMap Map<String, String> fields);
+
+    @PUT
+    Observable<GenericOverall> setPassword(@Header("Authorization") String authorization, @Url String url,
+                                           @Query("password") String password);
 
 }

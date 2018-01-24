@@ -76,7 +76,7 @@
     <string name="nc_change_password">Сменить пароль</string>
     <string name="nc_share_link">Поделиться ссылкой</string>
     <string name="nc_make_call_public">Сделать звонок общедоступным</string>
-    <string name="nc_stop_sharing">Закрыть общий доступ к звонку</string>
+    <string name="nc_make_call_private">Закрыть общий доступ к звонку</string>
     <string name="nc_delete_call">Удалить звонок</string>
 
     <!-- Contacts -->

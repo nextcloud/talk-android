@@ -22,7 +22,6 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/item_height">
@@ -71,7 +70,6 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/margin_between_elements"
-        android:background="@drawable/ic_more_horiz_black_24dp"
-        android:visibility="invisible"/>
+        android:background="@drawable/ic_more_horiz_black_24dp"/>
 
 </RelativeLayout>

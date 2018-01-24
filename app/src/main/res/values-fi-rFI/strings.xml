@@ -48,7 +48,7 @@
     <string name="nc_change_password">Vaihda salasana</string>
     <string name="nc_share_link">Jaa linkki</string>
     <string name="nc_make_call_public">Tee puhelusta julkinen</string>
-    <string name="nc_stop_sharing">Lopeta puhelun jakaminen</string>
+    <string name="nc_make_call_private">Lopeta puhelun jakaminen</string>
     <string name="nc_delete_call">Poista puhelu</string>
 
     <!-- Contacts -->

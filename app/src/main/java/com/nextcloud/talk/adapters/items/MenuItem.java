@@ -40,22 +40,24 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> {
     private String title;
+    private int tag;
 
-    public MenuItem(String title) {
+    public MenuItem(String title, int tag) {
         this.title = title;
+        this.tag = tag;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof MenuItem) {
             MenuItem inItem = (MenuItem) o;
-            return title.equals(inItem.getModel());
+            return tag == inItem.tag;
         }
         return false;
     }
 
-    private String getModel() {
-        return title;
+    public int getTag() {
+        return tag;
     }
 
     @Override

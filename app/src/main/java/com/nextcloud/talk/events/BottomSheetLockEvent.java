@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017 Mario Danic
+ * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.utils.bundle;
+package com.nextcloud.talk.events;
 
-public class BundleKeys {
-    public static final String KEY_USERNAME = "KEY_USERNAME";
-    public static final String KEY_TOKEN = "KEY_TOKEN";
-    public static final String KEY_BASE_URL = "KEY_BASE_URL";
-    public static final String KEY_IS_ACCOUNT_IMPORT = "KEY_IS_ACCOUNT_IMPORT";
-    public static final String KEY_ORIGINAL_PROTOCOL = "KEY_ORIGINAL_PROTOCOL";
-    public static final String KEY_ROOM = "KEY_ROOM";
-    public static final String KEY_OPERATION_CODE = "KEY_OPERATION_CODE";
+import lombok.Data;
+
+@Data
+public class BottomSheetLockEvent {
+    private final boolean cancel;
+    private final int delay;
+
+    public BottomSheetLockEvent(boolean cancel, int delay) {
+        this.cancel = cancel;
+        this.delay = delay;
+    }
 }

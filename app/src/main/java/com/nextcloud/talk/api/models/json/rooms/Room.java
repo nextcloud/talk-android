@@ -62,6 +62,7 @@ public class Room {
     public boolean hasPassword;
     @JsonField(name = "sessionId")
     public String sessionId;
+    public String password;
 
     public boolean isPublic() {
         return (RoomType.ROOM_PUBLIC_CALL.equals(type));

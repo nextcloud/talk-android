@@ -76,7 +76,7 @@
     <string name="nc_change_password">Endre passord</string>
     <string name="nc_share_link">Del lenke</string>
     <string name="nc_make_call_public">Gjør samtalen offentlig</string>
-    <string name="nc_stop_sharing">Avslutt deling av samtale</string>
+    <string name="nc_make_call_private">Avslutt deling av samtale</string>
     <string name="nc_delete_call">Slett samtale</string>
 
     <!-- Contacts -->

@@ -58,9 +58,12 @@ import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.controllers.bottomsheet.CallMenuController;
+import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -370,15 +373,31 @@ public class CallsListController extends BaseController implements SearchView.On
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(BottomSheetLockEvent bottomSheetLockEvent) {
+        if (bottomSheet != null) {
+            if (!bottomSheetLockEvent.isCancel()) {
+                bottomSheet.setCancelable(bottomSheetLockEvent.isCancel());
+            } else {
+                new Handler().postDelayed(() -> {
+                    bottomSheet.setCancelable(true);
+                    if (bottomSheet.isShowing()) {
+                        bottomSheet.cancel();
+                    }
+                }, bottomSheetLockEvent.getDelay());
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MoreMenuClickEvent moreMenuClickEvent) {
         BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
         Room room = moreMenuClickEvent.getRoom();
-        bundleBuilder.putParcelable("room", Parcels.wrap(room));
+        bundleBuilder.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
 
         getChildRouter((ViewGroup) view).setRoot(
-                RouterTransaction.with(new RoomMenuController(bundleBuilder.build()))
+                RouterTransaction.with(new CallMenuController(bundleBuilder.build()))
                         .popChangeHandler(new HorizontalChangeHandler())
                         .pushChangeHandler(new HorizontalChangeHandler()));
 

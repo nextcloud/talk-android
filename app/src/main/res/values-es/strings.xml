@@ -76,7 +76,7 @@
     <string name="nc_change_password">Cambiar la contraseña</string>
     <string name="nc_share_link">Compartir enlace</string>
     <string name="nc_make_call_public">Hacer pública la llamada</string>
-    <string name="nc_stop_sharing">Dejar de compartir la llamada</string>
+    <string name="nc_make_call_private">Dejar de compartir la llamada</string>
     <string name="nc_delete_call">Eliminar llamada</string>
 
     <!-- Contacts -->

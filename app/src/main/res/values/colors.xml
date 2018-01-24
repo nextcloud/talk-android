@@ -5,6 +5,7 @@
     <color name="colorAccent">#007CC2</color>
 
     <color name="nc_darkRed">#D32F2F</color>
+    <color name="nc_darkGreen">#006400</color>
     <color name="nc_white_color">@color/per70white</color>
     <color name="nc_white_color_complete">#FFFFFF</color>
     <color name="nc_light_blue_color">#7FC0E3</color>

@@ -76,7 +76,7 @@
     <string name="nc_change_password">암호 변경</string>
     <string name="nc_share_link">링크 공유</string>
     <string name="nc_make_call_public">공개 통화로 전환</string>
-    <string name="nc_stop_sharing">통화 공유 중지</string>
+    <string name="nc_make_call_private">통화 공유 중지</string>
     <string name="nc_delete_call">통화 삭제</string>
 
     <!-- Contacts -->

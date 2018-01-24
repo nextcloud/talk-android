@@ -77,7 +77,7 @@
     <string name="nc_change_password">A jelszó módosítása</string>
     <string name="nc_share_link">Megosztás hivatkozása</string>
     <string name="nc_make_call_public">Hívás nyilvánossá tétele</string>
-    <string name="nc_stop_sharing">Hívás megosztásának befejezése</string>
+    <string name="nc_make_call_private">Hívás megosztásának befejezése</string>
     <string name="nc_delete_call">Hívás törlése</string>
 
     <!-- Contacts -->

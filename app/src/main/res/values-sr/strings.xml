@@ -76,7 +76,7 @@
     <string name="nc_change_password">Измени лозинку</string>
     <string name="nc_share_link">Подели везу</string>
     <string name="nc_make_call_public">Учини разговор јавним</string>
-    <string name="nc_stop_sharing">Заустави дељење разговора</string>
+    <string name="nc_make_call_private">Заустави дељење разговора</string>
     <string name="nc_delete_call">Обриши позив</string>
 
     <!-- Contacts -->
