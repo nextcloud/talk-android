@@ -59,10 +59,10 @@
             android:layout_height="40dp"
             android:layout_marginEnd="30dp"
             android:background="?android:selectableItemBackgroundBorderless"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_call_end_white_24px"
             android:tint="@color/nc_darkRed"
-            android:tintMode="src_in"
-            android:scaleType="centerCrop"/>
+            android:tintMode="src_in"/>
 
         <ImageButton
             android:id="@+id/call_control_microphone"
@@ -72,8 +72,8 @@
             android:layout_toEndOf="@id/call_control_hangup"
             android:alpha="0.7"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_mic_off_white_24px"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_mic_off_white_24px"/>
 
         <ImageButton
             android:id="@+id/call_control_camera"
@@ -83,8 +83,8 @@
             android:layout_toEndOf="@id/call_control_microphone"
             android:alpha="0.7"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_videocam_off_white_24px"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_videocam_off_white_24px"/>
 
         <ImageButton
             android:id="@+id/call_control_switch_camera"
@@ -92,9 +92,9 @@
             android:layout_height="40dp"
             android:layout_toEndOf="@id/call_control_camera"
             android:background="?android:selectableItemBackgroundBorderless"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_switch_video_white_24px"
-            android:visibility="invisible"
-            android:scaleType="centerCrop"/>
+            android:visibility="invisible"/>
 
     </RelativeLayout>
 
