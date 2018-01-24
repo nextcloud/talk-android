@@ -143,7 +143,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         if (menuItem != null) {
             int tag = menuItem.getTag();
             if (tag > 0 && tag < 9) {
-                eventBus.post(new BottomSheetLockEvent(false, 0));
+                eventBus.post(new BottomSheetLockEvent(false, 0, false));
                 bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
                 if (tag != 6 && tag != 2) {
                     getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));

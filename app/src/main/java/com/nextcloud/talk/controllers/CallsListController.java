@@ -385,7 +385,7 @@ public class CallsListController extends BaseController implements SearchView.On
             if (!bottomSheetLockEvent.isCancel()) {
                 bottomSheet.setCancelable(bottomSheetLockEvent.isCancel());
             } else {
-                if (bottomSheetLockEvent.getDelay() != 0) {
+                if (bottomSheetLockEvent.getDelay() != 0 && bottomSheetLockEvent.isShouldRefreshData()) {
                     fetchData(true);
                 } else {
                     bottomSheet.setCancelable(true);

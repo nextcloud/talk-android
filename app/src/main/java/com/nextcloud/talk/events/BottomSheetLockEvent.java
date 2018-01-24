@@ -26,9 +26,11 @@ import lombok.Data;
 public class BottomSheetLockEvent {
     private final boolean cancel;
     private final int delay;
+    private final boolean shouldRefreshData;
 
-    public BottomSheetLockEvent(boolean cancel, int delay) {
+    public BottomSheetLockEvent(boolean cancel, int delay, boolean shouldRefreshData) {
         this.cancel = cancel;
         this.delay = delay;
+        this.shouldRefreshData = shouldRefreshData;
     }
 }

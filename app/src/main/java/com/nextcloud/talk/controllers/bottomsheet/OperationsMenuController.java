@@ -182,11 +182,12 @@ public class OperationsMenuController extends BaseController {
             resultsTextView.setText(R.string.nc_failed_to_perform_operation);
         }
 
+        boolean shouldRefreshData = operationCode != 4 && operationCode != 5;
         resultsTextView.setVisibility(View.VISIBLE);
         if (everythingOK) {
-            eventBus.post(new BottomSheetLockEvent(true, 2500));
+            eventBus.post(new BottomSheetLockEvent(true, 2500, shouldRefreshData));
         } else {
-            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0)));
+            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, shouldRefreshData)));
             okButton.setVisibility(View.VISIBLE);
         }
     }
