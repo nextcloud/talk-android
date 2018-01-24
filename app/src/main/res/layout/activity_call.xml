@@ -55,42 +55,46 @@
 
         <ImageButton
             android:id="@+id/call_control_hangup"
-            android:layout_width="44dp"
-            android:layout_height="56dp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="36dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="30dp"
             android:background="?android:selectableItemBackgroundBorderless"
             android:src="@drawable/ic_call_end_white_24px"
             android:tint="@color/nc_darkRed"
-            android:tintMode="src_in"/>
+            android:tintMode="src_in"
+            android:scaleType="centerCrop"/>
 
         <ImageButton
             android:id="@+id/call_control_microphone"
-            android:layout_width="32dp"
-            android:layout_height="56dp"
-            android:layout_marginEnd="@dimen/margin_between_elements"
+            android:layout_width="24dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="24dp"
             android:layout_toEndOf="@id/call_control_hangup"
             android:alpha="0.7"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_mic_off_white_24px"/>
+            android:src="@drawable/ic_mic_off_white_24px"
+            android:scaleType="centerCrop"/>
 
         <ImageButton
             android:id="@+id/call_control_camera"
-            android:layout_width="44dp"
-            android:layout_height="56dp"
-            android:layout_marginEnd="@dimen/margin_between_elements"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="24dp"
             android:layout_toEndOf="@id/call_control_microphone"
             android:alpha="0.7"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_videocam_off_white_24px"/>
+            android:src="@drawable/ic_videocam_off_white_24px"
+            android:scaleType="centerCrop"/>
 
         <ImageButton
             android:id="@+id/call_control_switch_camera"
-            android:layout_width="44dp"
-            android:layout_height="56dp"
+            android:layout_width="38dp"
+            android:layout_height="40dp"
             android:layout_toEndOf="@id/call_control_camera"
             android:background="?android:selectableItemBackgroundBorderless"
             android:src="@drawable/ic_switch_video_white_24px"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            android:scaleType="centerCrop"/>
 
     </RelativeLayout>
 
