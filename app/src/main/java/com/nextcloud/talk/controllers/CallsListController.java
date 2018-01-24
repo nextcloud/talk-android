@@ -150,7 +150,7 @@ public class CallsListController extends BaseController implements SearchView.On
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
             if (userEntity != null) {
-                fetchData();
+                fetchData(false);
             }
         }
 
@@ -238,7 +238,7 @@ public class CallsListController extends BaseController implements SearchView.On
         }
     }
 
-    private void fetchData() {
+    private void fetchData(boolean fromBottomSheet) {
         dispose(null);
 
         callItems = new ArrayList<>();
@@ -295,6 +295,13 @@ public class CallsListController extends BaseController implements SearchView.On
                     if (swipeRefreshLayout != null) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
+
+                    if (fromBottomSheet) {
+                        bottomSheet.setCancelable(true);
+                        if (bottomSheet.isShowing()) {
+                            bottomSheet.cancel();
+                        }
+                    }
                 });
     }
 
@@ -310,7 +317,7 @@ public class CallsListController extends BaseController implements SearchView.On
                 layoutManager.getOrientation()
         ));
 
-        swipeRefreshLayout.setOnRefreshListener(this::fetchData);
+        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
     }
 
@@ -378,12 +385,14 @@ public class CallsListController extends BaseController implements SearchView.On
             if (!bottomSheetLockEvent.isCancel()) {
                 bottomSheet.setCancelable(bottomSheetLockEvent.isCancel());
             } else {
-                new Handler().postDelayed(() -> {
+                if (bottomSheetLockEvent.getDelay() != 0) {
+                    fetchData(true);
+                } else {
                     bottomSheet.setCancelable(true);
                     if (bottomSheet.isShowing()) {
                         bottomSheet.cancel();
                     }
-                }, bottomSheetLockEvent.getDelay());
+                }
             }
         }
     }
