@@ -206,6 +206,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     Intent intent = new Intent(shareIntent);
                     intent.setComponent(new ComponentName(appItem.getPackageName(), appItem.getName()));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    eventBus.post(new BottomSheetLockEvent(true, 0, false));
                     getActivity().startActivity(intent);
                 } else {
                     bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 7);

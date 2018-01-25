@@ -73,6 +73,7 @@
         android:indeterminate="true"
         android:indeterminateTint="@color/nc_white_color_complete"
         android:indeterminateTintMode="src_in"
+        android:keepScreenOn="true"
         android:visibility="invisible"/>
 
     <TextView
@@ -81,12 +82,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/progress_bar"
         android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="56dp"
         android:lines="2"
         android:text="@string/nc_get_from_provider"
         android:textAlignment="center"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:textAllCaps="true"
         android:textColor="@color/nc_light_blue_color"/>
 

@@ -118,6 +118,7 @@ public class EntryMenuController extends BaseController {
                 intent.setComponent(new ComponentName(packageName, name));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().startActivity(intent);
+                eventBus.post(new BottomSheetLockEvent(true, 0, false));
             }
         }
     }
