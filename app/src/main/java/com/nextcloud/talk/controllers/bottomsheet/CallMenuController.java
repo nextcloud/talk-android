@@ -187,7 +187,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 if (tag > 0 && tag < 10) {
                     bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
                     if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
-                        eventBus.post(new BottomSheetLockEvent(false, 0, false));
+                        eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
                         getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
                     } else if (tag != 7) {
                         getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle)));
@@ -206,7 +206,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     Intent intent = new Intent(shareIntent);
                     intent.setComponent(new ComponentName(appItem.getPackageName(), appItem.getName()));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    eventBus.post(new BottomSheetLockEvent(true, 0, false));
+                    eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     getActivity().startActivity(intent);
                 } else {
                     bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 7);

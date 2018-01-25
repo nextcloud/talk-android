@@ -32,4 +32,6 @@ public class BundleKeys {
     public static final String KEY_SHARE_INTENT = "KEY_SHARE_INTENT";
     public static final String KEY_APP_ITEM_PACKAGE_NAME = "KEY_APP_ITEM_PACKAGE_NAME";
     public static final String KEY_APP_ITEM_NAME = "KEY_APP_ITEM_NAME";
+    public static final String KEY_CALL_PASSWORD = "KEY_CALL_PASSWORD";
+    public static final String KEY_CALL_SESSION = "KEY_CALL_SESSION";
 }

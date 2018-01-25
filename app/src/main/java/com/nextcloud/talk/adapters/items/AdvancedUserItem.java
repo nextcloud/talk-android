@@ -57,7 +57,8 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     private Participant participant;
     private UserEntity userEntity;
-    @Nullable private Account account;
+    @Nullable
+    private Account account;
 
     public AdvancedUserItem(Participant participant, UserEntity userEntity, @Nullable Account account) {
         this.participant = participant;

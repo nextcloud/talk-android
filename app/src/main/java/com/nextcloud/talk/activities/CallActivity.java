@@ -76,6 +76,7 @@ import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
@@ -242,7 +243,7 @@ public class CallActivity extends AppCompatActivity {
 
         roomToken = getIntent().getExtras().getString("roomToken", "");
         userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable("userEntity"));
-        callSession = "0";
+        callSession = getIntent().getExtras().getString(BundleKeys.KEY_CALL_SESSION, "0");
         credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
 
         networkBroadcastReceier = new BroadcastReceiver() {
@@ -774,121 +775,130 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void joinRoomAndCall() {
-        ncApi.joinRoom(credentials, ApiHelper.getUrlForRoomParticipants(userEntity.getBaseUrl(), roomToken))
+        if (callSession.equals("0")) {
+            ncApi.joinRoom(credentials, ApiHelper.getUrlForRoomParticipants(userEntity.getBaseUrl(), roomToken), null)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .retry(3)
+                    .subscribe(new Observer<CallOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(CallOverall callOverall) {
+                            performCall(callOverall.getOcs().getData().getSessionId());
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        } else {
+            performCall(null);
+        }
+    }
+
+    private void performCall(@Nullable String callSessionId) {
+        ncApi.joinCall(credentials,
+                ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
-                .subscribe(new Observer<CallOverall>() {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GenericOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(CallOverall callOverall) {
-                        ncApi.joinCall(credentials,
-                                ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
+                    public void onNext(GenericOverall genericOverall) {
+                        inCall = true;
+                        if (callSessionId != null) {
+                            callSession = callSessionId;
+                        }
+
+                        // start pinging the call
+                        ncApi.pingCall(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                                ApiHelper.getUrlForCallPing(userEntity.getBaseUrl(), roomToken))
                                 .subscribeOn(Schedulers.newThread())
-                                .retry(3)
                                 .observeOn(AndroidSchedulers.mainThread())
+                                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                                .takeWhile(observable -> inCall)
+                                .retry(3, observable -> inCall)
                                 .subscribe(new Observer<GenericOverall>() {
                                     @Override
                                     public void onSubscribe(Disposable d) {
-
+                                        pingDisposable = d;
                                     }
 
                                     @Override
                                     public void onNext(GenericOverall genericOverall) {
-                                        inCall = true;
-
-                                        callSession = callOverall.getOcs().getData().getSessionId();
-
-                                        // start pinging the call
-                                        ncApi.pingCall(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                                                ApiHelper.getUrlForCallPing(userEntity.getBaseUrl(), roomToken))
-                                                .subscribeOn(Schedulers.newThread())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                                                .takeWhile(observable -> inCall)
-                                                .retry(3, observable -> inCall)
-                                                .subscribe(new Observer<GenericOverall>() {
-                                                    @Override
-                                                    public void onSubscribe(Disposable d) {
-                                                        pingDisposable = d;
-                                                    }
-
-                                                    @Override
-                                                    public void onNext(GenericOverall genericOverall) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onError(Throwable e) {
-                                                        dispose(pingDisposable);
-                                                    }
-
-                                                    @Override
-                                                    public void onComplete() {
-                                                        dispose(pingDisposable);
-                                                    }
-                                                });
-
-                                        // Start pulling signaling messages
-                                        ncApi.pullSignalingMessages(ApiHelper.getCredentials(userEntity.getUsername(),
-                                                userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
-                                                .subscribeOn(Schedulers.newThread())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .repeatWhen(observable -> observable)
-                                                .takeWhile(observable -> inCall)
-                                                .retry(3, observable -> inCall)
-                                                .subscribe(new Observer<SignalingOverall>() {
-                                                    @Override
-                                                    public void onSubscribe(Disposable d) {
-                                                        signalingDisposable = d;
-                                                    }
-
-                                                    @Override
-                                                    public void onNext(SignalingOverall signalingOverall) {
-                                                        if (signalingOverall.getOcs().getSignalings() != null) {
-                                                            for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
-                                                                try {
-                                                                    receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
-                                                                } catch (IOException e) {
-                                                                    Log.e(TAG, "Failed to process received signaling" +
-                                                                            " message");
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onError(Throwable e) {
-                                                        dispose(signalingDisposable);
-                                                    }
-
-                                                    @Override
-                                                    public void onComplete() {
-                                                        dispose(signalingDisposable);
-                                                    }
-                                                });
-
 
                                     }
 
                                     @Override
                                     public void onError(Throwable e) {
+                                        dispose(pingDisposable);
                                     }
 
                                     @Override
                                     public void onComplete() {
-
+                                        dispose(pingDisposable);
                                     }
                                 });
+
+                        // Start pulling signaling messages
+                        ncApi.pullSignalingMessages(ApiHelper.getCredentials(userEntity.getUsername(),
+                                userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .repeatWhen(observable -> observable)
+                                .takeWhile(observable -> inCall)
+                                .retry(3, observable -> inCall)
+                                .subscribe(new Observer<SignalingOverall>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+                                        signalingDisposable = d;
+                                    }
+
+                                    @Override
+                                    public void onNext(SignalingOverall signalingOverall) {
+                                        if (signalingOverall.getOcs().getSignalings() != null) {
+                                            for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
+                                                try {
+                                                    receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
+                                                } catch (IOException e) {
+                                                    Log.e(TAG, "Failed to process received signaling" +
+                                                            " message");
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        dispose(signalingDisposable);
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+                                        dispose(signalingDisposable);
+                                    }
+                                });
+
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
                     }
 
                     @Override

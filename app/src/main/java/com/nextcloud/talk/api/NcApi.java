@@ -20,6 +20,8 @@
  */
 package com.nextcloud.talk.api;
 
+import android.support.annotation.Nullable;
+
 import com.nextcloud.talk.api.models.json.call.CallOverall;
 import com.nextcloud.talk.api.models.json.generic.GenericOverall;
 import com.nextcloud.talk.api.models.json.generic.Status;
@@ -97,7 +99,7 @@ public interface NcApi {
     @FormUrlEncoded
     @PUT
     Observable<GenericOverall> renameRoom(@Header("Authorization") String authorization, @Url String url,
-                                @Field("roomName") String roomName);
+                                          @Field("roomName") String roomName);
 
 
     /*
@@ -139,8 +141,10 @@ public interface NcApi {
     @GET
     Observable<ParticipantsOverall> getPeersForCall(@Header("Authorization") String authorization, @Url String url);
 
+    @FormUrlEncoded
     @POST
-    Observable<CallOverall> joinRoom(@Header("Authorization") String authorization, @Url String url);
+    Observable<CallOverall> joinRoom(@Header("Authorization") String authorization, @Url String url,
+                                     @Nullable @Field("password") String password);
 
     @DELETE
     Observable<GenericOverall> leaveRoom(@Header("Authorization") String authorization, @Url String url);

@@ -24,13 +24,15 @@ import lombok.Data;
 
 @Data
 public class BottomSheetLockEvent {
-    private final boolean cancel;
+    private final boolean cancelable;
     private final int delay;
     private final boolean shouldRefreshData;
+    private final boolean cancel;
 
-    public BottomSheetLockEvent(boolean cancel, int delay, boolean shouldRefreshData) {
-        this.cancel = cancel;
+    public BottomSheetLockEvent(boolean cancelable, int delay, boolean shouldRefreshData, boolean cancel) {
+        this.cancelable = cancelable;
         this.delay = delay;
         this.shouldRefreshData = shouldRefreshData;
+        this.cancel = cancel;
     }
 }

@@ -149,7 +149,7 @@ public class UserUtils {
     }
 
     public Observable<UserEntity> createOrUpdateUser(@Nullable String username, @Nullable String token, @Nullable String
-                                                     serverUrl,
+            serverUrl,
                                                      @Nullable String displayName,
                                                      @Nullable String pushConfigurationState,
                                                      @Nullable Boolean currentUser,

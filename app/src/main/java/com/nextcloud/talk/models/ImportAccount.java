@@ -27,7 +27,8 @@ import lombok.Data;
 @Data
 public class ImportAccount {
     public String username;
-    @Nullable public String token;
+    @Nullable
+    public String token;
     public String baseUrl;
 
     public ImportAccount(String username, @Nullable String token, String baseUrl) {

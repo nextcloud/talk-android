@@ -49,11 +49,11 @@ public class NotificationUtils {
             int usage;
 
             if (channelId.equals(NotificationUtils.NOTIFICATION_CHANNEL_CALLS)) {
-                usage =  AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST;
+                usage = AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST;
             } else {
                 usage = AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT;
             }
-            
+
             channel.setSound(soundUri, new AudioAttributes.Builder().setUsage(usage).build());
             channel.setDescription(channelDescription);
             channel.enableLights(vibrate);

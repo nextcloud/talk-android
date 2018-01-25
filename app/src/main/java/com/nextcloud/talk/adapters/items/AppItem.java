@@ -44,7 +44,8 @@ public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
     private String title;
     private String packageName;
     private String name;
-    @Nullable private Drawable drawable;
+    @Nullable
+    private Drawable drawable;
 
     public AppItem(String title, String packageName, String name, @Nullable Drawable drawable) {
         this.title = title;

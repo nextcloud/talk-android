@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.controllers.bottomsheet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -30,15 +31,20 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.api.models.json.call.CallOverall;
 import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ColorUtils;
+import com.nextcloud.talk.utils.ErrorMessageHolder;
+import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -53,6 +59,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class OperationsMenuController extends BaseController {
@@ -82,7 +89,11 @@ public class OperationsMenuController extends BaseController {
     private int operationCode;
     private Room room;
 
+    private UserEntity userEntity;
+    private String callPassword;
+
     private Disposable disposable;
+    private Disposable secondaryDisposable;
 
     private int retryCount = 0;
 
@@ -90,6 +101,11 @@ public class OperationsMenuController extends BaseController {
         super(args);
         this.operationCode = args.getInt(BundleKeys.KEY_OPERATION_CODE);
         this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+
+        this.callPassword = args.getString(BundleKeys.KEY_CALL_PASSWORD, "");
+        if (args.containsKey("userEntity")) {
+            this.userEntity = Parcels.unwrap(args.getParcelable("userEntity"));
+        }
     }
 
     @Override
@@ -166,6 +182,13 @@ public class OperationsMenuController extends BaseController {
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
                             .subscribe(operationsObserver);
+                case 99:
+                    ncApi.joinRoom(credentials, ApiHelper.getUrlForRoomParticipants(userEntity.getBaseUrl(), room.getToken()),
+                            callPassword)
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .retry(1)
+                            .subscribe(operationsObserver);
                     break;
                 default:
                     break;
@@ -195,11 +218,11 @@ public class OperationsMenuController extends BaseController {
 
         resultsTextView.setVisibility(View.VISIBLE);
         if (everythingOK) {
-            eventBus.post(new BottomSheetLockEvent(true, 2500, true));
+            eventBus.post(new BottomSheetLockEvent(true, 2500, true, true));
         } else {
             resultImageView.setImageDrawable(ColorUtils.getTintedDrawable(getResources(), R.drawable
                     .ic_cancel_black_24dp, R.color.nc_darkRed));
-            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, true)));
+            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, true, true)));
             okButton.setVisibility(View.VISIBLE);
         }
     }
@@ -212,6 +235,12 @@ public class OperationsMenuController extends BaseController {
         disposable = null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dispose();
+    }
+
     private class OperationsObserver implements Observer {
 
         @Override
@@ -222,13 +251,36 @@ public class OperationsMenuController extends BaseController {
 
         @Override
         public void onNext(Object o) {
-            showResultImage(true);
+            if (operationCode != 99) {
+                showResultImage(true);
+            } else {
+                BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+                bundleBuilder.putString("roomToken", room.getToken());
+                bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
+                bundleBuilder.putString(BundleKeys.KEY_CALL_SESSION, ((CallOverall) o).getOcs().getData().getSessionId());
+                overridePushHandler(new NoOpControllerChangeHandler());
+                overridePopHandler(new NoOpControllerChangeHandler());
+                Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                callIntent.putExtras(bundleBuilder.build());
+                startActivity(callIntent);
+            }
         }
 
         @Override
         public void onError(Throwable e) {
             if (retryCount == 1) {
-                showResultImage(false);
+                if (operationCode != 99 || !(e instanceof HttpException)) {
+                    showResultImage(false);
+                } else {
+                    HttpException httpException = (HttpException) e;
+                    if (((HttpException) e).response().code() == 403) {
+                        // just make it cancelable again
+                        ErrorMessageHolder.getInstance().setMessageType(ErrorMessageHolder.ErrorMessageType.CALL_PASSWORD_WRONG);
+                        getRouter().popCurrentController();
+                    } else {
+                        showResultImage(false);
+                    }
+                }
             }
             dispose();
         }
@@ -237,11 +289,5 @@ public class OperationsMenuController extends BaseController {
         public void onComplete() {
             dispose();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        dispose();
     }
 }

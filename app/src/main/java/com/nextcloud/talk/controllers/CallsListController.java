@@ -56,10 +56,12 @@ import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.items.CallItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.api.models.json.participants.Participant;
 import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.controllers.bottomsheet.CallMenuController;
+import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
@@ -387,14 +389,14 @@ public class CallsListController extends BaseController implements SearchView.On
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BottomSheetLockEvent bottomSheetLockEvent) {
         if (bottomSheet != null) {
-            if (!bottomSheetLockEvent.isCancel()) {
-                bottomSheet.setCancelable(bottomSheetLockEvent.isCancel());
+            if (!bottomSheetLockEvent.isCancelable()) {
+                bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
             } else {
                 if (bottomSheetLockEvent.getDelay() != 0 && bottomSheetLockEvent.isShouldRefreshData()) {
                     fetchData(true);
                 } else {
-                    bottomSheet.setCancelable(true);
-                    if (bottomSheet.isShowing()) {
+                    bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
+                    if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
                         bottomSheet.cancel();
                     }
                 }
@@ -408,35 +410,53 @@ public class CallsListController extends BaseController implements SearchView.On
         Room room = moreMenuClickEvent.getRoom();
         bundleBuilder.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
 
+        prepareAndShowBottomSheetWithBundle(bundleBuilder.build(), true);
+    }
+
+    private void prepareAndShowBottomSheetWithBundle(Bundle bundle, boolean shouldShowCallMenuController) {
         View view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
 
-        getChildRouter((ViewGroup) view).setRoot(
-                RouterTransaction.with(new CallMenuController(bundleBuilder.build()))
-                        .popChangeHandler(new HorizontalChangeHandler())
-                        .pushChangeHandler(new HorizontalChangeHandler()));
+        if (shouldShowCallMenuController) {
+            getChildRouter((ViewGroup) view).setRoot(
+                    RouterTransaction.with(new CallMenuController(bundle))
+                            .popChangeHandler(new HorizontalChangeHandler())
+                            .pushChangeHandler(new HorizontalChangeHandler()));
+        } else {
+            getChildRouter((ViewGroup) view).setRoot(
+                    RouterTransaction.with(new EntryMenuController(bundle))
+                            .popChangeHandler(new HorizontalChangeHandler())
+                            .pushChangeHandler(new HorizontalChangeHandler()));
+        }
 
-        if (bottomSheet == null) {
-            bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
-            if (bottomSheet.getWindow() != null) {
-                bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-            }
+        bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
+        if (bottomSheet.getWindow() != null) {
+            bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
 
         bottomSheet.show();
     }
 
+
     @Override
     public boolean onItemClick(int position) {
-        overridePushHandler(new NoOpControllerChangeHandler());
-        overridePopHandler(new NoOpControllerChangeHandler());
         CallItem callItem = adapter.getItem(position);
         if (callItem != null && getActivity() != null) {
-            Intent callIntent = new Intent(getActivity(), CallActivity.class);
+            Room room = callItem.getModel();
             BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
             bundleBuilder.putString("roomToken", callItem.getModel().getToken());
             bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
-            callIntent.putExtras(bundleBuilder.build());
-            startActivity(callIntent);
+
+            if (room.hasPassword && (room.participantType.equals(Participant.ParticipantType.GUEST) ||
+                    room.participantType.equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
+                bundleBuilder.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
+                prepareAndShowBottomSheetWithBundle(bundleBuilder.build(), false);
+            } else {
+                overridePushHandler(new NoOpControllerChangeHandler());
+                overridePopHandler(new NoOpControllerChangeHandler());
+                Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                callIntent.putExtras(bundleBuilder.build());
+                startActivity(callIntent);
+            }
         }
 
         return true;

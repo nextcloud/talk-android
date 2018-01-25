@@ -185,22 +185,22 @@ public class SwitchAccountController extends BaseController {
                 Account account;
                 ImportAccount importAccount;
                 for (Object accountObject : AccountUtils.findAccounts(userUtils.getUsers())) {
-                        account = (Account) accountObject;
-                        importAccount = AccountUtils.getInformationFromAccount(account);
+                    account = (Account) accountObject;
+                    importAccount = AccountUtils.getInformationFromAccount(account);
 
-                        participant = new Participant();
-                        participant.setName(importAccount.getUsername());
-                        participant.setUserId(importAccount.getUsername());
-                        userEntity = new UserEntity();
-                        userEntity.setBaseUrl(importAccount.getBaseUrl());
-                        userItems.add(new AdvancedUserItem(participant, userEntity, account));
-                    }
+                    participant = new Participant();
+                    participant.setName(importAccount.getUsername());
+                    participant.setUserId(importAccount.getUsername());
+                    userEntity = new UserEntity();
+                    userEntity.setBaseUrl(importAccount.getBaseUrl());
+                    userItems.add(new AdvancedUserItem(participant, userEntity, account));
+                }
 
                 adapter.addListener(onImportItemClickListener);
                 adapter.updateDataSet(userItems, false);
             }
 
-            }
+        }
 
         prepareViews();
     }

@@ -39,6 +39,8 @@ import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.ErrorMessageHolder;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -97,12 +99,40 @@ public class EntryMenuController extends BaseController {
         return inflater.inflate(R.layout.controller_entry_menu, container, false);
     }
 
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+        if (ErrorMessageHolder.getInstance().getMessageType() != null &&
+                ErrorMessageHolder.getInstance().getMessageType().equals(ErrorMessageHolder.ErrorMessageType.CALL_PASSWORD_WRONG)) {
+            textFieldBoxes.setError(getResources().getString(R.string.nc_wrong_password), true);
+            ErrorMessageHolder.getInstance().setMessageType(null);
+            if (proceedButton.isEnabled()) {
+                proceedButton.setEnabled(false);
+                proceedButton.setAlpha(0.7f);
+            }
+        }
+    }
+
     @OnClick(R.id.ok_button)
     public void onProceedButtonClick() {
-        if (operationCode != 7) {
-            eventBus.post(new BottomSheetLockEvent(false, 0, false));
+        Bundle bundle;
+        if (operationCode == 99) {
+            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+            UserEntity userEntity = userUtils.getCurrentUser();
 
-            Bundle bundle = new Bundle();
+            if (userEntity != null) {
+                eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+                bundle = new Bundle();
+                bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+                bundle.putParcelable("userEntity", Parcels.wrap(userEntity));
+                bundle.putString(BundleKeys.KEY_CALL_PASSWORD, editText.getText().toString());
+                getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
+            }
+
+        } else if (operationCode != 7) {
+            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+
+            bundle = new Bundle();
             if (operationCode == 4 || operationCode == 6) {
                 room.setPassword(editText.getText().toString());
             } else {
@@ -119,7 +149,7 @@ public class EntryMenuController extends BaseController {
                 intent.setComponent(new ComponentName(packageName, name));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().startActivity(intent);
-                eventBus.post(new BottomSheetLockEvent(true, 0, false));
+                eventBus.post(new BottomSheetLockEvent(true, 0, false, false));
             }
         }
     }
@@ -190,6 +220,7 @@ public class EntryMenuController extends BaseController {
                 break;
             case 6:
             case 7:
+            case 99:
                 labelText = getResources().getString(R.string.nc_password);
                 break;
             default:

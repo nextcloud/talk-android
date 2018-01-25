@@ -123,7 +123,7 @@ public class ServerSelectionController extends BaseController {
                 });
             } else if (AccountUtils.findAccounts(userUtils.getUsers()).size() > 0) {
                 if (!TextUtils.isEmpty(AccountUtils.getAppNameBasedOnPackage(getResources()
-                                .getString(R.string.nc_import_accounts_from)))) {
+                        .getString(R.string.nc_import_accounts_from)))) {
                     if (AccountUtils.findAccounts(userUtils.getUsers()).size() > 1) {
                         providersTextView.setText(String.format(getResources().getString(R.string
                                 .nc_server_import_accounts), AccountUtils.getAppNameBasedOnPackage(getResources()

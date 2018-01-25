@@ -124,12 +124,9 @@ public abstract class BottomNavigationController extends BaseController {
         bottomNavigationView.inflateMenu(getMenuResource());
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        navigateTo(item.getItemId(), getControllerFor(item.getItemId()));
-                        return true;
-                    }
+                item -> {
+                    navigateTo(item.getItemId(), getControllerFor(item.getItemId()));
+                    return true;
                 });
     }
 
