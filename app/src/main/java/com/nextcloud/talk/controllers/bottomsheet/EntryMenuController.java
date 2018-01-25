@@ -117,7 +117,6 @@ public class EntryMenuController extends BaseController {
     public void onProceedButtonClick() {
         Bundle bundle;
         if (operationCode == 99) {
-            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             UserEntity userEntity = userUtils.getCurrentUser();
 
             if (userEntity != null) {
@@ -131,7 +130,6 @@ public class EntryMenuController extends BaseController {
 
         } else if (operationCode != 7) {
             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
-
             bundle = new Bundle();
             if (operationCode == 4 || operationCode == 6) {
                 room.setPassword(editText.getText().toString());
@@ -149,7 +147,7 @@ public class EntryMenuController extends BaseController {
                 intent.setComponent(new ComponentName(packageName, name));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().startActivity(intent);
-                eventBus.post(new BottomSheetLockEvent(true, 0, false, false));
+                eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
             }
         }
     }

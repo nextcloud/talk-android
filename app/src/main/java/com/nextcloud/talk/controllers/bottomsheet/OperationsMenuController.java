@@ -274,7 +274,8 @@ public class OperationsMenuController extends BaseController {
                     showResultImage(false);
                 } else {
                     if (((HttpException) e).response().code() == 403) {
-                        // just make it cancelable again
+                        eventBus.post(new BottomSheetLockEvent(true, 0, false,
+                                false));
                         ErrorMessageHolder.getInstance().setMessageType(ErrorMessageHolder.ErrorMessageType.CALL_PASSWORD_WRONG);
                         getRouter().popCurrentController();
                     } else {
