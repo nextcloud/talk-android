@@ -4,7 +4,7 @@
     <item
         android:id="@+id/navigation_calls"
         android:checked="true"
-        android:icon="@drawable/ic_call_black_24dp"
+        android:icon="@drawable/ic_videocam_black_24dp"
         android:title="@string/nc_bottom_navigation_title_calls"/>
 
     <item

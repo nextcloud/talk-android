@@ -114,6 +114,11 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                     System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
         }
 
+        if (room.hasPassword) {
+            holder.passwordProtectedImageView.setVisibility(View.VISIBLE);
+        } else {
+            holder.passwordProtectedImageView.setVisibility(View.GONE);
+        }
 
         switch (room.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
@@ -140,12 +145,26 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 }
                 break;
             case ROOM_GROUP_CALL:
+                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                        .asBitmap()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .load(R.drawable.ic_group_white_24px)
+                        .centerInside()
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                        .into(holder.avatarImageView);
                 holder.avatarImageView.setVisibility(View.VISIBLE);
-                holder.avatarImageView.setImageResource(R.drawable.ic_group_black_24dp);
                 break;
             case ROOM_PUBLIC_CALL:
+                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                        .asBitmap()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .load(R.drawable.ic_link_white_24px)
+                        .centerInside()
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                        .into(holder.avatarImageView);
                 holder.avatarImageView.setVisibility(View.VISIBLE);
-                holder.avatarImageView.setImageResource(R.drawable.ic_link_black_24dp);
                 break;
             default:
                 holder.avatarImageView.setVisibility(View.GONE);
@@ -172,6 +191,8 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
         public ImageView avatarImageView;
         @BindView(R.id.more_menu)
         public ImageButton moreMenuButton;
+        @BindView(R.id.password_protected_image_view)
+        ImageView passwordProtectedImageView;
 
         /**
          * Default constructor.
