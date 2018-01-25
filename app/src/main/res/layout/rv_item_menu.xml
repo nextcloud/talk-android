@@ -22,16 +22,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:orientation="vertical">
+                android:layout_marginTop="16dp">
 
     <TextView
         android:id="@+id/menu_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:textSize="12sp"/>
-
 </RelativeLayout>

@@ -30,6 +30,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -128,6 +129,14 @@ public class EntryMenuController extends BaseController {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
+        editText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE && proceedButton.isEnabled()) {
+                proceedButton.callOnClick();
+                return true;
+            }
+            return false;
+        });
+
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -144,12 +153,12 @@ public class EntryMenuController extends BaseController {
                 if (!TextUtils.isEmpty(s)) {
                     if (operationCode == 2) {
                         if (room.getName() == null || !room.getName().equals(s.toString())) {
-                            if (proceedButton.isEnabled()) {
+                            if (!proceedButton.isEnabled()) {
                                 proceedButton.setEnabled(true);
                                 proceedButton.setAlpha(1.0f);
                             }
                         } else {
-                            if (!proceedButton.isEnabled()) {
+                            if (proceedButton.isEnabled()) {
                                 proceedButton.setEnabled(false);
                                 proceedButton.setAlpha(0.7f);
                             }

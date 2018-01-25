@@ -28,7 +28,7 @@
     <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
         android:id="@+id/text_field_boxes"
         android:layout_width="match_parent"
-        android:layout_height="96dp"
+        android:layout_height="104dp"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         app:errorColor="@color/nc_darkRed"
