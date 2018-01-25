@@ -117,21 +117,22 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
             } else {
                 if (room.isHasPassword()) {
                     menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password), 4));
+                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_clear_password), 5));
                 } else {
-                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password), 5));
+                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password), 6));
                 }
             }
         }
 
         if (room.isPublic()) {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link), 6));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link), 7));
             if (room.canModerate()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private), 7));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private), 8));
             }
         }
 
         if (room.isDeletable()) {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 8));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9));
         }
     }
 
@@ -139,14 +140,23 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     public boolean onItemClick(int position) {
         MenuItem menuItem = (MenuItem) adapter.getItem(position);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
         if (menuItem != null) {
             int tag = menuItem.getTag();
-            if (tag > 0 && tag < 9) {
-                eventBus.post(new BottomSheetLockEvent(false, 0, false));
+
+            if (tag == 5) {
+                room.setPassword("");
+            }
+            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+
+            if (tag > 0 && tag < 10) {
                 bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
-                if (tag != 6 && tag != 2) {
+                if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
+                    eventBus.post(new BottomSheetLockEvent(false, 0, false));
                     getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
+                } else if (tag != 7) {
+                    getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle)));
+                } else {
+                    // do nothing for now, this is share
                 }
             }
         }

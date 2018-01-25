@@ -297,12 +297,16 @@ public class CallsListController extends BaseController implements SearchView.On
                     }
 
                     if (fromBottomSheet) {
-                        bottomSheet.setCancelable(true);
-                        if (bottomSheet.isShowing()) {
-                            bottomSheet.cancel();
-                        }
+                        new Handler().postDelayed(() -> {
+                            bottomSheet.setCancelable(true);
+                            if (bottomSheet.isShowing()) {
+                                bottomSheet.cancel();
+                            }
+                        }, 2500);
                     }
+
                 });
+
     }
 
     private void prepareViews() {

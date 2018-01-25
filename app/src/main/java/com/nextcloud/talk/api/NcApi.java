@@ -44,7 +44,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
-import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 
@@ -95,9 +94,10 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken
      */
 
+    @FormUrlEncoded
     @PUT
-    Observable<Void> renameRoom(@Header("Authorization") String authorization, @Url String url,
-                                @QueryMap Map<String, String> options);
+    Observable<GenericOverall> renameRoom(@Header("Authorization") String authorization, @Url String url,
+                                @Field("roomName") String roomName);
 
 
     /*
@@ -242,8 +242,9 @@ public interface NcApi {
                                                                @Url String url,
                                                                @QueryMap Map<String, String> fields);
 
+    @FormUrlEncoded
     @PUT
     Observable<GenericOverall> setPassword(@Header("Authorization") String authorization, @Url String url,
-                                           @Query("password") String password);
+                                           @Field("password") String password);
 
 }

@@ -82,19 +82,6 @@ public class ApiHelper {
         return retrofitBucket;
     }
 
-    public static RetrofitBucket getRetrofitBucketForRenameRoom(String baseUrl, String token, String newRoomName) {
-        RetrofitBucket retrofitBucket = new RetrofitBucket();
-        retrofitBucket.setUrl(baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token);
-
-        Map<String, String> queryMap = new HashMap<>();
-
-        queryMap.put("roomName", newRoomName);
-
-        retrofitBucket.setQueryMap(queryMap);
-
-        return retrofitBucket;
-    }
-
     public static RetrofitBucket getRetrofitBucketForAddParticipant(String baseUrl, String token, String user) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
         retrofitBucket.setUrl(baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/participants");

@@ -37,7 +37,6 @@ import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
-import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -57,6 +56,8 @@ import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class OperationsMenuController extends BaseController {
+    private static final String TAG = "OperationsMenuController";
+
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
@@ -119,9 +120,8 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(operationsObserver);
                     break;
                 case 2:
-                    RetrofitBucket retrofitBucket = ApiHelper.getRetrofitBucketForRenameRoom(userEntity.getBaseUrl(),
-                            room.getToken(), room.getName());
-                    ncApi.renameRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                    ncApi.renameRoom(credentials, ApiHelper.getRoom(userEntity.getBaseUrl(), room.getToken()),
+                            room.getName())
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
@@ -137,6 +137,7 @@ public class OperationsMenuController extends BaseController {
                     break;
                 case 4:
                 case 5:
+                case 6:
                     String pass = "";
                     if (room.getPassword() != null) {
                         pass = room.getPassword();
@@ -148,10 +149,10 @@ public class OperationsMenuController extends BaseController {
                             .retry(1)
                             .subscribe(operationsObserver);
                     break;
-                case 6:
+                case 7:
                     // Operation 6 is sharing, so we handle this differently
                     break;
-                case 7:
+                case 8:
                     ncApi.makeRoomPrivate(credentials, ApiHelper.getUrlForRoomVisibility(userEntity.getBaseUrl(), room
                             .getToken()))
                             .subscribeOn(Schedulers.newThread())
@@ -159,7 +160,7 @@ public class OperationsMenuController extends BaseController {
                             .retry(1)
                             .subscribe(operationsObserver);
                     break;
-                case 8:
+                case 9:
                     ncApi.deleteRoom(credentials, ApiHelper.getUrlForRoomParticipants(userEntity.getBaseUrl(), room.getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -174,20 +175,31 @@ public class OperationsMenuController extends BaseController {
 
     private void showResultImage(boolean everythingOK) {
         progressBar.setVisibility(View.GONE);
+
+        if (everythingOK) {
+            resultImageView.setImageDrawable(ColorUtils.getTintedDrawable(getResources(), R.drawable
+                    .ic_check_circle_black_24dp, R.color.nc_darkGreen));
+        } else {
+            resultImageView.setImageDrawable(ColorUtils.getTintedDrawable(getResources(), R.drawable
+                    .ic_cancel_black_24dp, R.color.nc_darkRed));
+        }
+
         resultImageView.setVisibility(View.VISIBLE);
 
         if (everythingOK) {
             resultsTextView.setText(R.string.nc_all_ok_operation);
         } else {
+            resultsTextView.setTextColor(getResources().getColor(R.color.nc_darkRed));
             resultsTextView.setText(R.string.nc_failed_to_perform_operation);
         }
 
-        boolean shouldRefreshData = operationCode != 4 && operationCode != 5;
         resultsTextView.setVisibility(View.VISIBLE);
         if (everythingOK) {
-            eventBus.post(new BottomSheetLockEvent(true, 2500, shouldRefreshData));
+            eventBus.post(new BottomSheetLockEvent(true, 2500, true));
         } else {
-            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, shouldRefreshData)));
+            resultImageView.setImageDrawable(ColorUtils.getTintedDrawable(getResources(), R.drawable
+                    .ic_cancel_black_24dp, R.color.nc_darkRed));
+            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, true)));
             okButton.setVisibility(View.VISIBLE);
         }
     }
@@ -210,16 +222,12 @@ public class OperationsMenuController extends BaseController {
 
         @Override
         public void onNext(Object o) {
-            resultImageView.setImageDrawable(ColorUtils.getTintedDrawable(getResources(), R.drawable
-                    .ic_check_circle_black_24dp, R.color.nc_darkGreen));
             showResultImage(true);
         }
 
         @Override
         public void onError(Throwable e) {
             if (retryCount == 1) {
-                resultImageView.setImageDrawable(ColorUtils.getTintedDrawable(getResources(), R.drawable
-                        .ic_cancel_black_24dp, R.color.nc_darkRed));
                 showResultImage(false);
             }
             dispose();
@@ -231,5 +239,9 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dispose();
+    }
 }
