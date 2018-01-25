@@ -222,7 +222,8 @@ public class OperationsMenuController extends BaseController {
         } else {
             resultImageView.setImageDrawable(ColorUtils.getTintedDrawable(getResources(), R.drawable
                     .ic_cancel_black_24dp, R.color.nc_darkRed));
-            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, true, true)));
+            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, operationCode != 99,
+                    true)));
             okButton.setVisibility(View.VISIBLE);
         }
     }
@@ -272,7 +273,6 @@ public class OperationsMenuController extends BaseController {
                 if (operationCode != 99 || !(e instanceof HttpException)) {
                     showResultImage(false);
                 } else {
-                    HttpException httpException = (HttpException) e;
                     if (((HttpException) e).response().code() == 403) {
                         // just make it cancelable again
                         ErrorMessageHolder.getInstance().setMessageType(ErrorMessageHolder.ErrorMessageType.CALL_PASSWORD_WRONG);
