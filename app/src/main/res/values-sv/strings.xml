@@ -59,11 +59,8 @@
     <string name="nc_what">Vad vill du göra idag?</string>
     <string name="nc_leave">Lämna samtal</string>
     <string name="nc_rename">Döp om samtal</string>
-    <string name="nc_set_password">Sätt lösenordet</string>
-    <string name="nc_change_password">Byt lösenordet</string>
     <string name="nc_share_link">Dela länk</string>
     <string name="nc_make_call_public">Gör samtal offentligt</string>
-    <string name="nc_make_call_private">Stoppa delning av samtalet</string>
     <string name="nc_delete_call">Radera samtal</string>
 
     <!-- Contacts -->

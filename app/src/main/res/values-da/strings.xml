@@ -51,11 +51,8 @@
     <string name="nc_what">Hvad ønsker du lave idag?</string>
     <string name="nc_leave">Forlad opkald</string>
     <string name="nc_rename">Omdøb opkald</string>
-    <string name="nc_set_password">Sæt password</string>
-    <string name="nc_change_password">Skift kodeord</string>
     <string name="nc_share_link">Del link</string>
     <string name="nc_make_call_public">Lav et offentligt opkald</string>
-    <string name="nc_make_call_private">Stop deling af opkald</string>
     <string name="nc_delete_call">Slet opkald</string>
 
     <!-- Contacts -->

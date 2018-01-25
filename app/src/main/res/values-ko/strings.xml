@@ -72,11 +72,8 @@
     <string name="nc_what">오늘은 무엇을 할까요?</string>
     <string name="nc_leave">통화 떠나기</string>
     <string name="nc_rename">통화 이름 변경</string>
-    <string name="nc_set_password">암호 설정</string>
-    <string name="nc_change_password">암호 변경</string>
     <string name="nc_share_link">링크 공유</string>
     <string name="nc_make_call_public">공개 통화로 전환</string>
-    <string name="nc_make_call_private">통화 공유 중지</string>
     <string name="nc_delete_call">통화 삭제</string>
 
     <!-- Contacts -->
@@ -101,4 +98,4 @@
     <string name="nc_notification_channel_calls_description">수신 통화 표시</string>
     <string name="nc_notification_channel_messages_description">수신 메시지 표시</string>
 
-</resources>
+    </resources>

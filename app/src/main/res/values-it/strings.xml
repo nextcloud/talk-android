@@ -72,11 +72,8 @@
     <string name="nc_what">Cosa vorresti fare oggi?</string>
     <string name="nc_leave">Lascia la chiamata</string>
     <string name="nc_rename">Rinomina chiamata</string>
-    <string name="nc_set_password">Imposta la password</string>
-    <string name="nc_change_password">Cambia la password</string>
     <string name="nc_share_link">Condividi collegamento</string>
     <string name="nc_make_call_public">Rendi pubblica la chiamata</string>
-    <string name="nc_make_call_private">Interrompi la condivisione della chiamata</string>
     <string name="nc_delete_call">Elimina chiamata</string>
 
     <!-- Contacts -->
@@ -101,4 +98,4 @@
     <string name="nc_notification_channel_calls_description">Mostra le chiamate in ingresso</string>
     <string name="nc_notification_channel_messages_description">Mostra i messaggi in ingresso</string>
 
-</resources>
+    </resources>

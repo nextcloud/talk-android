@@ -64,11 +64,8 @@
     <string name="nc_what">Çfarë do të donit të bënit sot?</string>
     <string name="nc_leave">Lë thirrjen</string>
     <string name="nc_rename">Riemëro thirrjen</string>
-    <string name="nc_set_password">Vendos fjalëkalimin</string>
-    <string name="nc_change_password">Ndrysho fjalëkalimin</string>
     <string name="nc_share_link">Ndaj linkun</string>
     <string name="nc_make_call_public">Bëje thirrjen publike</string>
-    <string name="nc_make_call_private">Ndalo së ndari thirrjen</string>
     <string name="nc_delete_call">Fshi thirrjen</string>
 
     <!-- Contacts -->

@@ -73,11 +73,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_what">Wat wil je vandaag doen?</string>
     <string name="nc_leave">Verlaat gesprek</string>
     <string name="nc_rename">Hernoem gesprek</string>
-    <string name="nc_set_password">Instellen wachtwoord</string>
-    <string name="nc_change_password">Wijzig wachtwoord</string>
     <string name="nc_share_link">Deel link</string>
     <string name="nc_make_call_public">Maak gesprek openbaar</string>
-    <string name="nc_make_call_private">Stop delen van het gesprek</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
 
     <!-- Contacts -->
@@ -105,4 +102,4 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
     <string name="nc_notification_channel_calls_description">Toont inkomende gesprekken</string>
     <string name="nc_notification_channel_messages_description">Toont inkomende berichten</string>
 
-</resources>
+    </resources>

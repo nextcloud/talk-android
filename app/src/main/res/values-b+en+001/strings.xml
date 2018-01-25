@@ -72,11 +72,8 @@
     <string name="nc_what">What would you like to do today?</string>
     <string name="nc_leave">Leave call</string>
     <string name="nc_rename">Rename call</string>
-    <string name="nc_set_password">Set the password</string>
-    <string name="nc_change_password">Change the password</string>
     <string name="nc_share_link">Share link</string>
     <string name="nc_make_call_public">Make call public</string>
-    <string name="nc_make_call_private">Stop sharing the call</string>
     <string name="nc_delete_call">Delete call</string>
 
     <!-- Contacts -->
@@ -101,4 +98,4 @@
     <string name="nc_notification_channel_calls_description">Shows incoming calls</string>
     <string name="nc_notification_channel_messages_description">Shows incoming messages</string>
 
-</resources>
+    </resources>

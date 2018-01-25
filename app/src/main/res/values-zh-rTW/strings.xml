@@ -33,6 +33,8 @@
     <string name="nc_yes">是</string>
     <string name="nc_no">否</string>
     <string name="nc_details">詳細資料</string>
+    <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">proxy代理</string>
     <string name="nc_settings_proxy_type_key">proxy_類型</string>
@@ -50,6 +52,9 @@
     <string name="nc_settings_remove_account">移除帳號</string>
     <string name="nc_settings_add_account">新增一個帳號</string>
     <string name="nc_settings_wrong_account">只有特定帳號可以被重新授權</string>
+    <string name="nc_settings_no_talk_installed">聊天的app尚未安裝在您試著要授權的伺服器。</string>
+    <string name="nc_account_scheduled_for_deletion">此帳號已經被排定要刪除，也不能被修改。</string>
+
     <string name="nc_no_proxy">無proxy代理</string>
     <string name="nc_username">使用者</string>
     <string name="nc_password">密碼</string>
@@ -65,17 +70,30 @@
     <string name="nc_what">您今天想做什麼？</string>
     <string name="nc_leave">離開通話</string>
     <string name="nc_rename">重新命名通話</string>
-    <string name="nc_set_password">設定密碼</string>
-    <string name="nc_change_password">更改密碼</string>
     <string name="nc_share_link">分享連結</string>
     <string name="nc_make_call_public">公開通話</string>
-    <string name="nc_make_call_private">停止分享通話</string>
     <string name="nc_delete_call">刪除通話</string>
 
     <!-- Contacts -->
     <string name="nc_one_contact_selected">聯絡人已選</string>
     <string name="nc_more_contacts_selected">聯絡人已選</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">允許的權限需要被同意，用以建立影像及/或語音電話。請在來源的系統對話中點選\"允許\"。</string>
+    <string name="nc_permissions_audio">為了開啟語音電話，麥克風的需求需要被同意。請在來源的系統對話中點選\"允許\"。</string>
+    <string name="nc_permissions_video">為了開啟影像電話，相機的需求需要被同意。請在來源的系統對話中點選\"允許\"。</string>
+    <string name="nc_camera_permission_permanently_denied">為了開啟影像的通訊請在系統設定內同意\"相機\"的需求。</string>
+    <string name="nc_microphone_permission_permanently_denied">為了開啟聲音的通訊請在系統設定內同意\"麥克風\"的需求。</string>
     <string name="nc_permissions_settings">開啟設定</string>
+
+    <!-- Call -->
+    <string name="nc_incoming_call">來電</string>
+
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
+    <string name="nc_notification_channel_calls">來電通知頻道</string>
+    <string name="nc_notification_channel_messages">訊息通知頻道</string>
+    <string name="nc_notification_channel_calls_description">顯示來電</string>
+    <string name="nc_notification_channel_messages_description">顯示來電訊息</string>
 
     </resources>

@@ -73,11 +73,8 @@
     <string name="nc_what">Mit szeretnél ma csinálni?</string>
     <string name="nc_leave">Hívás elhagyása</string>
     <string name="nc_rename">Hívás átnevezése</string>
-    <string name="nc_set_password">A jelszó beállítása</string>
-    <string name="nc_change_password">A jelszó módosítása</string>
     <string name="nc_share_link">Megosztás hivatkozása</string>
     <string name="nc_make_call_public">Hívás nyilvánossá tétele</string>
-    <string name="nc_make_call_private">Hívás megosztásának befejezése</string>
     <string name="nc_delete_call">Hívás törlése</string>
 
     <!-- Contacts -->
@@ -102,4 +99,4 @@
     <string name="nc_notification_channel_calls_description">Bejövõ hívások megjelenítése</string>
     <string name="nc_notification_channel_messages_description">Beérkező üzenetek megjelenítése</string>
 
-</resources>
+    </resources>

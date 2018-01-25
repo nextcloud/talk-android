@@ -72,11 +72,8 @@
     <string name="nc_what">Hva har du lyst til å gjøre idag?</string>
     <string name="nc_leave">Forlat samtale</string>
     <string name="nc_rename">Endre navn på samtale</string>
-    <string name="nc_set_password">Lag passordet</string>
-    <string name="nc_change_password">Endre passord</string>
     <string name="nc_share_link">Del lenke</string>
     <string name="nc_make_call_public">Gjør samtalen offentlig</string>
-    <string name="nc_make_call_private">Avslutt deling av samtale</string>
     <string name="nc_delete_call">Slett samtale</string>
 
     <!-- Contacts -->
@@ -101,4 +98,4 @@
     <string name="nc_notification_channel_calls_description">Viser innkommende anrop</string>
     <string name="nc_notification_channel_messages_description">Viser innkommende meldinger</string>
 
-</resources>
+    </resources>

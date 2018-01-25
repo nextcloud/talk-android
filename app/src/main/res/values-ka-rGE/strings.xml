@@ -72,11 +72,8 @@
     <string name="nc_what">რისი გაკეთება მოგეწონებოდათ დღეს?</string>
     <string name="nc_leave">ზარის დატოვება</string>
     <string name="nc_rename">ზარის სახელის შეცვლა</string>
-    <string name="nc_set_password">პაროლის დაყენება</string>
-    <string name="nc_change_password">პაროლის ცვლილება</string>
     <string name="nc_share_link">ბმულის გაზიარება</string>
     <string name="nc_make_call_public">ღია ზარის წამოწყება</string>
-    <string name="nc_make_call_private">ზარის გაზიარების შეწყვეტა</string>
     <string name="nc_delete_call">ზარის გაუქმება</string>
 
     <!-- Contacts -->
@@ -101,4 +98,4 @@
     <string name="nc_notification_channel_calls_description">აჩვენებს შემომავალ ზარებს</string>
     <string name="nc_notification_channel_messages_description">აჩვენებს შემომავალ წერილებს</string>
 
-</resources>
+    </resources>

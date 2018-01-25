@@ -61,11 +61,8 @@
     <string name="nc_what">¿Qué te gustaría hacer el día de hoy?</string>
     <string name="nc_leave">Dejar la llamada</string>
     <string name="nc_rename">Renombrar la llamada</string>
-    <string name="nc_set_password">Establecer la contraseña</string>
-    <string name="nc_change_password">Cambiar la contraseña</string>
     <string name="nc_share_link">Compartir liga</string>
     <string name="nc_make_call_public">Generar una llamada pública</string>
-    <string name="nc_make_call_private">Dejar de compartir la llamada</string>
     <string name="nc_delete_call">Borrar la llamada</string>
 
     <!-- Contacts -->

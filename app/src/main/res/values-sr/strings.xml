@@ -72,11 +72,8 @@
     <string name="nc_what">Шта желите да радите данас?</string>
     <string name="nc_leave">Напусти разговор</string>
     <string name="nc_rename">Преименуј разговор</string>
-    <string name="nc_set_password">Постави лозинку</string>
-    <string name="nc_change_password">Измени лозинку</string>
     <string name="nc_share_link">Подели везу</string>
     <string name="nc_make_call_public">Учини разговор јавним</string>
-    <string name="nc_make_call_private">Заустави дељење разговора</string>
     <string name="nc_delete_call">Обриши позив</string>
 
     <!-- Contacts -->
@@ -101,4 +98,4 @@
     <string name="nc_notification_channel_calls_description">Прикажи долазне позиве</string>
     <string name="nc_notification_channel_messages_description">Прикажи долазне поруке</string>
 
-</resources>
+    </resources>
