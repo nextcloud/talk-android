@@ -150,7 +150,7 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(operationsObserver);
                     break;
                 case 7:
-                    // Operation 6 is sharing, so we handle this differently
+                    // Operation 7 is sharing, so we handle this differently
                     break;
                 case 8:
                     ncApi.makeRoomPrivate(credentials, ApiHelper.getUrlForRoomVisibility(userEntity.getBaseUrl(), room

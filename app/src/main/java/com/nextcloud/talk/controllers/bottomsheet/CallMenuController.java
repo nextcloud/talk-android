@@ -20,6 +20,8 @@
 
 package com.nextcloud.talk.controllers.bottomsheet;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
@@ -30,13 +32,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.kennyc.bottomsheet.adapters.AppAdapter;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.adapters.items.AppItem;
 import com.nextcloud.talk.adapters.items.MenuItem;
 import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
+import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
@@ -60,13 +66,22 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     @Inject
     EventBus eventBus;
 
+    @Inject
+    UserUtils userUtils;
+
     private Room room;
     private List<AbstractFlexibleItem> menuItems;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
 
+    private boolean isShare;
+    private Intent shareIntent;
+
     public CallMenuController(Bundle args) {
         super(args);
         this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        if (args.containsKey(BundleKeys.KEY_IS_SHARE)) {
+            this.isShare = true;
+        }
     }
 
     @Override
@@ -100,66 +115,108 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         ));
     }
 
+    private void prepareIntent() {
+        shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.nc_share_subject));
+    }
+
     private void prepareMenu() {
         menuItems = new ArrayList<>();
 
-        menuItems.add(new MenuItem(getResources().getString(R.string.nc_what), 0));
+        if (!isShare) {
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_what), 0));
 
-        menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1));
 
-        if (room.isNameEditable()) {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename), 2));
-        }
+            if (room.isNameEditable()) {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename), 2));
+            }
 
-        if (room.canModerate()) {
-            if (!room.isPublic()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public), 3));
-            } else {
-                if (room.isHasPassword()) {
-                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password), 4));
-                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_clear_password), 5));
+            if (room.canModerate()) {
+                if (!room.isPublic()) {
+                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public), 3));
                 } else {
-                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password), 6));
+                    if (room.isHasPassword()) {
+                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password), 4));
+                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_clear_password), 5));
+                    } else {
+                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password), 6));
+                    }
                 }
             }
-        }
 
-        if (room.isPublic()) {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link), 7));
-            if (room.canModerate()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private), 8));
+            if (room.isPublic()) {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link), 7));
+                if (room.canModerate()) {
+                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private), 8));
+                }
             }
-        }
 
-        if (room.isDeletable()) {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9));
+            if (room.isDeletable()) {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9));
+            }
+        } else {
+            prepareIntent();
+            List<AppAdapter.AppInfo> appInfoList = ShareUtils.getShareApps(getActivity(), shareIntent, null,
+                    null);
+            menuItems.add(new AppItem(getResources().getString(R.string.nc_share_link_via), "", "",
+                    null));
+            if (appInfoList != null) {
+                for (AppAdapter.AppInfo appInfo : appInfoList) {
+                    menuItems.add(new AppItem(appInfo.title, appInfo.packageName, appInfo.name, appInfo.drawable));
+                }
+            }
         }
     }
 
     @Override
     public boolean onItemClick(int position) {
-        MenuItem menuItem = (MenuItem) adapter.getItem(position);
         Bundle bundle = new Bundle();
-        if (menuItem != null) {
-            int tag = menuItem.getTag();
+        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
 
-            if (tag == 5) {
-                room.setPassword("");
+        if (!isShare) {
+            MenuItem menuItem = (MenuItem) adapter.getItem(position);
+            if (menuItem != null) {
+
+                int tag = menuItem.getTag();
+                if (tag == 5) {
+                    room.setPassword("");
+                }
+
+                if (tag > 0 && tag < 10) {
+                    bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
+                    if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
+                        eventBus.post(new BottomSheetLockEvent(false, 0, false));
+                        getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
+                    } else if (tag != 7) {
+                        getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle)));
+                    } else {
+                        bundle.putBoolean(BundleKeys.KEY_IS_SHARE, true);
+                        getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle)));
+                    }
+                }
             }
-            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
-
-            if (tag > 0 && tag < 10) {
-                bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
-                if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
-                    eventBus.post(new BottomSheetLockEvent(false, 0, false));
-                    getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
-                } else if (tag != 7) {
-                    getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle)));
+        } else if (position != 0) {
+            AppItem appItem = (AppItem) adapter.getItem(position);
+            if (appItem != null && getActivity() != null) {
+                if (!room.hasPassword) {
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(getActivity(), null,
+                            userUtils, room));
+                    Intent intent = new Intent(shareIntent);
+                    intent.setComponent(new ComponentName(appItem.getPackageName(), appItem.getName()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(intent);
                 } else {
-                    // do nothing for now, this is share
+                    bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 7);
+                    bundle.putParcelable(BundleKeys.KEY_SHARE_INTENT, Parcels.wrap(shareIntent));
+                    bundle.putString(BundleKeys.KEY_APP_ITEM_PACKAGE_NAME, appItem.getPackageName());
+                    bundle.putString(BundleKeys.KEY_APP_ITEM_NAME, appItem.getName());
+                    getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle)));
                 }
             }
         }
+
 
         return true;
     }

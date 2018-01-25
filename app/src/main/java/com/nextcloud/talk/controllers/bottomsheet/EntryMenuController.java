@@ -20,6 +20,8 @@
 
 package com.nextcloud.talk.controllers.bottomsheet;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -36,7 +38,9 @@ import com.nextcloud.talk.api.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
+import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
@@ -65,13 +69,26 @@ public class EntryMenuController extends BaseController {
     @Inject
     EventBus eventBus;
 
+    @Inject
+    UserUtils userUtils;
+
     private int operationCode;
     private Room room;
+    private Intent shareIntent;
+    private String packageName;
+    private String name;
 
     public EntryMenuController(Bundle args) {
         super(args);
         this.operationCode = args.getInt(BundleKeys.KEY_OPERATION_CODE);
         this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+
+        if (args.containsKey(BundleKeys.KEY_SHARE_INTENT)) {
+            this.shareIntent = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_SHARE_INTENT));
+        }
+
+        this.name = args.getString(BundleKeys.KEY_APP_ITEM_NAME, "");
+        this.packageName = args.getString(BundleKeys.KEY_APP_ITEM_PACKAGE_NAME, "");
     }
 
     @Override
@@ -81,17 +98,28 @@ public class EntryMenuController extends BaseController {
 
     @OnClick(R.id.ok_button)
     public void onProceedButtonClick() {
-        eventBus.post(new BottomSheetLockEvent(false, 0, false));
+        if (operationCode != 7) {
+            eventBus.post(new BottomSheetLockEvent(false, 0, false));
 
-        Bundle bundle = new Bundle();
-        if (operationCode == 4 || operationCode == 6) {
-            room.setPassword(editText.getText().toString());
+            Bundle bundle = new Bundle();
+            if (operationCode == 4 || operationCode == 6) {
+                room.setPassword(editText.getText().toString());
+            } else {
+                room.setName(editText.getText().toString());
+            }
+            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+            bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
+            getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
         } else {
-            room.setName(editText.getText().toString());
+            if (getActivity() != null) {
+                shareIntent.putExtra(Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(getActivity(),
+                        editText.getText().toString(), userUtils, room));
+                Intent intent = new Intent(shareIntent);
+                intent.setComponent(new ComponentName(packageName, name));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
+            }
         }
-        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
-        bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
-        getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
     }
 
     @Override
@@ -142,23 +170,23 @@ public class EntryMenuController extends BaseController {
             }
         });
 
-        String helperText = "";
+        String labelText = "";
         switch (operationCode) {
             case 2:
-                helperText = getResources().getString(R.string.nc_call_name);
+                labelText = getResources().getString(R.string.nc_call_name);
                 break;
             case 4:
-                helperText = getResources().getString(R.string.nc_new_password);
+                labelText = getResources().getString(R.string.nc_new_password);
                 break;
             case 6:
-                helperText = getResources().getString(R.string.nc_password);
+            case 7:
+                labelText = getResources().getString(R.string.nc_password);
                 break;
             default:
                 break;
         }
 
-        textFieldBoxes.setHelperText(helperText);
+        textFieldBoxes.setLabelText(labelText);
         editText.requestFocus();
     }
-
 }

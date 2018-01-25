@@ -20,11 +20,13 @@
 
 package com.nextcloud.talk.adapters.items;
 
-
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nextcloud.talk.R;
@@ -38,64 +40,86 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> {
+public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
     private String title;
-    private int tag;
+    private String packageName;
+    private String name;
+    @Nullable private Drawable drawable;
 
-    public MenuItem(String title, int tag) {
+    public AppItem(String title, String packageName, String name, @Nullable Drawable drawable) {
         this.title = title;
-        this.tag = tag;
+        this.packageName = packageName;
+        this.name = name;
+        this.drawable = drawable;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof MenuItem) {
-            MenuItem inItem = (MenuItem) o;
-            return tag == inItem.tag;
+        if (o instanceof AppItem) {
+            AppItem inItem = (AppItem) o;
+            return title.equals(inItem.getTitle()) && packageName.equals(inItem.getPackageName()) && name.equals(inItem
+                    .getName());
         }
+
         return false;
     }
 
-    public int getTag() {
-        return tag;
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
     public int getLayoutRes() {
-        return R.layout.rv_item_menu;
+        return R.layout.rv_item_app;
     }
 
     @Override
-    public MenuItem.MenuItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
-        return new MenuItemViewHolder(view, adapter);
+    public AppItem.AppItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new AppItemViewHolder(view, adapter);
     }
 
     @Override
-    public void bindViewHolder(FlexibleAdapter adapter, MenuItem.MenuItemViewHolder holder, int position, List payloads) {
+    public void bindViewHolder(FlexibleAdapter adapter, AppItem.AppItemViewHolder holder, int position, List<Object> payloads) {
+        if (drawable != null) {
+            holder.iconImageView.setVisibility(View.VISIBLE);
+            holder.iconImageView.setImageDrawable(drawable);
+        } else {
+            holder.iconImageView.setVisibility(View.GONE);
+        }
+
         if (position == 0) {
-            Spannable spannableString = new SpannableString(NextcloudTalkApplication.getSharedApplication()
-                    .getString(R.string.nc_what));
+            Spannable spannableString = new SpannableString(title);
             spannableString.setSpan(new ForegroundColorSpan(NextcloudTalkApplication.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary)), 0,
                     spannableString.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.menuTitle.setText(spannableString);
+            holder.appTitleTextView.setText(spannableString);
         } else {
-            holder.menuTitle.setText(title);
+            holder.appTitleTextView.setText(title);
         }
     }
 
-    static class MenuItemViewHolder extends FlexibleViewHolder {
-
-        @BindView(R.id.menu_text)
-        public TextView menuTitle;
+    static class AppItemViewHolder extends FlexibleViewHolder {
+        @BindView(R.id.icon_image_view)
+        public ImageView iconImageView;
+        @BindView(R.id.app_title_text_view)
+        public TextView appTitleTextView;
 
         /**
          * Default constructor.
          */
-        MenuItemViewHolder(View view, FlexibleAdapter adapter) {
+        AppItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             ButterKnife.bind(this, view);
         }
     }
+
 }

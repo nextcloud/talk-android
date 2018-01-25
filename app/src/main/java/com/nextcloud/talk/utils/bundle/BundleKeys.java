@@ -28,4 +28,8 @@ public class BundleKeys {
     public static final String KEY_ORIGINAL_PROTOCOL = "KEY_ORIGINAL_PROTOCOL";
     public static final String KEY_ROOM = "KEY_ROOM";
     public static final String KEY_OPERATION_CODE = "KEY_OPERATION_CODE";
+    public static final String KEY_IS_SHARE = "KEY_IS_SHARE";
+    public static final String KEY_SHARE_INTENT = "KEY_SHARE_INTENT";
+    public static final String KEY_APP_ITEM_PACKAGE_NAME = "KEY_APP_ITEM_PACKAGE_NAME";
+    public static final String KEY_APP_ITEM_NAME = "KEY_APP_ITEM_NAME";
 }

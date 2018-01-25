@@ -43,6 +43,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -416,6 +417,9 @@ public class CallsListController extends BaseController implements SearchView.On
 
         if (bottomSheet == null) {
             bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
+            if (bottomSheet.getWindow() != null) {
+                bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+            }
         }
 
         bottomSheet.show();
@@ -426,12 +430,14 @@ public class CallsListController extends BaseController implements SearchView.On
         overridePushHandler(new NoOpControllerChangeHandler());
         overridePopHandler(new NoOpControllerChangeHandler());
         CallItem callItem = adapter.getItem(position);
-        Intent callIntent = new Intent(getActivity(), CallActivity.class);
-        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-        bundleBuilder.putString("roomToken", callItem.getModel().getToken());
-        bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
-        callIntent.putExtras(bundleBuilder.build());
-        startActivity(callIntent);
+        if (callItem != null && getActivity() != null) {
+            Intent callIntent = new Intent(getActivity(), CallActivity.class);
+            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+            bundleBuilder.putString("roomToken", callItem.getModel().getToken());
+            bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
+            callIntent.putExtras(bundleBuilder.build());
+            startActivity(callIntent);
+        }
 
         return true;
     }
