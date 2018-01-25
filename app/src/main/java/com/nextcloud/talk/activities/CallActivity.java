@@ -945,8 +945,10 @@ public class CallActivity extends AppCompatActivity {
                                     SessionDescription.Type.fromCanonicalForm(type),
                                     sessionDescriptionStringWithPreferredCodec);
 
-                            magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
-                                    .getMagicSdpObserver(), sessionDescriptionWithPreferredCodec);
+                            if (magicPeerConnectionWrapper.getPeerConnection() != null) {
+                                magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
+                                        .getMagicSdpObserver(), sessionDescriptionWithPreferredCodec);
+                            }
                             break;
                         case "candidate":
                             NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
