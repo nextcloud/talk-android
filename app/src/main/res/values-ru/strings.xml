@@ -72,8 +72,11 @@
     <string name="nc_what">Что бы вы хотели сегодня сделать?</string>
     <string name="nc_leave">Завершить звонок</string>
     <string name="nc_rename">Переименовать звонок</string>
+    <string name="nc_set_password">Задать пароль</string>
+    <string name="nc_change_password">Сменить пароль</string>
     <string name="nc_share_link">Поделиться ссылкой</string>
     <string name="nc_make_call_public">Сделать звонок общедоступным</string>
+    <string name="nc_make_call_private">Сделать звонок закрытым</string>
     <string name="nc_delete_call">Удалить звонок</string>
 
     <!-- Contacts -->
@@ -98,4 +101,8 @@
     <string name="nc_notification_channel_calls_description">Показывает входящие вызовы</string>
     <string name="nc_notification_channel_messages_description">Показывает входящие сообщения</string>
 
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
+    <string name="nc_all_ok_operation">Всё готово!</string>
+    <string name="nc_ok">ОК</string>
     </resources>

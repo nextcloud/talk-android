@@ -72,8 +72,11 @@
     <string name="nc_what">Bugün ne yapmak istersiniz?</string>
     <string name="nc_leave">Çağrıdan ayrıl</string>
     <string name="nc_rename">Çağrıyı yeniden adlandır</string>
+    <string name="nc_set_password">Bir parola ayarlayın</string>
+    <string name="nc_change_password">Bir parolayı değiştirin</string>
     <string name="nc_share_link">Bağlantıyı paylaş</string>
     <string name="nc_make_call_public">Çağrıyı herkese aç</string>
+    <string name="nc_make_call_private">Çağrıyı özel yap</string>
     <string name="nc_delete_call">Çağrıyı sil</string>
 
     <!-- Contacts -->
@@ -98,4 +101,8 @@
     <string name="nc_notification_channel_calls_description">Gelen çağrıları görüntüler</string>
     <string name="nc_notification_channel_messages_description">Gelen iletileri görüntüler</string>
 
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
+    <string name="nc_all_ok_operation">Hepsi tamam!</string>
+    <string name="nc_ok">Tamam</string>
     </resources>
