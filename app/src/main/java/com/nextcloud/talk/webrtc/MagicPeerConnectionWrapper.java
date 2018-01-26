@@ -21,11 +21,14 @@
 
 package com.nextcloud.talk.webrtc;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
@@ -157,10 +160,10 @@ public class MagicPeerConnectionWrapper {
     }
 
     public String getNick() {
-        if (nick != null) {
+        if (!TextUtils.isEmpty(nick)) {
             return nick;
         } else {
-            return "";
+            return NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_nick_guest);
         }
     }
 
