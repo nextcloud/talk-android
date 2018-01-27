@@ -94,7 +94,6 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
 
     <!-- Call -->
     <string name="nc_incoming_call">Inkomend gesprek</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>

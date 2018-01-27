@@ -90,7 +90,6 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Долазни позив</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s на каналу за обавештење о %2$s</string>
     <string name="nc_notification_channel_calls">Канал обавештења о позивима</string>

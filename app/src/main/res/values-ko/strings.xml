@@ -90,7 +90,6 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">수신 통화</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%2$s 알림 채널의 %1$s</string>
     <string name="nc_notification_channel_calls">통화 알림 채널</string>

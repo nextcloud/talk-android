@@ -60,6 +60,8 @@
     <string name="nc_no_proxy">Sem proxy</string>
     <string name="nc_username">Usuário</string>
     <string name="nc_password">Senha</string>
+    <string name="nc_new_password">Nova senha</string>
+    <string name="nc_wrong_password">Senha incorreta</string>
     <string name="nc_about">Sobre</string>
     <string name="nc_privacy">Privacidade</string>
     <string name="nc_get_source_code">Obtenha o código fonte</string>
@@ -74,7 +76,9 @@
     <string name="nc_rename">Renomear uma chamada</string>
     <string name="nc_set_password">Definir uma senha</string>
     <string name="nc_change_password">Alterar uma senha</string>
+    <string name="nc_clear_password">Excluir a senha</string>
     <string name="nc_share_link">Compartilhar um link</string>
+    <string name="nc_share_link_via">Compartilhar link via</string>
     <string name="nc_make_call_public">Fazer uma chamada pública</string>
     <string name="nc_make_call_private">Fazer uma chamada privada</string>
     <string name="nc_delete_call">Excluir a chamada</string>
@@ -93,7 +97,6 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Chamada solicitada</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas do canal de notificação</string>
@@ -105,4 +108,12 @@
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_ok">OK</string>
-    </resources>
+    <string name="nc_call_name">Nome da chamada</string>
+    <string name="nc_proceed">Prosseguir</string>
+    <string name="nc_call_name_is_same">O nome que você inseriu é o mesmo que o existente</string>
+    <string name="nc_share_text">Olá,\n\nGostaria que você participasse de uma chamada comigo.\n\nVocê pode participar desta chamada via
+        %1$s/index.php/call/%2$s</string>
+    <string name="nc_talk_soon">\n\nAté breve,\n %1$s</string>
+    <string name="nc_share_subject">Convite de chamada</string>
+    <string name="nc_share_text_pass">\n\nA senha para a chamada é: %1$s</string>
+</resources>

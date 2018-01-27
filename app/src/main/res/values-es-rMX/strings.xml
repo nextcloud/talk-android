@@ -60,6 +60,8 @@
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Usuario</string>
     <string name="nc_password">Contraseña</string>
+    <string name="nc_new_password">Nueva contraseña</string>
+    <string name="nc_wrong_password">Contraseña equivocada</string>
     <string name="nc_about">Acerca</string>
     <string name="nc_privacy">Privacidad</string>
     <string name="nc_get_source_code">Obtener el código fuente</string>
@@ -72,8 +74,13 @@
     <string name="nc_what">¿Qué te gustaría hacer el día de hoy?</string>
     <string name="nc_leave">Dejar la llamada</string>
     <string name="nc_rename">Renombrar la llamada</string>
+    <string name="nc_set_password">Establecer una contraseña</string>
+    <string name="nc_change_password">Cambiar una contraseña</string>
+    <string name="nc_clear_password">Limpiar contraseña</string>
     <string name="nc_share_link">Compartir liga</string>
+    <string name="nc_share_link_via">Compartir vínculo vía</string>
     <string name="nc_make_call_public">Generar una llamada pública</string>
+    <string name="nc_make_call_private">Hacer una llamada privada</string>
     <string name="nc_delete_call">Borrar la llamada</string>
 
     <!-- Contacts -->
@@ -83,11 +90,13 @@
     <!-- Permissions -->
     <string name="nc_permissions">Hay permisos que necesitan ser otorgados para establecer una video y/o audio llamada. Por favor haz click en \"PERMITIR\" en la sigueinte ventana de diálogo del sistema. </string>
     <string name="nc_permissions_audio">El permiso de micrófono necesita ser otorgado para habilitar llamadas de audio. Por favor haz click en \"PERMITIR\" en la siguiente ventana de diálogo del sistema. </string>
+    <string name="nc_permissions_video">El permiso de la cámara necesita ser otorgado para habilitar video llamadas. Por favor haz click en \"PERMITIR\" en la siguiente ventana de diálogo del sistema. </string>
+    <string name="nc_camera_permission_permanently_denied">Para habilitar la comunicación con video por favor otorga el permiso de \"Cámara\" en la configuración del sistema. </string>
+    <string name="nc_microphone_permission_permanently_denied">Para habilitar la comunicacion con voz por favor otorga el privilegio de \"Microfono\" en las configuraciones del sistema. </string>
     <string name="nc_permissions_settings">Abrir configuraciones</string>
 
     <!-- Call -->
     <string name="nc_incoming_call">Llamada entrando</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s en el canal de notifcación %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
@@ -95,4 +104,16 @@
     <string name="nc_notification_channel_calls_description">Muestra las llamadas entrantes</string>
     <string name="nc_notification_channel_messages_description">Muestra los mensajes entrantes</string>
 
-    </resources>
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">¡Lo sentimos, algo salió mal!</string>
+    <string name="nc_all_ok_operation">¡OK, ya terminamos!</string>
+    <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Nombre de la llamada</string>
+    <string name="nc_proceed">Proceder</string>
+    <string name="nc_call_name_is_same">El nombre que ingresaste es igual al existente</string>
+    <string name="nc_share_text">Hola,\n\nquisiera que te unieras a una llamada conmigo.\n\nPuedes unirte a esta llamada vía
+%1$s/index.php/call/%2$s</string>
+    <string name="nc_talk_soon">\n\nHablaremos pronto,\n %1$s</string>
+    <string name="nc_share_subject">Invitación a llamada</string>
+    <string name="nc_share_text_pass">\n\nLa contraseña para la llamada es: %1$s</string>
+</resources>

@@ -60,6 +60,8 @@
     <string name="nc_no_proxy">Nessun proxy</string>
     <string name="nc_username">Nome utente</string>
     <string name="nc_password">Password</string>
+    <string name="nc_new_password">Nuova password</string>
+    <string name="nc_wrong_password">Password errata</string>
     <string name="nc_about">Informazioni</string>
     <string name="nc_privacy">Riservatezza</string>
     <string name="nc_get_source_code">Ottieni codice sorgente</string>
@@ -74,7 +76,9 @@
     <string name="nc_rename">Rinomina chiamata</string>
     <string name="nc_set_password">Imposta una password</string>
     <string name="nc_change_password">Modifica una password</string>
+    <string name="nc_clear_password">Cancella la password</string>
     <string name="nc_share_link">Condividi collegamento</string>
+    <string name="nc_share_link_via">Condividi collegamento tramite</string>
     <string name="nc_make_call_public">Rendi pubblica la chiamata</string>
     <string name="nc_make_call_private">Rendi privata la chiamata</string>
     <string name="nc_delete_call">Elimina chiamata</string>
@@ -93,7 +97,6 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Chiamata in ingresso</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s sul canale di notifica %2$s</string>
     <string name="nc_notification_channel_calls">Canale di notifica delle chiamate</string>
@@ -105,4 +108,12 @@
     <string name="nc_failed_to_perform_operation">Spiacenti, qualcosa non ha funzionato!</string>
     <string name="nc_all_ok_operation">OK, tutto fatto!</string>
     <string name="nc_ok">OK</string>
-    </resources>
+    <string name="nc_call_name">Nome della chiamata</string>
+    <string name="nc_proceed">Procedi</string>
+    <string name="nc_call_name_is_same">Il nome che hai digitato è uguale a quello esistente</string>
+    <string name="nc_share_text">Ciao,\n\nvorrei patercipare a una chiamata con te.\n\nPuoi unirti alla vhiamata tramite
+        %1$s/index.php/call/%2$s</string>
+    <string name="nc_talk_soon">\n\nParla presto,\n %1$s</string>
+    <string name="nc_share_subject">Invito alla chiamata</string>
+    <string name="nc_share_text_pass">\n\nLa password per la chiamata è: %1$s</string>
+</resources>

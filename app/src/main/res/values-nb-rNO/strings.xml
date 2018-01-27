@@ -60,6 +60,8 @@
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Brukernavn</string>
     <string name="nc_password">Passord</string>
+    <string name="nc_new_password">Nytt passord</string>
+    <string name="nc_wrong_password">Feil passord</string>
     <string name="nc_about">Om</string>
     <string name="nc_privacy">Personvern</string>
     <string name="nc_get_source_code">Få kildekoden</string>
@@ -72,7 +74,10 @@
     <string name="nc_what">Hva har du lyst til å gjøre idag?</string>
     <string name="nc_leave">Forlat samtale</string>
     <string name="nc_rename">Endre navn på samtale</string>
+    <string name="nc_set_password">Sett et passord</string>
+    <string name="nc_change_password">Endre et passord</string>
     <string name="nc_share_link">Del lenke</string>
+    <string name="nc_share_link_via">Del lenke via</string>
     <string name="nc_make_call_public">Gjør samtalen offentlig</string>
     <string name="nc_delete_call">Slett samtale</string>
 
@@ -90,7 +95,6 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Innkommende anrop</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s merknadskanal</string>
     <string name="nc_notification_channel_calls">Innringingsnotfikasjonskanal</string>
@@ -98,4 +102,11 @@
     <string name="nc_notification_channel_calls_description">Viser innkommende anrop</string>
     <string name="nc_notification_channel_messages_description">Viser innkommende meldinger</string>
 
-    </resources>
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
+    <string name="nc_ok">OK</string>
+    <string name="nc_proceed">Fortsett</string>
+    <string name="nc_talk_soon">\n\nSnakkes snart,\n %1$s</string>
+    <string name="nc_share_subject">Samtaleinvitasjon</string>
+    <string name="nc_share_text_pass">\n\nPassordet for samtalen er: %1$s</string>
+</resources>

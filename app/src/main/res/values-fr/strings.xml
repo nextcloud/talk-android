@@ -60,6 +60,8 @@
     <string name="nc_no_proxy">Aucun proxy</string>
     <string name="nc_username">Nom d\'utilisateur</string>
     <string name="nc_password">Mot de passe</string>
+    <string name="nc_new_password">Nouveau mot de passe</string>
+    <string name="nc_wrong_password">Mot de passe incorrect</string>
     <string name="nc_about">À propos</string>
     <string name="nc_privacy">Vie privée</string>
     <string name="nc_get_source_code">Obtenir le code source</string>
@@ -93,7 +95,6 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Appel rentrant</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">Canal de notification %1$s sur %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notification des appels</string>

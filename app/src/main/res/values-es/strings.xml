@@ -60,6 +60,8 @@
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Nombre de usuario</string>
     <string name="nc_password">Contraseña</string>
+    <string name="nc_new_password">Nueva contraseña</string>
+    <string name="nc_wrong_password">Contraseña errónea</string>
     <string name="nc_about">Acerca de</string>
     <string name="nc_privacy">Privacidad</string>
     <string name="nc_get_source_code">Conseguir el código fuente</string>
@@ -72,8 +74,13 @@
     <string name="nc_what">¿Qué quieres hacer hoy?</string>
     <string name="nc_leave">Abandonar llamada</string>
     <string name="nc_rename">Renombrar palabra</string>
+    <string name="nc_set_password">Configura una contraseña</string>
+    <string name="nc_change_password">Cambiar una contraseña</string>
+    <string name="nc_clear_password">Limpiar contraseña</string>
     <string name="nc_share_link">Compartir enlace</string>
+    <string name="nc_share_link_via">Compartir enlace vía</string>
     <string name="nc_make_call_public">Hacer pública la llamada</string>
+    <string name="nc_make_call_private">Hacer privada la llamada</string>
     <string name="nc_delete_call">Eliminar llamada</string>
 
     <!-- Contacts -->
@@ -90,7 +97,6 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Llamada entrante</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s en el canal de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
@@ -98,4 +104,16 @@
     <string name="nc_notification_channel_calls_description">Muestra las llamadas entrantes</string>
     <string name="nc_notification_channel_messages_description">Muestra los mensajes entrantes</string>
 
-    </resources>
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>
+    <string name="nc_all_ok_operation">OK. Todo hecho.</string>
+    <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Nombre de la llamada</string>
+    <string name="nc_proceed">Proceder</string>
+    <string name="nc_call_name_is_same">El nombre que has introducido es el mismo que el existente</string>
+    <string name="nc_share_text">¡Hola!\n\nMe gustaría que te unieras a una llamada conmigo.\|n\nPuedes unirte a esta llamada vía
+       %1$s/index.php/call/%2$s</string>
+    <string name="nc_talk_soon">\n\nHablamos pronto,\n %1$s</string>
+    <string name="nc_share_subject">Invitación a la llamada</string>
+    <string name="nc_share_text_pass">\n\nLa contraseña para la llamada es: %1$s</string>
+</resources>

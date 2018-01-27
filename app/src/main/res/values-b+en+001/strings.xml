@@ -90,7 +90,6 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Incoming call</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
     <string name="nc_notification_channel_calls">Calls notification channel</string>
