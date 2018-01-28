@@ -33,7 +33,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -81,7 +80,6 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
-import com.nextcloud.talk.webrtc.MagicWebRTCLists;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -487,9 +485,7 @@ public class CallActivity extends AppCompatActivity {
         if (camera2EnumeratorIsSupported) {
             cameraEnumerator = new Camera2Enumerator(this);
         } else {
-            cameraEnumerator = new Camera1Enumerator(!MagicWebRTCLists.HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build
-                    .MANUFACTURER.toLowerCase()) && !MagicWebRTCLists.HARDWARE_ACCELERATION_DEVICE_BLACKLIST.contains
-                    (Build.MODEL));
+            cameraEnumerator = new Camera1Enumerator(MagicWebRTCUtils.shouldEnableVideoHardwareAcceleration());
         }
     }
 

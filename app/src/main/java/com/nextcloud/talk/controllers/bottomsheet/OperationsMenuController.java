@@ -43,7 +43,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ColorUtils;
-import com.nextcloud.talk.utils.ErrorMessageHolder;
+import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -276,7 +276,7 @@ public class OperationsMenuController extends BaseController {
                     if (((HttpException) e).response().code() == 403) {
                         eventBus.post(new BottomSheetLockEvent(true, 0, false,
                                 false));
-                        ErrorMessageHolder.getInstance().setMessageType(ErrorMessageHolder.ErrorMessageType.CALL_PASSWORD_WRONG);
+                        ApplicationWideMessageHolder.getInstance().setMessageType(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG);
                         getRouter().popCurrentController();
                     } else {
                         showResultImage(false);

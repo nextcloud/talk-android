@@ -43,7 +43,7 @@ import com.nextcloud.talk.api.helpers.api.ApiHelper;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.utils.AccountUtils;
-import com.nextcloud.talk.utils.ErrorMessageHolder;
+import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -298,22 +298,22 @@ public class ServerSelectionController extends BaseController {
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        if (ErrorMessageHolder.getInstance().getMessageType() != null) {
-            if (ErrorMessageHolder.getInstance().getMessageType()
-                    .equals(ErrorMessageHolder.ErrorMessageType.ACCOUNT_SCHEDULED_FOR_DELETION)) {
+        if (ApplicationWideMessageHolder.getInstance().getMessageType() != null) {
+            if (ApplicationWideMessageHolder.getInstance().getMessageType()
+                    .equals(ApplicationWideMessageHolder.MessageType.ACCOUNT_SCHEDULED_FOR_DELETION)) {
                 textFieldBoxes.setError(getResources().getString(R.string.nc_account_scheduled_for_deletion),
                         false);
-                ErrorMessageHolder.getInstance().setMessageType(null);
-            } else if (ErrorMessageHolder.getInstance().getMessageType()
-                    .equals(ErrorMessageHolder.ErrorMessageType.SERVER_WITHOUT_TALK)) {
+                ApplicationWideMessageHolder.getInstance().setMessageType(null);
+            } else if (ApplicationWideMessageHolder.getInstance().getMessageType()
+                    .equals(ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK)) {
                 textFieldBoxes.setError(getResources().getString(R.string.nc_settings_no_talk_installed),
                         false);
-            } else if (ErrorMessageHolder.getInstance().getMessageType()
-                    .equals(ErrorMessageHolder.ErrorMessageType.FAILED_TO_IMPORT_ACCOUNT)) {
+            } else if (ApplicationWideMessageHolder.getInstance().getMessageType()
+                    .equals(ApplicationWideMessageHolder.MessageType.FAILED_TO_IMPORT_ACCOUNT)) {
                 textFieldBoxes.setError(getResources().getString(R.string.nc_server_failed_to_import_account),
                         false);
             }
-            ErrorMessageHolder.getInstance().setMessageType(null);
+            ApplicationWideMessageHolder.getInstance().setMessageType(null);
         }
     }
 

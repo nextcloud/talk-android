@@ -40,7 +40,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.ErrorMessageHolder;
+import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -102,10 +102,10 @@ public class EntryMenuController extends BaseController {
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        if (ErrorMessageHolder.getInstance().getMessageType() != null &&
-                ErrorMessageHolder.getInstance().getMessageType().equals(ErrorMessageHolder.ErrorMessageType.CALL_PASSWORD_WRONG)) {
+        if (ApplicationWideMessageHolder.getInstance().getMessageType() != null &&
+                ApplicationWideMessageHolder.getInstance().getMessageType().equals(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG)) {
             textFieldBoxes.setError(getResources().getString(R.string.nc_wrong_password), true);
-            ErrorMessageHolder.getInstance().setMessageType(null);
+            ApplicationWideMessageHolder.getInstance().setMessageType(null);
             if (proceedButton.isEnabled()) {
                 proceedButton.setEnabled(false);
                 proceedButton.setAlpha(0.7f);

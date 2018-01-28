@@ -48,7 +48,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.ErrorMessageHolder;
+import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -356,8 +356,8 @@ public class SettingsController extends BaseController {
 
         addAccountButton.setEnabled(true);
 
-        if (ErrorMessageHolder.getInstance().getMessageType() != null) {
-            switch (ErrorMessageHolder.getInstance().getMessageType()) {
+        if (ApplicationWideMessageHolder.getInstance().getMessageType() != null) {
+            switch (ApplicationWideMessageHolder.getInstance().getMessageType()) {
                 case ACCOUNT_UPDATED_NOT_ADDED:
                     messageText.setTextColor(getResources().getColor(R.color.colorPrimary));
                     messageText.setText(getResources().getString(R.string.nc_settings_account_updated));
@@ -386,7 +386,7 @@ public class SettingsController extends BaseController {
                     messageView.setVisibility(View.GONE);
                     break;
             }
-            ErrorMessageHolder.getInstance().setMessageType(null);
+            ApplicationWideMessageHolder.getInstance().setMessageType(null);
 
             messageView.animate()
                     .translationY(0)

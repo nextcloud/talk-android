@@ -27,22 +27,68 @@
  * tree. An additional intellectual property rights grant can be found
  * in the file PATENTS.  All contributing project authors may
  * be found in the AUTHORS file in the root of the source tree.
- *
  */
 
 package com.nextcloud.talk.webrtc;
 
+import android.os.Build;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MagicWebRTCUtils {
     private static final String TAG = "MagicWebRTCUtils";
+
+    /* AEC blacklist and SL_ES_WHITELIST are borrowed from Signal
+       https://github.com/WhisperSystems/Signal-Android/blob/551470123d006b76a68d705d131bb12513a5e683/src/org/thoughtcrime/securesms/ApplicationContext.java
+    */
+    public static Set<String> HARDWARE_AEC_BLACKLIST = new HashSet<String>() {{
+        add("D6503"); // Sony Xperia Z2 D6503
+        add("ONE A2005"); // OnePlus 2
+        add("MotoG3"); // Moto G (3rd Generation)
+        add("Nexus 6P"); // Nexus 6p
+        add("Pixel"); // Pixel
+        add("Pixel XL"); // Pixel XL
+        add("MI 4LTE"); // Xiami Mi4
+        add("Redmi Note 3"); // Redmi Note 3
+        add("Redmi Note 4"); // Redmi Note 4
+        add("SM-G900F"); // Samsung Galaxy S5
+        add("g3_kt_kr"); // LG G3
+        add("SM-G930F"); // Samsung Galaxy S7
+        add("Xperia SP"); // Sony Xperia SP
+        add("Nexus 6"); // Nexus 6
+        add("ONE E1003"); // OnePlus X
+        add("One"); // OnePlus One
+        add("Moto G5");
+    }};
+
+    public static Set<String> OPEN_SL_ES_WHITELIST = new HashSet<String>() {{
+        add("Pixel");
+        add("Pixel XL");
+    }};
+
+    private static Set<String> HARDWARE_ACCELERATION_DEVICE_BLACKLIST = new HashSet<String>() {{
+        add("GT-I9100"); // Samsung Galaxy S2
+        add("GT-N8013"); // Samsung Galaxy Note 10.1
+        add("SM-G930F"); // Samsung Galaxy S7
+        add("AGS-W09"); // Huawei MediaPad T3 10
+    }};
+
+    private static Set<String> HARDWARE_ACCELERATION_VENDOR_BLACKLIST = new HashSet<String>() {{
+        add("samsung");
+    }};
+
+    public static boolean shouldEnableVideoHardwareAcceleration() {
+        return (!HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build.MANUFACTURER.toLowerCase())
+                && !HARDWARE_ACCELERATION_DEVICE_BLACKLIST.contains(Build.MODEL));
+    }
 
     public static String preferCodec(String sdpDescription, String codec, boolean isAudio) {
         final String[] lines = sdpDescription.split("\r\n");

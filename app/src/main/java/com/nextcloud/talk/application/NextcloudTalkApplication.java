@@ -20,12 +20,10 @@
  */
 package com.nextcloud.talk.application;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.Log;
 
 import com.evernote.android.job.JobManager;
@@ -39,8 +37,9 @@ import com.nextcloud.talk.dagger.modules.RestModule;
 import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 import com.nextcloud.talk.jobs.creator.MagicJobCreator;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserModule;
-import com.nextcloud.talk.webrtc.MagicWebRTCLists;
+import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -48,9 +47,6 @@ import org.webrtc.PeerConnectionFactory;
 import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.GeneralSecurityException;
 
 import javax.inject.Singleton;
@@ -89,43 +85,18 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     //endregion
 
     //region private methods
-    // Solution inspired by https://stackoverflow.com/questions/34936590/why-isnt-my-vector-drawable-scaling-as-expected
-    private void useCompatVectorIfNeeded() {
-        if (Build.VERSION.SDK_INT < 23) {
-            try {
-                @SuppressLint("RestrictedApi") AppCompatDrawableManager drawableManager = AppCompatDrawableManager.get();
-                Class<?> inflateDelegateClass = Class.forName("android.support.v7.widget.AppCompatDrawableManager$InflateDelegate");
-                Class<?> vdcInflateDelegateClass = Class.forName("android.support.v7.widget.AppCompatDrawableManager$VdcInflateDelegate");
-
-                Constructor<?> constructor = vdcInflateDelegateClass.getDeclaredConstructor();
-                constructor.setAccessible(true);
-                Object vdcInflateDelegate = constructor.newInstance();
-
-                Class<?> args[] = {String.class, inflateDelegateClass};
-                Method addDelegate = AppCompatDrawableManager.class.getDeclaredMethod("addDelegate", args);
-                addDelegate.setAccessible(true);
-                addDelegate.invoke(drawableManager, "vector", vdcInflateDelegate);
-            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
-                    InvocationTargetException | IllegalAccessException e) {
-                Log.e(TAG, "Failed to use reflection to enable proper vector scaling");
-            }
-        }
-    }
-
     private void initializeWebRtc() {
         try {
-            if (MagicWebRTCLists.HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
+            if (MagicWebRTCUtils.HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
                 WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true);
             }
 
-            if (!MagicWebRTCLists.OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
+            if (!MagicWebRTCUtils.OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
                 WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true);
             }
 
             PeerConnectionFactory.initialize(PeerConnectionFactory.InitializationOptions.builder(this)
-                    .setEnableVideoHwAcceleration(!MagicWebRTCLists.HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build
-                            .MANUFACTURER.toLowerCase()) && !MagicWebRTCLists.HARDWARE_ACCELERATION_DEVICE_BLACKLIST
-                            .contains(Build.MODEL))
+                    .setEnableVideoHwAcceleration(MagicWebRTCUtils.shouldEnableVideoHardwareAcceleration())
                     .createInitializationOptions());
         } catch (UnsatisfiedLinkError e) {
             Log.w(TAG, e);
@@ -144,7 +115,7 @@ public class NextcloudTalkApplication extends MultiDexApplication {
         sharedApplication = this;
 
         initializeWebRtc();
-        useCompatVectorIfNeeded();
+        DisplayUtils.useCompatVectorIfNeeded();
 
 
         try {

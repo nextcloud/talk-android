@@ -49,7 +49,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.ErrorMessageHolder;
+import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -268,28 +268,28 @@ public class WebViewLoginController extends BaseController {
 
             UserEntity currentUser = userUtils.getCurrentUser();
 
-            ErrorMessageHolder.ErrorMessageType errorMessageType = null;
+            ApplicationWideMessageHolder.MessageType messageType = null;
             if (currentUser != null && isPasswordUpdate &&
                     !currentUser.getUsername().equals(loginData.getUsername())) {
-                ErrorMessageHolder.getInstance().setMessageType(
-                        ErrorMessageHolder.ErrorMessageType.WRONG_ACCOUNT);
+                ApplicationWideMessageHolder.getInstance().setMessageType(
+                        ApplicationWideMessageHolder.MessageType.WRONG_ACCOUNT);
                 getRouter().popToRoot();
             } else {
 
                 if (!isPasswordUpdate && userUtils.getIfUserWithUsernameAndServer(loginData.getUsername(), baseUrl)) {
-                    errorMessageType = ErrorMessageHolder.ErrorMessageType.ACCOUNT_UPDATED_NOT_ADDED;
+                    messageType = ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED;
                 }
 
                 if (userUtils.checkIfUserIsScheduledForDeletion(loginData.getUsername(), baseUrl)) {
-                    ErrorMessageHolder.getInstance().setMessageType(
-                            ErrorMessageHolder.ErrorMessageType.ACCOUNT_SCHEDULED_FOR_DELETION);
+                    ApplicationWideMessageHolder.getInstance().setMessageType(
+                            ApplicationWideMessageHolder.MessageType.ACCOUNT_SCHEDULED_FOR_DELETION);
                     getRouter().popToRoot();
                 }
 
-                ErrorMessageHolder.ErrorMessageType finalErrorMessageType = errorMessageType;
+                ApplicationWideMessageHolder.MessageType finalMessageType = messageType;
                 cookieManager.getCookieStore().removeAll();
 
-                if (!isPasswordUpdate && finalErrorMessageType == null) {
+                if (!isPasswordUpdate && finalMessageType == null) {
                     BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
                     bundleBuilder.putString(BundleKeys.KEY_USERNAME, loginData.getUsername());
                     bundleBuilder.putString(BundleKeys.KEY_TOKEN, loginData.getToken());
@@ -315,16 +315,16 @@ public class WebViewLoginController extends BaseController {
                                     null, null, null, true,
                                     null, currentUser.getId()).
                                     subscribe(userEntity -> {
-                                                if (finalErrorMessageType != null) {
-                                                    ErrorMessageHolder.getInstance().setMessageType(finalErrorMessageType);
+                                                if (finalMessageType != null) {
+                                                    ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);
                                                 }
                                                 getRouter().popToRoot();
                                             }, throwable -> dispose(),
                                             this::dispose);
                         }
                     } else {
-                        if (finalErrorMessageType != null) {
-                            ErrorMessageHolder.getInstance().setMessageType(finalErrorMessageType);
+                        if (finalMessageType != null) {
+                            ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);
                         }
                         getRouter().popToRoot();
 
