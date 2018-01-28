@@ -488,7 +488,8 @@ public class CallActivity extends AppCompatActivity {
             cameraEnumerator = new Camera2Enumerator(this);
         } else {
             cameraEnumerator = new Camera1Enumerator(!MagicWebRtcLists.HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build
-                    .MANUFACTURER.toLowerCase()));
+                    .MANUFACTURER.toLowerCase()) && !MagicWebRtcLists.HARDWARE_ACCELERATION_DEVICE_BLACKLIST.contains
+                    (Build.MODEL));
         }
     }
 

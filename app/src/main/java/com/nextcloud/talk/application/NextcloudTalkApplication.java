@@ -124,7 +124,8 @@ public class NextcloudTalkApplication extends MultiDexApplication {
 
             PeerConnectionFactory.initialize(PeerConnectionFactory.InitializationOptions.builder(this)
                     .setEnableVideoHwAcceleration(!MagicWebRtcLists.HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build
-                            .MANUFACTURER.toLowerCase()))
+                            .MANUFACTURER.toLowerCase()) && !MagicWebRtcLists.HARDWARE_ACCELERATION_DEVICE_BLACKLIST
+                            .contains(Build.MODEL))
                     .createInitializationOptions());
         } catch (UnsatisfiedLinkError e) {
             Log.w(TAG, e);
