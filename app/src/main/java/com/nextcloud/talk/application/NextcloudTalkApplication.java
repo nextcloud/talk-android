@@ -40,7 +40,7 @@ import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 import com.nextcloud.talk.jobs.creator.MagicJobCreator;
 import com.nextcloud.talk.utils.database.user.UserModule;
-import com.nextcloud.talk.webrtc.MagicWebRtcLists;
+import com.nextcloud.talk.webrtc.MagicWebRTCLists;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -114,17 +114,17 @@ public class NextcloudTalkApplication extends MultiDexApplication {
 
     private void initializeWebRtc() {
         try {
-            if (MagicWebRtcLists.HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
+            if (MagicWebRTCLists.HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
                 WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true);
             }
 
-            if (!MagicWebRtcLists.OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
+            if (!MagicWebRTCLists.OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
                 WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true);
             }
 
             PeerConnectionFactory.initialize(PeerConnectionFactory.InitializationOptions.builder(this)
-                    .setEnableVideoHwAcceleration(!MagicWebRtcLists.HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build
-                            .MANUFACTURER.toLowerCase()) && !MagicWebRtcLists.HARDWARE_ACCELERATION_DEVICE_BLACKLIST
+                    .setEnableVideoHwAcceleration(!MagicWebRTCLists.HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build
+                            .MANUFACTURER.toLowerCase()) && !MagicWebRTCLists.HARDWARE_ACCELERATION_DEVICE_BLACKLIST
                             .contains(Build.MODEL))
                     .createInitializationOptions());
         } catch (UnsatisfiedLinkError e) {

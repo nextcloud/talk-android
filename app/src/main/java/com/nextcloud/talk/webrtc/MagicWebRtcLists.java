@@ -23,7 +23,7 @@ package com.nextcloud.talk.webrtc;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MagicWebRtcLists {
+public class MagicWebRTCLists {
     /*
        AEC blacklist and SL_ES_WHITELIST are borrowed from Signal
        https://github.com/WhisperSystems/Signal-Android/blob/551470123d006b76a68d705d131bb12513a5e683/src/org/thoughtcrime/securesms/ApplicationContext.java
