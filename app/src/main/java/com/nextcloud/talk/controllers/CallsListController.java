@@ -65,7 +65,6 @@ import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -406,11 +405,11 @@ public class CallsListController extends BaseController implements SearchView.On
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MoreMenuClickEvent moreMenuClickEvent) {
-        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
+        Bundle bundle = new Bundle();
         Room room = moreMenuClickEvent.getRoom();
-        bundleBuilder.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
 
-        prepareAndShowBottomSheetWithBundle(bundleBuilder.build(), true);
+        prepareAndShowBottomSheetWithBundle(bundle, true);
     }
 
     private void prepareAndShowBottomSheetWithBundle(Bundle bundle, boolean shouldShowCallMenuController) {
@@ -442,19 +441,19 @@ public class CallsListController extends BaseController implements SearchView.On
         CallItem callItem = adapter.getItem(position);
         if (callItem != null && getActivity() != null) {
             Room room = callItem.getModel();
-            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-            bundleBuilder.putString("roomToken", callItem.getModel().getToken());
-            bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
+            Bundle bundle = new Bundle();
+            bundle.putString("roomToken", callItem.getModel().getToken());
+            bundle.putParcelable("userEntity", Parcels.wrap(userEntity));
 
             if (room.hasPassword && (room.participantType.equals(Participant.ParticipantType.GUEST) ||
                     room.participantType.equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
-                bundleBuilder.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
-                prepareAndShowBottomSheetWithBundle(bundleBuilder.build(), false);
+                bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
+                prepareAndShowBottomSheetWithBundle(bundle, false);
             } else {
                 overridePushHandler(new NoOpControllerChangeHandler());
                 overridePopHandler(new NoOpControllerChangeHandler());
                 Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                callIntent.putExtras(bundleBuilder.build());
+                callIntent.putExtras(bundle);
                 startActivity(callIntent);
             }
         }

@@ -62,7 +62,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import org.parceler.Parcels;
@@ -457,10 +456,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         overridePushHandler(new NoOpControllerChangeHandler());
                         overridePopHandler(new NoOpControllerChangeHandler());
                         Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                        bundleBuilder.putString("roomToken", roomOverall.getOcs().getData().getToken());
-                        bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
-                        callIntent.putExtras(bundleBuilder.build());
+                        Bundle bundle = new Bundle();
+                        bundle.putString("roomToken", roomOverall.getOcs().getData().getToken());
+                        bundle.putParcelable("userEntity", Parcels.wrap(userEntity));
+                        callIntent.putExtras(bundle);
                         startActivity(callIntent);
                     }
 

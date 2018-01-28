@@ -45,7 +45,6 @@ import com.nextcloud.talk.api.models.json.push.PushMessage;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
-import com.nextcloud.talk.utils.bundle.BundleBuilder;
 
 import org.parceler.Parcels;
 
@@ -94,12 +93,12 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
                             Intent intent = new Intent(this, CallActivity.class);
-                            BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                            bundleBuilder.putString("roomToken", decryptedPushMessage.getId());
-                            bundleBuilder.putParcelable("userEntity", Parcels.wrap(signatureVerification
+                            Bundle bundle = new Bundle();
+                            bundle.putString("roomToken", decryptedPushMessage.getId());
+                            bundle.putParcelable("userEntity", Parcels.wrap(signatureVerification
                                     .getUserEntity()));
-                            bundleBuilder.putBoolean("fromNotification", true);
-                            intent.putExtras(bundleBuilder.build());
+                            bundle.putBoolean("fromNotification", true);
+                            intent.putExtras(bundle);
 
                             PendingIntent pendingIntent = PendingIntent.getActivity(this,
                                     0, intent, PendingIntent.FLAG_CANCEL_CURRENT);

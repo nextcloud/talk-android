@@ -50,7 +50,6 @@ import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
-import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
@@ -290,10 +289,10 @@ public class WebViewLoginController extends BaseController {
                 cookieManager.getCookieStore().removeAll();
 
                 if (!isPasswordUpdate && finalMessageType == null) {
-                    BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                    bundleBuilder.putString(BundleKeys.KEY_USERNAME, loginData.getUsername());
-                    bundleBuilder.putString(BundleKeys.KEY_TOKEN, loginData.getToken());
-                    bundleBuilder.putString(BundleKeys.KEY_BASE_URL, loginData.getServerUrl());
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BundleKeys.KEY_USERNAME, loginData.getUsername());
+                    bundle.putString(BundleKeys.KEY_TOKEN, loginData.getToken());
+                    bundle.putString(BundleKeys.KEY_BASE_URL, loginData.getServerUrl());
                     String protocol = "";
 
                     if (baseUrl.startsWith("http://")) {
@@ -303,10 +302,10 @@ public class WebViewLoginController extends BaseController {
                     }
 
                     if (!TextUtils.isEmpty(protocol)) {
-                        bundleBuilder.putString(BundleKeys.KEY_ORIGINAL_PROTOCOL, protocol);
+                        bundle.putString(BundleKeys.KEY_ORIGINAL_PROTOCOL, protocol);
                     }
                     getRouter().pushController(RouterTransaction.with(new AccountVerificationController
-                            (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
+                            (bundle)).pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler()));
                 } else {
                     if (isPasswordUpdate) {

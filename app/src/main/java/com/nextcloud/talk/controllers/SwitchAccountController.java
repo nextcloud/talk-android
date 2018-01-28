@@ -44,7 +44,6 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.ImportAccount;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.AccountUtils;
-import com.nextcloud.talk.utils.bundle.BundleBuilder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -221,13 +220,13 @@ public class SwitchAccountController extends BaseController {
 
     private void verifyAccount(Account account) {
         ImportAccount importAccount = AccountUtils.getInformationFromAccount(account);
-        BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-        bundleBuilder.putString(BundleKeys.KEY_USERNAME, importAccount.getUsername());
-        bundleBuilder.putString(BundleKeys.KEY_TOKEN, importAccount.getToken());
-        bundleBuilder.putString(BundleKeys.KEY_BASE_URL, importAccount.getBaseUrl());
-        bundleBuilder.putBoolean(BundleKeys.KEY_IS_ACCOUNT_IMPORT, true);
+        Bundle bundle = new Bundle();
+        bundle.putString(BundleKeys.KEY_USERNAME, importAccount.getUsername());
+        bundle.putString(BundleKeys.KEY_TOKEN, importAccount.getToken());
+        bundle.putString(BundleKeys.KEY_BASE_URL, importAccount.getBaseUrl());
+        bundle.putBoolean(BundleKeys.KEY_IS_ACCOUNT_IMPORT, true);
         getRouter().pushController(RouterTransaction.with(new AccountVerificationController
-                (bundleBuilder.build())).pushChangeHandler(new HorizontalChangeHandler())
+                (bundle)).pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler()));
     }
 

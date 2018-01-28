@@ -42,9 +42,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
-import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
-import com.nextcloud.talk.utils.bundle.BundleBuilder;
+import com.nextcloud.talk.utils.ColorUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -255,14 +254,14 @@ public class OperationsMenuController extends BaseController {
             if (operationCode != 99) {
                 showResultImage(true);
             } else {
-                BundleBuilder bundleBuilder = new BundleBuilder(new Bundle());
-                bundleBuilder.putString("roomToken", room.getToken());
-                bundleBuilder.putParcelable("userEntity", Parcels.wrap(userEntity));
-                bundleBuilder.putString(BundleKeys.KEY_CALL_SESSION, ((CallOverall) o).getOcs().getData().getSessionId());
+                Bundle bundle = new Bundle();
+                bundle.putString("roomToken", room.getToken());
+                bundle.putParcelable("userEntity", Parcels.wrap(userEntity));
+                bundle.putString(BundleKeys.KEY_CALL_SESSION, ((CallOverall) o).getOcs().getData().getSessionId());
                 overridePushHandler(new NoOpControllerChangeHandler());
                 overridePopHandler(new NoOpControllerChangeHandler());
                 Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                callIntent.putExtras(bundleBuilder.build());
+                callIntent.putExtras(bundle);
                 startActivity(callIntent);
             }
         }
