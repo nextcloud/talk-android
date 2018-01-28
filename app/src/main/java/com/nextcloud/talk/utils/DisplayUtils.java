@@ -23,7 +23,10 @@ package com.nextcloud.talk.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -66,4 +69,10 @@ public class DisplayUtils {
         }
     }
 
+    public static Drawable getTintedDrawable(Resources res, @DrawableRes int drawableResId, @ColorRes int colorResId) {
+        Drawable drawable = res.getDrawable(drawableResId);
+        int color = res.getColor(colorResId);
+        drawable.setTint(color);
+        return drawable;
+    }
 }

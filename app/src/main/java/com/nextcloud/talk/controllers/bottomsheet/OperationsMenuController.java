@@ -43,7 +43,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
-import com.nextcloud.talk.utils.ColorUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -199,10 +199,10 @@ public class OperationsMenuController extends BaseController {
         progressBar.setVisibility(View.GONE);
 
         if (everythingOK) {
-            resultImageView.setImageDrawable(ColorUtils.getTintedDrawable(getResources(), R.drawable
+            resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(), R.drawable
                     .ic_check_circle_black_24dp, R.color.nc_darkGreen));
         } else {
-            resultImageView.setImageDrawable(ColorUtils.getTintedDrawable(getResources(), R.drawable
+            resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(), R.drawable
                     .ic_cancel_black_24dp, R.color.nc_darkRed));
         }
 
@@ -219,7 +219,7 @@ public class OperationsMenuController extends BaseController {
         if (everythingOK) {
             eventBus.post(new BottomSheetLockEvent(true, 2500, true, true));
         } else {
-            resultImageView.setImageDrawable(ColorUtils.getTintedDrawable(getResources(), R.drawable
+            resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(), R.drawable
                     .ic_cancel_black_24dp, R.color.nc_darkRed));
             okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, operationCode != 99,
                     true)));

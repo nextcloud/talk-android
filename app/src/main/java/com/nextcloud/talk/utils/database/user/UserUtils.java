@@ -42,7 +42,6 @@ public class UserUtils {
 
     UserUtils(ReactiveEntityStore<Persistable> dataStore) {
         this.dataStore = dataStore;
-
     }
 
     public boolean anyUserExists() {
