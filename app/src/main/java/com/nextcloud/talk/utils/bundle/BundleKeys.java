@@ -34,4 +34,6 @@ public class BundleKeys {
     public static final String KEY_APP_ITEM_NAME = "KEY_APP_ITEM_NAME";
     public static final String KEY_CALL_PASSWORD = "KEY_CALL_PASSWORD";
     public static final String KEY_CALL_SESSION = "KEY_CALL_SESSION";
+    public static final String KEY_ROOM_TOKEN = "KEY_ROOM_TOKEN";
+    public static final String KEY_USER_ENTITY = "KEY_USER_ENTITY";
 }

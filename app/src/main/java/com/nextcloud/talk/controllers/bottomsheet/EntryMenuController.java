@@ -123,7 +123,7 @@ public class EntryMenuController extends BaseController {
                 eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
                 bundle = new Bundle();
                 bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
-                bundle.putParcelable("userEntity", Parcels.wrap(userEntity));
+                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
                 bundle.putString(BundleKeys.KEY_CALL_PASSWORD, editText.getText().toString());
                 getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
             }

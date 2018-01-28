@@ -102,8 +102,8 @@ public class OperationsMenuController extends BaseController {
         this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
 
         this.callPassword = args.getString(BundleKeys.KEY_CALL_PASSWORD, "");
-        if (args.containsKey("userEntity")) {
-            this.userEntity = Parcels.unwrap(args.getParcelable("userEntity"));
+        if (args.containsKey(BundleKeys.KEY_USER_ENTITY)) {
+            this.userEntity = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
         }
     }
 
@@ -255,8 +255,8 @@ public class OperationsMenuController extends BaseController {
                 showResultImage(true);
             } else {
                 Bundle bundle = new Bundle();
-                bundle.putString("roomToken", room.getToken());
-                bundle.putParcelable("userEntity", Parcels.wrap(userEntity));
+                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
+                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
                 bundle.putString(BundleKeys.KEY_CALL_SESSION, ((CallOverall) o).getOcs().getData().getSessionId());
                 overridePushHandler(new NoOpControllerChangeHandler());
                 overridePopHandler(new NoOpControllerChangeHandler());

@@ -239,8 +239,8 @@ public class CallActivity extends AppCompatActivity {
                 .setRepeatCount(PulseAnimation.INFINITE)
                 .setRepeatMode(PulseAnimation.REVERSE);
 
-        roomToken = getIntent().getExtras().getString("roomToken", "");
-        userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable("userEntity"));
+        roomToken = getIntent().getExtras().getString(BundleKeys.KEY_ROOM_TOKEN, "");
+        userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable(BundleKeys.KEY_USER_ENTITY));
         callSession = getIntent().getExtras().getString(BundleKeys.KEY_CALL_SESSION, "0");
         credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
 

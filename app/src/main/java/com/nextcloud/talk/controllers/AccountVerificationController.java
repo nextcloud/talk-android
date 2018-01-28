@@ -319,21 +319,18 @@ public class AccountVerificationController extends BaseController {
         } else {
             ApplicationWideMessageHolder.getInstance().setMessageType(
                     ApplicationWideMessageHolder.MessageType.FAILED_TO_IMPORT_ACCOUNT);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (getRouter().hasRootController()) {
-                        getRouter().popToRoot();
+            new Handler().postDelayed(() -> {
+                if (getRouter().hasRootController()) {
+                    getRouter().popToRoot();
+                } else {
+                    if (userUtils.anyUserExists()) {
+                        getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                                .pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()));
                     } else {
-                        if (userUtils.anyUserExists()) {
-                            getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                                    .pushChangeHandler(new HorizontalChangeHandler())
-                                    .popChangeHandler(new HorizontalChangeHandler()));
-                        } else {
-                            getRouter().setRoot(RouterTransaction.with(new ServerSelectionController())
-                                    .pushChangeHandler(new HorizontalChangeHandler())
-                                    .popChangeHandler(new HorizontalChangeHandler()));
-                        }
+                        getRouter().setRoot(RouterTransaction.with(new ServerSelectionController())
+                                .pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()));
                     }
                 }
             }, 7500);

@@ -45,6 +45,7 @@ import com.nextcloud.talk.api.models.json.push.PushMessage;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import org.parceler.Parcels;
 
@@ -94,8 +95,8 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
 
                             Intent intent = new Intent(this, CallActivity.class);
                             Bundle bundle = new Bundle();
-                            bundle.putString("roomToken", decryptedPushMessage.getId());
-                            bundle.putParcelable("userEntity", Parcels.wrap(signatureVerification
+                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
+                            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(signatureVerification
                                     .getUserEntity()));
                             bundle.putBoolean("fromNotification", true);
                             intent.putExtras(bundle);
