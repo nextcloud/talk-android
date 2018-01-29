@@ -33,8 +33,8 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.json.rooms.Room;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.persistence.entities.UserEntity;
@@ -125,10 +125,10 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 holder.avatarImageView.setVisibility(View.VISIBLE);
 
                 if (!TextUtils.isEmpty(room.getName())) {
-                    GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                    GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                             room.getName(), false), new LazyHeaders.Builder()
                             .setHeader("Accept", "image/*")
-                            .setHeader("User-Agent", ApiHelper.getUserAgent())
+                            .setHeader("User-Agent", ApiUtils.getUserAgent())
                             .build());
 
                     GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())

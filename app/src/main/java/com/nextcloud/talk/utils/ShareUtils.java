@@ -33,7 +33,7 @@ import android.text.TextUtils;
 
 import com.kennyc.bottomsheet.adapters.AppAdapter;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.api.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 

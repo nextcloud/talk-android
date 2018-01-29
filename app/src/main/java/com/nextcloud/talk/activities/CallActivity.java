@@ -28,10 +28,6 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,29 +47,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.evernote.android.job.JobRequest;
-import com.evernote.android.job.util.Device;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.json.call.CallOverall;
-import com.nextcloud.talk.api.models.json.generic.GenericOverall;
-import com.nextcloud.talk.api.models.json.rooms.Room;
-import com.nextcloud.talk.api.models.json.rooms.RoomsOverall;
-import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
-import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
-import com.nextcloud.talk.api.models.json.signaling.NCMessagePayload;
-import com.nextcloud.talk.api.models.json.signaling.NCMessageWrapper;
-import com.nextcloud.talk.api.models.json.signaling.NCSignalingMessage;
-import com.nextcloud.talk.api.models.json.signaling.Signaling;
-import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
-import com.nextcloud.talk.api.models.json.signaling.settings.IceServer;
-import com.nextcloud.talk.api.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
+import com.nextcloud.talk.models.json.call.CallOverall;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.RoomsOverall;
+import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
+import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
+import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
+import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.signaling.Signaling;
+import com.nextcloud.talk.models.json.signaling.SignalingOverall;
+import com.nextcloud.talk.models.json.signaling.settings.IceServer;
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -201,8 +195,6 @@ public class CallActivity extends AppCompatActivity {
     private boolean videoOn = false;
     private boolean audioOn = false;
 
-    private BroadcastReceiver networkBroadcastReceier;
-
     private Handler handler = new Handler();
 
     private boolean isPTTActive = false;
@@ -242,20 +234,7 @@ public class CallActivity extends AppCompatActivity {
         roomToken = getIntent().getExtras().getString(BundleKeys.KEY_ROOM_TOKEN, "");
         userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable(BundleKeys.KEY_USER_ENTITY));
         callSession = getIntent().getExtras().getString(BundleKeys.KEY_CALL_SESSION, "0");
-        credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
-
-        networkBroadcastReceier = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
-                    if (!Device.getNetworkType(context).equals(JobRequest.NetworkType.ANY)) {
-                        startPullingSignalingMessages(true);
-                    } else {
-                        //hangup(true);
-                    }
-                }
-            }
-        };
+        credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
 
         callControls.setZ(100.0f);
         basicInitialization();
@@ -301,16 +280,8 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private void performIceRestart() {
-        for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
-            sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("IceRestart", "true"));
-            PeerConnection.RTCConfiguration rtcConfiguration = new PeerConnection.RTCConfiguration(iceServers);
-            magicPeerConnectionWrapperList.get(i).getPeerConnection().setConfiguration(rtcConfiguration);
-        }
-    }
-
     private void handleFromNotification() {
-        ncApi.getRooms(credentials, ApiHelper.getUrlForGetRooms(userEntity.getBaseUrl()))
+        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(userEntity.getBaseUrl()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RoomsOverall>() {
@@ -690,8 +661,7 @@ public class CallActivity extends AppCompatActivity {
         if (!isPTTActive) {
             animateCallControls(false, 7500);
         }
-        startPullingSignalingMessages(false);
-        //registerNetworkReceiver();
+        startPullingSignalingMessages();
     }
 
     @OnClick({R.id.pip_video_view, R.id.remote_renderers_layout})
@@ -699,17 +669,11 @@ public class CallActivity extends AppCompatActivity {
         animateCallControls(true, 0);
     }
 
-    public void startPullingSignalingMessages(boolean restart) {
-
-        if (restart) {
-            dispose(null);
-            //hangupNetworkCalls();
-        }
-
+    public void startPullingSignalingMessages() {
         leavingCall = false;
 
-        ncApi.getSignalingSettings(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                ApiHelper.getUrlForSignalingSettings(userEntity.getBaseUrl()))
+        ncApi.getSignalingSettings(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                ApiUtils.getUrlForSignalingSettings(userEntity.getBaseUrl()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SignalingSettingsOverall>() {
@@ -747,11 +711,7 @@ public class CallActivity extends AppCompatActivity {
                             }
                         }
 
-                        if (restart) {
-                            performIceRestart();
-                        } else {
-                            joinRoomAndCall();
-                        }
+                        joinRoomAndCall();
                     }
 
                     @Override
@@ -773,7 +733,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void joinRoomAndCall() {
         if (callSession.equals("0")) {
-            ncApi.joinRoom(credentials, ApiHelper.getUrlForRoomParticipants(userEntity.getBaseUrl(), roomToken), null)
+            ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(userEntity.getBaseUrl(), roomToken), null)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
@@ -805,7 +765,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void performCall(@Nullable String callSessionId) {
         ncApi.joinCall(credentials,
-                ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
+                ApiUtils.getUrlForCall(userEntity.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -823,8 +783,8 @@ public class CallActivity extends AppCompatActivity {
                         }
 
                         // start pinging the call
-                        ncApi.pingCall(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                                ApiHelper.getUrlForCallPing(userEntity.getBaseUrl(), roomToken))
+                        ncApi.pingCall(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                                ApiUtils.getUrlForCallPing(userEntity.getBaseUrl(), roomToken))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
@@ -853,8 +813,8 @@ public class CallActivity extends AppCompatActivity {
                                 });
 
                         // Start pulling signaling messages
-                        ncApi.pullSignalingMessages(ApiHelper.getCredentials(userEntity.getUsername(),
-                                userEntity.getToken()), ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()))
+                        ncApi.pullSignalingMessages(ApiUtils.getCredentials(userEntity.getUsername(),
+                                userEntity.getToken()), ApiUtils.getUrlForSignaling(userEntity.getBaseUrl()))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .repeatWhen(observable -> observable)
@@ -1090,8 +1050,8 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void hangupNetworkCalls() {
-        String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
-        ncApi.leaveCall(credentials, ApiHelper.getUrlForCall(userEntity.getBaseUrl(), roomToken))
+        String credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
+        ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(userEntity.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
@@ -1102,7 +1062,7 @@ public class CallActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        ncApi.leaveRoom(credentials, ApiHelper.getUrlForRoomParticipants(userEntity.getBaseUrl(), roomToken))
+                        ncApi.leaveRoom(credentials, ApiUtils.getUrlForRoomParticipants(userEntity.getBaseUrl(), roomToken))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Observer<GenericOverall>() {
@@ -1309,7 +1269,7 @@ public class CallActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
-        String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
+        String credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
         ncMessageWrapper.setEv("message");
         ncMessageWrapper.setSessionId(callSession);
@@ -1349,7 +1309,7 @@ public class CallActivity extends AppCompatActivity {
         String stringToSend = stringBuilder.toString();
         strings.add(stringToSend);
 
-        ncApi.sendSignalingMessages(credentials, ApiHelper.getUrlForSignaling(userEntity.getBaseUrl()),
+        ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(userEntity.getBaseUrl()),
                 strings.toString())
                 .retry(3)
                 .subscribeOn(Schedulers.newThread())
@@ -1403,14 +1363,6 @@ public class CallActivity extends AppCompatActivity {
 
         EffortlessPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults,
                 this);
-    }
-
-    private void registerNetworkReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANxGE");
-        intentFilter.addAction("android.net.wifi.STATE_CHANGE");
-
-        this.registerReceiver(networkBroadcastReceier, intentFilter);
     }
 
     private void animateCallControls(boolean show, long startDelay) {

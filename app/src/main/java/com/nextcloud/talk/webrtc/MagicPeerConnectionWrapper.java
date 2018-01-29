@@ -26,8 +26,8 @@ import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.api.models.json.signaling.DataChannelMessage;
-import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
+import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
+import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;

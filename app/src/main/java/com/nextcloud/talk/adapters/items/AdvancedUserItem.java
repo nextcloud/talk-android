@@ -35,8 +35,8 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.json.participants.Participant;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.glide.GlideApp;
@@ -123,10 +123,10 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
             layoutParams.setMarginStart(0);
             layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_START);
             holder.linearLayout.setLayoutParams(layoutParams);
-            GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+            GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                     participant.getUserId(), false), new LazyHeaders.Builder()
                     .setHeader("Accept", "image/*")
-                    .setHeader("User-Agent", ApiHelper.getUserAgent())
+                    .setHeader("User-Agent", ApiUtils.getUserAgent())
                     .build());
 
             GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())

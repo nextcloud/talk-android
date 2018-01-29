@@ -28,9 +28,9 @@ import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.evernote.android.job.Job;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.json.generic.GenericOverall;
-import com.nextcloud.talk.api.models.json.push.PushConfigurationState;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -81,8 +81,8 @@ public class AccountRemovalJob extends Job {
                     ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
                             JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
-                    ncApi.unregisterDeviceForNotificationsWithNextcloud(ApiHelper.getCredentials(userEntity.getUsername(),
-                            userEntity.getToken()), ApiHelper.getUrlNextcloudPush(userEntity.getBaseUrl()))
+                    ncApi.unregisterDeviceForNotificationsWithNextcloud(ApiUtils.getCredentials(userEntity.getUsername(),
+                            userEntity.getToken()), ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()))
                             .subscribe(new Observer<GenericOverall>() {
                                 @Override
                                 public void onSubscribe(Disposable d) {
@@ -100,8 +100,8 @@ public class AccountRemovalJob extends Job {
                                                 finalPushConfigurationState.getDeviceIdentifierSignature());
 
                                         ncApi.unregisterDeviceForNotificationsWithProxy
-                                                (ApiHelper.getCredentials(userEntity.getUsername(),
-                                                        userEntity.getToken()), ApiHelper.getUrlPushProxy(), queryMap)
+                                                (ApiUtils.getCredentials(userEntity.getUsername(),
+                                                        userEntity.getToken()), ApiUtils.getUrlPushProxy(), queryMap)
                                                 .subscribe(new Observer<Void>() {
                                                     @Override
                                                     public void onSubscribe(Disposable d) {

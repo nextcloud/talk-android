@@ -39,7 +39,7 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.utils.AccountUtils;
@@ -212,7 +212,7 @@ public class ServerSelectionController extends BaseController {
             url = url.substring(0, url.length() - 1);
         }
 
-        String queryUrl = url + ApiHelper.getUrlPostfixForStatus();
+        String queryUrl = url + ApiUtils.getUrlPostfixForStatus();
 
         if (url.startsWith("http://") || url.startsWith("https://")) {
             checkServer(queryUrl, false);

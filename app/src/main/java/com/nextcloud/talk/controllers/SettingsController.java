@@ -43,7 +43,7 @@ import com.evernote.android.job.JobRequest;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.AccountRemovalJob;
@@ -273,9 +273,9 @@ public class SettingsController extends BaseController {
 
             loadAvatarImage();
 
-            profileQueryDisposable = ncApi.getUserProfile(ApiHelper.getCredentials(userEntity.getUsername(),
+            profileQueryDisposable = ncApi.getUserProfile(ApiUtils.getCredentials(userEntity.getUsername(),
                     userEntity.getToken()),
-                    ApiHelper.getUrlForUserProfile(userEntity.getBaseUrl()))
+                    ApiUtils.getUrlForUserProfile(userEntity.getBaseUrl()))
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(userProfileOverall -> {
@@ -418,10 +418,10 @@ public class SettingsController extends BaseController {
             avatarId = userEntity.getUsername();
         }
 
-        GlideUrl glideUrl = new GlideUrl(ApiHelper.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                 avatarId, true), new LazyHeaders.Builder()
                 .setHeader("Accept", "image/*")
-                .setHeader("User-Agent", ApiHelper.getUserAgent())
+                .setHeader("User-Agent", ApiUtils.getUserAgent())
                 .build());
 
         GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())

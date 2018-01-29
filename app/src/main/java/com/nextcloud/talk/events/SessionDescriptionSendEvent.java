@@ -22,7 +22,7 @@ package com.nextcloud.talk.events;
 
 import android.support.annotation.Nullable;
 
-import com.nextcloud.talk.api.models.json.signaling.NCIceCandidate;
+import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 
 import org.webrtc.SessionDescription;
 

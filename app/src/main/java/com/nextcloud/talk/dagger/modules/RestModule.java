@@ -28,7 +28,7 @@ import android.util.Log;
 import com.github.aurae.retrofit2.LoganSquareConverterFactory;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
@@ -208,7 +208,7 @@ public class RestModule {
             Request original = chain.request();
 
             Request request = original.newBuilder()
-                    .header("User-Agent", ApiHelper.getUserAgent())
+                    .header("User-Agent", ApiUtils.getUserAgent())
                     .header("Accept", "application/json")
                     .header("OCS-APIRequest", "true")
                     .method(original.method(), original.body())

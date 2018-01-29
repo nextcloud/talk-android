@@ -23,7 +23,7 @@ package com.nextcloud.talk.utils.database.user;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.nextcloud.talk.persistence.entities.User;
+import com.nextcloud.talk.models.database.User;
 import com.nextcloud.talk.persistence.entities.UserEntity;
 
 import java.util.List;

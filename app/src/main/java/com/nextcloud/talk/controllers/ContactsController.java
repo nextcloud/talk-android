@@ -54,10 +54,10 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.json.participants.Participant;
-import com.nextcloud.talk.api.models.json.rooms.RoomOverall;
-import com.nextcloud.talk.api.models.json.sharees.Sharee;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.rooms.RoomOverall;
+import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.RetrofitBucket;
@@ -226,10 +226,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         contactItems = new ArrayList<>();
 
-        RetrofitBucket retrofitBucket = ApiHelper.getRetrofitBucketForContactsSearch(userEntity.getBaseUrl(),
+        RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearch(userEntity.getBaseUrl(),
                 "");
         contactsQueryDisposable = ncApi.getContactsWithSearchParam(
-                ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
                 retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -439,9 +439,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     public boolean onItemClick(int position) {
         UserItem userItem = adapter.getItem(position);
-        RetrofitBucket retrofitBucket = ApiHelper.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
+        RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
                 userItem.getModel().getUserId());
-        ncApi.createRoom(ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+        ncApi.createRoom(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
                 retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -28,8 +28,7 @@ import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.json.push.PushConfigurationState;
+import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.persistence.entities.UserEntity;
@@ -265,8 +264,8 @@ public class PushUtils {
                                     JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
                             ncApi.registerDeviceForNotificationsWithNextcloud(
-                                    ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                                    ApiHelper.getUrlNextcloudPush(userEntity.getBaseUrl()), queryMap)
+                                    ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                                    ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()), queryMap)
                                     .subscribeOn(Schedulers.newThread())
                                     .subscribe(pushRegistrationOverall -> {
                                         Map<String, String> proxyMap = new HashMap<>();
@@ -279,9 +278,9 @@ public class PushUtils {
                                                 .getData().getPublicKey());
 
 
-                                        ncApi.registerDeviceForNotificationsWithProxy(ApiHelper.getCredentials
+                                        ncApi.registerDeviceForNotificationsWithProxy(ApiUtils.getCredentials
                                                         (userEntity.getUsername(), userEntity.getToken()),
-                                                ApiHelper.getUrlPushProxy(), proxyMap)
+                                                ApiUtils.getUrlPushProxy(), proxyMap)
                                                 .subscribeOn(Schedulers.newThread())
                                                 .subscribe(new Consumer<Void>() {
                                                     @Override

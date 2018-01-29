@@ -55,9 +55,9 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.items.CallItem;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.json.participants.Participant;
-import com.nextcloud.talk.api.models.json.rooms.Room;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.controllers.bottomsheet.CallMenuController;
@@ -245,8 +245,8 @@ public class CallsListController extends BaseController implements SearchView.On
 
         callItems = new ArrayList<>();
 
-        roomsQueryDisposable = ncApi.getRooms(ApiHelper.getCredentials(userEntity.getUsername(),
-                userEntity.getToken()), ApiHelper.getUrlForGetRooms(userEntity.getBaseUrl()))
+        roomsQueryDisposable = ncApi.getRooms(ApiUtils.getCredentials(userEntity.getUsername(),
+                userEntity.getToken()), ApiUtils.getUrlForGetRooms(userEntity.getBaseUrl()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(roomsOverall -> {

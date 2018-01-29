@@ -22,18 +22,18 @@ package com.nextcloud.talk.api;
 
 import android.support.annotation.Nullable;
 
-import com.nextcloud.talk.api.models.json.call.CallOverall;
-import com.nextcloud.talk.api.models.json.generic.GenericOverall;
-import com.nextcloud.talk.api.models.json.generic.Status;
-import com.nextcloud.talk.api.models.json.participants.AddParticipantOverall;
-import com.nextcloud.talk.api.models.json.participants.ParticipantsOverall;
-import com.nextcloud.talk.api.models.json.push.PushRegistrationOverall;
-import com.nextcloud.talk.api.models.json.rooms.RoomOverall;
-import com.nextcloud.talk.api.models.json.rooms.RoomsOverall;
-import com.nextcloud.talk.api.models.json.sharees.ShareesOverall;
-import com.nextcloud.talk.api.models.json.signaling.SignalingOverall;
-import com.nextcloud.talk.api.models.json.signaling.settings.SignalingSettingsOverall;
-import com.nextcloud.talk.api.models.json.userprofile.UserProfileOverall;
+import com.nextcloud.talk.models.json.call.CallOverall;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.generic.Status;
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
+import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
+import com.nextcloud.talk.models.json.rooms.RoomOverall;
+import com.nextcloud.talk.models.json.rooms.RoomsOverall;
+import com.nextcloud.talk.models.json.sharees.ShareesOverall;
+import com.nextcloud.talk.models.json.signaling.SignalingOverall;
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 
 import java.util.Map;
 

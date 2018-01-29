@@ -35,9 +35,9 @@ import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
-import com.nextcloud.talk.api.models.json.call.CallOverall;
-import com.nextcloud.talk.api.models.json.rooms.Room;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.models.json.call.CallOverall;
+import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
@@ -124,10 +124,10 @@ public class OperationsMenuController extends BaseController {
         UserEntity userEntity = userUtils.getCurrentUser();
         OperationsObserver operationsObserver = new OperationsObserver();
         if (userEntity != null) {
-            String credentials = ApiHelper.getCredentials(userEntity.getUsername(), userEntity.getToken());
+            String credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
             switch (operationCode) {
                 case 1:
-                    ncApi.removeSelfFromRoom(credentials, ApiHelper.getUrlForRemoveSelfFromRoom(userEntity.getBaseUrl
+                    ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForRemoveSelfFromRoom(userEntity.getBaseUrl
                             (), room.getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -135,7 +135,7 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(operationsObserver);
                     break;
                 case 2:
-                    ncApi.renameRoom(credentials, ApiHelper.getRoom(userEntity.getBaseUrl(), room.getToken()),
+                    ncApi.renameRoom(credentials, ApiUtils.getRoom(userEntity.getBaseUrl(), room.getToken()),
                             room.getName())
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -143,7 +143,7 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(operationsObserver);
                     break;
                 case 3:
-                    ncApi.makeRoomPublic(credentials, ApiHelper.getUrlForRoomVisibility(userEntity.getBaseUrl(), room
+                    ncApi.makeRoomPublic(credentials, ApiUtils.getUrlForRoomVisibility(userEntity.getBaseUrl(), room
                             .getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -157,7 +157,7 @@ public class OperationsMenuController extends BaseController {
                     if (room.getPassword() != null) {
                         pass = room.getPassword();
                     }
-                    ncApi.setPassword(credentials, ApiHelper.getUrlForPassword(userEntity.getBaseUrl(),
+                    ncApi.setPassword(credentials, ApiUtils.getUrlForPassword(userEntity.getBaseUrl(),
                             room.getToken()), pass)
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -168,7 +168,7 @@ public class OperationsMenuController extends BaseController {
                     // Operation 7 is sharing, so we handle this differently
                     break;
                 case 8:
-                    ncApi.makeRoomPrivate(credentials, ApiHelper.getUrlForRoomVisibility(userEntity.getBaseUrl(), room
+                    ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomVisibility(userEntity.getBaseUrl(), room
                             .getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -176,13 +176,13 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(operationsObserver);
                     break;
                 case 9:
-                    ncApi.deleteRoom(credentials, ApiHelper.getUrlForRoomParticipants(userEntity.getBaseUrl(), room.getToken()))
+                    ncApi.deleteRoom(credentials, ApiUtils.getUrlForRoomParticipants(userEntity.getBaseUrl(), room.getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
                             .subscribe(operationsObserver);
                 case 99:
-                    ncApi.joinRoom(credentials, ApiHelper.getUrlForRoomParticipants(userEntity.getBaseUrl(), room.getToken()),
+                    ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(userEntity.getBaseUrl(), room.getToken()),
                             callPassword)
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())

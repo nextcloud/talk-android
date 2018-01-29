@@ -36,7 +36,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.evernote.android.job.JobRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.api.helpers.api.ApiHelper;
+import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
@@ -136,9 +136,9 @@ public class AccountVerificationController extends BaseController {
         baseUrl = baseUrl.replace("http://", "").replace("https://", "");
 
         if (checkForcedHttps) {
-            queryUrl = "https://" + baseUrl + ApiHelper.getUrlPostfixForStatus();
+            queryUrl = "https://" + baseUrl + ApiUtils.getUrlPostfixForStatus();
         } else {
-            queryUrl = "http://" + baseUrl + ApiHelper.getUrlPostfixForStatus();
+            queryUrl = "http://" + baseUrl + ApiUtils.getUrlPostfixForStatus();
         }
 
         statusQueryDisposable = ncApi.getServerStatus(queryUrl)
@@ -164,10 +164,10 @@ public class AccountVerificationController extends BaseController {
     }
 
     private void checkEverything() {
-        String credentials = ApiHelper.getCredentials(username, token);
+        String credentials = ApiUtils.getCredentials(username, token);
         cookieManager.getCookieStore().removeAll();
 
-        roomsQueryDisposable = ncApi.getRooms(credentials, ApiHelper.getUrlForGetRooms(baseUrl))
+        roomsQueryDisposable = ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(roomsOverall -> {
@@ -175,7 +175,7 @@ public class AccountVerificationController extends BaseController {
                             R.string.nc_nextcloud_talk_app_installed), getResources().getString(R.string.nc_app_name)));
 
                     profileQueryDisposable = ncApi.getUserProfile(credentials,
-                            ApiHelper.getUrlForUserProfile(baseUrl))
+                            ApiUtils.getUrlForUserProfile(baseUrl))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(userProfileOverall -> {

@@ -35,7 +35,7 @@ import android.widget.Button;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.api.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
