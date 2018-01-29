@@ -28,10 +28,10 @@ import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.SignatureVerification;
-import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 

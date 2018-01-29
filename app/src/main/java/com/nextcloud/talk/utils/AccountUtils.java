@@ -32,7 +32,7 @@ import android.util.Log;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.ImportAccount;
-import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.models.database.UserEntity;
 
 import java.util.ArrayList;
 import java.util.List;

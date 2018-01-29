@@ -28,11 +28,11 @@ import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.evernote.android.job.Job;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.io.IOException;

@@ -24,7 +24,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.persistence.entities.Models;
+import com.nextcloud.talk.models.database.Models;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import net.orange_box.storebox.StoreBox;

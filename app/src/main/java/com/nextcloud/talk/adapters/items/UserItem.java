@@ -30,10 +30,10 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
 import org.apache.commons.lang3.StringUtils;

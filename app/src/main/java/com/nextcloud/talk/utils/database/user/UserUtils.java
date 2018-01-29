@@ -24,7 +24,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.nextcloud.talk.models.database.User;
-import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.models.database.UserEntity;
 
 import java.util.List;
 
