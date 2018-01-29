@@ -108,4 +108,5 @@
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
     <string name="nc_all_ok_operation">OK, tout est fini !</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_proceed">Continuer</string>
     </resources>

@@ -60,6 +60,8 @@
     <string name="nc_no_proxy">Без посредника</string>
     <string name="nc_username">Корисничко име</string>
     <string name="nc_password">Лозинка</string>
+    <string name="nc_new_password">Нова лозинка</string>
+    <string name="nc_wrong_password">Погрешна лозинка</string>
     <string name="nc_about">О програму</string>
     <string name="nc_privacy">Приватност</string>
     <string name="nc_get_source_code">Изворни кôд</string>
@@ -72,8 +74,13 @@
     <string name="nc_what">Шта желите да радите данас?</string>
     <string name="nc_leave">Напусти разговор</string>
     <string name="nc_rename">Преименуј разговор</string>
+    <string name="nc_set_password">Постави лозинку</string>
+    <string name="nc_change_password">Промени лозинку</string>
+    <string name="nc_clear_password">Очисти лозинку</string>
     <string name="nc_share_link">Подели везу</string>
+    <string name="nc_share_link_via">Подели везу преко</string>
     <string name="nc_make_call_public">Учини разговор јавним</string>
+    <string name="nc_make_call_private">Учини разговор приватним</string>
     <string name="nc_delete_call">Обриши позив</string>
 
     <!-- Contacts -->
@@ -90,6 +97,8 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Долазни позив</string>
+    <string name="nc_nick_guest">Гост</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s на каналу за обавештење о %2$s</string>
     <string name="nc_notification_channel_calls">Канал обавештења о позивима</string>
@@ -97,4 +106,16 @@
     <string name="nc_notification_channel_calls_description">Прикажи долазне позиве</string>
     <string name="nc_notification_channel_messages_description">Прикажи долазне поруке</string>
 
-    </resources>
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
+    <string name="nc_all_ok_operation">У реду, све готово!</string>
+    <string name="nc_ok">У реду</string>
+    <string name="nc_call_name">Име позива</string>
+    <string name="nc_proceed">Настави</string>
+    <string name="nc_call_name_is_same">Име које сте унели је исто као и тренутно</string>
+    <string name="nc_share_text">Поздрав,\n\nЖелео бих да се придружиш позиву на коме се налазим.\n\nМожеш му се придружити на
+        %1$s/index.php/call/%2$s</string>
+    <string name="nc_talk_soon">\n\nЧујемо се ускоро,\n %1$s</string>
+    <string name="nc_share_subject">Позивница за разговор</string>
+    <string name="nc_share_text_pass">\n\nЛозинка за позив је: %1$s</string>
+</resources>
