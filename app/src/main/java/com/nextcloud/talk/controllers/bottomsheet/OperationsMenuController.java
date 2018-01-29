@@ -35,13 +35,13 @@ import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.models.json.call.CallOverall;
-import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.models.json.call.CallOverall;
+import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.persistence.entities.UserEntity;
+import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -268,18 +268,16 @@ public class OperationsMenuController extends BaseController {
 
         @Override
         public void onError(Throwable e) {
-            if (retryCount == 1) {
-                if (operationCode != 99 || !(e instanceof HttpException)) {
-                    showResultImage(false);
+            if (operationCode != 99 || !(e instanceof HttpException)) {
+                showResultImage(false);
+            } else {
+                if (((HttpException) e).response().code() == 403) {
+                    eventBus.post(new BottomSheetLockEvent(true, 0, false,
+                            false));
+                    ApplicationWideMessageHolder.getInstance().setMessageType(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG);
+                    getRouter().popCurrentController();
                 } else {
-                    if (((HttpException) e).response().code() == 403) {
-                        eventBus.post(new BottomSheetLockEvent(true, 0, false,
-                                false));
-                        ApplicationWideMessageHolder.getInstance().setMessageType(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG);
-                        getRouter().popCurrentController();
-                    } else {
-                        showResultImage(false);
-                    }
+                    showResultImage(false);
                 }
             }
             dispose();
