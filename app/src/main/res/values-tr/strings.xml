@@ -97,6 +97,8 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Gelen çağrı</string>
+    <string name="nc_nick_guest">Konuk</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
     <string name="nc_notification_channel_calls">Bildirim kanalındaki çağrı</string>
