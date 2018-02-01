@@ -61,6 +61,8 @@
     <string name="nc_no_proxy">Nincs proxy</string>
     <string name="nc_username">Felhasználónév</string>
     <string name="nc_password">Jelszó</string>
+    <string name="nc_new_password">Új jelszó</string>
+    <string name="nc_wrong_password">Hibás jelszó</string>
     <string name="nc_about">Leírás</string>
     <string name="nc_privacy">Titoktartás</string>
     <string name="nc_get_source_code">Forráskód letöltése</string>
@@ -73,8 +75,13 @@
     <string name="nc_what">Mit szeretnél ma csinálni?</string>
     <string name="nc_leave">Hívás elhagyása</string>
     <string name="nc_rename">Hívás átnevezése</string>
+    <string name="nc_set_password">Jelszó beállítása</string>
+    <string name="nc_change_password">Jelszó módosítása</string>
+    <string name="nc_clear_password">Jelszó törlése</string>
     <string name="nc_share_link">Megosztás hivatkozása</string>
+    <string name="nc_share_link_via">Link megosztása ezzel</string>
     <string name="nc_make_call_public">Hívás nyilvánossá tétele</string>
+    <string name="nc_make_call_private">Hívás  priváttá tétele</string>
     <string name="nc_delete_call">Hívás törlése</string>
 
     <!-- Contacts -->
@@ -91,6 +98,8 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Bejövő hívás</string>
+    <string name="nc_nick_guest">Vendég</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s a(z) %2$s értesítési csatornán</string>
     <string name="nc_notification_channel_calls">Hívások értesítési csatornája</string>
@@ -98,4 +107,16 @@
     <string name="nc_notification_channel_calls_description">Bejövõ hívások megjelenítése</string>
     <string name="nc_notification_channel_messages_description">Beérkező üzenetek megjelenítése</string>
 
-    </resources>
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba adódott!</string>
+    <string name="nc_all_ok_operation">Rendben, minden kész!</string>
+    <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Hívónév</string>
+    <string name="nc_proceed">Folytatás</string>
+    <string name="nc_call_name_is_same">A megadott név egyezik a korábbival</string>
+    <string name="nc_share_text">Üdv,\n\nSzeretnélek felkérni, hogy csatlakozz egy híváshoz.\n\nCsatlakozhatsz ezen keresztül:
+        %1$s/index.php/call/%2$s</string>
+    <string name="nc_talk_soon">\n\nHamarosan beszélünk,\n %1$s</string>
+    <string name="nc_share_subject">Hívás invitáció</string>
+    <string name="nc_share_text_pass">\n\nHívás jelszava: %1$s</string>
+</resources>
