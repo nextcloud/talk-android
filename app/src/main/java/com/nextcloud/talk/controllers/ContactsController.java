@@ -31,12 +31,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,6 +43,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -52,6 +52,8 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
+import com.nextcloud.talk.adapters.items.EmptyFooterItem;
+import com.nextcloud.talk.adapters.items.UserHeaderItem;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -61,6 +63,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.sharees.Sharee;
+import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -69,6 +72,7 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -77,9 +81,15 @@ import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.Optional;
+import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.SelectableAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.IFlexible;
+import eu.davidea.flipview.FlipView;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -88,7 +98,7 @@ import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ContactsController extends BaseController implements SearchView.OnQueryTextListener,
-        ActionMode.Callback, FlexibleAdapter.OnItemClickListener {
+        FlexibleAdapter.OnItemClickListener, FastScroller.OnScrollStateChangeListener {
 
     public static final String TAG = "ContactsController";
 
@@ -105,21 +115,44 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
+    @Nullable
+    @BindView(R.id.bottom_buttons_layout)
+    LinearLayout bottomButtonsLinearLayout;
+
+    @BindView(R.id.fast_scroller)
+    FastScroller fastScroller;
+
+    @Nullable
+    @BindView(R.id.clear_button)
+    Button clearButton;
+
     private UserEntity userEntity;
     private Disposable contactsQueryDisposable;
     private Disposable cacheQueryDisposable;
-    private FlexibleAdapter<UserItem> adapter;
-    private List<UserItem> contactItems = new ArrayList<>();
+    private FlexibleAdapter adapter;
+    private List<AbstractFlexibleItem> contactItems = new ArrayList<>();
+
+    private SmoothScrollLinearLayoutManager layoutManager;
 
     private MenuItem searchItem;
     private SearchView searchView;
     private String searchQuery;
 
-    private ActionMode actionMode;
+    private boolean isNewConversationView;
+
+    private HashMap<String, UserHeaderItem> userHeaderItems = new HashMap<String, UserHeaderItem>();
 
     public ContactsController() {
         super();
         setHasOptionsMenu(true);
+    }
+
+    public ContactsController(Bundle args) {
+        super(args);
+        setHasOptionsMenu(true);
+        if (args.containsKey(BundleKeys.KEY_NEW_CONVERSATION)) {
+            isNewConversationView = true;
+        }
     }
 
     @Override
@@ -128,9 +161,20 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+        if (getActionBar() != null && isNewConversationView) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+
+        FlipView.resetLayoutAnimationDelay(true, 1000L);
+        FlipView.stopLayoutAnimation();
 
         userEntity = userUtils.getCurrentUser();
 
@@ -144,13 +188,45 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
+            adapter.setNotifyChangeOfUnfilteredItems(true)
+                    .setMode(SelectableAdapter.Mode.MULTI);
+
+
             if (userEntity != null) {
                 fetchData();
             }
         }
 
+        adapter.setStickyHeaderElevation(5)
+                .setUnlinkAllItemsOnRemoveHeaders(true)
+                .setDisplayHeadersAtStartUp(true)
+                .setStickyHeaders(true);
+
         adapter.addListener(this);
         prepareViews();
+    }
+
+    @Optional
+    @OnClick(R.id.clear_button)
+    public void onClearButtonClick() {
+        if (adapter != null) {
+            List<Integer> selectedPositions = adapter.getSelectedPositions();
+            for (Integer position : selectedPositions) {
+                UserItem userItem = (UserItem) adapter.getItem(position);
+                adapter.toggleSelection(position);
+                if (userItem != null) {
+                    userItem.flipItemSelection();
+                }
+            }
+        }
+
+        checkAndHandleBottomButtons();
+    }
+
+    @Optional
+    @OnClick(R.id.done_button)
+    public void onDoneButtonClick() {
+
     }
 
     private void initSearchView() {
@@ -172,10 +248,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         final View mSearchEditFrame = searchView
                 .findViewById(android.support.v7.appcompat.R.id.search_edit_frame);
 
-        BottomNavigationView bottomNavigationView = getParentController().getView().findViewById(R.id.navigation);
+        BottomNavigationView bottomNavigationView = null;
+        if (getParentController() != null && getParentController().getView() != null) {
+            bottomNavigationView = getParentController().getView().findViewById(R.id.navigation);
+        }
 
         Handler handler = new Handler();
         ViewTreeObserver vto = mSearchEditFrame.getViewTreeObserver();
+        BottomNavigationView finalBottomNavigationView = bottomNavigationView;
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             int oldVisibility = -1;
 
@@ -186,10 +266,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                 if (currentVisibility != oldVisibility) {
                     if (currentVisibility == View.VISIBLE) {
-                        handler.postDelayed(() -> bottomNavigationView.setVisibility(View.GONE), 100);
+                        if (finalBottomNavigationView != null) {
+                            handler.postDelayed(() -> finalBottomNavigationView.setVisibility(View.GONE), 100);
+                        }
                     } else {
                         handler.postDelayed(() -> {
-                            bottomNavigationView.setVisibility(View.VISIBLE);
+                            if (finalBottomNavigationView != null) {
+                                finalBottomNavigationView.setVisibility(View.VISIBLE);
+                            }
                             searchItem.setVisible(contactItems.size() > 0);
                         }, 500);
                     }
@@ -203,10 +287,22 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getRouter().popCurrentController();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_filter, menu);
+        inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
         searchItem = menu.findItem(R.id.action_search);
+        menu.findItem(R.id.action_new_conversation).setVisible(false);
         initSearchView();
     }
 
@@ -218,6 +314,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             searchItem.expandActionView();
             searchView.setQuery(adapter.getSearchText(), false);
         }
+
     }
 
     private void fetchData() {
@@ -226,6 +323,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         Set<Sharee> shareeHashSet = new HashSet<>();
 
         contactItems = new ArrayList<>();
+        userHeaderItems = new HashMap<>();
 
         RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearch(userEntity.getBaseUrl(),
                 "");
@@ -234,7 +332,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(shareesOverall -> {
+                .subscribe((ShareesOverall shareesOverall) -> {
                             if (shareesOverall != null) {
 
                                 if (shareesOverall.getOcs().getData().getUsers() != null) {
@@ -252,18 +350,52 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     if (!sharee.getValue().getShareWith().equals(userEntity.getUsername())) {
                                         participant = new Participant();
                                         participant.setName(sharee.getLabel());
+                                        String headerTitle;
+
+                                        headerTitle = sharee.getLabel().substring(0, 1).toUpperCase();
+
+                                        UserHeaderItem userHeaderItem;
+                                        if (!userHeaderItems.containsKey(headerTitle)) {
+                                            userHeaderItem = new UserHeaderItem(headerTitle);
+                                            userHeaderItems.put(headerTitle, userHeaderItem);
+                                        }
+
                                         participant.setUserId(sharee.getValue().getShareWith());
-                                        contactItems.add(new UserItem(participant, userEntity));
+                                        contactItems.add(new UserItem(participant, userEntity,
+                                                userHeaderItems.get(headerTitle)));
                                     }
 
                                 }
 
-                                Collections.sort(contactItems, (userItem, t1) ->
-                                        userItem.getModel().getName().compareToIgnoreCase(t1.getModel().getName()));
+
+                                userHeaderItems = new HashMap<>();
+
+                                Collections.sort(contactItems, (o1, o2) -> {
+                                    String firstName;
+                                    String secondName;
+
+                                    if (o1 instanceof UserItem) {
+                                        firstName = ((UserItem) o1).getModel().getName();
+                                    } else {
+                                        firstName = ((UserHeaderItem) o1).getModel();
+                                    }
+
+                                    if (o2 instanceof UserItem) {
+                                        secondName = ((UserItem) o2).getModel().getName();
+                                    } else {
+                                        secondName = ((UserHeaderItem) o2).getModel();
+                                    }
+
+                                    return firstName.compareToIgnoreCase(secondName);
+                                });
 
                                 adapter.updateDataSet(contactItems, true);
                                 searchItem.setVisible(contactItems.size() > 0);
                                 swipeRefreshLayout.setRefreshing(false);
+
+                                if (isNewConversationView) {
+                                    checkAndHandleBottomButtons();
+                                }
                             }
 
                         }, throwable -> {
@@ -299,7 +431,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     private void prepareViews() {
-        LinearLayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
+        layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
@@ -311,6 +443,17 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         swipeRefreshLayout.setOnRefreshListener(this::fetchData);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+
+        fastScroller.addOnScrollStateChangeListener(this);
+        adapter.setFastScroller(fastScroller);
+        fastScroller.setBubbleTextCreator(position -> {
+            IFlexible abstractFlexibleItem = adapter.getItem(position);
+            if (abstractFlexibleItem instanceof UserItem) {
+                return ((UserItem)adapter.getItem(position)).getHeader().getModel();
+            } else {
+                return ((UserHeaderItem)adapter.getItem(position)).getModel();
+            }
+        });
     }
 
     private void dispose(@Nullable Disposable disposable) {
@@ -330,8 +473,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
     }
 
+
     @Override
     public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+        adapter.onSaveInstanceState(outState);
         super.onSaveViewState(view, outState);
         if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
             outState.putString(KEY_SEARCH_QUERY, searchView.getQuery().toString());
@@ -342,6 +487,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         super.onRestoreViewState(view, savedViewState);
         searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
+        if (adapter != null) {
+            adapter.onRestoreInstanceState(savedViewState);
+        }
     }
 
     @Override
@@ -377,110 +525,90 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
-    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-        adapter.setMode(SelectableAdapter.Mode.MULTI);
+    public boolean onItemClick(int position) {
+        if (adapter.getItem(position) instanceof UserItem) {
+            if (!isNewConversationView) {
+                UserItem userItem = (UserItem) adapter.getItem(position);
+                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
+                        userItem.getModel().getUserId());
+                ncApi.createRoom(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                        retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<RoomOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(RoomOverall roomOverall) {
+                                overridePushHandler(new NoOpControllerChangeHandler());
+                                overridePopHandler(new NoOpControllerChangeHandler());
+                                Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
+                                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
+                                callIntent.putExtras(bundle);
+                                startActivity(callIntent);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            } else {
+                ((UserItem) adapter.getItem(position)).flipItemSelection();
+                adapter.toggleSelection(position);
+
+                checkAndHandleBottomButtons();
+            }
+        }
         return true;
     }
 
-    @Override
-    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-        return false;
-    }
+    private void checkAndHandleBottomButtons() {
+        if (adapter != null && bottomButtonsLinearLayout != null && clearButton != null) {
+            if (adapter.getSelectedItemCount() > 0) {
+                if (bottomButtonsLinearLayout.getVisibility() != View.VISIBLE) {
+                    bottomButtonsLinearLayout.setVisibility(View.VISIBLE);
+                }
+            } else {
+                bottomButtonsLinearLayout.setVisibility(View.GONE);
+            }
+        } else if (bottomButtonsLinearLayout != null) {
+            bottomButtonsLinearLayout.setVisibility(View.GONE);
+        }
 
-    @Override
-    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-        return false;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode actionMode) {
-        adapter.setMode(SelectableAdapter.Mode.IDLE);
-        actionMode = null;
-    }
-
-    /*@Override
-    public boolean onItemClick(int position) {
-        if (actionMode != null && position != RecyclerView.NO_POSITION) {
-            // Mark the position selected
-            toggleSelection(position);
-            return true;
+        if (bottomButtonsLinearLayout != null && bottomButtonsLinearLayout.getVisibility() == View.VISIBLE) {
+            if (adapter.getScrollableFooters().size() == 0) {
+                adapter.addScrollableFooterWithDelay(new EmptyFooterItem(999), 0, layoutManager
+                        .findLastVisibleItemPosition() == adapter.getItemCount() - 1);
+            }
         } else {
-            // Handle the item click listener
-            // We don't need to activate anything
-            return false;
+            if (adapter != null) {
+                adapter.removeAllScrollableFooters();
+            }
         }
-    }*/
-
-    private void toggleSelection(int position) {
-        adapter.toggleSelection(position);
-
-        int count = adapter.getSelectedItemCount();
-
-        if (count == 0) {
-            actionMode.finish();
-        } else {
-            //setContextTitle(count);
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        adapter.onSaveInstanceState(outState);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (adapter != null) {
-            adapter.onRestoreInstanceState(savedInstanceState);
-        }
-    }
-
-    @Override
-    public boolean onItemClick(int position) {
-        UserItem userItem = adapter.getItem(position);
-        RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
-                userItem.getModel().getUserId());
-        ncApi.createRoom(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<RoomOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(RoomOverall roomOverall) {
-                        overridePushHandler(new NoOpControllerChangeHandler());
-                        overridePopHandler(new NoOpControllerChangeHandler());
-                        Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
-                        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
-                        callIntent.putExtras(bundle);
-                        startActivity(callIntent);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-
-        return true;
     }
 
     @Override
     protected String getTitle() {
-        return getResources().getString(R.string.nc_app_name);
+        if (!isNewConversationView) {
+            return getResources().getString(R.string.nc_app_name);
+        } else {
+            return getResources().getString(R.string.nc_select_contacts);
+        }
     }
 
+    @Override
+    public void onFastScrollerStateChange(boolean scrolling) {
+        swipeRefreshLayout.setEnabled(!scrolling);
+    }
 }

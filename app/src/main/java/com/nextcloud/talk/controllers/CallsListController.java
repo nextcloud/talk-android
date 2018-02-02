@@ -31,7 +31,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
@@ -81,6 +80,7 @@ import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 import butterknife.BindView;
+import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -90,7 +90,7 @@ import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallsListController extends BaseController implements SearchView.OnQueryTextListener,
-        FlexibleAdapter.OnItemClickListener {
+        FlexibleAdapter.OnItemClickListener, FastScroller.OnScrollStateChangeListener {
 
     public static final String TAG = "CallsListController";
 
@@ -110,6 +110,11 @@ public class CallsListController extends BaseController implements SearchView.On
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
+    @BindView(R.id.fast_scroller)
+    FastScroller fastScroller;
+
+    private SmoothScrollLinearLayoutManager layoutManager;
+
     private UserEntity userEntity;
     private Disposable roomsQueryDisposable;
     private FlexibleAdapter<CallItem> adapter;
@@ -117,6 +122,7 @@ public class CallsListController extends BaseController implements SearchView.On
 
     private BottomSheet bottomSheet;
     private MenuItem searchItem;
+    private Menu menuVariable;
     private SearchView searchView;
     private String searchQuery;
 
@@ -158,7 +164,6 @@ public class CallsListController extends BaseController implements SearchView.On
 
         adapter.addListener(this);
         prepareViews();
-
     }
 
     @Override
@@ -223,9 +228,31 @@ public class CallsListController extends BaseController implements SearchView.On
     }
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_new_conversation:
+                searchItem.setVisible(false);
+                menuVariable.findItem(R.id.action_new_conversation).setVisible(false);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
+                if (getParentController() != null) {
+                    getParentController().getRouter().pushController(
+                            (RouterTransaction.with(new ContactsController(bundle))
+                                    .pushChangeHandler(new VerticalChangeHandler())
+                                    .popChangeHandler(new VerticalChangeHandler())));
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_filter, menu);
+
+        inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
+        menuVariable = menu;
         searchItem = menu.findItem(R.id.action_search);
         initSearchView();
     }
@@ -312,7 +339,7 @@ public class CallsListController extends BaseController implements SearchView.On
     }
 
     private void prepareViews() {
-        LinearLayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
+        layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
@@ -325,6 +352,16 @@ public class CallsListController extends BaseController implements SearchView.On
 
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+
+        fastScroller.addOnScrollStateChangeListener(this);
+        adapter.setFastScroller(fastScroller);
+        fastScroller.setBubbleTextCreator(position -> {
+            String displayName = adapter.getItem(position).getModel().getDisplayName();
+            if(displayName.length() > 8) {
+                displayName = displayName.substring(0, 4) + "...";
+            }
+            return displayName;
+        });
     }
 
     private void dispose(@Nullable Disposable disposable) {
@@ -427,8 +464,14 @@ public class CallsListController extends BaseController implements SearchView.On
                             .pushChangeHandler(new HorizontalChangeHandler()));
         }
 
-        bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
-        if (bottomSheet.getWindow() != null) {
+        boolean isNew = false;
+
+        if (bottomSheet == null) {
+            bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
+            isNew = true;
+        }
+
+        if (bottomSheet.getWindow() != null && isNew) {
             bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
 
@@ -464,5 +507,10 @@ public class CallsListController extends BaseController implements SearchView.On
     @Override
     protected String getTitle() {
         return getResources().getString(R.string.nc_app_name);
+    }
+
+    @Override
+    public void onFastScrollerStateChange(boolean scrolling) {
+        swipeRefreshLayout.setEnabled(!scrolling);
     }
 }

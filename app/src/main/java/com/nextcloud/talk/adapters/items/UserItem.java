@@ -21,7 +21,6 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -45,17 +44,25 @@ import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
+import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
+import eu.davidea.flipview.FlipView;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements IFilterable {
+public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements
+        ISectionable<UserItem.UserItemViewHolder, UserHeaderItem>, IFilterable {
 
     private Participant participant;
     private UserEntity userEntity;
+    private UserHeaderItem header;
 
-    public UserItem(Participant participant, UserEntity userEntity) {
+    private FlipView flipView;
+
+
+    public UserItem(Participant participant, UserEntity userEntity, UserHeaderItem userHeaderItem) {
         this.participant = participant;
         this.userEntity = userEntity;
+        this.header = userHeaderItem;
     }
 
     @Override
@@ -84,6 +91,10 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         return userEntity;
     }
 
+    public void flipItemSelection() {
+        flipView.flip(!flipView.isFlipped());
+    }
+
     @Override
     public int getLayoutRes() {
         return R.layout.rv_item_contact;
@@ -96,6 +107,9 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
+
+        flipView = holder.avatarFlipView;
+
         if (adapter.hasSearchText()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(), adapter.getSearchText());
         } else {
@@ -108,14 +122,17 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 .setHeader("User-Agent", ApiUtils.getUserAgent())
                 .build());
 
+        int avatarSize = Math.round(NextcloudTalkApplication
+                .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
+
         GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                 .asBitmap()
-                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .load(glideUrl)
                 .centerInside()
+                .override(avatarSize, avatarSize)
                 .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                .into(holder.avatarImageView);
+                .into(holder.avatarFlipView.getFrontImageView());
     }
 
     @Override
@@ -124,13 +141,23 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 StringUtils.containsIgnoreCase(participant.getName().trim(), constraint);
     }
 
+    @Override
+    public UserHeaderItem getHeader() {
+        return header;
+    }
+
+    @Override
+    public void setHeader(UserHeaderItem header) {
+        this.header = header;
+    }
+
 
     static class UserItemViewHolder extends FlexibleViewHolder {
 
         @BindView(R.id.name_text)
         public TextView contactDisplayName;
-        @BindView(R.id.avatar_image)
-        public ImageView avatarImageView;
+        @BindView(R.id.avatar_flip_view)
+        public FlipView avatarFlipView;
 
         /**
          * Default constructor.

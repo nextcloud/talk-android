@@ -117,7 +117,6 @@ public class NextcloudTalkApplication extends MultiDexApplication {
         initializeWebRtc();
         DisplayUtils.useCompatVectorIfNeeded();
 
-
         try {
             buildComponent();
         } catch (final GeneralSecurityException exception) {

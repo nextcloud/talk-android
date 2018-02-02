@@ -31,6 +31,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -129,13 +130,26 @@ public class SwitchAccountController extends BaseController {
             };
 
     public SwitchAccountController() {
+        setHasOptionsMenu(true);
     }
 
     public SwitchAccountController(Bundle args) {
         super(args);
+        setHasOptionsMenu(true);
 
         if (args.containsKey(BundleKeys.KEY_IS_ACCOUNT_IMPORT)) {
             isAccountImport = true;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getRouter().popCurrentController();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -202,6 +216,14 @@ public class SwitchAccountController extends BaseController {
         }
 
         prepareViews();
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void prepareViews() {

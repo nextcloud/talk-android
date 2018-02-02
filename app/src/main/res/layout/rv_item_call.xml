@@ -34,10 +34,15 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin">
 
-        <ImageView
+        <com.nextcloud.talk.utils.MagicFlipView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/avatar_image"
             android:layout_width="@dimen/avatar_size"
-            android:layout_height="@dimen/avatar_size"/>
+            android:layout_height="@dimen/avatar_size"
+            app:animationDuration="170"
+            app:checked="false"
+            app:enableInitialAnimation="true"
+            app:rearBackgroundColor="@color/colorPrimary"/>
 
         <ImageView
             android:id="@+id/password_protected_image_view"
@@ -83,11 +88,15 @@
     <ImageButton
         android:id="@+id/more_menu"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/margin_between_elements"
-        android:background="@drawable/ic_more_horiz_black_24dp"/>
+        android:background="?android:attr/selectableItemBackground"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_more_horiz_black_24dp"/>
 
 </RelativeLayout>

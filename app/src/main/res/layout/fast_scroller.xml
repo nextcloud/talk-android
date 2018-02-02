@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<eu.davidea.fastscroller.FastScroller xmlns:android="http://schemas.android.com/apk/res/android"
+                                      xmlns:app="http://schemas.android.com/apk/res-auto"
+                                      xmlns:tools="http://schemas.android.com/tools"
+                                      android:id="@+id/fast_scroller"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="match_parent"
+                                      android:layout_alignBottom="@+id/swipe_refresh_layout"
+                                      android:layout_alignParentEnd="true"
+                                      android:layout_alignTop="@+id/swipe_refresh_layout"
+                                      android:layout_centerHorizontal="true"
+                                      app:fastScrollerAutoHideDelayInMillis="1000"
+                                      app:fastScrollerAutoHideEnabled="true"
+                                      app:fastScrollerBubbleEnabled="true"
+                                      app:fastScrollerBubblePosition="adjacent"
+                                      app:fastScrollerIgnoreTouchesOutsideHandle="false"
+                                      tools:visibility="visible">
+</eu.davidea.fastscroller.FastScroller>

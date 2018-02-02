@@ -51,6 +51,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
+import eu.davidea.flipview.FlipView;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements IFilterable {
@@ -120,6 +121,9 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
             holder.passwordProtectedImageView.setVisibility(View.GONE);
         }
 
+        int avatarSize = Math.round(NextcloudTalkApplication
+                .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
+
         switch (room.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
                 holder.avatarImageView.setVisibility(View.VISIBLE);
@@ -133,12 +137,12 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
 
                     GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                             .asBitmap()
-                            .skipMemoryCache(true)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .load(glideUrl)
                             .centerInside()
+                            .override(avatarSize, avatarSize)
                             .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(holder.avatarImageView);
+                            .into(holder.avatarImageView.getFrontImageView());
 
                 } else {
                     holder.avatarImageView.setVisibility(View.GONE);
@@ -147,23 +151,23 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
             case ROOM_GROUP_CALL:
                 GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                         .asBitmap()
-                        .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .load(R.drawable.ic_group_white_24px)
                         .centerInside()
+                        .override(avatarSize, avatarSize)
                         .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(holder.avatarImageView);
+                        .into(holder.avatarImageView.getFrontImageView());
                 holder.avatarImageView.setVisibility(View.VISIBLE);
                 break;
             case ROOM_PUBLIC_CALL:
                 GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                         .asBitmap()
-                        .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .load(R.drawable.ic_link_white_24px)
                         .centerInside()
+                        .override(avatarSize, avatarSize)
                         .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(holder.avatarImageView);
+                        .into(holder.avatarImageView.getFrontImageView());
                 holder.avatarImageView.setVisibility(View.VISIBLE);
                 break;
             default:
@@ -188,7 +192,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
         @BindView(R.id.secondary_text)
         public TextView roomLastPing;
         @BindView(R.id.avatar_image)
-        public ImageView avatarImageView;
+        public FlipView avatarImageView;
         @BindView(R.id.more_menu)
         public ImageButton moreMenuButton;
         @BindView(R.id.password_protected_image_view)

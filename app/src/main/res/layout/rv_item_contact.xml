@@ -28,23 +28,27 @@
                 android:layout_height="@dimen/item_height"
                 android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/avatar_image"
+    <com.nextcloud.talk.utils.MagicFlipView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/avatar_flip_view"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"/>
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        app:animationDuration="170"
+        app:enableInitialAnimation="true"
+        app:rearBackgroundColor="@color/colorPrimary"/>
 
     <TextView
         android:id="@+id/name_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:ellipsize="end"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_toEndOf="@id/avatar_flip_view"
+        android:ellipsize="end"
         android:textAppearance="?android:attr/textAppearanceListItem"
-        android:layout_toEndOf="@id/avatar_image"
         tools:text="Contact item text"/>
 
 </RelativeLayout>

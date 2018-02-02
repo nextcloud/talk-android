@@ -53,6 +53,7 @@ public abstract class BaseController extends RefWatchingController {
     @Override
     protected void onAttach(@NonNull View view) {
         setTitle();
+        getActionBar().setDisplayHomeAsUpEnabled(false);
         super.onAttach(view);
     }
 

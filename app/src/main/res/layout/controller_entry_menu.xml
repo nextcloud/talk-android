@@ -57,9 +57,9 @@
         android:layout_marginBottom="12dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:alpha="0.7"
         android:background="#0000"
         android:enabled="false"
-        android:alpha="0.7"
         android:text="@string/nc_proceed"
         android:textColor="@color/colorPrimary"/>
 

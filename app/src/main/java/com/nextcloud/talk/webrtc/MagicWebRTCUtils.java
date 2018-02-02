@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Original code:
+ * Part of the code related to codec handling is originally:
  *
  *
  * Copyright 2016 The WebRTC Project Authors. All rights reserved.

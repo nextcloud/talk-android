@@ -51,6 +51,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
+import eu.davidea.flipview.FlipView;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.UserItemViewHolder> implements IFilterable {
@@ -119,24 +120,23 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
         if (userEntity.getBaseUrl().startsWith("http://") || userEntity.getBaseUrl().startsWith("https://")) {
             holder.avatarImageView.setVisibility(View.VISIBLE);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.linearLayout.getLayoutParams();
-            layoutParams.setMarginStart(0);
-            layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_START);
-            holder.linearLayout.setLayoutParams(layoutParams);
             GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                     participant.getUserId(), false), new LazyHeaders.Builder()
                     .setHeader("Accept", "image/*")
                     .setHeader("User-Agent", ApiUtils.getUserAgent())
                     .build());
 
+            int avatarSize = Math.round(NextcloudTalkApplication
+                    .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
+
             GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                     .asBitmap()
-                    .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .load(glideUrl)
                     .centerInside()
+                    .override(avatarSize, avatarSize)
                     .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                    .into(holder.avatarImageView);
+                    .into(holder.avatarImageView.getFrontImageView());
         } else {
             holder.avatarImageView.setVisibility(View.GONE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.linearLayout.getLayoutParams();
@@ -161,11 +161,13 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         @BindView(R.id.secondary_text)
         public TextView serverUrl;
         @BindView(R.id.avatar_image)
-        public ImageView avatarImageView;
+        public FlipView avatarImageView;
         @BindView(R.id.linear_layout)
         LinearLayout linearLayout;
         @BindView(R.id.more_menu)
         ImageButton moreMenuButton;
+        @BindView(R.id.password_protected_image_view)
+        ImageView passwordProtectedImageView;
 
         /**
          * Default constructor.
@@ -174,8 +176,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
             super(view, adapter);
             ButterKnife.bind(this, view);
             moreMenuButton.setVisibility(View.GONE);
+            passwordProtectedImageView.setVisibility(View.GONE);
         }
     }
-
-
 }

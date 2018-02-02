@@ -19,17 +19,20 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/nc_white_color">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/rv_item_call"/>
+	<!-- Search, should appear as action button -->
+	<item android:id="@+id/action_search"
+	      android:title="@string/nc_search"
+	      android:icon="@drawable/ic_search_white_24dp"
+	      app:showAsAction="collapseActionView|always"
+	      android:animateLayoutChanges="true"
+	      app:actionViewClass="android.support.v7.widget.SearchView"
+        />
 
-
-</RelativeLayout>
+    <item android:id="@+id/action_new_conversation"
+          android:title="@string/nc_new_conversation"
+          android:icon="@drawable/ic_add_white_24px"
+          app:showAsAction="ifRoom"/>
+</menu>

@@ -36,8 +36,8 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_above="@id/peer_nick_text_view"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:src="@drawable/ic_videocam_off_white_24px"
         android:visibility="invisible"/>
 
@@ -56,9 +56,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="4dp"
-        android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:textColor="@color/nc_white_color_complete"/>
 
 </RelativeLayout>
