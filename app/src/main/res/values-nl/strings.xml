@@ -29,7 +29,6 @@ Kies er eentje van een provider.</string>
 
     <string name="nc_never">Nooit deelgenomen</string>
     <string name="nc_search">Zoeken</string>
-
     <string name="nc_certificate_dialog_title">Verifieer het certificaat</string>
     <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
     <string name="nc_yes">Ja</string>
@@ -77,10 +76,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_make_call_public">Maak gesprek openbaar</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
 
-    <!-- Contacts -->
     <string name="nc_one_contact_selected">contact geselecteerd</string>
     <string name="nc_more_contacts_selected">contacten geselecteerd</string>
-
     <!-- Permissions -->
     <string name="nc_permissions">Permissies zijn nodig om een video- en/of audiogesprek te starten. Druk 
 op \"TOESTAAN\" in de volgende systeemdialoog.</string>

@@ -28,7 +28,6 @@
 
     <string name="nc_never">Mai partecipato</string>
     <string name="nc_search">Cerca</string>
-
     <string name="nc_certificate_dialog_title">Controlla il certificato</string>
     <string name="nc_certificate_dialog_text">Ti fidi del certificato SSL fino ad ora sconosciuto, rilasciato da %1$s per %2$s, valido da %3$s a %4$s?</string>
     <string name="nc_yes">Sì</string>
@@ -83,10 +82,8 @@
     <string name="nc_make_call_private">Rendi privata la chiamata</string>
     <string name="nc_delete_call">Elimina chiamata</string>
 
-    <!-- Contacts -->
     <string name="nc_one_contact_selected">contatto selezionato</string>
     <string name="nc_more_contacts_selected">contatti selezionati</string>
-
     <!-- Permissions -->
     <string name="nc_permissions">È necessario accordare permessi per stabilire una chiamata audio/video. Fai clic su \"CONSENTI\" nella finestra di sistema che apparirà.</string>
     <string name="nc_permissions_audio">Il permesso per il microfono deve essere accordato per abilitare le chiamate audio. Fai clic su \"CONSENTI\" nella finestra di sistema che apparirà.</string>

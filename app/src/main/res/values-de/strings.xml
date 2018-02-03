@@ -28,7 +28,6 @@
 
     <string name="nc_never">Nie beigetreten</string>
     <string name="nc_search">Suche</string>
-
     <string name="nc_certificate_dialog_title">Überprüfe das Zertifikat</string>
     <string name="nc_certificate_dialog_text">Vertraust du dem bisher unbekannten SSL Zertifikat, ausgestellt von %1$s für %2$s, gültig von %3$s bis %4$s?</string>
     <string name="nc_yes">Ja</string>
@@ -83,10 +82,8 @@
     <string name="nc_make_call_private">Anruf privat machen</string>
     <string name="nc_delete_call">Anruf löschen</string>
 
-    <!-- Contacts -->
     <string name="nc_one_contact_selected">Kontakt ausgewählt</string>
     <string name="nc_more_contacts_selected">Kontakte ausgewählt</string>
-
     <!-- Permissions -->
     <string name="nc_permissions">Für Video- und Audioanrufe müssen Berechtigungen erteilt werden. Bitte klicken Sie im folgenden Systemdialog auf \\"ZULASSEN\\".</string>
     <string name="nc_permissions_audio">Für die Nutzung des Mikrophons für Audioanrufe muss eine Berechtigungen erteilt werden. Bitte klicken Sie im folgenden Systemdialog auf \"ZULASSEN\".</string>

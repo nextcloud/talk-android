@@ -14,7 +14,6 @@
     <string name="nc_display_name_stored">Display navn gemt</string>
     <string name="nc_never">Aldrig ansluttet</string>
     <string name="nc_search">Søg</string>
-
     <string name="nc_certificate_dialog_title">Tjek certifikatet</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nej</string>
@@ -55,10 +54,8 @@
     <string name="nc_make_call_public">Lav et offentligt opkald</string>
     <string name="nc_delete_call">Slet opkald</string>
 
-    <!-- Contacts -->
     <string name="nc_one_contact_selected">kontakt valgt</string>
     <string name="nc_more_contacts_selected">kontakt valgt</string>
-
     <string name="nc_permissions_settings">Indstillinger</string>
 
     </resources>

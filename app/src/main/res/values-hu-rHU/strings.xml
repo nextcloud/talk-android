@@ -28,7 +28,6 @@
 
     <string name="nc_never">Soha nem csatlakozott</string>
     <string name="nc_search">Keresés</string>
-
     <string name="nc_certificate_dialog_title">Tanúsítvány ellenőrzése</string>
     <string name="nc_certificate_dialog_text">Korábban ismeretlen SSL tanúsítvány érkezett. %1$s bocsátotta ki %2$s részére, %3$s és %4$s között érvényes. Megbízható?</string>
     <string name="nc_yes">Igen</string>
@@ -84,10 +83,8 @@
     <string name="nc_make_call_private">Hívás  priváttá tétele</string>
     <string name="nc_delete_call">Hívás törlése</string>
 
-    <!-- Contacts -->
     <string name="nc_one_contact_selected">kapcsolat kiválasztva</string>
     <string name="nc_more_contacts_selected">kapcsolatok kiválasztva</string>
-
     <!-- Permissions -->
     <string name="nc_permissions">Videohívás létrehozásához bizonyos engedélyek szükségesek. A következő párbeszédablakban az „ENGEDÉLYEZÉS”-re kell kattintani.</string>
     <string name="nc_permissions_audio">Videohívás létrehozásához mikrofon használati engedély szükséges. A következő párbeszédablakban az „ENGEDÉLYEZÉS”-re kell kattintani.</string>

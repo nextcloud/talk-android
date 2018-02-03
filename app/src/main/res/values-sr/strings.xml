@@ -28,7 +28,6 @@
 
     <string name="nc_never">Никад придружен</string>
     <string name="nc_search">Тражи</string>
-
     <string name="nc_certificate_dialog_title">Провери сертификат</string>
     <string name="nc_certificate_dialog_text">Да ли верујете, до сада непознатом, SSL сертификату, који је издао %1$s на %2$s, валидним од %3$s до %4$s?</string>
     <string name="nc_yes">Да</string>
@@ -83,10 +82,8 @@
     <string name="nc_make_call_private">Учини разговор приватним</string>
     <string name="nc_delete_call">Обриши позив</string>
 
-    <!-- Contacts -->
     <string name="nc_one_contact_selected">контакт означен</string>
     <string name="nc_more_contacts_selected">контакта означено</string>
-
     <!-- Permissions -->
     <string name="nc_permissions">Да бисте успоставили видео или аудио позив, морате одобрити неке дозволе. Молимо кликните \"Дозволи\" на следећем системском дијалогу.</string>
     <string name="nc_permissions_audio">Да бисте успоставили аудио позив, морате одобрити дозволе за коришћење микрофона. Молимо кликните \"Дозволи\" на следећем системском дијалогу.</string>

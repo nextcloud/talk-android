@@ -28,7 +28,6 @@
 
     <string name="nc_never">არასდროს შემოსულა</string>
     <string name="nc_search">ძებნა</string>
-
     <string name="nc_certificate_dialog_title">სერტიფიკატის შემოწმება</string>
     <string name="nc_certificate_dialog_text">ენდობით ჯერ კიდევ უცნობ SSL სერტიფიკატს, რომელიც გაიცა %1$s-ში %2$s-თვის, ვადით %3$s-დან %4$s-მდე?</string>
     <string name="nc_yes">კი</string>
@@ -83,10 +82,8 @@
     <string name="nc_make_call_private">პირადი ზარის შესრულება</string>
     <string name="nc_delete_call">ზარის გაუქმება</string>
 
-    <!-- Contacts -->
     <string name="nc_one_contact_selected">კონტაქტი იქნა არჩეულ</string>
     <string name="nc_more_contacts_selected">კონტაქტი იქნა არჩეულ</string>
-
     <!-- Permissions -->
     <string name="nc_permissions">ვიდეო და/ან აუდიო ზარის გასახორციელებლად საჭიროა უფლებების მინიჭება. გთხოვთ ამომავალ სისტემურ დიალოგში დააწკაპუნოთ \"ნების დართვას\".</string>
     <string name="nc_permissions_audio">აუდიო ზარების გასახორციელებლად საჭიროა მიკროფონის უფლებების მინიჭება. გთხოვთ ამომავალ სისტემურ დიალოგში დააწკაპუნოთ \"ნების დართვას\".</string>

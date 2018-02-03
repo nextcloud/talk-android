@@ -19,7 +19,6 @@
     <string name="nc_display_name_stored">Nombre a mostrar almacenado</string>
     <string name="nc_never">Nunca se unió</string>
     <string name="nc_search">Buscar</string>
-
     <string name="nc_certificate_dialog_title">Verifica el certificado</string>
     <string name="nc_yes">Sí</string>
     <string name="nc_no">No</string>
@@ -65,10 +64,8 @@
     <string name="nc_make_call_public">Generar una llamada pública</string>
     <string name="nc_delete_call">Borrar la llamada</string>
 
-    <!-- Contacts -->
     <string name="nc_one_contact_selected">contacto seleccionado</string>
     <string name="nc_more_contacts_selected">contactos seleccionados</string>
-
     <string name="nc_permissions_settings">Abrir configuraciones</string>
 
     </resources>

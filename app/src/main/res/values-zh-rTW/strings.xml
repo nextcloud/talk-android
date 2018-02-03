@@ -28,7 +28,6 @@
 
     <string name="nc_never">從未加入</string>
     <string name="nc_search">搜尋</string>
-
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_yes">是</string>
     <string name="nc_no">否</string>
@@ -74,10 +73,8 @@
     <string name="nc_make_call_public">公開通話</string>
     <string name="nc_delete_call">刪除通話</string>
 
-    <!-- Contacts -->
     <string name="nc_one_contact_selected">聯絡人已選</string>
     <string name="nc_more_contacts_selected">聯絡人已選</string>
-
     <!-- Permissions -->
     <string name="nc_permissions">允許的權限需要被同意，用以建立影像及/或語音電話。請在來源的系統對話中點選\"允許\"。</string>
     <string name="nc_permissions_audio">為了開啟語音電話，麥克風的需求需要被同意。請在來源的系統對話中點選\"允許\"。</string>

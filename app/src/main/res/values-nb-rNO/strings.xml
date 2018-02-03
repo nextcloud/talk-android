@@ -28,7 +28,6 @@
 
     <string name="nc_never">Har aldri deltatt</string>
     <string name="nc_search">Søk</string>
-
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
     <string name="nc_certificate_dialog_text">Ønsker du å stole på det hittil ukjente SSL-sertifikatet, utstedt av %1$s for %2$s gyldig fra %3$s til %4$s?</string>
     <string name="nc_yes">Ja</string>
@@ -83,10 +82,8 @@
     <string name="nc_make_call_private">Gjør samtale privat</string>
     <string name="nc_delete_call">Slett samtale</string>
 
-    <!-- Contacts -->
     <string name="nc_one_contact_selected">kontakt valgt</string>
     <string name="nc_more_contacts_selected">kontakter valgt</string>
-
     <!-- Permissions -->
     <string name="nc_permissions">Tilganger må innvilges for å etablere video og/eller lydsamtaler. Klikk \"TILLAT\" i neste vindu.</string>
     <string name="nc_permissions_audio">Mikrofontilganger må innvilges for å etablere lydsamtaler. Klikk \"TILLAT\" i neste vindu.</string>
