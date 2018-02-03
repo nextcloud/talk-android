@@ -49,7 +49,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="bottom|end"
-            android:src="@drawable/ic_vpn_key_black_24dp"
+            android:src="@drawable/ic_lock_white_24px"
             android:tint="@color/nc_material_yellow"
             android:tintMode="src_in"
             android:visibility="visible"/>
