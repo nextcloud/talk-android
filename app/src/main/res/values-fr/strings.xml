@@ -28,6 +28,8 @@
 
     <string name="nc_never">Jamais contacté</string>
     <string name="nc_search">Recherche</string>
+    <string name="nc_new_conversation">Créer une nouveau fil de conversation</string>
+
     <string name="nc_certificate_dialog_title">Vérifier le certificat</string>
     <string name="nc_certificate_dialog_text">Faites-vous confiance au certificat SSL jusque là inconnu, émis par %1$s pour%2$s, et est valide du %3$s au %4$s ?</string>
     <string name="nc_yes">Oui</string>
@@ -82,8 +84,13 @@
     <string name="nc_make_call_private">Effectuer un appel privé</string>
     <string name="nc_delete_call">Supprimer l’appel</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Choisissez un contact</string>
     <string name="nc_one_contact_selected">contact sélectionné</string>
     <string name="nc_more_contacts_selected">contacts sélectionnés</string>
+    <string name="nc_contacts_clear">Effacer</string>
+    <string name="nc_contacts_done">Terminé</string>
+
     <!-- Permissions -->
     <string name="nc_permissions">Des autorisations sont requises pour établir un appel video et/ou audio. Merci de cliquer sur \"AUTORISER\" dans la prochaine boîte de dialogue système.</string>
     <string name="nc_permissions_audio">L\'autorisation du microphone est requise pour établir un appel audio. Merci de cliquer sur \"AUTORISER\" dans la prochaine boîte de dialogue système.</string>
@@ -109,6 +116,12 @@
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nom de l\'appelant</string>
     <string name="nc_proceed">Continuer</string>
+    <string name="nc_call_name_is_same">Le nom que vous avez entré est le même que celui existant</string>
+    <string name="nc_share_text">Salut,
+
+Je souhaiterai t\'inviter à un appel avec moi.
+
+Tu peux me rejoindre via ce lien %1$s/index.php/call/%2$s</string>
     <string name="nc_talk_soon">
 
 Parlez bientôt;

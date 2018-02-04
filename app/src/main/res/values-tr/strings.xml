@@ -28,6 +28,8 @@
 
     <string name="nc_never">Asls katılmadı</string>
     <string name="nc_search">Arama</string>
+    <string name="nc_new_conversation">Yeni bir sohbet ekle</string>
+
     <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
     <string name="nc_certificate_dialog_text">Şimdiye kadar bilinmeyen, %1$s tarafından %2$s için yayınlanmış %3$s ile %4$s tarihleri arasında geçerli olan sertifikaya güvenilsin mi?</string>
     <string name="nc_yes">Evet</string>
@@ -82,8 +84,13 @@
     <string name="nc_make_call_private">Çağrıyı özel yap</string>
     <string name="nc_delete_call">Çağrıyı sil</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Kişileri seçin</string>
     <string name="nc_one_contact_selected">kişi seçilmiş</string>
     <string name="nc_more_contacts_selected">kişi seçilmiş</string>
+    <string name="nc_contacts_clear">Temizle</string>
+    <string name="nc_contacts_done">Tamam</string>
+
     <!-- Permissions -->
     <string name="nc_permissions">Bir görüntülü ya da ses çağrısı başlatmak için bazı izinlerin verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
     <string name="nc_permissions_audio">Sesli çağrı başlatmak için mikrofona erişme izni verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
