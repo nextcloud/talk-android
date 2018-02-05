@@ -10,6 +10,12 @@
     <string name="nc_server_db_upgrade_needed">Vänligen uppgradera din %1$s-databas</string>
     <string name="nc_server_maintenance">Vänligen inaktivera underhållningsläge för din %1$s </string>
     <string name="nc_server_version">%1$s fungerar bara med %2$s 13 och uppåt</string>
+    <string name="nc_server_import_account_plain">Importera konto</string>
+    <string name="nc_server_import_accounts_plain">Importera konton</string>
+    <string name="nc_server_import_account">Importera konton från %1$s-appen</string>
+    <string name="nc_server_import_accounts">Importera konton från %1$s-appen</string>
+    <string name="nc_server_failed_to_import_account">Misslyckades att importera valt konto</string>
+    <string name="nc_Server_account_imported">Valt konto är nu importerat och tillgängligt</string>
     <string name="nc_get_from_provider">Har du inte en server än?\nKlicka här för att få en från en leverantör</string>
 
     <!-- Account verification -->
@@ -22,7 +28,10 @@
 
     <string name="nc_never">Gick aldrig med</string>
     <string name="nc_search">Sök</string>
+    <string name="nc_new_conversation">Skapa en ny konversation</string>
+
     <string name="nc_certificate_dialog_title">Kontrollera certifikatet</string>
+    <string name="nc_certificate_dialog_text">Litar du på det tills nu okända SSL-certifikatet, skapad av  %1$s för %2$s, giltig från%3$s till %4$s?</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nej</string>
     <string name="nc_details">Detaljer</string>
