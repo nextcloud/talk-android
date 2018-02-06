@@ -53,6 +53,7 @@ import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.items.EmptyFooterItem;
+import com.nextcloud.talk.adapters.items.NewCallHeaderItem;
 import com.nextcloud.talk.adapters.items.UserHeaderItem;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
@@ -139,6 +140,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private String searchQuery;
 
     private boolean isNewConversationView;
+    private boolean isPublicCall;
 
     private HashMap<String, UserHeaderItem> userHeaderItems = new HashMap<String, UserHeaderItem>();
 
@@ -163,8 +165,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        if (getActionBar() != null && isNewConversationView) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (isNewConversationView) {
+            checkAndHandleBottomButtons();
+
+            if (getActionBar() != null) {
+                getActionBar().setDisplayHomeAsUpEnabled(true);
+            }
         }
     }
 
@@ -212,10 +218,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (adapter != null) {
             List<Integer> selectedPositions = adapter.getSelectedPositions();
             for (Integer position : selectedPositions) {
-                UserItem userItem = (UserItem) adapter.getItem(position);
-                adapter.toggleSelection(position);
-                if (userItem != null) {
-                    userItem.flipItemSelection();
+                if (adapter.getItem(position) instanceof UserItem) {
+                    UserItem userItem = (UserItem) adapter.getItem(position);
+                    adapter.toggleSelection(position);
+                    if (userItem != null) {
+                        userItem.flipItemSelection();
+                    }
                 }
             }
         }
@@ -389,9 +397,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     return firstName.compareToIgnoreCase(secondName);
                                 });
 
+                                if (isNewConversationView) {
+                                    contactItems.add(0, new NewCallHeaderItem());
+                                }
+
                                 adapter.updateDataSet(contactItems, true);
                                 searchItem.setVisible(contactItems.size() > 0);
                                 swipeRefreshLayout.setRefreshing(false);
+
 
                                 if (isNewConversationView) {
                                     checkAndHandleBottomButtons();
@@ -569,15 +582,26 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                 checkAndHandleBottomButtons();
             }
+        } else if (adapter.getItem(position) instanceof NewCallHeaderItem) {
+            adapter.toggleSelection(position);
+            isPublicCall = adapter.isSelected(position);
+            ((NewCallHeaderItem)adapter.getItem(position)).togglePublicCall(isPublicCall);
+            checkAndHandleBottomButtons();
         }
         return true;
     }
 
     private void checkAndHandleBottomButtons() {
         if (adapter != null && bottomButtonsLinearLayout != null && clearButton != null) {
-            if (adapter.getSelectedItemCount() > 0) {
+            if (adapter.getSelectedItemCount() > 0 || isPublicCall) {
                 if (bottomButtonsLinearLayout.getVisibility() != View.VISIBLE) {
                     bottomButtonsLinearLayout.setVisibility(View.VISIBLE);
+                }
+
+                if (isPublicCall && adapter.getSelectedItemCount() < 2) {
+                    clearButton.setVisibility(View.GONE);
+                } else {
+                    clearButton.setVisibility(View.VISIBLE);
                 }
             } else {
                 bottomButtonsLinearLayout.setVisibility(View.GONE);

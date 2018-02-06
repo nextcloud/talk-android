@@ -102,6 +102,9 @@
     <!-- Call -->
     <string name="nc_incoming_call">Incoming call</string>
     <string name="nc_nick_guest">Guest</string>
+    <string name="nc_public_call">NEW PUBLIC CALL</string>
+    <string name="nc_public_call_explanation">Public calls let you invite people from outside through a specially
+        crafted link.</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>

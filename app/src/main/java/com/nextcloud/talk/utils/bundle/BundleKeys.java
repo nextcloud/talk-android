@@ -37,4 +37,5 @@ public class BundleKeys {
     public static final String KEY_ROOM_TOKEN = "KEY_ROOM_TOKEN";
     public static final String KEY_USER_ENTITY = "KEY_USER_ENTITY";
     public static final String KEY_NEW_CONVERSATION = "KEY_NEW_CONVERSATION";
+    public static final String KEY_IS_PUBLIC_CALL = "KEY_IS_PUBLIC_CALL";
 }
