@@ -88,6 +88,7 @@
     <string name="nc_select_contacts">Kontakt auswählen</string>
     <string name="nc_one_contact_selected">Kontakt ausgewählt</string>
     <string name="nc_more_contacts_selected">Kontakte ausgewählt</string>
+    <string name="nc_contacts_clear">Leeren</string>
     <string name="nc_contacts_done">Erledigt</string>
 
     <!-- Permissions -->
@@ -115,4 +116,10 @@
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Anrufname</string>
     <string name="nc_proceed">Fortfahren</string>
-    </resources>
+    <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>
+    <string name="nc_share_text">Hallo \n\nI möchtest Du meinen Anruf beitreten? \n\nI Trete dem Anruf bei durch
+         %1$s/index.php/call/%2$s</string>
+    <string name="nc_talk_soon">\n\n wir reden später, \n %1$s</string>
+    <string name="nc_share_subject">Anrufeinladung</string>
+    <string name="nc_share_text_pass">\n\n Passwort für diesen Anruf lautet: %1$s</string>
+</resources>
