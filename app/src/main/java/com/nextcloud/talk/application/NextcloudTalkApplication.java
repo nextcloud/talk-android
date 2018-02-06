@@ -21,6 +21,7 @@
 package com.nextcloud.talk.application;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
@@ -28,6 +29,7 @@ import android.util.Log;
 
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
+import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.dagger.modules.BusModule;
@@ -66,7 +68,7 @@ import autodagger.AutoInjector;
 
 @Singleton
 @AutoInjector(NextcloudTalkApplication.class)
-public class NextcloudTalkApplication extends MultiDexApplication {
+public class NextcloudTalkApplication extends MultiDexApplication implements ProviderInstaller.ProviderInstallListener {
     private static final String TAG = NextcloudTalkApplication.class.getSimpleName();
 
     //region Public variables
@@ -109,11 +111,13 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        ProviderInstaller.installIfNeededAsync(this, this);
+
         JobManager.create(this).addJobCreator(new MagicJobCreator());
         FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false);
 
         sharedApplication = this;
-
+        
         initializeWebRtc();
         DisplayUtils.useCompatVectorIfNeeded();
 
@@ -138,6 +142,16 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     public void onTerminate() {
         super.onTerminate();
         sharedApplication = null;
+    }
+
+    @Override
+    public void onProviderInstalled() {
+
+    }
+
+    @Override
+    public void onProviderInstallFailed(int i, Intent intent) {
+
     }
     //endregion
 
