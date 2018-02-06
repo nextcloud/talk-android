@@ -117,7 +117,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
         FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false);
 
         sharedApplication = this;
-        
+
         initializeWebRtc();
         DisplayUtils.useCompatVectorIfNeeded();
 
