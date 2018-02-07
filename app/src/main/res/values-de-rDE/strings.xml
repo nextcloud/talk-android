@@ -102,7 +102,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Eingehender Anruf</string>
     <string name="nc_nick_guest">Gast</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s auf %2$s Benachrichtigungskanal</string>
     <string name="nc_notification_channel_calls">Benachrichtigungskanal für Anrufe</string>

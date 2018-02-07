@@ -95,7 +95,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Входящий вызов</string>
     <string name="nc_nick_guest">Гость</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">канал уведомлений %1$s на %2$s</string>
     <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>

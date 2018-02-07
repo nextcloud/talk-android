@@ -95,7 +95,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Innkommende anrop</string>
     <string name="nc_nick_guest">Gjest</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s merknadskanal</string>
     <string name="nc_notification_channel_calls">Innringingsnotfikasjonskanal</string>
