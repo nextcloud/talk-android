@@ -409,7 +409,11 @@ public class CallActivity extends AppCompatActivity {
 
     @OnClick(R.id.call_control_hangup)
     public void onHangupClick() {
-        hangup(false);
+        if (inCall) {
+            hangup(false);
+        } else {
+            hangup(true);
+        }
     }
 
     @OnClick(R.id.call_control_camera)
@@ -1046,7 +1050,11 @@ public class CallActivity extends AppCompatActivity {
         localAudioTrack = null;
         localVideoTrack = null;
 
-        hangupNetworkCalls();
+        if (!dueToNetworkChange) {
+            hangupNetworkCalls();
+        } else {
+            finish();
+        }
     }
 
     private void hangupNetworkCalls() {
