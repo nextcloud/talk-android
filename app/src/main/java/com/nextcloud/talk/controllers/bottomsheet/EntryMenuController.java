@@ -34,6 +34,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -84,7 +85,9 @@ public class EntryMenuController extends BaseController {
     public EntryMenuController(Bundle args) {
         super(args);
         this.operationCode = args.getInt(BundleKeys.KEY_OPERATION_CODE);
-        this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        if (args.containsKey(BundleKeys.KEY_ROOM)) {
+            this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        }
 
         if (args.containsKey(BundleKeys.KEY_SHARE_INTENT)) {
             this.shareIntent = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_SHARE_INTENT));
@@ -123,12 +126,13 @@ public class EntryMenuController extends BaseController {
                 eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
                 bundle = new Bundle();
                 bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
-                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
                 bundle.putString(BundleKeys.KEY_CALL_PASSWORD, editText.getText().toString());
-                getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
+                getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler()));
             }
 
-        } else if (operationCode != 7) {
+        } else if (operationCode != 7 && operationCode != 10) {
             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
             if (operationCode == 4 || operationCode == 6) {
@@ -138,8 +142,10 @@ public class EntryMenuController extends BaseController {
             }
             bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
-            getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
-        } else {
+            getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
+        } else if (operationCode == 7) {
             if (getActivity() != null) {
                 shareIntent.putExtra(Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(getActivity(),
                         editText.getText().toString(), userUtils, room));
@@ -149,6 +155,15 @@ public class EntryMenuController extends BaseController {
                 getActivity().startActivity(intent);
                 eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
             }
+        } else {
+            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+            bundle = new Bundle();
+            bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
+            bundle.putString(BundleKeys.KEY_CALL_URL, editText.getText().toString());
+            getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
+
         }
     }
 
@@ -193,11 +208,27 @@ public class EntryMenuController extends BaseController {
                             textFieldBoxes.setError(getResources().getString(R.string.nc_call_name_is_same),
                                     true);
                         }
-                    } else {
+                    } else if (operationCode != 10) {
                         if (!proceedButton.isEnabled()) {
                             proceedButton.setEnabled(true);
                             proceedButton.setAlpha(1.0f);
                         }
+                    } else if (editText.getText().toString().startsWith("http://") ||
+                            editText.getText().toString().startsWith("https://") &&
+                            editText.getText().toString().contains("/call/")) {
+                        // operation code 10
+                        if (!proceedButton.isEnabled()) {
+                            proceedButton.setEnabled(true);
+                            proceedButton.setAlpha(1.0f);
+
+                        }
+                    } else {
+                        if (proceedButton.isEnabled()) {
+                            proceedButton.setEnabled(false);
+                            proceedButton.setAlpha(0.7f);
+                        }
+                        textFieldBoxes.setError(getResources().getString(R.string.nc_wrong_link),
+                                true);
                     }
                 } else {
                     if (proceedButton.isEnabled()) {
@@ -219,7 +250,11 @@ public class EntryMenuController extends BaseController {
             case 6:
             case 7:
             case 99:
+                // 99 is joining a room via password
                 labelText = getResources().getString(R.string.nc_password);
+                break;
+            case 10:
+                labelText = getResources().getString(R.string.nc_conversation_link);
                 break;
             default:
                 break;

@@ -231,16 +231,9 @@ public class CallsListController extends BaseController implements SearchView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_new_conversation:
-                searchItem.setVisible(false);
-                menuVariable.findItem(R.id.action_new_conversation).setVisible(false);
                 Bundle bundle = new Bundle();
-                bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
-                if (getParentController() != null) {
-                    getParentController().getRouter().pushController(
-                            (RouterTransaction.with(new ContactsController(bundle))
-                                    .pushChangeHandler(new VerticalChangeHandler())
-                                    .popChangeHandler(new VerticalChangeHandler())));
-                }
+                bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(CallMenuController.MenuType.NEW_CONVERSATION));
+                prepareAndShowBottomSheetWithBundle(bundle, true);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -445,6 +438,7 @@ public class CallsListController extends BaseController implements SearchView.On
         Bundle bundle = new Bundle();
         Room room = moreMenuClickEvent.getRoom();
         bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+        bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(CallMenuController.MenuType.REGULAR));
 
         prepareAndShowBottomSheetWithBundle(bundle, true);
     }
@@ -455,13 +449,13 @@ public class CallsListController extends BaseController implements SearchView.On
         if (shouldShowCallMenuController) {
             getChildRouter((ViewGroup) view).setRoot(
                     RouterTransaction.with(new CallMenuController(bundle))
-                            .popChangeHandler(new HorizontalChangeHandler())
-                            .pushChangeHandler(new HorizontalChangeHandler()));
+                            .popChangeHandler(new VerticalChangeHandler())
+                            .pushChangeHandler(new VerticalChangeHandler()));
         } else {
             getChildRouter((ViewGroup) view).setRoot(
                     RouterTransaction.with(new EntryMenuController(bundle))
-                            .popChangeHandler(new HorizontalChangeHandler())
-                            .pushChangeHandler(new HorizontalChangeHandler()));
+                            .popChangeHandler(new VerticalChangeHandler())
+                            .pushChangeHandler(new VerticalChangeHandler()));
         }
 
         boolean isNew = false;

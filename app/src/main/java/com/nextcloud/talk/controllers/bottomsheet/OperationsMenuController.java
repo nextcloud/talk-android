@@ -39,8 +39,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -90,21 +90,21 @@ public class OperationsMenuController extends BaseController {
 
     private UserEntity userEntity;
     private String callPassword;
+    private String callUrl;
+
+    private String baseUrl;
 
     private Disposable disposable;
-    private Disposable secondaryDisposable;
-
-    private int retryCount = 0;
 
     public OperationsMenuController(Bundle args) {
         super(args);
         this.operationCode = args.getInt(BundleKeys.KEY_OPERATION_CODE);
-        this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        if (args.containsKey(BundleKeys.KEY_ROOM)) {
+            this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        }
 
         this.callPassword = args.getString(BundleKeys.KEY_CALL_PASSWORD, "");
-        if (args.containsKey(BundleKeys.KEY_USER_ENTITY)) {
-            this.userEntity = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
-        }
+        this.callUrl = args.getString(BundleKeys.KEY_CALL_URL, "");
     }
 
     @Override
@@ -121,7 +121,7 @@ public class OperationsMenuController extends BaseController {
     }
 
     private void processOperation() {
-        UserEntity userEntity = userUtils.getCurrentUser();
+        userEntity = userUtils.getCurrentUser();
         OperationsObserver operationsObserver = new OperationsObserver();
         if (userEntity != null) {
             String credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
@@ -181,6 +181,46 @@ public class OperationsMenuController extends BaseController {
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
                             .subscribe(operationsObserver);
+                case 10:
+                    String conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1, callUrl.length());
+                    if (callUrl.contains("/index.php")) {
+                        baseUrl = callUrl.substring(0, callUrl.indexOf("/index.php"));
+                    } else {
+                        baseUrl = callUrl.substring(0, callUrl.indexOf("/call"));
+                    }
+
+                    ncApi.getRoom(credentials, ApiUtils.getRoom(baseUrl, conversationToken))
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .retry(1)
+                            .subscribe(new Observer<RoomOverall>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+                                    disposable = d;
+                                }
+
+                                @Override
+                                public void onNext(RoomOverall roomOverall) {
+                                    room = roomOverall.getOcs().getData();
+                                    if (room.isHasPassword() && room.isGuest()) {
+
+                                    } else {
+                                        initiateCall();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    showResultImage(false, false);
+                                    dispose();
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    dispose();
+                                }
+                            });
+                    break;
                 case 99:
                     ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(userEntity.getBaseUrl(), room.getToken()),
                             callPassword)
@@ -195,7 +235,7 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
-    private void showResultImage(boolean everythingOK) {
+    private void showResultImage(boolean everythingOK, boolean isSignalingSettingsError) {
         progressBar.setVisibility(View.GONE);
 
         if (everythingOK) {
@@ -212,7 +252,11 @@ public class OperationsMenuController extends BaseController {
             resultsTextView.setText(R.string.nc_all_ok_operation);
         } else {
             resultsTextView.setTextColor(getResources().getColor(R.color.nc_darkRed));
-            resultsTextView.setText(R.string.nc_failed_to_perform_operation);
+            if (!isSignalingSettingsError) {
+                resultsTextView.setText(R.string.nc_failed_to_perform_operation);
+            } else {
+                resultsTextView.setText(R.string.nc_failed_signaling_settings);
+            }
         }
 
         resultsTextView.setVisibility(View.VISIBLE);
@@ -221,8 +265,8 @@ public class OperationsMenuController extends BaseController {
         } else {
             resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(), R.drawable
                     .ic_cancel_black_24dp, R.color.nc_darkRed));
-            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, operationCode != 99,
-                    true)));
+            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, operationCode != 99
+                    && operationCode != 10, true)));
             okButton.setVisibility(View.VISIBLE);
         }
     }
@@ -241,35 +285,41 @@ public class OperationsMenuController extends BaseController {
         dispose();
     }
 
+    private void initiateCall() {
+        eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
+        Bundle bundle = new Bundle();
+        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
+        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
+        if (!baseUrl.equals(userEntity.getBaseUrl())) {
+            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
+        }
+        overridePushHandler(new NoOpControllerChangeHandler());
+        overridePopHandler(new NoOpControllerChangeHandler());
+        Intent callIntent = new Intent(getActivity(), CallActivity.class);
+        callIntent.putExtras(bundle);
+        startActivity(callIntent);
+    }
+
     private class OperationsObserver implements Observer {
 
         @Override
         public void onSubscribe(Disposable d) {
             disposable = d;
-            retryCount++;
         }
 
         @Override
         public void onNext(Object o) {
             if (operationCode != 99) {
-                showResultImage(true);
+                showResultImage(true, false);
             } else {
-                Bundle bundle = new Bundle();
-                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
-                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
-                bundle.putString(BundleKeys.KEY_CALL_SESSION, ((CallOverall) o).getOcs().getData().getSessionId());
-                overridePushHandler(new NoOpControllerChangeHandler());
-                overridePopHandler(new NoOpControllerChangeHandler());
-                Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                callIntent.putExtras(bundle);
-                startActivity(callIntent);
+                initiateCall();
             }
         }
 
         @Override
         public void onError(Throwable e) {
             if (operationCode != 99 || !(e instanceof HttpException)) {
-                showResultImage(false);
+                showResultImage(false, false);
             } else {
                 if (((HttpException) e).response().code() == 403) {
                     eventBus.post(new BottomSheetLockEvent(true, 0, false,
@@ -277,7 +327,7 @@ public class OperationsMenuController extends BaseController {
                     ApplicationWideMessageHolder.getInstance().setMessageType(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG);
                     getRouter().popCurrentController();
                 } else {
-                    showResultImage(false);
+                    showResultImage(false, false);
                 }
             }
             dispose();

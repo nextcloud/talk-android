@@ -68,6 +68,11 @@ public class Room {
         return (RoomType.ROOM_PUBLIC_CALL.equals(type));
     }
 
+    public boolean isGuest() {
+        return (Participant.ParticipantType.GUEST.equals(participantType) ||
+                Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participantType));
+    }
+
     public boolean canModerate() {
         return (Participant.ParticipantType.OWNER.equals(participantType)
                 || Participant.ParticipantType.MODERATOR.equals(participantType));

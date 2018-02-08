@@ -28,7 +28,7 @@ public class BundleKeys {
     public static final String KEY_ORIGINAL_PROTOCOL = "KEY_ORIGINAL_PROTOCOL";
     public static final String KEY_ROOM = "KEY_ROOM";
     public static final String KEY_OPERATION_CODE = "KEY_OPERATION_CODE";
-    public static final String KEY_IS_SHARE = "KEY_IS_SHARE";
+    public static final String KEY_MENU_TYPE = "KEY_MENU_TYPE";
     public static final String KEY_SHARE_INTENT = "KEY_SHARE_INTENT";
     public static final String KEY_APP_ITEM_PACKAGE_NAME = "KEY_APP_ITEM_PACKAGE_NAME";
     public static final String KEY_APP_ITEM_NAME = "KEY_APP_ITEM_NAME";
@@ -38,4 +38,8 @@ public class BundleKeys {
     public static final String KEY_USER_ENTITY = "KEY_USER_ENTITY";
     public static final String KEY_NEW_CONVERSATION = "KEY_NEW_CONVERSATION";
     public static final String KEY_IS_PUBLIC_CALL = "KEY_IS_PUBLIC_CALL";
+    public static final String KEY_CALL_URL = "KEY_CALL_URL";
+    public static final String KEY_MODIFIED_BASE_URL = "KEY_MODIFIED_BASE_URL";
+    public static final String KEY_NOTIFICATION_SUBJECT = "KEY_NOTIFICATION_SUBJECT";
+    public static final String KEY_NOTIFICATION_SIGNATURE = "KEY_NOTIFICATION_SIGNATURE";
 }

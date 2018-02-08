@@ -28,7 +28,6 @@
 
     <string name="nc_never">Never joined</string>
     <string name="nc_search">Search</string>
-    <string name="nc_new_conversation">Create a new conversation</string>
 
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
@@ -61,6 +60,7 @@
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_username">Username</string>
     <string name="nc_password">Password</string>
+    <string name="nc_conversation_link">Conversation link</string>
     <string name="nc_new_password">New password</string>
     <string name="nc_wrong_password">Wrong password</string>
     <string name="nc_about">About</string>
@@ -83,6 +83,9 @@
     <string name="nc_make_call_public">Make call public</string>
     <string name="nc_make_call_private">Make call private</string>
     <string name="nc_delete_call">Delete call</string>
+    <string name="nc_new_conversation">Start a new conversation</string>
+    <string name="nc_join_via_link">Join via link</string>
+    <string name="nc_join_via_web">Join via web</string>
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Select contacts</string>
@@ -115,11 +118,14 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
+    <string name="nc_failed_signaling_settings">Target server does not support joining public rooms via mobile phones.
+        You may attempt to join the call via web browser.</string>
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Call name</string>
     <string name="nc_proceed">Proceed</string>
     <string name="nc_call_name_is_same">The name you entered is the same as the existing one</string>
+    <string name="nc_wrong_link">Conversation link is not valid</string>
     <string name="nc_share_text">Hello,\n\nI would like you to join a call with me.\n\nYou can join this call via
         %1$s/index.php/call/%2$s</string>
     <string name="nc_talk_soon">\n\nTalk soon,\n %1$s</string>

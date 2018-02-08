@@ -32,11 +32,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.kennyc.bottomsheet.adapters.AppAdapter;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.AppItem;
 import com.nextcloud.talk.adapters.items.MenuItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.controllers.ContactsController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.json.rooms.Room;
@@ -45,6 +48,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -73,14 +77,19 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private List<AbstractFlexibleItem> menuItems;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
 
-    private boolean isShare;
+    @Parcel
+    public enum MenuType {
+        REGULAR, SHARE, NEW_CONVERSATION
+    }
+
+    private MenuType menuType;
     private Intent shareIntent;
 
     public CallMenuController(Bundle args) {
         super(args);
         this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
-        if (args.containsKey(BundleKeys.KEY_IS_SHARE)) {
-            this.isShare = true;
+        if (args.containsKey(BundleKeys.KEY_MENU_TYPE)) {
+            this.menuType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_MENU_TYPE));
         }
     }
 
@@ -124,7 +133,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private void prepareMenu() {
         menuItems = new ArrayList<>();
 
-        if (!isShare) {
+        if (menuType.equals(MenuType.REGULAR)) {
             menuItems.add(new MenuItem(getResources().getString(R.string.nc_what), 0));
 
             menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1));
@@ -156,7 +165,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
             if (room.isDeletable()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9));
             }
-        } else {
+        } else if (menuType.equals(MenuType.SHARE)) {
             prepareIntent();
             List<AppAdapter.AppInfo> appInfoList = ShareUtils.getShareApps(getActivity(), shareIntent, null,
                     null);
@@ -167,6 +176,10 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     menuItems.add(new AppItem(appInfo.title, appInfo.packageName, appInfo.name, appInfo.drawable));
                 }
             }
+        } else {
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_what), 0));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_new_conversation), 1));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_join_via_link), 2));
         }
     }
 
@@ -175,7 +188,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         Bundle bundle = new Bundle();
         bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
 
-        if (!isShare) {
+        if (menuType.equals(MenuType.REGULAR)) {
             MenuItem menuItem = (MenuItem) adapter.getItem(position);
             if (menuItem != null) {
 
@@ -188,16 +201,22 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
                     if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
                         eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
-                        getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle)));
+                        getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
+                                .pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()));
                     } else if (tag != 7) {
-                        getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle)));
+                        getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
+                                .pushChangeHandler(new VerticalChangeHandler())
+                                .popChangeHandler(new VerticalChangeHandler()));
                     } else {
-                        bundle.putBoolean(BundleKeys.KEY_IS_SHARE, true);
-                        getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle)));
+                        bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(MenuType.SHARE));
+                        getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle))
+                                .pushChangeHandler(new VerticalChangeHandler())
+                                .popChangeHandler(new VerticalChangeHandler()));
                     }
                 }
             }
-        } else if (position != 0) {
+        } else if (menuType.equals(MenuType.SHARE) && position != 0) {
             AppItem appItem = (AppItem) adapter.getItem(position);
             if (appItem != null && getActivity() != null) {
                 if (!room.hasPassword) {
@@ -213,7 +232,30 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     bundle.putParcelable(BundleKeys.KEY_SHARE_INTENT, Parcels.wrap(shareIntent));
                     bundle.putString(BundleKeys.KEY_APP_ITEM_PACKAGE_NAME, appItem.getPackageName());
                     bundle.putString(BundleKeys.KEY_APP_ITEM_NAME, appItem.getName());
-                    getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle)));
+                    getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
+                            .pushChangeHandler(new VerticalChangeHandler())
+                            .popChangeHandler(new VerticalChangeHandler()));
+                }
+            }
+        } else if (menuType.equals(MenuType.NEW_CONVERSATION) && position != 0) {
+            MenuItem menuItem = (MenuItem) adapter.getItem(position);
+            if (menuItem != null) {
+                if (menuItem.getTag() == 1) {
+                    eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
+                    bundle = new Bundle();
+                    bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
+                    if (getParentController() != null && getParentController().getParentController() != null) {
+                        getParentController().getParentController().getRouter().pushController(
+                                (RouterTransaction.with(new ContactsController(bundle))
+                                        .pushChangeHandler(new VerticalChangeHandler())
+                                        .popChangeHandler(new VerticalChangeHandler())));
+                    }
+                } else {
+                    bundle = new Bundle();
+                    bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 10);
+                    getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
                 }
             }
         }

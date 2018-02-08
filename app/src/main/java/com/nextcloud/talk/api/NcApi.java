@@ -143,34 +143,34 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<CallOverall> joinRoom(@Header("Authorization") String authorization, @Url String url,
+    Observable<CallOverall> joinRoom(@Nullable @Header("Authorization") String authorization, @Url String url,
                                      @Nullable @Field("password") String password);
 
     @DELETE
-    Observable<GenericOverall> leaveRoom(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> leaveRoom(@Nullable @Header("Authorization") String authorization, @Url String url);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
     */
 
     @POST
-    Observable<GenericOverall> joinCall(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> joinCall(@Nullable @Header("Authorization") String authorization, @Url String url);
 
     /*
     Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
     */
     @DELETE
-    Observable<GenericOverall> leaveCall(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> leaveCall(@Nullable @Header("Authorization") String authorization, @Url String url);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken/ping
     */
     @POST
-    Observable<GenericOverall> pingCall(@Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> pingCall(@Nullable @Header("Authorization") String authorization, @Url String url);
 
     @GET
-    Observable<SignalingSettingsOverall> getSignalingSettings(@Header("Authorization") String authorization, @Url
-            String url);
+    Observable<SignalingSettingsOverall> getSignalingSettings(@Nullable @Header("Authorization") String authorization,
+                                                              @Url String url);
 
     /*
         QueryMap items are as follows:
@@ -180,14 +180,16 @@ public interface NcApi {
     */
     @FormUrlEncoded
     @POST
-    Observable<SignalingOverall> sendSignalingMessages(@Header("Authorization") String authorization, @Url String url,
+    Observable<SignalingOverall> sendSignalingMessages(@Nullable@Header("Authorization") String authorization, @Url String url,
                                                        @Field("messages") String messages);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
     */
     @GET
-    Observable<SignalingOverall> pullSignalingMessages(@Header("Authorization") String authorization, @Url String url);
+    Observable<SignalingOverall> pullSignalingMessages(@Nullable @Header("Authorization") String authorization, @Url
+            String
+            url);
 
      /*
         QueryMap items are as follows:

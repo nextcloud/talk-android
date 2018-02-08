@@ -201,6 +201,8 @@ public class CallActivity extends AppCompatActivity {
     private PulseAnimation pulseAnimation;
     private View.OnClickListener videoOnClickListener;
 
+    private String baseUrl;
+    
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
         flags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
@@ -235,6 +237,13 @@ public class CallActivity extends AppCompatActivity {
         userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable(BundleKeys.KEY_USER_ENTITY));
         callSession = getIntent().getExtras().getString(BundleKeys.KEY_CALL_SESSION, "0");
         credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
+
+        if (getIntent().getExtras().containsKey(BundleKeys.KEY_MODIFIED_BASE_URL)) {
+            credentials = null;
+            baseUrl = getIntent().getExtras().getString(BundleKeys.KEY_MODIFIED_BASE_URL);
+        } else {
+            baseUrl = userEntity.getBaseUrl();
+        }
 
         callControls.setZ(100.0f);
         basicInitialization();
@@ -281,7 +290,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void handleFromNotification() {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(userEntity.getBaseUrl()))
+        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RoomsOverall>() {
@@ -676,8 +685,7 @@ public class CallActivity extends AppCompatActivity {
     public void startPullingSignalingMessages() {
         leavingCall = false;
 
-        ncApi.getSignalingSettings(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                ApiUtils.getUrlForSignalingSettings(userEntity.getBaseUrl()))
+        ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SignalingSettingsOverall>() {
@@ -737,7 +745,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void joinRoomAndCall() {
         if (callSession.equals("0")) {
-            ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(userEntity.getBaseUrl(), roomToken), null)
+            ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken), null)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
@@ -769,7 +777,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void performCall(@Nullable String callSessionId) {
         ncApi.joinCall(credentials,
-                ApiUtils.getUrlForCall(userEntity.getBaseUrl(), roomToken))
+                ApiUtils.getUrlForCall(baseUrl, roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -787,8 +795,7 @@ public class CallActivity extends AppCompatActivity {
                         }
 
                         // start pinging the call
-                        ncApi.pingCall(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                                ApiUtils.getUrlForCallPing(userEntity.getBaseUrl(), roomToken))
+                        ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
@@ -817,8 +824,7 @@ public class CallActivity extends AppCompatActivity {
                                 });
 
                         // Start pulling signaling messages
-                        ncApi.pullSignalingMessages(ApiUtils.getCredentials(userEntity.getUsername(),
-                                userEntity.getToken()), ApiUtils.getUrlForSignaling(userEntity.getBaseUrl()))
+                        ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .repeatWhen(observable -> observable)
@@ -945,8 +951,7 @@ public class CallActivity extends AppCompatActivity {
         Set<String> oldSesssions = new HashSet<>();
 
         for (HashMap<String, String> participant : users) {
-            if (!participant.get("sessionId").equals(callSession) && !participant.get("userId").equals(userEntity
-                    .getUserId())) {
+            if (!participant.get("sessionId").equals(callSession)) {
                 Object inCallObject = participant.get("inCall");
                 if ((boolean) inCallObject) {
                     newSessions.add(participant.get("sessionId"));
@@ -1050,7 +1055,7 @@ public class CallActivity extends AppCompatActivity {
         localAudioTrack = null;
         localVideoTrack = null;
 
-        if (!dueToNetworkChange) {
+        if (!dueToNetworkChange && credentials != null) {
             hangupNetworkCalls();
         } else {
             finish();
@@ -1058,8 +1063,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void hangupNetworkCalls() {
-        String credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
-        ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(userEntity.getBaseUrl(), roomToken))
+        ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
@@ -1070,7 +1074,7 @@ public class CallActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        ncApi.leaveRoom(credentials, ApiUtils.getUrlForRoomParticipants(userEntity.getBaseUrl(), roomToken))
+                        ncApi.leaveRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Observer<GenericOverall>() {
@@ -1277,7 +1281,6 @@ public class CallActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
-        String credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
         ncMessageWrapper.setEv("message");
         ncMessageWrapper.setSessionId(callSession);
@@ -1317,7 +1320,7 @@ public class CallActivity extends AppCompatActivity {
         String stringToSend = stringBuilder.toString();
         strings.add(stringToSend);
 
-        ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(userEntity.getBaseUrl()),
+        ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl),
                 strings.toString())
                 .retry(3)
                 .subscribeOn(Schedulers.newThread())
@@ -1427,7 +1430,7 @@ public class CallActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        hangup(false);
+        onHangupClick();
     }
 
     private class microphoneButtonTouchListener implements View.OnTouchListener {
