@@ -40,7 +40,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -117,6 +116,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
+import eu.davidea.flipview.FlipView;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -152,11 +152,11 @@ public class CallActivity extends AppCompatActivity {
     @BindView(R.id.call_controls)
     RelativeLayout callControls;
     @BindView(R.id.call_control_microphone)
-    ImageButton microphoneControlButton;
+    FlipView microphoneControlButton;
     @BindView(R.id.call_control_camera)
-    ImageButton cameraControlButton;
+    FlipView cameraControlButton;
     @BindView(R.id.call_control_switch_camera)
-    ImageButton cameraSwitchButton;
+    FlipView cameraSwitchButton;
 
     @Inject
     NcApi ncApi;
@@ -228,7 +228,7 @@ public class CallActivity extends AppCompatActivity {
         microphoneControlButton.setOnTouchListener(new microphoneButtonTouchListener());
         videoOnClickListener = new videoClickListener();
 
-        pulseAnimation = PulseAnimation.create().with(microphoneControlButton)
+        pulseAnimation = PulseAnimation.create().with(microphoneControlButton.getFrontImageView())
                 .setDuration(310)
                 .setRepeatCount(PulseAnimation.INFINITE)
                 .setRepeatMode(PulseAnimation.REVERSE);
@@ -393,14 +393,14 @@ public class CallActivity extends AppCompatActivity {
                 audioOn = !audioOn;
 
                 if (audioOn) {
-                    microphoneControlButton.setImageResource(R.drawable.ic_mic_white_24px);
+                    microphoneControlButton.getFrontImageView().setImageResource(R.drawable.ic_mic_white_24px);
                 } else {
-                    microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+                    microphoneControlButton.getFrontImageView().setImageResource(R.drawable.ic_mic_off_white_24px);
                 }
 
                 toggleMedia(audioOn, false);
             } else {
-                microphoneControlButton.setImageResource(R.drawable.ic_mic_white_24px);
+                microphoneControlButton.getFrontImageView().setImageResource(R.drawable.ic_mic_white_24px);
                 pulseAnimation.start();
                 toggleMedia(true, false);
             }
@@ -431,9 +431,13 @@ public class CallActivity extends AppCompatActivity {
             videoOn = !videoOn;
 
             if (videoOn) {
-                cameraControlButton.setImageResource(R.drawable.ic_videocam_white_24px);
+                cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_white_24px);
+                cameraSwitchButton.setVisibility(View.GONE);
             } else {
-                cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
+                cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_off_white_24px);
+                if (cameraEnumerator.getDeviceNames().length > 1) {
+                    cameraSwitchButton.setVisibility(View.VISIBLE);
+                }
             }
 
             toggleMedia(videoOn, true);
@@ -566,7 +570,7 @@ public class CallActivity extends AppCompatActivity {
                 onCameraClick();
             }
         } else {
-            cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
+            cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_off_white_24px);
             if (cameraSwitchButton != null) {
                 cameraSwitchButton.setVisibility(View.GONE);
             }
@@ -577,7 +581,7 @@ public class CallActivity extends AppCompatActivity {
                 onMicrophoneClick();
             }
         } else {
-            microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+            microphoneControlButton.getFrontImageView().setImageResource(R.drawable.ic_mic_off_white_24px);
         }
 
         if (!inCall) {
@@ -1409,7 +1413,7 @@ public class CallActivity extends AppCompatActivity {
                             super.onAnimationEnd(animation);
                             if (callControls != null) {
                                 if (!show) {
-                                    callControls.setVisibility(View.INVISIBLE);
+                                    callControls.setVisibility(View.GONE);
                                 } else {
                                     handler.postDelayed(new Runnable() {
                                         @Override
@@ -1441,7 +1445,7 @@ public class CallActivity extends AppCompatActivity {
             v.onTouchEvent(event);
             if (event.getAction() == MotionEvent.ACTION_UP && isPTTActive) {
                 isPTTActive = false;
-                microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+                microphoneControlButton.getFrontImageView().setImageResource(R.drawable.ic_mic_off_white_24px);
                 pulseAnimation.stop();
                 toggleMedia(false, false);
                 animateCallControls(false, 5000);

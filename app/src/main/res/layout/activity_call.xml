@@ -51,50 +51,57 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:animateLayoutChanges="true">
 
-        <ImageButton
-            android:id="@+id/call_control_hangup"
-            android:layout_width="36dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="30dp"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_call_end_white_24px"
-            android:tint="@color/nc_darkRed"
-            android:tintMode="src_in"/>
-
-        <ImageButton
-            android:id="@+id/call_control_microphone"
-            android:layout_width="24dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="24dp"
-            android:layout_toEndOf="@id/call_control_hangup"
-            android:alpha="0.7"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_mic_off_white_24px"/>
-
-        <ImageButton
+        <com.nextcloud.talk.utils.MagicFlipView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/call_control_camera"
-            android:layout_width="30dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="24dp"
-            android:layout_toEndOf="@id/call_control_microphone"
-            android:alpha="0.7"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_videocam_off_white_24px"/>
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="20dp"
+            app:alpha="0.7"
+            app:checked="false"
+            app:enableInitialAnimation="false"
+            app:frontBackgroundColor="@color/colorPrimary"
+            app:frontImage="@drawable/ic_videocam_off_white_24px"/>
 
-        <ImageButton
+        <com.nextcloud.talk.utils.MagicFlipView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/call_control_switch_camera"
-            android:layout_width="38dp"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="20dp"
             android:layout_toEndOf="@id/call_control_camera"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_switch_video_white_24px"
-            android:visibility="invisible"/>
+            app:alpha="0.7"
+            app:checked="false"
+            app:enableInitialAnimation="false"
+            app:frontBackgroundColor="@color/colorPrimary"
+            app:frontImage="@drawable/ic_switch_video_white_24px"/>
+
+        <com.nextcloud.talk.utils.MagicFlipView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/call_control_microphone"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="20dp"
+            android:layout_toEndOf="@id/call_control_switch_camera"
+            app:alpha="0.7"
+            app:checked="false"
+            app:enableInitialAnimation="false"
+            app:frontBackgroundColor="@color/colorPrimary"
+            app:frontImage="@drawable/ic_mic_off_white_24px"/>
+
+        <com.nextcloud.talk.utils.MagicFlipView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/call_control_hangup"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_toEndOf="@+id/call_control_microphone"
+            app:checked="false"
+            app:enableInitialAnimation="false"
+            app:frontBackgroundColor="@color/nc_darkRed"
+            app:frontImage="@drawable/ic_call_end_white_24px"/>
 
     </RelativeLayout>
 
