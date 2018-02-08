@@ -53,6 +53,7 @@ ext {
 
 
 configurations.all {
+    exclude group: 'com.google.firebase', module: 'firebase-core'
     resolutionStrategy {
         force "com.android.support:cardview-v7:${supportLibraryVersion}"
         force "com.android.support:preference-v7:${supportLibraryVersion}"
@@ -124,10 +125,8 @@ dependencies {
 
     implementation 'com.evernote:android-job:1.2.0'
 
-    implementation "com.google.firebase:firebase-messaging:${googleLibraryVersion}"
-    implementation "com.google.android.gms:play-services-base:${googleLibraryVersion}"
     implementation "com.google.android.gms:play-services-gcm:${googleLibraryVersion}"
-    implementation "com.google.firebase:firebase-core:${googleLibraryVersion}"
+    implementation "com.google.firebase:firebase-messaging:${googleLibraryVersion}"
 
     implementation 'com.yarolegovich:lovely-dialog:1.1.0'
     implementation 'com.yarolegovich:lovelyinput:1.0.9'

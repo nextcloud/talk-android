@@ -30,7 +30,6 @@ import android.util.Log;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
 import com.google.android.gms.security.ProviderInstaller;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
@@ -49,7 +48,11 @@ import org.webrtc.PeerConnectionFactory;
 import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -113,33 +116,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
         super.onCreate();
         ProviderInstaller.installIfNeededAsync(this, this);
 
-        /*if (Build.MANUFACTURER.equalsIgnoreCase("huawei")) {
-            try {
-                Class<?> enclosingClass = Class.forName("com.huawei.systemmanager.startupmgr.db.StartupDataMgrHelper");
-                Method method = enclosingClass.getMethod("modifyNormalStartupInfoStatus", Context.class, String.class, boolean.class);
-                method.invoke(null, getApplicationContext(), getPackageName(), true);
-
-                Class<?> secondaryEnclosingClass = Class.forName("com.huawei.systemmanager.optimize.process" +
-                        ".ProtectAppControl");
-                Method secondaryMethod = secondaryEnclosingClass.getMethod("getInstance", Context.class);
-                Object object = secondaryMethod.invoke(null, getApplicationContext());
-                Method thirdMethod = secondaryEnclosingClass.getMethod("setNoProtect", List.class);
-                List<String> packageNames = new ArrayList<>();
-                packageNames.add(getPackageName());
-                thirdMethod.invoke(object, packageNames);
-            } catch (ClassNotFoundException e) {
-                Log.e(TAG, "Failed to find the required class on Huawei");
-            } catch (NoSuchMethodException e) {
-                Log.e(TAG, "Failed to find the appropriate method");
-            } catch (IllegalAccessException e) {
-                Log.e(TAG, "Illegal access exception");
-            } catch (InvocationTargetException e) {
-                Log.e(TAG, "Invocation target exception");
-            }
-        }*/
-
         JobManager.create(this).addJobCreator(new MagicJobCreator());
-        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false);
 
         sharedApplication = this;
 
@@ -164,7 +141,33 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
 
 
     private void prepareThingsForStrangePhones() {
+        if (Build.MANUFACTURER.equalsIgnoreCase("huawei")) {
+            try {
+                Class<?> enclosingClass = Class.forName("com.huawei.systemmanager.startupmgr.db.StartupDataMgrHelper");
+                Method method = enclosingClass.getMethod("modifyNormalStartupInfoStatus",
+                        Context.class, String.class, boolean.class);
+                method.invoke(null, getApplicationContext(), getPackageName(), true);
+
+                Class<?> secondaryEnclosingClass = Class.forName("com.huawei.systemmanager.optimize.process" +
+                        ".ProtectAppControl");
+                Method secondaryMethod = secondaryEnclosingClass.getMethod("getInstance", Context.class);
+                Object object = secondaryMethod.invoke(null, getApplicationContext());
+                Method thirdMethod = secondaryEnclosingClass.getMethod("setNoProtect", List.class);
+                List<String> packageNames = new ArrayList<>();
+                packageNames.add(getPackageName());
+                thirdMethod.invoke(object, packageNames);
+            } catch (ClassNotFoundException e) {
+                Log.e(TAG, "Failed to find the required class on Huawei");
+            } catch (NoSuchMethodException e) {
+                Log.e(TAG, "Failed to find the appropriate method");
+            } catch (IllegalAccessException e) {
+                Log.e(TAG, "Illegal access exception");
+            } catch (InvocationTargetException e) {
+                Log.e(TAG, "Invocation target exception");
+            }
+        }
     }
+
     @Override
     public void onTerminate() {
         super.onTerminate();
