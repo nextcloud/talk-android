@@ -150,7 +150,7 @@ public class CallActivity extends AppCompatActivity {
     LinearLayout remoteRenderersLayout;
 
     @BindView(R.id.call_controls)
-    RelativeLayout callControls;
+    LinearLayout callControls;
     @BindView(R.id.call_control_microphone)
     FlipView microphoneControlButton;
     @BindView(R.id.call_control_camera)
