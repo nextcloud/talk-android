@@ -48,11 +48,7 @@ import org.webrtc.PeerConnectionFactory;
 import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -138,36 +134,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
         new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
 
     }
-
-
-    private void prepareThingsForStrangePhones() {
-        if (Build.MANUFACTURER.equalsIgnoreCase("huawei")) {
-            try {
-                Class<?> enclosingClass = Class.forName("com.huawei.systemmanager.startupmgr.db.StartupDataMgrHelper");
-                Method method = enclosingClass.getMethod("modifyNormalStartupInfoStatus",
-                        Context.class, String.class, boolean.class);
-                method.invoke(null, getApplicationContext(), getPackageName(), true);
-
-                Class<?> secondaryEnclosingClass = Class.forName("com.huawei.systemmanager.optimize.process" +
-                        ".ProtectAppControl");
-                Method secondaryMethod = secondaryEnclosingClass.getMethod("getInstance", Context.class);
-                Object object = secondaryMethod.invoke(null, getApplicationContext());
-                Method thirdMethod = secondaryEnclosingClass.getMethod("setProtect", List.class);
-                List<String> packageNames = new ArrayList<>();
-                packageNames.add(getPackageName());
-                thirdMethod.invoke(object, packageNames);
-            } catch (ClassNotFoundException e) {
-                Log.e(TAG, "Failed to find the required class on Huawei");
-            } catch (NoSuchMethodException e) {
-                Log.e(TAG, "Failed to find the appropriate method");
-            } catch (IllegalAccessException e) {
-                Log.e(TAG, "Illegal access exception");
-            } catch (InvocationTargetException e) {
-                Log.e(TAG, "Invocation target exception");
-            }
-        }
-    }
-
+    
     @Override
     public void onTerminate() {
         super.onTerminate();
