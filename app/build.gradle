@@ -129,9 +129,9 @@ dependencies {
     implementation "com.google.android.gms:play-services-gcm:${googleLibraryVersion}"
     implementation "com.google.firebase:firebase-core:${googleLibraryVersion}"
 
-    implementation 'com.yarolegovich:lovely-dialog:1.0.7'
-    implementation 'com.yarolegovich:lovelyinput:1.0.2'
-    implementation 'com.yarolegovich:mp:1.0.8'
+    implementation 'com.yarolegovich:lovely-dialog:1.1.0'
+    implementation 'com.yarolegovich:lovelyinput:1.0.9'
+    implementation 'com.yarolegovich:mp:1.0.9'
 
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.0.2'
 
