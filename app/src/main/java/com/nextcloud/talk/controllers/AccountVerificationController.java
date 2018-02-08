@@ -211,6 +211,8 @@ public class AccountVerificationController extends BaseController {
                                                         cookieManager.getCookieStore().removeAll();
                                                         userUtils.disableAllUsersWithoutId(userEntity.getId());
 
+                                                        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
+
                                                         if (userUtils.getUsers().size() == 1) {
                                                             getRouter().setRoot(RouterTransaction.with(new
                                                                     MagicBottomNavigationController())
