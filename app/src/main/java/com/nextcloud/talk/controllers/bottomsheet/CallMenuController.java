@@ -33,7 +33,6 @@ import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.kennyc.bottomsheet.adapters.AppAdapter;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.AppItem;
@@ -206,13 +205,13 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                                 .popChangeHandler(new HorizontalChangeHandler()));
                     } else if (tag != 7) {
                         getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
-                                .pushChangeHandler(new VerticalChangeHandler())
-                                .popChangeHandler(new VerticalChangeHandler()));
+                                .pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()));
                     } else {
                         bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(MenuType.SHARE));
                         getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle))
-                                .pushChangeHandler(new VerticalChangeHandler())
-                                .popChangeHandler(new VerticalChangeHandler()));
+                                .pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()));
                     }
                 }
             }
@@ -233,8 +232,8 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     bundle.putString(BundleKeys.KEY_APP_ITEM_PACKAGE_NAME, appItem.getPackageName());
                     bundle.putString(BundleKeys.KEY_APP_ITEM_NAME, appItem.getName());
                     getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
-                            .pushChangeHandler(new VerticalChangeHandler())
-                            .popChangeHandler(new VerticalChangeHandler()));
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
                 }
             }
         } else if (menuType.equals(MenuType.NEW_CONVERSATION) && position != 0) {
@@ -247,8 +246,8 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     if (getParentController() != null && getParentController().getParentController() != null) {
                         getParentController().getParentController().getRouter().pushController(
                                 (RouterTransaction.with(new ContactsController(bundle))
-                                        .pushChangeHandler(new VerticalChangeHandler())
-                                        .popChangeHandler(new VerticalChangeHandler())));
+                                        .pushChangeHandler(new HorizontalChangeHandler())
+                                        .popChangeHandler(new HorizontalChangeHandler())));
                     }
                 } else {
                     bundle = new Bundle();
