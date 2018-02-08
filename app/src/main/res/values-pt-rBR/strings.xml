@@ -102,6 +102,10 @@
     <!-- Call -->
     <string name="nc_incoming_call">Chamada solicitada</string>
     <string name="nc_nick_guest">Convidado</string>
+    <string name="nc_public_call">NOVA CHAMADA PÚBLICA</string>
+    <string name="nc_public_call_explanation">Chamadas públicas permitem convidar pessoas de fora através de um
+        link especialmente criado</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas do canal de notificação</string>

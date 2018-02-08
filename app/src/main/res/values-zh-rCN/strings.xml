@@ -1,0 +1,66 @@
+<resources>
+    <string name="nc_bottom_navigation_title_contacts">联系人</string>
+    <string name="nc_bottom_navigation_title_settings">设置</string>
+
+    <!-- Server selection -->
+    <string name="nc_server_url">服务器地址</string>
+    <string name="nc_server_db_upgrade_needed">请升级你的%1$s数据库</string>
+    <string name="nc_server_import_account_plain">导入账户</string>
+    <string name="nc_server_import_accounts_plain">导入账户</string>
+    <string name="nc_server_failed_to_import_account">选择的账户导入失败</string>
+    <string name="nc_Server_account_imported">选择的账户导入成功并可立即使用</string>
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">显示名称已获取</string>
+    <string name="nc_display_name_stored">显示储存的名称</string>
+    <string name="nc_display_name_not_stored">无法储存显示名称，终止中</string>
+
+    <string name="nc_never">从未加入</string>
+    <string name="nc_search">搜索</string>
+    <string name="nc_new_conversation">创建一个新对话</string>
+
+    <string name="nc_certificate_dialog_title">检查证书</string>
+    <string name="nc_yes">是的</string>
+    <string name="nc_no">不</string>
+    <string name="nc_details">详情</string>
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">代理</string>
+    <string name="nc_settings_proxy_type_title">代理类型</string>
+    <string name="nc_settings_proxy_host_title">代理主机</string>
+    <string name="nc_settings_proxy_port_title">代理端口</string>
+    <string name="nc_settings_switch_account">切换账户</string>
+    <string name="nc_settings_reauthorize">重新认证</string>
+    <string name="nc_settings_remove_account">移除账户</string>
+    <string name="nc_settings_add_account">添加一个新账户</string>
+    <string name="nc_settings_wrong_account">仅当前帐户可以重新授权</string>
+    <string name="nc_no_proxy">无代理</string>
+    <string name="nc_username">用户名</string>
+    <string name="nc_password">密码</string>
+    <string name="nc_new_password">新密码</string>
+    <string name="nc_wrong_password">错误的密码</string>
+    <string name="nc_about">关于</string>
+    <string name="nc_privacy">隐私</string>
+    <string name="nc_get_source_code">获取源代码</string>
+    <string name="nc_license_title">许可证</string>
+    <string name="nc_select_an_account">选择一个账户</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">今天想干点什么呢？</string>
+    <string name="nc_leave">离开通话</string>
+    <string name="nc_set_password">设置一个密码</string>
+    <string name="nc_change_password">修改密码</string>
+    <string name="nc_clear_password">清除密码</string>
+    <string name="nc_share_link">共享链接</string>
+    <!-- Contacts -->
+    <string name="nc_select_contacts">选择联系人</string>
+    <string name="nc_contacts_clear">清除</string>
+    <string name="nc_contacts_done">完成</string>
+
+    <string name="nc_permissions_settings">打开设置</string>
+
+    <!-- Call -->
+    <string name="nc_incoming_call">来电</string>
+    <string name="nc_nick_guest">来宾</string>
+    <string name="nc_notification_channel_calls_description">显示来电</string>
+    <string name="nc_all_ok_operation">OK，已完成！</string>
+    <string name="nc_ok">OK</string>
+    </resources>
