@@ -152,7 +152,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
                         ".ProtectAppControl");
                 Method secondaryMethod = secondaryEnclosingClass.getMethod("getInstance", Context.class);
                 Object object = secondaryMethod.invoke(null, getApplicationContext());
-                Method thirdMethod = secondaryEnclosingClass.getMethod("setNoProtect", List.class);
+                Method thirdMethod = secondaryEnclosingClass.getMethod("setProtect", List.class);
                 List<String> packageNames = new ArrayList<>();
                 packageNames.add(getPackageName());
                 thirdMethod.invoke(object, packageNames);
