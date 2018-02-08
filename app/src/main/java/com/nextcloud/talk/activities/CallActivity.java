@@ -432,12 +432,12 @@ public class CallActivity extends AppCompatActivity {
 
             if (videoOn) {
                 cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_white_24px);
-                cameraSwitchButton.setVisibility(View.GONE);
-            } else {
-                cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_off_white_24px);
                 if (cameraEnumerator.getDeviceNames().length > 1) {
                     cameraSwitchButton.setVisibility(View.VISIBLE);
                 }
+            } else {
+                cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_off_white_24px);
+                cameraSwitchButton.setVisibility(View.GONE);
             }
 
             toggleMedia(videoOn, true);
