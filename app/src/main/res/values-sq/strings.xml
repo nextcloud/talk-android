@@ -21,6 +21,7 @@
 
     <string name="nc_never">Nuk u bashkua kurrë</string>
     <string name="nc_search">Kërko</string>
+
     <string name="nc_certificate_dialog_title">Kontrollo çertifikaten</string>
     <string name="nc_certificate_dialog_text">A e beson deri tani çertifikatën e panjohur deri tani SSL, lëshuar nga %1$spër %2$s, e vlefshme nga %3$s në %4$s?</string>
     <string name="nc_yes">Po</string>
@@ -66,7 +67,6 @@
     <string name="nc_share_link">Ndaj linkun</string>
     <string name="nc_make_call_public">Bëje thirrjen publike</string>
     <string name="nc_delete_call">Fshi thirrjen</string>
-
     <string name="nc_one_contact_selected">Kontakti u zgjedh</string>
     <string name="nc_more_contacts_selected">Kontaktet e zgjedhura</string>
     <string name="nc_permissions_settings">Hap rregullimet</string>

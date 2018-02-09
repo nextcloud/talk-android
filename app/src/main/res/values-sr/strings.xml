@@ -28,7 +28,6 @@
 
     <string name="nc_never">Никад придружен</string>
     <string name="nc_search">Тражи</string>
-    <string name="nc_new_conversation">Направи нови разговор</string>
 
     <string name="nc_certificate_dialog_title">Провери сертификат</string>
     <string name="nc_certificate_dialog_text">Да ли верујете, до сада непознатом, SSL сертификату, који је издао %1$s на %2$s, валидним од %3$s до %4$s?</string>
@@ -83,7 +82,6 @@
     <string name="nc_make_call_public">Учини разговор јавним</string>
     <string name="nc_make_call_private">Учини разговор приватним</string>
     <string name="nc_delete_call">Обриши позив</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Одаберите контакт</string>
     <string name="nc_one_contact_selected">контакт означен</string>
@@ -102,6 +100,10 @@
     <!-- Call -->
     <string name="nc_incoming_call">Долазни позив</string>
     <string name="nc_nick_guest">Гост</string>
+    <string name="nc_public_call">НОВИ ЈАВНИ ПОЗИВ</string>
+    <string name="nc_public_call_explanation">Јавни позиви Вам дозвољавају да позовете људе споља кроз
+        специјално направљену везу за њих.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s на каналу за обавештење о %2$s</string>
     <string name="nc_notification_channel_calls">Канал обавештења о позивима</string>

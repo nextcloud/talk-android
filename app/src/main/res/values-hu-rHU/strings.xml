@@ -28,7 +28,6 @@
 
     <string name="nc_never">Soha nem csatlakozott</string>
     <string name="nc_search">Keresés</string>
-    <string name="nc_new_conversation">Új beszélgetés kezdése</string>
 
     <string name="nc_certificate_dialog_title">Tanúsítvány ellenőrzése</string>
     <string name="nc_certificate_dialog_text">Korábban ismeretlen SSL tanúsítvány érkezett. %1$s bocsátotta ki %2$s részére, %3$s és %4$s között érvényes. Megbízható?</string>
@@ -84,7 +83,6 @@
     <string name="nc_make_call_public">Hívás nyilvánossá tétele</string>
     <string name="nc_make_call_private">Hívás  priváttá tétele</string>
     <string name="nc_delete_call">Hívás törlése</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Kapcsolat kiválasztása</string>
     <string name="nc_one_contact_selected">kapcsolat kiválasztva</string>

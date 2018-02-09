@@ -28,6 +28,7 @@
 
     <string name="nc_never">Nunca unido</string>
     <string name="nc_search">Buscar</string>
+
     <string name="nc_certificate_dialog_title">Comprobar el certificado</string>
     <string name="nc_certificate_dialog_text">¿Confías en el certificado SSL antes desconocido emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
     <string name="nc_yes">Sí</string>
@@ -81,7 +82,6 @@
     <string name="nc_make_call_public">Hacer pública la llamada</string>
     <string name="nc_make_call_private">Hacer privada la llamada</string>
     <string name="nc_delete_call">Eliminar llamada</string>
-
     <string name="nc_one_contact_selected">contacto seleccionado</string>
     <string name="nc_more_contacts_selected">contactos seleccionados</string>
     <!-- Permissions -->

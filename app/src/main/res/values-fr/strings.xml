@@ -28,7 +28,6 @@
 
     <string name="nc_never">Jamais contacté</string>
     <string name="nc_search">Recherche</string>
-    <string name="nc_new_conversation">Créer une nouveau fil de conversation</string>
 
     <string name="nc_certificate_dialog_title">Vérifier le certificat</string>
     <string name="nc_certificate_dialog_text">Faites-vous confiance au certificat SSL jusque là inconnu, émis par %1$s pour%2$s, et est valide du %3$s au %4$s ?</string>
@@ -83,7 +82,6 @@
     <string name="nc_make_call_public">Effectuer un appel public</string>
     <string name="nc_make_call_private">Effectuer un appel privé</string>
     <string name="nc_delete_call">Supprimer l’appel</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Choisissez un contact</string>
     <string name="nc_one_contact_selected">contact sélectionné</string>
@@ -102,6 +100,9 @@
     <!-- Call -->
     <string name="nc_incoming_call">Appel rentrant</string>
     <string name="nc_nick_guest">Invité</string>
+    <string name="nc_public_call">NOUVEL APPEL PUBLIC</string>
+    <string name="nc_public_call_explanation">Les appels publics vous permet d\'inviter des personnes extérieures grâce à un lien spécialement créé.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">Canal de notification %1$s sur %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notification des appels</string>
