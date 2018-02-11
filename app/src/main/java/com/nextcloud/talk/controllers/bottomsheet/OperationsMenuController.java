@@ -181,6 +181,7 @@ public class OperationsMenuController extends BaseController {
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
                             .subscribe(operationsObserver);
+                    break;
                 case 10:
                     String conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1, callUrl.length());
                     if (callUrl.contains("/index.php")) {
