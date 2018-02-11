@@ -134,7 +134,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
         new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
 
     }
-    
+
     @Override
     public void onTerminate() {
         super.onTerminate();

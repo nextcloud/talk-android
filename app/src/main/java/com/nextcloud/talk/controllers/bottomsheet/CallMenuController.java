@@ -75,15 +75,8 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private Room room;
     private List<AbstractFlexibleItem> menuItems;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
-
-    @Parcel
-    public enum MenuType {
-        REGULAR, SHARE, NEW_CONVERSATION
-    }
-
     private MenuType menuType;
     private Intent shareIntent;
-
     public CallMenuController(Bundle args) {
         super(args);
         this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
@@ -261,5 +254,10 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
 
         return true;
+    }
+
+    @Parcel
+    public enum MenuType {
+        REGULAR, SHARE, NEW_CONVERSATION
     }
 }

@@ -462,9 +462,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         fastScroller.setBubbleTextCreator(position -> {
             IFlexible abstractFlexibleItem = adapter.getItem(position);
             if (abstractFlexibleItem instanceof UserItem) {
-                return ((UserItem)adapter.getItem(position)).getHeader().getModel();
+                return ((UserItem) adapter.getItem(position)).getHeader().getModel();
             } else {
-                return ((UserHeaderItem)adapter.getItem(position)).getModel();
+                return ((UserHeaderItem) adapter.getItem(position)).getModel();
             }
         });
     }
@@ -585,7 +585,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         } else if (adapter.getItem(position) instanceof NewCallHeaderItem) {
             adapter.toggleSelection(position);
             isPublicCall = adapter.isSelected(position);
-            ((NewCallHeaderItem)adapter.getItem(position)).togglePublicCall(isPublicCall);
+            ((NewCallHeaderItem) adapter.getItem(position)).togglePublicCall(isPublicCall);
             checkAndHandleBottomButtons();
         }
         return true;

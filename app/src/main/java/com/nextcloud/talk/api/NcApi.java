@@ -180,7 +180,7 @@ public interface NcApi {
     */
     @FormUrlEncoded
     @POST
-    Observable<SignalingOverall> sendSignalingMessages(@Nullable@Header("Authorization") String authorization, @Url String url,
+    Observable<SignalingOverall> sendSignalingMessages(@Nullable @Header("Authorization") String authorization, @Url String url,
                                                        @Field("messages") String messages);
 
     /*

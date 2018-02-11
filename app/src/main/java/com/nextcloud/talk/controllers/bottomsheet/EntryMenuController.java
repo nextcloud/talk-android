@@ -215,7 +215,7 @@ public class EntryMenuController extends BaseController {
                         }
                     } else if (editText.getText().toString().startsWith("http://") ||
                             editText.getText().toString().startsWith("https://") &&
-                            editText.getText().toString().contains("/call/")) {
+                                    editText.getText().toString().contains("/call/")) {
                         // operation code 10
                         if (!proceedButton.isEnabled()) {
                             proceedButton.setEnabled(true);
