@@ -126,6 +126,8 @@ public class CallsListController extends BaseController implements SearchView.On
     private SearchView searchView;
     private String searchQuery;
 
+    private View view;
+
     public CallsListController() {
         super();
         setHasOptionsMenu(true);
@@ -322,7 +324,7 @@ public class CallsListController extends BaseController implements SearchView.On
                         new Handler().postDelayed(() -> {
                             bottomSheet.setCancelable(true);
                             if (bottomSheet.isShowing()) {
-                                bottomSheet.cancel();
+                                bottomSheet.dismiss();
                             }
                         }, 2500);
                     }
@@ -350,7 +352,7 @@ public class CallsListController extends BaseController implements SearchView.On
         adapter.setFastScroller(fastScroller);
         fastScroller.setBubbleTextCreator(position -> {
             String displayName = adapter.getItem(position).getModel().getDisplayName();
-            if(displayName.length() > 8) {
+            if (displayName.length() > 8) {
                 displayName = displayName.substring(0, 4) + "...";
             }
             return displayName;
@@ -426,7 +428,7 @@ public class CallsListController extends BaseController implements SearchView.On
                 } else {
                     bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
                     if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
-                        bottomSheet.cancel();
+                        bottomSheet.dismiss();
                     }
                 }
             }
@@ -444,7 +446,9 @@ public class CallsListController extends BaseController implements SearchView.On
     }
 
     private void prepareAndShowBottomSheetWithBundle(Bundle bundle, boolean shouldShowCallMenuController) {
-        View view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
+        if (view == null) {
+            view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
+        }
 
         if (shouldShowCallMenuController) {
             getChildRouter((ViewGroup) view).setRoot(
@@ -458,14 +462,9 @@ public class CallsListController extends BaseController implements SearchView.On
                             .pushChangeHandler(new VerticalChangeHandler()));
         }
 
-        boolean isNew = false;
-
         if (bottomSheet == null) {
             bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
-            isNew = true;
-        }
-
-        if (bottomSheet.getWindow() != null && isNew) {
+        } else if (bottomSheet.getWindow() != null) {
             bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
 
