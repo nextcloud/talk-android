@@ -42,4 +42,5 @@ public class BundleKeys {
     public static final String KEY_MODIFIED_BASE_URL = "KEY_MODIFIED_BASE_URL";
     public static final String KEY_NOTIFICATION_SUBJECT = "KEY_NOTIFICATION_SUBJECT";
     public static final String KEY_NOTIFICATION_SIGNATURE = "KEY_NOTIFICATION_SIGNATURE";
+    public static final String KEY_INTERNAL_USER_ID = "KEY_INTERNAL_USER_ID";
 }

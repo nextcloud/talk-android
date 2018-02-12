@@ -41,6 +41,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.ContactsController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -77,6 +78,8 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
     private MenuType menuType;
     private Intent shareIntent;
+
+    private UserEntity currentUser;
     public CallMenuController(Bundle args) {
         super(args);
         this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
@@ -94,6 +97,8 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+
+        currentUser = userUtils.getCurrentUser();
         prepareViews();
     }
 

@@ -20,7 +20,12 @@
 package com.nextcloud.talk.models.database;
 
 import android.os.Parcelable;
+import android.util.Log;
 
+import com.bluelinelabs.logansquare.LoganSquare;
+import com.nextcloud.talk.models.json.capabilities.Capabilities;
+
+import java.io.IOException;
 import java.io.Serializable;
 
 import io.requery.Entity;
@@ -30,6 +35,8 @@ import io.requery.Persistable;
 
 @Entity
 public interface User extends Parcelable, Persistable, Serializable {
+    static final String TAG = "UserEntity";
+
     @Key
     @Generated
     long getId();
@@ -46,7 +53,22 @@ public interface User extends Parcelable, Persistable, Serializable {
 
     String getPushConfigurationState();
 
+    String getCapabilities();
+
     boolean getCurrent();
 
     boolean getScheduledForDeletion();
+
+    default boolean checkForSpreedCapability(String capabilityName) {
+        try {
+            Capabilities capabilities = LoganSquare.parse(this.getCapabilities(), Capabilities.class);
+            if (capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null) {
+                return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to get capabilities for the user");
+        }
+
+        return false;
+    }
 }

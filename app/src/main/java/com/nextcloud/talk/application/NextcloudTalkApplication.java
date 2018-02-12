@@ -36,6 +36,7 @@ import com.nextcloud.talk.dagger.modules.ContextModule;
 import com.nextcloud.talk.dagger.modules.DatabaseModule;
 import com.nextcloud.talk.dagger.modules.RestModule;
 import com.nextcloud.talk.jobs.AccountRemovalJob;
+import com.nextcloud.talk.jobs.CapabilitiesJob;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 import com.nextcloud.talk.jobs.creator.MagicJobCreator;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -49,6 +50,7 @@ import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
 import java.security.GeneralSecurityException;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -132,7 +134,21 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
 
         new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
         new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
-
+        
+        boolean periodicJobFound = false;
+        for (JobRequest jobRequest : JobManager.instance().getAllJobRequestsForTag(CapabilitiesJob.TAG)) {
+            if (jobRequest.isPeriodic()) {
+                periodicJobFound = true;
+                break;
+            }
+        }
+        
+        if (!periodicJobFound) {
+            new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent(true)
+                    .setPeriodic(TimeUnit.DAYS.toMillis(1), TimeUnit.HOURS.toMillis(1))
+                    .build().scheduleAsync();
+        }
+        new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent(false).startNow().build().schedule();
     }
 
     @Override

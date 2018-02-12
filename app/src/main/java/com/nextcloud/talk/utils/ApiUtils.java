@@ -61,6 +61,10 @@ public class ApiUtils {
         return getRoom(baseUrl, token) + "/participants/active";
     }
 
+    public static String getUrlForCapabilities(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/cloud/capabilities";
+    }
+
     public static String getUrlForGetRooms(String baseUrl) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room";
     }

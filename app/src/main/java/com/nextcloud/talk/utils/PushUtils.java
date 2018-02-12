@@ -304,7 +304,7 @@ public class PushUtils {
                                                                 null, null,
                                                                 userEntity.getDisplayName(),
                                                                 LoganSquare.serialize(pushConfigurationState), null,
-                                                                null, userEntity.getId())
+                                                                null, userEntity.getId(), null)
                                                                 .subscribe(new Consumer<UserEntity>() {
                                                                     @Override
                                                                     public void accept(UserEntity userEntity) throws Exception {

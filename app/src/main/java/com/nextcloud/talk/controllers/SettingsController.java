@@ -300,7 +300,7 @@ public class SettingsController extends BaseController {
                             dbQueryDisposable = userUtils.createOrUpdateUser(null,
                                     null,
                                     null, displayName, null, true,
-                                    userProfileOverall.getOcs().getData().getUserId(), userEntity.getId())
+                                    userProfileOverall.getOcs().getData().getUserId(), userEntity.getId(), null)
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(userEntityResult -> {

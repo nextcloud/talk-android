@@ -23,6 +23,7 @@ package com.nextcloud.talk.api;
 import android.support.annotation.Nullable;
 
 import com.nextcloud.talk.models.json.call.CallOverall;
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
@@ -253,4 +254,6 @@ public interface NcApi {
     Observable<GenericOverall> setPassword(@Header("Authorization") String authorization, @Url String url,
                                            @Field("password") String password);
 
+    @GET
+    Observable<CapabilitiesOverall> getCapabilities(@Header("Authorization") String authorization, @Url String url);
 }

@@ -41,6 +41,7 @@ import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.push.PushMessage;
@@ -59,6 +60,9 @@ import java.util.zip.CRC32;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 
+import autodagger.AutoInjector;
+
+@AutoInjector(NextcloudTalkApplication.class)
 public class NotificationJob extends Job {
     public static final String TAG = "NotificationJob";
 

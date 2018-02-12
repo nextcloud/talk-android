@@ -124,6 +124,14 @@ public class UserUtils {
 
     }
 
+    public UserEntity getUserWithInternalId(long internalId) {
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)
+                .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true)))
+                .limit(1).get();
+
+        return (UserEntity) findUserQueryResult.firstOrNull();
+    }
+
     public boolean getIfUserWithUsernameAndServer(String username, String server) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username)
                 .and(UserEntity.BASE_URL.eq(server)))
@@ -147,13 +155,14 @@ public class UserUtils {
 
     }
 
-    public Observable<UserEntity> createOrUpdateUser(@Nullable String username, @Nullable String token, @Nullable String
-            serverUrl,
+    public Observable<UserEntity> createOrUpdateUser(@Nullable String username, @Nullable String token,
+                                                     @Nullable String serverUrl,
                                                      @Nullable String displayName,
                                                      @Nullable String pushConfigurationState,
                                                      @Nullable Boolean currentUser,
                                                      @Nullable String userId,
-                                                     @Nullable Long internalId) {
+                                                     @Nullable Long internalId,
+                                                     @Nullable String capabilities) {
         Result findUserQueryResult;
         if (internalId == null) {
             findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
@@ -182,6 +191,10 @@ public class UserUtils {
                 user.setUserId(userId);
             }
 
+            if (!TextUtils.isEmpty(capabilities)) {
+                user.setCapabilities(capabilities);
+            }
+
             user.setCurrent(true);
 
         } else {
@@ -200,6 +213,10 @@ public class UserUtils {
 
             if (pushConfigurationState != null && !pushConfigurationState.equals(user.getPushConfigurationState())) {
                 user.setPushConfigurationState(pushConfigurationState);
+            }
+
+            if (capabilities != null && !capabilities.equals(user.getCapabilities())) {
+                user.setCapabilities(capabilities);
             }
 
             if (currentUser != null) {

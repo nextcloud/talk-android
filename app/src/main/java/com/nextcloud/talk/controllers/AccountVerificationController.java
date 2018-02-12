@@ -34,10 +34,12 @@ import android.widget.TextView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.evernote.android.job.JobRequest;
+import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.jobs.CapabilitiesJob;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
@@ -196,7 +198,7 @@ public class AccountVerificationController extends BaseController {
                                 if (!TextUtils.isEmpty(displayName)) {
                                     dbQueryDisposable = userUtils.createOrUpdateUser(username, token,
                                             baseUrl, displayName, null, true,
-                                            userProfileOverall.getOcs().getData().getUserId(), null)
+                                            userProfileOverall.getOcs().getData().getUserId(), null, null)
                                             .subscribeOn(Schedulers.newThread())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(userEntity -> {
@@ -208,10 +210,17 @@ public class AccountVerificationController extends BaseController {
                                                         new JobRequest.Builder(PushRegistrationJob.TAG).
                                                                 setUpdateCurrent(true).startNow().build().schedule();
 
+                                                        PersistableBundleCompat persistableBundleCompat = new
+                                                                PersistableBundleCompat();
+                                                        persistableBundleCompat.putLong(BundleKeys
+                                                                .KEY_INTERNAL_USER_ID, userEntity.getId());
+
+                                                        new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent
+                                                                (false).addExtras(persistableBundleCompat).startNow()
+                                                                .build().schedule();
+
                                                         cookieManager.getCookieStore().removeAll();
                                                         userUtils.disableAllUsersWithoutId(userEntity.getId());
-
-                                                        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
 
                                                         if (userUtils.getUsers().size() == 1) {
                                                             getRouter().setRoot(RouterTransaction.with(new
