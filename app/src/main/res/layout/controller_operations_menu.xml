@@ -74,4 +74,18 @@
         android:text="@string/nc_ok"
         android:textColor="@color/colorPrimary"
         android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/web_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/result_text_view"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/ok_button"
+        android:background="#0000"
+        android:text="@string/nc_join_via_web"
+        android:textColor="@color/nc_darkGreen"
+        android:visibility="gone"/>
+
 </RelativeLayout>

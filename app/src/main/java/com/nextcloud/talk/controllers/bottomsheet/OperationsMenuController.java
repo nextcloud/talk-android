@@ -21,6 +21,7 @@
 package com.nextcloud.talk.controllers.bottomsheet;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -75,6 +77,9 @@ public class OperationsMenuController extends BaseController {
 
     @BindView(R.id.ok_button)
     Button okButton;
+
+    @BindView(R.id.web_button)
+    Button webButton;
 
     @Inject
     NcApi ncApi;
@@ -203,11 +208,42 @@ public class OperationsMenuController extends BaseController {
                                 @Override
                                 public void onNext(RoomOverall roomOverall) {
                                     room = roomOverall.getOcs().getData();
-                                    if (room.isHasPassword() && room.isGuest()) {
+                                    ncApi.getCapabilities(null, ApiUtils.getUrlForCapabilities(baseUrl))
+                                            .subscribeOn(Schedulers.newThread())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(new Observer<CapabilitiesOverall>() {
+                                                @Override
+                                                public void onSubscribe(Disposable d) {
 
-                                    } else {
-                                        initiateCall();
-                                    }
+                                                }
+
+                                                @Override
+                                                public void onNext(CapabilitiesOverall capabilitiesOverall) {
+                                                    if (capabilitiesOverall.getOcs().getData()
+                                                            .getCapabilities().getSpreedCapability() != null &&
+                                                            capabilitiesOverall.getOcs().getData()
+                                                                    .getCapabilities().getSpreedCapability()
+                                                                    .getFeatures() != null) {
+                                                        if (room.isHasPassword() && room.isGuest()) {
+
+                                                        } else {
+                                                            initiateCall();
+                                                        }
+                                                    } else {
+                                                        showResultImage(false, true);
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onError(Throwable e) {
+                                                    showResultImage(false, false);
+                                                }
+
+                                                @Override
+                                                public void onComplete() {
+
+                                                }
+                                            });
                                 }
 
                                 @Override
@@ -236,7 +272,7 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
-    private void showResultImage(boolean everythingOK, boolean isSignalingSettingsError) {
+    private void showResultImage(boolean everythingOK, boolean isGuestSupportError) {
         progressBar.setVisibility(View.GONE);
 
         if (everythingOK) {
@@ -253,10 +289,16 @@ public class OperationsMenuController extends BaseController {
             resultsTextView.setText(R.string.nc_all_ok_operation);
         } else {
             resultsTextView.setTextColor(getResources().getColor(R.color.nc_darkRed));
-            if (!isSignalingSettingsError) {
+            if (!isGuestSupportError) {
                 resultsTextView.setText(R.string.nc_failed_to_perform_operation);
             } else {
                 resultsTextView.setText(R.string.nc_failed_signaling_settings);
+                webButton.setOnClickListener(v -> {
+                    new BottomSheetLockEvent(true, 0, false, true);
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(callUrl));
+                    startActivity(browserIntent);
+                });
+                webButton.setVisibility(View.VISIBLE);
             }
         }
 
