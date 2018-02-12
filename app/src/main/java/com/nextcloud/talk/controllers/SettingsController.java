@@ -179,11 +179,9 @@ public class SettingsController extends BaseController {
 
         if (!TextUtils.isEmpty(getResources().getString(R.string.nc_gpl3_url))) {
             licenceButton.addPreferenceClickListener(view1 -> {
-                sourceCodeButton.setEnabled(false);
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
                         getString(R.string.nc_gpl3_url)));
                 startActivity(browserIntent);
-                sourceCodeButton.setEnabled(true);
             });
         } else {
             licenceButton.setVisibility(View.GONE);
@@ -191,11 +189,9 @@ public class SettingsController extends BaseController {
 
         if (!TextUtils.isEmpty(getResources().getString(R.string.nc_privacy_url))) {
             privacyButton.addPreferenceClickListener(view12 -> {
-                sourceCodeButton.setEnabled(false);
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
                         getString(R.string.nc_privacy_url)));
                 startActivity(browserIntent);
-                sourceCodeButton.setEnabled(true);
             });
         } else {
             privacyButton.setVisibility(View.GONE);
@@ -203,11 +199,9 @@ public class SettingsController extends BaseController {
 
         if (!TextUtils.isEmpty(getResources().getString(R.string.nc_source_code_url))) {
             sourceCodeButton.addPreferenceClickListener(view13 -> {
-                sourceCodeButton.setEnabled(false);
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
                         getString(R.string.nc_source_code_url)));
                 startActivity(browserIntent);
-                sourceCodeButton.setEnabled(true);
             });
         } else {
             sourceCodeButton.setVisibility(View.GONE);
@@ -217,14 +211,12 @@ public class SettingsController extends BaseController {
 
 
         addAccountButton.addPreferenceClickListener(view15 -> {
-            addAccountButton.setEnabled(false);
             getParentController().getRouter().pushController(RouterTransaction.with(new
                     ServerSelectionController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
         });
 
         switchAccountButton.addPreferenceClickListener(view16 -> {
-            switchAccountButton.setEnabled(false);
             getParentController().getRouter().pushController(RouterTransaction.with(new
                     SwitchAccountController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
@@ -259,12 +251,10 @@ public class SettingsController extends BaseController {
             baseUrlTextView.setText(userEntity.getBaseUrl());
 
             reauthorizeButton.addPreferenceClickListener(view14 -> {
-                reauthorizeButton.setEnabled(false);
                 getParentController().getRouter().pushController(RouterTransaction.with(
                         new WebViewLoginController(userEntity.getBaseUrl(), true))
                         .pushChangeHandler(new VerticalChangeHandler())
                         .popChangeHandler(new VerticalChangeHandler()));
-                reauthorizeButton.setEnabled(true);
             });
 
             if (userEntity.getDisplayName() != null) {
@@ -318,10 +308,8 @@ public class SettingsController extends BaseController {
                         dispose(profileQueryDisposable);
                     }, () -> dispose(profileQueryDisposable));
 
-            removeAccountButton.setEnabled(true);
 
             removeAccountButton.addPreferenceClickListener(view1 -> {
-                removeAccountButton.setEnabled(false);
                 cookieManager.getCookieStore().removeAll();
                 boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(userEntity.getId());
                 new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true)
@@ -350,12 +338,8 @@ public class SettingsController extends BaseController {
 
         if (userUtils.getUsers().size() <= 1) {
             switchAccountButton.setVisibility(View.GONE);
-        } else {
-            switchAccountButton.setEnabled(true);
         }
-
-        addAccountButton.setEnabled(true);
-
+        
         if (ApplicationWideMessageHolder.getInstance().getMessageType() != null) {
             switch (ApplicationWideMessageHolder.getInstance().getMessageType()) {
                 case ACCOUNT_UPDATED_NOT_ADDED:
