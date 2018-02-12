@@ -80,6 +80,7 @@ public class MagicWebRTCUtils {
         add("SM-G930F"); // Samsung Galaxy S7
         add("AGS-W09"); // Huawei MediaPad T3 10
         add("MIX 2"); // Xiaomi Mi Mix 2
+        add("HWVNS-H"); // Huawei P9 Lite
         add("HWVNS-Q"); // Huawei P9 Lite
     }};
 
