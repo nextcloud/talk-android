@@ -60,6 +60,7 @@
     <string name="nc_no_proxy">Aucun proxy</string>
     <string name="nc_username">Nom d\'utilisateur</string>
     <string name="nc_password">Mot de passe</string>
+    <string name="nc_conversation_link">Lien de conversation</string>
     <string name="nc_new_password">Nouveau mot de passe</string>
     <string name="nc_wrong_password">Mot de passe incorrect</string>
     <string name="nc_about">À propos</string>
@@ -82,6 +83,10 @@
     <string name="nc_make_call_public">Effectuer un appel public</string>
     <string name="nc_make_call_private">Effectuer un appel privé</string>
     <string name="nc_delete_call">Supprimer l’appel</string>
+    <string name="nc_new_conversation">Commencer une nouvelle conversation</string>
+    <string name="nc_join_via_link">Joindre via le lien</string>
+    <string name="nc_join_via_web">Joindre via le web</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Choisissez un contact</string>
     <string name="nc_one_contact_selected">contact sélectionné</string>
@@ -112,11 +117,14 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
+    <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux discussions publiques depuis un téléphone mobile.
+Veuillez essayer de joindre l\'appel depuis un navigateur web.</string>
     <string name="nc_all_ok_operation">OK, tout est fini !</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nom de l\'appelant</string>
     <string name="nc_proceed">Continuer</string>
     <string name="nc_call_name_is_same">Le nom que vous avez entré est le même que celui existant</string>
+    <string name="nc_wrong_link">Le lien de conversation n\'est pas valide.</string>
     <string name="nc_share_text">Salut,
 
 Je souhaiterai t\'inviter à un appel avec moi.
@@ -128,4 +136,7 @@ Parlez bientôt;
 %1$s</string>
     <string name="nc_share_subject">Invitation d\'appel</string>
     <string name="nc_share_text_pass">\n\nLe mot de passe pour l\'appel est : %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
 </resources>

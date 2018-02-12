@@ -82,8 +82,16 @@
     <string name="nc_make_call_public">Gjør samtalen offentlig</string>
     <string name="nc_make_call_private">Gjør samtale privat</string>
     <string name="nc_delete_call">Slett samtale</string>
+    <string name="nc_join_via_link">Ta del via lenke</string>
+    <string name="nc_join_via_web">Ta del via nett</string>
+
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Velg kontakter</string>
     <string name="nc_one_contact_selected">kontakt valgt</string>
     <string name="nc_more_contacts_selected">kontakter valgt</string>
+    <string name="nc_contacts_clear">Tøm</string>
+    <string name="nc_contacts_done">Ferdig</string>
+
     <!-- Permissions -->
     <string name="nc_permissions">Tilganger må innvilges for å etablere video og/eller lydsamtaler. Klikk \"TILLAT\" i neste vindu.</string>
     <string name="nc_permissions_audio">Mikrofontilganger må innvilges for å etablere lydsamtaler. Klikk \"TILLAT\" i neste vindu.</string>
@@ -109,4 +117,7 @@
     <string name="nc_talk_soon">\n\nSnakkes snart,\n %1$s</string>
     <string name="nc_share_subject">Samtaleinvitasjon</string>
     <string name="nc_share_text_pass">\n\nPassordet for samtalen er: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
 </resources>

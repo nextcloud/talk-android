@@ -109,4 +109,7 @@
     <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
     <string name="nc_share_subject">Приглашение</string>
     <string name="nc_share_text_pass">\n\nПароль для подключения к звонку: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
 </resources>

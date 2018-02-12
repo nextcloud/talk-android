@@ -61,6 +61,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_no_proxy">geen proxy</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
+    <string name="nc_new_password">Nieuw wachtwoord</string>
+    <string name="nc_wrong_password">Onjuist wachtwoord</string>
     <string name="nc_about">Over</string>
     <string name="nc_privacy">Privacy</string>
     <string name="nc_get_source_code">Download sourcecode</string>
@@ -73,11 +75,16 @@ Kies er eentje van een provider.</string>
     <string name="nc_what">Wat wil je vandaag doen?</string>
     <string name="nc_leave">Verlaat gesprek</string>
     <string name="nc_rename">Hernoem gesprek</string>
+    <string name="nc_set_password">Instellen wachtwoord</string>
+    <string name="nc_change_password">Wijzig een wachtwoord</string>
     <string name="nc_share_link">Deel link</string>
     <string name="nc_make_call_public">Maak gesprek openbaar</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
     <string name="nc_one_contact_selected">contact geselecteerd</string>
     <string name="nc_more_contacts_selected">contacten geselecteerd</string>
+    <string name="nc_contacts_clear">Schoonmaken</string>
+    <string name="nc_contacts_done">Gereed</string>
+
     <!-- Permissions -->
     <string name="nc_permissions">Permissies zijn nodig om een video- en/of audiogesprek te starten. Druk 
 op \"TOESTAAN\" in de volgende systeemdialoog.</string>
@@ -91,6 +98,7 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
 
     <!-- Call -->
     <string name="nc_incoming_call">Inkomend gesprek</string>
+    <string name="nc_nick_guest">Gast</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
@@ -98,4 +106,8 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
     <string name="nc_notification_channel_calls_description">Toont inkomende gesprekken</string>
     <string name="nc_notification_channel_messages_description">Toont inkomende berichten</string>
 
-    </resources>
+    <string name="nc_ok">OK</string>
+    <string name="nc_proceed">Verder</string>
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+</resources>

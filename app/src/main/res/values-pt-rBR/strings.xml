@@ -60,6 +60,7 @@
     <string name="nc_no_proxy">Sem proxy</string>
     <string name="nc_username">Usuário</string>
     <string name="nc_password">Senha</string>
+    <string name="nc_conversation_link">Link de conversação</string>
     <string name="nc_new_password">Nova senha</string>
     <string name="nc_wrong_password">Senha incorreta</string>
     <string name="nc_about">Sobre</string>
@@ -82,6 +83,10 @@
     <string name="nc_make_call_public">Fazer uma chamada pública</string>
     <string name="nc_make_call_private">Fazer uma chamada privada</string>
     <string name="nc_delete_call">Excluir a chamada</string>
+    <string name="nc_new_conversation">Iniciar uma nova conversa</string>
+    <string name="nc_join_via_link">Juntar-se via link</string>
+    <string name="nc_join_via_web">Juntar-se via web</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecionar contatos</string>
     <string name="nc_one_contact_selected">contato selecionado</string>
@@ -113,14 +118,20 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
+    <string name="nc_failed_signaling_settings">O servidor de destino não suporta juntar-se a salas públicas via celulares.
+       Você pode tentar juntar-se à chamada via navegador Web.</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nome da chamada</string>
     <string name="nc_proceed">Prosseguir</string>
     <string name="nc_call_name_is_same">O nome que você inseriu é o mesmo que o existente</string>
+    <string name="nc_wrong_link">O link de conversação não é válido</string>
     <string name="nc_share_text">Olá,\n\nGostaria que você participasse de uma chamada comigo.\n\nVocê pode participar desta chamada via
         %1$s/index.php/call/%2$s</string>
     <string name="nc_talk_soon">\n\nAté breve,\n %1$s</string>
     <string name="nc_share_subject">Convite de chamada</string>
     <string name="nc_share_text_pass">\n\nA senha para a chamada é: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
 </resources>

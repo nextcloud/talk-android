@@ -60,6 +60,7 @@
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Nombre de usuario</string>
     <string name="nc_password">Contraseña</string>
+    <string name="nc_conversation_link">Enlace a la llamada</string>
     <string name="nc_new_password">Nueva contraseña</string>
     <string name="nc_wrong_password">Contraseña errónea</string>
     <string name="nc_about">Acerca de</string>
@@ -82,8 +83,17 @@
     <string name="nc_make_call_public">Hacer pública la llamada</string>
     <string name="nc_make_call_private">Hacer privada la llamada</string>
     <string name="nc_delete_call">Eliminar llamada</string>
+    <string name="nc_new_conversation">Comenzar una conversación nueva</string>
+    <string name="nc_join_via_link">Unirse vía enlace</string>
+    <string name="nc_join_via_web">Unirse vía web</string>
+
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Seleccionar contactos</string>
     <string name="nc_one_contact_selected">contacto seleccionado</string>
     <string name="nc_more_contacts_selected">contactos seleccionados</string>
+    <string name="nc_contacts_clear">Limpiar</string>
+    <string name="nc_contacts_done">Hecho</string>
+
     <!-- Permissions -->
     <string name="nc_permissions">Necesitamos ciertos permisos para establecer una llamada de vídeo o de audio Por favor, pulsa \"ACEPTAR\" en el mensaje de sistema que va a aparecer.</string>
     <string name="nc_permissions_audio">Se necesita conceder el permiso de micrófono para activar las llamadas de audio. Por favor ,pulsa \"ACEPTAR\" en el mensaje de sistema que va a aparecer.</string>
@@ -95,6 +105,10 @@
     <!-- Call -->
     <string name="nc_incoming_call">Llamada entrante</string>
     <string name="nc_nick_guest">Invitado</string>
+    <string name="nc_public_call">NUEVA LLAMADA PÚBLICA</string>
+    <string name="nc_public_call_explanation">Las llamadas públicas te permiten invitar a gente del exterior a través de un 
+        enlace creado de forma especial.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s en el canal de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
@@ -104,14 +118,20 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>
+    <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a habitacions públicas vía teléfonos móviles.
+          Puedes intentar unirte a la llamada vía el navegador web.</string>
     <string name="nc_all_ok_operation">OK. Todo hecho.</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nombre de la llamada</string>
     <string name="nc_proceed">Proceder</string>
     <string name="nc_call_name_is_same">El nombre que has introducido es el mismo que el existente</string>
+    <string name="nc_wrong_link">El enlace a la conversación no es válido</string>
     <string name="nc_share_text">¡Hola!\n\nMe gustaría que te unieras a una llamada conmigo.\|n\nPuedes unirte a esta llamada vía
        %1$s/index.php/call/%2$s</string>
     <string name="nc_talk_soon">\n\nHablamos pronto,\n %1$s</string>
     <string name="nc_share_subject">Invitación a la llamada</string>
     <string name="nc_share_text_pass">\n\nLa contraseña para la llamada es: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
 </resources>

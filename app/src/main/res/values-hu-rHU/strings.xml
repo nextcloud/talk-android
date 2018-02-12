@@ -120,4 +120,7 @@
     <string name="nc_talk_soon">\n\nHamarosan beszélünk,\n %1$s</string>
     <string name="nc_share_subject">Hívás invitáció</string>
     <string name="nc_share_text_pass">\n\nHívás jelszava: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
 </resources>

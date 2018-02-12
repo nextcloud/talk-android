@@ -60,6 +60,7 @@
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Nutzername</string>
     <string name="nc_password">Passwort</string>
+    <string name="nc_conversation_link">Unterhaltungslink</string>
     <string name="nc_new_password">Neues Passwort</string>
     <string name="nc_wrong_password">Falsches Passwort</string>
     <string name="nc_about">Über</string>
@@ -82,6 +83,10 @@
     <string name="nc_make_call_public">Anruf öffentlich machen</string>
     <string name="nc_make_call_private">Anruf privat machen</string>
     <string name="nc_delete_call">Anruf löschen</string>
+    <string name="nc_new_conversation">Starte eine neue Unterhaltung</string>
+    <string name="nc_join_via_link">Über einen Link beitreten</string>
+    <string name="nc_join_via_web">Über das Internet beitreten</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Kontakte auswählen</string>
     <string name="nc_one_contact_selected">Kontakt ausgewählt</string>
@@ -100,6 +105,9 @@
     <!-- Call -->
     <string name="nc_incoming_call">Eingehender Anruf</string>
     <string name="nc_nick_guest">Gast</string>
+    <string name="nc_public_call">NEUER ÖFFENTLICHER ANRUF</string>
+    <string name="nc_public_call_explanation">Zu öffentlichen Anrufen können Sie Personen über einen speziellen Link einladen.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s auf %2$s Benachrichtigungskanal</string>
     <string name="nc_notification_channel_calls">Benachrichtigungskanal für Anrufe</string>
@@ -109,14 +117,20 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Schade, etwas ist schiefgelaufen!</string>
+    <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Räume durch Mobiltelefone.
+        Probieren Sie mit einem Internetbrowser dem Anruf beizutreten.</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Anrufname</string>
     <string name="nc_proceed">Fortsetzen</string>
     <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>
+    <string name="nc_wrong_link">Unterhaltungslink ist ungültig</string>
     <string name="nc_share_text">Hallo \n\nI möchten Sie meinem Anruf beitreten? \n\nI Treten Sie dem Anruf bei durch 
         %1$s/index.php/call/%2$s</string>
     <string name="nc_talk_soon">\n\n wir reden später, \n%1$s</string>
     <string name="nc_share_subject">Anrufeinladung</string>
     <string name="nc_share_text_pass">\n\n Passwort für diesen Anruf lautet: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
 </resources>

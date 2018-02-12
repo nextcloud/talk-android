@@ -60,6 +60,7 @@
     <string name="nc_no_proxy">Vekil sunucu yok</string>
     <string name="nc_username">Kullanıcı adı</string>
     <string name="nc_password">Parola</string>
+    <string name="nc_conversation_link">Sohbet bağlantısı</string>
     <string name="nc_new_password">Yeni parola</string>
     <string name="nc_wrong_password">Parola yanlış</string>
     <string name="nc_about">Hakkında</string>
@@ -82,6 +83,10 @@
     <string name="nc_make_call_public">Çağrıyı herkese aç</string>
     <string name="nc_make_call_private">Çağrıyı özel yap</string>
     <string name="nc_delete_call">Çağrıyı sil</string>
+    <string name="nc_new_conversation">Yeni bir sohbet başlat</string>
+    <string name="nc_join_via_link">Bağlantı ile katıl</string>
+    <string name="nc_join_via_web">Web üzerinden katıl</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Kişileri seçin</string>
     <string name="nc_one_contact_selected">kişi seçilmiş</string>
@@ -100,6 +105,10 @@
     <!-- Call -->
     <string name="nc_incoming_call">Gelen çağrı</string>
     <string name="nc_nick_guest">Konuk</string>
+    <string name="nc_public_call">YENİ HERKESE AÇIK ÇAĞRI</string>
+    <string name="nc_public_call_explanation">Herkese açık sohbetlere dışarıdan kişiler özel oluşturulmuş bir bağlantı
+  ile katılabilir.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
     <string name="nc_notification_channel_calls">Bildirim kanalındaki çağrı</string>
@@ -109,14 +118,20 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
+    <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık sohbetlere katılmayı
+ desteklemiyor. Çağrıya web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_all_ok_operation">Hepsi tamam!</string>
     <string name="nc_ok">Tamam</string>
     <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_proceed">İlerle</string>
     <string name="nc_call_name_is_same">Yazdığınız ad var olan ad ile aynı</string>
+    <string name="nc_wrong_link">Sohbet bağlantısı geçersiz</string>
     <string name="nc_share_text">Merhaba,\n\nBenimle bir görüşmeye katılmanı istiyorum.\n\nGörüşmeye şuradan katılabilirsin
         %1$s/index.php/call/%2$s</string>
     <string name="nc_talk_soon">\n\nGörüşmek üzere,\n %1$s</string>
     <string name="nc_share_subject">Görüşme Çağrısı</string>
     <string name="nc_share_text_pass">\n\nGörüşme parolası: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
 </resources>

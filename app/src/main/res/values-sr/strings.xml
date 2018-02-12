@@ -60,6 +60,7 @@
     <string name="nc_no_proxy">Без посредника</string>
     <string name="nc_username">Корисничко име</string>
     <string name="nc_password">Лозинка</string>
+    <string name="nc_conversation_link">Веза ка разговору</string>
     <string name="nc_new_password">Нова лозинка</string>
     <string name="nc_wrong_password">Погрешна лозинка</string>
     <string name="nc_about">О програму</string>
@@ -82,6 +83,10 @@
     <string name="nc_make_call_public">Учини разговор јавним</string>
     <string name="nc_make_call_private">Учини разговор приватним</string>
     <string name="nc_delete_call">Обриши позив</string>
+    <string name="nc_new_conversation">Започни нови разговор</string>
+    <string name="nc_join_via_link">Придружи се преко везе</string>
+    <string name="nc_join_via_web">Придружи се преко веба</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Одаберите контакт</string>
     <string name="nc_one_contact_selected">контакт означен</string>
@@ -113,14 +118,20 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
+    <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним собама преко мобилног телефона.
+        Можете пробати да се придружите разговору преко веб читача.</string>
     <string name="nc_all_ok_operation">У реду, све готово!</string>
     <string name="nc_ok">У реду</string>
     <string name="nc_call_name">Име позива</string>
     <string name="nc_proceed">Настави</string>
     <string name="nc_call_name_is_same">Име које сте унели је исто као и тренутно</string>
+    <string name="nc_wrong_link">Веза разговора није исправна</string>
     <string name="nc_share_text">Поздрав,\n\nЖелео бих да се придружиш позиву на коме се налазим.\n\nМожеш му се придружити на
         %1$s/index.php/call/%2$s</string>
     <string name="nc_talk_soon">\n\nЧујемо се ускоро,\n %1$s</string>
     <string name="nc_share_subject">Позивница за разговор</string>
     <string name="nc_share_text_pass">\n\nЛозинка за позив је: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
 </resources>
