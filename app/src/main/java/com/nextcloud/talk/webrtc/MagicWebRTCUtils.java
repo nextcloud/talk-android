@@ -80,6 +80,7 @@ public class MagicWebRTCUtils {
         add("SM-G930F"); // Samsung Galaxy S7
         add("AGS-W09"); // Huawei MediaPad T3 10
         add("MIX 2"); // Xiaomi Mi Mix 2
+        add("CHIRON"); // Xiaomi Mi Mix 2
         add("HWVNS-H"); // Huawei P9 Lite
         add("HWVNS-Q"); // Huawei P9 Lite
     }};
@@ -90,7 +91,7 @@ public class MagicWebRTCUtils {
 
     public static boolean shouldEnableVideoHardwareAcceleration() {
         return (!HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build.MANUFACTURER.toLowerCase())
-                && !HARDWARE_ACCELERATION_DEVICE_BLACKLIST.contains(Build.MODEL));
+                && !HARDWARE_ACCELERATION_DEVICE_BLACKLIST.contains(Build.MODEL.toUpperCase()));
     }
 
     public static String preferCodec(String sdpDescription, String codec, boolean isAudio) {
