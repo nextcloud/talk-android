@@ -339,7 +339,7 @@ public class SettingsController extends BaseController {
         if (userUtils.getUsers().size() <= 1) {
             switchAccountButton.setVisibility(View.GONE);
         }
-        
+
         if (ApplicationWideMessageHolder.getInstance().getMessageType() != null) {
             switch (ApplicationWideMessageHolder.getInstance().getMessageType()) {
                 case ACCOUNT_UPDATED_NOT_ADDED:

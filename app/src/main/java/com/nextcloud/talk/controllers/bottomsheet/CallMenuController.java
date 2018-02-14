@@ -80,6 +80,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private Intent shareIntent;
 
     private UserEntity currentUser;
+
     public CallMenuController(Bundle args) {
         super(args);
         this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));

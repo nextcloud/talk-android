@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -39,7 +40,6 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.ShareUtils;
@@ -81,6 +81,7 @@ public class EntryMenuController extends BaseController {
     private Intent shareIntent;
     private String packageName;
     private String name;
+    private String callUrl;
 
     public EntryMenuController(Bundle args) {
         super(args);
@@ -95,6 +96,7 @@ public class EntryMenuController extends BaseController {
 
         this.name = args.getString(BundleKeys.KEY_APP_ITEM_NAME, "");
         this.packageName = args.getString(BundleKeys.KEY_APP_ITEM_PACKAGE_NAME, "");
+        this.callUrl = args.getString(BundleKeys.KEY_CALL_URL, "");
     }
 
     @Override
@@ -120,18 +122,15 @@ public class EntryMenuController extends BaseController {
     public void onProceedButtonClick() {
         Bundle bundle;
         if (operationCode == 99) {
-            UserEntity userEntity = userUtils.getCurrentUser();
-
-            if (userEntity != null) {
-                eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
-                bundle = new Bundle();
-                bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
-                bundle.putString(BundleKeys.KEY_CALL_PASSWORD, editText.getText().toString());
-                getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
-                        .pushChangeHandler(new HorizontalChangeHandler())
-                        .popChangeHandler(new HorizontalChangeHandler()));
-            }
-
+            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+            bundle = new Bundle();
+            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+            bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
+            bundle.putString(BundleKeys.KEY_CALL_PASSWORD, editText.getText().toString());
+            bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
+            getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
         } else if (operationCode != 7 && operationCode != 10) {
             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
@@ -246,12 +245,14 @@ public class EntryMenuController extends BaseController {
                 break;
             case 4:
                 labelText = getResources().getString(R.string.nc_new_password);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 break;
             case 6:
             case 7:
             case 99:
                 // 99 is joining a room via password
                 labelText = getResources().getString(R.string.nc_password);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 break;
             case 10:
                 labelText = getResources().getString(R.string.nc_conversation_link);

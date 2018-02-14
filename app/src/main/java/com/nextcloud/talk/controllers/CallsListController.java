@@ -324,7 +324,7 @@ public class CallsListController extends BaseController implements SearchView.On
                         new Handler().postDelayed(() -> {
                             bottomSheet.setCancelable(true);
                             if (bottomSheet.isShowing()) {
-                                bottomSheet.dismiss();
+                                bottomSheet.cancel();
                             }
                         }, 2500);
                     }
@@ -428,7 +428,7 @@ public class CallsListController extends BaseController implements SearchView.On
                 } else {
                     bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
                     if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
-                        bottomSheet.dismiss();
+                        bottomSheet.cancel();
                     }
                 }
             }
@@ -464,9 +464,9 @@ public class CallsListController extends BaseController implements SearchView.On
 
         if (bottomSheet == null) {
             bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
-        } else if (bottomSheet.getWindow() != null) {
-            bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
+
+        bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         bottomSheet.show();
     }

@@ -134,7 +134,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
 
         new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
         new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
-        
+
         boolean periodicJobFound = false;
         for (JobRequest jobRequest : JobManager.instance().getAllJobRequestsForTag(CapabilitiesJob.TAG)) {
             if (jobRequest.isPeriodic()) {
@@ -142,7 +142,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
                 break;
             }
         }
-        
+
         if (!periodicJobFound) {
             new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent(true)
                     .setPeriodic(TimeUnit.DAYS.toMillis(1), TimeUnit.HOURS.toMillis(1))

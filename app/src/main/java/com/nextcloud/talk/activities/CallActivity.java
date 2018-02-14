@@ -1072,7 +1072,7 @@ public class CallActivity extends AppCompatActivity {
         localAudioTrack = null;
         localVideoTrack = null;
 
-        if (!dueToNetworkChange && credentials != null) {
+        if (!dueToNetworkChange) {
             hangupNetworkCalls();
         } else {
             finish();
