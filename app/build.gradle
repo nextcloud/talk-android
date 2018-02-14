@@ -13,7 +13,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         versionCode 26
-        versionName "1.1.0"
+        versionName "1.1.0beta1"
 
         // Enabling multidex support.
         multiDexEnabled true
