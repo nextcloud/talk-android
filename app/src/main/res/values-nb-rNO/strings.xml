@@ -60,6 +60,7 @@
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Brukernavn</string>
     <string name="nc_password">Passord</string>
+    <string name="nc_conversation_link">Samtale lenke</string>
     <string name="nc_new_password">Nytt passord</string>
     <string name="nc_wrong_password">Feil passord</string>
     <string name="nc_about">Om</string>
@@ -82,6 +83,7 @@
     <string name="nc_make_call_public">Gjør samtalen offentlig</string>
     <string name="nc_make_call_private">Gjør samtale privat</string>
     <string name="nc_delete_call">Slett samtale</string>
+    <string name="nc_new_conversation">Opprett en ny samtale</string>
     <string name="nc_join_via_link">Ta del via lenke</string>
     <string name="nc_join_via_web">Ta del via nett</string>
 
@@ -103,6 +105,10 @@
     <!-- Call -->
     <string name="nc_incoming_call">Innkommende anrop</string>
     <string name="nc_nick_guest">Gjest</string>
+    <string name="nc_public_call">NY OFFENTLIG SAMTALE</string>
+    <string name="nc_public_call_explanation">Offentlig samtaler lar deg invitere personer fra utsiden gjennom en spesielt
+         laget lenke.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s merknadskanal</string>
     <string name="nc_notification_channel_calls">Innringingsnotfikasjonskanal</string>
@@ -112,8 +118,16 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
+    <string name="nc_failed_signaling_settings">Tjeneren støtter ikke å koble seg til offentlige rom via mobiltelefoner.
+        Du kan forsøke å koble til via en nettleser.</string>
+    <string name="nc_all_ok_operation">OK, ferdig!</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Kallenavn</string>
     <string name="nc_proceed">Fortsett</string>
+    <string name="nc_call_name_is_same">Navnet du valgte eksisterer allerede</string>
+    <string name="nc_wrong_link">Samtale lenke er ikke gyldig</string>
+    <string name="nc_share_text">Hei,\n\nJeg vil gjerne opprette en samtale med deg.\n\nDu kan koble til via
+        %1$s/index.php/call/%2$s</string>
     <string name="nc_talk_soon">\n\nSnakkes snart,\n %1$s</string>
     <string name="nc_share_subject">Samtaleinvitasjon</string>
     <string name="nc_share_text_pass">\n\nPassordet for samtalen er: %1$s</string>

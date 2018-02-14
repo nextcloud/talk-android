@@ -1,0 +1,95 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">Samtöl</string>
+    <string name="nc_bottom_navigation_title_contacts">Tengiliðir</string>
+    <string name="nc_bottom_navigation_title_settings">Stillingar</string>
+
+    <!-- Server selection -->
+    <string name="nc_server_url">Vistfang þjóns</string>
+    <string name="nc_server_not_installed">Kláraðu uppsetninguna þína á %1$s</string>
+    <string name="nc_server_db_upgrade_needed">Uppfærðu %1$s gagnagrunninn þinn</string>
+    <string name="nc_server_version">%1$s virkar bara með %2$s 13 og upp</string>
+    <string name="nc_server_import_account_plain">Flytja inn aðgang</string>
+    <string name="nc_server_import_accounts_plain">Flytja inn aðganga</string>
+    <string name="nc_server_import_account">Flytja inn aðgang úr %1$s forritinu</string>
+    <string name="nc_server_import_accounts">Flytja inn aðganga úr %1$s forritinu</string>
+    <string name="nc_server_failed_to_import_account">Mistókst að flytja inn valinn notandaaðgang</string>
+    <string name="nc_Server_account_imported">Valinn aðgangur er núna fluttur inn og tiltækur</string>
+    <string name="nc_get_from_provider">Ertu ekki enn með skýjaþjón?\nSmelltu hér til að fá þér einn frá þjónustuaðila.</string>
+
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Náð í birtingarnafn</string>
+    <string name="nc_nextcloud_talk_app_installed">%1$s forrit fannst</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s forritið ekki uppsett á þjóninu, hætti við</string>
+    <string name="nc_display_name_stored">Birtingarnafn geymt</string>
+    <string name="nc_never">Skráði sig aldrei</string>
+    <string name="nc_search">Leita</string>
+
+    <string name="nc_certificate_dialog_title">Sannreyna skilríkið</string>
+    <string name="nc_certificate_dialog_text">Treystirðu hinu hingað til óþekkta SSL-skilríki, útgefnu af %1$s fyrir %2$s, með gildistíma frá %3$s til %4$s?</string>
+    <string name="nc_yes">Já</string>
+    <string name="nc_no">Nei</string>
+    <string name="nc_details">Nánar</string>
+    <string name="nc_certificate_error">SSL-uppsetningin þín kom í veg fyrir tengingu</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Milliþjónn</string>
+    <string name="nc_settings_proxy_type_title">Gerð milliþjóns</string>
+    <string name="nc_settings_proxy_host_title">Milliþjónn</string>
+    <string name="nc_settings_proxy_port_title">Gátt milliþjóns</string>
+    <string name="nc_settings_use_credentials_title">Auðkenni notanda</string>
+    <string name="nc_settings_switch_account">Skipta á milli aðganga</string>
+    <string name="nc_settings_remove_account">Fjarlægja notandaaðgang</string>
+    <string name="nc_settings_add_account">Bæta við nýjum notandaaðgangi</string>
+    <string name="nc_no_proxy">Enginn milliþjónn</string>
+    <string name="nc_username">Notandanafn</string>
+    <string name="nc_password">Lykilorð</string>
+    <string name="nc_conversation_link">Samskiptatengill</string>
+    <string name="nc_new_password">Nýtt lykilorð</string>
+    <string name="nc_wrong_password">Rangt lykilorð</string>
+    <string name="nc_about">Um hugbúnaðinn</string>
+    <string name="nc_privacy">Gagnaleynd</string>
+    <string name="nc_get_source_code">Náðu í grunnkóðann</string>
+    <string name="nc_license_title">Notkunarleyfi</string>
+    <string name="nc_license_summary">GNU General Public notkunarleyfið, útgáfa 3</string>
+
+    <string name="nc_select_an_account">Veldu aðgang</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">Hvað viltu gera í dag?</string>
+    <string name="nc_leave">Hætta símtali</string>
+    <string name="nc_rename">Endurnefna samtal</string>
+    <string name="nc_set_password">Setja lykilorð</string>
+    <string name="nc_change_password">Breyta lykilorði</string>
+    <string name="nc_clear_password">Hreinsa lykilorð</string>
+    <string name="nc_share_link">Deila tengli</string>
+    <string name="nc_share_link_via">Deila tengli með</string>
+    <string name="nc_make_call_public">Gera samtal opinbert</string>
+    <string name="nc_make_call_private">Gera samtal að einka</string>
+    <string name="nc_delete_call">Eyða samtali</string>
+    <string name="nc_new_conversation">Hefja nýtt samtal</string>
+    <string name="nc_join_via_link">Taka þátt í gegnum tengil</string>
+    <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
+
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Veldu tengiliði</string>
+    <string name="nc_one_contact_selected">tengiliður valinn</string>
+    <string name="nc_more_contacts_selected">tengiliðir valdir</string>
+    <string name="nc_contacts_clear">Hreinsa</string>
+    <string name="nc_contacts_done">Lokið</string>
+
+    <string name="nc_permissions_settings">Opna stillingar</string>
+
+    <string name="nc_nick_guest">Gestur</string>
+    <string name="nc_public_call">NÝTT OPINBERT SÍMTAL</string>
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
+    <string name="nc_all_ok_operation">Í lagi, allt klárt!</string>
+    <string name="nc_ok">Í lagi</string>
+    <string name="nc_call_name">Birtingarnafn</string>
+    <string name="nc_proceed">Halda áfram</string>
+    <string name="nc_talk_soon">\n\nVerðum í bandi fljótlega,\n %1$s</string>
+    <string name="nc_share_subject">Boð um samtal</string>
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+</resources>

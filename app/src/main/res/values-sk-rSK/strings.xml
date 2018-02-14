@@ -1,0 +1,137 @@
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_calls">Hovory</string>
+    <string name="nc_bottom_navigation_title_contacts">Kontakty</string>
+    <string name="nc_bottom_navigation_title_settings">Nastavenia</string>
+
+    <!-- Server selection -->
+    <string name="nc_server_url">Adresa servera</string>
+    <string name="nc_server_not_installed">Prosím dokončite vašu %1$s inštaláciu</string>
+    <string name="nc_server_db_upgrade_needed">Prosím aktualizujte vašu %1$sdatabázu</string>
+    <string name="nc_server_maintenance">Prosím vypnite váš %1$s z režimu údržby</string>
+    <string name="nc_server_version">%1$spracuje iba s %2$s13 a vyššie</string>
+    <string name="nc_server_import_account_plain">Importovať účet</string>
+    <string name="nc_server_import_accounts_plain">Importovať účty</string>
+    <string name="nc_server_import_account">Importovať účet z aplikácie %1$s</string>
+    <string name="nc_server_import_accounts">Importovať účty z aplikácie %1$s</string>
+    <string name="nc_server_failed_to_import_account">Nepodarilo sa importovať vybrané kontá</string>
+    <string name="nc_Server_account_imported">Vybrané účty sú teraz importované a dostupné</string>
+    <string name="nc_get_from_provider">Ešte nemáte server? \nKliknite sem a získajte jeden od poskytovateľa</string>
+
+    <!-- Account verification -->
+    <string name="nc_display_name_fetched">Zobrazované meno načítané</string>
+    <string name="nc_display_name_not_fetched">Zobrazované meno sa nedalo načítať, ruším</string>
+    <string name="nc_nextcloud_talk_app_installed">Aplikácia %1$s nájdená</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Aplikácia %1$snie je nainštalovaná na servri, ruším</string>
+    <string name="nc_display_name_stored">Zobrazované meno uložené</string>
+    <string name="nc_display_name_not_stored">Nedá sa uložiť zobrazované meno, ruším</string>
+
+    <string name="nc_never">Nikdy nepridaný</string>
+    <string name="nc_search">Hľadať</string>
+
+    <string name="nc_certificate_dialog_title">Skontrolujte certifikát</string>
+    <string name="nc_certificate_dialog_text">Dôverujete tomuto doteraz neznámemu SSL certifikátu, vydaného %1$s pre %2$s, platného od %3$s do %4$s ?</string>
+    <string name="nc_yes">Áno</string>
+    <string name="nc_no">Nie</string>
+    <string name="nc_details">Podrobnosti</string>
+    <string name="nc_certificate_error">Vaša konfigurácia SSL zabránila pripojeniu</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_key">typ_proxy</string>
+    <string name="nc_settings_proxy_type_title">Typ proxy</string>
+    <string name="nc_settings_proxy_host_key">proxy_host</string>
+    <string name="nc_settings_proxy_host_title">Proxy host</string>
+    <string name="nc_settings_proxy_port_key">proxy_port</string>
+    <string name="nc_settings_proxy_port_title">Proxy port</string>
+    <string name="nc_settings_proxy_username_key">proxy_užívateľské_meno</string>
+    <string name="nc_settings_proxy_password_key">proxy_heslo</string>
+    <string name="nc_settings_use_credentials_title">Použi prihlasovacie údaje</string>
+    <string name="nc_settings_use_credentials_key">proxy_prihlasovacie_údaje</string>
+    <string name="nc_settings_switch_account">Prepínať medzi účtami</string>
+    <string name="nc_settings_reauthorize">Znova prihlásiť</string>
+    <string name="nc_settings_remove_account">Odstrániť účet</string>
+    <string name="nc_settings_add_account">Pridať nový účet</string>
+    <string name="nc_settings_wrong_account">Iba aktuálny účet môže byť znova prihlásený</string>
+    <string name="nc_settings_no_talk_installed">Aplikácia Talk nieje nainštalovaná na servri ku ktorému ste sa pokúsili prihlásiť</string>
+    <string name="nc_settings_account_updated">Namiesto pridania nového účtu, bol aktualizovaný existujúci účet</string>
+    <string name="nc_account_scheduled_for_deletion">Účet je naplánovaný na zrušenie a preto nemôže byť zmenený</string>
+
+    <string name="nc_no_proxy">Bez proxy</string>
+    <string name="nc_username">Používateľské meno</string>
+    <string name="nc_password">Heslo</string>
+    <string name="nc_conversation_link">Odkaz rozhovoru</string>
+    <string name="nc_new_password">Nové heslo</string>
+    <string name="nc_wrong_password">Nesprávne heslo</string>
+    <string name="nc_about">O aplikácii</string>
+    <string name="nc_privacy">Súkromie</string>
+    <string name="nc_get_source_code">Získajte zdrojový kód</string>
+    <string name="nc_license_title">Licencia</string>
+    <string name="nc_license_summary">GNU Všeobecná Verejná Licencia, Verzia 3</string>
+
+    <string name="nc_select_an_account">Zvoľte si účet</string>
+
+    <!-- Room menu -->
+    <string name="nc_what">Čo by ste chceli dnes robiť?</string>
+    <string name="nc_leave">Opustiť hovor</string>
+    <string name="nc_rename">Premenovať trezor</string>
+    <string name="nc_set_password">Nastavte si heslo</string>
+    <string name="nc_change_password">Zmeňte si heslo</string>
+    <string name="nc_clear_password">Zrušiť heslo</string>
+    <string name="nc_share_link">Zdieľať odkaz</string>
+    <string name="nc_share_link_via">Zdieľať odkaz cez</string>
+    <string name="nc_make_call_public">Urobiť hovor verejným</string>
+    <string name="nc_make_call_private">Urobiť hovor súkromným</string>
+    <string name="nc_delete_call">Zmazať hovor</string>
+    <string name="nc_new_conversation">Začať nový rozhovor</string>
+    <string name="nc_join_via_link">Pripojiť sa cez odkaz</string>
+    <string name="nc_join_via_web">Pripojiť sa cez web</string>
+
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Vyberte si kontakty</string>
+    <string name="nc_one_contact_selected">kontakt označený</string>
+    <string name="nc_more_contacts_selected">kontakty označené</string>
+    <string name="nc_contacts_clear">Vyčistiť</string>
+    <string name="nc_contacts_done">Hotovo</string>
+
+    <!-- Permissions -->
+    <string name="nc_permissions">Aby ste mohli uskutočniť video a/alebo audio hovor, musíte udeliť aplikácii povolenia. Prosím, kliknite \"POVOLIŤ\" na ďalšom systémovom dialógu.</string>
+    <string name="nc_permissions_audio">Ak chcete telefonovať, musíte povoliť aplikácii používanie mikrofónu. Prosím, kliknite \"POVOLIŤ\" v nasledujúcom systémovom dialógu.</string>
+    <string name="nc_permissions_video">Ak chcete videohovory, musíte aplikácii povoliť používanie kamery. Prosím, kliknite \"POVOLIŤ\" v nasledujúcom systémovom dialógu.</string>
+    <string name="nc_camera_permission_permanently_denied">Na zapnutie video komunikácie, prosím povoľte \"Fotoaparát\" v nastaveniach systému.</string>
+    <string name="nc_microphone_permission_permanently_denied">Na zapnutie hlasovej komunikácie, prosím povoľte \"Mikrofón\" v nastaveniach systému.</string>
+    <string name="nc_permissions_settings">Otvoriť nastavenia</string>
+
+    <!-- Call -->
+    <string name="nc_incoming_call">Prichádzajúci hovor</string>
+    <string name="nc_nick_guest">Hosť</string>
+    <string name="nc_public_call">NOVÝ VEREJNÝ HOVOR</string>
+    <string name="nc_public_call_explanation">Verejné hovory Vám umožňujú pozvať ľudí z vonku cez špeciálne
+ vytvorený odkaz.</string>
+
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s na %2$s notifikačný kanál</string>
+    <string name="nc_notification_channel_calls">Oznamovací kanál hovorov</string>
+    <string name="nc_notification_channel_messages">Oznamovací kanál správ</string>
+    <string name="nc_notification_channel_calls_description">Ukazuje prichádzajúce hovory</string>
+    <string name="nc_notification_channel_messages_description">Ukazuje prichádzajúce správy</string>
+
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa pokazilo!</string>
+    <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných miestností cez mobilné telefóny 
+         Môžete sa pokúsiť pripojiť na hovor cez webový prehliadač.</string>
+    <string name="nc_all_ok_operation">OK, všetko hotovo!</string>
+    <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Názov hovoru</string>
+    <string name="nc_proceed">Pokračovať</string>
+    <string name="nc_call_name_is_same">Názov, ktorý ste zadali je zhodný s existujúcim</string>
+    <string name="nc_wrong_link">Odkaz na rozhovor nie je platný!</string>
+    <string name="nc_share_text">Ahoj, \n\nChcel by som, aby ste sa pripojili na rozhovor so mnou. \n\nMôžete sa k tomuto hovoru pripojiť cez 
+%1$s/index.php/call/%2$s</string>
+    <string name="nc_talk_soon">\n\nHovor skoro, \n%1$s</string>
+    <string name="nc_share_subject">Pozvanie telefonovať</string>
+    <string name="nc_share_text_pass">\n\nHeslo pre telefonovanie je: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+</resources>
