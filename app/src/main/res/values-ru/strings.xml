@@ -60,6 +60,7 @@
     <string name="nc_no_proxy">Без прокси-сервера</string>
     <string name="nc_username">Имя пользователя</string>
     <string name="nc_password">Пароль</string>
+    <string name="nc_conversation_link">Ссылка на беседу</string>
     <string name="nc_new_password">Новый пароль</string>
     <string name="nc_wrong_password">Неправильный пароль</string>
     <string name="nc_about">О программе</string>
@@ -82,8 +83,17 @@
     <string name="nc_make_call_public">Сделать звонок общедоступным</string>
     <string name="nc_make_call_private">Сделать звонок закрытым</string>
     <string name="nc_delete_call">Удалить звонок</string>
+    <string name="nc_new_conversation">Начать новую беседу</string>
+    <string name="nc_join_via_link">Присоединиться по ссылке</string>
+    <string name="nc_join_via_web">Присоединиться через веб</string>
+
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Выбрать контакты</string>
     <string name="nc_one_contact_selected">контакт выбран</string>
     <string name="nc_more_contacts_selected">контакта(ов) выбрано</string>
+    <string name="nc_contacts_clear">Отчистить</string>
+    <string name="nc_contacts_done">Готово</string>
+
     <!-- Permissions -->
     <string name="nc_permissions">Для выполнения звонка или видеоконференции необходимо предоставить дополнительные разрешения этому приложению. Выберите «Разрешить» в открывшемся диалоге.</string>
     <string name="nc_permissions_audio">Для выполнения звонка необходимо предоставить этому приложению доступ к микрофону. Выберите «Разрешить» в открывшемся диалоге.</string>
@@ -95,6 +105,7 @@
     <!-- Call -->
     <string name="nc_incoming_call">Входящий вызов</string>
     <string name="nc_nick_guest">Гость</string>
+    <string name="nc_public_call">НОВЫЙ ОТКРЫТЫЙ ЗВОНОК</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">канал уведомлений %1$s на %2$s</string>
     <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>
@@ -106,7 +117,10 @@
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
     <string name="nc_ok">ОК</string>
+    <string name="nc_call_name">Позвони мне</string>
+    <string name="nc_proceed">Продолжить</string>
     <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
+    <string name="nc_wrong_link">Ссылка на беседу более не действительна</string>
     <string name="nc_share_subject">Приглашение</string>
     <string name="nc_share_text_pass">\n\nПароль для подключения к звонку: %1$s</string>
 

@@ -61,6 +61,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_no_proxy">geen proxy</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
+    <string name="nc_conversation_link">Conversatie link</string>
     <string name="nc_new_password">Nieuw wachtwoord</string>
     <string name="nc_wrong_password">Onjuist wachtwoord</string>
     <string name="nc_about">Over</string>
@@ -77,9 +78,18 @@ Kies er eentje van een provider.</string>
     <string name="nc_rename">Hernoem gesprek</string>
     <string name="nc_set_password">Instellen wachtwoord</string>
     <string name="nc_change_password">Wijzig een wachtwoord</string>
+    <string name="nc_clear_password">Wachtwoord legen</string>
     <string name="nc_share_link">Deel link</string>
+    <string name="nc_share_link_via">Deel link via</string>
     <string name="nc_make_call_public">Maak gesprek openbaar</string>
+    <string name="nc_make_call_private">Maak gesprek privé</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
+    <string name="nc_new_conversation">Begin een nieuwe conversatie</string>
+    <string name="nc_join_via_link">Deelnemen via link</string>
+    <string name="nc_join_via_web">Deelnemen via web</string>
+
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Selecteer contacten</string>
     <string name="nc_one_contact_selected">contact geselecteerd</string>
     <string name="nc_more_contacts_selected">contacten geselecteerd</string>
     <string name="nc_contacts_clear">Schoonmaken</string>
@@ -99,6 +109,7 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
     <!-- Call -->
     <string name="nc_incoming_call">Inkomend gesprek</string>
     <string name="nc_nick_guest">Gast</string>
+    <string name="nc_public_call">NEW PUBLIEK GESPREK</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
@@ -106,8 +117,16 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
     <string name="nc_notification_channel_calls_description">Toont inkomende gesprekken</string>
     <string name="nc_notification_channel_messages_description">Toont inkomende berichten</string>
 
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_proceed">Verder</string>
+    <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
+    <string name="nc_wrong_link">Conversatie link is niet geldig</string>
+    <string name="nc_share_subject">Gespreksuitnodiging</string>
+    <string name="nc_share_text_pass">\n\nWachtwoord voor het gesprek is: %1$s</string>
+
     <!-- Magical stuff -->
     <string name="nc_empty"></string>
 </resources>
