@@ -21,7 +21,6 @@
 package com.nextcloud.talk.application;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
@@ -29,7 +28,6 @@ import android.util.Log;
 
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
-import com.google.android.gms.security.ProviderInstaller;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
@@ -57,6 +55,8 @@ import javax.inject.Singleton;
 import autodagger.AutoComponent;
 import autodagger.AutoInjector;
 
+//import com.google.android.gms.security.ProviderInstaller;
+
 @AutoComponent(
         modules = {
                 BusModule.class,
@@ -69,7 +69,7 @@ import autodagger.AutoInjector;
 
 @Singleton
 @AutoInjector(NextcloudTalkApplication.class)
-public class NextcloudTalkApplication extends MultiDexApplication implements ProviderInstaller.ProviderInstallListener {
+public class NextcloudTalkApplication extends MultiDexApplication {
     private static final String TAG = NextcloudTalkApplication.class.getSimpleName();
 
     //region Public variables
@@ -112,7 +112,6 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
     @Override
     public void onCreate() {
         super.onCreate();
-        ProviderInstaller.installIfNeededAsync(this, this);
 
         JobManager.create(this).addJobCreator(new MagicJobCreator());
 
@@ -157,15 +156,6 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Pro
         sharedApplication = null;
     }
 
-    @Override
-    public void onProviderInstalled() {
-
-    }
-
-    @Override
-    public void onProviderInstallFailed(int i, Intent intent) {
-
-    }
     //endregion
 
     //region Getters
