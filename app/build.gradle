@@ -125,6 +125,7 @@ dependencies {
 
     implementation 'com.evernote:android-job:1.2.4'
 
+    implementation "com.google.android.gms:play-services-gcm:${googleLibraryVersion}"
     implementation "com.google.firebase:firebase-messaging:${googleLibraryVersion}"
 
     implementation 'com.yarolegovich:lovely-dialog:1.1.0'

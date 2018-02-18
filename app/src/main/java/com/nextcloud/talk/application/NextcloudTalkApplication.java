@@ -21,6 +21,7 @@
 package com.nextcloud.talk.application;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
@@ -28,6 +29,7 @@ import android.util.Log;
 
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
+import com.google.android.gms.security.ProviderInstaller;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
@@ -37,6 +39,7 @@ import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.jobs.CapabilitiesJob;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 import com.nextcloud.talk.jobs.creator.MagicJobCreator;
+import com.nextcloud.talk.utils.DeviceUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserModule;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
@@ -55,8 +58,6 @@ import javax.inject.Singleton;
 import autodagger.AutoComponent;
 import autodagger.AutoInjector;
 
-//import com.google.android.gms.security.ProviderInstaller;
-
 @AutoComponent(
         modules = {
                 BusModule.class,
@@ -69,7 +70,7 @@ import autodagger.AutoInjector;
 
 @Singleton
 @AutoInjector(NextcloudTalkApplication.class)
-public class NextcloudTalkApplication extends MultiDexApplication {
+public class NextcloudTalkApplication extends MultiDexApplication implements ProviderInstaller.ProviderInstallListener {
     private static final String TAG = NextcloudTalkApplication.class.getSimpleName();
 
     //region Public variables
@@ -112,6 +113,7 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        ProviderInstaller.installIfNeededAsync(this, this);
 
         JobManager.create(this).addJobCreator(new MagicJobCreator());
 
@@ -130,6 +132,8 @@ public class NextcloudTalkApplication extends MultiDexApplication {
 
         componentApplication.inject(this);
         refWatcher = LeakCanary.install(this);
+
+        DeviceUtils.ignoreSpecialBatteryFeatures();
 
         new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
         new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
@@ -179,6 +183,16 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+    }
+
+    @Override
+    public void onProviderInstalled() {
+
+    }
+
+    @Override
+    public void onProviderInstallFailed(int i, Intent intent) {
+
     }
     //endregion
 }
