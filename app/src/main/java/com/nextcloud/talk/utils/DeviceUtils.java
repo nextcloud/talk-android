@@ -80,16 +80,21 @@ public class DeviceUtils {
                 @SuppressLint("PrivateApi") Class<?> aClass = Class.forName("com.huawei.systemmanager.optimize.process" +
                         ".ProtectAppControl");
                 if (aClass != null) {
-                    Method isProtected = aClass.getDeclaredMethod("isProtect", String.class);
                     Context applicationContext = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
-                    Object result = isProtected.invoke(aClass, applicationContext.getApplicationContext().getPackageName());
+
+                    Method method = aClass.getMethod("getInstance", Context.class);
+                    // ProtectAppControl instance
+                    Object protectAppControlInstance = method.invoke(null, applicationContext);
+
+                    Method isProtected = aClass.getDeclaredMethod("isProtect", String.class);
+                    Object result = isProtected.invoke(protectAppControlInstance, applicationContext.getPackageName());
                     if (result instanceof Boolean) {
                         boolean booleanResult = (boolean) result;
                         if (!booleanResult) {
                             Method setProtect = aClass.getDeclaredMethod("setProtect", List.class);
                             List<String> appsList = new ArrayList<>();
-                            appsList.add(applicationContext.getApplicationContext().getPackageName());
-                            setProtect.invoke(aClass, appsList);
+                            appsList.add(applicationContext.getPackageName());
+                            setProtect.invoke(protectAppControlInstance, appsList);
                         }
                     }
                 }
