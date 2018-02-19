@@ -36,21 +36,23 @@ public class DeviceUtils {
     private static final String TAG = "DeviceUtils";
 
     public static void ignoreSpecialBatteryFeatures() {
-        if (Build.MANUFACTURER.equalsIgnoreCase("xiaomi")) {
+        if (Build.MANUFACTURER.equalsIgnoreCase("xiaomi") || Build.MANUFACTURER.equalsIgnoreCase("meizu")) {
             try {
                 @SuppressLint("PrivateApi") Class<?> aClass = Class.forName("android.miui.AppOpsUtils");
                 if (aClass != null) {
                     Method getApplicationAutoStart = aClass.getDeclaredMethod("getApplicationAutoStart", Context.class, String.class);
-                    Context applicationContext = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
-                    Object result = getApplicationAutoStart.invoke(aClass, applicationContext, applicationContext.getPackageName());
-                    if (result instanceof Integer) {
-                        Integer integerResult = (Integer) result;
-                        if (integerResult == 0) {
-                            Method setApplicationAutoStartMethod = aClass.getDeclaredMethod("setApplicationAutoStart",
-                                    Context.class, String.class, Boolean.TYPE);
-                            if (setApplicationAutoStartMethod != null) {
-                                setApplicationAutoStartMethod.invoke(aClass, applicationContext, applicationContext.getPackageName(),
-                                        Boolean.TRUE);
+                    if (getApplicationAutoStart != null) {
+                        Context applicationContext = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+                        Object result = getApplicationAutoStart.invoke(aClass, applicationContext, applicationContext.getPackageName());
+                        if (result instanceof Integer) {
+                            Integer integerResult = (Integer) result;
+                            if (integerResult == 0) {
+                                Method setApplicationAutoStartMethod = aClass.getDeclaredMethod("setApplicationAutoStart",
+                                        Context.class, String.class, Boolean.TYPE);
+                                if (setApplicationAutoStartMethod != null) {
+                                    setApplicationAutoStartMethod.invoke(aClass, applicationContext, applicationContext.getPackageName(),
+                                            Boolean.TRUE);
+                                }
                             }
                         }
                     }
