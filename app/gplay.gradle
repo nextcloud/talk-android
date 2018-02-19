@@ -1,0 +1,8 @@
+ext {
+    googleLibraryVersion = '11.8.0'
+}
+
+dependencies {
+  implementation "com.google.android.gms:play-services-gcm:${googleLibraryVersion}"
+  implementation "com.google.firebase:firebase-messaging:${googleLibraryVersion}"
+}

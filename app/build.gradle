@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
+if (getGradle().getStartParameter().getTaskRequests().toString().contains("GPlay")){
+    apply from: 'gplay.gradle'
+}
 
 android {
     compileSdkVersion 27
@@ -12,9 +15,16 @@ android {
         targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        versionCode 26
-        versionName "1.1.0beta1"
+        versionCode 27
+        versionName "1.1.0beta2"
 
+        flavorDimensions "default"
+
+        productFlavors {
+            // used for f-droid
+            Generic
+            GPlay
+        }
         // Enabling multidex support.
         multiDexEnabled true
 
@@ -48,7 +58,6 @@ android {
 
 ext {
     supportLibraryVersion = '27.0.2'
-    googleLibraryVersion = '11.8.0'
 }
 
 
@@ -125,9 +134,6 @@ dependencies {
 
     implementation 'com.evernote:android-job:1.2.4'
 
-    implementation "com.google.android.gms:play-services-gcm:${googleLibraryVersion}"
-    implementation "com.google.firebase:firebase-messaging:${googleLibraryVersion}"
-
     implementation 'com.yarolegovich:lovely-dialog:1.1.0'
     implementation 'com.yarolegovich:lovelyinput:1.0.9'
     implementation 'com.yarolegovich:mp:1.0.9'
@@ -143,4 +149,3 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
-//apply plugin: 'com.google.gms.google-services'
