@@ -6,5 +6,3 @@ dependencies {
   implementation "com.google.android.gms:play-services-gcm:${googleLibraryVersion}"
   implementation "com.google.firebase:firebase-messaging:${googleLibraryVersion}"
 }
-
-apply plugin: 'com.google.gms.google-services'
