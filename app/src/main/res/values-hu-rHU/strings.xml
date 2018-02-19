@@ -61,6 +61,7 @@
     <string name="nc_no_proxy">Nincs proxy</string>
     <string name="nc_username">Felhasználónév</string>
     <string name="nc_password">Jelszó</string>
+    <string name="nc_conversation_link">Beszélgetési link</string>
     <string name="nc_new_password">Új jelszó</string>
     <string name="nc_wrong_password">Hibás jelszó</string>
     <string name="nc_about">Leírás</string>
@@ -83,6 +84,10 @@
     <string name="nc_make_call_public">Hívás nyilvánossá tétele</string>
     <string name="nc_make_call_private">Hívás  priváttá tétele</string>
     <string name="nc_delete_call">Hívás törlése</string>
+    <string name="nc_new_conversation">Új beszélgetés indítása</string>
+    <string name="nc_join_via_link">Csatlakozás linken kersztül</string>
+    <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Kapcsolat kiválasztása</string>
     <string name="nc_one_contact_selected">kapcsolat kiválasztva</string>
@@ -101,6 +106,9 @@
     <!-- Call -->
     <string name="nc_incoming_call">Bejövő hívás</string>
     <string name="nc_nick_guest">Vendég</string>
+    <string name="nc_public_call">ÚJ NYILVÁNOS HÍVÁS</string>
+    <string name="nc_public_call_explanation">Nyilvános hívások segítségével meghívhatsz embereket egy speciálisan összeállított link segítségével.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s a(z) %2$s értesítési csatornán</string>
     <string name="nc_notification_channel_calls">Hívások értesítési csatornája</string>
@@ -110,11 +118,14 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba adódott!</string>
+    <string name="nc_failed_signaling_settings">A célszerver nem támogatja a nyilvános hívásokhoz való csatlakozást mobillal.
+Megpróbálhatod weben keresztül.</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Hívónév</string>
     <string name="nc_proceed">Folytatás</string>
     <string name="nc_call_name_is_same">A megadott név egyezik a korábbival</string>
+    <string name="nc_wrong_link">A beszélgetési link nem érvényes.</string>
     <string name="nc_share_text">Üdv,\n\nSzeretnélek felkérni, hogy csatlakozz egy híváshoz.\n\nCsatlakozhatsz ezen keresztül:
         %1$s/index.php/call/%2$s</string>
     <string name="nc_talk_soon">\n\nHamarosan beszélünk,\n %1$s</string>
