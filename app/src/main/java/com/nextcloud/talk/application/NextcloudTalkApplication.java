@@ -37,9 +37,9 @@ import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.jobs.CapabilitiesJob;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 import com.nextcloud.talk.jobs.creator.MagicJobCreator;
+import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.DeviceUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.database.user.UserModule;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.squareup.leakcanary.LeakCanary;
@@ -137,6 +137,11 @@ public class NextcloudTalkApplication extends MultiDexApplication {
         new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
         new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
 
+        schedulePeriodCapabilitiesJob();
+        new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent(false).startNow().build().schedule();
+    }
+
+    private void schedulePeriodCapabilitiesJob() {
         boolean periodicJobFound = false;
         for (JobRequest jobRequest : JobManager.instance().getAllJobRequestsForTag(CapabilitiesJob.TAG)) {
             if (jobRequest.isPeriodic()) {
@@ -150,7 +155,6 @@ public class NextcloudTalkApplication extends MultiDexApplication {
                     .setPeriodic(TimeUnit.DAYS.toMillis(1), TimeUnit.HOURS.toMillis(1))
                     .build().scheduleAsync();
         }
-        new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent(false).startNow().build().schedule();
     }
 
     @Override
