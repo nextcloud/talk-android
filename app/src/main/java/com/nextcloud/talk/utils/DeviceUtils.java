@@ -40,21 +40,12 @@ public class DeviceUtils {
             try {
                 @SuppressLint("PrivateApi") Class<?> appOpsUtilsClass = Class.forName("android.miui.AppOpsUtils");
                 if (appOpsUtilsClass != null) {
-                    Method getApplicationAutoStart = appOpsUtilsClass.getDeclaredMethod("getApplicationAutoStart", Context.class, String.class);
-                    if (getApplicationAutoStart != null) {
+                    Method setApplicationAutoStartMethod = appOpsUtilsClass.getDeclaredMethod("setApplicationAutoStart", Context.class, String
+                            .class, Boolean.TYPE);
+                    if (setApplicationAutoStartMethod != null) {
                         Context applicationContext = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
-                        Object result = getApplicationAutoStart.invoke(appOpsUtilsClass, applicationContext, applicationContext.getPackageName());
-                        if (result instanceof Integer) {
-                            Integer integerResult = (Integer) result;
-                            if (integerResult == 0) {
-                                Method setApplicationAutoStartMethod = appOpsUtilsClass.getDeclaredMethod("setApplicationAutoStart",
-                                        Context.class, String.class, Boolean.TYPE);
-                                if (setApplicationAutoStartMethod != null) {
-                                    setApplicationAutoStartMethod.invoke(appOpsUtilsClass, applicationContext, applicationContext.getPackageName(),
-                                            Boolean.TRUE);
-                                }
-                            }
-                        }
+                        setApplicationAutoStartMethod.invoke(appOpsUtilsClass, applicationContext, applicationContext
+                                .getPackageName(), Boolean.TRUE);
                     }
                 }
             } catch (ClassNotFoundException e) {
@@ -78,20 +69,11 @@ public class DeviceUtils {
                     if (getInstanceMethod != null) {
                         Object protectAppControlInstance = getInstanceMethod.invoke(null, applicationContext);
 
-                        Method isProtectedMethod = protectAppControlClass.getDeclaredMethod("isProtect", String.class);
-                        if (isProtectedMethod != null) {
-                            Object result = isProtectedMethod.invoke(protectAppControlInstance, applicationContext.getPackageName());
-                            if (result instanceof Boolean) {
-                                boolean booleanResult = (boolean) result;
-                                if (!booleanResult) {
-                                    Method setProtectMethod = protectAppControlClass.getDeclaredMethod("setProtect", List.class);
-                                    if (setProtectMethod != null) {
-                                        List<String> appsList = new ArrayList<>();
-                                        appsList.add(applicationContext.getPackageName());
-                                        setProtectMethod.invoke(protectAppControlInstance, appsList);
-                                    }
-                                }
-                            }
+                        Method setProtectMethod = protectAppControlClass.getDeclaredMethod("setProtect", List.class);
+                        if (setProtectMethod != null) {
+                            List<String> appsList = new ArrayList<>();
+                            appsList.add(applicationContext.getPackageName());
+                            setProtectMethod.invoke(protectAppControlInstance, appsList);
                         }
                     }
                 }
