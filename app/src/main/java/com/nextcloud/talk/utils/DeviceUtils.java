@@ -38,19 +38,19 @@ public class DeviceUtils {
     public static void ignoreSpecialBatteryFeatures() {
         if (Build.MANUFACTURER.equalsIgnoreCase("xiaomi") || Build.MANUFACTURER.equalsIgnoreCase("meizu")) {
             try {
-                @SuppressLint("PrivateApi") Class<?> aClass = Class.forName("android.miui.AppOpsUtils");
-                if (aClass != null) {
-                    Method getApplicationAutoStart = aClass.getDeclaredMethod("getApplicationAutoStart", Context.class, String.class);
+                @SuppressLint("PrivateApi") Class<?> appOpsUtilsClass = Class.forName("android.miui.AppOpsUtils");
+                if (appOpsUtilsClass != null) {
+                    Method getApplicationAutoStart = appOpsUtilsClass.getDeclaredMethod("getApplicationAutoStart", Context.class, String.class);
                     if (getApplicationAutoStart != null) {
                         Context applicationContext = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
-                        Object result = getApplicationAutoStart.invoke(aClass, applicationContext, applicationContext.getPackageName());
+                        Object result = getApplicationAutoStart.invoke(appOpsUtilsClass, applicationContext, applicationContext.getPackageName());
                         if (result instanceof Integer) {
                             Integer integerResult = (Integer) result;
                             if (integerResult == 0) {
-                                Method setApplicationAutoStartMethod = aClass.getDeclaredMethod("setApplicationAutoStart",
+                                Method setApplicationAutoStartMethod = appOpsUtilsClass.getDeclaredMethod("setApplicationAutoStart",
                                         Context.class, String.class, Boolean.TYPE);
                                 if (setApplicationAutoStartMethod != null) {
-                                    setApplicationAutoStartMethod.invoke(aClass, applicationContext, applicationContext.getPackageName(),
+                                    setApplicationAutoStartMethod.invoke(appOpsUtilsClass, applicationContext, applicationContext.getPackageName(),
                                             Boolean.TRUE);
                                 }
                             }
@@ -68,24 +68,30 @@ public class DeviceUtils {
             }
         } else if (Build.MANUFACTURER.equalsIgnoreCase("huawei")) {
             try {
-                @SuppressLint("PrivateApi") Class<?> aClass = Class.forName("com.huawei.systemmanager.optimize.process" +
+                @SuppressLint("PrivateApi") Class<?> protectAppControlClass = Class.forName("com.huawei.systemmanager.optimize.process" +
                         ".ProtectAppControl");
-                if (aClass != null) {
+                if (protectAppControlClass != null) {
                     Context applicationContext = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
 
-                    Method method = aClass.getMethod("getInstance", Context.class);
+                    Method getInstanceMethod = protectAppControlClass.getMethod("getInstance", Context.class);
                     // ProtectAppControl instance
-                    Object protectAppControlInstance = method.invoke(null, applicationContext);
+                    if (getInstanceMethod != null) {
+                        Object protectAppControlInstance = getInstanceMethod.invoke(null, applicationContext);
 
-                    Method isProtected = aClass.getDeclaredMethod("isProtect", String.class);
-                    Object result = isProtected.invoke(protectAppControlInstance, applicationContext.getPackageName());
-                    if (result instanceof Boolean) {
-                        boolean booleanResult = (boolean) result;
-                        if (!booleanResult) {
-                            Method setProtect = aClass.getDeclaredMethod("setProtect", List.class);
-                            List<String> appsList = new ArrayList<>();
-                            appsList.add(applicationContext.getPackageName());
-                            setProtect.invoke(protectAppControlInstance, appsList);
+                        Method isProtectedMethod = protectAppControlClass.getDeclaredMethod("isProtect", String.class);
+                        if (isProtectedMethod != null) {
+                            Object result = isProtectedMethod.invoke(protectAppControlInstance, applicationContext.getPackageName());
+                            if (result instanceof Boolean) {
+                                boolean booleanResult = (boolean) result;
+                                if (!booleanResult) {
+                                    Method setProtectMethod = protectAppControlClass.getDeclaredMethod("setProtect", List.class);
+                                    if (setProtectMethod != null) {
+                                        List<String> appsList = new ArrayList<>();
+                                        appsList.add(applicationContext.getPackageName());
+                                        setProtectMethod.invoke(protectAppControlInstance, appsList);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
