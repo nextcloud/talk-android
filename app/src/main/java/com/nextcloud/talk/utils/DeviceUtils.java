@@ -22,13 +22,11 @@ package com.nextcloud.talk.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.util.Log;
 
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -48,20 +46,11 @@ public class DeviceUtils {
                     if (result instanceof Integer) {
                         Integer integerResult = (Integer) result;
                         if (integerResult == 0) {
-                            Class<ApplicationInfo> clazz = ApplicationInfo.class;
-                            Field[] fields = clazz.getDeclaredFields();
-
-                            for (Field field : fields) {
-                                field.setAccessible(true);
-                                if (field.getName().equals("FLAG_DISABLE_AUTOSTART")) {
-                                    int value = field.getInt(ApplicationInfo.class);
-                                    if (value != 0) {
-                                        field.setInt(ApplicationInfo.class, 0);
-                                        field.setAccessible(false);
-                                    }
-                                    break;
-                                }
-                                field.setAccessible(false);
+                            Method setApplicationAutoStartMethod = aClass.getDeclaredMethod("setApplicationAutoStart",
+                                    Context.class, String.class, Boolean.TYPE);
+                            if (setApplicationAutoStartMethod != null) {
+                                setApplicationAutoStartMethod.invoke(aClass, applicationContext, applicationContext.getPackageName(),
+                                        Boolean.TRUE);
                             }
                         }
                     }
