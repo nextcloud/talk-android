@@ -39,6 +39,7 @@ import com.nextcloud.talk.jobs.PushRegistrationJob;
 import com.nextcloud.talk.jobs.creator.MagicJobCreator;
 import com.nextcloud.talk.utils.DeviceUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.database.user.UserModule;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.squareup.leakcanary.LeakCanary;
@@ -111,6 +112,7 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        new ClosedInterfaceImpl().ProviderInstallerInstallIfNeededAsync();
 
         JobManager.create(this).addJobCreator(new MagicJobCreator());
 

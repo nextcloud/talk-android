@@ -21,11 +21,27 @@
 package com.nextcloud.talk.utils;
 
 
+import android.content.Intent;
+
+import com.google.android.gms.security.ProviderInstaller;
+import com.google.android.gms.security.ProviderInstaller.ProviderInstallListener;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.interfaces.ClosedInterface;
 
-public class MagicProviderInstaller implements ClosedInterface {
+public class ClosedInterfaceImpl implements ClosedInterface, ProviderInstallListener {
     @Override
     public void ProviderInstallerInstallIfNeededAsync() {
-        // does absolutely nothing :)
+        ProviderInstaller.installIfNeededAsync(NextcloudTalkApplication.getSharedApplication().getApplicationContext(),
+                this);
+    }
+
+    @Override
+    public void onProviderInstalled() {
+
+    }
+
+    @Override
+    public void onProviderInstallFailed(int i, Intent intent) {
+
     }
 }
