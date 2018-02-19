@@ -112,7 +112,6 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        new ClosedInterfaceImpl().ProviderInstallerInstallIfNeededAsync();
 
         JobManager.create(this).addJobCreator(new MagicJobCreator());
 
@@ -132,6 +131,7 @@ public class NextcloudTalkApplication extends MultiDexApplication {
         componentApplication.inject(this);
         refWatcher = LeakCanary.install(this);
 
+        new ClosedInterfaceImpl().ProviderInstallerInstallIfNeededAsync();
         DeviceUtils.ignoreSpecialBatteryFeatures();
 
         new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
