@@ -9,13 +9,13 @@
     <string name="nc_server_not_installed">Завершите установку %1$s</string>
     <string name="nc_server_db_upgrade_needed">Обновите базу данных %1$s</string>
     <string name="nc_server_maintenance">Сервер %1$s находится в режиме обслуживания</string>
-    <string name="nc_server_version">Работоспособность %1$s обеспечивается только серверами %2$s версии 13 или более новой</string>
+    <string name="nc_server_version">Работа приложения %1$s возможна только с серверами %2$s версии 13 или старше</string>
     <string name="nc_server_import_account_plain">Импортировать учётную запись</string>
     <string name="nc_server_import_accounts_plain">Импортировать учётные записи</string>
     <string name="nc_server_import_account">Импортировать учётную запись из приложения %1$s </string>
     <string name="nc_server_import_accounts">Импортировать учётные записи из приложения %1$s </string>
-    <string name="nc_server_failed_to_import_account">Не удалось импортировать выбранную учетную запись</string>
-    <string name="nc_Server_account_imported">Выбранная учетная запись теперь доступна</string>
+    <string name="nc_server_failed_to_import_account">Не удалось импортировать выбранную учётную запись</string>
+    <string name="nc_Server_account_imported">Выбранная учётная запись теперь доступна</string>
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
 
     <!-- Account verification -->
@@ -24,17 +24,17 @@
     <string name="nc_nextcloud_talk_app_installed">Найдено приложение %1$s</string>
     <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s не установлено на сервере. Действие отменено.</string>
     <string name="nc_display_name_stored">Отображаемое имя сохранено</string>
-    <string name="nc_display_name_not_stored">Отображаемое имя не сохранено, продолжение невозможно</string>
+    <string name="nc_display_name_not_stored">Не удалось сохранить отображаемое имя, продолжение невозможно</string>
 
     <string name="nc_never">Никогда не использовался</string>
     <string name="nc_search">Поиск</string>
 
     <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
-    <string name="nc_certificate_dialog_text">Вы доверяете неизвестному SSL-сертификату, выпущенному %1$s для %2$s, действителен с %3$s по %4$s?</string>
+    <string name="nc_certificate_dialog_text">Доверять неизвестному сертификату SSL: выпущен %1$s для %2$s, действителен с %3$s по %4$s?</string>
     <string name="nc_yes">Да</string>
     <string name="nc_no">Нет</string>
     <string name="nc_details">Подробности</string>
-    <string name="nc_certificate_error">Действующие настройки SSL не позволяют подключиться</string>
+    <string name="nc_certificate_error">Заданные параметры SSL не позволяют подключиться</string>
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Прокси-сервер</string>
@@ -49,15 +49,15 @@
     <string name="nc_settings_use_credentials_title">Использовать учётные данные</string>
     <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">Переключение учётных записей</string>
-    <string name="nc_settings_reauthorize">Повторный вход в систему</string>
-    <string name="nc_settings_remove_account">Удалить аккаунт</string>
-    <string name="nc_settings_add_account">Добавить новый аккаунт</string>
+    <string name="nc_settings_reauthorize">Выйти и снова войти в систему</string>
+    <string name="nc_settings_remove_account">Удалить учётную запись</string>
+    <string name="nc_settings_add_account">Добавить учётную запись</string>
     <string name="nc_settings_wrong_account">Повторный вход может быть выполнен только в текущую учётную запись</string>
     <string name="nc_settings_no_talk_installed">На сервере, к которому вы пытаетесь подключиться, не установлено приложение «Вызовы»</string>
     <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>
     <string name="nc_account_scheduled_for_deletion">Учётная запись запланирована к удалению и не может быть использована</string>
 
-    <string name="nc_no_proxy">Без прокси-сервера</string>
+    <string name="nc_no_proxy">Не использовать прокси-сервер</string>
     <string name="nc_username">Имя пользователя</string>
     <string name="nc_password">Пароль</string>
     <string name="nc_conversation_link">Ссылка на беседу</string>
@@ -73,16 +73,16 @@
 
     <!-- Room menu -->
     <string name="nc_what">Что бы вы хотели сегодня сделать?</string>
-    <string name="nc_leave">Завершить звонок</string>
-    <string name="nc_rename">Переименовать звонок</string>
+    <string name="nc_leave">Завершить вызов</string>
+    <string name="nc_rename">Переименовать вызов</string>
     <string name="nc_set_password">Задать пароль</string>
     <string name="nc_change_password">Сменить пароль</string>
     <string name="nc_clear_password">Очистить пароль</string>
     <string name="nc_share_link">Поделиться ссылкой</string>
     <string name="nc_share_link_via">Поделиться ссылкой</string>
-    <string name="nc_make_call_public">Сделать звонок общедоступным</string>
-    <string name="nc_make_call_private">Сделать звонок закрытым</string>
-    <string name="nc_delete_call">Удалить звонок</string>
+    <string name="nc_make_call_public">Сделать вызов общедоступным</string>
+    <string name="nc_make_call_private">Сделать вызов закрытым</string>
+    <string name="nc_delete_call">Удалить вызов</string>
     <string name="nc_new_conversation">Начать новую беседу</string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
     <string name="nc_join_via_web">Присоединиться через веб</string>
@@ -95,17 +95,19 @@
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Для выполнения звонка или видеоконференции необходимо предоставить дополнительные разрешения этому приложению. Выберите «Разрешить» в открывшемся диалоге.</string>
-    <string name="nc_permissions_audio">Для выполнения звонка необходимо предоставить этому приложению доступ к микрофону. Выберите «Разрешить» в открывшемся диалоге.</string>
-    <string name="nc_permissions_video">Для выполнения видеозвонка необходимо предоставить этому приложению доступ к камере. Выберите «Разрешить» в открывшемся диалоге.</string>
-    <string name="nc_camera_permission_permanently_denied">Для выполнения видеозвонка требуется получение дополнительных системных разрешений. Разрешите приложению доступ к камере в системных настройках.</string>
-    <string name="nc_microphone_permission_permanently_denied">Для выполнения звонка требуется получение дополнительных системных разрешений. Разрешите приложению доступ к микрофону  в системных настройках.</string>
+    <string name="nc_permissions">Для выполнения вызова или видеоконференции необходимо предоставить дополнительные разрешения этому приложению. Выберите «Разрешить» в открывшемся диалоге.</string>
+    <string name="nc_permissions_audio">Для выполнения вызова необходимо предоставить этому приложению доступ к микрофону. Выберите «Разрешить» в открывшемся диалоге.</string>
+    <string name="nc_permissions_video">Для выполнения видеовызова необходимо предоставить этому приложению доступ к камере. Выберите «Разрешить» в открывшемся диалоге.</string>
+    <string name="nc_camera_permission_permanently_denied">Для выполнения видеовызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к камере в системных настройках.</string>
+    <string name="nc_microphone_permission_permanently_denied">Для выполнения вызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к микрофону  в системных настройках.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
 
     <!-- Call -->
     <string name="nc_incoming_call">Входящий вызов</string>
     <string name="nc_nick_guest">Гость</string>
-    <string name="nc_public_call">НОВЫЙ ОТКРЫТЫЙ ЗВОНОК</string>
+    <string name="nc_public_call">НОВЫЙ ОТКРЫТЫЙ ВЫЗОВ</string>
+    <string name="nc_public_call_explanation">К открытому вызову могут присоединиться внешние участники, получившие специальную ссылку-приглашение.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">канал уведомлений %1$s на %2$s</string>
     <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>
@@ -115,14 +117,18 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
+    <string name="nc_failed_signaling_settings">Сервер не поддерживает присоединение к открытому вызову с мобильного телефона. Попробуйте повторить через веб-браузер.</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
     <string name="nc_ok">ОК</string>
-    <string name="nc_call_name">Позвони мне</string>
+    <string name="nc_call_name">Название вызова</string>
     <string name="nc_proceed">Продолжить</string>
     <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
     <string name="nc_wrong_link">Ссылка на беседу более не действительна</string>
-    <string name="nc_share_subject">Приглашение</string>
-    <string name="nc_share_text_pass">\n\nПароль для подключения к звонку: %1$s</string>
+    <string name="nc_share_text">Я приглашаю Вас поговорить со мной. Чтобы присоединиться к разговору воспользуйтесь ссылкой: %1$s/index.php/call/%2$s</string>
+    <string name="nc_talk_soon">\n\n До связи, \n
+%1$s.</string>
+    <string name="nc_share_subject">Приглашение поговорить</string>
+    <string name="nc_share_text_pass">\n\nПароль для подключения к вызову: %1$s</string>
 
     <!-- Magical stuff -->
     <string name="nc_empty"></string>
