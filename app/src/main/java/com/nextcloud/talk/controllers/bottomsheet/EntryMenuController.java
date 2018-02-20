@@ -82,8 +82,12 @@ public class EntryMenuController extends BaseController {
     private String name;
     private String callUrl;
 
+    private Bundle originalBundle;
+
     public EntryMenuController(Bundle args) {
         super(args);
+        originalBundle = args;
+
         this.operationCode = args.getInt(BundleKeys.KEY_OPERATION_CODE);
         if (args.containsKey(BundleKeys.KEY_ROOM)) {
             this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
@@ -130,7 +134,7 @@ public class EntryMenuController extends BaseController {
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
-        } else if (operationCode != 7 && operationCode != 10) {
+        } else if (operationCode != 7 && operationCode != 10 && operationCode != 11) {
             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
             if (operationCode == 4 || operationCode == 6) {
@@ -153,12 +157,19 @@ public class EntryMenuController extends BaseController {
                 getActivity().startActivity(intent);
                 eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
             }
-        } else {
+        } else if (operationCode != 11) {
             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
             bundle.putString(BundleKeys.KEY_CALL_URL, editText.getText().toString());
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
+
+        } else if (operationCode == 11) {
+            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+            originalBundle.putString(BundleKeys.KEY_CONVERSATION_NAME, editText.getText().toString());
+            getRouter().pushController(RouterTransaction.with(new OperationsMenuController(originalBundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
 
@@ -239,6 +250,7 @@ public class EntryMenuController extends BaseController {
 
         String labelText = "";
         switch (operationCode) {
+            case 11:
             case 2:
                 labelText = getResources().getString(R.string.nc_call_name);
                 break;

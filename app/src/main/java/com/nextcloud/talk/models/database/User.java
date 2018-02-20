@@ -59,7 +59,7 @@ public interface User extends Parcelable, Persistable, Serializable {
 
     boolean getScheduledForDeletion();
 
-    default boolean checkForSpreedCapability(String capabilityName) {
+    default boolean hasSpreedCapabilityWithName(String capabilityName) {
         try {
             Capabilities capabilities = LoganSquare.parse(this.getCapabilities(), Capabilities.class);
             if (capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null) {

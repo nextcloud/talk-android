@@ -86,6 +86,7 @@ public class Room {
         return (canModerate() && ((participants != null && participants.size() > 2) || numberOfGuests > 0));
     }
 
+    @Parcel
     public enum RoomType {
         DUMMY,
         ROOM_TYPE_ONE_TO_ONE_CALL,

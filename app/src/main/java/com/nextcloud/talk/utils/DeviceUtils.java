@@ -40,8 +40,8 @@ public class DeviceUtils {
             try {
                 @SuppressLint("PrivateApi") Class<?> appOpsUtilsClass = Class.forName("android.miui.AppOpsUtils");
                 if (appOpsUtilsClass != null) {
-                    Method setApplicationAutoStartMethod = appOpsUtilsClass.getDeclaredMethod("setApplicationAutoStart", Context.class, String
-                            .class, Boolean.TYPE);
+                    Method setApplicationAutoStartMethod = appOpsUtilsClass.getMethod("setApplicationAutoStart", Context
+                            .class, String.class, Boolean.TYPE);
                     if (setApplicationAutoStartMethod != null) {
                         Context applicationContext = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
                         setApplicationAutoStartMethod.invoke(appOpsUtilsClass, applicationContext, applicationContext

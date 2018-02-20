@@ -42,9 +42,12 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -55,6 +58,8 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -106,6 +111,12 @@ public class OperationsMenuController extends BaseController {
 
     private Disposable disposable;
 
+    private Room.RoomType conversationType;
+    private ArrayList<String> invitedUsers = new ArrayList<>();
+    private String conversationName;
+
+    private String credentials;
+
     public OperationsMenuController(Bundle args) {
         super(args);
         this.operationCode = args.getInt(BundleKeys.KEY_OPERATION_CODE);
@@ -115,6 +126,15 @@ public class OperationsMenuController extends BaseController {
 
         this.callPassword = args.getString(BundleKeys.KEY_CALL_PASSWORD, "");
         this.callUrl = args.getString(BundleKeys.KEY_CALL_URL, "");
+
+        this.conversationName = args.getString(BundleKeys.KEY_CONVERSATION_NAME, "");
+        if (args.containsKey(BundleKeys.KEY_INVITED_PARTICIPANTS)) {
+            this.invitedUsers = args.getStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS);
+        }
+
+        if (args.containsKey(BundleKeys.KEY_CONVERSATION_TYPE)) {
+            this.conversationType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_CONVERSATION_TYPE));
+        }
     }
 
     @Override
@@ -144,7 +164,7 @@ public class OperationsMenuController extends BaseController {
         }
 
         if (userEntity != null) {
-            String credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
+            credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
 
             if (!TextUtils.isEmpty(baseUrl) && !baseUrl.equals(userEntity.getBaseUrl())) {
                 credentials = null;
@@ -282,6 +302,84 @@ public class OperationsMenuController extends BaseController {
                                 }
                             });
                     break;
+                case 11:
+                    RetrofitBucket retrofitBucket;
+                    boolean isGroupCallWorkaround = false;
+                    if (conversationType.equals(Room.RoomType.ROOM_PUBLIC_CALL) ||
+                            !userEntity.hasSpreedCapabilityWithName("empty-group-room")) {
+                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(),
+                                "3", null, conversationName);
+                    } else {
+                        String roomType = "2";
+                        if (!userEntity.hasSpreedCapabilityWithName("empty-group-room")) {
+                            isGroupCallWorkaround = true;
+                            roomType = "3";
+                        }
+                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(),
+                                roomType, null, conversationName);
+                    }
+
+                    String finalCredentials1 = credentials;
+                    final boolean isGroupCallWorkaroundFinal = isGroupCallWorkaround;
+                    ncApi.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .retry(1)
+                            .subscribe(new Observer<RoomOverall>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(RoomOverall roomOverall) {
+                                    room = roomOverall.getOcs().getData();
+                                    if (conversationType.equals(Room.RoomType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
+                                        ncApi.makeRoomPrivate(finalCredentials1, ApiUtils.getUrlForRoomVisibility
+                                                (userEntity.getBaseUrl(), room.getToken()))
+                                                .subscribeOn(Schedulers.newThread())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .retry(1)
+                                                .subscribe(new Observer<GenericOverall>() {
+                                                    @Override
+                                                    public void onSubscribe(Disposable d) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onNext(GenericOverall genericOverall) {
+                                                        inviteUsersToAConversation();
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Throwable e) {
+                                                        showResultImage(false, false);
+                                                        dispose();
+                                                    }
+
+                                                    @Override
+                                                    public void onComplete() {
+                                                        dispose();
+                                                    }
+                                                });
+                                    } else {
+                                        inviteUsersToAConversation();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    showResultImage(false, false);
+                                    dispose();
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    dispose();
+                                }
+                            });
+
+                    break;
                 case 99:
                     ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, conversationToken),
                             callPassword)
@@ -353,12 +451,59 @@ public class OperationsMenuController extends BaseController {
         dispose();
     }
 
+    private void inviteUsersToAConversation() {
+        RetrofitBucket retrofitBucket;
+        final ArrayList<String> localInvitedUsers = invitedUsers;
+        if (localInvitedUsers.size() > 0) {
+            for (int i = 0; i < invitedUsers.size(); i++) {
+                final String userId = invitedUsers.get(i);
+                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(userEntity.getBaseUrl(), room.getToken(),
+                        userId);
+
+                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(1)
+                        .subscribe(new Observer<AddParticipantOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(AddParticipantOverall addParticipantOverall) {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                dispose();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                synchronized (localInvitedUsers) {
+                                    localInvitedUsers.remove(userId);
+                                }
+
+                                if (localInvitedUsers.size() == 0) {
+                                    initiateCall();
+                                }
+                                dispose();
+                            }
+                        });
+            }
+        } else {
+            showResultImage(true, false);
+        }
+    }
+
     private void initiateCall() {
         eventBus.post(new BottomSheetLockEvent(true, 0, true, true));
         Bundle bundle = new Bundle();
         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
-        if (!baseUrl.equals(userEntity.getBaseUrl())) {
+        if (baseUrl != null && !baseUrl.equals(userEntity.getBaseUrl())) {
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
         }
         bundle.putString(BundleKeys.KEY_CALL_SESSION, callSession);

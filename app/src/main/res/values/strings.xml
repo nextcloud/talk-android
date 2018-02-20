@@ -122,7 +122,7 @@
         You may attempt to join the call via web browser.</string>
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Call name</string>
+    <string name="nc_call_name">Conversation name</string>
     <string name="nc_proceed">Proceed</string>
     <string name="nc_call_name_is_same">The name you entered is the same as the existing one</string>
     <string name="nc_wrong_link">Conversation link is not valid</string>

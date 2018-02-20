@@ -42,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -50,6 +51,7 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
+import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.items.EmptyFooterItem;
@@ -59,9 +61,11 @@ import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
@@ -110,6 +114,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Inject
     NcApi ncApi;
+
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -132,6 +137,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private Disposable cacheQueryDisposable;
     private FlexibleAdapter adapter;
     private List<AbstractFlexibleItem> contactItems = new ArrayList<>();
+    private BottomSheet bottomSheet;
+    private View view;
 
     private SmoothScrollLinearLayoutManager layoutManager;
 
@@ -232,7 +239,26 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Optional
     @OnClick(R.id.done_button)
     public void onDoneButtonClick() {
+        Bundle bundle = new Bundle();
+        Room.RoomType roomType;
+        if (isPublicCall) {
+            roomType = Room.RoomType.ROOM_PUBLIC_CALL;
+        } else {
+            roomType = Room.RoomType.ROOM_GROUP_CALL;
+        }
+        bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));
+        ArrayList<String> userIds = new ArrayList<>();
+        Set<Integer> selectedPositions = adapter.getSelectedPositionsAsSet();
+        for (int selectedPosition : selectedPositions) {
+            if (adapter.getItem(selectedPosition) instanceof UserItem) {
+                UserItem userItem = (UserItem) adapter.getItem(selectedPosition);
+                userIds.add(userItem.getModel().getUserId());
+            }
 
+        }
+        bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIds);
+        bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 11);
+        prepareAndShowBottomSheetWithBundle(bundle);
     }
 
     private void initSearchView() {
@@ -541,7 +567,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             if (!isNewConversationView) {
                 UserItem userItem = (UserItem) adapter.getItem(position);
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
-                        userItem.getModel().getUserId());
+                        userItem.getModel().getUserId(), null);
                 ncApi.createRoom(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.newThread())
@@ -634,5 +660,26 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     public void onFastScrollerStateChange(boolean scrolling) {
         swipeRefreshLayout.setEnabled(!scrolling);
+    }
+
+
+    private void prepareAndShowBottomSheetWithBundle(Bundle bundle) {
+        if (view == null) {
+            view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
+        }
+
+        getChildRouter((ViewGroup) view).setRoot(
+                RouterTransaction.with(new EntryMenuController(bundle))
+                        .popChangeHandler(new VerticalChangeHandler())
+                        .pushChangeHandler(new VerticalChangeHandler()));
+
+        if (bottomSheet == null) {
+            bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
+        }
+
+        bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        bottomSheet.show();
+        bottomSheet.findViewById(R.id.extended_edit_text).invalidate();
     }
 }

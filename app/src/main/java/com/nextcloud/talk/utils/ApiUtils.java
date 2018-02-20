@@ -20,6 +20,7 @@
 package com.nextcloud.talk.utils;
 
 import android.net.Uri;
+import android.support.annotation.Nullable;
 
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
@@ -73,13 +74,21 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token;
     }
 
-    public static RetrofitBucket getRetrofitBucketForCreateRoom(String baseUrl, String roomType, String invite) {
+    public static RetrofitBucket getRetrofitBucketForCreateRoom(String baseUrl, String roomType,
+                                                                @Nullable String invite,
+                                                                @Nullable String conversationName) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
         retrofitBucket.setUrl(baseUrl + ocsApiVersion + spreedApiVersion + "/room");
         Map<String, String> queryMap = new HashMap<>();
 
         queryMap.put("roomType", roomType);
-        queryMap.put("invite", invite);
+        if (invite != null) {
+            queryMap.put("invite", invite);
+        }
+
+        if (conversationName != null) {
+            queryMap.put("roomName", conversationName);
+        }
 
         retrofitBucket.setQueryMap(queryMap);
 

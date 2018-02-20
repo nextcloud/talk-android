@@ -26,14 +26,14 @@ public class BundleKeys {
     public static final String KEY_BASE_URL = "KEY_BASE_URL";
     public static final String KEY_IS_ACCOUNT_IMPORT = "KEY_IS_ACCOUNT_IMPORT";
     public static final String KEY_ORIGINAL_PROTOCOL = "KEY_ORIGINAL_PROTOCOL";
-    public static final String KEY_ROOM = "KEY_ROOM";
+    public static final String KEY_ROOM = "KEY_CONVERSATION";
     public static final String KEY_OPERATION_CODE = "KEY_OPERATION_CODE";
     public static final String KEY_MENU_TYPE = "KEY_MENU_TYPE";
     public static final String KEY_SHARE_INTENT = "KEY_SHARE_INTENT";
     public static final String KEY_APP_ITEM_PACKAGE_NAME = "KEY_APP_ITEM_PACKAGE_NAME";
     public static final String KEY_APP_ITEM_NAME = "KEY_APP_ITEM_NAME";
-    public static final String KEY_CALL_PASSWORD = "KEY_CALL_PASSWORD";
-    public static final String KEY_CALL_SESSION = "KEY_CALL_SESSION";
+    public static final String KEY_CALL_PASSWORD = "KEY_CONVERSATION_PASSWORD";
+    public static final String KEY_CALL_SESSION = "KEY_CONVERSATION_SESSION";
     public static final String KEY_ROOM_TOKEN = "KEY_ROOM_TOKEN";
     public static final String KEY_USER_ENTITY = "KEY_USER_ENTITY";
     public static final String KEY_NEW_CONVERSATION = "KEY_NEW_CONVERSATION";
@@ -43,4 +43,7 @@ public class BundleKeys {
     public static final String KEY_NOTIFICATION_SUBJECT = "KEY_NOTIFICATION_SUBJECT";
     public static final String KEY_NOTIFICATION_SIGNATURE = "KEY_NOTIFICATION_SIGNATURE";
     public static final String KEY_INTERNAL_USER_ID = "KEY_INTERNAL_USER_ID";
+    public static final String KEY_CONVERSATION_TYPE = "KEY_CONVERSATION_TYPE";
+    public static final String KEY_INVITED_PARTICIPANTS = "KEY_INVITED_PARTICIPANTS";
+    public static final String KEY_CONVERSATION_NAME = "KEY_CONVERSATION_NAME";
 }
