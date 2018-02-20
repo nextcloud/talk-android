@@ -680,6 +680,5 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         bottomSheet.show();
-        bottomSheet.findViewById(R.id.extended_edit_text).invalidate();
     }
 }
