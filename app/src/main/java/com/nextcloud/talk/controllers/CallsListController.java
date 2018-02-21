@@ -146,12 +146,11 @@ public class CallsListController extends BaseController implements SearchView.On
 
         userEntity = userUtils.getCurrentUser();
 
-        if (userEntity == null) {
-            if (getParentController() != null && getParentController().getRouter() != null) {
-                getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
-                        .pushChangeHandler(new HorizontalChangeHandler())
-                        .popChangeHandler(new HorizontalChangeHandler())));
-            }
+        if (userEntity == null &&
+                getParentController() != null && getParentController().getRouter() != null) {
+            getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler())));
         }
 
         if (adapter == null) {
@@ -359,12 +358,11 @@ public class CallsListController extends BaseController implements SearchView.On
     private void dispose(@Nullable Disposable disposable) {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
-        } else if (disposable == null) {
+        } else if (disposable == null &&
+                roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed() {
+            roomsQueryDisposable.dispose();
+            roomsQueryDisposable = null;
 
-            if (roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed()) {
-                roomsQueryDisposable.dispose();
-                roomsQueryDisposable = null;
-            }
         }
     }
 

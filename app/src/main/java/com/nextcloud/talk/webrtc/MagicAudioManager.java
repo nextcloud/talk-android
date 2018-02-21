@@ -545,14 +545,15 @@ public class MagicAudioManager {
             bluetoothManager.updateDevice();
         }
 
-        if (needBluetoothAudioStart && !needBluetoothAudioStop) {
-            // Attempt to start Bluetooth SCO audio (takes a few second to start).
-            if (!bluetoothManager.startScoAudio()) {
-                // Remove BLUETOOTH from list of available devices since SCO failed.
-                audioDevices.remove(AudioDevice.BLUETOOTH);
-                audioDeviceSetUpdated = true;
-            }
+        // Attempt to start Bluetooth SCO audio (takes a few second to start).
+        if (needBluetoothAudioStart &&
+                !needBluetoothAudioStop &&
+                !bluetoothManager.startScoAudio()) {
+            // Remove BLUETOOTH from list of available devices since SCO failed.
+            audioDevices.remove(AudioDevice.BLUETOOTH);
+            audioDeviceSetUpdated = true;
         }
+    }
 
         // Update selected audio device.
         AudioDevice newAudioDevice = selectedAudioDevice;
