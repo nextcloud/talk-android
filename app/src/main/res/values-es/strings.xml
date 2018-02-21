@@ -6,7 +6,7 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Dirección del servidor</string>
-    <string name="nc_server_not_installed">Por favor finaliza la instalación de %1$s</string>
+    <string name="nc_server_not_installed">Por favor, finaliza la instalación de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza la base de datos de %1$s</string>
     <string name="nc_server_maintenance">Por favor pon %1$s fuera de mantenimiento</string>
     <string name="nc_server_version">%1$s sólo trabaja con %2$s 13 y superior</string>

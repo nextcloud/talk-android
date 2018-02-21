@@ -34,6 +34,8 @@
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nej</string>
     <string name="nc_details">Detaljer</string>
+    <string name="nc_certificate_error">Dina SSL-inställningar förhindrade anslutning</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_key">proxy_type</string>
@@ -54,6 +56,9 @@
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Användarnamn</string>
     <string name="nc_password">Lösenord</string>
+    <string name="nc_conversation_link">Konversationslänk</string>
+    <string name="nc_new_password">Nytt lösenord</string>
+    <string name="nc_wrong_password">Fel lösenord</string>
     <string name="nc_about">Om</string>
     <string name="nc_privacy">Integritet</string>
     <string name="nc_get_source_code">Hämta källkod</string>
@@ -66,9 +71,15 @@
     <string name="nc_what">Vad vill du göra idag?</string>
     <string name="nc_leave">Lämna samtal</string>
     <string name="nc_rename">Döp om samtal</string>
+    <string name="nc_set_password">Sätt ett lösenord</string>
+    <string name="nc_change_password">Ändra ett lösenord</string>
+    <string name="nc_clear_password">Rensa lösenord</string>
     <string name="nc_share_link">Dela länk</string>
+    <string name="nc_share_link_via">Dela länk via</string>
     <string name="nc_make_call_public">Gör samtal offentligt</string>
+    <string name="nc_make_call_private">Gör samtal privat</string>
     <string name="nc_delete_call">Radera samtal</string>
+    <string name="nc_new_conversation">Starta en ny konversation</string>
     <string name="nc_one_contact_selected">kontakt vald</string>
     <string name="nc_more_contacts_selected">kontakter valda</string>
     <string name="nc_permissions_settings">Öppna inställningar</string>
