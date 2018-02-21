@@ -113,8 +113,6 @@ public class CallsListController extends BaseController implements SearchView.On
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
 
-    private SmoothScrollLinearLayoutManager layoutManager;
-
     private UserEntity userEntity;
     private Disposable roomsQueryDisposable;
     private FlexibleAdapter<CallItem> adapter;
@@ -332,7 +330,8 @@ public class CallsListController extends BaseController implements SearchView.On
     }
 
     private void prepareViews() {
-        layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
+        SmoothScrollLinearLayoutManager layoutManager =
+                new SmoothScrollLinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
