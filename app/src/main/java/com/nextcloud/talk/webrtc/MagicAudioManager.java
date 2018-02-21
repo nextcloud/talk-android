@@ -624,8 +624,8 @@ public class MagicAudioManager {
         @Override
         public void onReceive(Context context, Intent intent) {
             int state = intent.getIntExtra("state", STATE_UNPLUGGED);
-            int microphone = intent.getIntExtra("microphone", HAS_NO_MIC);
-            String name = intent.getStringExtra("name");
+            // int microphone = intent.getIntExtra("microphone", HAS_NO_MIC);
+            // String name = intent.getStringExtra("name");
             hasWiredHeadset = (state == STATE_PLUGGED);
             updateAudioDeviceState();
         }
