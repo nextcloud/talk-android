@@ -36,7 +36,6 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class NewCallHeaderItem extends AbstractHeaderItem<NewCallHeaderItem.HeaderViewHolder>
         implements IHeader<NewCallHeaderItem.HeaderViewHolder> {
-    private static final String TAG = "NewCallHeaderItem";
 
     HeaderViewHolder headerViewHolder;
 

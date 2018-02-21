@@ -56,7 +56,6 @@ import java.util.Set;
 public class MagicAudioManager {
     private static final String TAG = "MagicAudioManager";
     private static final String SPEAKERPHONE_AUTO = "auto";
-    private static final String SPEAKERPHONE_TRUE = "true";
     private static final String SPEAKERPHONE_FALSE = "false";
     private final Context magicContext;
     // Contains speakerphone setting: auto, true or false
@@ -91,7 +90,7 @@ public class MagicAudioManager {
     private MagicProximitySensor proximitySensor = null;
     // Contains a list of available audio devices. A Set collection is used to
     // avoid duplicate elements.
-    private Set<AudioDevice> audioDevices = new HashSet<AudioDevice>();
+    private Set<AudioDevice> audioDevices = new HashSet<>();
     // Broadcast receiver for wired headset intent broadcasts.
     private BroadcastReceiver wiredHeadsetReceiver;
     // Callback method for changes in audio focus.
@@ -620,7 +619,6 @@ public class MagicAudioManager {
         private static final int STATE_UNPLUGGED = 0;
         private static final int STATE_PLUGGED = 1;
         private static final int HAS_NO_MIC = 0;
-        private static final int HAS_MIC = 1;
 
         @Override
         public void onReceive(Context context, Intent intent) {

@@ -79,8 +79,6 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private MenuType menuType;
     private Intent shareIntent;
 
-    private UserEntity currentUser;
-
     public CallMenuController(Bundle args) {
         super(args);
         this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
@@ -98,8 +96,6 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-
-        currentUser = userUtils.getCurrentUser();
         prepareViews();
     }
 

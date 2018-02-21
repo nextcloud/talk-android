@@ -53,9 +53,7 @@ public class MagicPeerConnectionWrapper {
     private static String TAG = "MagicPeerConnectionWrapper";
     List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
-    private List<PeerConnection.IceServer> iceServers;
     private String sessionId;
-    private String localSession;
     private String nick;
     private MediaConstraints mediaConstraints;
     private DataChannel magicDataChannel;
@@ -73,8 +71,6 @@ public class MagicPeerConnectionWrapper {
                                       MediaConstraints mediaConstraints,
                                       String sessionId, String localSession, MediaStream mediaStream) {
 
-        this.iceServers = iceServerList;
-        this.localSession = localSession;
         this.localMediaStream = mediaStream;
 
         this.sessionId = sessionId;

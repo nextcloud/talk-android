@@ -68,7 +68,6 @@ import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class OperationsMenuController extends BaseController {
-    private static final String TAG = "OperationsMenuController";
 
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;

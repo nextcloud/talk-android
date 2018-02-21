@@ -122,7 +122,6 @@ public class CallsListController extends BaseController implements SearchView.On
 
     private BottomSheet bottomSheet;
     private MenuItem searchItem;
-    private Menu menuVariable;
     private SearchView searchView;
     private String searchQuery;
 
@@ -247,7 +246,6 @@ public class CallsListController extends BaseController implements SearchView.On
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
-        menuVariable = menu;
         searchItem = menu.findItem(R.id.action_search);
         initSearchView();
     }

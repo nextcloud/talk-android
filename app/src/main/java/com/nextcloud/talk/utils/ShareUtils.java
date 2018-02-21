@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Set;
 
 public class ShareUtils {
-    private static final String TAG = "ShareUtils";
 
     public static String getStringForIntent(Context context, @Nullable String password, UserUtils userUtils, Room
             room) {
