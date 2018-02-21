@@ -21,5 +21,5 @@
 package com.nextcloud.talk.interfaces;
 
 public interface ClosedInterface {
-    void ProviderInstallerInstallIfNeededAsync();
+    void providerInstallerInstallIfNeededAsync();
 }

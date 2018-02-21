@@ -30,7 +30,7 @@ import com.nextcloud.talk.interfaces.ClosedInterface;
 
 public class ClosedInterfaceImpl implements ClosedInterface, ProviderInstallListener {
     @Override
-    public void ProviderInstallerInstallIfNeededAsync() {
+    public void providerInstallerInstallIfNeededAsync() {
         ProviderInstaller.installIfNeededAsync(NextcloudTalkApplication.getSharedApplication().getApplicationContext(),
                 this);
     }
