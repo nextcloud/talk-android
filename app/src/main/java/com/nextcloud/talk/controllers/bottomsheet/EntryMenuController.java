@@ -59,7 +59,6 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class EntryMenuController extends BaseController {
-    private static final String TAG = "EntryMenuController";
 
     @BindView(R.id.ok_button)
     Button proceedButton;

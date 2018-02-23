@@ -184,19 +184,17 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         userEntity = userUtils.getCurrentUser();
 
-        if (userEntity == null) {
-            if (getParentController().getRouter() != null) {
-                getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
-                        .pushChangeHandler(new HorizontalChangeHandler())
-                        .popChangeHandler(new HorizontalChangeHandler())));
-            }
+        if (userEntity == null &&
+                getParentController() != null && getParentController().getRouter() != null) {
+            getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler())));
         }
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
             adapter.setNotifyChangeOfUnfilteredItems(true)
                     .setMode(SelectableAdapter.Mode.MULTI);
-
 
             if (userEntity != null) {
                 fetchData();

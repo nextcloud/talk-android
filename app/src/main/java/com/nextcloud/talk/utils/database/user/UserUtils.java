@@ -37,7 +37,6 @@ import io.requery.query.Result;
 import io.requery.reactivex.ReactiveEntityStore;
 
 public class UserUtils {
-    private static final String TAG = "UserUtils";
     private ReactiveEntityStore<Persistable> dataStore;
 
     UserUtils(ReactiveEntityStore<Persistable> dataStore) {

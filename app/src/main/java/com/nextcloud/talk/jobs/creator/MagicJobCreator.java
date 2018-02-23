@@ -31,7 +31,6 @@ import com.nextcloud.talk.jobs.NotificationJob;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 
 public class MagicJobCreator implements JobCreator {
-    private static final String TAG = "MagicJobCreator";
 
     @Nullable
     @Override

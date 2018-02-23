@@ -33,7 +33,6 @@ import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicFirebaseInstanceIDService extends FirebaseInstanceIdService {
-    private static final String TAG = "MagicFirebaseInstanceIDService";
 
     @Inject
     AppPreferences appPreferences;

@@ -761,7 +761,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void joinRoomAndCall() {
-        if (callSession.equals("0")) {
+        if ("0".equals(callSession)) {
             ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken), null)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())

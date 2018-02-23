@@ -347,7 +347,6 @@ public class PushUtils {
         if (readPublicKey) {
             keyString = keyString.replaceAll("\\n", "").replace("-----BEGIN PUBLIC KEY-----",
                     "").replace("-----END PUBLIC KEY-----", "");
-            ;
         } else {
             keyString = keyString.replaceAll("\\n", "").replace("-----BEGIN PRIVATE KEY-----",
                     "").replace("-----END PRIVATE KEY-----", "");

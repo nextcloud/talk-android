@@ -30,7 +30,6 @@ import com.nextcloud.talk.jobs.NotificationJob;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 public class MagicFirebaseMessagingService extends FirebaseMessagingService {
-    private static final String TAG = "MagicFirebaseMessagingService";
 
     @SuppressLint("LongLogTag")
     @Override

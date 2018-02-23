@@ -65,7 +65,6 @@ import io.reactivex.disposables.Disposable;
 @AutoInjector(NextcloudTalkApplication.class)
 public class SwitchAccountController extends BaseController {
 
-    private static final String TAG = "SwitchAccountController";
     @Inject
     UserUtils userUtils;
 

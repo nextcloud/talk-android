@@ -89,6 +89,7 @@ class SSLSocketFactoryCompat(trustManager: X509TrustManager) : SSLSocketFactory(
                         cipherSuites = _cipherSuites.toTypedArray()
                     }
                 } catch (e: IOException) {
+                    // Exception is to be ignored
                 } finally {
                     socket?.close()     // doesn't implement Closeable on all supported Android versions
                 }

@@ -113,8 +113,6 @@ public class CallsListController extends BaseController implements SearchView.On
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
 
-    private SmoothScrollLinearLayoutManager layoutManager;
-
     private UserEntity userEntity;
     private Disposable roomsQueryDisposable;
     private FlexibleAdapter<CallItem> adapter;
@@ -122,7 +120,6 @@ public class CallsListController extends BaseController implements SearchView.On
 
     private BottomSheet bottomSheet;
     private MenuItem searchItem;
-    private Menu menuVariable;
     private SearchView searchView;
     private String searchQuery;
 
@@ -149,12 +146,11 @@ public class CallsListController extends BaseController implements SearchView.On
 
         userEntity = userUtils.getCurrentUser();
 
-        if (userEntity == null) {
-            if (getParentController() != null && getParentController().getRouter() != null) {
-                getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
-                        .pushChangeHandler(new HorizontalChangeHandler())
-                        .popChangeHandler(new HorizontalChangeHandler())));
-            }
+        if (userEntity == null &&
+                getParentController() != null && getParentController().getRouter() != null) {
+            getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler())));
         }
 
         if (adapter == null) {
@@ -247,7 +243,6 @@ public class CallsListController extends BaseController implements SearchView.On
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
-        menuVariable = menu;
         searchItem = menu.findItem(R.id.action_search);
         initSearchView();
     }
@@ -334,7 +329,8 @@ public class CallsListController extends BaseController implements SearchView.On
     }
 
     private void prepareViews() {
-        layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
+        SmoothScrollLinearLayoutManager layoutManager =
+                new SmoothScrollLinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
@@ -362,12 +358,11 @@ public class CallsListController extends BaseController implements SearchView.On
     private void dispose(@Nullable Disposable disposable) {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
-        } else if (disposable == null) {
+        } else if (disposable == null &&
+                roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed() {
+            roomsQueryDisposable.dispose();
+            roomsQueryDisposable = null;
 
-            if (roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed()) {
-                roomsQueryDisposable.dispose();
-                roomsQueryDisposable = null;
-            }
         }
     }
 

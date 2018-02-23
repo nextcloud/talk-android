@@ -111,10 +111,9 @@ public class MagicProximitySensor implements SensorEventListener {
     @Override
     public final void onAccuracyChanged(Sensor sensor, int accuracy) {
         threadChecker.checkIsOnValidThread();
-        if (sensor.getType() == Sensor.TYPE_PROXIMITY) {
-            if (accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-                Log.e(TAG, "The values returned by this sensor cannot be trusted");
-            }
+        if (sensor.getType() == Sensor.TYPE_PROXIMITY &&
+                accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+            Log.e(TAG, "The values returned by this sensor cannot be trusted");
         }
     }
 
