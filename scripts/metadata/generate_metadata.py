@@ -79,16 +79,13 @@ def main():
         short_desc = e.find('.//string[@name="nc_store_short_desc"]')
         full_desc = e.find('.//string[@name="nc_store_full_desc"]')
         if short_desc is not None:
-            save_file(short_desc.text, LANG_MAP[entry], 'short_description.txt', False)
+            save_file(short_desc.text, LANG_MAP[entry], 'short_description.txt')
         if full_desc is not None:
-            save_file(full_desc.text, LANG_MAP[entry], 'full_description.txt', False)
+            save_file(full_desc.text, LANG_MAP[entry], 'full_description.txt')
 
 
-def save_file(text, directory, filename, dev):
-    if dev:
-        directory_path = os.path.join(PATH, METADATA_DEV_PATH, directory)
-    else:
-        directory_path = os.path.join(PATH, METADATA_PATH, directory)
+def save_file(text, directory, filename):
+    directory_path = os.path.join(PATH, METADATA_PATH, directory)
 
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
