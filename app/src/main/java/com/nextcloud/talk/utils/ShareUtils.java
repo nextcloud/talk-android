@@ -55,10 +55,6 @@ public class ShareUtils {
             if (!TextUtils.isEmpty(password)) {
                 shareString += String.format(context.getResources().getString(R.string.nc_share_text_pass), password);
             }
-
-            shareString += String.format(context.getResources().getString(R.string.nc_talk_soon), userEntity
-                    .getDisplayName()
-            );
         }
 
         return shareString;

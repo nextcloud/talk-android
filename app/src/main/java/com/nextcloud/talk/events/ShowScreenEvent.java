@@ -27,15 +27,15 @@ import lombok.Data;
 
 @Data
 public class ShowScreenEvent {
-    public enum ScreenType {
-        CONTACTS_SCREEN
-    }
-
-    @Nullable private final Bundle bundle;
+    @Nullable
+    private final Bundle bundle;
     private final ScreenType screenType;
-
     public ShowScreenEvent(ScreenType screenType, @Nullable Bundle bundle) {
         this.bundle = bundle;
         this.screenType = screenType;
+    }
+
+    public enum ScreenType {
+        CONTACTS_SCREEN
     }
 }

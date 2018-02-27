@@ -253,6 +253,7 @@ public class EntryMenuController extends BaseController {
             case 11:
             case 2:
                 labelText = getResources().getString(R.string.nc_call_name);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT);
                 break;
             case 4:
                 labelText = getResources().getString(R.string.nc_new_password);
@@ -267,12 +268,13 @@ public class EntryMenuController extends BaseController {
                 break;
             case 10:
                 labelText = getResources().getString(R.string.nc_conversation_link);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
                 break;
             default:
                 break;
         }
 
         textFieldBoxes.setLabelText(labelText);
-        editText.requestFocus();
+        textFieldBoxes.requestFocus();
     }
 }
