@@ -553,7 +553,7 @@ public class MagicAudioManager {
             audioDevices.remove(AudioDevice.BLUETOOTH);
             audioDeviceSetUpdated = true;
         }
-    }
+    
 
         // Update selected audio device.
         AudioDevice newAudioDevice = selectedAudioDevice;
