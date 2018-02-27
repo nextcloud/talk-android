@@ -507,6 +507,7 @@ public class OperationsMenuController extends BaseController {
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
         }
         bundle.putString(BundleKeys.KEY_CALL_SESSION, callSession);
+
         overridePushHandler(new NoOpControllerChangeHandler());
         overridePopHandler(new NoOpControllerChangeHandler());
         Intent callIntent = new Intent(getActivity(), CallActivity.class);

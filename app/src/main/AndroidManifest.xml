@@ -60,7 +60,7 @@
             android:name=".activities.CallActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
-            />
+            android:noHistory="true"/>
 
     </application>
 </manifest>

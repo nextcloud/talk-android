@@ -62,6 +62,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
+import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
@@ -73,6 +74,9 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -114,6 +118,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Inject
     NcApi ncApi;
+
+    @Inject
+    EventBus eventBus;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -172,6 +179,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
+        eventBus.register(this);
+
         if (isNewConversationView) {
             checkAndHandleBottomButtons();
 
@@ -185,6 +194,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+
+        if (isNewConversationView) {
+            getParentController().getView().findViewById(R.id.navigation).setVisibility(View.GONE);
+        }
 
         FlipView.resetLayoutAnimationDelay(true, 1000L);
         FlipView.stopLayoutAnimation();
@@ -239,26 +252,65 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Optional
     @OnClick(R.id.done_button)
     public void onDoneButtonClick() {
-        Bundle bundle = new Bundle();
-        Room.RoomType roomType;
-        if (isPublicCall) {
-            roomType = Room.RoomType.ROOM_PUBLIC_CALL;
-        } else {
-            roomType = Room.RoomType.ROOM_GROUP_CALL;
-        }
-        bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));
-        ArrayList<String> userIds = new ArrayList<>();
-        Set<Integer> selectedPositions = adapter.getSelectedPositionsAsSet();
-        for (int selectedPosition : selectedPositions) {
-            if (adapter.getItem(selectedPosition) instanceof UserItem) {
-                UserItem userItem = (UserItem) adapter.getItem(selectedPosition);
-                userIds.add(userItem.getModel().getUserId());
-            }
 
+        if (!isPublicCall && adapter.getSelectedPositions().size() == 1) {
+            RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
+                    ((UserItem) adapter.getItem(adapter.getSelectedPositions().get(0))).getModel().getUserId(), null);
+            ncApi.createRoom(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                    retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(RoomOverall roomOverall) {
+                            if (getActivity() != null) {
+                                overridePushHandler(new NoOpControllerChangeHandler());
+                                overridePopHandler(new NoOpControllerChangeHandler());
+                                Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
+                                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
+                                callIntent.putExtras(bundle);
+                                startActivity(callIntent);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
+        } else {
+
+            Bundle bundle = new Bundle();
+            Room.RoomType roomType;
+            if (isPublicCall) {
+                roomType = Room.RoomType.ROOM_PUBLIC_CALL;
+            } else {
+                roomType = Room.RoomType.ROOM_GROUP_CALL;
+            }
+            bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));
+            ArrayList<String> userIds = new ArrayList<>();
+            Set<Integer> selectedPositions = adapter.getSelectedPositionsAsSet();
+            for (int selectedPosition : selectedPositions) {
+                if (adapter.getItem(selectedPosition) instanceof UserItem) {
+                    UserItem userItem = (UserItem) adapter.getItem(selectedPosition);
+                    userIds.add(userItem.getModel().getUserId());
+                }
+            }
+            bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIds);
+            bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 11);
+            prepareAndShowBottomSheetWithBundle(bundle);
         }
-        bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIds);
-        bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 11);
-        prepareAndShowBottomSheetWithBundle(bundle);
     }
 
     private void initSearchView() {
@@ -588,7 +640,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                                     bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
                                     callIntent.putExtras(bundle);
-                                    startActivity(callIntent);
                                 }
                             }
 
@@ -681,4 +732,25 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         bottomSheet.show();
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(BottomSheetLockEvent bottomSheetLockEvent) {
+        if (bottomSheet != null) {
+            if (!bottomSheetLockEvent.isCancelable()) {
+                bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
+            } else {
+                bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
+                if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
+                    bottomSheet.cancel();
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onDetach(@NonNull View view) {
+        super.onDetach(view);
+        eventBus.unregister(this);
+    }
+
 }

@@ -38,9 +38,9 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.AppItem;
 import com.nextcloud.talk.adapters.items.MenuItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.controllers.ContactsController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.events.ShowScreenEvent;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -237,12 +237,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     bundle = new Bundle();
                     bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
-                    if (getParentController() != null && getParentController().getParentController() != null) {
-                        getParentController().getParentController().getRouter().pushController(
-                                (RouterTransaction.with(new ContactsController(bundle))
-                                        .pushChangeHandler(new HorizontalChangeHandler())
-                                        .popChangeHandler(new HorizontalChangeHandler())));
-                    }
+                    eventBus.post(new ShowScreenEvent(ShowScreenEvent.ScreenType.CONTACTS_SCREEN, bundle));
                 } else {
                     bundle = new Bundle();
                     bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 10);
