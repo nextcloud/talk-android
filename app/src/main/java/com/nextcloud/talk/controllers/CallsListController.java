@@ -359,7 +359,7 @@ public class CallsListController extends BaseController implements SearchView.On
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         } else if (disposable == null &&
-                roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed() {
+                roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed()) {
             roomsQueryDisposable.dispose();
             roomsQueryDisposable = null;
 
