@@ -60,6 +60,7 @@
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Usuario</string>
     <string name="nc_password">Contraseña</string>
+    <string name="nc_conversation_link">Liga de la conversación</string>
     <string name="nc_new_password">Nueva contraseña</string>
     <string name="nc_wrong_password">Contraseña equivocada</string>
     <string name="nc_about">Acerca</string>
@@ -82,8 +83,17 @@
     <string name="nc_make_call_public">Generar una llamada pública</string>
     <string name="nc_make_call_private">Hacer una llamada privada</string>
     <string name="nc_delete_call">Borrar la llamada</string>
+    <string name="nc_new_conversation">Iniciar una nueva conversación</string>
+    <string name="nc_join_via_link">Únete vía una liga</string>
+    <string name="nc_join_via_web">Únete vía web</string>
+
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Selecciona los contactos</string>
     <string name="nc_one_contact_selected">contacto seleccionado</string>
     <string name="nc_more_contacts_selected">contactos seleccionados</string>
+    <string name="nc_contacts_clear">Limpiar</string>
+    <string name="nc_contacts_done">Terminado</string>
+
     <!-- Permissions -->
     <string name="nc_permissions">Hay permisos que necesitan ser otorgados para establecer una video y/o audio llamada. Por favor haz click en \"PERMITIR\" en la sigueinte ventana de diálogo del sistema. </string>
     <string name="nc_permissions_audio">El permiso de micrófono necesita ser otorgado para habilitar llamadas de audio. Por favor haz click en \"PERMITIR\" en la siguiente ventana de diálogo del sistema. </string>
@@ -94,6 +104,8 @@
 
     <!-- Call -->
     <string name="nc_incoming_call">Llamada entrando</string>
+    <string name="nc_nick_guest">Invitado</string>
+    <string name="nc_public_call">NUEVA LLAMADA PÚBLICA</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s en el canal de notifcación %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
@@ -108,6 +120,7 @@
     <string name="nc_call_name">Nombre de la llamada</string>
     <string name="nc_proceed">Proceder</string>
     <string name="nc_call_name_is_same">El nombre que ingresaste es igual al existente</string>
+    <string name="nc_wrong_link">La liga de la conversación no es válida</string>
     <string name="nc_share_text">Hola,\n\nquisiera que te unieras a una llamada conmigo.\n\nPuedes unirte a esta llamada vía
 %1$s/index.php/call/%2$s</string>
     <string name="nc_talk_soon">\n\nHablaremos pronto,\n %1$s</string>
