@@ -83,11 +83,13 @@ public class MagicWebRTCUtils {
         add("CHIRON"); // Xiaomi Mi Mix 2
         add("HWVNS-H"); // Huawei P9 Lite
         add("HWVNS-Q"); // Huawei P9 Lite
+        add("P00A"); // Asus ZenPad 8.0
     }};
 
     private static Set<String> HARDWARE_ACCELERATION_VENDOR_BLACKLIST = new HashSet<String>() {{
         add("samsung");
     }};
+
 
     public static boolean shouldEnableVideoHardwareAcceleration() {
         return (!HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build.MANUFACTURER.toLowerCase())
