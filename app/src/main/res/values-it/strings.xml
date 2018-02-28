@@ -121,16 +121,7 @@
         Puoi provare a unirti alla chiamata tramite un browser web.</string>
     <string name="nc_all_ok_operation">OK, tutto fatto!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Nome della chiamata</string>
     <string name="nc_proceed">Procedi</string>
     <string name="nc_call_name_is_same">Il nome che hai digitato è uguale a quello esistente</string>
     <string name="nc_wrong_link">Il collegamento della conversazione non è valido</string>
-    <string name="nc_share_text">Ciao,\n\nvorrei patercipare a una chiamata con te.\n\nPuoi unirti alla vhiamata tramite
-        %1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\nParla presto,\n %1$s</string>
-    <string name="nc_share_subject">Invito alla chiamata</string>
-    <string name="nc_share_text_pass">\n\nLa password per la chiamata è: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

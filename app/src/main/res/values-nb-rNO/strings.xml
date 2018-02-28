@@ -122,16 +122,7 @@
         Du kan forsøke å koble til via en nettleser.</string>
     <string name="nc_all_ok_operation">OK, ferdig!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Kallenavn</string>
     <string name="nc_proceed">Fortsett</string>
     <string name="nc_call_name_is_same">Navnet du valgte eksisterer allerede</string>
     <string name="nc_wrong_link">Samtale lenke er ikke gyldig</string>
-    <string name="nc_share_text">Hei,\n\nJeg vil gjerne opprette en samtale med deg.\n\nDu kan koble til via
-        %1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\nSnakkes snart,\n %1$s</string>
-    <string name="nc_share_subject">Samtaleinvitasjon</string>
-    <string name="nc_share_text_pass">\n\nPassordet for samtalen er: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

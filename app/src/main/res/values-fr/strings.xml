@@ -121,22 +121,7 @@
 Veuillez essayer de joindre l\'appel depuis un navigateur web.</string>
     <string name="nc_all_ok_operation">OK, tout est fini !</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Nom de l\'appelant</string>
     <string name="nc_proceed">Continuer</string>
     <string name="nc_call_name_is_same">Le nom que vous avez entré est le même que celui existant</string>
     <string name="nc_wrong_link">Le lien de conversation n\'est pas valide.</string>
-    <string name="nc_share_text">Salut,
-
-Je souhaiterai t\'inviter à un appel avec moi.
-
-Tu peux me rejoindre via ce lien %1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">
-
-Parlez bientôt;
-%1$s</string>
-    <string name="nc_share_subject">Invitation d\'appel</string>
-    <string name="nc_share_text_pass">\n\nLe mot de passe pour l\'appel est : %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

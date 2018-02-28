@@ -121,16 +121,7 @@
         Probieren Sie mit einem Internetbrowser dem Anruf beizutreten.</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Anrufname</string>
     <string name="nc_proceed">Fortsetzen</string>
     <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>
     <string name="nc_wrong_link">Unterhaltungslink ist ungültig</string>
-    <string name="nc_share_text">Hallo \n\nI möchten Sie meinem Anruf beitreten? \n\nI Treten Sie dem Anruf bei durch 
-        %1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\n wir reden später, \n%1$s</string>
-    <string name="nc_share_subject">Anrufeinladung</string>
-    <string name="nc_share_text_pass">\n\n Passwort für diesen Anruf lautet: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

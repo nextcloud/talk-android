@@ -122,16 +122,7 @@
         Можете пробати да се придружите разговору преко веб читача.</string>
     <string name="nc_all_ok_operation">У реду, све готово!</string>
     <string name="nc_ok">У реду</string>
-    <string name="nc_call_name">Име позива</string>
     <string name="nc_proceed">Настави</string>
     <string name="nc_call_name_is_same">Име које сте унели је исто као и тренутно</string>
     <string name="nc_wrong_link">Веза разговора није исправна</string>
-    <string name="nc_share_text">Поздрав,\n\nЖелео бих да се придружиш позиву на коме се налазим.\n\nМожеш му се придружити на
-        %1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\nЧујемо се ускоро,\n %1$s</string>
-    <string name="nc_share_subject">Позивница за разговор</string>
-    <string name="nc_share_text_pass">\n\nЛозинка за позив је: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

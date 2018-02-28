@@ -68,6 +68,4 @@
     <string name="nc_more_contacts_selected">contactos seleccionados</string>
     <string name="nc_permissions_settings">Abrir configuraciones</string>
 
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

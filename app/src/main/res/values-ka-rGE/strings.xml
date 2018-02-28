@@ -111,15 +111,6 @@
     <string name="nc_failed_to_perform_operation">ბოდიში, რაღაც აირია!</string>
     <string name="nc_all_ok_operation">კარგი, ყველაფერი დასრულდა!</string>
     <string name="nc_ok">კარგი</string>
-    <string name="nc_call_name">ზარის სახელი</string>
     <string name="nc_proceed">გაგრძელება</string>
     <string name="nc_call_name_is_same">შეყვანილი სახელი იგივეა რაც არსებული</string>
-    <string name="nc_share_text">გამარჯობა,\n\nმსურს შემომიერთდე ზარში.\n\nშეგიძლია შემომიერთდე შემდეგი გზით
-        %1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\nმალე ვისაუბრებთ,\n %1$s</string>
-    <string name="nc_share_subject">ზარის მოწვევა</string>
-    <string name="nc_share_text_pass">\n\nზარის პაროლია: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

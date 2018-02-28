@@ -122,16 +122,7 @@
        Você pode tentar juntar-se à chamada via navegador Web.</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Nome da chamada</string>
     <string name="nc_proceed">Prosseguir</string>
     <string name="nc_call_name_is_same">O nome que você inseriu é o mesmo que o existente</string>
     <string name="nc_wrong_link">O link de conversação não é válido</string>
-    <string name="nc_share_text">Olá,\n\nGostaria que você participasse de uma chamada comigo.\n\nVocê pode participar desta chamada via
-        %1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\nAté breve,\n %1$s</string>
-    <string name="nc_share_subject">Convite de chamada</string>
-    <string name="nc_share_text_pass">\n\nA senha para a chamada é: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

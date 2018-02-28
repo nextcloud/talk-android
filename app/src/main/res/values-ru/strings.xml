@@ -120,16 +120,7 @@
     <string name="nc_failed_signaling_settings">Сервер не поддерживает присоединение к открытому вызову с мобильного телефона. Попробуйте повторить через веб-браузер.</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
     <string name="nc_ok">ОК</string>
-    <string name="nc_call_name">Название вызова</string>
     <string name="nc_proceed">Продолжить</string>
     <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
     <string name="nc_wrong_link">Ссылка на беседу более не действительна</string>
-    <string name="nc_share_text">Я приглашаю Вас поговорить со мной. Чтобы присоединиться к разговору воспользуйтесь ссылкой: %1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\n До связи, \n
-%1$s.</string>
-    <string name="nc_share_subject">Приглашение поговорить</string>
-    <string name="nc_share_text_pass">\n\nПароль для подключения к вызову: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

@@ -125,16 +125,7 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
 Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_all_ok_operation">OK, alles gedaan!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_proceed">Verder</string>
     <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
     <string name="nc_wrong_link">Conversatie link is niet geldig</string>
-    <string name="nc_share_text">Hallo,\n\nIk wil je graag uitnodigen voor een gesprek.\n\nNeem deel via
-%1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\nTot snel,\n%1$s</string>
-    <string name="nc_share_subject">Gespreksuitnodiging</string>
-    <string name="nc_share_text_pass">\n\nWachtwoord voor het gesprek is: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

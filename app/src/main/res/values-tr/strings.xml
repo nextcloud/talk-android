@@ -122,16 +122,7 @@
  desteklemiyor. Çağrıya web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_all_ok_operation">Hepsi tamam!</string>
     <string name="nc_ok">Tamam</string>
-    <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_proceed">İlerle</string>
     <string name="nc_call_name_is_same">Yazdığınız ad var olan ad ile aynı</string>
     <string name="nc_wrong_link">Sohbet bağlantısı geçersiz</string>
-    <string name="nc_share_text">Merhaba,\n\nBenimle bir görüşmeye katılmanı istiyorum.\n\nGörüşmeye şuradan katılabilirsin
-        %1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\nGörüşmek üzere,\n %1$s</string>
-    <string name="nc_share_subject">Görüşme Çağrısı</string>
-    <string name="nc_share_text_pass">\n\nGörüşme parolası: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

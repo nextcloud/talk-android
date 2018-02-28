@@ -122,16 +122,7 @@
          Môžete sa pokúsiť pripojiť na hovor cez webový prehliadač.</string>
     <string name="nc_all_ok_operation">OK, všetko hotovo!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Názov hovoru</string>
     <string name="nc_proceed">Pokračovať</string>
     <string name="nc_call_name_is_same">Názov, ktorý ste zadali je zhodný s existujúcim</string>
     <string name="nc_wrong_link">Odkaz na rozhovor nie je platný!</string>
-    <string name="nc_share_text">Ahoj, \n\nChcel by som, aby ste sa pripojili na rozhovor so mnou. \n\nMôžete sa k tomuto hovoru pripojiť cez 
-%1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\nHovor skoro, \n%1$s</string>
-    <string name="nc_share_subject">Pozvanie telefonovať</string>
-    <string name="nc_share_text_pass">\n\nHeslo pre telefonovanie je: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

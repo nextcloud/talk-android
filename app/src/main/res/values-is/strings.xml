@@ -86,10 +86,5 @@
     <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
     <string name="nc_all_ok_operation">Í lagi, allt klárt!</string>
     <string name="nc_ok">Í lagi</string>
-    <string name="nc_call_name">Birtingarnafn</string>
     <string name="nc_proceed">Halda áfram</string>
-    <string name="nc_talk_soon">\n\nVerðum í bandi fljótlega,\n %1$s</string>
-    <string name="nc_share_subject">Boð um samtal</string>
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

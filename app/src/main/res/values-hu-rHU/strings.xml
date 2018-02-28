@@ -122,16 +122,7 @@
 Megpróbálhatod weben keresztül.</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Hívónév</string>
     <string name="nc_proceed">Folytatás</string>
     <string name="nc_call_name_is_same">A megadott név egyezik a korábbival</string>
     <string name="nc_wrong_link">A beszélgetési link nem érvényes.</string>
-    <string name="nc_share_text">Üdv,\n\nSzeretnélek felkérni, hogy csatlakozz egy híváshoz.\n\nCsatlakozhatsz ezen keresztül:
-        %1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\nHamarosan beszélünk,\n %1$s</string>
-    <string name="nc_share_subject">Hívás invitáció</string>
-    <string name="nc_share_text_pass">\n\nHívás jelszava: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>

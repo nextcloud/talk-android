@@ -106,6 +106,9 @@
     <string name="nc_incoming_call">Llamada entrando</string>
     <string name="nc_nick_guest">Invitado</string>
     <string name="nc_public_call">NUEVA LLAMADA PÚBLICA</string>
+    <string name="nc_public_call_explanation">Las llamadas públicas te permiten invitar a personas de afuera a través de 
+una liga específica.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s en el canal de notifcación %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
@@ -115,18 +118,11 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">¡Lo sentimos, algo salió mal!</string>
+    <string name="nc_failed_signaling_settings">El servidor desstino no soporta unir cuartos públicos vía teléfonos móviles.
+Puedes intentar unirte a la llamada via el navegador web.</string>
     <string name="nc_all_ok_operation">¡OK, ya terminamos!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Nombre de la llamada</string>
     <string name="nc_proceed">Proceder</string>
     <string name="nc_call_name_is_same">El nombre que ingresaste es igual al existente</string>
     <string name="nc_wrong_link">La liga de la conversación no es válida</string>
-    <string name="nc_share_text">Hola,\n\nquisiera que te unieras a una llamada conmigo.\n\nPuedes unirte a esta llamada vía
-%1$s/index.php/call/%2$s</string>
-    <string name="nc_talk_soon">\n\nHablaremos pronto,\n %1$s</string>
-    <string name="nc_share_subject">Invitación a llamada</string>
-    <string name="nc_share_text_pass">\n\nLa contraseña para la llamada es: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
-</resources>
+    </resources>
