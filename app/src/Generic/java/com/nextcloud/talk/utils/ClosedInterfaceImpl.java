@@ -25,7 +25,7 @@ import com.nextcloud.talk.interfaces.ClosedInterface;
 
 public class ClosedInterfaceImpl implements ClosedInterface {
     @Override
-    public void ProviderInstallerInstallIfNeededAsync() {
+    public void providerInstallerInstallIfNeededAsync() {
         // does absolutely nothing :)
     }
 }
