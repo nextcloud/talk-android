@@ -121,7 +121,11 @@
 Probiere mit einem Internetbrowser dem Anruf beizutreten.</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Name der Unterhaltung</string>
     <string name="nc_proceed">Fortfahren</string>
     <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>
     <string name="nc_wrong_link">Unterhaltungslink ist ungültig</string>
+    <string name="nc_share_subject">%1$s Einladung</string>
+    <string name="nc_share_text_pass">\nPasswort: %1$s</string>
+
     </resources>

@@ -122,7 +122,15 @@
         Можете пробати да се придружите разговору преко веб читача.</string>
     <string name="nc_all_ok_operation">У реду, све готово!</string>
     <string name="nc_ok">У реду</string>
+    <string name="nc_call_name">Назив разговора</string>
     <string name="nc_proceed">Настави</string>
     <string name="nc_call_name_is_same">Име које сте унели је исто као и тренутно</string>
     <string name="nc_wrong_link">Веза разговора није исправна</string>
+    <string name="nc_share_text">Придружи се разговору на%1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s позивница</string>
+    <string name="nc_share_text_pass">\nЛозинка: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_store_short_desc">Обављајте приватне видео позиве и ћаскајте користећи Ваш сервер.</string>
     </resources>
