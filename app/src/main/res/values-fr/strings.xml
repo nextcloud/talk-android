@@ -128,4 +128,7 @@ Veuillez essayer de joindre l\'appel depuis un navigateur web.</string>
     <string name="nc_share_text">Rejoins la conversation à %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nLe mot de passe : %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_store_short_desc">Ayez des appels vidéos et des discussions privés en utilisant votre propre serveur.</string>
     </resources>

@@ -126,6 +126,9 @@ Puedes intentar unirte a la llamada via el navegador web.</string>
     <string name="nc_proceed">Proceder</string>
     <string name="nc_call_name_is_same">El nombre que ingresaste es igual al existente</string>
     <string name="nc_wrong_link">La liga de la conversación no es válida</string>
+    <string name="nc_share_text">Unirse a la conversación en %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_text_pass">\nContraseña:%1$s</string>
+
     <!-- Magical stuff -->
     <string name="nc_empty"></string>
     <string name="nc_store_short_desc">Haz video llamadas y chats privados usnaod tu propio servidor.</string>
@@ -141,7 +144,7 @@ Nextcloud Talk soporta:
 * Chats individuales o en grupo
 * Compartir la pantalla de manera sencilla
 * Aplicaciones móviles para Android y iOS 
-* Llamadas móviles &amp; notificaciones push de chat
+* Notificaciones push para llamadas móviles &amp; chat
 * Integración con Nextcloud Files y Nextcloud Groupware
 * Completamente en-sitio, 100% código abierto
 * Encripción de llamadas de punta a punta

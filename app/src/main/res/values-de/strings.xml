@@ -125,7 +125,11 @@ Probiere mit einem Internetbrowser dem Anruf beizutreten.</string>
     <string name="nc_proceed">Fortfahren</string>
     <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>
     <string name="nc_wrong_link">Unterhaltungslink ist ungültig</string>
+    <string name="nc_share_text">Treten Sie der Unterhaltung %1$s/index.php/call/%2$s bei</string>
     <string name="nc_share_subject">%1$s Einladung</string>
     <string name="nc_share_text_pass">\nPasswort: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_store_short_desc">Nutze private Videoanrufe und den Chat durch die Verwendung eines eigenen Servers.</string>
     </resources>

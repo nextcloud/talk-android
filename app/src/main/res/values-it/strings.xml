@@ -121,7 +121,15 @@
         Puoi provare a unirti alla chiamata tramite un browser web.</string>
     <string name="nc_all_ok_operation">OK, tutto fatto!</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Nome della conversazione</string>
     <string name="nc_proceed">Procedi</string>
     <string name="nc_call_name_is_same">Il nome che hai digitato è uguale a quello esistente</string>
     <string name="nc_wrong_link">Il collegamento della conversazione non è valido</string>
+    <string name="nc_share_text">Partecipa alla conversazione su %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s invito</string>
+    <string name="nc_share_text_pass">\nPassword: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_store_short_desc">Videochiamate e chat utilizzando il tuo server.</string>
     </resources>

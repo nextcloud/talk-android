@@ -122,7 +122,40 @@
         You may attempt to join the call via web browser.</string>
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Conversation name</string>
     <string name="nc_proceed">Proceed</string>
     <string name="nc_call_name_is_same">The name you entered is the same as the existing one</string>
     <string name="nc_wrong_link">Conversation link is not valid</string>
-    </resources>
+    <string name="nc_share_text">Join the conversation at %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s invitation</string>
+    <string name="nc_share_text_pass">\nPassword: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_store_short_desc">Have private video calls and chat using your own server.</string>
+    <string name="nc_store_full_desc">Use Nextcloud Talk to have one-on-one or group audio or video calls, create or join web conferences and send chat messages. All communication is fully encrypted and mediated by your own server, providing the highest degree of privacy possible.
+
+Nextcloud Talk is easy to use and will always be completely free!
+
+Nextcloud Talk supports:
+* HD (H.265) audio/video calls
+* Group and one-on-one calls
+* Webinars &amp; public web meetings
+* Individual and group chat
+* Easy screen sharing
+* Mobile apps for Android and iOS
+* Mobile call &amp; chat push notifications
+* Integration in Nextcloud Files and Nextcloud Groupware
+* Fully on-premise, 100% open source
+* End-to-end Encrypted calls
+* Scaling to millions of users
+* SIP gate: dial in by phone
+
+The Nextcloud Talk app requires a Nextcloud Talk server to function. Nextcloud is a private, self-hosted file sync and communication platform, designed to put you back in control over your data. It runs on a server of your choice, be it at home, at a service provider or in your enterprise, and gives you access to your documents, calendars, contacts, email and other data. You can share with others even across different Nextcloud servers and work together on documents. Nextcloud is fully open source, giving you the option to extend them for your own use, participate in their development or simply verify they do what we promise.
+
+Millions of users use Nextcloud daily at businesses and homes around the world. Business users rely on the professional support of Nextcloud GmbH, making sure they have a fully supported, enterprise-ready platform for productivity and collaboration, fully under control of their IT department.
+
+Learn more on https://nextcloud.com/talk
+
+Find Nextcloud on https://nextcloud.com</string>
+</resources>

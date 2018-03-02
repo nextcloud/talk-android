@@ -60,6 +60,7 @@
     <string name="nc_no_proxy">პროქსი არაა</string>
     <string name="nc_username">მომხმარებელი</string>
     <string name="nc_password">პაროლი</string>
+    <string name="nc_conversation_link">საუბრის ბმული</string>
     <string name="nc_new_password">ახალი პაროლი</string>
     <string name="nc_wrong_password">არასწორი პაროლი</string>
     <string name="nc_about">შესახებ</string>
@@ -82,6 +83,10 @@
     <string name="nc_make_call_public">ღია ზარის წამოწყება</string>
     <string name="nc_make_call_private">პირადი ზარის შესრულება</string>
     <string name="nc_delete_call">ზარის გაუქმება</string>
+    <string name="nc_new_conversation">ახალი საუბრის დაწყება</string>
+    <string name="nc_join_via_link">შეუერთდით ბმულით</string>
+    <string name="nc_join_via_web">შეუერთდით ვებით</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">აირჩიეთ კონტაქტები</string>
     <string name="nc_one_contact_selected">კონტაქტი იქნა არჩეულ</string>
@@ -100,6 +105,10 @@
     <!-- Call -->
     <string name="nc_incoming_call">შემომავალი ზარი</string>
     <string name="nc_nick_guest">სტუმარი</string>
+    <string name="nc_public_call">ახალი ღია ზარი</string>
+    <string name="nc_public_call_explanation">ღია ზარი უფლებას გაძლევთ მოიწვიოთ ადამიანები სპეციფირებულად
+        დამზადებული ბმულით.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s %2$s-ზე შეტყობინებების არხი</string>
     <string name="nc_notification_channel_calls">ზარების შეტყობინებების არხი</string>
@@ -109,8 +118,46 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">ბოდიში, რაღაც აირია!</string>
+    <string name="nc_failed_signaling_settings">დანიშნულების სერვერი არ უჭერს მხარს ღია ოთახებში შესვლას მობილური ტელეფონებით.
+        სცადეთ შეუერთდეთ ზარს ვებ ბრაუზერის გამოყენებით.</string>
     <string name="nc_all_ok_operation">კარგი, ყველაფერი დასრულდა!</string>
     <string name="nc_ok">კარგი</string>
+    <string name="nc_call_name">საუბრის სახელწოდება</string>
     <string name="nc_proceed">გაგრძელება</string>
     <string name="nc_call_name_is_same">შეყვანილი სახელი იგივეა რაც არსებული</string>
-    </resources>
+    <string name="nc_wrong_link">საუბრის ბმული არაა ვალიდური</string>
+    <string name="nc_share_text">შეუერთდით საუბარს %1$s/index.php/call%2$s</string>
+    <string name="nc_share_subject">%1$s მოწვევა</string>
+    <string name="nc_share_text_pass">\nპაროლი: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_store_short_desc">იქონიეთ პირადი ვიდეო ზარები და ჩეთი საკუთარი სერვერით.</string>
+    <string name="nc_store_full_desc">გამოიყენეთ Nextcloud Talk, რათა იქონიოთ პირადი ან ჯგუფური აუდიო ან ვიდეო ზარები, შექმნათ ან შეუერთდეთ ვებ-კონფერენციებს და გააგზავნოთ ჩეთ წერილები. ყველა კომუნიკაცია სრულად დაშიფრულია, მას შუამავლობას უწევს თქვენი სერვერი, რაც უზრუნველყოფს კონფიდენციალურობის უმაღლეს ხარისხს.
+
+Nextcloud Talk მარტივად მოსახმარია და ყოველთვის იქნება უფასო!
+
+Nextcloud Talk მხარს უჭერს:
+* HD (H.265) აუდიო/ვიდეო ზარებს
+* ჯგუფურ და პირად ზარებს
+* Webinar-ებს და ღია ვებ-შეხვედრებს
+* ინდივიდუალურ და ჯგუფურ ჩეთებს
+* მარტივ ეკრანის გაზიარებას
+* მობილურ აპლიკაციებს Android-ისა და iOS-ისთვის
+* მობილურ ზარებს და ჩეთის ფუშ შეტყობინებებს
+* ინტეგრაციას Nextcloud ფაილებთან და Nextcloud Groupware-თან
+* 100% ღია კოდი
+* End-to-end დაშიფრული ზარები
+* სკალირება მილიონობით მომხმარებელზე
+* SIP კარიბჭე: დარეკეთ ტელეფონით
+
+
+Nextcloud Talk აპლიკაცია მოქმედებისთვის საჭიროებს Nextcloud Talk სერვერს. Nextcloud პირადი, ფაილების სინქ. და კომუნიკაციის პლატფორმაა, შემუშავებულია თქვენი მონაცემების მართვისთვის. ის მოქმედებს თქვენ არჩეულ სერვერზე, სახლში, სერვის პროვაიდერთან ან თქვენს ფირმაში, ის გაძლევთ წვდომას თქვენს დოკუმენტებზე, კალენდრებზე, კონტაქტებზე, ელ-ფოსტაზე და სხვა მონაცემებზე. შეგიძლით გაუზიაროთ სხვებს თუნდაც სხვა Nextcloud სერვერებზე და იმუშოეთ ერთად დოკუმენტებზე. Nextcloud სრულად ღიაა და შეგიძლიათ განავრცოთ პირადი მიზნებისთვის, ჩაერთოთ მის განვითარებაში ან უბრალოთ დაამოწმოთ მისი გამართული მოქმედება.
+
+
+მსოფლიო მასშტაბით, ყოველდღიურად, მილიონობით მომხმარებელი იყენებს Nextcloud-ს, ბიზნესებსა და სახლებში. ბიზნეს მომხმარებლებს გააჭნიათ Nextcloud GmbH პროფესიონალური მხარდაჭერა, რაც უზრუნველყოფს სრულად მხარდაჭერილ, პროდქტიულობისა და კოლაბორაციისთვის, ენტერპარისისზე გათვლილ, საკუთარი IT დეპარტამენთების მიერ მართვად პლატფორმას.
+
+შეიტვეთ მეტი მისამართზე https://nextcloud.com/talk
+
+იპოვეთ Nextcloud მისამრთზე https://nextcloud.com</string>
+</resources>

@@ -120,7 +120,15 @@
     <string name="nc_failed_signaling_settings">Сервер не поддерживает присоединение к открытому вызову с мобильного телефона. Попробуйте повторить через веб-браузер.</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
     <string name="nc_ok">ОК</string>
+    <string name="nc_call_name">Наименование разговора</string>
     <string name="nc_proceed">Продолжить</string>
     <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
     <string name="nc_wrong_link">Ссылка на беседу более не действительна</string>
+    <string name="nc_share_text">Присоединиться к беседе в %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s приглашение</string>
+    <string name="nc_share_text_pass">\nПароль: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_store_short_desc">Возможность иметь частные видео звонки и переписку, используя ваш собственный сервер.</string>
     </resources>
