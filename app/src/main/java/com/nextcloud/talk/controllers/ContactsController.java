@@ -159,12 +159,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     public ContactsController() {
         super();
-        setHasOptionsMenu(true);
     }
 
     public ContactsController(Bundle args) {
         super(args);
-        setHasOptionsMenu(true);
         if (args.containsKey(BundleKeys.KEY_NEW_CONVERSATION)) {
             isNewConversationView = true;
         }
@@ -178,6 +176,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
+        setHasOptionsMenu(true);
         eventBus.register(this);
 
         if (isNewConversationView) {
@@ -738,7 +737,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             } else {
                 bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
                 if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
-                    bottomSheet.cancel();
+                    new Handler().postDelayed(() -> bottomSheet.cancel(), bottomSheetLockEvent.getDelay());
+                    getRouter().popCurrentController();
                 }
             }
         }
