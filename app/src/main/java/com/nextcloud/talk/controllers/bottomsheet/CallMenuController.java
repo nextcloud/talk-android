@@ -33,14 +33,15 @@ import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.kennyc.bottomsheet.adapters.AppAdapter;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.AppItem;
 import com.nextcloud.talk.adapters.items.MenuItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.controllers.ContactsController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
-import com.nextcloud.talk.events.ShowScreenEvent;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -238,7 +239,10 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     bundle = new Bundle();
                     bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
-                    eventBus.post(new ShowScreenEvent(ShowScreenEvent.ScreenType.CONTACTS_SCREEN, bundle));
+                    getParentController().getRouter().pushController((RouterTransaction.with(new ContactsController
+                            (bundle))
+                            .pushChangeHandler(new VerticalChangeHandler())
+                            .popChangeHandler(new VerticalChangeHandler())));
                 } else {
                     bundle = new Bundle();
                     bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 10);

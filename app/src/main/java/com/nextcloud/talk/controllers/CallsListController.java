@@ -60,7 +60,6 @@ import com.nextcloud.talk.controllers.bottomsheet.CallMenuController;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
-import com.nextcloud.talk.events.ShowScreenEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.rooms.Room;
@@ -412,15 +411,6 @@ public class CallsListController extends BaseController implements SearchView.On
     @Override
     public boolean onQueryTextSubmit(String query) {
         return onQueryTextChange(query);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(ShowScreenEvent showScreenEvent) {
-        if (showScreenEvent.getScreenType().equals(ShowScreenEvent.ScreenType.CONTACTS_SCREEN)) {
-            getRouter().pushController((RouterTransaction.with(new ContactsController(showScreenEvent.getBundle()))
-                            .pushChangeHandler(new VerticalChangeHandler())
-                            .popChangeHandler(new VerticalChangeHandler())));
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
