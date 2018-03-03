@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.controllers;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -44,6 +45,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -159,10 +161,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     public ContactsController() {
         super();
+        setHasOptionsMenu(true);
     }
 
     public ContactsController(Bundle args) {
         super(args);
+        setHasOptionsMenu(true);
         if (args.containsKey(BundleKeys.KEY_NEW_CONVERSATION)) {
             isNewConversationView = true;
         }
@@ -176,7 +180,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        setHasOptionsMenu(true);
         eventBus.register(this);
 
         if (isNewConversationView) {
@@ -192,10 +195,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-
-        if (isNewConversationView) {
-            getParentController().getView().findViewById(R.id.navigation).setVisibility(View.GONE);
-        }
 
         FlipView.resetLayoutAnimationDelay(true, 1000L);
         FlipView.stopLayoutAnimation();
@@ -272,6 +271,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                                 bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
                                 callIntent.putExtras(bundle);
+                                if (getActivity() != null) {
+                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                                    if (imm != null) {
+                                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                                    }
+                                }
+
                                 startActivity(callIntent);
                                 new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
                             }
@@ -635,6 +641,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                                     bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
                                     callIntent.putExtras(bundle);
+                                    if (getActivity() != null) {
+                                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                                        if (imm != null) {
+                                            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                                        }
+                                    }
                                     startActivity(callIntent);
                                 }
                             }
@@ -726,19 +738,30 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
+        bottomSheet.setOnCancelListener(dialog -> {
+            if (getActionBar() != null) {
+                getActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        });
+
         bottomSheet.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(BottomSheetLockEvent bottomSheetLockEvent) {
+
         if (bottomSheet != null) {
             if (!bottomSheetLockEvent.isCancelable()) {
                 bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
             } else {
                 bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
                 if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
-                    new Handler().postDelayed(() -> bottomSheet.cancel(), bottomSheetLockEvent.getDelay());
-                    getRouter().popCurrentController();
+                    new Handler().postDelayed(() -> {
+                        bottomSheet.setOnCancelListener(null);
+                        bottomSheet.cancel();
+
+                        new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
+                    }, bottomSheetLockEvent.getDelay());
                 }
             }
         }

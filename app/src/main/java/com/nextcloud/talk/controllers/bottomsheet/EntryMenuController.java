@@ -182,7 +182,7 @@ public class EntryMenuController extends BaseController {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         editText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE && proceedButton.isEnabled()) {
+            if (actionId == EditorInfo.IME_ACTION_DONE && proceedButton != null && proceedButton.isEnabled()) {
                 proceedButton.callOnClick();
                 return true;
             }

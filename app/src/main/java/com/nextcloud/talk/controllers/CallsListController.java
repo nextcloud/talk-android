@@ -168,7 +168,12 @@ public class CallsListController extends BaseController implements SearchView.On
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
         eventBus.register(this);
-        getParentController().getView().findViewById(R.id.navigation).setVisibility(View.VISIBLE);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+
+        userEntity = userUtils.getCurrentUser();
+
     }
 
     @Override

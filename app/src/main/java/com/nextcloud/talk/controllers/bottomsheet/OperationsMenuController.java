@@ -20,15 +20,16 @@
 
 package com.nextcloud.talk.controllers.bottomsheet;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -271,7 +272,7 @@ public class OperationsMenuController extends BaseController {
                                                                     .pushChangeHandler(new HorizontalChangeHandler())
                                                                     .popChangeHandler(new HorizontalChangeHandler()));
                                                         } else {
-                                                            initiateCall(false);
+                                                            initiateCall();
                                                         }
                                                     } else {
                                                         showResultImage(false, true);
@@ -487,7 +488,7 @@ public class OperationsMenuController extends BaseController {
                                 }
 
                                 if (localInvitedUsers.size() == 0) {
-                                    initiateCall(true);
+                                    initiateCall();
                                 }
                                 dispose();
                             }
@@ -498,7 +499,7 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
-    private void initiateCall(boolean fromContactsView) {
+    private void initiateCall() {
         eventBus.post(new BottomSheetLockEvent(true, 0, true, true));
         Bundle bundle = new Bundle();
         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
@@ -510,10 +511,15 @@ public class OperationsMenuController extends BaseController {
 
         Intent callIntent = new Intent(getActivity(), CallActivity.class);
         callIntent.putExtras(bundle);
-        startActivity(callIntent);
-        if (fromContactsView) {
-            new Handler().postDelayed(() -> getParentController().getRouter().popCurrentController(), 100);
+
+        if (getActivity() != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            }
         }
+
+        startActivity(callIntent);
     }
 
     private class OperationsObserver implements Observer {
@@ -530,7 +536,7 @@ public class OperationsMenuController extends BaseController {
             } else {
                 CallOverall callOverall = (CallOverall) o;
                 callSession = callOverall.getOcs().getData().getSessionId();
-                initiateCall(false);
+                initiateCall();
             }
         }
 
