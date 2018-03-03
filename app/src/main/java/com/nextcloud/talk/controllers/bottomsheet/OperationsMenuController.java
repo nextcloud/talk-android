@@ -230,7 +230,7 @@ public class OperationsMenuController extends BaseController {
                     break;
                 case 10:
                     String finalCredentials = credentials;
-                    ncApi.getRoom(null, ApiUtils.getRoom(baseUrl, conversationToken))
+                    ncApi.getRoom(finalCredentials, ApiUtils.getRoom(baseUrl, conversationToken))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
