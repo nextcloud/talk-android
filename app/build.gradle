@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-if (getGradle().getStartParameter().getTaskRequests().toString().contains("GPlay")){
+if (getGradle().getStartParameter().getTaskRequests().toString().contains("Gplay")){
     apply from: 'gplay.gradle'
 }
 
@@ -22,8 +22,8 @@ android {
 
         productFlavors {
             // used for f-droid
-            Generic
-            GPlay
+            generic
+            gplay
         }
         // Enabling multidex support.
         multiDexEnabled true
@@ -57,7 +57,7 @@ android {
 }
 
 ext {
-    supportLibraryVersion = '27.0.2'
+    supportLibraryVersion = '27.1.0'
 }
 
 
@@ -74,7 +74,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${supportLibraryVersion}"
     implementation "com.android.support:design:${supportLibraryVersion}"
 
-    implementation 'com.android.support:multidex:1.0.2'
+    implementation 'com.android.support:multidex:1.0.3'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation "io.reactivex.rxjava2:rxjava:2.1.4"
