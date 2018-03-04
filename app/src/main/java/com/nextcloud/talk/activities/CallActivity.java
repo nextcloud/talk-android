@@ -546,7 +546,7 @@ public class CallActivity extends AppCompatActivity {
                 cameraControlButton.setVisibility(View.GONE);
             }
 
-            if (cameraSwitchButton != null && cameraEnumerator.getDeviceNames().length > 1) {
+            if (cameraEnumerator.getDeviceNames().length > 1) {
                 if (!initialPermissionsCheck) {
                     cameraSwitchButton.setVisibility(View.VISIBLE);
                 } else {
@@ -570,7 +570,7 @@ public class CallActivity extends AppCompatActivity {
             cameraControlButton.setVisibility(View.GONE);
         }
 
-        if (cameraSwitchButton != null && cameraEnumerator.getDeviceNames().length > 1) {
+        if (cameraEnumerator.getDeviceNames().length > 1) {
             cameraSwitchButton.setVisibility(View.VISIBLE);
         }
 
@@ -581,9 +581,7 @@ public class CallActivity extends AppCompatActivity {
         } else {
             cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_off_white_24px);
             cameraControlButton.setAlpha(0.7f);
-            if (cameraSwitchButton != null) {
-                cameraSwitchButton.setVisibility(View.GONE);
-            }
+            cameraSwitchButton.setVisibility(View.GONE);
         }
 
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
