@@ -22,7 +22,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/bottom_buttons_layout"
               android:layout_width="match_parent"
-              android:layout_height="32dp"
+              android:layout_height="64dp"
               android:alpha="0.7"
               android:animateLayoutChanges="true"
               android:gravity="bottom"
