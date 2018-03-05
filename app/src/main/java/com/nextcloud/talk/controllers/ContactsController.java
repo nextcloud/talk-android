@@ -43,7 +43,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -72,6 +71,7 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -736,13 +736,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
         }
 
-        bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
         bottomSheet.setOnCancelListener(dialog -> {
             if (getActionBar() != null) {
                 getActionBar().setDisplayHomeAsUpEnabled(true);
             }
         });
+
+        bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout()));
 
         bottomSheet.show();
     }

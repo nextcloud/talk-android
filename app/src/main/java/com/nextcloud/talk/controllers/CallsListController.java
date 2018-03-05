@@ -42,7 +42,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -64,6 +63,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -467,8 +467,7 @@ public class CallsListController extends BaseController implements SearchView.On
             bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
         }
 
-        bottomSheet.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
+        bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout()));
         bottomSheet.show();
     }
 
