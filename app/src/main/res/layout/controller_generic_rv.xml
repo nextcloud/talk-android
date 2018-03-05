@@ -46,9 +46,6 @@
 
     <include
         layout="@layout/bottom_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:layout_gravity="bottom"
         android:visibility="gone"/>
 
     <include layout="@layout/fast_scroller"/>

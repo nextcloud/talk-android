@@ -22,17 +22,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/bottom_buttons_layout"
               android:layout_width="match_parent"
-              android:layout_height="64dp"
+              android:layout_height="48dp"
               android:alpha="0.7"
               android:animateLayoutChanges="true"
               android:gravity="bottom"
+              android:layout_gravity="bottom"
               android:orientation="horizontal"
-              android:visibility="gone">
+              android:visibility="visible">
 
     <Button
         android:id="@+id/clear_button"
+        style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="0.6"
         android:background="@color/nc_darkRed"
         android:text="@string/nc_contacts_clear"
@@ -41,8 +43,9 @@
 
     <Button
         android:id="@+id/done_button"
+        style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="0.4"
         android:background="@color/nc_darkGreen"
         android:text="@string/nc_contacts_done"
