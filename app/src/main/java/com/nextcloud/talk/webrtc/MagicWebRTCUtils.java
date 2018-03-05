@@ -80,9 +80,10 @@ public class MagicWebRTCUtils {
         add("SM-G930F"); // Samsung Galaxy S7
         add("AGS-W09"); // Huawei MediaPad T3 10
         add("MIX 2"); // Xiaomi Mi Mix 2
-        add("HWVNS-H"); // Huawei P9 Lite
-        add("HWVNS-Q"); // Huawei P9 Lite
+        add("HUAWEI VNS-L31"); // Huawei P9 Lite
+        add("ALE-L21"); // Huawei P8 Lite
         add("Z380M"); // Asus ZenPad 8.0
+        add("XT1097"); // Motorola Moto X (2nd Gen)
     }};
 
     private static Set<String> HARDWARE_ACCELERATION_VENDOR_BLACKLIST = new HashSet<String>() {{
