@@ -23,10 +23,9 @@
               android:id="@+id/bottom_buttons_layout"
               android:layout_width="match_parent"
               android:layout_height="48dp"
-              android:alpha="0.7"
+              android:layout_gravity="bottom"
               android:animateLayoutChanges="true"
               android:gravity="bottom"
-              android:layout_gravity="bottom"
               android:orientation="horizontal"
               android:visibility="visible">
 

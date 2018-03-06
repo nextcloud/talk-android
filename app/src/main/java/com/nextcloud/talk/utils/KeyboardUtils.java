@@ -32,30 +32,6 @@ import android.view.inputmethod.InputMethodManager;
 public class KeyboardUtils {
     private View decorView;
     private View contentView;
-
-    public KeyboardUtils(Activity act, View contentView) {
-        this.decorView = act.getWindow().getDecorView();
-        this.contentView = contentView;
-
-        //only required on newer android versions. it was working on API level 19
-        if (Build.VERSION.SDK_INT >= 19) {
-            decorView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
-        }
-    }
-
-    public void enable() {
-        if (Build.VERSION.SDK_INT >= 19) {
-            decorView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
-        }
-    }
-
-    public void disable() {
-        if (Build.VERSION.SDK_INT >= 19) {
-            decorView.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
-        }
-    }
-
-
     //a small helper to allow showing the editText focus
     ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
@@ -86,6 +62,15 @@ public class KeyboardUtils {
         }
     };
 
+    public KeyboardUtils(Activity act, View contentView) {
+        this.decorView = act.getWindow().getDecorView();
+        this.contentView = contentView;
+
+        //only required on newer android versions. it was working on API level 19
+        if (Build.VERSION.SDK_INT >= 19) {
+            decorView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
+        }
+    }
 
     /**
      * Helper to hide the keyboard
@@ -96,6 +81,18 @@ public class KeyboardUtils {
         if (act != null && act.getCurrentFocus() != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) act.getSystemService(Activity.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(act.getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    public void enable() {
+        if (Build.VERSION.SDK_INT >= 19) {
+            decorView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
+        }
+    }
+
+    public void disable() {
+        if (Build.VERSION.SDK_INT >= 19) {
+            decorView.getViewTreeObserver().removeOnGlobalLayoutListener(onGlobalLayoutListener);
         }
     }
 }
