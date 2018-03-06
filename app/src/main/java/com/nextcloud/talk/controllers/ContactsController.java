@@ -397,9 +397,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         searchItem.setVisible(contactItems.size() > 0);
-        if (adapter.hasSearchText()) {
+        if (adapter.hasFilter()) {
             searchItem.expandActionView();
-            searchView.setQuery(adapter.getSearchText(), false);
+            searchView.setQuery((CharSequence) adapter.getFilter(String.class), false);
         }
 
     }
@@ -592,20 +592,20 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (adapter.hasNewSearchText(newText) || !TextUtils.isEmpty(searchQuery)) {
+        if (adapter.hasNewFilter(newText) || !TextUtils.isEmpty(searchQuery)) {
 
             if (!TextUtils.isEmpty(searchQuery)) {
-                adapter.setSearchText(searchQuery);
+                adapter.setFilter(searchQuery);
                 searchQuery = "";
                 adapter.filterItems();
             } else {
-                adapter.setSearchText(newText);
+                adapter.setFilter(newText);
                 adapter.filterItems(300);
             }
         }
 
         if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setEnabled(!adapter.hasSearchText());
+            swipeRefreshLayout.setEnabled(!adapter.hasFilter());
         }
 
         return true;
@@ -614,66 +614,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     public boolean onQueryTextSubmit(String query) {
         return onQueryTextChange(query);
-    }
-
-    @Override
-    public boolean onItemClick(int position) {
-        if (adapter.getItem(position) instanceof UserItem) {
-            if (!isNewConversationView) {
-                UserItem userItem = (UserItem) adapter.getItem(position);
-                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
-                        userItem.getModel().getUserId(), null);
-                ncApi.createRoom(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                        retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<RoomOverall>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(RoomOverall roomOverall) {
-                                if (getActivity() != null) {
-                                    Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
-                                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
-                                    callIntent.putExtras(bundle);
-                                    if (getActivity() != null) {
-                                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                                        if (imm != null) {
-                                            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                                        }
-                                    }
-                                    startActivity(callIntent);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
-            } else {
-                ((UserItem) adapter.getItem(position)).flipItemSelection();
-                adapter.toggleSelection(position);
-
-                checkAndHandleBottomButtons();
-            }
-        } else if (adapter.getItem(position) instanceof NewCallHeaderItem) {
-            adapter.toggleSelection(position);
-            isPublicCall = adapter.isSelected(position);
-            ((NewCallHeaderItem) adapter.getItem(position)).togglePublicCall(isPublicCall);
-            checkAndHandleBottomButtons();
-        }
-        return true;
     }
 
     private void checkAndHandleBottomButtons() {
@@ -773,4 +713,63 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         eventBus.unregister(this);
     }
 
+    @Override
+    public boolean onItemClick(View view, int position) {
+        if (adapter.getItem(position) instanceof UserItem) {
+            if (!isNewConversationView) {
+                UserItem userItem = (UserItem) adapter.getItem(position);
+                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
+                        userItem.getModel().getUserId(), null);
+                ncApi.createRoom(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                        retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<RoomOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(RoomOverall roomOverall) {
+                                if (getActivity() != null) {
+                                    Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
+                                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
+                                    callIntent.putExtras(bundle);
+                                    if (getActivity() != null) {
+                                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                                        if (imm != null) {
+                                            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                                        }
+                                    }
+                                    startActivity(callIntent);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            } else {
+                ((UserItem) adapter.getItem(position)).flipItemSelection();
+                adapter.toggleSelection(position);
+
+                checkAndHandleBottomButtons();
+            }
+        } else if (adapter.getItem(position) instanceof NewCallHeaderItem) {
+            adapter.toggleSelection(position);
+            isPublicCall = adapter.isSelected(position);
+            ((NewCallHeaderItem) adapter.getItem(position)).togglePublicCall(isPublicCall);
+            checkAndHandleBottomButtons();
+        }
+        return true;
+    }
 }

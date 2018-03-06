@@ -54,7 +54,7 @@ import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.flipview.FlipView;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements IFilterable {
+public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements IFilterable<String> {
 
     private Room room;
     private UserEntity userEntity;
@@ -102,8 +102,9 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
 
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, RoomItemViewHolder holder, int position, List payloads) {
-        if (adapter.hasSearchText()) {
-            FlexibleUtils.highlightText(holder.roomDisplayName, room.getDisplayName(), adapter.getSearchText());
+        if (adapter.hasFilter()) {
+            FlexibleUtils.highlightText(holder.roomDisplayName, room.getDisplayName(),
+                    String.valueOf(adapter.getFilter(String.class)));
         } else {
             holder.roomDisplayName.setText(room.getDisplayName());
         }

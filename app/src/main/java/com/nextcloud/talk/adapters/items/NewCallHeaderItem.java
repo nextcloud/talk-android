@@ -31,6 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractHeaderItem;
+import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.flexibleadapter.items.IHeader;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
@@ -55,13 +56,7 @@ public class NewCallHeaderItem extends AbstractHeaderItem<NewCallHeaderItem.Head
     }
 
     @Override
-    public HeaderViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
-        headerViewHolder = new HeaderViewHolder(view, adapter);
-        return headerViewHolder;
-    }
-
-    @Override
-    public void bindViewHolder(FlexibleAdapter adapter, HeaderViewHolder holder, int position, List<Object> payloads) {
+    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, HeaderViewHolder holder, int position, List<Object> payloads) {
         headerViewHolder = holder;
 
         if (holder.secondaryRelativeLayout.getVisibility() == View.GONE && adapter.isSelected(position)) {
@@ -69,6 +64,12 @@ public class NewCallHeaderItem extends AbstractHeaderItem<NewCallHeaderItem.Head
         } else if (holder.initialRelativeLayout.getVisibility() == View.GONE && !adapter.isSelected(position)) {
             togglePublicCall(false);
         }
+    }
+
+    @Override
+    public HeaderViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        headerViewHolder = new HeaderViewHolder(view, adapter);
+        return headerViewHolder;
     }
 
     public void togglePublicCall(boolean showDescription) {

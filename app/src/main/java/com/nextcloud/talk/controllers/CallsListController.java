@@ -257,9 +257,9 @@ public class CallsListController extends BaseController implements SearchView.On
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         searchItem.setVisible(callItems.size() > 0);
-        if (adapter.hasSearchText()) {
+        if (adapter.hasFilter()) {
             searchItem.expandActionView();
-            searchView.setQuery(adapter.getSearchText(), false);
+            searchView.setQuery(adapter.getFilter(String.class), false);
         }
     }
 
@@ -394,20 +394,20 @@ public class CallsListController extends BaseController implements SearchView.On
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (adapter.hasNewSearchText(newText) || !TextUtils.isEmpty(searchQuery)) {
+        if (adapter.hasNewFilter(newText) || !TextUtils.isEmpty(searchQuery)) {
 
             if (!TextUtils.isEmpty(searchQuery)) {
-                adapter.setSearchText(searchQuery);
+                adapter.setFilter(searchQuery);
                 searchQuery = "";
                 adapter.filterItems();
             } else {
-                adapter.setSearchText(newText);
+                adapter.setFilter(newText);
                 adapter.filterItems(300);
             }
         }
 
         if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setEnabled(!adapter.hasSearchText());
+            swipeRefreshLayout.setEnabled(!adapter.hasFilter());
         }
 
         return true;
@@ -473,7 +473,17 @@ public class CallsListController extends BaseController implements SearchView.On
 
 
     @Override
-    public boolean onItemClick(int position) {
+    protected String getTitle() {
+        return getResources().getString(R.string.nc_app_name);
+    }
+
+    @Override
+    public void onFastScrollerStateChange(boolean scrolling) {
+        swipeRefreshLayout.setEnabled(!scrolling);
+    }
+
+    @Override
+    public boolean onItemClick(View view, int position) {
         CallItem callItem = adapter.getItem(position);
         if (callItem != null && getActivity() != null) {
             Room room = callItem.getModel();
@@ -495,15 +505,5 @@ public class CallsListController extends BaseController implements SearchView.On
         }
 
         return true;
-    }
-
-    @Override
-    protected String getTitle() {
-        return getResources().getString(R.string.nc_app_name);
-    }
-
-    @Override
-    public void onFastScrollerStateChange(boolean scrolling) {
-        swipeRefreshLayout.setEnabled(!scrolling);
     }
 }

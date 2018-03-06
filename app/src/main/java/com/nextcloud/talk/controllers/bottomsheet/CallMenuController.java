@@ -179,7 +179,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     }
 
     @Override
-    public boolean onItemClick(int position) {
+    public boolean onItemClick(View view, int position) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
 
@@ -253,7 +253,6 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 }
             }
         }
-
 
         return true;
     }

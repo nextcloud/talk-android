@@ -54,7 +54,8 @@ import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.flipview.FlipView;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.UserItemViewHolder> implements IFilterable {
+public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.UserItemViewHolder> implements
+        IFilterable<String> {
 
     private Participant participant;
     private UserEntity userEntity;
@@ -110,8 +111,9 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
-        if (adapter.hasSearchText()) {
-            FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(), adapter.getSearchText());
+        if (adapter.hasFilter()) {
+            FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(),
+                    String.valueOf(adapter.getFilter(String.class)));
         } else {
             holder.contactDisplayName.setText(participant.getName());
         }

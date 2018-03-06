@@ -38,6 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
@@ -83,12 +84,7 @@ public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
     }
 
     @Override
-    public AppItem.AppItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
-        return new AppItemViewHolder(view, adapter);
-    }
-
-    @Override
-    public void bindViewHolder(FlexibleAdapter adapter, AppItem.AppItemViewHolder holder, int position, List<Object> payloads) {
+    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, AppItemViewHolder holder, int position, List<Object> payloads) {
         if (drawable != null) {
             holder.iconImageView.setVisibility(View.VISIBLE);
             holder.iconImageView.setImageDrawable(drawable);
@@ -106,6 +102,11 @@ public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
         } else {
             holder.appTitleTextView.setText(title);
         }
+    }
+
+    @Override
+    public AppItem.AppItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new AppItemViewHolder(view, adapter);
     }
 
     static class AppItemViewHolder extends FlexibleViewHolder {

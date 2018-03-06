@@ -50,7 +50,7 @@ import eu.davidea.flipview.FlipView;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements
-        ISectionable<UserItem.UserItemViewHolder, UserHeaderItem>, IFilterable {
+        ISectionable<UserItem.UserItemViewHolder, UserHeaderItem>, IFilterable<String> {
 
     private Participant participant;
     private UserEntity userEntity;
@@ -114,8 +114,9 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             flipItemSelection();
         }
 
-        if (adapter.hasSearchText()) {
-            FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(), adapter.getSearchText());
+        if (adapter.hasFilter()) {
+            FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(),
+                    String.valueOf(adapter.getFilter(String.class)));
         } else {
             holder.contactDisplayName.setText(participant.getName());
         }

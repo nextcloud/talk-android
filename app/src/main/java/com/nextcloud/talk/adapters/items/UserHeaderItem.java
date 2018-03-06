@@ -35,9 +35,10 @@ import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractHeaderItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
+import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class UserHeaderItem extends AbstractHeaderItem<UserHeaderItem.HeaderViewHolder> implements IFilterable {
+public class UserHeaderItem extends AbstractHeaderItem<UserHeaderItem.HeaderViewHolder> implements IFilterable<String> {
     private static final String TAG = "UserHeaderItem";
 
     private String title;
@@ -73,17 +74,18 @@ public class UserHeaderItem extends AbstractHeaderItem<UserHeaderItem.HeaderView
     }
 
     @Override
-    public HeaderViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
-        return new HeaderViewHolder(view, adapter);
-    }
-
-    @Override
-    public void bindViewHolder(FlexibleAdapter adapter, HeaderViewHolder holder, int position, List<Object> payloads) {
+    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, HeaderViewHolder holder, int position, List<Object> payloads) {
         if (payloads.size() > 0) {
             Log.d(TAG, "We have payloads, so ignoring!");
         } else {
             holder.titleTextView.setText(title);
         }
+
+    }
+
+    @Override
+    public HeaderViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new HeaderViewHolder(view, adapter);
     }
 
     static class HeaderViewHolder extends FlexibleViewHolder {

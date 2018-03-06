@@ -28,6 +28,7 @@ import java.util.List;
 
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class EmptyFooterItem extends AbstractFlexibleItem<EmptyFooterItem.EmptyFooterItemViewHolder> {
@@ -57,13 +58,14 @@ public class EmptyFooterItem extends AbstractFlexibleItem<EmptyFooterItem.EmptyF
     }
 
     @Override
-    public EmptyFooterItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
-        return new EmptyFooterItemViewHolder(view, adapter);
+    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, EmptyFooterItemViewHolder holder,
+                               int position, List<Object> payloads) {
+
     }
 
     @Override
-    public void bindViewHolder(FlexibleAdapter adapter, EmptyFooterItemViewHolder holder, int position, List<Object> payloads) {
-
+    public EmptyFooterItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new EmptyFooterItemViewHolder(view, adapter);
     }
 
     static class EmptyFooterItemViewHolder extends FlexibleViewHolder {

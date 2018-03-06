@@ -81,52 +81,54 @@ public class SwitchAccountController extends BaseController {
 
     private boolean isAccountImport = false;
 
-    private FlexibleAdapter.OnItemClickListener onImportItemClickListener = position -> {
-        if (userItems.size() > position) {
-            Account account = ((AdvancedUserItem) userItems.get(position)).getAccount();
-            verifyAccount(account);
-        }
+    private FlexibleAdapter.OnItemClickListener onImportItemClickListener = new FlexibleAdapter.OnItemClickListener() {
+        @Override
+        public boolean onItemClick(View view, int position) {
+            if (userItems.size() > position) {
+                Account account = ((AdvancedUserItem) userItems.get(position)).getAccount();
+                verifyAccount(account);
+            }
 
-        return true;
+            return true;
+        }
     };
 
-    private FlexibleAdapter.OnItemClickListener onSwitchItemClickListener =
-            new FlexibleAdapter.OnItemClickListener() {
-                @Override
-                public boolean onItemClick(int position) {
-                    if (userItems.size() > position) {
-                        UserEntity userEntity = ((AdvancedUserItem) userItems.get(position)).getEntity();
-                        userUtils.createOrUpdateUser(null,
-                                null, null, null,
-                                null, true, null, userEntity.getId(), null)
-                                .subscribe(new Observer<UserEntity>() {
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
+    private FlexibleAdapter.OnItemClickListener onSwitchItemClickListener = new FlexibleAdapter.OnItemClickListener() {
+        @Override
+        public boolean onItemClick(View view, int position) {
+            if (userItems.size() > position) {
+                UserEntity userEntity = ((AdvancedUserItem) userItems.get(position)).getEntity();
+                userUtils.createOrUpdateUser(null,
+                        null, null, null,
+                        null, true, null, userEntity.getId(), null)
+                        .subscribe(new Observer<UserEntity>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
-                                    }
+                            }
 
-                                    @Override
-                                    public void onNext(UserEntity userEntity) {
-                                        cookieManager.getCookieStore().removeAll();
-                                        userUtils.disableAllUsersWithoutId(userEntity.getId());
-                                        getRouter().popCurrentController();
-                                    }
+                            @Override
+                            public void onNext(UserEntity userEntity) {
+                                cookieManager.getCookieStore().removeAll();
+                                userUtils.disableAllUsersWithoutId(userEntity.getId());
+                                getRouter().popCurrentController();
+                            }
 
-                                    @Override
-                                    public void onError(Throwable e) {
+                            @Override
+                            public void onError(Throwable e) {
 
-                                    }
+                            }
 
-                                    @Override
-                                    public void onComplete() {
+                            @Override
+                            public void onComplete() {
 
-                                    }
-                                });
-                    }
+                            }
+                        });
+            }
 
-                    return true;
-                }
-            };
+            return true;
+        }
+    };
 
     public SwitchAccountController() {
         setHasOptionsMenu(true);
