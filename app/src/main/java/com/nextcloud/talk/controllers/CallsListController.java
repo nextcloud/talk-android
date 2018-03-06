@@ -289,7 +289,9 @@ public class CallsListController extends BaseController implements SearchView.On
                         }
                     }
 
-                    swipeRefreshLayout.setRefreshing(false);
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
 
                 }, throwable -> {
                     if (searchItem != null) {
@@ -313,7 +315,9 @@ public class CallsListController extends BaseController implements SearchView.On
                                 break;
                         }
                     }
-                    swipeRefreshLayout.setRefreshing(false);
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
                     dispose(roomsQueryDisposable);
                 }, () -> {
                     dispose(roomsQueryDisposable);
