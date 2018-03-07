@@ -122,7 +122,41 @@
         Du kan forsøke å koble til via en nettleser.</string>
     <string name="nc_all_ok_operation">OK, ferdig!</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Samtalenavn
+</string>
     <string name="nc_proceed">Fortsett</string>
     <string name="nc_call_name_is_same">Navnet du valgte eksisterer allerede</string>
     <string name="nc_wrong_link">Samtale lenke er ikke gyldig</string>
-    </resources>
+    <string name="nc_share_text">Delta i samtalen via %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s invitasjon</string>
+    <string name="nc_share_text_pass">\nPassord: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_store_short_desc">Få private videosamtaler og chat ved å bruke din egen tjener.</string>
+    <string name="nc_store_full_desc">Bruk Nextcloud Talk for lyd- eller video- samtaler for 2 eller flere personer, opprette eller delta i webkonferanser og send chat- meldinger. All kommunikasjon er kryptert og organisert av din egen server, og sørger derfor for den høyeste grad av personvern som mulig.
+
+Nextcloud Talk er lett å bruke og vil alltid være gratis!
+
+Nextcloud Talk støtter:
+* HD (H.265) lyd/video- samtaler
+* Gruppe og en-til-en- samtaler
+* Webinars &amp; webmøter åpne for alle
+* En-til-en chat og gruppechat
+* Enkel skjermdeling
+* Mobilapper for Android og iOS
+* Push- notifikasjoner for oppring &amp; og chat
+* Integrasjon med Nextcloud Files og Nextcloud Groupware
+* Kjøres helt og holdent lokalt, og 100% åpen kildekode
+* Ende-til-ende- kryptering
+* Skalerbart til millioner av brukere
+* SIP gate: ring inn via telefon
+
+Nextcloud Talk app krever en Nextcloud Talk- server for å fungere. Nextcloud er en privat plattform for filsynkronisering og kommunikasjon som du drifter helt selv, og er designet slik at du kan ta tilbake kontrollen over dataene dine. Den kjører på en tjener som du velger selv, enten det er hjemme, hos en annen driftsleverandør eller i bedriften din, og gir deg tilgang til dine dokumenter, kalendere, kontakter, e-mail, og andre data. Du kan til og med dele med andre på tvers av andre Nextcloud- tjenere og jobbe sammen med dokumenter. Nextcloud har helt åpen kildekode, og gir deg muligheten til å utvide koden for eget bruk, for å delta i utviklingen eller helt enkelt for å sikre at vi gjør som vi lover.
+
+Millioner av brukere benytter Nextcloud daglig i bedriften eller hjemme rundt omkring i hele verden. Bedriftsbrukere støtter seg på den profesjonelle hjelpen de får fra Nextcloud GmbH, og sørger for at de har en fullt ut støttet, bedriftsklar plattform for produktivitet og samarbeid, under full kontroll av deres IT- avdeling.
+
+Lær mer her: https://nextcloud.com/talk
+
+Finn Nextcloud her: https://nextcloud.com</string>
+</resources>

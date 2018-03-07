@@ -1,0 +1,25 @@
+Gebruik Nextcloud Talk om een één-op-één of groeps- audio- of videogesprek te houden, voor het starten of deelnemen aan web conferenties en voor het versturen van berichten. Alle communicatie is volledig versleuteld en verwerkt via je eigen server, waardoor je de hoogst mogelijke graad van privacy bereikt.
+
+Nextcloud Talk is gemakkelijk te gebruiken en is altijd helemaal gratis!
+
+Nextcloud Talk ondersteunt:
+* HD (H.265) audio/video gesprekken
+* Groeps en één-op-één gesprekken
+* Webinars & openbare web bijeenkomsten
+* Individuele en groepschat
+* Eenvoudig delen van je scherm
+* Mobiele apps voor Android en iOS
+* Mobiele gespreks- & chat push meldingen
+* Integratie in Nextcloud Bestanden en Nextcloud Groupware
+* Volledig on-premise, 100% open source
+* Begin-tot-eind versleutelde gesprekken
+* Schaalbaar tot miljoenen gebruikers
+* SIP gate: inbellen per telefoon
+
+De Nextcloud Talk app vereist een Nextcloud Talk server. Nextcloud is een besloten, self-hosted bestandsync en communicatieplatform, ontwikkeld om jou weer in control over jouw gegevens te laten zijn. Het draait op een server van jouw keuze, thuis, bij een service provider of in je bedrijf en geeft je toegang tot je documenten, agenda's, contactpersonen, e-mail en andere gegevens. Je kunt delen met anderen, ook over verschillende Nextcloud servers en samenwerken aan documenten. Nextcloud is volledig open source, waardoor je de mogelijkheid hebt om het uit te breiden voor je eigen gebruik, om mee te doen aan de ontwikkeling ervan, of om simpelweg te controleren of het doet wat we beloven.
+
+Miljoenen mensen gebruiken Nextcloud dagelijks voor hun werk of thuis. Professionele gebruikers vertrouwen op de professionele ondersteuning van Nextcloud GmbH, waarbij ze een volledig ondersteunde, enterprise-ready platform voor productiviteit en samenwerking hebben, geheel onder controle van hun IT afdeling.
+
+Meer informatie op https://nextcloud.com/talk
+
+Bezoek Nextcloud op https://nextcloud.com

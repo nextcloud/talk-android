@@ -122,7 +122,40 @@
 Megpróbálhatod weben keresztül.</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Beszélgetésnév</string>
     <string name="nc_proceed">Folytatás</string>
     <string name="nc_call_name_is_same">A megadott név egyezik a korábbival</string>
     <string name="nc_wrong_link">A beszélgetési link nem érvényes.</string>
-    </resources>
+    <string name="nc_share_text">Csatlakozz a beszélgetéshez itt: %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s meghívás</string>
+    <string name="nc_share_text_pass">\nJelszó: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_store_short_desc">Intézz videóhívásokat és magánbeszélgetéseket saját szervered segítségével.</string>
+    <string name="nc_store_full_desc">Használd a Nextcloud Talk-ot egy-egy vagy csoportos videó és hanghívásokhoz, Hozz létre, vagy csatlakozz videó konferenciákhoz és küldj szöveges üzeneteket. Minden kapcsolat teljesen titkosított és a te szervered közvetíti, biztosítva az elérhető legmagasabb biztonsági szintet.
+
+A Nextcloud Talk könnyen használható és mindíg ingyenes marad!
+
+A Nextcloud Talk támogatja:
+* HD (H.265) audió/videó hívások
+* Csoportos és egy-egy kapcsolatok
+* Webinar-ok &amp; nyilvános web találkozók
+* Egyedi és csoportos chat
+* Egyszerű képernyőmegosztás
+* Mobil alkalmazás Android-ra és iOS-ra
+* Mobil hívás &amp; chat push értesítések
+* Integráció a Nextcloud Fájlokkal és Nextcloud Groupware-el
+* Saját futtatású, 100% nyílt forrás
+* vég-vég titkosított hívások
+* Több millió felhasználóig skálázódik
+* SIP kapu: behívás telefonnal
+
+A Nextcloud Talk app-nak szükséges egy  Nextcloud Talk szerver. A Nextcloud egy privát, saját kiszolgálású fájlszinkronizációs és kommunikciós platform, melyet az adataid feletti uralom visszanyerésére terveztek. Az általad választott szerveren fut, legyen az otthon, egy szolgáltatónál vagy a cégednél. Hozzáférést ad a dokumentumaidhoz, naptáraidhoz, kapcsolataidhoz, email-jeidhez és más adataidhoz. Megoszthatod ezeket akár más Nextcloud telepítésekkel is, vagy dolgozhatsz rajtuk közösen. A Nextcloud teljesen nyílt forrású, így lehetőséged van azt teljesen személyre szabni, átírni, részt venni a fejlesztésben vagy csak meggyőződhetsz, hogy azt teszi amit állítanak róla.
+
+Millióan használják a Nextcloud-ot naponta üzleti és magáncélra szerte a világon. Üzleti felhasználók rábízzák magukat a Nextcloud GmbH-ra, biztosítva a teljes támogatást, üzleti célú termelékenység és összedolgozást támogató rendszerükkel, a saját IT osztályuk felügyelete alatt.
+
+Bővebben: https://nextcloud.com/talk
+
+A Nextcloudról: https://nextcloud.com</string>
+</resources>
