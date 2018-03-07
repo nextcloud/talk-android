@@ -13,10 +13,6 @@ bin/
 gen/
 out/
 
-# Gradle files
-.gradle/
-build/
-
 # Local configuration file (sdk path, etc)
 local.properties
 
@@ -55,3 +51,9 @@ freeline.py
 freeline/
 freeline_project_description.json
 .DS_Store
+
+# Android Studio and Gradle specific entries
+.gradle/
+build/
+.idea/
+/gradle.properties

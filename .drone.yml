@@ -1,0 +1,44 @@
+pipeline:
+  compile:
+    image: nextcloudci/android:android-33
+    commands:
+      # build app and assemble APK
+      - sh -c "if [ '${FLAVOR}' != 'Lint' ]; then ./gradlew assemble${FLAVOR}; fi"
+    when:
+      matrix:
+        FLAVOR: [Generic, Gplay]
+
+  lint:
+    image: nextcloudci/android:android-33
+    commands:
+      # needs gplay
+      - sed -i '/.*com.google.*/s/^.*\\/\\///g' build.gradle
+      - export BRANCH=$(scripts/lint/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
+      - scripts/lint/lint-up-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER
+    secrets: [ GIT_USERNAME, GIT_TOKEN, LOG_USERNAME, LOG_PASSWORD ]
+    when:
+      matrix:
+        FLAVOR: Lint
+        
+  notify:
+      image: drillster/drone-email
+      host: $EMAIL_HOST
+      port: 587
+      username: $EMAIL_USERNAME
+      password: $EMAIL_PASSWORD
+      from: nextcloud-drone@kaminsky.me
+      recipients_only: true
+      recipients: [ $EMAIL_RECIPIENTS ]
+      secrets: [ EMAIL_USERNAME, EMAIL_PASSWORD, EMAIL_RECIPIENTS, EMAIL_HOST ]
+      when:
+        event: push
+        status: failure
+        branch: master
+
+matrix:
+  FLAVOR:
+    - Generic
+    - Gplay
+    - Lint
+
+branches: master
