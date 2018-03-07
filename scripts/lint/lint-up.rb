@@ -18,7 +18,7 @@ TRAVIS_GIT_USERNAME = String.new("Drone CI server")
 #   lintOptions {
 #       htmlOutput file("[FILE_NAME].html")
 #   }
-LINT_REPORT_FILE = String.new("build/reports/lint/lint.html")
+LINT_REPORT_FILE = String.new("app/build/reports/lint/lint.html")
 
 # File name and relative path of previous results of this script.
 PREVIOUS_LINT_RESULTS_FILE=String.new("scripts/lint/lint-results.txt")
@@ -61,7 +61,7 @@ system './gradlew clean assembleGplay lint'
 # confirm that Lint ran w/out error
 result = $?.to_i
 if result != 0
-    puts "FAIL: failed to run ./gradlew clean lint"
+    puts "FAIL: failed to run ./gradlew clean assembleGplay lint"
     exit 1
 end
 

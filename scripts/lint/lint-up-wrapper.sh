@@ -19,14 +19,14 @@ echo "Branch: $3"
 
 if [ $3 = "master" -a $returnValue -ne 1 ]; then
     echo "New master at: https://nextcloud.kaminsky.me/index.php/s/fyxdQjc7LCiy57C"
-    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-droneLogs/master.html --upload-file build/reports/lint/lint.html
+    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-droneLogs/master.html --upload-file app/build/reports/lint/lint.html
     exit 0
 else
     if [ -e $6 ]; then
         6="master-"$(date +%F)
     fi
     echo "New results at https://nextcloud.kaminsky.me/index.php/s/fyxdQjc7LCiy57C ->" $6.html
-    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-droneLogs/$6.html --upload-file build/reports/lint/lint.html
+    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-droneLogs/$6.html --upload-file app/build/reports/lint/lint.html
     
     if [ $returnValue -eq 2 ]; then
         exit 0
