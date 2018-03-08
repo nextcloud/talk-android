@@ -32,6 +32,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
+import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
@@ -61,7 +62,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
-import io.reactivex.functions.Consumer;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
@@ -267,72 +269,106 @@ public class PushUtils {
                                     ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
                                     ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()), queryMap)
                                     .subscribeOn(Schedulers.newThread())
-                                    .subscribe(pushRegistrationOverall -> {
-                                        Map<String, String> proxyMap = new HashMap<>();
-                                        proxyMap.put("pushToken", token);
-                                        proxyMap.put("deviceIdentifier", pushRegistrationOverall.getOcs().getData().
-                                                getDeviceIdentifier());
-                                        proxyMap.put("deviceIdentifierSignature", pushRegistrationOverall.getOcs()
-                                                .getData().getSignature());
-                                        proxyMap.put("userPublicKey", pushRegistrationOverall.getOcs()
-                                                .getData().getPublicKey());
-
-
-                                        ncApi.registerDeviceForNotificationsWithProxy(ApiUtils.getCredentials
-                                                        (userEntity.getUsername(), userEntity.getToken()),
-                                                ApiUtils.getUrlPushProxy(), proxyMap)
-                                                .subscribeOn(Schedulers.newThread())
-                                                .subscribe(new Consumer<Void>() {
-                                                    @Override
-                                                    public void accept(Void aVoid) throws Exception {
-
-                                                        PushConfigurationState pushConfigurationState =
-                                                                new PushConfigurationState();
-                                                        pushConfigurationState.setPushToken(token);
-                                                        pushConfigurationState.setDeviceIdentifier(
-                                                                pushRegistrationOverall.getOcs()
-                                                                        .getData().getDeviceIdentifier());
-                                                        pushConfigurationState.setDeviceIdentifierSignature(
-                                                                pushRegistrationOverall
-                                                                        .getOcs().getData().getSignature());
-                                                        pushConfigurationState.setUserPublicKey(
-                                                                pushRegistrationOverall.getOcs()
-                                                                        .getData().getPublicKey());
-                                                        pushConfigurationState.setUsesRegularPass(false);
-
-                                                        userUtils.createOrUpdateUser(null,
-                                                                null, null,
-                                                                userEntity.getDisplayName(),
-                                                                LoganSquare.serialize(pushConfigurationState), null,
-                                                                null, userEntity.getId(), null)
-                                                                .subscribe(new Consumer<UserEntity>() {
-                                                                    @Override
-                                                                    public void accept(UserEntity userEntity) throws Exception {
-                                                                        // all went well
-                                                                    }
-                                                                }, new Consumer<Throwable>() {
-                                                                    @Override
-                                                                    public void accept(Throwable throwable) throws Exception {
-                                                                    }
-                                                                });
-
-
-                                                    }
-                                                }, new Consumer<Throwable>() {
-                                                    @Override
-                                                    public void accept(Throwable throwable) throws Exception {
-                                                        // something went wrong
-                                                    }
-                                                });
-
-
-                                    }, new Consumer<Throwable>() {
+                                    .subscribe(new Observer<PushRegistrationOverall>() {
                                         @Override
-                                        public void accept(Throwable throwable) throws Exception {
-                                            // TODO: If 400, we're using regular token
+                                        public void onSubscribe(Disposable d) {
+
+                                        }
+
+                                        @Override
+                                        public void onNext(PushRegistrationOverall pushRegistrationOverall) {
+                                            Map<String, String> proxyMap = new HashMap<>();
+                                            proxyMap.put("pushToken", token);
+                                            proxyMap.put("deviceIdentifier", pushRegistrationOverall.getOcs().getData().
+                                                    getDeviceIdentifier());
+                                            proxyMap.put("deviceIdentifierSignature", pushRegistrationOverall.getOcs()
+                                                    .getData().getSignature());
+                                            proxyMap.put("userPublicKey", pushRegistrationOverall.getOcs()
+                                                    .getData().getPublicKey());
+
+
+                                            ncApi.registerDeviceForNotificationsWithProxy(ApiUtils.getCredentials
+                                                            (userEntity.getUsername(), userEntity.getToken()),
+                                                    ApiUtils.getUrlPushProxy(), proxyMap)
+                                                    .subscribeOn(Schedulers.newThread())
+                                                    .subscribe(new Observer<Void>() {
+                                                        @Override
+                                                        public void onSubscribe(Disposable d) {
+
+                                                        }
+
+                                                        @Override
+                                                        public void onNext(Void aVoid) {
+                                                            PushConfigurationState pushConfigurationState =
+                                                                    new PushConfigurationState();
+                                                            pushConfigurationState.setPushToken(token);
+                                                            pushConfigurationState.setDeviceIdentifier(
+                                                                    pushRegistrationOverall.getOcs()
+                                                                            .getData().getDeviceIdentifier());
+                                                            pushConfigurationState.setDeviceIdentifierSignature(
+                                                                    pushRegistrationOverall
+                                                                            .getOcs().getData().getSignature());
+                                                            pushConfigurationState.setUserPublicKey(
+                                                                    pushRegistrationOverall.getOcs()
+                                                                            .getData().getPublicKey());
+                                                            pushConfigurationState.setUsesRegularPass(false);
+
+                                                            try {
+                                                                userUtils.createOrUpdateUser(null,
+                                                                        null, null,
+                                                                        userEntity.getDisplayName(),
+                                                                        LoganSquare.serialize(pushConfigurationState), null,
+                                                                        null, userEntity.getId(), null)
+                                                                        .subscribe(new Observer<UserEntity>() {
+                                                                            @Override
+                                                                            public void onSubscribe(Disposable d) {
+
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onNext(UserEntity userEntity) {
+
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onError(Throwable e) {
+
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onComplete() {
+
+                                                                            }
+                                                                        });
+                                                            } catch (IOException e) {
+                                                                Log.e(TAG, "IOException while updating user");
+                                                            }
+
+
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+
+                                                        }
+
+                                                        @Override
+                                                        public void onComplete() {
+
+                                                        }
+                                                    });
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
                                         }
                                     });
-
                         }
                     }
                 }

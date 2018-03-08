@@ -268,6 +268,7 @@ public class AccountVerificationController extends BaseController {
     private void dispose(@Nullable Disposable disposable) {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
+            disposable = null;
         } else if (disposable == null) {
             if (roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed()) {
                 roomsQueryDisposable.dispose();
@@ -290,7 +291,6 @@ public class AccountVerificationController extends BaseController {
             }
         }
 
-        disposable = null;
     }
 
     @Override
