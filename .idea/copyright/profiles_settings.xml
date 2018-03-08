@@ -1,5 +1,5 @@
 <component name="CopyrightManager">
-  <settings>
+  <settings default="GPL3">
     <module2copyright>
       <element module="Project Files" copyright="GPL3" />
     </module2copyright>

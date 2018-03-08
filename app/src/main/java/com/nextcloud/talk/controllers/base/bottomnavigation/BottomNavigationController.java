@@ -44,7 +44,7 @@ import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.utils.BottomNavigationUtils;
-import com.nextcloud.talk.utils.animations.BottomNavigationViewBehaviourAnimation;
+import com.nextcloud.talk.utils.animations.ViewHidingBehaviourAnimation;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 
 import butterknife.BindView;
@@ -131,7 +131,7 @@ public abstract class BottomNavigationController extends BaseController {
                 });
 
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
-        layoutParams.setBehavior(new BottomNavigationViewBehaviourAnimation());
+        layoutParams.setBehavior(new ViewHidingBehaviourAnimation());
     }
 
     @Override

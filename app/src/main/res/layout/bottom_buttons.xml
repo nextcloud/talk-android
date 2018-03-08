@@ -19,7 +19,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/bottom_buttons_layout"
               android:layout_width="match_parent"
               android:layout_height="48dp"
@@ -29,26 +29,31 @@
               android:orientation="horizontal"
               android:visibility="visible">
 
-    <Button
-        android:id="@+id/clear_button"
-        style="?android:attr/borderlessButtonStyle"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.6"
-        android:background="@color/nc_darkRed"
-        android:text="@string/nc_contacts_clear"
-        android:textAlignment="center"
-        android:textColor="@color/nc_white_color_complete"/>
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/done_button"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.4"
-        android:background="@color/nc_darkGreen"
-        android:text="@string/nc_contacts_done"
-        android:textAlignment="center"
-        android:textColor="@color/nc_white_color_complete"/>
+        <Button
+            android:id="@+id/clear_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:background="@color/nc_darkRed"
+            android:text="@string/nc_contacts_clear"
+            android:textAlignment="center"
+            android:textColor="@color/nc_white_color_complete"/>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/done_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:background="@color/nc_darkGreen"
+            android:text="@string/nc_contacts_done"
+            android:textAlignment="center"
+            android:textColor="@color/nc_white_color_complete"/>
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

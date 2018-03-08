@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -46,7 +47,6 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -54,7 +54,6 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
-import com.nextcloud.talk.adapters.items.EmptyFooterItem;
 import com.nextcloud.talk.adapters.items.NewCallHeaderItem;
 import com.nextcloud.talk.adapters.items.UserHeaderItem;
 import com.nextcloud.talk.adapters.items.UserItem;
@@ -72,6 +71,7 @@ import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
+import com.nextcloud.talk.utils.animations.ViewHidingBehaviourAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -129,9 +129,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    @Nullable
     @BindView(R.id.bottom_buttons_layout)
-    LinearLayout bottomButtonsLinearLayout;
+    CoordinatorLayout bottomButtonsLinearLayout;
 
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
@@ -546,6 +545,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 return ((UserHeaderItem) adapter.getItem(position)).getModel();
             }
         });
+
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomButtonsLinearLayout.getLayoutParams();
+        layoutParams.setBehavior(new ViewHidingBehaviourAnimation());
     }
 
     private void dispose(@Nullable Disposable disposable) {
@@ -633,17 +635,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         } else if (bottomButtonsLinearLayout != null) {
             bottomButtonsLinearLayout.setVisibility(View.GONE);
-        }
-
-        if (bottomButtonsLinearLayout != null && bottomButtonsLinearLayout.getVisibility() == View.VISIBLE) {
-            if (adapter.getScrollableFooters().size() == 0) {
-                adapter.addScrollableFooterWithDelay(new EmptyFooterItem(999), 0, layoutManager
-                        .findLastVisibleItemPosition() == adapter.getItemCount() - 1);
-            }
-        } else {
-            if (adapter != null) {
-                adapter.removeAllScrollableFooters();
-            }
         }
     }
 
