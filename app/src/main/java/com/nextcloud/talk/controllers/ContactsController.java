@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.controllers;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +44,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.bluelinelabs.conductor.RouterTransaction;
