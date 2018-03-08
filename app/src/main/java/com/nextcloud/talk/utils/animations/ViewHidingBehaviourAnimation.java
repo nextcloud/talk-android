@@ -32,6 +32,7 @@ import android.view.View;
 public class ViewHidingBehaviourAnimation extends CoordinatorLayout.Behavior<View> {
 
     private int height;
+    private boolean slidingDown = false;
 
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
@@ -56,13 +57,19 @@ public class ViewHidingBehaviourAnimation extends CoordinatorLayout.Behavior<Vie
     }
 
     private void slideUp(View child) {
-        child.clearAnimation();
-        child.animate().translationY(0).setDuration(200);
+        if (slidingDown) {
+            slidingDown = false;
+            child.clearAnimation();
+            child.animate().translationY(0).setDuration(200);
+        }
     }
 
     private void slideDown(View child) {
-        child.clearAnimation();
-        child.animate().translationY(height).setDuration(200);
+        if (!slidingDown) {
+            slidingDown = true;
+            child.clearAnimation();
+            child.animate().translationY(height).setDuration(200);
+        }
     }
 
 }
