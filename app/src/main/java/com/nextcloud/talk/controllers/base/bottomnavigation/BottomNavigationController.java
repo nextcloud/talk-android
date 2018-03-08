@@ -28,13 +28,13 @@ import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.bluelinelabs.conductor.ChangeHandlerFrameLayout;
 import com.bluelinelabs.conductor.Controller;
@@ -44,6 +44,7 @@ import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.utils.BottomNavigationUtils;
+import com.nextcloud.talk.utils.animations.BottomNavigationViewBehaviourAnimation;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 
 import butterknife.BindView;
@@ -77,7 +78,7 @@ public abstract class BottomNavigationController extends BaseController {
     private static final String KEY_STATE_CURRENTLY_SELECTED_ID = "key_state_currently_selected_id";
 
     @BindView(R.id.bottom_navigation_root)
-    LinearLayout bottomNavigationRoot;
+    CoordinatorLayout bottomNavigationRoot;
 
     @BindView(R.id.navigation)
     BottomNavigationView bottomNavigationView;
@@ -128,6 +129,9 @@ public abstract class BottomNavigationController extends BaseController {
                     navigateTo(item.getItemId(), getControllerFor(item.getItemId()));
                     return true;
                 });
+
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
+        layoutParams.setBehavior(new BottomNavigationViewBehaviourAnimation());
     }
 
     @Override
