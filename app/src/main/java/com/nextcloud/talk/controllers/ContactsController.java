@@ -270,13 +270,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                                 bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
                                 callIntent.putExtras(bundle);
-                                if (getActivity() != null) {
-                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                                    if (imm != null) {
-                                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                                    }
-                                }
-
                                 startActivity(callIntent);
                                 new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
                             }
@@ -729,12 +722,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                                     bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
                                     callIntent.putExtras(bundle);
-                                    if (getActivity() != null) {
-                                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                                        if (imm != null) {
-                                            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                                        }
-                                    }
                                     startActivity(callIntent);
                                 }
                             }
