@@ -110,9 +110,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         flipView = holder.avatarFlipView;
 
-        if (adapter.isSelected(position) && !flipView.isFlipped()) {
-            flipItemSelection();
-        }
+        flipView.flipSilently(adapter.isSelected(position));
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(),
