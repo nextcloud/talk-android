@@ -6,9 +6,9 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Serveradres</string>
-    <string name="nc_server_not_installed">Beëindig je %1$s installatie</string>
-    <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
-    <string name="nc_server_maintenance">Haal je %1$s uit de onderhoudsmodus</string>
+    <string name="nc_server_not_installed">Beëindig alsjeblieft je %1$s installatie</string>
+    <string name="nc_server_db_upgrade_needed">Werk alsjeblieft je %1$s database bij</string>
+    <string name="nc_server_maintenance">Haal alsjeblieft je %1$s uit de onderhoudsmodus</string>
     <string name="nc_server_version">%1$s werkt alleen met %2$s 13 en hoger</string>
     <string name="nc_server_import_account_plain">Importeer account</string>
     <string name="nc_server_import_accounts_plain">Importeer accounts</string>
@@ -133,6 +133,9 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_share_subject">%1$s uitnodiging</string>
     <string name="nc_share_text_pass">\nWachtwoord: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_store_short_desc">Heb vertrouwelijke videogesprekken en chats via je eigen server.</string>
     <string name="nc_store_full_desc">Gebruik Nextcloud Talk om een één-op-één of groeps- audio- of videogesprek te houden, voor het starten of deelnemen aan web conferenties en voor het versturen van berichten. Alle communicatie is volledig versleuteld en verwerkt via je eigen server, waardoor je de hoogst mogelijke graad van privacy bereikt.
 
 Nextcloud Talk is gemakkelijk te gebruiken en is altijd helemaal gratis!
