@@ -126,6 +126,7 @@ Veuillez essayer de joindre l\'appel depuis un navigateur web.</string>
     <string name="nc_call_name_is_same">Le nom que vous avez entré est le même que celui existant</string>
     <string name="nc_wrong_link">Le lien de conversation n\'est pas valide.</string>
     <string name="nc_share_text">Rejoins la conversation à %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text_pass">\nLe mot de passe : %1$s</string>
 
     <!-- Magical stuff -->
