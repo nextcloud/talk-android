@@ -29,6 +29,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -73,6 +74,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
+import com.wooplr.spotlight.SpotlightView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -204,6 +206,8 @@ public class CallActivity extends AppCompatActivity {
     private String baseUrl;
 
     private boolean initialPermissionsCheck = true;
+
+    private SpotlightView spotlightView;
 
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -391,6 +395,28 @@ public class CallActivity extends AppCompatActivity {
     @OnClick(R.id.call_control_microphone)
     public void onMicrophoneClick() {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
+
+            spotlightView = new SpotlightView.Builder(this)
+                    .introAnimationDuration(300)
+                    .enableRevealAnimation(true)
+                    .performClick(false)
+                    .fadeinTextDuration(400)
+                    .headingTvColor(getResources().getColor(R.color.colorPrimary))
+                    .headingTvSize(20)
+                    .headingTvText(getString(R.string.nc_push_to_talk))
+                    .subHeadingTvColor(getResources().getColor(R.color.nc_white_color_complete))
+                    .subHeadingTvSize(16)
+                    .subHeadingTvText(getString(R.string.nc_push_to_talk_desc))
+                    .maskColor(Color.parseColor("#dc000000"))
+                    .target(microphoneControlButton)
+                    .lineAnimDuration(400)
+                    .lineAndArcColor(getResources().getColor(R.color.colorPrimary))
+                    .enableDismissAfterShown(true)
+                    .dismissOnBackPress(true)
+                    .usageId("pushToTalk")
+                    .show();
+
+
             if (!isPTTActive) {
                 audioOn = !audioOn;
 
@@ -1404,7 +1430,13 @@ public class CallActivity extends AppCompatActivity {
                     callControls.setAlpha(0.0f);
                     callControls.setVisibility(View.VISIBLE);
                 } else {
-                    handler.postDelayed(() -> animateCallControls(false, 0), 5000);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            animateCallControls(false, 0);
+
+                        }
+                    }, 5000);
                     return;
                 }
             } else {
@@ -1425,6 +1457,9 @@ public class CallActivity extends AppCompatActivity {
                             if (callControls != null) {
                                 if (!show) {
                                     callControls.setVisibility(View.GONE);
+                                    if (spotlightView.getVisibility() != View.GONE) {
+                                        spotlightView.setVisibility(View.GONE);
+                                    }
                                 } else {
                                     handler.postDelayed(new Runnable() {
                                         @Override
