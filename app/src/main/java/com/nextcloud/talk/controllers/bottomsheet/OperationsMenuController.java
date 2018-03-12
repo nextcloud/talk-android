@@ -229,8 +229,7 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(operationsObserver);
                     break;
                 case 10:
-                    String finalCredentials = credentials;
-                    ncApi.getRoom(finalCredentials, ApiUtils.getRoom(baseUrl, conversationToken))
+                    ncApi.getRoom(credentials, ApiUtils.getRoom(baseUrl, conversationToken))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
@@ -243,52 +242,7 @@ public class OperationsMenuController extends BaseController {
                                 @Override
                                 public void onNext(RoomOverall roomOverall) {
                                     room = roomOverall.getOcs().getData();
-                                    ncApi.getCapabilities(finalCredentials, ApiUtils.getUrlForCapabilities(baseUrl))
-                                            .subscribeOn(Schedulers.newThread())
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribe(new Observer<CapabilitiesOverall>() {
-                                                @Override
-                                                public void onSubscribe(Disposable d) {
-
-                                                }
-
-                                                @Override
-                                                public void onNext(CapabilitiesOverall capabilitiesOverall) {
-                                                    if (capabilitiesOverall.getOcs().getData()
-                                                            .getCapabilities().getSpreedCapability() != null &&
-                                                            capabilitiesOverall.getOcs().getData()
-                                                                    .getCapabilities().getSpreedCapability()
-                                                                    .getFeatures() != null && capabilitiesOverall.getOcs().getData()
-                                                            .getCapabilities().getSpreedCapability()
-                                                            .getFeatures().contains("guest-signaling")) {
-                                                        if (room.isHasPassword() && room.isGuest()) {
-                                                            eventBus.post(new BottomSheetLockEvent(true, 0,
-                                                                    true, false));
-                                                            Bundle bundle = new Bundle();
-                                                            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
-                                                            bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
-                                                            bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
-                                                            getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
-                                                                    .pushChangeHandler(new HorizontalChangeHandler())
-                                                                    .popChangeHandler(new HorizontalChangeHandler()));
-                                                        } else {
-                                                            initiateCall();
-                                                        }
-                                                    } else {
-                                                        showResultImage(false, true);
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onError(Throwable e) {
-                                                    showResultImage(false, false);
-                                                }
-
-                                                @Override
-                                                public void onComplete() {
-
-                                                }
-                                            });
+                                    fetchCapabilities(credentials);
                                 }
 
                                 @Override
@@ -453,6 +407,55 @@ public class OperationsMenuController extends BaseController {
     public void onDestroy() {
         super.onDestroy();
         dispose();
+    }
+
+    private void fetchCapabilities(String credentials) {
+        ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<CapabilitiesOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(CapabilitiesOverall capabilitiesOverall) {
+                        if (capabilitiesOverall.getOcs().getData()
+                                .getCapabilities().getSpreedCapability() != null &&
+                                capabilitiesOverall.getOcs().getData()
+                                        .getCapabilities().getSpreedCapability()
+                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
+                                .getCapabilities().getSpreedCapability()
+                                .getFeatures().contains("guest-signaling")) {
+                            if (room.isHasPassword() && room.isGuest()) {
+                                eventBus.post(new BottomSheetLockEvent(true, 0,
+                                        true, false));
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+                                bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
+                                bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
+                                getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
+                                        .pushChangeHandler(new HorizontalChangeHandler())
+                                        .popChangeHandler(new HorizontalChangeHandler()));
+                            } else {
+                                initiateCall();
+                            }
+                        } else {
+                            showResultImage(false, true);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showResultImage(false, false);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     private void inviteUsersToAConversation() {
