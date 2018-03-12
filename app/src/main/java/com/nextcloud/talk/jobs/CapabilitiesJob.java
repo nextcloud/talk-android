@@ -21,22 +21,27 @@
 package com.nextcloud.talk.jobs;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.evernote.android.job.Job;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
@@ -82,14 +87,63 @@ public class CapabilitiesJob extends Job {
             ncApi.getCapabilities(ApiUtils.getCredentials(internalUserEntity.getUsername(),
                     internalUserEntity.getToken()), ApiUtils.getUrlForCapabilities(internalUserEntity.getBaseUrl()))
                     .subscribeOn(Schedulers.newThread())
-                    .subscribe(capabilitiesOverall -> userUtils.createOrUpdateUser(null, null,
-                            null, null,
-                            null, null, null, internalUserEntity.getId(),
-                            LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()))
-                            .subscribeOn(Schedulers.newThread())
-                            .subscribe());
+                    .subscribe(new Observer<CapabilitiesOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(CapabilitiesOverall capabilitiesOverall) {
+                            updateUser(capabilitiesOverall, internalUserEntity);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
         }
 
         return Result.SUCCESS;
+    }
+
+    private void updateUser(CapabilitiesOverall capabilitiesOverall, UserEntity internalUserEntity) {
+        try {
+            userUtils.createOrUpdateUser(null, null,
+                    null, null,
+                    null, null, null, internalUserEntity.getId(),
+                    LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()))
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Observer<UserEntity>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(UserEntity userEntity) {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to create or update user");
+        }
+
     }
 }

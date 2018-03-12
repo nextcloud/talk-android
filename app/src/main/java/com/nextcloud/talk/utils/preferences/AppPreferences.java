@@ -117,6 +117,16 @@ public interface AppPreferences {
     @KeyByString("push_token")
     void removePushToken();
 
+    @KeyByString("pushToTalk_intro_shown")
+    boolean getPushToTalkIntroShown();
+
+    @KeyByString("pushToTalk_intro_shown")
+    void setPushToTalkIntroShown(boolean shown);
+
+    @KeyByString("pushToTalk_intro_shown")
+    void removePushToTalkIntroShown();
+
+
     @ClearMethod
     void clear();
 }

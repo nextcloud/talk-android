@@ -71,6 +71,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
@@ -168,6 +169,8 @@ public class CallActivity extends AppCompatActivity {
     UserUtils userUtils;
     @Inject
     CookieManager cookieManager;
+    @Inject
+    AppPreferences appPreferences;
 
     PeerConnectionFactory peerConnectionFactory;
     MediaConstraints audioConstraints;
@@ -223,7 +226,7 @@ public class CallActivity extends AppCompatActivity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         getWindow().getDecorView().setSystemUiVisibility(getSystemUiVisibility());
@@ -396,26 +399,29 @@ public class CallActivity extends AppCompatActivity {
     public void onMicrophoneClick() {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
 
-            spotlightView = new SpotlightView.Builder(this)
-                    .introAnimationDuration(300)
-                    .enableRevealAnimation(true)
-                    .performClick(false)
-                    .fadeinTextDuration(400)
-                    .headingTvColor(getResources().getColor(R.color.colorPrimary))
-                    .headingTvSize(20)
-                    .headingTvText(getString(R.string.nc_push_to_talk))
-                    .subHeadingTvColor(getResources().getColor(R.color.nc_white_color_complete))
-                    .subHeadingTvSize(16)
-                    .subHeadingTvText(getString(R.string.nc_push_to_talk_desc))
-                    .maskColor(Color.parseColor("#dc000000"))
-                    .target(microphoneControlButton)
-                    .lineAnimDuration(400)
-                    .lineAndArcColor(getResources().getColor(R.color.colorPrimary))
-                    .enableDismissAfterShown(true)
-                    .dismissOnBackPress(true)
-                    .usageId("pushToTalk")
-                    .show();
+            if (!appPreferences.getPushToTalkIntroShown()) {
+                spotlightView = new SpotlightView.Builder(this)
+                        .introAnimationDuration(300)
+                        .enableRevealAnimation(true)
+                        .performClick(false)
+                        .fadeinTextDuration(400)
+                        .headingTvColor(getResources().getColor(R.color.colorPrimary))
+                        .headingTvSize(20)
+                        .headingTvText(getString(R.string.nc_push_to_talk))
+                        .subHeadingTvColor(getResources().getColor(R.color.nc_white_color_complete))
+                        .subHeadingTvSize(16)
+                        .subHeadingTvText(getString(R.string.nc_push_to_talk_desc))
+                        .maskColor(Color.parseColor("#dc000000"))
+                        .target(microphoneControlButton)
+                        .lineAnimDuration(400)
+                        .lineAndArcColor(getResources().getColor(R.color.colorPrimary))
+                        .enableDismissAfterShown(true)
+                        .dismissOnBackPress(true)
+                        .usageId("pushToTalk")
+                        .show();
 
+                appPreferences.setPushToTalkIntroShown(true);
+            }
 
             if (!isPTTActive) {
                 audioOn = !audioOn;
@@ -1457,7 +1463,7 @@ public class CallActivity extends AppCompatActivity {
                             if (callControls != null) {
                                 if (!show) {
                                     callControls.setVisibility(View.GONE);
-                                    if (spotlightView.getVisibility() != View.GONE) {
+                                    if (spotlightView != null && spotlightView.getVisibility() != View.GONE) {
                                         spotlightView.setVisibility(View.GONE);
                                     }
                                 } else {

@@ -320,7 +320,6 @@ public class OperationsMenuController extends BaseController {
                                 roomType, null, conversationName);
                     }
 
-                    String finalCredentials1 = credentials;
                     final boolean isGroupCallWorkaroundFinal = isGroupCallWorkaround;
                     ncApi.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                             .subscribeOn(Schedulers.newThread())
@@ -336,33 +335,7 @@ public class OperationsMenuController extends BaseController {
                                 public void onNext(RoomOverall roomOverall) {
                                     room = roomOverall.getOcs().getData();
                                     if (conversationType.equals(Room.RoomType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
-                                        ncApi.makeRoomPrivate(finalCredentials1, ApiUtils.getUrlForRoomVisibility
-                                                (userEntity.getBaseUrl(), room.getToken()))
-                                                .subscribeOn(Schedulers.newThread())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .retry(1)
-                                                .subscribe(new Observer<GenericOverall>() {
-                                                    @Override
-                                                    public void onSubscribe(Disposable d) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onNext(GenericOverall genericOverall) {
-                                                        inviteUsersToAConversation();
-                                                    }
-
-                                                    @Override
-                                                    public void onError(Throwable e) {
-                                                        showResultImage(false, false);
-                                                        dispose();
-                                                    }
-
-                                                    @Override
-                                                    public void onComplete() {
-                                                        dispose();
-                                                    }
-                                                });
+                                        performGroupCallWorkaround(credentials);
                                     } else {
                                         inviteUsersToAConversation();
                                     }
@@ -395,6 +368,36 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
+    private void performGroupCallWorkaround(String credentials) {
+        ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomVisibility(userEntity.getBaseUrl(), room.getToken()))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(1)
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GenericOverall genericOverall) {
+                        inviteUsersToAConversation();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showResultImage(false, false);
+                        dispose();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dispose();
+                    }
+                });
+
+
+    }
     private void showResultImage(boolean everythingOK, boolean isGuestSupportError) {
         progressBar.setVisibility(View.GONE);
 
