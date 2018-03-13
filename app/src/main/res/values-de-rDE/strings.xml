@@ -129,8 +129,6 @@
     <string name="nc_share_subject">%1$sEinladung </string>
     <string name="nc_share_text_pass">\nPasswort: %1$s</string>
 
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_store_short_desc">Nutzen Sie private Videoanrufe und den Chat durch die Verwendung eines eigenen Servers.</string>
     <string name="nc_store_full_desc">Verwenden Sie Nextcloud Talk, um Einzel- oder Gruppen-Audio- oder Videoanrufe zu führen, Webkonferenzen zu erstellen oder daran teilzunehmen und Chatnachrichten zu senden. Die gesamte Kommunikation wird vollständig verschlüsselt und von Ihrem eigenen Server vermittelt, um ein höchstmögliches Maß an Privatsphäre zu gewährleisten.
 

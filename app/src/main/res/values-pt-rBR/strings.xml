@@ -130,8 +130,6 @@
     <string name="nc_share_subject">%1$s convite</string>
     <string name="nc_share_text_pass">\nSenha: %1$s</string>
 
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_store_short_desc">Tenha um chat com chamadas de vídeo privadas usando seu próprio servidor.</string>
     <string name="nc_store_full_desc">Use o Nextcloud Talk para fazer chamadas de áudio ou vídeo individuais, crie ou junte-se a conferências na web e envie mensagens de bate-papo. Toda comunicação é totalmente criptografada e mediada por seu próprio servidor, proporcionando o maior grau de privacidade possível.
 

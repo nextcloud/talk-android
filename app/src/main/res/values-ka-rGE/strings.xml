@@ -130,8 +130,6 @@
     <string name="nc_share_subject">%1$s მოწვევა</string>
     <string name="nc_share_text_pass">\nპაროლი: %1$s</string>
 
-    <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_store_short_desc">იქონიეთ პირადი ვიდეო ზარები და ჩეთი საკუთარი სერვერით.</string>
     <string name="nc_store_full_desc">გამოიყენეთ Nextcloud Talk, რათა იქონიოთ პირადი ან ჯგუფური აუდიო ან ვიდეო ზარები, შექმნათ ან შეუერთდეთ ვებ-კონფერენციებს და გააგზავნოთ ჩეთ წერილები. ყველა კომუნიკაცია სრულად დაშიფრულია, მას შუამავლობას უწევს თქვენი სერვერი, რაც უზრუნველყოფს კონფიდენციალურობის უმაღლეს ხარისხს.
 
