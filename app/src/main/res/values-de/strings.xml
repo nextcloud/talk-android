@@ -129,6 +129,10 @@ Probiere mit einem Internetbrowser dem Anruf beizutreten.</string>
     <string name="nc_share_subject">%1$s Einladung</string>
     <string name="nc_share_text_pass">\nPasswort: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_push_to_talk">Funkgerät-Modus</string>
+    <string name="nc_push_to_talk_desc">Bei stummgeschaltetem Mikrofon drücken&amp;halten Sie die Sprechtaste um zu senden (Funkgerät-Modus)</string>
     <string name="nc_store_short_desc">Nutze private Videoanrufe und den Chat durch die Verwendung eines eigenen Servers.</string>
     <string name="nc_store_full_desc">Verwende Nextcloud Talk, um Einzel- oder Gruppen-Audio- oder Videoanrufe zu führen, Webkonferenzen zu erstellen oder daran teilzunehmen und Chatnachrichten zu senden. Die gesamte Kommunikation wird vollständig verschlüsselt und von deinem eigenen Server vermittelt, um ein höchstmögliches Maß an Privatsphäre zu gewährleisten.
 

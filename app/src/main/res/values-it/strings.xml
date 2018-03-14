@@ -129,6 +129,10 @@
     <string name="nc_share_subject">%1$s invito</string>
     <string name="nc_share_text_pass">\nPassword: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_push_to_talk">Premi per parlare</string>
+    <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utillizzare Premi per parlare</string>
     <string name="nc_store_short_desc">Videochiamate e chat utilizzando il tuo server.</string>
     <string name="nc_store_full_desc">Usa Nextcloud Talk per avere chiamate audio e video uno a uno o di gruppo, creare o partecipare a conferenze web e inviare messaggi di chat. Tutte le comunicazioni sono completamente cifrate e mediate dal proprio server, fornendo il più alto grado di riservatezza possibile.
 
