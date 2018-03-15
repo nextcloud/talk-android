@@ -128,7 +128,11 @@
     <string name="nc_share_subject">%1$s приглашение</string>
     <string name="nc_share_text_pass">\nПароль: %1$s</string>
 
-    <string name="nc_store_short_desc">Возможность иметь частные видео звонки и переписку, используя ваш собственный сервер.</string>
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_push_to_talk"> PTT (нажми чтобы говорить)</string>
+    <string name="nc_push_to_talk_desc">Нажмите и удерживайте для использования PTT при отключенном микрофоне</string>
+    <string name="nc_store_short_desc">Личные видеовызовы и переписка с использованием собственного сервера.</string>
     <string name="nc_store_full_desc">Приложение Nexcloud Talk предназначено для осуществления вызовов между двумя или несколькими абонентами, в том числе с использованием видеосвязи. Соединения обслуживаются вашим собственным сервером, и все данные передаются в зашифрованном виде, что обеспечивает максимальную защиту.
 
 Навсегда бесплатное приложение Nexcloud Talk простое в использовании.

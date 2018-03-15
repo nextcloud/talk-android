@@ -129,6 +129,10 @@ Veuillez essayer de joindre l\'appel depuis un navigateur web.</string>
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text_pass">\nLe mot de passe : %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_push_to_talk">fonction Talkie-Walkie</string>
+    <string name="nc_push_to_talk_desc">Si le micro est désactivé, maintenez &amp; pour utiliser la fonction Talkie-Walkie</string>
     <string name="nc_store_short_desc">Ayez des appels vidéos et des discussions privés en utilisant votre propre serveur.</string>
     <string name="nc_store_full_desc">Utilisez Nextcloud Talk pour faire des appels vidéo ou audio en groupe ou en tête-à-tête, créer ou rejoindre des web-conférences et envoyer des messages dans un salon de discussion. Toutes les communications sont entièrement cryptées et  gérées par votre propre serveur, fournissant le plus haut niveau de confidentialité possible.
 
