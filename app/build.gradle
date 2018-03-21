@@ -129,8 +129,8 @@ dependencies {
 
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.1'
 
-    implementation 'eu.davidea:flexible-adapter:5.0.0'
-    implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b2'
+    implementation 'eu.davidea:flexible-adapter:5.0.2'
+    implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b3'
 
     implementation 'com.github.bumptech.glide:glide:4.3.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.0'
