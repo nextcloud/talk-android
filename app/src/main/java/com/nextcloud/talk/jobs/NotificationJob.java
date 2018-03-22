@@ -44,7 +44,6 @@ import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
-import com.nextcloud.talk.models.json.push.PushMessage;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -77,12 +76,8 @@ public class NotificationJob extends Job {
         if (!TextUtils.isEmpty(subject) && !TextUtils.isEmpty(signature)) {
 
             try {
-                PushMessage pushMessage = new PushMessage();
-                pushMessage.setSubject(subject);
-                pushMessage.setSignature(signature);
-
-                byte[] base64DecodedSubject = Base64.decode(pushMessage.getSubject(), Base64.DEFAULT);
-                byte[] base64DecodedSignature = Base64.decode(pushMessage.getSignature(), Base64.DEFAULT);
+                byte[] base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT);
+                byte[] base64DecodedSignature = Base64.decode(signature, Base64.DEFAULT);
                 PushUtils pushUtils = new PushUtils();
                 PrivateKey privateKey = (PrivateKey) pushUtils.readKeyFromFile(false);
 
