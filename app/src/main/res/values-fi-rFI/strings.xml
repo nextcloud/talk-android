@@ -13,12 +13,16 @@
     <string name="nc_server_import_accounts_plain">Tuo tilejä</string>
     <string name="nc_server_failed_to_import_account">Valitun tilin tuominen epäonnistui</string>
     <string name="nc_Server_account_imported">Valittu tili on nyt tuotu ja käytettävissä</string>
+    <string name="nc_nextcloud_talk_app_installed">Sovellus %1$s löytyi</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Sovellusta %1$s ei ole asennettu, keskeytetään</string>
     <string name="nc_search">Etsi</string>
 
     <string name="nc_certificate_dialog_title">Tarkista varmenne</string>
     <string name="nc_yes">Kyllä</string>
     <string name="nc_no">Ei</string>
     <string name="nc_details">Tiedot</string>
+    <string name="nc_certificate_error">SSL-asetukset esti yhteyden</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Välityspalvelin</string>
     <string name="nc_settings_proxy_type_title">Välityspalvelimen tyyppi</string>
@@ -41,6 +45,8 @@
     <string name="nc_privacy">Yksityisyys</string>
     <string name="nc_get_source_code">Lataa lähdekoodi</string>
     <string name="nc_license_title">Lisenssi</string>
+    <string name="nc_license_summary">GNU yleinen lisenssi, versio 3</string>
+
     <string name="nc_select_an_account">Valitse tili</string>
 
     <!-- Room menu -->
@@ -61,6 +67,7 @@
     <string name="nc_select_contacts">Valitse yhteystiedot</string>
     <string name="nc_one_contact_selected">yhteystieto valittu</string>
     <string name="nc_more_contacts_selected">yhteystietoa valittu</string>
+    <string name="nc_contacts_clear">Tyhjennä</string>
     <string name="nc_contacts_done">Valmis</string>
 
     <string name="nc_permissions_settings">Avaa asetukset</string>
@@ -75,6 +82,7 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Pahoittelut, jokin meni vikaan!</string>
+    <string name="nc_all_ok_operation">OK, kaikki valmista!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_proceed">Jatka</string>
     <string name="nc_wrong_link">Keskustelulinkki ei ole kelvollinen</string>
