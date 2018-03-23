@@ -107,9 +107,22 @@ public class WebViewLoginController extends BaseController {
     private String baseUrl;
     private boolean isPasswordUpdate;
 
+    private String username;
+    private String password;
+    private int loginStep = 0;
+
+    private boolean automatedLoginAttempted = false;
+
     public WebViewLoginController(String baseUrl, boolean isPasswordUpdate) {
         this.baseUrl = baseUrl;
         this.isPasswordUpdate = isPasswordUpdate;
+    }
+
+    public WebViewLoginController(String baseUrl, boolean isPasswordUpdate, String username, String password) {
+        this.baseUrl = baseUrl;
+        this.isPasswordUpdate = isPasswordUpdate;
+        this.username = username;
+        this.password = password;
     }
 
     public WebViewLoginController(Bundle args) {
@@ -175,6 +188,8 @@ public class WebViewLoginController extends BaseController {
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                loginStep++;
+
                 if (!basePageLoaded) {
                     if (progressBar != null) {
                         progressBar.setVisibility(View.GONE);
@@ -184,6 +199,18 @@ public class WebViewLoginController extends BaseController {
                         webView.setVisibility(View.VISIBLE);
                     }
                     basePageLoaded = true;
+                }
+
+                if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+                    if (loginStep == 1) {
+                        webView.loadUrl("javascript: {document.getElementsByClassName('login')[0].click(); };");
+                    } else if (!automatedLoginAttempted){
+                        automatedLoginAttempted = true;
+                        webView.loadUrl("javascript: {" +
+                                "document.getElementById('user').value = '" + username + "';" +
+                                "document.getElementById('password').value = '" + password + "';" +
+                                "document.getElementById('submit').click(); };");
+                    }
                 }
 
                 super.onPageFinished(view, url);
