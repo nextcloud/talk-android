@@ -1,6 +1,9 @@
 # Nextcloud Talk for Android
 
 **Video & audio calls through Nextcloud on Android**
+Nextcloud Talk is a fully on-premises audio/video and chat communication service. It features web and mobile apps and is designed to offer the highest degree of security while being easy to use.
+
+Nextcloud Talk lowers the barrier for communication and lets your team connect any time, any where, on any device, with each other, customers or partners.
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/21a6fb22279e401baba31fb296b6f20e)](https://www.codacy.com/app/Nextcloud/talk-android?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nextcloud/talk-android&amp;utm_campaign=Badge_Grade) [![irc](https://img.shields.io/badge/IRC-%23nextcloud--mobile%20on%20freenode-blue.svg)](https://webchat.freenode.net/?channels=nextcloud-mobile)
 
@@ -12,6 +15,9 @@
       height="80">](https://f-droid.org/packages/com.nextcloud.talk2/)
 
 ## Why is this so awesome?
+Because it is self hosted!!! Audio/video calls and text chat typically require a central server. Some projects go commendably far in trying to ensure they can't see the data, so nobody, not government, advertising company or somebody who broke in the servers, can follow conversations. But the servers still have to mediate every call and text message, allowing them to map out who talks to who and at what time. This 'metadata' [is as useful](https://www.wired.com/2015/03/data-and-goliath-nsa-metadata-spying-your-secrets/), if not more, to track people, than the full content, especially for mass surveillance purposes. Even if the data is not stored by the chat server, the hosting provider or a hacker could simply gather the data.
+
+By hosting your own server, all meta data stays on your server and thus under your control!
 
 If you have suggestions or problems, please [open an issue](https://github.com/nextcloud/talk-android/issues) or contribute directly :)
 
