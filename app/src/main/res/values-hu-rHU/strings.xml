@@ -130,6 +130,10 @@ Megpróbálhatod weben keresztül.</string>
     <string name="nc_share_subject">%1$s meghívás</string>
     <string name="nc_share_text_pass">\nJelszó: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_push_to_talk">Adóvevő</string>
+    <string name="nc_push_to_talk_desc">Letiltott mikorfonnal kattintson a &amp; tartásra, hogy használni tudja az adóvevőt</string>
     <string name="nc_store_short_desc">Intézz videóhívásokat és magánbeszélgetéseket saját szervered segítségével.</string>
     <string name="nc_store_full_desc">Használd a Nextcloud Talk-ot egy-egy vagy csoportos videó és hanghívásokhoz, Hozz létre, vagy csatlakozz videó konferenciákhoz és küldj szöveges üzeneteket. Minden kapcsolat teljesen titkosított és a te szervered közvetíti, biztosítva az elérhető legmagasabb biztonsági szintet.
 
