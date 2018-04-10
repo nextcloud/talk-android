@@ -28,6 +28,7 @@ import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.AccountVerificationController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
+import com.nextcloud.talk.controllers.SwitchAccountController;
 import com.nextcloud.talk.controllers.WebViewLoginController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -45,17 +46,30 @@ public abstract class BaseController extends RefWatchingController {
     @Inject
     AppPreferences appPreferences;
 
-    private List<String> temporaryClassNames = new ArrayList<>();
 
     private static final String TAG = "BaseController";
 
     protected BaseController() {
+        cleanTempCertPreference();
     }
 
     protected BaseController(Bundle args) {
         super(args);
+        cleanTempCertPreference();
     }
 
+    private void cleanTempCertPreference() {
+        List<String> temporaryClassNames = new ArrayList<>();
+        temporaryClassNames.add(ServerSelectionController.class.getName());
+        temporaryClassNames.add(AccountVerificationController.class.getName());
+        temporaryClassNames.add(WebViewLoginController.class.getName());
+        temporaryClassNames.add(SwitchAccountController.class.getName());
+
+        if (!temporaryClassNames.contains(getClass().getName())) {
+            appPreferences.removeTemporaryClientCertAlias();
+        }
+
+    }
     @Override
     protected void onViewBound(@NonNull View view) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -79,13 +93,6 @@ public abstract class BaseController extends RefWatchingController {
         setTitle();
         getActionBar().setDisplayHomeAsUpEnabled(false);
 
-        temporaryClassNames.add(ServerSelectionController.class.getName());
-        temporaryClassNames.add(AccountVerificationController.class.getName());
-        temporaryClassNames.add(WebViewLoginController.class.getName());
-
-        if (!temporaryClassNames.contains(getClass().getName())) {
-            appPreferences.removeTemporaryClientCertAlias();
-        }
         super.onAttach(view);
     }
 
