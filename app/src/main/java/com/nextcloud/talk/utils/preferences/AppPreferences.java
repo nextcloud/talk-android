@@ -115,7 +115,18 @@ public interface AppPreferences {
     void setPushToken(String pushToken);
 
     @KeyByString("push_token")
+    @RemoveMethod
     void removePushToken();
+
+    @KeyByString("tempClientCertAlias")
+    String getTemporaryClientCertAlias();
+
+    @KeyByString("tempClientCertAlias")
+    void setTemporaryClientCertAlias(String alias);
+
+    @KeyByString("tempClientCertAlias")
+    @RemoveMethod
+    void removeTemporaryClientCertAlias();
 
     @KeyByString("pushToTalk_intro_shown")
     boolean getPushToTalkIntroShown();
@@ -124,8 +135,8 @@ public interface AppPreferences {
     void setPushToTalkIntroShown(boolean shown);
 
     @KeyByString("pushToTalk_intro_shown")
+    @RemoveMethod
     void removePushToTalkIntroShown();
-
 
     @ClearMethod
     void clear();

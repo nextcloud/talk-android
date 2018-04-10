@@ -352,6 +352,7 @@ public class OperationsMenuController extends BaseController {
 
 
     }
+
     private void showResultImage(boolean everythingOK, boolean isGuestSupportError) {
         progressBar.setVisibility(View.GONE);
 

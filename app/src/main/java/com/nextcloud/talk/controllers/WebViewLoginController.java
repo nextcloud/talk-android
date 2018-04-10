@@ -20,6 +20,7 @@
  */
 package com.nextcloud.talk.controllers;
 
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
@@ -29,7 +30,6 @@ import android.security.KeyChain;
 import android.security.KeyChainException;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,13 +52,13 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Field;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.CookieManager;
 import java.net.URLDecoder;
 import java.security.PrivateKey;
 import java.security.cert.CertificateException;
@@ -86,13 +86,16 @@ public class WebViewLoginController extends BaseController {
     @Inject
     UserUtils userUtils;
     @Inject
+    AppPreferences appPreferences;
+    @Inject
     ReactiveEntityStore<Persistable> dataStore;
     @Inject
     MagicTrustManager magicTrustManager;
     @Inject
     EventBus eventBus;
     @Inject
-    java.net.CookieManager cookieManager;
+    CookieManager cookieManager;
+
 
     @BindView(R.id.webview)
     WebView webView;
@@ -140,6 +143,7 @@ public class WebViewLoginController extends BaseController {
         return inflater.inflate(R.layout.controller_web_view_login, container, false);
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
@@ -167,6 +171,7 @@ public class WebViewLoginController extends BaseController {
         webView.clearCache(true);
         webView.clearFormData();
         webView.clearHistory();
+        WebView.clearClientCertPreferences(null);
 
         CookieSyncManager.createInstance(getActivity());
         android.webkit.CookieManager.getInstance().removeAllCookies(null);
@@ -204,7 +209,7 @@ public class WebViewLoginController extends BaseController {
                 if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
                     if (loginStep == 1) {
                         webView.loadUrl("javascript: {document.getElementsByClassName('login')[0].click(); };");
-                    } else if (!automatedLoginAttempted){
+                    } else if (!automatedLoginAttempted) {
                         automatedLoginAttempted = true;
                         webView.loadUrl("javascript: {" +
                                 "document.getElementById('user').value = '" + username + "';" +
@@ -218,32 +223,55 @@ public class WebViewLoginController extends BaseController {
 
             @Override
             public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
-                String host = null;
+                UserEntity userEntity;
 
-                try {
-                    URL url = new URL(webView.getUrl());
-                    host = url.getHost();
-                } catch (MalformedURLException e) {
-                    Log.d(TAG, "Failed to create url");
+                String alias = null;
+                if (!isPasswordUpdate) {
+                    alias = appPreferences.getTemporaryClientCertAlias();
                 }
 
-                KeyChain.choosePrivateKeyAlias(getActivity(), alias -> {
-                    try {
-                        if (alias != null) {
-                            PrivateKey privateKey = KeyChain.getPrivateKey(getActivity(), alias);
-                            X509Certificate[] certificates = KeyChain.getCertificateChain(getActivity(), alias);
-                            request.proceed(privateKey, certificates);
+                if (TextUtils.isEmpty(alias) && (userEntity = userUtils.getCurrentUser()) != null) {
+                    alias = userEntity.getClientCertificate();
+                }
+
+                if (!TextUtils.isEmpty(alias)) {
+                    String finalAlias = alias;
+                    new Thread(() -> {
+                        try {
+                            PrivateKey privateKey = KeyChain.getPrivateKey(getActivity(), finalAlias);
+                            X509Certificate[] certificates = KeyChain.getCertificateChain(getActivity(), finalAlias);
+                            if (privateKey != null && certificates != null) {
+                                request.proceed(privateKey, certificates);
+                            } else {
+                                request.cancel();
+                            }
+                        } catch (KeyChainException | InterruptedException e) {
+                            request.cancel();
+                        }
+                    }).start();
+                } else {
+                    KeyChain.choosePrivateKeyAlias(getActivity(), chosenAlias -> {
+                        if (chosenAlias != null) {
+                            appPreferences.setTemporaryClientCertAlias(chosenAlias);
+                            new Thread(() -> {
+                                PrivateKey privateKey = null;
+                                try {
+                                    privateKey = KeyChain.getPrivateKey(getActivity(), chosenAlias);
+                                    X509Certificate[] certificates = KeyChain.getCertificateChain(getActivity(), chosenAlias);
+                                    if (privateKey != null && certificates != null) {
+                                        request.proceed(privateKey, certificates);
+                                    } else {
+                                        request.cancel();
+                                    }
+                                } catch (KeyChainException | InterruptedException e) {
+                                    request.cancel();
+                                }
+                            }).start();
                         } else {
                             request.cancel();
                         }
-                    } catch (KeyChainException e) {
-                        Log.e(TAG, "Failed to get keys via keychain exception");
-                        request.cancel();
-                    } catch (InterruptedException e) {
-                        Log.e(TAG, "Failed to get keys due to interruption");
-                        request.cancel();
-                    }
-                }, new String[]{"RSA"}, null, host, -1, null);
+                    }, new String[]{"RSA", "EC"}, null, request.getHost(), request.getPort(), null);
+                }
             }
 
             @Override
@@ -339,7 +367,7 @@ public class WebViewLoginController extends BaseController {
                         if (currentUser != null) {
                             userQueryDisposable = userUtils.createOrUpdateUser(null, null,
                                     null, null, null, true,
-                                    null, currentUser.getId(), null).
+                                    null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias()).
                                     subscribe(userEntity -> {
                                                 if (finalMessageType != null) {
                                                     ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);

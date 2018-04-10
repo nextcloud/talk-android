@@ -24,9 +24,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.net.Uri;
+import android.security.KeyChain;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,9 +66,12 @@ import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
 import org.greenrobot.eventbus.EventBus;
 
 import java.net.CookieManager;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -125,6 +130,9 @@ public class SettingsController extends BaseController {
 
     @BindView(R.id.message_view)
     MaterialPreferenceCategory messageView;
+
+    @BindView(R.id.settings_client_cert)
+    MaterialStandardPreference certificateSetup;
 
     @BindView(R.id.message_text)
     TextView messageText;
@@ -221,6 +229,45 @@ public class SettingsController extends BaseController {
                     SwitchAccountController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
         });
+
+        if (userEntity.getClientCertificate() != null) {
+            certificateSetup.setTitle(R.string.nc_client_cert_change);
+        }
+
+
+        String host = null;
+        int port = -1;
+
+        URI uri;
+        try {
+            uri = new URI(userEntity.getBaseUrl());
+            host = uri.getHost();
+            port = uri.getPort();
+        } catch (URISyntaxException e) {
+            Log.e(TAG, "Failed to create uri");
+        }
+
+        String finalHost = host;
+        int finalPort = port;
+        certificateSetup.addPreferenceClickListener(v -> KeyChain.choosePrivateKeyAlias(Objects.requireNonNull(getActivity()), alias -> {
+            String finalAlias = alias;
+            getActivity().runOnUiThread(() -> {
+                if (finalAlias != null) {
+                    certificateSetup.setTitle(R.string.nc_client_cert_change);
+                } else {
+                    certificateSetup.setTitle(R.string.nc_client_cert_setup);
+                }
+            });
+
+            if (alias == null) {
+                alias = "";
+            }
+
+
+            userUtils.createOrUpdateUser(null, null, null, null, null, null, null, userEntity.getId(),
+                    null, alias);
+        }, new String[]{"RSA", "EC"}, null, finalHost, finalPort, userEntity.getClientCertificate
+                ()));
     }
 
     @Override
@@ -290,7 +337,7 @@ public class SettingsController extends BaseController {
                             dbQueryDisposable = userUtils.createOrUpdateUser(null,
                                     null,
                                     null, displayName, null, true,
-                                    userProfileOverall.getOcs().getData().getUserId(), userEntity.getId(), null)
+                                    userProfileOverall.getOcs().getData().getUserId(), userEntity.getId(), null, null)
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(userEntityResult -> {

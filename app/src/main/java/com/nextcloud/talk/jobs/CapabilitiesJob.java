@@ -118,7 +118,7 @@ public class CapabilitiesJob extends Job {
             userUtils.createOrUpdateUser(null, null,
                     null, null,
                     null, null, null, internalUserEntity.getId(),
-                    LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()))
+                    LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()), null)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(new Observer<UserEntity>() {
                         @Override

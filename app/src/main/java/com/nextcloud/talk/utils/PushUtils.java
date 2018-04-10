@@ -318,7 +318,7 @@ public class PushUtils {
                                                                         null, null,
                                                                         userEntity.getDisplayName(),
                                                                         LoganSquare.serialize(pushConfigurationState), null,
-                                                                        null, userEntity.getId(), null)
+                                                                        null, userEntity.getId(), null, null)
                                                                         .subscribe(new Observer<UserEntity>() {
                                                                             @Override
                                                                             public void onSubscribe(Disposable d) {

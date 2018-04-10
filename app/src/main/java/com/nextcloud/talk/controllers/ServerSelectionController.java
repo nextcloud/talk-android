@@ -20,10 +20,12 @@
 
 package com.nextcloud.talk.controllers;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.security.KeyChain;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -46,6 +48,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import java.security.cert.CertificateException;
 
@@ -53,6 +56,7 @@ import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -72,6 +76,8 @@ public class ServerSelectionController extends BaseController {
     ProgressBar progressBar;
     @BindView(R.id.helper_text_view)
     TextView providersTextView;
+    @BindView(R.id.cert_text_view)
+    TextView certTextView;
 
     @Inject
     NcApi ncApi;
@@ -79,11 +85,30 @@ public class ServerSelectionController extends BaseController {
     @Inject
     UserUtils userUtils;
 
+    @Inject
+    AppPreferences appPreferences;
+
     private Disposable statusQueryDisposable;
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_server_selection, container, false);
+    }
+
+    @SuppressLint("LongLogTag")
+    @OnClick(R.id.cert_text_view)
+    public void onCertClick() {
+        if (getActivity() != null) {
+                KeyChain.choosePrivateKeyAlias(getActivity(), alias -> {
+                    if (alias != null) {
+                        appPreferences.setTemporaryClientCertAlias(alias);
+                    } else {
+                        appPreferences.removeTemporaryClientCertAlias();
+                    }
+
+                    setCertTextView();
+                }, new String[]{"RSA", "EC"}, null, null, -1, null);
+        }
     }
 
     @Override
@@ -108,7 +133,7 @@ public class ServerSelectionController extends BaseController {
 
         if (TextUtils.isEmpty(getResources().getString(R.string.nc_providers_url)) && (TextUtils.isEmpty(getResources
                 ().getString(R.string.nc_import_account_type)))) {
-            providersTextView.setVisibility(View.GONE);
+            providersTextView.setVisibility(View.INVISIBLE);
         } else {
             if ((TextUtils.isEmpty(getResources
                     ().getString(R.string.nc_import_account_type)) ||
@@ -151,7 +176,7 @@ public class ServerSelectionController extends BaseController {
                             .popChangeHandler(new HorizontalChangeHandler()));
                 });
             } else {
-                providersTextView.setVisibility(View.GONE);
+                providersTextView.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -204,8 +229,9 @@ public class ServerSelectionController extends BaseController {
 
         serverEntry.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
-        if (providersTextView.getVisibility() != View.GONE) {
+        if (providersTextView.getVisibility() != View.INVISIBLE) {
             providersTextView.setVisibility(View.INVISIBLE);
+            certTextView.setVisibility(View.INVISIBLE);
         }
 
         if (url.endsWith("/")) {
@@ -279,8 +305,9 @@ public class ServerSelectionController extends BaseController {
                         }
 
                         progressBar.setVisibility(View.INVISIBLE);
-                        if (providersTextView.getVisibility() != View.GONE) {
+                        if (providersTextView.getVisibility() != View.INVISIBLE) {
                             providersTextView.setVisibility(View.VISIBLE);
+                            certTextView.setVisibility(View.VISIBLE);
                         }
                         toggleProceedButton(false);
 
@@ -288,8 +315,9 @@ public class ServerSelectionController extends BaseController {
                     }
                 }, () -> {
                     progressBar.setVisibility(View.INVISIBLE);
-                    if (providersTextView.getVisibility() != View.GONE) {
+                    if (providersTextView.getVisibility() != View.INVISIBLE) {
                         providersTextView.setVisibility(View.VISIBLE);
+                        certTextView.setVisibility(View.VISIBLE);
                     }
                     dispose();
                 });
@@ -314,6 +342,23 @@ public class ServerSelectionController extends BaseController {
                         false);
             }
             ApplicationWideMessageHolder.getInstance().setMessageType(null);
+        }
+
+        setCertTextView();
+    }
+
+    private void setCertTextView() {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() -> {
+                if (!TextUtils.isEmpty(appPreferences.getTemporaryClientCertAlias())) {
+                    certTextView.setText(R.string.nc_change_cert_auth);
+                } else {
+                    certTextView.setText(R.string.nc_configure_cert_auth);
+                }
+
+                textFieldBoxes.setError("", true);
+                toggleProceedButton(true);
+            });
         }
     }
 

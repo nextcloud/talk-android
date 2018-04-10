@@ -121,7 +121,7 @@ public abstract class BottomNavigationController extends BaseController {
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
 
-    /* Setup the BottomNavigationView with the constructor supplied Menu resource */
+        /* Setup the BottomNavigationView with the constructor supplied Menu resource */
         bottomNavigationView.inflateMenu(getMenuResource());
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -138,20 +138,20 @@ public abstract class BottomNavigationController extends BaseController {
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
 
-    /* Fresh start, setup everything */
+        /* Fresh start, setup everything */
         if (routerSavedStateBundles == null) {
             Menu menu = bottomNavigationView.getMenu();
             int menuSize = menu.size();
             routerSavedStateBundles = new SparseArray<>(menuSize);
             for (int i = 0; i < menuSize; i++) {
                 MenuItem menuItem = menu.getItem(i);
-        /* Ensure the first checked item is shown */
+                /* Ensure the first checked item is shown */
                 if (menuItem.isChecked()) {
-          /*
-           * Seems like the BottomNavigationView always initializes index 0 as isChecked / Selected,
-           * regardless of what was set in the menu xml originally.
-           * So basically all we're doing here is always setting up menuItem index 0.
-           */
+                    /*
+                     * Seems like the BottomNavigationView always initializes index 0 as isChecked / Selected,
+                     * regardless of what was set in the menu xml originally.
+                     * So basically all we're doing here is always setting up menuItem index 0.
+                     */
                     int itemId = menuItem.getItemId();
                     configureRouter(getChildRouter(itemId), itemId);
                     bottomNavigationView.setSelectedItemId(itemId);
@@ -160,11 +160,11 @@ public abstract class BottomNavigationController extends BaseController {
                 }
             }
         } else {
-      /*
-       * Since we are restoring our state,
-       * and onRestoreInstanceState is called before onViewBound,
-       * all we need to do is rebind.
-       */
+            /*
+             * Since we are restoring our state,
+             * and onRestoreInstanceState is called before onViewBound,
+             * all we need to do is rebind.
+             */
             Router childRouter = getChildRouter(currentlySelectedItemId);
             childRouter.rebindIfNeeded();
             lastActiveChildRouter = childRouter;
@@ -235,7 +235,7 @@ public abstract class BottomNavigationController extends BaseController {
         if (currentlySelectedItemId != itemId) {
             destroyChildRouter(lastActiveChildRouter, currentlySelectedItemId);
 
-      /* Ensure correct Checked state based on new selection */
+            /* Ensure correct Checked state based on new selection */
             Menu menu = bottomNavigationView.getMenu();
             for (int i = 0; i < menu.size(); i++) {
                 MenuItem menuItem = menu.getItem(i);
@@ -249,21 +249,21 @@ public abstract class BottomNavigationController extends BaseController {
             currentlySelectedItemId = itemId;
             Router childRouter = getChildRouter(currentlySelectedItemId);
             if (configureRouter(childRouter, currentlySelectedItemId)) {
-        /* Determine if a Controller of same class already exists in the backstack */
+                /* Determine if a Controller of same class already exists in the backstack */
                 Controller backstackController;
                 int size = childRouter.getBackstackSize();
                 for (int i = 0; i < size; i++) {
                     backstackController = childRouter.getBackstack().get(i).controller();
                     if (BottomNavigationUtils.equals(backstackController.getClass(), controller.getClass())) {
-            /* Match found at root - so just set new root */
+                        /* Match found at root - so just set new root */
                         if (i == size - 1) {
                             childRouter.setRoot(RouterTransaction.with(controller));
                         } else {
-              /* Match found at i - pop until we're at the matching Controller */
+                            /* Match found at i - pop until we're at the matching Controller */
                             for (int j = size; j < i; j--) {
                                 childRouter.popCurrentController();
                             }
-              /* Replace the existing matching Controller with the new */
+                            /* Replace the existing matching Controller with the new */
                             childRouter.replaceTopController(RouterTransaction.with(controller));
                         }
                     }
@@ -301,21 +301,21 @@ public abstract class BottomNavigationController extends BaseController {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         if (lastActiveChildRouter == null && cachedSavedInstanceState != null) {
-      /*
-       * Here we assume that we're in a state
-       * where the BottomNavigationController itself is in the backstack,
-       * it has been restored, and is now being saved again.
-       * In this case, the BottomNavigationController won't ever have had onViewBound() called,
-       * and thus won't have any views to setup the Child Routers with.
-       * In this case, we assume that we've previously had onSaveInstanceState() called
-       * on us successfully, and thus have a cachedSavedInstanceState to use.
-       *
-       * To replicate issue this solves:
-       * Navigate from BottomNavigationController to another controller not hosted in
-       * the childRouter, background the app
-       * (with developer setting "don't keep activities in memory" enabled on the device),
-       * open the app again, and background it once more, and open it again to see it crash.
-       */
+            /*
+             * Here we assume that we're in a state
+             * where the BottomNavigationController itself is in the backstack,
+             * it has been restored, and is now being saved again.
+             * In this case, the BottomNavigationController won't ever have had onViewBound() called,
+             * and thus won't have any views to setup the Child Routers with.
+             * In this case, we assume that we've previously had onSaveInstanceState() called
+             * on us successfully, and thus have a cachedSavedInstanceState to use.
+             *
+             * To replicate issue this solves:
+             * Navigate from BottomNavigationController to another controller not hosted in
+             * the childRouter, background the app
+             * (with developer setting "don't keep activities in memory" enabled on the device),
+             * open the app again, and background it once more, and open it again to see it crash.
+             */
             outState.putSparseParcelableArray(
                     KEY_STATE_ROUTER_BUNDLES,
                     cachedSavedInstanceState.getSparseParcelableArray(KEY_STATE_ROUTER_BUNDLES));
@@ -323,20 +323,20 @@ public abstract class BottomNavigationController extends BaseController {
                     KEY_STATE_CURRENTLY_SELECTED_ID,
                     cachedSavedInstanceState.getInt(KEY_STATE_CURRENTLY_SELECTED_ID));
         } else if (currentlySelectedItemId != 0) {
-      /*
-       * Only save state if we have a valid item selected.
-       *
-       * Otherwise we may be in a state where we are in a backstack, but have never been shown.
-       * I.e. if we are put in a synthesized backstack, we've never been shown any UI,
-       * and therefore have nothing to save.
-       */
+            /*
+             * Only save state if we have a valid item selected.
+             *
+             * Otherwise we may be in a state where we are in a backstack, but have never been shown.
+             * I.e. if we are put in a synthesized backstack, we've never been shown any UI,
+             * and therefore have nothing to save.
+             */
             save(lastActiveChildRouter, currentlySelectedItemId);
             outState.putSparseParcelableArray(KEY_STATE_ROUTER_BUNDLES, routerSavedStateBundles);
-      /*
-       * For some reason the BottomNavigationView does not seem to correctly restore its
-       * selectedId, even though the view appears with the correct state.
-       * So we keep track of it manually
-       */
+            /*
+             * For some reason the BottomNavigationView does not seem to correctly restore its
+             * selectedId, even though the view appears with the correct state.
+             * So we keep track of it manually
+             */
             outState.putInt(KEY_STATE_CURRENTLY_SELECTED_ID, currentlySelectedItemId);
             lastActiveChildRouter = null;
         }
@@ -344,10 +344,10 @@ public abstract class BottomNavigationController extends BaseController {
 
     @Override
     public boolean handleBack() {
-    /*
-     * The childRouter should handleBack,
-     * as this BottomNavigationController doesn't have a back step sensible to the user.
-     */
+        /*
+         * The childRouter should handleBack,
+         * as this BottomNavigationController doesn't have a back step sensible to the user.
+         */
         return lastActiveChildRouter != null && lastActiveChildRouter.handleBack();
     }
 

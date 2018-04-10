@@ -55,6 +55,8 @@ public interface User extends Parcelable, Persistable, Serializable {
 
     String getCapabilities();
 
+    String getClientCertificate();
+
     boolean getCurrent();
 
     boolean getScheduledForDeletion();

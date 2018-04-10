@@ -51,7 +51,7 @@ public class MagicBottomNavigationController extends BottomNavigationController 
                 BottomNavigationMenuItem.getEnum(itemId).getControllerClass().getConstructors();
         Controller controller = null;
         try {
-      /* Determine default or Bundle constructor */
+            /* Determine default or Bundle constructor */
             for (Constructor constructor : constructors) {
                 if (constructor.getParameterTypes().length == 0) {
                     controller = (Controller) constructor.newInstance();

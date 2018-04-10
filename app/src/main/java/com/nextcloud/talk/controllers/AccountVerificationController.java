@@ -45,6 +45,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import java.net.CookieManager;
 
@@ -71,6 +72,9 @@ public class AccountVerificationController extends BaseController {
 
     @Inject
     CookieManager cookieManager;
+
+    @Inject
+    AppPreferences appPreferences;
 
     @BindView(R.id.progress_text)
     TextView progressText;
@@ -198,7 +202,8 @@ public class AccountVerificationController extends BaseController {
                                 if (!TextUtils.isEmpty(displayName)) {
                                     dbQueryDisposable = userUtils.createOrUpdateUser(username, token,
                                             baseUrl, displayName, null, true,
-                                            userProfileOverall.getOcs().getData().getUserId(), null, null)
+                                            userProfileOverall.getOcs().getData().getUserId(), null, null,
+                                            appPreferences.getTemporaryClientCertAlias())
                                             .subscribeOn(Schedulers.newThread())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(userEntity -> {

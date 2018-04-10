@@ -91,4 +91,19 @@
         android:textAllCaps="true"
         android:textColor="@color/nc_light_blue_color"/>
 
+    <TextView
+        android:id="@+id/cert_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/helper_text_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="16dp"
+        android:lines="2"
+        android:text="@string/nc_configure_cert_auth"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/nc_light_blue_color"/>
+
 </RelativeLayout>

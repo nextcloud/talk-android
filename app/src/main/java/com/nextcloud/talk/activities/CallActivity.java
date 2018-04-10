@@ -260,7 +260,7 @@ public class CallActivity extends AppCompatActivity {
         if (!userEntity.getCurrent()) {
             userUtils.createOrUpdateUser(null,
                     null, null, null,
-                    null, true, null, userEntity.getId(), null)
+                    null, true, null, userEntity.getId(), null, null)
                     .subscribe(new Observer<UserEntity>() {
                         @Override
                         public void onSubscribe(Disposable d) {

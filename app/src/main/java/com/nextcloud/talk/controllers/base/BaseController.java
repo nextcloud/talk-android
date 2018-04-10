@@ -25,9 +25,27 @@ import android.util.Log;
 import android.view.View;
 
 import com.bluelinelabs.conductor.Controller;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.controllers.AccountVerificationController;
+import com.nextcloud.talk.controllers.ServerSelectionController;
+import com.nextcloud.talk.controllers.WebViewLoginController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+
+@AutoInjector(NextcloudTalkApplication.class)
 public abstract class BaseController extends RefWatchingController {
+
+    @Inject
+    AppPreferences appPreferences;
+
+    private List<String> temporaryClassNames = new ArrayList<>();
 
     private static final String TAG = "BaseController";
 
@@ -36,6 +54,12 @@ public abstract class BaseController extends RefWatchingController {
 
     protected BaseController(Bundle args) {
         super(args);
+    }
+
+    @Override
+    protected void onViewBound(@NonNull View view) {
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        super.onViewBound(view);
     }
 
     // Note: This is just a quick demo of how an ActionBar *can* be accessed, not necessarily how it *should*
@@ -54,6 +78,14 @@ public abstract class BaseController extends RefWatchingController {
     protected void onAttach(@NonNull View view) {
         setTitle();
         getActionBar().setDisplayHomeAsUpEnabled(false);
+
+        temporaryClassNames.add(ServerSelectionController.class.getName());
+        temporaryClassNames.add(AccountVerificationController.class.getName());
+        temporaryClassNames.add(WebViewLoginController.class.getName());
+
+        if (!temporaryClassNames.contains(getClass().getName())) {
+            appPreferences.removeTemporaryClientCertAlias();
+        }
         super.onAttach(view);
     }
 

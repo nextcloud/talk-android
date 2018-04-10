@@ -30,7 +30,9 @@ import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.ssl.MagicKeyManager;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
 
@@ -38,9 +40,16 @@ import java.io.IOException;
 import java.net.CookieManager;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.X509KeyManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -110,8 +119,35 @@ public class RestModule {
 
     @Provides
     @Singleton
-    SSLSocketFactoryCompat provideSslSocketFactoryCompat(MagicTrustManager magicTrustManager) {
-        return new SSLSocketFactoryCompat(magicTrustManager);
+    MagicKeyManager provideKeyManager(AppPreferences appPreferences, UserUtils userUtils) {
+        KeyStore keyStore = null;
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(keyStore, null);
+            X509KeyManager origKm = (X509KeyManager) kmf.getKeyManagers()[0];
+            return new MagicKeyManager(origKm, userUtils, appPreferences);
+        } catch (KeyStoreException e) {
+            Log.e(TAG, "KeyStoreException " + e.getLocalizedMessage());
+        } catch (CertificateException e) {
+            Log.e(TAG, "CertificateException " + e.getLocalizedMessage());
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "NoSuchAlgorithmException " + e.getLocalizedMessage());
+        } catch (IOException e) {
+            Log.e(TAG, "IOException " + e.getLocalizedMessage());
+        } catch (UnrecoverableKeyException e) {
+            Log.e(TAG, "UnrecoverableKeyException " + e.getLocalizedMessage());
+        }
+
+        return null;
+    }
+
+    @Provides
+    @Singleton
+    SSLSocketFactoryCompat provideSslSocketFactoryCompat(MagicKeyManager keyManager, MagicTrustManager
+            magicTrustManager) {
+        return new SSLSocketFactoryCompat(keyManager, magicTrustManager);
     }
 
     @Provides
@@ -145,10 +181,10 @@ public class RestModule {
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
             httpClient.addInterceptor(loggingInterceptor);
         }
 
+        // Trust own CA and all self-signed certs
         httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager);
         httpClient.retryOnConnectionFailure(true);
         httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE));
