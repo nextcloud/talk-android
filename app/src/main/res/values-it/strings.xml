@@ -50,6 +50,8 @@
     <string name="nc_settings_use_credentials_key">credenziali_proxy</string>
     <string name="nc_settings_switch_account">Cambia account</string>
     <string name="nc_settings_reauthorize">Autorizza nuovamente</string>
+    <string name="nc_client_cert_setup">Configura certificato client</string>
+    <string name="nc_client_cert_change">Cambia certificato client</string>
     <string name="nc_settings_remove_account">Rimuovi account</string>
     <string name="nc_settings_add_account">Aggiungi un nuovo account</string>
     <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
@@ -134,6 +136,8 @@
     <string name="nc_push_to_talk">Premi per parlare</string>
     <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utillizzare Premi per parlare</string>
     <string name="nc_store_short_desc">Videochiamate e chat utilizzando il tuo server.</string>
+    <string name="nc_configure_cert_auth">Seleziona certificato di autenticazione</string>
+    <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
     <string name="nc_store_full_desc">Usa Nextcloud Talk per avere chiamate audio e video uno a uno o di gruppo, creare o partecipare a conferenze web e inviare messaggi di chat. Tutte le comunicazioni sono completamente cifrate e mediate dal proprio server, fornendo il più alto grado di riservatezza possibile.
 
 Nextcloud Talk è semplice da utilizzare e sarà sempre completamente gratuito e libero!

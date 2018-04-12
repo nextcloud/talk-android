@@ -50,6 +50,8 @@
     <string name="nc_settings_use_credentials_key">vekil_sunucu_kullanici_bilgileri</string>
     <string name="nc_settings_switch_account">Hesaplar arasında geçiş yap</string>
     <string name="nc_settings_reauthorize">Yeniden izin ver</string>
+    <string name="nc_client_cert_setup">İstemci sertifikası kurulumu</string>
+    <string name="nc_client_cert_change">İstemci sertifikasını değiştir</string>
     <string name="nc_settings_remove_account">Hesabı sil</string>
     <string name="nc_settings_add_account">Hesap ekle</string>
     <string name="nc_settings_wrong_account">Yalnız geçerli hesaba yeniden izin verilebilir</string>
@@ -135,6 +137,8 @@
     <string name="nc_push_to_talk">Bas-konuş</string>
     <string name="nc_push_to_talk_desc">Mikrofon devre dışı iken, Bas-konuş üzerine tıklayıp basılı tutun</string>
     <string name="nc_store_short_desc">Kendi sunucunuz üzerinden görüntülü görüşme ve sohbet yapın.</string>
+    <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
+    <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
     <string name="nc_store_full_desc">Birebir ya da grup ile ses ya da görüntü çağrıları yapmak, web konferansları oluşturmak ve sohbet iletileri göndermek için Nextcloud Talk uygulamasını kullanabilisiniz. Tüm bilgiler tamamen şifrelenmiş olarak sizin sunucunuz üzerinden iletilerek olabilecek en yüksek gizlilik düzeyi sağlanır.
 
 Nextcloud Talk uygulamasının kullanımı kolaydır ve herhangi bir ücret ödemeniz gerekmez!

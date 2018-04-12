@@ -50,6 +50,8 @@
     <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">Пребацивање између налога</string>
     <string name="nc_settings_reauthorize">Понови ауторизацију</string>
+    <string name="nc_client_cert_setup">Подесите клијентски сертификат</string>
+    <string name="nc_client_cert_change">Измени клијентски сертификат</string>
     <string name="nc_settings_remove_account">Уклони налог</string>
     <string name="nc_settings_add_account">Додај нови налог</string>
     <string name="nc_settings_wrong_account">Само тренутни налог се може поново ауторизовати</string>
@@ -135,6 +137,8 @@
     <string name="nc_push_to_talk">Притисни за разговор</string>
     <string name="nc_push_to_talk_desc">Са онемогућеним микрофоном, кликните &amp; држите да користите притисак за разговор</string>
     <string name="nc_store_short_desc">Обављајте приватне видео позиве и ћаскајте користећи Ваш сервер.</string>
+    <string name="nc_configure_cert_auth">Одабери сертификат за пријаву</string>
+    <string name="nc_change_cert_auth">Измени сертификат за пријаву</string>
     <string name="nc_store_full_desc">Користите Nextcloud Talk да обављате приватне 
 или групне аудио и видео позиве, правите и придружујете се веб конференцијским позивима и ћаскањима. Целокупна комуникација је шифрована и спроводи се на Вашем серверу, дајући Вам тако највиши могући ниво приватности.
 
