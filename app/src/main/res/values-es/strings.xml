@@ -50,6 +50,8 @@
     <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">Cambiar entre cuentas</string>
     <string name="nc_settings_reauthorize">Reautorizar</string>
+    <string name="nc_client_cert_setup">Configurar certificado de cliente</string>
+    <string name="nc_client_cert_change">Cambiar certificado de cliente</string>
     <string name="nc_settings_remove_account">Eliminar cuenta</string>
     <string name="nc_settings_add_account">Añadir nueva cuenta</string>
     <string name="nc_settings_wrong_account">Solo la cuenta actual puede ser reautorizada</string>
@@ -135,6 +137,8 @@
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Con el micrófono deshabilitado, mantén pulsado &amp; para usar Push-to-talk</string>
     <string name="nc_store_short_desc">Haz llamadas de vídeo y conversaciones usando tu propio servidor.</string>
+    <string name="nc_configure_cert_auth">Seleccionar certificado de autenticación</string>
+    <string name="nc_change_cert_auth">Cambiar certificado de autenticación</string>
     <string name="nc_store_full_desc">Usa Nextcloud Talk para tener llamadas de audio y vídeo individuales o de grupo, crear o unirte a conferencias web y enviar mensajes de chat. Todas las comunicaciones están totalmente cifradas y mediadas por tu propio servidor, proporcionando el máximo grado posible de privacidad.
 
 Nextcloud Talk es fácil de usar y siempre será completamente gratuito.
