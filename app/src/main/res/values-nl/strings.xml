@@ -51,6 +51,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">Omschakelen tussen accounts</string>
     <string name="nc_settings_reauthorize">Opnieuw autoriseren</string>
+    <string name="nc_client_cert_setup">Instellen clientcertificaat</string>
+    <string name="nc_client_cert_change">Wijzig clientcertificaat</string>
     <string name="nc_settings_remove_account">Verwijder account</string>
     <string name="nc_settings_add_account">Toevoegen nieuw account</string>
     <string name="nc_settings_wrong_account">Alleen het huidige account kan opnieuw worden geautoriseerd</string>
