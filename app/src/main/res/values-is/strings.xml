@@ -19,9 +19,12 @@
 
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Náð í birtingarnafn</string>
+    <string name="nc_display_name_not_fetched">Gat ekki náð í birtingarnafn, hætti</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s forrit fannst</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s forritið ekki uppsett á þjóninu, hætti við</string>
     <string name="nc_display_name_stored">Birtingarnafn geymt</string>
+    <string name="nc_display_name_not_stored">Gat ekki geymt birtingarnafn, hætti</string>
+
     <string name="nc_never">Skráði sig aldrei</string>
     <string name="nc_search">Leita</string>
 
@@ -34,11 +37,20 @@
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Milliþjónn</string>
+    <string name="nc_settings_proxy_type_key">proxy_type</string>
     <string name="nc_settings_proxy_type_title">Gerð milliþjóns</string>
+    <string name="nc_settings_proxy_host_key">proxy_host</string>
     <string name="nc_settings_proxy_host_title">Milliþjónn</string>
+    <string name="nc_settings_proxy_port_key">proxy_port</string>
     <string name="nc_settings_proxy_port_title">Gátt milliþjóns</string>
+    <string name="nc_settings_proxy_username_key">proxy_username</string>
+    <string name="nc_settings_proxy_password_key">proxy_password</string>
     <string name="nc_settings_use_credentials_title">Auðkenni notanda</string>
+    <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">Skipta á milli aðganga</string>
+    <string name="nc_settings_reauthorize">Endurheimila</string>
+    <string name="nc_client_cert_setup">Setja upp skilríki biðlara</string>
+    <string name="nc_client_cert_change">Skipta um skilríki biðlara</string>
     <string name="nc_settings_remove_account">Fjarlægja notandaaðgang</string>
     <string name="nc_settings_add_account">Bæta við nýjum notandaaðgangi</string>
     <string name="nc_no_proxy">Enginn milliþjónn</string>
@@ -82,9 +94,18 @@
 
     <string name="nc_nick_guest">Gestur</string>
     <string name="nc_public_call">NÝTT OPINBERT SÍMTAL</string>
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s á %2$s tilkynningarásinni</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
     <string name="nc_all_ok_operation">Í lagi, allt klárt!</string>
     <string name="nc_ok">Í lagi</string>
+    <string name="nc_call_name">Heiti samtals</string>
     <string name="nc_proceed">Halda áfram</string>
+    <string name="nc_wrong_link">Samskiptatengill er ekki gildur</string>
+    <string name="nc_share_text">Taktu þátt í samtalinu á %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_text_pass">\nLykilorð: %1$s</string>
+
+    <string name="nc_configure_cert_auth">Veldu skilríki fyrir auðkenningu</string>
+    <string name="nc_change_cert_auth">Skipta um skilríki fyrir auðkenningu</string>
     </resources>

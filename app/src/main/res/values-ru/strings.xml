@@ -50,6 +50,8 @@
     <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">Переключение учётных записей</string>
     <string name="nc_settings_reauthorize">Выйти и снова войти в систему</string>
+    <string name="nc_client_cert_setup">Установка клиентского сертификата</string>
+    <string name="nc_client_cert_change">Изменение клиентского сертификата</string>
     <string name="nc_settings_remove_account">Удалить учётную запись</string>
     <string name="nc_settings_add_account">Добавить учётную запись</string>
     <string name="nc_settings_wrong_account">Повторный вход может быть выполнен только в текущую учётную запись</string>
@@ -133,6 +135,8 @@
     <string name="nc_push_to_talk"> PTT (нажми чтобы говорить)</string>
     <string name="nc_push_to_talk_desc">Нажмите и удерживайте для использования PTT при отключенном микрофоне</string>
     <string name="nc_store_short_desc">Личные видеовызовы и переписка с использованием собственного сервера.</string>
+    <string name="nc_configure_cert_auth">Выбор аутентификационного сертификата</string>
+    <string name="nc_change_cert_auth">Изменение аутентификационного сертификата</string>
     <string name="nc_store_full_desc">Приложение Nexcloud Talk предназначено для осуществления вызовов между двумя или несколькими абонентами, в том числе с использованием видеосвязи. Соединения обслуживаются вашим собственным сервером, и все данные передаются в зашифрованном виде, что обеспечивает максимальную защиту.
 
 Навсегда бесплатное приложение Nexcloud Talk простое в использовании.
