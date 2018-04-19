@@ -126,12 +126,17 @@ public class ApiUtils {
         return getUrlForCall(baseUrl, token) + "/ping";
     }
 
-    public static String getUrlForSignaling(String baseUrl) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/signaling";
+    public static String getUrlForSignaling(String baseUrl, @Nullable String token) {
+        String signalingUrl = baseUrl + ocsApiVersion + spreedApiVersion + "/signaling";
+        if (token == null) {
+            return signalingUrl;
+        } else {
+            return signalingUrl + "/" + token;
+        }
     }
 
     public static String getUrlForSignalingSettings(String baseUrl) {
-        return getUrlForSignaling(baseUrl) + "/settings";
+        return getUrlForSignaling(baseUrl, null) + "/settings";
     }
 
 

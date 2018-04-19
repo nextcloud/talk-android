@@ -55,6 +55,7 @@ import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.CallOverall;
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
@@ -199,6 +200,8 @@ public class CallActivity extends AppCompatActivity {
 
     private boolean videoOn = false;
     private boolean audioOn = false;
+
+    private boolean isMultiSession = false;
 
     private Handler handler = new Handler();
 
@@ -770,7 +773,7 @@ public class CallActivity extends AppCompatActivity {
                             }
                         }
 
-                        joinRoomAndCall();
+                        checkCapabilities();
                     }
 
                     @Override
@@ -788,6 +791,41 @@ public class CallActivity extends AppCompatActivity {
         if (videoCapturer != null) {
             videoCapturer.startCapture(1280, 720, 30);
         }
+    }
+
+    private void checkCapabilities() {
+            ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<CapabilitiesOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(CapabilitiesOverall capabilitiesOverall) {
+                            isMultiSession = capabilitiesOverall.getOcs().getData()
+                                    .getCapabilities().getSpreedCapability() != null &&
+                                    capabilitiesOverall.getOcs().getData()
+                                            .getCapabilities().getSpreedCapability()
+                                            .getFeatures() != null && capabilitiesOverall.getOcs().getData()
+                                    .getCapabilities().getSpreedCapability()
+                                    .getFeatures().contains("multi-room-users");
+
+                            joinRoomAndCall();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            isMultiSession = false;
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
     }
 
     private void joinRoomAndCall() {
@@ -871,7 +909,11 @@ public class CallActivity extends AppCompatActivity {
                                 });
 
                         // Start pulling signaling messages
-                        ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl))
+                        String urlToken = null;
+                        if (isMultiSession) {
+                            urlToken = roomToken;
+                        }
+                        ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .repeatWhen(observable -> observable)
@@ -1367,7 +1409,12 @@ public class CallActivity extends AppCompatActivity {
         String stringToSend = stringBuilder.toString();
         strings.add(stringToSend);
 
-        ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl),
+        String urlToken = null;
+        if (isMultiSession) {
+            urlToken = roomToken;
+        }
+
+        ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken),
                 strings.toString())
                 .retry(3)
                 .subscribeOn(Schedulers.newThread())
