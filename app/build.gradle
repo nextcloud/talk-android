@@ -111,7 +111,7 @@ dependencies {
     implementation 'net.zetetic:android-database-sqlcipher:3.5.9'
     annotationProcessor 'io.requery:requery-processor:1.5.0'
 
-    compile 'org.parceler:parceler-api:1.1.9'
+    implementation 'org.parceler:parceler-api:1.1.9'
     annotationProcessor 'org.parceler:parceler:1.1.9'
 
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
@@ -122,14 +122,14 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
     debugImplementation "javax.transaction:transaction-api:1.1-rev-1"
 
-    implementation 'com.github.HITGIF:TextFieldBoxes:1.4.1'
+    implementation 'com.github.HITGIF:TextFieldBoxes:1.4.3'
 
-    implementation 'eu.davidea:flexible-adapter:5.0.2'
+    implementation 'eu.davidea:flexible-adapter:5.0.3'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b3'
 
     implementation 'com.github.bumptech.glide:glide:4.3.0'

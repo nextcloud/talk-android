@@ -2,7 +2,7 @@
 buildscript {
 
     ext {
-        kotlinVersion = '1.2.21'
+        kotlinVersion = '1.2.31'
     }
 
     repositories {

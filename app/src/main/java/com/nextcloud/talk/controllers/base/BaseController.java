@@ -59,6 +59,8 @@ public abstract class BaseController extends RefWatchingController {
     }
 
     private void cleanTempCertPreference() {
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+
         List<String> temporaryClassNames = new ArrayList<>();
         temporaryClassNames.add(ServerSelectionController.class.getName());
         temporaryClassNames.add(AccountVerificationController.class.getName());
@@ -72,7 +74,6 @@ public abstract class BaseController extends RefWatchingController {
     }
     @Override
     protected void onViewBound(@NonNull View view) {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         super.onViewBound(view);
     }
 
