@@ -140,6 +140,8 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_push_to_talk">Druk-om-te-praten</string>
     <string name="nc_push_to_talk_desc">Met uitgeschakelde microfoon, klik&amp;indrukken om Druk-om-te-praten te gebruiken</string>
     <string name="nc_store_short_desc">Heb vertrouwelijke videogesprekken en chats via je eigen server.</string>
+    <string name="nc_configure_cert_auth">Selecteer authenticatiecertificaat</string>
+    <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
     <string name="nc_store_full_desc">Gebruik Nextcloud Talk om een één-op-één of groeps- audio- of videogesprek te houden, voor het starten of deelnemen aan web conferenties en voor het versturen van berichten. Alle communicatie is volledig versleuteld en verwerkt via je eigen server, waardoor je de hoogst mogelijke graad van privacy bereikt.
 
 Nextcloud Talk is gemakkelijk te gebruiken en is altijd helemaal gratis!
