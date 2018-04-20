@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.utils.animations.ViewHidingBehaviourAnimation;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 
 import butterknife.BindView;
@@ -105,23 +107,23 @@ public abstract class BottomNavigationController extends BaseController {
         super.onViewBound(view);
         /* Setup the BottomNavigationView with the constructor supplied Menu resource */
         bottomNavigationView.inflateMenu(getMenuResource());
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int nextItemId = item.getItemId();
-                if (currentlySelectedItemId != nextItemId) {
-                    Router oldChildRouter = getChildRouter(currentlySelectedItemId);
-                    save(oldChildRouter, currentlySelectedItemId);
-                    destroyChildRouter(oldChildRouter);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int nextItemId = item.getItemId();
+            if (currentlySelectedItemId != nextItemId) {
+                Router oldChildRouter = getChildRouter(currentlySelectedItemId);
+                save(oldChildRouter, currentlySelectedItemId);
+                destroyChildRouter(oldChildRouter);
 
-                    configureRouter(getChildRouter(nextItemId), nextItemId);
-                    currentlySelectedItemId = nextItemId;
-                } else {
-                    resetCurrentBackstack();
-                }
-                return true;
+                configureRouter(getChildRouter(nextItemId), nextItemId);
+                currentlySelectedItemId = nextItemId;
+            } else {
+                resetCurrentBackstack();
             }
+            return true;
         });
+
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
+        layoutParams.setBehavior(new ViewHidingBehaviourAnimation());
     }
 
     @Override
