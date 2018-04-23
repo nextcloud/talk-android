@@ -164,4 +164,5 @@ Millions of users use Nextcloud daily at businesses and homes around the world. 
 Learn more on https://nextcloud.com/talk
 
 Find Nextcloud on https://nextcloud.com</string>
+    <string name="hint_enter_a_message">Enter a message…</string>
 </resources>

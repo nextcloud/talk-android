@@ -113,7 +113,7 @@ public class CallsListController extends BaseController implements SearchView.On
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
 
-    private UserEntity userEntity;
+    private UserEntity currentUser;
     private Disposable roomsQueryDisposable;
     private FlexibleAdapter<CallItem> adapter;
     private List<CallItem> callItems = new ArrayList<>();
@@ -144,9 +144,9 @@ public class CallsListController extends BaseController implements SearchView.On
             getActionBar().show();
         }
 
-        userEntity = userUtils.getCurrentUser();
+        currentUser = userUtils.getCurrentUser();
 
-        if (userEntity == null &&
+        if (currentUser == null &&
                 getParentController() != null && getParentController().getRouter() != null) {
             getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
                     .pushChangeHandler(new HorizontalChangeHandler())
@@ -155,7 +155,7 @@ public class CallsListController extends BaseController implements SearchView.On
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
-            if (userEntity != null) {
+            if (currentUser != null) {
                 fetchData(false);
             }
         }
@@ -172,7 +172,7 @@ public class CallsListController extends BaseController implements SearchView.On
             getActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
-        userEntity = userUtils.getCurrentUser();
+        currentUser = userUtils.getCurrentUser();
 
     }
 
@@ -268,15 +268,15 @@ public class CallsListController extends BaseController implements SearchView.On
 
         callItems = new ArrayList<>();
 
-        roomsQueryDisposable = ncApi.getRooms(ApiUtils.getCredentials(userEntity.getUsername(),
-                userEntity.getToken()), ApiUtils.getUrlForGetRooms(userEntity.getBaseUrl()))
+        roomsQueryDisposable = ncApi.getRooms(ApiUtils.getCredentials(currentUser.getUsername(),
+                currentUser.getToken()), ApiUtils.getUrlForGetRooms(currentUser.getBaseUrl()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(roomsOverall -> {
 
                     if (roomsOverall != null) {
                         for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
-                            callItems.add(new CallItem(roomsOverall.getOcs().getData().get(i), userEntity));
+                            callItems.add(new CallItem(roomsOverall.getOcs().getData().get(i), currentUser));
                         }
 
                         adapter.updateDataSet(callItems, true);
@@ -305,7 +305,7 @@ public class CallsListController extends BaseController implements SearchView.On
                                 if (getParentController() != null &&
                                         getParentController().getRouter() != null) {
                                     getParentController().getRouter().pushController((RouterTransaction.with
-                                            (new WebViewLoginController(userEntity.getBaseUrl(),
+                                            (new WebViewLoginController(currentUser.getBaseUrl(),
                                                     true))
                                             .pushChangeHandler(new VerticalChangeHandler())
                                             .popChangeHandler(new VerticalChangeHandler())));
@@ -494,18 +494,25 @@ public class CallsListController extends BaseController implements SearchView.On
             Room room = callItem.getModel();
             Bundle bundle = new Bundle();
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, callItem.getModel().getToken());
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
 
             if (room.hasPassword && (room.participantType.equals(Participant.ParticipantType.GUEST) ||
                     room.participantType.equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
                 bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
                 prepareAndShowBottomSheetWithBundle(bundle, false);
             } else {
-                overridePushHandler(new NoOpControllerChangeHandler());
-                overridePopHandler(new NoOpControllerChangeHandler());
-                Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                callIntent.putExtras(bundle);
-                startActivity(callIntent);
+                if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+                    bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
+                    getParentController().getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler())));
+                } else {
+                    overridePushHandler(new NoOpControllerChangeHandler());
+                    overridePopHandler(new NoOpControllerChangeHandler());
+                    Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                    callIntent.putExtras(bundle);
+                    startActivity(callIntent);
+                }
             }
         }
 

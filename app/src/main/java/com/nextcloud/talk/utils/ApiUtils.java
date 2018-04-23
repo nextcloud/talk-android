@@ -126,6 +126,10 @@ public class ApiUtils {
         return getUrlForCall(baseUrl, token) + "/ping";
     }
 
+    public static String getUrlForChat(String baseUrl, String token) {
+        return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token;
+    }
+
     public static String getUrlForSignaling(String baseUrl, @Nullable String token) {
         String signalingUrl = baseUrl + ocsApiVersion + spreedApiVersion + "/signaling";
         if (token == null) {

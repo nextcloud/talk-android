@@ -150,6 +150,8 @@ dependencies {
 
     implementation 'com.github.wooplr:Spotlight:1.2.3'
 
+    implementation 'com.github.stfalcon:chatkit:0.2.2'
+
     implementation 'com.github.Kennyc1012:BottomSheet:2.4.0'
     implementation 'eu.davidea:flipview:1.1.3'
     testImplementation 'junit:junit:4.12'

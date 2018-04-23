@@ -1,0 +1,111 @@
+/*
+ * Nextcloud Talk application
+ *
+ * @author Mario Danic
+ * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.nextcloud.talk.models.json.chat;
+
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.TimeUtils;
+import com.stfalcon.chatkit.commons.models.IMessage;
+import com.stfalcon.chatkit.commons.models.IUser;
+
+import org.parceler.Parcel;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Parcel
+@Data
+@JsonObject
+public class ChatMessage implements IMessage {
+    String baseUrl;
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    @JsonField(name = "id")
+    int jsonMessageId;
+
+    @JsonField(name = "token")
+    String token;
+
+    // guests or users
+    @JsonField(name = "actorType")
+    String actorType;
+
+    @JsonField(name = "actorId")
+    String actorId;
+
+    // send when crafting a message
+    @JsonField(name = "actorDisplayName")
+    String actorDisplayName;
+
+    @JsonField(name = "timestamp")
+    long timestamp;
+
+    // send when crafting a message, max 1000 lines
+    @JsonField(name = "message")
+    String message;
+
+    @Override
+    public String getId() {
+        return Integer.toString(jsonMessageId);
+    }
+
+    @Override
+    public String getText() {
+        return message;
+    }
+
+    @Override
+    public IUser getUser() {
+        return new IUser() {
+            @Override
+            public String getId() {
+                return actorId;
+            }
+
+            @Override
+            public String getName() {
+                return actorDisplayName;
+            }
+
+            @Override
+            public String getAvatar() {
+                if ("guests".equals(actorType)) {
+                    return null;
+                } else {
+                    return ApiUtils.getUrlForAvatarWithName(getBaseUrl(), actorId, false);
+                }
+            }
+        };
+    }
+
+    @Override
+    public Date getCreatedAt() {
+        return TimeUtils.getDateCurrentTimeZone(timestamp);
+    }
+}

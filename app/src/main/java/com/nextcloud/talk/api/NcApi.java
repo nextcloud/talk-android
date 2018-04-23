@@ -24,6 +24,7 @@ import android.support.annotation.Nullable;
 
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
+import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
@@ -39,6 +40,7 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import java.util.Map;
 
 import io.reactivex.Observable;
+import retrofit2.Response;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
@@ -256,4 +258,28 @@ public interface NcApi {
 
     @GET
     Observable<CapabilitiesOverall> getCapabilities(@Header("Authorization") String authorization, @Url String url);
+
+     /*
+        QueryMap items are as follows:
+          - "lookIntoFuture": int (0 or 1),
+          - "limit" : int, range 100-200,
+          - "timeout": used with look into future, 30 default, 60 at most
+          - "lastKnownMessageId", int, use one from X-Chat-Last-Given
+    */
+    @GET
+    Observable<Response<ChatOverall>> pullChatMessages(@Header("Authorization") String authorization, @Url String url,
+                                                       @QueryMap Map<String, Integer> fields);
+
+    /*
+        Fieldmap items are as follows:
+          - "message": ,
+          - "actorDisplayName"
+    */
+
+    @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization, @Url String url,
+                                               @FieldMap Map<String, String> fields);
+
+
 }
