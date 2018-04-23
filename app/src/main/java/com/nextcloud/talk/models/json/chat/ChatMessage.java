@@ -22,7 +22,6 @@ package com.nextcloud.talk.models.json.chat;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.TimeUtils;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 
@@ -95,17 +94,13 @@ public class ChatMessage implements IMessage {
 
             @Override
             public String getAvatar() {
-                if ("guests".equals(actorType)) {
-                    return null;
-                } else {
-                    return ApiUtils.getUrlForAvatarWithName(getBaseUrl(), actorId, false);
-                }
+                return ApiUtils.getUrlForAvatarWithName(getBaseUrl(), actorId, false);
             }
         };
     }
 
     @Override
     public Date getCreatedAt() {
-        return TimeUtils.getDateCurrentTimeZone(timestamp);
+        return new Date(timestamp * 1000L);
     }
 }

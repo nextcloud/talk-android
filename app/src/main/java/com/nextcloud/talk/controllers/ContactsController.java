@@ -137,7 +137,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @BindView(R.id.clear_button)
     Button clearButton;
 
-    private UserEntity userEntity;
+    private UserEntity currentUser;
     private Disposable contactsQueryDisposable;
     private Disposable cacheQueryDisposable;
     private FlexibleAdapter adapter;
@@ -196,9 +196,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         FlipView.resetLayoutAnimationDelay(true, 1000L);
         FlipView.stopLayoutAnimation();
 
-        userEntity = userUtils.getCurrentUser();
+        currentUser = userUtils.getCurrentUser();
 
-        if (userEntity == null &&
+        if (currentUser == null &&
                 getParentController() != null && getParentController().getRouter() != null) {
             getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
                     .pushChangeHandler(new HorizontalChangeHandler())
@@ -210,7 +210,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             adapter.setNotifyChangeOfUnfilteredItems(true)
                     .setMode(SelectableAdapter.Mode.MULTI);
 
-            if (userEntity != null) {
+            if (currentUser != null) {
                 fetchData();
             }
         }
@@ -248,9 +248,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public void onDoneButtonClick() {
 
         if (!isPublicCall && adapter.getSelectedPositions().size() == 1) {
-            RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
+            RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), "1",
                     ((UserItem) adapter.getItem(adapter.getSelectedPositions().get(0))).getModel().getUserId(), null);
-            ncApi.createRoom(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+            ncApi.createRoom(ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
                     retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -266,7 +266,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 Intent callIntent = new Intent(getActivity(), CallActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
-                                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
+                                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
                                 callIntent.putExtras(bundle);
                                 startActivity(callIntent);
                                 new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
@@ -402,10 +402,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         contactItems = new ArrayList<>();
         userHeaderItems = new HashMap<>();
 
-        RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearch(userEntity.getBaseUrl(),
+        RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearch(currentUser.getBaseUrl(),
                 "");
         contactsQueryDisposable = ncApi.getContactsWithSearchParam(
-                ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
                 retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -424,7 +424,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                                 Participant participant;
                                 for (Sharee sharee : shareeHashSet) {
-                                    if (!sharee.getValue().getShareWith().equals(userEntity.getUsername())) {
+                                    if (!sharee.getValue().getShareWith().equals(currentUser.getUsername())) {
                                         participant = new Participant();
                                         participant.setName(sharee.getLabel());
                                         String headerTitle;
@@ -438,7 +438,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                         }
 
                                         participant.setUserId(sharee.getValue().getShareWith());
-                                        contactItems.add(new UserItem(participant, userEntity,
+                                        contactItems.add(new UserItem(participant, currentUser,
                                                 userHeaderItems.get(headerTitle)));
                                     }
 
@@ -492,7 +492,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                         if (getParentController() != null &&
                                                 getParentController().getRouter() != null) {
                                             getParentController().getRouter().pushController((RouterTransaction.with
-                                                    (new WebViewLoginController(userEntity.getBaseUrl(),
+                                                    (new WebViewLoginController(currentUser.getBaseUrl(),
                                                             true))
                                                     .pushChangeHandler(new VerticalChangeHandler())
                                                     .popChangeHandler(new VerticalChangeHandler())));
@@ -700,9 +700,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (adapter.getItem(position) instanceof UserItem) {
             if (!isNewConversationView) {
                 UserItem userItem = (UserItem) adapter.getItem(position);
-                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(userEntity.getBaseUrl(), "1",
+                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), "1",
                         userItem.getModel().getUserId(), null);
-                ncApi.createRoom(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                ncApi.createRoom(ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -715,12 +715,21 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             @Override
                             public void onNext(RoomOverall roomOverall) {
                                 if (getActivity() != null) {
-                                    Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                                    Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
-                                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(userEntity));
-                                    callIntent.putExtras(bundle);
-                                    startActivity(callIntent);
+                                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
+                                    conversationIntent.putExtras(bundle);
+
+                                    if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+                                        bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
+                                                roomOverall.getOcs().getData().getDisplayName());
+                                        getParentController().getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
+                                                .pushChangeHandler(new HorizontalChangeHandler())
+                                                .popChangeHandler(new HorizontalChangeHandler())));
+                                    } else {
+                                        startActivity(conversationIntent);
+                                    }
                                 }
                             }
 

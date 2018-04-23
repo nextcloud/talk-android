@@ -277,7 +277,7 @@ public interface NcApi {
     */
 
     @FormUrlEncoded
-    @PUT
+    @POST
     Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization, @Url String url,
                                                @FieldMap Map<String, String> fields);
 

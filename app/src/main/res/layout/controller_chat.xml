@@ -29,6 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/input"
+        app:outcomingDefaultBubbleColor="@color/colorPrimary"
+        app:outcomingDefaultBubbleSelectedColor="@color/colorPrimaryDark"
         app:textAutoLink="all"/>
 
     <View
@@ -45,10 +47,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:maxLength="1000"
+        app:inputButtonDefaultBgColor="@color/colorPrimary"
+        app:inputButtonDefaultBgPressedColor="@color/colorPrimaryDark"
         app:inputButtonHeight="30dp"
         app:inputButtonMargin="16dp"
         app:inputButtonWidth="30dp"
-        app:inputHint="@string/hint_enter_a_message"
+        app:inputHint="@string/nc_hint_enter_a_message"
         app:inputTextColor="@color/black"
         app:inputTextSize="18sp"/>
 

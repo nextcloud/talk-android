@@ -24,6 +24,8 @@ package com.nextcloud.talk.controllers;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +43,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -49,9 +52,11 @@ import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
+import com.stfalcon.chatkit.utils.DateFormatter;
 
 import org.parceler.Parcels;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +72,8 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener {
+public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
+        MessagesListAdapter.Formatter<Date> {
     @Inject
     NcApi ncApi;
     @Inject
@@ -87,6 +93,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private int globalLastKnownPastMessageId = -1;
 
     private MessagesListAdapter<ChatMessage> adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     public ChatController(Bundle args) {
         super(args);
@@ -106,23 +113,37 @@ public class ChatController extends BaseController implements MessagesListAdapte
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
-        adapter = new MessagesListAdapter<>(currentUser.getUserId(), new ImageLoader() {
-            @Override
-            public void loadImage(ImageView imageView, String url) {
-                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(url)
-                        .centerInside()
-                        .override(imageView.getMeasuredWidth(), imageView.getMeasuredHeight())
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(imageView);
-            }
-        });
+        boolean adapterWasNull = false;
+
+        if (adapter == null) {
+            adapterWasNull = true;
+            adapter = new MessagesListAdapter<>(currentUser.getUserId(), new ImageLoader() {
+                @Override
+                public void loadImage(ImageView imageView, String url) {
+                    GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                            .asBitmap()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .load(url)
+                            .centerInside()
+                            .override(imageView.getMeasuredWidth(), imageView.getMeasuredHeight())
+                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                            .into(imageView);
+                }
+            });
+        }
 
         messagesList.setAdapter(adapter);
         adapter.setLoadMoreListener(this);
-        joinRoomWithPassword(null);
+        adapter.setDateHeadersFormatter(this::format);
+
+        messageInput.setInputListener(input -> {
+            sendMessage(input.toString());
+            return true;
+        });
+
+        if (adapterWasNull) {
+            joinRoomWithPassword(null);
+        }
     }
 
     @Override
@@ -186,10 +207,43 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 });
     }
 
+    private void sendMessage(String message) {
+        Map<String, String> fieldMap = new HashMap<>();
+        fieldMap.put("message", message);
+        fieldMap.put("actorDisplayName", currentUser.getDisplayName());
+
+
+        ncApi.sendChatMessage(ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken()),
+                ApiUtils.getUrlForChat(currentUser.getBaseUrl(), roomToken), fieldMap)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(3, observable -> inChat)
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GenericOverall genericOverall) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
     private void pullChatMessages(int lookIntoFuture) {
         Map<String, Integer> fieldMap = new HashMap<>();
         fieldMap.put("lookIntoFuture", lookIntoFuture);
-        fieldMap.put("limit", 2);
+        fieldMap.put("limit", 25);
 
         int lastKnown;
         if (lookIntoFuture == 1) {
@@ -285,17 +339,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
                 }
 
-
                 adapter.addToEnd(chatMessageList, false);
 
             } else {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) messagesList.getLayoutManager();
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessageList.get(i).setBaseUrl(currentUser.getBaseUrl());
-                    if (i == chatMessageList.size() - 1) {
-                        adapter.addToStart(chatMessageList.get(i), true);
-                    } else {
-                        adapter.addToStart(chatMessageList.get(i), false);
-                    }
+                    adapter.addToStart(chatMessageList.get(i),
+                            layoutManager.findLastVisibleItemPosition() <= adapter.getItemCount() - 3);
                 }
 
                 globalLastKnownFutureMessageId = Integer.parseInt(response.headers().get("X-Chat-Last-Given"));
@@ -315,4 +366,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
             pullChatMessages(0);
         }
     }
-}
+
+
+    @Override
+    public String format(Date date) {
+        if (DateFormatter.isToday(date)) {
+            return getResources().getString(R.string.nc_date_header_today);
+        } else if (DateFormatter.isYesterday(date)) {
+            return getResources().getString(R.string.nc_date_header_yesterday);
+        } else {
+            return DateFormatter.format(date, DateFormatter.Template.STRING_DAY_MONTH_YEAR);
+        }
+    }}
