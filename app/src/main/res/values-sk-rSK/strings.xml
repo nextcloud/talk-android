@@ -122,9 +122,12 @@
          Môžete sa pokúsiť pripojiť na hovor cez webový prehliadač.</string>
     <string name="nc_all_ok_operation">OK, všetko hotovo!</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Názov rozhovoru</string>
     <string name="nc_proceed">Pokračovať</string>
     <string name="nc_call_name_is_same">Názov, ktorý ste zadali je zhodný s existujúcim</string>
     <string name="nc_wrong_link">Odkaz na rozhovor nie je platný!</string>
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
 
+    <string name="nc_configure_cert_auth">Vybrať autentifikačný certifikát</string>
+    <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
     </resources>
