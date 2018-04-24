@@ -47,7 +47,7 @@ public class MagicIncomingTextMessageViewHolder
     public void onBind(ChatMessage message) {
         super.onBind(message);
         String author;
-        if (TextUtils.isEmpty(author = message.getActorDisplayName())) {
+        if (!TextUtils.isEmpty(author = message.getActorDisplayName())) {
             messageAuthor.setText(author);
         } else {
             messageAuthor.setText(R.string.nc_nick_guest);
