@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Puhelut</string>
+    <string name="nc_bottom_navigation_title_conversations">Puhelut</string>
     <string name="nc_bottom_navigation_title_contacts">Yhteystiedot</string>
     <string name="nc_bottom_navigation_title_settings">Asetukset</string>
 

@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Hovory</string>
+    <string name="nc_bottom_navigation_title_conversations">Hovory</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakty</string>
     <string name="nc_bottom_navigation_title_settings">Nastavenia</string>
 

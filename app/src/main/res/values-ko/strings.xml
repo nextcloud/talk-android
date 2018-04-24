@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">통화</string>
+    <string name="nc_bottom_navigation_title_conversations">통화</string>
     <string name="nc_bottom_navigation_title_contacts">연락처</string>
     <string name="nc_bottom_navigation_title_settings">설정</string>
 

@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Calls</string>
+    <string name="nc_bottom_navigation_title_conversations">Conversations</string>
     <string name="nc_bottom_navigation_title_contacts">Contacts</string>
     <string name="nc_bottom_navigation_title_settings">Settings</string>
 
@@ -75,16 +75,16 @@
 
     <!-- Room menu -->
     <string name="nc_what">What would you like to do today?</string>
-    <string name="nc_leave">Leave call</string>
-    <string name="nc_rename">Rename call</string>
+    <string name="nc_leave">Leave conversation</string>
+    <string name="nc_rename">Rename conversation</string>
     <string name="nc_set_password">Set a password</string>
     <string name="nc_change_password">Change a password</string>
     <string name="nc_clear_password">Clear password</string>
     <string name="nc_share_link">Share link</string>
     <string name="nc_share_link_via">Share link via</string>
-    <string name="nc_make_call_public">Make call public</string>
-    <string name="nc_make_call_private">Make call private</string>
-    <string name="nc_delete_call">Delete call</string>
+    <string name="nc_make_call_public">Make conversation public</string>
+    <string name="nc_make_call_private">Make conversation private</string>
+    <string name="nc_delete_call">Delete conversation</string>
     <string name="nc_new_conversation">Start a new conversation</string>
     <string name="nc_join_via_link">Join via link</string>
     <string name="nc_join_via_web">Join via web</string>
@@ -107,9 +107,9 @@
     <!-- Call -->
     <string name="nc_incoming_call">Incoming call</string>
     <string name="nc_nick_guest">Guest</string>
-    <string name="nc_public_call">NEW PUBLIC CALL</string>
-    <string name="nc_public_call_explanation">Public calls let you invite people from outside through a specially
-        crafted link.</string>
+    <string name="nc_public_call">New public conversation</string>
+    <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a
+        specially crafted link.</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
@@ -120,8 +120,8 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
-    <string name="nc_failed_signaling_settings">Target server does not support joining public rooms via mobile phones.
-        You may attempt to join the call via web browser.</string>
+    <string name="nc_failed_signaling_settings">Target server does not support joining public conversations via mobile
+        phones. You may attempt to join the conversation via web browser.</string>
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Conversation name</string>

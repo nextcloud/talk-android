@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Позиви</string>
+    <string name="nc_bottom_navigation_title_conversations">Позиви</string>
     <string name="nc_bottom_navigation_title_contacts">Контакти</string>
     <string name="nc_bottom_navigation_title_settings">Поставке</string>
 

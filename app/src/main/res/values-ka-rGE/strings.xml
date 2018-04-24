@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">ზარები</string>
+    <string name="nc_bottom_navigation_title_conversations">ზარები</string>
     <string name="nc_bottom_navigation_title_contacts">კონტაქტები</string>
     <string name="nc_bottom_navigation_title_settings">პარამეტრები</string>
 

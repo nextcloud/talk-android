@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Chamadas</string>
+    <string name="nc_bottom_navigation_title_conversations">Chamadas</string>
     <string name="nc_bottom_navigation_title_contacts">Contatos</string>
     <string name="nc_bottom_navigation_title_settings">Configurações</string>
 

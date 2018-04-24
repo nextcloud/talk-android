@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Çağrılar</string>
+    <string name="nc_bottom_navigation_title_conversations">Çağrılar</string>
     <string name="nc_bottom_navigation_title_contacts">Kişiler</string>
     <string name="nc_bottom_navigation_title_settings">Ayarlar</string>
 

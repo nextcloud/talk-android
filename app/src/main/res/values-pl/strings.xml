@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Połączenia</string>
+    <string name="nc_bottom_navigation_title_conversations">Połączenia</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakty</string>
     <string name="nc_bottom_navigation_title_settings">Ustawienia</string>
 

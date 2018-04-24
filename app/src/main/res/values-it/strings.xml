@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Chiamate</string>
+    <string name="nc_bottom_navigation_title_conversations">Chiamate</string>
     <string name="nc_bottom_navigation_title_contacts">Contatti</string>
     <string name="nc_bottom_navigation_title_settings">Impostazioni</string>
 

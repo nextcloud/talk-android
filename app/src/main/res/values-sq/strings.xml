@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Thirrjet</string>
+    <string name="nc_bottom_navigation_title_conversations">Thirrjet</string>
     <string name="nc_bottom_navigation_title_contacts">Kontaktet</string>
     <string name="nc_bottom_navigation_title_settings">Rregullimet</string>
 

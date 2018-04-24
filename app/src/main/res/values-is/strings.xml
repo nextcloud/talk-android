@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Samtöl</string>
+    <string name="nc_bottom_navigation_title_conversations">Samtöl</string>
     <string name="nc_bottom_navigation_title_contacts">Tengiliðir</string>
     <string name="nc_bottom_navigation_title_settings">Stillingar</string>
 

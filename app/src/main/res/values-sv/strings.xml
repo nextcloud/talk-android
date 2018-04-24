@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Samtal</string>
+    <string name="nc_bottom_navigation_title_conversations">Samtal</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakter</string>
     <string name="nc_bottom_navigation_title_settings">Inställningar</string>
 

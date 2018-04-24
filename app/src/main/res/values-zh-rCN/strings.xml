@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">呼叫</string>
+    <string name="nc_bottom_navigation_title_conversations">呼叫</string>
     <string name="nc_bottom_navigation_title_contacts">联系人</string>
     <string name="nc_bottom_navigation_title_settings">设置</string>
 

@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_calls">Llamadas</string>
+    <string name="nc_bottom_navigation_title_conversations">Llamadas</string>
     <string name="nc_bottom_navigation_title_contacts">Contactos</string>
     <string name="nc_bottom_navigation_title_settings">Configuración</string>
 
