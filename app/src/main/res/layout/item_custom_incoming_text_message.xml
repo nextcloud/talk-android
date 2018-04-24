@@ -52,7 +52,7 @@
             android:id="@+id/messageAuthor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorPrimary"
             android:textSize="12sp"
             app:layout_alignSelf="flex_start"/>
 
