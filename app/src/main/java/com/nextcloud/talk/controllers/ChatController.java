@@ -36,6 +36,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -117,7 +118,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         if (adapter == null) {
             adapterWasNull = true;
-            adapter = new MessagesListAdapter<>(currentUser.getUserId(), new ImageLoader() {
+
+            MessagesListAdapter.HoldersConfig holdersConfig = new MessagesListAdapter.HoldersConfig();
+            holdersConfig.setIncoming(MagicIncomingTextMessageViewHolder.class,
+                    R.layout.item_custom_incoming_text_message);
+
+            adapter = new MessagesListAdapter<>(currentUser.getUserId(), holdersConfig, new ImageLoader() {
                 @Override
                 public void loadImage(ImageView imageView, String url) {
                     GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())

@@ -29,8 +29,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/input"
+        app:incomingDefaultBubbleColor="@color/white_two"
+        app:incomingDefaultBubblePressedColor="@color/white_two"
+        app:incomingDefaultBubbleSelectedColor="@color/colorPrimaryDark"
+        app:incomingTextSize="14sp"
+        app:incomingTimeTextSize="12sp"
         app:outcomingDefaultBubbleColor="@color/colorPrimary"
+        app:outcomingDefaultBubblePressedColor="@color/colorPrimary"
         app:outcomingDefaultBubbleSelectedColor="@color/colorPrimaryDark"
+        app:outcomingTextSize="14sp"
+        app:outcomingTimeTextSize="12sp"
         app:textAutoLink="all"/>
 
     <View
@@ -54,6 +62,6 @@
         app:inputButtonWidth="30dp"
         app:inputHint="@string/nc_hint_enter_a_message"
         app:inputTextColor="@color/black"
-        app:inputTextSize="18sp"/>
+        app:inputTextSize="16sp"/>
 
 </RelativeLayout>
