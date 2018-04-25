@@ -50,6 +50,8 @@
     <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">Váltás fiókok között</string>
     <string name="nc_settings_reauthorize">Újraengedélyezés</string>
+    <string name="nc_client_cert_setup">Kliens tanúsítvány beállítása</string>
+    <string name="nc_client_cert_change">Kliens tanúsítvány módosítása</string>
     <string name="nc_settings_remove_account">Fiók törlése</string>
     <string name="nc_settings_add_account">Új fiók létrehozása</string>
     <string name="nc_settings_wrong_account">Csak az aktuális fiókot lehet újraengedélyezni</string>
@@ -135,6 +137,8 @@ Megpróbálhatod weben keresztül.</string>
     <string name="nc_push_to_talk">Adóvevő</string>
     <string name="nc_push_to_talk_desc">Letiltott mikorfonnal kattintson a &amp; tartásra, hogy használni tudja az adóvevőt</string>
     <string name="nc_store_short_desc">Intézz videóhívásokat és magánbeszélgetéseket saját szervered segítségével.</string>
+    <string name="nc_configure_cert_auth">Autentikációs tanúsítvány kiválasztása</string>
+    <string name="nc_change_cert_auth">Autentikációs tanúsítvány módosítása</string>
     <string name="nc_store_full_desc">Használd a Nextcloud Talk-ot egy-egy vagy csoportos videó és hanghívásokhoz, Hozz létre, vagy csatlakozz videó konferenciákhoz és küldj szöveges üzeneteket. Minden kapcsolat teljesen titkosított és a te szervered közvetíti, biztosítva az elérhető legmagasabb biztonsági szintet.
 
 A Nextcloud Talk könnyen használható és mindíg ingyenes marad!
