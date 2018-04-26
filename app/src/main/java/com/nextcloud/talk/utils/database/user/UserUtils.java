@@ -99,6 +99,16 @@ public class UserUtils {
 
     }
 
+    public Completable deleteUserWithId(long id) {
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id)).limit(1).get();
+
+        UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
+
+        return dataStore.delete(user)
+                .subscribeOn(Schedulers.newThread());
+
+    }
+
     public void disableAllUsersWithoutId(long userId) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.notEqual(userId)).get();
 

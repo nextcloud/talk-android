@@ -29,12 +29,15 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -78,6 +81,9 @@ public class PushUtils {
 
     @Inject
     AppPreferences appPreferences;
+
+    @Inject
+    EventBus eventBus;
 
     @Inject
     OkHttpClient okHttpClient;
@@ -327,12 +333,15 @@ public class PushUtils {
 
                                                                             @Override
                                                                             public void onNext(UserEntity userEntity) {
-
+                                                                                eventBus.post(new EventStatus(userEntity.getId(), EventStatus.EventType.PUSH_REGISTRATION, true));
                                                                             }
 
                                                                             @Override
                                                                             public void onError(Throwable e) {
-
+                                                                                eventBus.post(new EventStatus
+                                                                                        (userEntity.getId(),
+                                                                                                EventStatus.EventType
+                                                                                                        .PUSH_REGISTRATION, false));
                                                                             }
 
                                                                             @Override
@@ -349,7 +358,8 @@ public class PushUtils {
 
                                                         @Override
                                                         public void onError(Throwable e) {
-
+                                                            eventBus.post(new EventStatus(userEntity.getId(),
+                                                                    EventStatus.EventType.PUSH_REGISTRATION, false));
                                                         }
 
                                                         @Override
@@ -361,12 +371,13 @@ public class PushUtils {
 
                                         @Override
                                         public void onError(Throwable e) {
+                                            eventBus.post(new EventStatus(userEntity.getId(),
+                                                    EventStatus.EventType.PUSH_REGISTRATION, false));
 
                                         }
 
                                         @Override
                                         public void onComplete() {
-
                                         }
                                     });
                         }

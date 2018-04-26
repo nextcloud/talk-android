@@ -362,7 +362,7 @@ public class SettingsController extends BaseController {
                 cookieManager.getCookieStore().removeAll();
                 boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(userEntity.getId());
                 new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true)
-                        .startNow().build().schedule();
+                        .startNow().build().scheduleAsync();
 
                 if (otherUserExists && getView() != null) {
                     onViewBound(getView());

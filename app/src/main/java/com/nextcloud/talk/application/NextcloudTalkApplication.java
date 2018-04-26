@@ -134,11 +134,11 @@ public class NextcloudTalkApplication extends MultiDexApplication {
         new ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync();
         DeviceUtils.ignoreSpecialBatteryFeatures();
 
-        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
-        new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
+        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().scheduleAsync();
+        new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().scheduleAsync();
 
         schedulePeriodCapabilitiesJob();
-        new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent(false).startNow().build().schedule();
+        new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent(false).startNow().build().scheduleAsync();
     }
 
     private void schedulePeriodCapabilitiesJob() {

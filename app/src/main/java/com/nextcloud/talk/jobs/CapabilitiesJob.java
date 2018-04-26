@@ -27,11 +27,14 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.evernote.android.job.Job;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,6 +59,9 @@ public class CapabilitiesJob extends Job {
 
     @Inject
     Retrofit retrofit;
+
+    @Inject
+    EventBus eventBus;
 
     @Inject
     OkHttpClient okHttpClient;
@@ -100,6 +106,8 @@ public class CapabilitiesJob extends Job {
 
                         @Override
                         public void onError(Throwable e) {
+                            eventBus.post(new EventStatus(internalUserEntity.getId(),
+                                    EventStatus.EventType.CAPABILITIES_FETCH, false));
 
                         }
 
@@ -128,12 +136,14 @@ public class CapabilitiesJob extends Job {
 
                         @Override
                         public void onNext(UserEntity userEntity) {
-
+                            eventBus.post(new EventStatus(userEntity.getId(),
+                                    EventStatus.EventType.CAPABILITIES_FETCH, true));
                         }
 
                         @Override
                         public void onError(Throwable e) {
-
+                            eventBus.post(new EventStatus(internalUserEntity.getId(),
+                                    EventStatus.EventType.CAPABILITIES_FETCH, false));
                         }
 
                         @Override
