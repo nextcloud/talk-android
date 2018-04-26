@@ -110,7 +110,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public static final String TAG = "ContactsController";
 
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
-    @Nullable @BindView(R.id.call_header_layout)
+    @Nullable @BindView(R.id.initial_relative_layout)
     public RelativeLayout initialRelativeLayout;
     @Nullable @BindView(R.id.secondary_relative_layout)
     public RelativeLayout secondaryRelativeLayout;
