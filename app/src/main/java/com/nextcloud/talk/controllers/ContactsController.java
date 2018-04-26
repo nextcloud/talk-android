@@ -110,25 +110,18 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public static final String TAG = "ContactsController";
 
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
-
-    @Inject
-    UserUtils userUtils;
-
-    @Inject
-    NcApi ncApi;
-
-    @Inject
-    EventBus eventBus;
-
     @BindView(R.id.call_header_layout)
     public RelativeLayout callHeaderLayout;
-
     @BindView(R.id.initial_relative_layout)
     public RelativeLayout initialRelativeLayout;
-
     @BindView(R.id.secondary_relative_layout)
     public RelativeLayout secondaryRelativeLayout;
-
+    @Inject
+    UserUtils userUtils;
+    @Inject
+    NcApi ncApi;
+    @Inject
+    EventBus eventBus;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -759,7 +752,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @OnClick(R.id.call_header_layout)
-    private void toggleCallHeader() {
+    void toggleCallHeader() {
         adapter.toggleSelection(0);
         isPublicCall = adapter.isSelected(0);
         if (!isPublicCall) {
