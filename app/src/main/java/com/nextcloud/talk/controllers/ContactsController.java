@@ -747,7 +747,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         return true;
     }
 
-    @Optional @OnClick(R.id.call_header_layout)
+    @Optional
+    @OnClick(R.id.call_header_layout)
     void toggleCallHeader() {
         isPublicCall = !isPublicCall;
         if (!isPublicCall) {
