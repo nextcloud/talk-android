@@ -35,7 +35,7 @@
         android:layout_height="@dimen/avatar_size"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="48dp"
         app:animationDuration="170"
         app:enableInitialAnimation="true"
         app:rearBackgroundColor="@color/colorPrimary"/>
