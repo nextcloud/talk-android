@@ -110,11 +110,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public static final String TAG = "ContactsController";
 
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
-    @BindView(R.id.call_header_layout)
-    public RelativeLayout callHeaderLayout;
-    @BindView(R.id.initial_relative_layout)
+    @Nullable @BindView(R.id.call_header_layout)
     public RelativeLayout initialRelativeLayout;
-    @BindView(R.id.secondary_relative_layout)
+    @Nullable @BindView(R.id.secondary_relative_layout)
     public RelativeLayout secondaryRelativeLayout;
     @Inject
     UserUtils userUtils;
@@ -172,7 +170,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        return inflater.inflate(R.layout.controller_contacts_rv, container, false);
+        if (isNewConversationView) {
+            return inflater.inflate(R.layout.controller_contacts_rv, container, false);
+        } else {
+            return inflater.inflate(R.layout.controller_generic_rv, container, false);
+        }
     }
 
     @Override
@@ -467,12 +469,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     return firstName.compareToIgnoreCase(secondName);
                                 });
 
-                                if (isNewConversationView) {
-                                    callHeaderLayout.setVisibility(View.VISIBLE);
-                                } else {
-                                    callHeaderLayout.setVisibility(View.GONE);
-                                }
-
                                 adapter.updateDataSet(contactItems, true);
                                 searchItem.setVisible(contactItems.size() > 0);
                                 swipeRefreshLayout.setRefreshing(false);
@@ -751,7 +747,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         return true;
     }
 
-    @OnClick(R.id.call_header_layout)
+    @Optional @OnClick(R.id.call_header_layout)
     void toggleCallHeader() {
         adapter.toggleSelection(0);
         isPublicCall = adapter.isSelected(0);

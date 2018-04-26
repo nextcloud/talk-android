@@ -45,6 +45,7 @@ import autodagger.AutoInjector;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -83,6 +84,7 @@ public class AccountRemovalJob extends Job {
 
                     ncApi.unregisterDeviceForNotificationsWithNextcloud(ApiUtils.getCredentials(userEntity.getUsername(),
                             userEntity.getToken()), ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()))
+                            .subscribeOn(Schedulers.newThread())
                             .subscribe(new Observer<GenericOverall>() {
                                 @Override
                                 public void onSubscribe(Disposable d) {
@@ -102,6 +104,7 @@ public class AccountRemovalJob extends Job {
                                         ncApi.unregisterDeviceForNotificationsWithProxy
                                                 (ApiUtils.getCredentials(userEntity.getUsername(),
                                                         userEntity.getToken()), ApiUtils.getUrlPushProxy(), queryMap)
+                                                .subscribeOn(Schedulers.newThread())
                                                 .subscribe(new Observer<Void>() {
                                                     @Override
                                                     public void onSubscribe(Disposable d) {
@@ -154,7 +157,9 @@ public class AccountRemovalJob extends Job {
                             });
                 } else {
                     userUtils.deleteUser(userEntity.getUsername(),
-                            userEntity.getBaseUrl()).subscribe(new CompletableObserver() {
+                            userEntity.getBaseUrl())
+                            .subscribeOn(Schedulers.newThread())
+                            .subscribe(new CompletableObserver() {
                         @Override
                         public void onSubscribe(Disposable d) {
 
@@ -174,7 +179,9 @@ public class AccountRemovalJob extends Job {
             } catch (IOException e) {
                 Log.d(TAG, "Something went wrong while removing job at parsing PushConfigurationState");
                 userUtils.deleteUser(userEntity.getUsername(),
-                        userEntity.getBaseUrl()).subscribe(new CompletableObserver() {
+                        userEntity.getBaseUrl())
+                        .subscribeOn(Schedulers.newThread())
+                        .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
