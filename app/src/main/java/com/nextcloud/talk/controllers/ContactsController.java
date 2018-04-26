@@ -183,6 +183,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         eventBus.register(this);
 
         if (isNewConversationView) {
+            if (!isPublicCall) {
+                secondaryRelativeLayout.setVisibility(View.GONE);
+                initialRelativeLayout.setVisibility(View.VISIBLE);
+            } else {
+                initialRelativeLayout.setVisibility(View.GONE);
+                secondaryRelativeLayout.setVisibility(View.VISIBLE);
+            }
+
             checkAndHandleBottomButtons();
 
             if (getActionBar() != null) {
