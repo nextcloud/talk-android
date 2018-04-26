@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Hovory</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakty</string>
     <string name="nc_bottom_navigation_title_settings">Nastavenia</string>
 
@@ -73,16 +71,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">Čo by ste chceli dnes robiť?</string>
-    <string name="nc_leave">Opustiť hovor</string>
-    <string name="nc_rename">Premenovať trezor</string>
     <string name="nc_set_password">Nastavte si heslo</string>
     <string name="nc_change_password">Zmeňte si heslo</string>
     <string name="nc_clear_password">Zrušiť heslo</string>
     <string name="nc_share_link">Zdieľať odkaz</string>
     <string name="nc_share_link_via">Zdieľať odkaz cez</string>
-    <string name="nc_make_call_public">Urobiť hovor verejným</string>
-    <string name="nc_make_call_private">Urobiť hovor súkromným</string>
-    <string name="nc_delete_call">Zmazať hovor</string>
     <string name="nc_new_conversation">Začať nový rozhovor</string>
     <string name="nc_join_via_link">Pripojiť sa cez odkaz</string>
     <string name="nc_join_via_web">Pripojiť sa cez web</string>
@@ -105,10 +98,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Prichádzajúci hovor</string>
     <string name="nc_nick_guest">Hosť</string>
-    <string name="nc_public_call">NOVÝ VEREJNÝ HOVOR</string>
-    <string name="nc_public_call_explanation">Verejné hovory Vám umožňujú pozvať ľudí z vonku cez špeciálne
- vytvorený odkaz.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na %2$s notifikačný kanál</string>
     <string name="nc_notification_channel_calls">Oznamovací kanál hovorov</string>
@@ -118,8 +107,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa pokazilo!</string>
-    <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných miestností cez mobilné telefóny 
-         Môžete sa pokúsiť pripojiť na hovor cez webový prehliadač.</string>
     <string name="nc_all_ok_operation">OK, všetko hotovo!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Názov rozhovoru</string>

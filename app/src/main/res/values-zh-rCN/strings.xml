@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">呼叫</string>
     <string name="nc_bottom_navigation_title_contacts">联系人</string>
     <string name="nc_bottom_navigation_title_settings">设置</string>
 
@@ -71,16 +69,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">今天想干点什么呢？</string>
-    <string name="nc_leave">离开通话</string>
-    <string name="nc_rename">重命名电话</string>
     <string name="nc_set_password">设置一个密码</string>
     <string name="nc_change_password">修改密码</string>
     <string name="nc_clear_password">清除密码</string>
     <string name="nc_share_link">共享链接</string>
     <string name="nc_share_link_via">共享链接通过</string>
-    <string name="nc_make_call_public">公开呼叫</string>
-    <string name="nc_make_call_private">私有呼叫</string>
-    <string name="nc_delete_call">删除通话</string>
     <string name="nc_new_conversation">开始一个新对话</string>
     <string name="nc_join_via_link">通过链接加入</string>
     <string name="nc_join_via_web">通过网页加入</string>

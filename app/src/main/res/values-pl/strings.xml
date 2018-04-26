@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Połączenia</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakty</string>
     <string name="nc_bottom_navigation_title_settings">Ustawienia</string>
 
@@ -44,16 +42,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">Co chcesz dziś robić?</string>
-    <string name="nc_leave">Opuść połączenie</string>
-    <string name="nc_rename">Zmień nazwę połączenia</string>
     <string name="nc_set_password">Ustaw hasło</string>
     <string name="nc_change_password">Zmień hasło</string>
     <string name="nc_clear_password">Wyczyść hasło</string>
     <string name="nc_share_link">Udostępnij link</string>
     <string name="nc_share_link_via">Udostępnij link przez</string>
-    <string name="nc_make_call_public">Ustaw połączenie jako publiczne</string>
-    <string name="nc_make_call_private">Ustaw połączenie jako prywatne</string>
-    <string name="nc_delete_call">Usuń rozmowę</string>
     <string name="nc_new_conversation">Utwórz nową konwersację </string>
     <string name="nc_join_via_link">Dołącz przez link</string>
     <string name="nc_join_via_web">Dołącz przez sieć</string>

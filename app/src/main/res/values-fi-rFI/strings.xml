@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Puhelut</string>
     <string name="nc_bottom_navigation_title_contacts">Yhteystiedot</string>
     <string name="nc_bottom_navigation_title_settings">Asetukset</string>
 
@@ -51,14 +49,9 @@
 
     <!-- Room menu -->
     <string name="nc_what">Mitä haluat tehdä tänään?</string>
-    <string name="nc_leave">Poistu puhelusta</string>
-    <string name="nc_rename">Nimeä puhelu uudelleen</string>
     <string name="nc_set_password">Aseta salasana</string>
     <string name="nc_change_password">Vaihda salasana</string>
     <string name="nc_share_link">Jaa linkki</string>
-    <string name="nc_make_call_public">Tee puhelusta julkinen</string>
-    <string name="nc_make_call_private">Tee puhelusta yksityinen</string>
-    <string name="nc_delete_call">Poista puhelu</string>
     <string name="nc_new_conversation">Aloita uusi keskustelu</string>
     <string name="nc_join_via_link">Liity linkin kautta</string>
     <string name="nc_join_via_web">Liity verkon kautta</string>

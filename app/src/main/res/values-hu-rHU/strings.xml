@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Hívások</string>
     <string name="nc_bottom_navigation_title_contacts">Kapcsolatok</string>
     <string name="nc_bottom_navigation_title_settings">Beállítások</string>
 
@@ -76,16 +74,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">Mit szeretnél ma csinálni?</string>
-    <string name="nc_leave">Hívás elhagyása</string>
-    <string name="nc_rename">Hívás átnevezése</string>
     <string name="nc_set_password">Jelszó beállítása</string>
     <string name="nc_change_password">Jelszó módosítása</string>
     <string name="nc_clear_password">Jelszó törlése</string>
     <string name="nc_share_link">Megosztás hivatkozása</string>
     <string name="nc_share_link_via">Link megosztása ezzel</string>
-    <string name="nc_make_call_public">Hívás nyilvánossá tétele</string>
-    <string name="nc_make_call_private">Hívás  priváttá tétele</string>
-    <string name="nc_delete_call">Hívás törlése</string>
     <string name="nc_new_conversation">Új beszélgetés indítása</string>
     <string name="nc_join_via_link">Csatlakozás linken kersztül</string>
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
@@ -108,9 +101,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Bejövő hívás</string>
     <string name="nc_nick_guest">Vendég</string>
-    <string name="nc_public_call">ÚJ NYILVÁNOS HÍVÁS</string>
-    <string name="nc_public_call_explanation">Nyilvános hívások segítségével meghívhatsz embereket egy speciálisan összeállított link segítségével.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s a(z) %2$s értesítési csatornán</string>
     <string name="nc_notification_channel_calls">Hívások értesítési csatornája</string>
@@ -120,8 +110,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba adódott!</string>
-    <string name="nc_failed_signaling_settings">A célszerver nem támogatja a nyilvános hívásokhoz való csatlakozást mobillal.
-Megpróbálhatod weben keresztül.</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Beszélgetésnév</string>
@@ -164,4 +152,5 @@ Millióan használják a Nextcloud-ot naponta üzleti és magáncélra szerte a 
 Bővebben: https://nextcloud.com/talk
 
 A Nextcloudról: https://nextcloud.com</string>
-</resources>
+
+    </resources>

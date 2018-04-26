@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">通話</string>
     <string name="nc_bottom_navigation_title_contacts">聯絡人</string>
     <string name="nc_bottom_navigation_title_settings">設定</string>
 
@@ -68,11 +66,7 @@
 
     <!-- Room menu -->
     <string name="nc_what">您今天想做什麼？</string>
-    <string name="nc_leave">離開通話</string>
-    <string name="nc_rename">重新命名通話</string>
     <string name="nc_share_link">分享連結</string>
-    <string name="nc_make_call_public">公開通話</string>
-    <string name="nc_delete_call">刪除通話</string>
     <string name="nc_one_contact_selected">聯絡人已選</string>
     <string name="nc_more_contacts_selected">聯絡人已選</string>
     <!-- Permissions -->

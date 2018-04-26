@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Oproepen</string>
     <string name="nc_bottom_navigation_title_contacts">Contactpersonen</string>
     <string name="nc_bottom_navigation_title_settings">Instellingen</string>
 
@@ -76,16 +74,11 @@ Kies er eentje van een provider.</string>
 
     <!-- Room menu -->
     <string name="nc_what">Wat wil je vandaag doen?</string>
-    <string name="nc_leave">Verlaat gesprek</string>
-    <string name="nc_rename">Hernoem gesprek</string>
     <string name="nc_set_password">Instellen wachtwoord</string>
     <string name="nc_change_password">Wijzig een wachtwoord</string>
     <string name="nc_clear_password">Wachtwoord legen</string>
     <string name="nc_share_link">Deel link</string>
     <string name="nc_share_link_via">Deel link via</string>
-    <string name="nc_make_call_public">Maak gesprek openbaar</string>
-    <string name="nc_make_call_private">Maak gesprek privé</string>
-    <string name="nc_delete_call">Verwijder gesprek</string>
     <string name="nc_new_conversation">Begin een nieuwe conversatie</string>
     <string name="nc_join_via_link">Deelnemen via link</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
@@ -111,9 +104,6 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
     <!-- Call -->
     <string name="nc_incoming_call">Inkomend gesprek</string>
     <string name="nc_nick_guest">Gast</string>
-    <string name="nc_public_call">NEW PUBLIEK GESPREK</string>
-    <string name="nc_public_call_explanation">Met openbare gesprekken kun je mensen zonder account uitnodigen via een persoonlijke link.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
@@ -123,8 +113,6 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
-    <string name="nc_failed_signaling_settings">Doelserver ondersteund geen deelname aan publieke gesprekken via mobiele telefoons.
-Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_all_ok_operation">OK, alles gedaan!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Gespreksnaam</string>
@@ -167,4 +155,5 @@ Miljoenen mensen gebruiken Nextcloud dagelijks voor hun werk of thuis. Professio
 Meer informatie op https://nextcloud.com/talk
 
 Bezoek Nextcloud op https://nextcloud.com</string>
-</resources>
+
+    </resources>

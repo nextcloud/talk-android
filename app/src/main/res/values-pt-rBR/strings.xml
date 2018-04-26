@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Chamadas</string>
     <string name="nc_bottom_navigation_title_contacts">Contatos</string>
     <string name="nc_bottom_navigation_title_settings">Configurações</string>
 
@@ -75,16 +73,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">O que deseja fazer hoje?</string>
-    <string name="nc_leave">Deixar uma chamada</string>
-    <string name="nc_rename">Renomear uma chamada</string>
     <string name="nc_set_password">Definir uma senha</string>
     <string name="nc_change_password">Alterar uma senha</string>
     <string name="nc_clear_password">Excluir a senha</string>
     <string name="nc_share_link">Compartilhar um link</string>
     <string name="nc_share_link_via">Compartilhar link via</string>
-    <string name="nc_make_call_public">Fazer uma chamada pública</string>
-    <string name="nc_make_call_private">Fazer uma chamada privada</string>
-    <string name="nc_delete_call">Excluir a chamada</string>
     <string name="nc_new_conversation">Iniciar uma nova conversa</string>
     <string name="nc_join_via_link">Juntar-se via link</string>
     <string name="nc_join_via_web">Juntar-se via web</string>
@@ -107,10 +100,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Chamada solicitada</string>
     <string name="nc_nick_guest">Convidado</string>
-    <string name="nc_public_call">NOVA CHAMADA PÚBLICA</string>
-    <string name="nc_public_call_explanation">Chamadas públicas permitem convidar pessoas de fora através de um
-        link especialmente criado</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas do canal de notificação</string>
@@ -120,8 +109,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
-    <string name="nc_failed_signaling_settings">O servidor de destino não suporta juntar-se a salas públicas via celulares.
-       Você pode tentar juntar-se à chamada via navegador Web.</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nome de conversação</string>
@@ -164,4 +151,5 @@ Milhões de usuários usam Nextcloud diariamente em empresas e casas em todo o m
 Saiba mais em https://nextcloud.com/talk
 
 Encontre o Nextcloud em https://nextcloud.com</string>
-</resources>
+
+    </resources>

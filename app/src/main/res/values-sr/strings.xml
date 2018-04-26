@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Позиви</string>
     <string name="nc_bottom_navigation_title_contacts">Контакти</string>
     <string name="nc_bottom_navigation_title_settings">Поставке</string>
 
@@ -75,16 +73,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">Шта желите да радите данас?</string>
-    <string name="nc_leave">Напусти разговор</string>
-    <string name="nc_rename">Преименуј разговор</string>
     <string name="nc_set_password">Постави лозинку</string>
     <string name="nc_change_password">Промени лозинку</string>
     <string name="nc_clear_password">Очисти лозинку</string>
     <string name="nc_share_link">Подели везу</string>
     <string name="nc_share_link_via">Подели везу преко</string>
-    <string name="nc_make_call_public">Учини разговор јавним</string>
-    <string name="nc_make_call_private">Учини разговор приватним</string>
-    <string name="nc_delete_call">Обриши позив</string>
     <string name="nc_new_conversation">Започни нови разговор</string>
     <string name="nc_join_via_link">Придружи се преко везе</string>
     <string name="nc_join_via_web">Придружи се преко веба</string>
@@ -107,10 +100,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Долазни позив</string>
     <string name="nc_nick_guest">Гост</string>
-    <string name="nc_public_call">НОВИ ЈАВНИ ПОЗИВ</string>
-    <string name="nc_public_call_explanation">Јавни позиви Вам дозвољавају да позовете људе споља кроз
-        специјално направљену везу за њих.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s на каналу за обавештење о %2$s</string>
     <string name="nc_notification_channel_calls">Канал обавештења о позивима</string>
@@ -120,8 +109,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
-    <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним собама преко мобилног телефона.
-        Можете пробати да се придружите разговору преко веб читача.</string>
     <string name="nc_all_ok_operation">У реду, све готово!</string>
     <string name="nc_ok">У реду</string>
     <string name="nc_call_name">Назив разговора</string>
@@ -165,4 +152,5 @@ Nextcloud Talk апликација захтева да имате Некстк�
 Сазнајте више на https://nextcloud.com/talk
 
 Пронађите Некстклауд на https://nextcloud.com</string>
-</resources>
+
+    </resources>

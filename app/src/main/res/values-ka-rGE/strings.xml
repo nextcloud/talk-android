@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">ზარები</string>
     <string name="nc_bottom_navigation_title_contacts">კონტაქტები</string>
     <string name="nc_bottom_navigation_title_settings">პარამეტრები</string>
 
@@ -73,16 +71,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">რისი გაკეთება მოგეწონებოდათ დღეს?</string>
-    <string name="nc_leave">ზარის დატოვება</string>
-    <string name="nc_rename">ზარის სახელის შეცვლა</string>
     <string name="nc_set_password">პაროლის დაყენება</string>
     <string name="nc_change_password">პაროლის ცვლილება</string>
     <string name="nc_clear_password">პაროლის გასუფთავება</string>
     <string name="nc_share_link">ბმულის გაზიარება</string>
     <string name="nc_share_link_via">ბმულის გაზიარება მეთოდით</string>
-    <string name="nc_make_call_public">ღია ზარის წამოწყება</string>
-    <string name="nc_make_call_private">პირადი ზარის შესრულება</string>
-    <string name="nc_delete_call">ზარის გაუქმება</string>
     <string name="nc_new_conversation">ახალი საუბრის დაწყება</string>
     <string name="nc_join_via_link">შეუერთდით ბმულით</string>
     <string name="nc_join_via_web">შეუერთდით ვებით</string>
@@ -105,10 +98,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">შემომავალი ზარი</string>
     <string name="nc_nick_guest">სტუმარი</string>
-    <string name="nc_public_call">ახალი ღია ზარი</string>
-    <string name="nc_public_call_explanation">ღია ზარი უფლებას გაძლევთ მოიწვიოთ ადამიანები სპეციფირებულად
-        დამზადებული ბმულით.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s %2$s-ზე შეტყობინებების არხი</string>
     <string name="nc_notification_channel_calls">ზარების შეტყობინებების არხი</string>
@@ -118,8 +107,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">ბოდიში, რაღაც აირია!</string>
-    <string name="nc_failed_signaling_settings">დანიშნულების სერვერი არ უჭერს მხარს ღია ოთახებში შესვლას მობილური ტელეფონებით.
-        სცადეთ შეუერთდეთ ზარს ვებ ბრაუზერის გამოყენებით.</string>
     <string name="nc_all_ok_operation">კარგი, ყველაფერი დასრულდა!</string>
     <string name="nc_ok">კარგი</string>
     <string name="nc_call_name">საუბრის სახელწოდება</string>
@@ -158,4 +145,5 @@ Nextcloud Talk აპლიკაცია მოქმედებისთვ�
 შეიტვეთ მეტი მისამართზე https://nextcloud.com/talk
 
 იპოვეთ Nextcloud მისამრთზე https://nextcloud.com</string>
-</resources>
+
+    </resources>

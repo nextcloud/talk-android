@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Çağrılar</string>
     <string name="nc_bottom_navigation_title_contacts">Kişiler</string>
     <string name="nc_bottom_navigation_title_settings">Ayarlar</string>
 
@@ -75,16 +73,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">Bugün ne yapmak istersiniz?</string>
-    <string name="nc_leave">Çağrıdan ayrıl</string>
-    <string name="nc_rename">Çağrıyı yeniden adlandır</string>
     <string name="nc_set_password">Bir parola ayarlayın</string>
     <string name="nc_change_password">Bir parolayı değiştirin</string>
     <string name="nc_clear_password">Parolayı temizle</string>
     <string name="nc_share_link">Bağlantıyı paylaş</string>
     <string name="nc_share_link_via">Bağlantıyı şununla paylaş</string>
-    <string name="nc_make_call_public">Çağrıyı herkese aç</string>
-    <string name="nc_make_call_private">Çağrıyı özel yap</string>
-    <string name="nc_delete_call">Çağrıyı sil</string>
     <string name="nc_new_conversation">Yeni bir sohbet başlat</string>
     <string name="nc_join_via_link">Bağlantı ile katıl</string>
     <string name="nc_join_via_web">Web üzerinden katıl</string>
@@ -107,10 +100,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Gelen çağrı</string>
     <string name="nc_nick_guest">Konuk</string>
-    <string name="nc_public_call">YENİ HERKESE AÇIK ÇAĞRI</string>
-    <string name="nc_public_call_explanation">Herkese açık sohbetlere dışarıdan kişiler özel oluşturulmuş bir bağlantı
-  ile katılabilir.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
     <string name="nc_notification_channel_calls">Bildirim kanalındaki çağrı</string>
@@ -120,8 +109,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
-    <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık sohbetlere katılmayı
- desteklemiyor. Çağrıya web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_all_ok_operation">Hepsi tamam!</string>
     <string name="nc_ok">Tamam</string>
     <string name="nc_call_name">Sohbet adı</string>
@@ -166,4 +153,5 @@ Dünya üzerinde milyonlarca kullanıcı ev ya da iş yerlerinde günlük işlem
 Ayrıntılı bilgi almak için https://nextcloud.com/talk
 
 Nextcloud web sitesi https://nextcloud.com</string>
-</resources>
+
+    </resources>

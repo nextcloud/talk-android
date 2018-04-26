@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Samtöl</string>
     <string name="nc_bottom_navigation_title_contacts">Tengiliðir</string>
     <string name="nc_bottom_navigation_title_settings">Stillingar</string>
 
@@ -69,16 +67,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">Hvað viltu gera í dag?</string>
-    <string name="nc_leave">Hætta símtali</string>
-    <string name="nc_rename">Endurnefna samtal</string>
     <string name="nc_set_password">Setja lykilorð</string>
     <string name="nc_change_password">Breyta lykilorði</string>
     <string name="nc_clear_password">Hreinsa lykilorð</string>
     <string name="nc_share_link">Deila tengli</string>
     <string name="nc_share_link_via">Deila tengli með</string>
-    <string name="nc_make_call_public">Gera samtal opinbert</string>
-    <string name="nc_make_call_private">Gera samtal að einka</string>
-    <string name="nc_delete_call">Eyða samtali</string>
     <string name="nc_new_conversation">Hefja nýtt samtal</string>
     <string name="nc_join_via_link">Taka þátt í gegnum tengil</string>
     <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
@@ -93,7 +86,6 @@
     <string name="nc_permissions_settings">Opna stillingar</string>
 
     <string name="nc_nick_guest">Gestur</string>
-    <string name="nc_public_call">NÝTT OPINBERT SÍMTAL</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s á %2$s tilkynningarásinni</string>
     <!-- Bottom sheet menu -->

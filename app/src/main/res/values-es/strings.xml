@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Llamadas</string>
     <string name="nc_bottom_navigation_title_contacts">Contactos</string>
     <string name="nc_bottom_navigation_title_settings">Configuración</string>
 
@@ -75,16 +73,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">¿Qué quieres hacer hoy?</string>
-    <string name="nc_leave">Abandonar llamada</string>
-    <string name="nc_rename">Renombrar palabra</string>
     <string name="nc_set_password">Configura una contraseña</string>
     <string name="nc_change_password">Cambiar una contraseña</string>
     <string name="nc_clear_password">Limpiar contraseña</string>
     <string name="nc_share_link">Compartir enlace</string>
     <string name="nc_share_link_via">Compartir enlace vía</string>
-    <string name="nc_make_call_public">Hacer pública la llamada</string>
-    <string name="nc_make_call_private">Hacer privada la llamada</string>
-    <string name="nc_delete_call">Eliminar llamada</string>
     <string name="nc_new_conversation">Comenzar una conversación nueva</string>
     <string name="nc_join_via_link">Unirse vía enlace</string>
     <string name="nc_join_via_web">Unirse vía web</string>
@@ -107,10 +100,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Llamada entrante</string>
     <string name="nc_nick_guest">Invitado</string>
-    <string name="nc_public_call">NUEVA LLAMADA PÚBLICA</string>
-    <string name="nc_public_call_explanation">Las llamadas públicas te permiten invitar a gente del exterior a través de un 
-        enlace creado de forma especial.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s en el canal de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
@@ -120,8 +109,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>
-    <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a habitacions públicas vía teléfonos móviles.
-          Puedes intentar unirte a la llamada vía el navegador web.</string>
     <string name="nc_all_ok_operation">OK. Todo hecho.</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nombre de la conversación</string>
@@ -164,4 +151,5 @@ Millones de usuarios usan Nextcloud diariamente en negocios y hogares de todo el
 Descubre más en https://nextcloud.com/talk
 
 Encuentra Nextcloud en https://nextcloud.com</string>
-</resources>
+
+    </resources>

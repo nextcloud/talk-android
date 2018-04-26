@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Anrufe</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakte</string>
     <string name="nc_bottom_navigation_title_settings">Einstellungen</string>
 
@@ -75,16 +73,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">Was möchten Sie heute machen?</string>
-    <string name="nc_leave">Anruf verlassen</string>
-    <string name="nc_rename">Anruf umbenennen</string>
     <string name="nc_set_password">Passwort setzen</string>
     <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_clear_password">Passwort leeren</string>
     <string name="nc_share_link">Link teilen</string>
     <string name="nc_share_link_via">Link teilen via</string>
-    <string name="nc_make_call_public">Anruf öffentlich machen</string>
-    <string name="nc_make_call_private">Anruf privat machen</string>
-    <string name="nc_delete_call">Anruf löschen</string>
     <string name="nc_new_conversation">Starte eine neue Unterhaltung</string>
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
@@ -107,9 +100,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Eingehender Anruf</string>
     <string name="nc_nick_guest">Gast</string>
-    <string name="nc_public_call">NEUER ÖFFENTLICHER ANRUF</string>
-    <string name="nc_public_call_explanation">Zu öffentlichen Anrufen können Sie Personen über einen speziellen Link einladen.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s auf %2$s Benachrichtigungskanal</string>
     <string name="nc_notification_channel_calls">Benachrichtigungskanal für Anrufe</string>
@@ -119,8 +109,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Schade, etwas ist schiefgelaufen!</string>
-    <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Räume durch Mobiltelefone.
-        Probieren Sie mit einem Internetbrowser dem Anruf beizutreten.</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
@@ -163,4 +151,5 @@ Millionen von Benutzern nutzen Nextcloud täglich in Unternehmen und zu Hause au
 Weitere Informationen erhalten Sie unter https://nextcloud.com/talk
 
 Finden Sie Nextcloud auf https://nextcloud.com</string>
-</resources>
+
+    </resources>

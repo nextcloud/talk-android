@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Вызовы</string>
     <string name="nc_bottom_navigation_title_contacts">Контакты</string>
     <string name="nc_bottom_navigation_title_settings">Параметры</string>
 
@@ -75,16 +73,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">Что бы вы хотели сегодня сделать?</string>
-    <string name="nc_leave">Завершить вызов</string>
-    <string name="nc_rename">Переименовать вызов</string>
     <string name="nc_set_password">Задать пароль</string>
     <string name="nc_change_password">Сменить пароль</string>
     <string name="nc_clear_password">Очистить пароль</string>
     <string name="nc_share_link">Поделиться ссылкой</string>
     <string name="nc_share_link_via">Поделиться ссылкой</string>
-    <string name="nc_make_call_public">Сделать вызов общедоступным</string>
-    <string name="nc_make_call_private">Сделать вызов закрытым</string>
-    <string name="nc_delete_call">Удалить вызов</string>
     <string name="nc_new_conversation">Начать новую беседу</string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
     <string name="nc_join_via_web">Присоединиться через веб</string>
@@ -107,9 +100,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Входящий вызов</string>
     <string name="nc_nick_guest">Гость</string>
-    <string name="nc_public_call">НОВЫЙ ОТКРЫТЫЙ ВЫЗОВ</string>
-    <string name="nc_public_call_explanation">К открытому вызову могут присоединиться внешние участники, получившие специальную ссылку-приглашение.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">канал уведомлений %1$s на %2$s</string>
     <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>
@@ -119,7 +109,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
-    <string name="nc_failed_signaling_settings">Сервер не поддерживает присоединение к открытому вызову с мобильного телефона. Попробуйте повторить через веб-браузер.</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
     <string name="nc_ok">ОК</string>
     <string name="nc_call_name">Наименование разговора</string>
@@ -163,4 +152,5 @@ Nextcloud ежедневно используется как для работы
 Узнайте больше на https://nextcloud.com/talk
 
 Познакомьтесь с Nextcloud на https://nextcloud.com</string>
-</resources>
+
+    </resources>

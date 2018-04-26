@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Samtaler</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakter</string>
     <string name="nc_bottom_navigation_title_settings">Innstillinger</string>
 
@@ -73,16 +71,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">Hva har du lyst til å gjøre idag?</string>
-    <string name="nc_leave">Forlat samtale</string>
-    <string name="nc_rename">Endre navn på samtale</string>
     <string name="nc_set_password">Sett et passord</string>
     <string name="nc_change_password">Endre et passord</string>
     <string name="nc_clear_password">Tøm passord</string>
     <string name="nc_share_link">Del lenke</string>
     <string name="nc_share_link_via">Del lenke via</string>
-    <string name="nc_make_call_public">Gjør samtalen offentlig</string>
-    <string name="nc_make_call_private">Gjør samtale privat</string>
-    <string name="nc_delete_call">Slett samtale</string>
     <string name="nc_new_conversation">Opprett en ny samtale</string>
     <string name="nc_join_via_link">Ta del via lenke</string>
     <string name="nc_join_via_web">Ta del via nett</string>
@@ -105,10 +98,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Innkommende anrop</string>
     <string name="nc_nick_guest">Gjest</string>
-    <string name="nc_public_call">NY OFFENTLIG SAMTALE</string>
-    <string name="nc_public_call_explanation">Offentlig samtaler lar deg invitere personer fra utsiden gjennom en spesielt
-         laget lenke.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s merknadskanal</string>
     <string name="nc_notification_channel_calls">Innringingsnotfikasjonskanal</string>
@@ -118,8 +107,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
-    <string name="nc_failed_signaling_settings">Tjeneren støtter ikke å koble seg til offentlige rom via mobiltelefoner.
-        Du kan forsøke å koble til via en nettleser.</string>
     <string name="nc_all_ok_operation">OK, ferdig!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Samtalenavn
@@ -161,4 +148,5 @@ Millioner av brukere benytter Nextcloud daglig i bedriften eller hjemme rundt om
 Lær mer her: https://nextcloud.com/talk
 
 Finn Nextcloud her: https://nextcloud.com</string>
-</resources>
+
+    </resources>

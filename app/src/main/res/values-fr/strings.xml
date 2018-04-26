@@ -1,6 +1,4 @@
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Appels</string>
     <string name="nc_bottom_navigation_title_contacts">Contacts</string>
     <string name="nc_bottom_navigation_title_settings">Paramètres</string>
 
@@ -75,16 +73,11 @@
 
     <!-- Room menu -->
     <string name="nc_what">Que voulez-vous faire aujourd\'hui ?</string>
-    <string name="nc_leave">Quitter l\'appel</string>
-    <string name="nc_rename">Renommer l\'appel</string>
     <string name="nc_set_password">Saisissez un mot de passe</string>
     <string name="nc_change_password">Changer un mot de passe</string>
     <string name="nc_clear_password">Effacer le mot de passe</string>
     <string name="nc_share_link">Partager par lien public</string>
     <string name="nc_share_link_via">Partager le lien via</string>
-    <string name="nc_make_call_public">Effectuer un appel public</string>
-    <string name="nc_make_call_private">Effectuer un appel privé</string>
-    <string name="nc_delete_call">Supprimer l’appel</string>
     <string name="nc_new_conversation">Commencer une nouvelle conversation</string>
     <string name="nc_join_via_link">Joindre via le lien</string>
     <string name="nc_join_via_web">Joindre via le web</string>
@@ -107,9 +100,6 @@
     <!-- Call -->
     <string name="nc_incoming_call">Appel rentrant</string>
     <string name="nc_nick_guest">Invité</string>
-    <string name="nc_public_call">NOUVEL APPEL PUBLIC</string>
-    <string name="nc_public_call_explanation">Les appels publics vous permet d\'inviter des personnes extérieures grâce à un lien spécialement créé.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">Canal de notification %1$s sur %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notification des appels</string>
@@ -119,8 +109,6 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
-    <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux discussions publiques depuis un téléphone mobile.
-Veuillez essayer de joindre l\'appel depuis un navigateur web.</string>
     <string name="nc_all_ok_operation">OK, tout est fini !</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nom de la conversation</string>
@@ -163,4 +151,5 @@ Des millions d\'utilisateurs utilisent Nextcloud quotidiennement dans les entrep
 En savoir plus sur https://nextcloud.com/talk
 
 Trouvez Nextcloud sur https://nextcloud.com</string>
-</resources>
+
+    </resources>
