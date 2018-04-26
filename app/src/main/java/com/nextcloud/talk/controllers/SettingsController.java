@@ -230,10 +230,6 @@ public class SettingsController extends BaseController {
                     .popChangeHandler(new VerticalChangeHandler()));
         });
 
-        if (userEntity.getClientCertificate() != null) {
-            certificateSetup.setTitle(R.string.nc_client_cert_change);
-        }
-
 
         String host = null;
         int port = -1;
@@ -280,6 +276,12 @@ public class SettingsController extends BaseController {
 
         dispose(null);
         userEntity = userUtils.getCurrentUser();
+
+        if (!TextUtils.isEmpty(userEntity.getClientCertificate())) {
+            certificateSetup.setTitle(R.string.nc_client_cert_change);
+        } else {
+            certificateSetup.setTitle(R.string.nc_client_cert_setup);
+        }
 
         if ("No proxy".equals(appPreferences.getProxyType()) || appPreferences.getProxyType() == null) {
             hideProxySettings();
