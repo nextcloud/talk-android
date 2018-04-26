@@ -610,7 +610,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     bottomButtonsLinearLayout.setVisibility(View.VISIBLE);
                 }
 
-                if (isPublicCall && adapter.getSelectedItemCount() < 2) {
+                if (adapter.getSelectedItemCount() == 0) {
                     clearButton.setVisibility(View.GONE);
                 } else {
                     clearButton.setVisibility(View.VISIBLE);
@@ -749,8 +749,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Optional @OnClick(R.id.call_header_layout)
     void toggleCallHeader() {
-        adapter.toggleSelection(0);
-        isPublicCall = adapter.isSelected(0);
+        isPublicCall = !isPublicCall;
         if (!isPublicCall) {
             secondaryRelativeLayout.setVisibility(View.GONE);
             initialRelativeLayout.setVisibility(View.VISIBLE);
