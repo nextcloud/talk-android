@@ -44,6 +44,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -51,7 +52,6 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
-import com.nextcloud.talk.adapters.items.NewCallHeaderItem;
 import com.nextcloud.talk.adapters.items.UserHeaderItem;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
@@ -110,16 +110,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public static final String TAG = "ContactsController";
 
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
-
+    @Nullable @BindView(R.id.initial_relative_layout)
+    public RelativeLayout initialRelativeLayout;
+    @Nullable @BindView(R.id.secondary_relative_layout)
+    public RelativeLayout secondaryRelativeLayout;
     @Inject
     UserUtils userUtils;
-
     @Inject
     NcApi ncApi;
-
     @Inject
     EventBus eventBus;
-
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -153,7 +153,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private boolean isNewConversationView;
     private boolean isPublicCall;
 
-    private HashMap<String, UserHeaderItem> userHeaderItems = new HashMap<String, UserHeaderItem>();
+    private HashMap<String, UserHeaderItem> userHeaderItems = new HashMap<>();
 
     public ContactsController() {
         super();
@@ -170,7 +170,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        return inflater.inflate(R.layout.controller_generic_rv, container, false);
+        if (isNewConversationView) {
+            return inflater.inflate(R.layout.controller_contacts_rv, container, false);
+        } else {
+            return inflater.inflate(R.layout.controller_generic_rv, container, false);
+        }
     }
 
     @Override
@@ -179,6 +183,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         eventBus.register(this);
 
         if (isNewConversationView) {
+            toggleNewCallHeaderVisibility(!isPublicCall);
+
             checkAndHandleBottomButtons();
 
             if (getActionBar() != null) {
@@ -465,10 +471,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     return firstName.compareToIgnoreCase(secondName);
                                 });
 
-                                if (isNewConversationView) {
-                                    contactItems.add(0, new NewCallHeaderItem());
-                                }
-
                                 adapter.updateDataSet(contactItems, true);
                                 searchItem.setVisible(contactItems.size() > 0);
                                 swipeRefreshLayout.setRefreshing(false);
@@ -610,7 +612,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     bottomButtonsLinearLayout.setVisibility(View.VISIBLE);
                 }
 
-                if (isPublicCall && adapter.getSelectedItemCount() < 2) {
+                if (adapter.getSelectedItemCount() == 0) {
                     clearButton.setVisibility(View.GONE);
                 } else {
                     clearButton.setVisibility(View.VISIBLE);
@@ -743,12 +745,25 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                 checkAndHandleBottomButtons();
             }
-        } else if (adapter.getItem(position) instanceof NewCallHeaderItem) {
-            adapter.toggleSelection(position);
-            isPublicCall = adapter.isSelected(position);
-            ((NewCallHeaderItem) adapter.getItem(position)).togglePublicCall(isPublicCall);
-            checkAndHandleBottomButtons();
         }
         return true;
+    }
+
+    @Optional
+    @OnClick(R.id.call_header_layout)
+    void toggleCallHeader() {
+        toggleNewCallHeaderVisibility(isPublicCall);
+        isPublicCall = !isPublicCall;
+        checkAndHandleBottomButtons();
+    }
+
+    private void toggleNewCallHeaderVisibility(boolean showInitialLayout) {
+        if (showInitialLayout) {
+            initialRelativeLayout.setVisibility(View.VISIBLE);
+            secondaryRelativeLayout.setVisibility(View.GONE);
+        } else {
+            initialRelativeLayout.setVisibility(View.GONE);
+            secondaryRelativeLayout.setVisibility(View.VISIBLE);
+        }
     }
 }

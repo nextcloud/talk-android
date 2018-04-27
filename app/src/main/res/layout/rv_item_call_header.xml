@@ -20,10 +20,11 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/call_header_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/initial_relative_layout"
@@ -32,25 +33,28 @@
 
         <ImageView
             android:id="@+id/public_call_link"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_centerVertical="true"
-            android:layout_marginStart="24dp"
-            android:src="@drawable/ic_group_black_24px"/>
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_group_black_24px"
+            android:tint="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/description_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_toEndOf="@id/public_call_link"
             android:ellipsize="middle"
             android:singleLine="true"
             android:text="@string/nc_public_call"
             android:textAppearance="?android:attr/textAppearanceListItem"
-            tools:text="@string/nc_public_call"/>
+            tools:text="@string/nc_public_call" />
 
     </RelativeLayout>
 
@@ -72,7 +76,7 @@
             android:text="@string/nc_public_call_explanation"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceListItem"
-            tools:text="@string/nc_public_call_explanation"/>
+            tools:text="@string/nc_public_call_explanation" />
 
     </RelativeLayout>
 </RelativeLayout>
