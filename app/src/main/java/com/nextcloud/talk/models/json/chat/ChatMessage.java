@@ -28,6 +28,7 @@ import com.stfalcon.chatkit.commons.models.IUser;
 import org.parceler.Parcel;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import lombok.Data;
 
@@ -69,6 +70,9 @@ public class ChatMessage implements IMessage {
     @JsonField(name = "message")
     String message;
 
+    @JsonField(name = "messageParameters")
+    HashMap<String, HashMap<String, String>> messageParameters;
+
     @Override
     public String getId() {
         return Integer.toString(jsonMessageId);
@@ -76,7 +80,7 @@ public class ChatMessage implements IMessage {
 
     @Override
     public String getText() {
-        return message;
+        return getParsedMessage();
     }
 
     @Override
@@ -102,5 +106,19 @@ public class ChatMessage implements IMessage {
     @Override
     public Date getCreatedAt() {
         return new Date(timestamp * 1000L);
+    }
+
+    private String getParsedMessage() {
+        String message = getMessage();
+        if (messageParameters != null && messageParameters.size() > 0) {
+            for (String key : messageParameters.keySet()) {
+                HashMap<String, String> individualHashMap = messageParameters.get(key);
+                if (individualHashMap.get("type").equals("user")) {
+                    message = message.replaceAll("\\{" + key + "\\}", messageParameters.get(key).get("name"));
+                }
+            }
+        }
+
+        return message;
     }
 }
