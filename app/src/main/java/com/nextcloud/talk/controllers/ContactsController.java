@@ -183,13 +183,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         eventBus.register(this);
 
         if (isNewConversationView) {
-            if (!isPublicCall) {
-                secondaryRelativeLayout.setVisibility(View.GONE);
-                initialRelativeLayout.setVisibility(View.VISIBLE);
-            } else {
-                initialRelativeLayout.setVisibility(View.GONE);
-                secondaryRelativeLayout.setVisibility(View.VISIBLE);
-            }
+            toggleNewCallHeaderVisibility(!isPublicCall);
 
             checkAndHandleBottomButtons();
 
@@ -758,14 +752,18 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Optional
     @OnClick(R.id.call_header_layout)
     void toggleCallHeader() {
-        if (isPublicCall) {
-            secondaryRelativeLayout.setVisibility(View.GONE);
+        toggleNewCallHeaderVisibility(isPublicCall);
+        isPublicCall = !isPublicCall;
+        checkAndHandleBottomButtons();
+    }
+
+    private void toggleNewCallHeaderVisibility(boolean showInitialLayout) {
+        if (showInitialLayout) {
             initialRelativeLayout.setVisibility(View.VISIBLE);
+            secondaryRelativeLayout.setVisibility(View.GONE);
         } else {
             initialRelativeLayout.setVisibility(View.GONE);
             secondaryRelativeLayout.setVisibility(View.VISIBLE);
         }
-        isPublicCall = !isPublicCall;
-        checkAndHandleBottomButtons();
     }
 }
