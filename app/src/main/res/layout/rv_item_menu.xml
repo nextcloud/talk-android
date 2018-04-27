@@ -3,7 +3,9 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
   ~ Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+  ~ Copyright (C) 2018 Andy Scherzinger
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -20,8 +22,9 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/menu_text"
@@ -30,5 +33,9 @@
         android:layout_margin="16dp"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:textSize="12sp"/>
+        android:gravity="center_vertical"
+        android:textSize="18sp"
+        tools:drawableLeft="@drawable/ic_add_grey600_24px"
+        tools:drawablePadding="16dp"
+        tools:text="Start a new conversation" />
 </RelativeLayout>
