@@ -24,7 +24,6 @@ package com.nextcloud.talk.adapters.items;
 
 
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
