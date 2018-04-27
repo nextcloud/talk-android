@@ -1,4 +1,6 @@
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_conversations">Conversas</string>
     <string name="nc_bottom_navigation_title_contacts">Contatos</string>
     <string name="nc_bottom_navigation_title_settings">Configurações</string>
 
@@ -73,11 +75,16 @@
 
     <!-- Room menu -->
     <string name="nc_what">O que deseja fazer hoje?</string>
+    <string name="nc_leave">Sair da conversa</string>
+    <string name="nc_rename">Renomear conversa</string>
     <string name="nc_set_password">Definir uma senha</string>
     <string name="nc_change_password">Alterar uma senha</string>
     <string name="nc_clear_password">Excluir a senha</string>
     <string name="nc_share_link">Compartilhar um link</string>
     <string name="nc_share_link_via">Compartilhar link via</string>
+    <string name="nc_make_call_public">Fazer esta conversa pública</string>
+    <string name="nc_make_call_private">Fazer esta conversa privada</string>
+    <string name="nc_delete_call">Excluir conversa</string>
     <string name="nc_new_conversation">Iniciar uma nova conversa</string>
     <string name="nc_join_via_link">Juntar-se via link</string>
     <string name="nc_join_via_web">Juntar-se via web</string>
@@ -100,6 +107,10 @@
     <!-- Call -->
     <string name="nc_incoming_call">Chamada solicitada</string>
     <string name="nc_nick_guest">Convidado</string>
+    <string name="nc_public_call">Nova conversa pública</string>
+    <string name="nc_public_call_explanation">Conversas públicas permitem que você convide pessoas de fora
+       via um link especialmente criado.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas do canal de notificação</string>
@@ -109,6 +120,8 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
+    <string name="nc_failed_signaling_settings">O servidor de destino não suporta a participação em conversas públicas
+      via celulares. Você pode tentar entrar na conversa via navegador.</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nome de conversação</string>
@@ -152,4 +165,9 @@ Saiba mais em https://nextcloud.com/talk
 
 Encontre o Nextcloud em https://nextcloud.com</string>
 
-    </resources>
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Digite uma mensagem...</string>
+    <string name="nc_date_header_yesterday">Ontem</string>
+    <string name="nc_date_header_today">Hoje</string>
+
+</resources>

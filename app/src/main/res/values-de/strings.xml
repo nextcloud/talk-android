@@ -1,4 +1,6 @@
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_conversations">Unterhaltungen</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakte</string>
     <string name="nc_bottom_navigation_title_settings">Einstellungen</string>
 
@@ -73,11 +75,16 @@
 
     <!-- Room menu -->
     <string name="nc_what">Was möchtest du heute machen?</string>
+    <string name="nc_leave">Unterhaltung verlassen</string>
+    <string name="nc_rename">Unterhaltung umbenennen</string>
     <string name="nc_set_password">Passwort setzen</string>
     <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_clear_password">Passwort leeren</string>
     <string name="nc_share_link">Link teilen</string>
     <string name="nc_share_link_via">Link teilen via</string>
+    <string name="nc_make_call_public">Unterhaltung öffentlich machen</string>
+    <string name="nc_make_call_private">Unterhaltung privat machen</string>
+    <string name="nc_delete_call">Unterhaltung löschen</string>
     <string name="nc_new_conversation">Starte eine neue Unterhaltung</string>
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
@@ -100,6 +107,9 @@
     <!-- Call -->
     <string name="nc_incoming_call">Eingehender Anruf</string>
     <string name="nc_nick_guest">Gast</string>
+    <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
+    <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über einen speziellen Link eingeladen werden.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s auf %2$s Benachrichtigungskanal</string>
     <string name="nc_notification_channel_calls">Benachrichtigungskanal für Anrufe</string>
@@ -109,6 +119,8 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Schade, etwas ist schiefgelaufen!</string>
+    <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Unterhaltungen durch Mobiltelefone.
+Probiere mit einem Internetbrowser der Unterhaltung beizutreten.</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
@@ -152,4 +164,9 @@ Weitere Informationen erhälst du unter https://nextcloud.com/talk
 
 Finden Sie Nextcloud auf https://nextcloud.com</string>
 
-    </resources>
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Neue Nachricht eingeben…</string>
+    <string name="nc_date_header_yesterday">Gestern</string>
+    <string name="nc_date_header_today">Heute</string>
+
+</resources>
