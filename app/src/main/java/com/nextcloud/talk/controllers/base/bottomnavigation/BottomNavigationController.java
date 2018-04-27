@@ -310,10 +310,6 @@ public abstract class BottomNavigationController extends BaseController {
         return bottomNavigationView;
     }
 
-    public int getCurrentlySelectedItemId() {
-        return currentlySelectedItemId;
-    }
-
     /**
      * Get the {@link Menu} Resource ID from {@link Controller#getArgs()}
      *

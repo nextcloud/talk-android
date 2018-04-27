@@ -119,18 +119,11 @@ public class MagicBottomNavigationController extends BottomNavigationController 
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        //getBottomNavigationView().setItemIconTintList(null);
+        getBottomNavigationView().setItemIconTintList(null);
 
         Menu menu = getMenu();
         int menuSize = menu.size();
         if (menuSize > 0) {
-            settingsMenuItemIndex = menuSize - 1;
-            MenuItem menuItem = menu.getItem(settingsMenuItemIndex);
-            menuItem.getIcon().setTintList(null);
-            // tint grey
-            //menuItem.getIcon().clearColorFilter();
-            //menuItem.getIcon().setColorFilter(context.getResources().getColor(R.color.grey600), PorterDuff.Mode.SRC_ATOP);
-            //menuItem.setIcon(tintDrawable(menuItem.getIcon(), R.color.grey600));
             loadAvatarImage(menu.getItem(menuSize - 1));
         }
     }
@@ -172,41 +165,5 @@ public class MagicBottomNavigationController extends BottomNavigationController 
                     .circleCrop()
                     .into(target);
         }
-    }
-
-    private void tintBottomNavigation(int itemId) {
-        int currentSelection = getCurrentlySelectedItemId();
-        if (currentSelection != itemId) {
-
-            /* Ensure correct tinting based on new selection */
-            Menu menu = getMenu();
-            Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
-            for (int i = 0; i < menu.size(); i++) {
-                if (i > settingsMenuItemIndex || i < settingsMenuItemIndex) {
-                    MenuItem menuItem = menu.getItem(i);
-                    if (menuItem.getItemId() != itemId) {
-                        // tint grey
-                        menuItem.getIcon().clearColorFilter();
-                        menuItem.getIcon().setColorFilter(context.getResources().getColor(R.color.grey600), PorterDuff.Mode.SRC_ATOP);
-                        //menuItem.setIcon(tintDrawable(menuItem.getIcon(), R.color.grey600));
-                    } else if (menuItem.getItemId() == itemId) {
-                        // tint primary
-                        menuItem.getIcon().clearColorFilter();
-                        menuItem.setIcon(tintDrawable(menuItem.getIcon(), R.color.colorPrimary));
-                    }
-                }
-            }
-        }
-    }
-
-    private static Drawable tintDrawable(Drawable drawable, @ColorRes int color) {
-        if (drawable != null) {
-            Drawable wrap = DrawableCompat.wrap(drawable);
-            Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
-            wrap.setColorFilter(context.getResources().getColor(color), PorterDuff.Mode.SRC_ATOP);
-            return wrap;
-        }
-
-        return null;
     }
 }
