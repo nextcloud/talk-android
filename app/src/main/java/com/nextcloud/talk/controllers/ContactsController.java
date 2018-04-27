@@ -758,14 +758,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Optional
     @OnClick(R.id.call_header_layout)
     void toggleCallHeader() {
-        isPublicCall = !isPublicCall;
-        if (!isPublicCall) {
+        if (isPublicCall) {
             secondaryRelativeLayout.setVisibility(View.GONE);
             initialRelativeLayout.setVisibility(View.VISIBLE);
         } else {
             initialRelativeLayout.setVisibility(View.GONE);
             secondaryRelativeLayout.setVisibility(View.VISIBLE);
         }
+        isPublicCall = !isPublicCall;
         checkAndHandleBottomButtons();
     }
 }
