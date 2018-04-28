@@ -129,52 +129,61 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         menuItems = new ArrayList<>();
 
         if (menuType.equals(MenuType.REGULAR)) {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_what), 0));
-
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_what), 0, null));
 
             if (room.isNameEditable()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename), 2));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename), 2, getResources().getDrawable(R.drawable
+                        .ic_pencil_grey600_24dp)));
             }
 
             if (room.canModerate()) {
                 if (!room.isPublic()) {
-                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public), 3));
+                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public), 3, getResources().getDrawable(R.drawable
+                            .ic_link_grey600_24px)));
                 } else {
                     if (room.isHasPassword()) {
-                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password), 4));
-                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_clear_password), 5));
+                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password), 4, getResources().getDrawable(R.drawable
+                                .ic_lock_grey600_24px)));
+                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_clear_password), 5, getResources().getDrawable(R.drawable
+                                .ic_lock_open_grey600_24dp)));
                     } else {
-                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password), 6));
+                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password), 6, getResources().getDrawable(R.drawable
+                                .ic_lock_plus_grey600_24dp)));
                     }
                 }
             }
 
             if (room.isPublic()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link), 7));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link), 7, getResources().getDrawable(R.drawable
+                        .ic_link_grey600_24px)));
                 if (room.canModerate()) {
-                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private), 8));
+                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private), 8, getResources().getDrawable(R.drawable
+                            .ic_group_grey600_24px)));
                 }
             }
 
             if (room.isDeletable()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9, getResources().getDrawable(R.drawable
+                        .ic_delete_grey600_24dp)));
             }
+
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1, getResources().getDrawable(R.drawable
+                    .ic_close_grey600_24dp)));
         } else if (menuType.equals(MenuType.SHARE)) {
             prepareIntent();
             List<AppAdapter.AppInfo> appInfoList = ShareUtils.getShareApps(getActivity(), shareIntent, null,
                     null);
             menuItems.add(new AppItem(getResources().getString(R.string.nc_share_link_via), "", "",
-                    null));
+                    getResources().getDrawable(R.drawable.ic_link_grey600_24px)));
             if (appInfoList != null) {
                 for (AppAdapter.AppInfo appInfo : appInfoList) {
                     menuItems.add(new AppItem(appInfo.title, appInfo.packageName, appInfo.name, appInfo.drawable));
                 }
             }
         } else {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_what), 0));
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_new_conversation), 1));
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_join_via_link), 2));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_what), 0, null));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_new_conversation), 1, getResources().getDrawable(R.drawable.ic_add_grey600_24px)));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_join_via_link), 2, getResources().getDrawable(R.drawable.ic_link_grey600_24px)));
         }
     }
 

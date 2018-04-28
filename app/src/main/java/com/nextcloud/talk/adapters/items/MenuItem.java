@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2018 Andy Scherzinger
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +23,7 @@
 package com.nextcloud.talk.adapters.items;
 
 
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -29,6 +32,7 @@ import android.widget.TextView;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
 
@@ -40,11 +44,16 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> {
     private String title;
+    private Drawable icon;
     private int tag;
+    private int padding;
 
-    public MenuItem(String title, int tag) {
+    public MenuItem(String title, int tag, Drawable icon) {
         this.title = title;
         this.tag = tag;
+        this.icon = icon;
+        padding = (int) DisplayUtils.convertDpToPixel(16,
+                NextcloudTalkApplication.getSharedApplication().getApplicationContext());
     }
 
     @Override
@@ -82,6 +91,8 @@ public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> 
             holder.menuTitle.setText(spannableString);
         } else {
             holder.menuTitle.setText(title);
+            holder.menuTitle.setCompoundDrawablesWithIntrinsicBounds(icon,null,null,null);
+            holder.menuTitle.setCompoundDrawablePadding(padding);
         }
     }
 
