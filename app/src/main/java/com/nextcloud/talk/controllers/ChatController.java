@@ -23,14 +23,16 @@ package com.nextcloud.talk.controllers;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
@@ -40,6 +42,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.call.Call;
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
@@ -86,6 +89,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private String conversationName;
     private String roomToken;
     private UserEntity currentUser;
+    private String roomPassword;
+
+    private Call currentCall;
 
     private boolean inChat = false;
     private boolean historyRead = false;
@@ -100,6 +106,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         this.conversationName = args.getString(BundleKeys.KEY_CONVERSATION_NAME);
         this.currentUser = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
         this.roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN);
+        this.roomPassword = args.getString(BundleKeys.KEY_ROOM_PASSWORD, "");
     }
 
     @Override
@@ -146,7 +153,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         });
 
         if (adapterWasNull) {
-            joinRoomWithPassword(null);
+            joinRoomWithPassword();
         }
     }
 
@@ -168,11 +175,31 @@ public class ChatController extends BaseController implements MessagesListAdapte
         switch (item.getItemId()) {
             case android.R.id.home:
                 inChat = false;
-                getRouter().popCurrentController();
+                if (getRouter().hasRootController()) {
+                    getRouter().popToRoot(new HorizontalChangeHandler());
+                } else {
+                    getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public boolean handleBack() {
+        if (getRouter().hasRootController()) {
+            getRouter().popToRoot(new HorizontalChangeHandler());
+        } else {
+            getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
+        }
+
+        return true;
     }
 
     @Override
@@ -181,7 +208,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
         super.onDestroy();
     }
 
-    private void joinRoomWithPassword(@Nullable String password) {
+    private void joinRoomWithPassword() {
+        String password = "";
+
+        if (TextUtils.isEmpty(roomPassword)) {
+            password = roomPassword;
+        }
+
         ncApi.joinRoom(ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken()), ApiUtils
                 .getUrlForRoomParticipants(currentUser.getBaseUrl(), roomToken), password)
                 .subscribeOn(Schedulers.newThread())
@@ -197,6 +230,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     public void onNext(CallOverall callOverall) {
                         inChat = true;
                         pullChatMessages(0);
+                        currentCall = callOverall.getOcs().getData();
                     }
 
                     @Override

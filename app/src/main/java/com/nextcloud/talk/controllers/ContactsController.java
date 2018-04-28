@@ -110,9 +110,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public static final String TAG = "ContactsController";
 
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
-    @Nullable @BindView(R.id.initial_relative_layout)
+    @Nullable
+    @BindView(R.id.initial_relative_layout)
     public RelativeLayout initialRelativeLayout;
-    @Nullable @BindView(R.id.secondary_relative_layout)
+    @Nullable
+    @BindView(R.id.secondary_relative_layout)
     public RelativeLayout secondaryRelativeLayout;
     @Inject
     UserUtils userUtils;
@@ -267,13 +269,21 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                         @Override
                         public void onNext(RoomOverall roomOverall) {
-                            if (getActivity() != null) {
-                                Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                                Bundle bundle = new Bundle();
-                                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
-                                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
-                                callIntent.putExtras(bundle);
-                                startActivity(callIntent);
+                            Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
+                            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
+
+                            if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+                                conversationIntent.putExtras(bundle);
+                                bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
+                                        roomOverall.getOcs().getData().getDisplayName());
+                                getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
+                                        .pushChangeHandler(new HorizontalChangeHandler())
+                                        .popChangeHandler(new HorizontalChangeHandler())));
+                            } else {
+                                conversationIntent.putExtras(bundle);
+                                startActivity(conversationIntent);
                                 new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
                             }
                         }
@@ -414,6 +424,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry(3)
                 .subscribe((ShareesOverall shareesOverall) -> {
                             if (shareesOverall != null) {
 
