@@ -26,6 +26,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,7 @@ import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
-        MessagesListAdapter.Formatter<Date> {
+        MessagesListAdapter.Formatter<Date>, MessagesListAdapter.SelectionListener {
     @Inject
     NcApi ncApi;
     @Inject
@@ -99,6 +100,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private int globalLastKnownPastMessageId = -1;
 
     private MessagesListAdapter<ChatMessage> adapter;
+
+    private Menu globalMenu;
 
     public ChatController(Bundle args) {
         super(args);
@@ -146,6 +149,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messagesList.setAdapter(adapter);
         adapter.setLoadMoreListener(this);
         adapter.setDateHeadersFormatter(this::format);
+        //adapter.enableSelectionMode(this);
 
         messageInput.setInputListener(input -> {
             sendMessage(input.toString());
@@ -415,4 +419,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
         } else {
             return DateFormatter.format(date, DateFormatter.Template.STRING_DAY_MONTH_YEAR);
         }
-    }}
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        globalMenu = menu;
+    }
+
+    @Override
+    public void onSelectionChanged(int count) {
+        //globalMenu.findItem(R.id.action_delete).setVisible(count > 0);
+    }
+}
