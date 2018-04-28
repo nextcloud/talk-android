@@ -60,6 +60,7 @@ import com.stfalcon.chatkit.utils.DateFormatter;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -78,29 +79,28 @@ import retrofit2.Response;
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
         MessagesListAdapter.Formatter<Date>, MessagesListAdapter.SelectionListener {
+    private static final String TAG = "ChatController";
+
     @Inject
     NcApi ncApi;
     @Inject
     UserUtils userUtils;
+
     @BindView(R.id.input)
     MessageInput messageInput;
     @BindView(R.id.messagesList)
     MessagesList messagesList;
-
+    List<Disposable> disposableList = new ArrayList<>();
     private String conversationName;
     private String roomToken;
     private UserEntity currentUser;
     private String roomPassword;
-
     private Call currentCall;
-
     private boolean inChat = false;
     private boolean historyRead = false;
     private int globalLastKnownFutureMessageId = -1;
     private int globalLastKnownPastMessageId = -1;
-
     private MessagesListAdapter<ChatMessage> adapter;
-
     private Menu globalMenu;
 
     public ChatController(Bundle args) {
@@ -125,6 +125,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         boolean adapterWasNull = false;
 
         if (adapter == null) {
+
             adapterWasNull = true;
 
             MessagesListAdapter.HoldersConfig holdersConfig = new MessagesListAdapter.HoldersConfig();
@@ -209,7 +210,17 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Override
     public void onDestroy() {
         inChat = false;
+        dispose();
         super.onDestroy();
+    }
+
+    private void dispose() {
+        Disposable disposable;
+        for (int i = 0; i < disposableList.size(); i++) {
+            if ((disposable = disposableList.get(i)).isDisposed()) {
+                disposable.dispose();
+            }
+        }
     }
 
     private void joinRoomWithPassword() {
@@ -227,7 +238,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 .subscribe(new Observer<CallOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        disposableList.add(d);
                     }
 
                     @Override
@@ -282,6 +293,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
                 });
     }
+
     private void pullChatMessages(int lookIntoFuture) {
         Map<String, Integer> fieldMap = new HashMap<>();
         fieldMap.put("lookIntoFuture", lookIntoFuture);
@@ -294,7 +306,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
             lastKnown = globalLastKnownPastMessageId;
         }
 
-        fieldMap.put("lastKnownMessageId", lastKnown);
+        if (lastKnown != -1) {
+            fieldMap.put("lastKnownMessageId", lastKnown);
+        }
 
         if (lookIntoFuture == 1) {
             ncApi.pullChatMessages(ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken()),
@@ -306,13 +320,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     .subscribe(new Observer<Response>() {
                         @Override
                         public void onSubscribe(Disposable d) {
-
+                            disposableList.add(d);
                         }
 
                         @Override
                         public void onNext(Response response) {
                             processMessages(response, true);
-                            pullChatMessages(1);
                         }
 
                         @Override
@@ -322,7 +335,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                         @Override
                         public void onComplete() {
-
+                            pullChatMessages(1);
                         }
                     });
 
@@ -335,7 +348,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     .subscribe(new Observer<Response>() {
                         @Override
                         public void onSubscribe(Disposable d) {
-
+                            disposableList.add(d);
                         }
 
                         @Override
@@ -388,7 +401,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessageList.get(i).setBaseUrl(currentUser.getBaseUrl());
                     adapter.addToStart(chatMessageList.get(i),
-                            layoutManager.findLastVisibleItemPosition() <= adapter.getItemCount() - 3);
+                            layoutManager.findLastVisibleItemPosition() <= adapter.getItemCount() - 10);
                 }
 
                 globalLastKnownFutureMessageId = Integer.parseInt(response.headers().get("X-Chat-Last-Given"));
