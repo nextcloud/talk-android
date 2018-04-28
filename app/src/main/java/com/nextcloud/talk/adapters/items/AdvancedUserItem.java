@@ -101,7 +101,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     @Override
     public int getLayoutRes() {
-        return R.layout.rv_item_call;
+        return R.layout.rv_item_conversation;
     }
 
     @Override

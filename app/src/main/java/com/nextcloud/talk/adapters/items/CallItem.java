@@ -92,7 +92,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
 
     @Override
     public int getLayoutRes() {
-        return R.layout.rv_item_call;
+        return R.layout.rv_item_conversation;
     }
 
     @Override

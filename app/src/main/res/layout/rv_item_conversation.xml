@@ -46,12 +46,12 @@
 
         <ImageView
             android:id="@+id/password_protected_image_view"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
             android:layout_gravity="bottom|end"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="6dp"
             android:src="@drawable/ic_lock_white_24px"
-            android:tint="@color/nc_material_yellow"
-            android:tintMode="src_in"
             android:visibility="visible"/>
 
     </FrameLayout>
