@@ -20,6 +20,8 @@
 
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Nome de exibição obtido</string>
+    <string name="nc_push_disabled">Notificações push desativadas</string>
+    <string name="nc_capabilities_failed">Falhou ao buscar recursos, interrompendo</string>
     <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s aplicativo encontrado</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplicativo %1$s não instalado no servidor, cancelando</string>

@@ -1,4 +1,6 @@
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_conversations">Conversazioni</string>
     <string name="nc_bottom_navigation_title_contacts">Contatti</string>
     <string name="nc_bottom_navigation_title_settings">Impostazioni</string>
 
@@ -18,6 +20,8 @@
 
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Nome visualizzato recuperato</string>
+    <string name="nc_push_disabled">Notifiche push disabilitate</string>
+    <string name="nc_capabilities_failed">Recupero delle capacità non riuscito, interruzione in corso</string>
     <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
     <string name="nc_nextcloud_talk_app_installed"> Applicazione %1$s trovate</string>
     <string name="nc_nextcloud_talk_app_not_installed">Applicazione %1$s non installata, interruzione in corso</string>
@@ -73,11 +77,16 @@
 
     <!-- Room menu -->
     <string name="nc_what">Cosa vorresti fare oggi?</string>
+    <string name="nc_leave">Lascia la conversazione</string>
+    <string name="nc_rename">Rinomina conversazione</string>
     <string name="nc_set_password">Imposta una password</string>
     <string name="nc_change_password">Modifica una password</string>
     <string name="nc_clear_password">Cancella la password</string>
     <string name="nc_share_link">Condividi collegamento</string>
     <string name="nc_share_link_via">Condividi collegamento tramite</string>
+    <string name="nc_make_call_public">Rendi pubblica la conversazione</string>
+    <string name="nc_make_call_private">Rendi privata la conversazione</string>
+    <string name="nc_delete_call">Elimina conversazione</string>
     <string name="nc_new_conversation">Inizia una nuova conversazione</string>
     <string name="nc_join_via_link">Unisciti tramite collegamento</string>
     <string name="nc_join_via_web">Unisciti tramite web</string>
@@ -100,6 +109,10 @@
     <!-- Call -->
     <string name="nc_incoming_call">Chiamata in ingresso</string>
     <string name="nc_nick_guest">Ospite</string>
+    <string name="nc_public_call">Nuova conversazione pubblica</string>
+    <string name="nc_public_call_explanation">Le conversazioni pubbliche ti consentono di invitare persone esterne tramite un
+       collegamento appositamente generato.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s sul canale di notifica %2$s</string>
     <string name="nc_notification_channel_calls">Canale di notifica delle chiamate</string>
@@ -109,6 +122,8 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Spiacenti, qualcosa non ha funzionato!</string>
+    <string name="nc_failed_signaling_settings">Il server di destinazione non supporta la partecipazione a stanze pubbliche tramite cellulare
+        Puoi provare a unirti alla conversazioni tramite un browser web.</string>
     <string name="nc_all_ok_operation">OK, tutto fatto!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nome della conversazione</string>
@@ -152,4 +167,9 @@ Scopri altro su https://nextcloud.com/talk
 
 Trovi Nextcloud su https://nextcloud.com</string>
 
-    </resources>
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Digita un messaggio</string>
+    <string name="nc_date_header_yesterday">Ieri</string>
+    <string name="nc_date_header_today">Oggi</string>
+
+</resources>
