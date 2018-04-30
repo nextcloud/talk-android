@@ -449,6 +449,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 Intent callIntent = new Intent(getActivity(), CallActivity.class);
                 callIntent.putExtras(bundle);
 
+                startActivity(callIntent);
                 return true;
             case R.id.conversation_voice_call:
                 return true;
