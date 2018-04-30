@@ -47,4 +47,5 @@ public class BundleKeys {
     public static final String KEY_INVITED_PARTICIPANTS = "KEY_INVITED_PARTICIPANTS";
     public static final String KEY_CONVERSATION_NAME = "KEY_CONVERSATION_NAME";
     public static final String KEY_ROOM_PASSWORD = "KEY_ROOM_PASSWORD";
+    public static final String KEY_CALL_VOICE_ONLY = "KEY_CALL_VOICE_ONLY";
 }

@@ -441,22 +441,31 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 return true;
 
             case R.id.conversation_video_call:
-                Bundle bundle = new Bundle();
-                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
-                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
-                bundle.putString(BundleKeys.KEY_CALL_SESSION, currentCall.getSessionId());
-
-                Intent callIntent = new Intent(getActivity(), CallActivity.class);
-                callIntent.putExtras(bundle);
-
-                startActivity(callIntent);
+                startActivity(getIntentForCall(false));
                 return true;
             case R.id.conversation_voice_call:
+                startActivity(getIntentForCall(true));
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private Intent getIntentForCall(boolean isVoiceOnlyCall) {
+        Bundle bundle = new Bundle();
+        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
+        bundle.putString(BundleKeys.KEY_CALL_SESSION, currentCall.getSessionId());
+
+        if (isVoiceOnlyCall) {
+            bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true);
+        }
+
+        Intent callIntent = new Intent(getActivity(), CallActivity.class);
+        callIntent.putExtras(bundle);
+
+        return callIntent;
     }
 
     @Override
