@@ -34,7 +34,8 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:gravity="center_vertical"
-        android:textSize="18sp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
         tools:drawableLeft="@drawable/ic_add_grey600_24px"
         tools:drawablePadding="16dp"
         tools:text="Start a new conversation" />
