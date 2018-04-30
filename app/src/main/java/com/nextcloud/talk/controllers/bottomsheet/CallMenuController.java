@@ -111,11 +111,6 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
         adapter.addListener(this);
         recyclerView.setAdapter(adapter);
-
-        recyclerView.addItemDecoration(new DividerItemDecoration(
-                recyclerView.getContext(),
-                layoutManager.getOrientation()
-        ));
     }
 
     private void prepareIntent() {
