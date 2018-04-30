@@ -20,5 +20,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:animateLayoutChanges="true"
-        android:background="?android:attr/windowBackground"/>
+        android:background="@color/white"/>
 </android.support.design.widget.CoordinatorLayout>
