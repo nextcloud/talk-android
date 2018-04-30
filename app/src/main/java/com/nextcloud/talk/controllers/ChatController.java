@@ -21,12 +21,14 @@
 package com.nextcloud.talk.controllers;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -174,25 +177,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     protected String getTitle() {
         return conversationName;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                inChat = false;
-                if (getRouter().hasRootController()) {
-                    getRouter().popToRoot(new HorizontalChangeHandler());
-                } else {
-                    getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler()));
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 
     @Override
     public boolean handleBack() {
@@ -435,9 +419,43 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_conversation, menu);
         globalMenu = menu;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                inChat = false;
+                if (getRouter().hasRootController()) {
+                    getRouter().popToRoot(new HorizontalChangeHandler());
+                } else {
+                    getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
+                }
+                return true;
+
+            case R.id.conversation_video_call:
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
+                bundle.putString(BundleKeys.KEY_CALL_SESSION, currentCall.getSessionId());
+
+                Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                callIntent.putExtras(bundle);
+
+                return true;
+            case R.id.conversation_voice_call:
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
