@@ -24,8 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/nc_white_color">
+                android:layout_marginTop="16dp">
 
     <ImageView
         android:id="@+id/icon_image_view"
@@ -34,11 +33,12 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="16dp"
         android:focusable="false"
-        android:focusableInTouchMode="false"/>
+        android:focusableInTouchMode="false"
+        tools:src="@drawable/ic_add_grey600_24px"/>
 
     <TextView
         android:id="@+id/app_title_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
@@ -46,8 +46,8 @@
         android:layout_toEndOf="@id/icon_image_view"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        tools:text="App title"/>
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        tools:text="Start a new conversation"/>
 
 </RelativeLayout>
