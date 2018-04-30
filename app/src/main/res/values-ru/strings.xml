@@ -1,4 +1,6 @@
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_conversations">Беседы</string>
     <string name="nc_bottom_navigation_title_contacts">Контакты</string>
     <string name="nc_bottom_navigation_title_settings">Параметры</string>
 
@@ -18,6 +20,8 @@
 
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Отображаемое имя получено</string>
+    <string name="nc_push_disabled">Всплывающие уведомления отключены</string>
+    <string name="nc_capabilities_failed">Не удалось получить список поддерживаемых протоколов</string>
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
     <string name="nc_nextcloud_talk_app_installed">Найдено приложение %1$s</string>
     <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s не установлено на сервере. Действие отменено.</string>
@@ -73,12 +77,17 @@
 
     <!-- Room menu -->
     <string name="nc_what">Что бы вы хотели сегодня сделать?</string>
+    <string name="nc_leave">Покинуть беседу</string>
+    <string name="nc_rename">Переименовать разговор</string>
     <string name="nc_set_password">Задать пароль</string>
     <string name="nc_change_password">Сменить пароль</string>
     <string name="nc_clear_password">Очистить пароль</string>
     <string name="nc_share_link">Поделиться ссылкой</string>
     <string name="nc_share_link_via">Поделиться ссылкой</string>
-    <string name="nc_new_conversation">Начать новую беседу</string>
+    <string name="nc_make_call_public">Сделать беседу открытой</string>
+    <string name="nc_make_call_private">Сделать беседу личной</string>
+    <string name="nc_delete_call">Удалить беседу</string>
+    <string name="nc_new_conversation">Начать беседу</string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
     <string name="nc_join_via_web">Присоединиться через веб</string>
 
@@ -100,6 +109,9 @@
     <!-- Call -->
     <string name="nc_incoming_call">Входящий вызов</string>
     <string name="nc_nick_guest">Гость</string>
+    <string name="nc_public_call">Начать открытую беседу</string>
+    <string name="nc_public_call_explanation">Открытые беседы позволяют приглашать участников при помощи специальной ссылки.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">канал уведомлений %1$s на %2$s</string>
     <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>
@@ -109,9 +121,10 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
+    <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте войти присоединиться к беседе используя браузер на ПК.</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
     <string name="nc_ok">ОК</string>
-    <string name="nc_call_name">Наименование разговора</string>
+    <string name="nc_call_name">Наименование беседы</string>
     <string name="nc_proceed">Продолжить</string>
     <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
     <string name="nc_wrong_link">Ссылка на беседу более не действительна</string>
@@ -153,4 +166,9 @@ Nextcloud ежедневно используется как для работы
 
 Познакомьтесь с Nextcloud на https://nextcloud.com</string>
 
-    </resources>
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Напишите сообщение…</string>
+    <string name="nc_date_header_yesterday">Вчера</string>
+    <string name="nc_date_header_today">Сегодня</string>
+
+</resources>
