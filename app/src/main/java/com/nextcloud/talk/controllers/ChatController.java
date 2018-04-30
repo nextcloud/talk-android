@@ -93,7 +93,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     MessageInput messageInput;
     @BindView(R.id.messagesList)
     MessagesList messagesList;
-    List<Disposable> disposableList = new ArrayList<>();
+    private List<Disposable> disposableList = new ArrayList<>();
     private String conversationName;
     private String roomToken;
     private UserEntity currentUser;
