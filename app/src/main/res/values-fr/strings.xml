@@ -168,5 +168,4 @@ Trouvez Nextcloud sur https://nextcloud.com</string>
 
     <string name="nc_date_header_yesterday">Hier</string>
     <string name="nc_date_header_today">Aujourd\'hui</string>
-
-</resources>
+    </resources>

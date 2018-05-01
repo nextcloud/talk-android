@@ -171,5 +171,4 @@ Encuentra Nextcloud en https://nextcloud.com</string>
     <string name="nc_hint_enter_a_message">Escribe un mensaje…</string>
     <string name="nc_date_header_yesterday">Ayer</string>
     <string name="nc_date_header_today">Hoy</string>
-
-</resources>
+    </resources>

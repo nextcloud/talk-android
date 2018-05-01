@@ -173,5 +173,4 @@ Nextcloud web sitesi https://nextcloud.com</string>
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
     <string name="nc_date_header_yesterday">Dün</string>
     <string name="nc_date_header_today">Bugün</string>
-
-</resources>
+    </resources>
