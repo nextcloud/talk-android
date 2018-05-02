@@ -166,6 +166,11 @@ En savoir plus sur https://nextcloud.com/talk
 
 Trouvez Nextcloud sur https://nextcloud.com</string>
 
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Saisir un message…</string>
     <string name="nc_date_header_yesterday">Hier</string>
     <string name="nc_date_header_today">Aujourd\'hui</string>
-    </resources>
+    <string name="conversation_menu_voice_call">Appel audio</string>
+    <string name="conversation_menu_video_call">Appel vidéo</string>
+
+</resources>

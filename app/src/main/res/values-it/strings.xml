@@ -171,4 +171,7 @@ Trovi Nextcloud su https://nextcloud.com</string>
     <string name="nc_hint_enter_a_message">Digita un messaggio</string>
     <string name="nc_date_header_yesterday">Ieri</string>
     <string name="nc_date_header_today">Oggi</string>
-    </resources>
+    <string name="conversation_menu_voice_call">Chiamata vocale</string>
+    <string name="conversation_menu_video_call">Chiamata video</string>
+
+</resources>
