@@ -51,11 +51,10 @@
 
         <studio.carbonylgroup.textfieldboxes.ExtendedEditText
             android:id="@+id/extended_edit_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
             android:inputType="textUri"
-            android:minWidth="5dp"
             android:singleLine="true"
             android:textColor="@color/nc_white_color_complete"/>
 
