@@ -24,6 +24,8 @@
 
 package com.nextcloud.talk.controllers.base.bottomnavigation;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
@@ -43,6 +45,7 @@ import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.utils.animations.ViewHidingBehaviourAnimation;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
@@ -55,10 +58,11 @@ import butterknife.BindView;
  * The backstack of each {@link MenuItem} is switched out, in order to maintain a separate backstack
  * for each {@link MenuItem} - even though that is against the Google Design Guidelines:
  *
+ * @author chris6647@gmail.com
  * @see <a
- *     href="https://material.io/guidelines/components/bottom-navigation.html#bottom-navigation-behavior">Material
- *     Design Guidelines</a>
- *
+ * href="https://material.io/guidelines/components/bottom-navigation.html#bottom-navigation-behavior">Material
+ * Design Guidelines</a>
+ * <p>
  * Internally works similarly to {@link com.bluelinelabs.conductor.support.RouterPagerAdapter},
  * in the sense that it keeps track of the currently active {@link MenuItem} and the paired
  * Child {@link Router}. Everytime we navigate from one to another,
@@ -66,8 +70,6 @@ import butterknife.BindView;
  * of the Child {@link Router}, and cache it, so we have it available when we navigate to
  * another {@link MenuItem} and can then restore the correct Child {@link Router}
  * (and thus the entire backstack)
- *
- * @author chris6647@gmail.com
  */
 public abstract class BottomNavigationController extends BaseController {
 
@@ -135,7 +137,7 @@ public abstract class BottomNavigationController extends BaseController {
          * and in case of resuming the app (i.e. when the view is not created again)
          */
         if (routerSavedStateBundles == null) {
-            Menu menu = bottomNavigationView.getMenu();
+            Menu menu = getMenu();
             int menuSize = menu.size();
             routerSavedStateBundles = new SparseArray<>(menuSize);
             for (int i = 0; i < menuSize; i++) {
@@ -162,6 +164,11 @@ public abstract class BottomNavigationController extends BaseController {
              */
             getChildRouter(currentlySelectedItemId).rebindIfNeeded();
         }
+    }
+
+    @NonNull
+    protected Menu getMenu() {
+        return bottomNavigationView.getMenu();
     }
 
     /**
@@ -233,13 +240,15 @@ public abstract class BottomNavigationController extends BaseController {
             routerSavedStateBundles.remove(currentlySelectedItemId);
 
             /* Ensure correct Checked state based on new selection */
-            Menu menu = bottomNavigationView.getMenu();
+            Menu menu = getMenu();
             for (int i = 0; i < menu.size(); i++) {
                 MenuItem menuItem = menu.getItem(i);
                 if (menuItem.isChecked() && menuItem.getItemId() != itemId) {
                     menuItem.setChecked(false);
                 } else if (menuItem.getItemId() == itemId) {
                     menuItem.setChecked(true);
+                    menuItem.getIcon().clearColorFilter();
+                    menuItem.getIcon().setColorFilter(getResources().getColor(R.color.grey600), PorterDuff.Mode.SRC_ATOP);
                 }
             }
 
@@ -295,6 +304,10 @@ public abstract class BottomNavigationController extends BaseController {
             Log.d(TAG, "handleBack called with getChildRouter(currentlySelectedItemId) == null.");
             return false;
         }
+    }
+
+    public BottomNavigationView getBottomNavigationView() {
+        return bottomNavigationView;
     }
 
     /**

@@ -3,6 +3,7 @@
     <color name="colorPrimary">#0082C9</color>
     <color name="colorPrimaryDark">#006AA3</color>
     <color name="colorAccent">#007CC2</color>
+    <color name="grey600">#757575</color>
 
     <color name="nc_darkRed">#D32F2F</color>
     <color name="nc_darkGreen">#006400</color>
