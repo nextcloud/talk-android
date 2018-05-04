@@ -43,11 +43,9 @@ import autodagger.AutoInjector;
 @AutoInjector(NextcloudTalkApplication.class)
 public abstract class BaseController extends RefWatchingController {
 
+    private static final String TAG = "BaseController";
     @Inject
     AppPreferences appPreferences;
-
-
-    private static final String TAG = "BaseController";
 
     protected BaseController() {
         cleanTempCertPreference();
@@ -72,6 +70,7 @@ public abstract class BaseController extends RefWatchingController {
         }
 
     }
+
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);

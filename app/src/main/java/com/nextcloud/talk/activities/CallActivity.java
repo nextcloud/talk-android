@@ -794,38 +794,38 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void checkCapabilities() {
-            ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<CapabilitiesOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+        ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<CapabilitiesOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onNext(CapabilitiesOverall capabilitiesOverall) {
-                            isMultiSession = capabilitiesOverall.getOcs().getData()
-                                    .getCapabilities().getSpreedCapability() != null &&
-                                    capabilitiesOverall.getOcs().getData()
-                                            .getCapabilities().getSpreedCapability()
-                                            .getFeatures() != null && capabilitiesOverall.getOcs().getData()
-                                    .getCapabilities().getSpreedCapability()
-                                    .getFeatures().contains("multi-room-users");
+                    @Override
+                    public void onNext(CapabilitiesOverall capabilitiesOverall) {
+                        isMultiSession = capabilitiesOverall.getOcs().getData()
+                                .getCapabilities().getSpreedCapability() != null &&
+                                capabilitiesOverall.getOcs().getData()
+                                        .getCapabilities().getSpreedCapability()
+                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
+                                .getCapabilities().getSpreedCapability()
+                                .getFeatures().contains("multi-room-users");
 
-                            joinRoomAndCall();
-                        }
+                        joinRoomAndCall();
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            isMultiSession = false;
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                        isMultiSession = false;
+                    }
 
-                        @Override
-                        public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-                        }
-                    });
+                    }
+                });
     }
 
     private void joinRoomAndCall() {

@@ -25,15 +25,19 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.v7.widget.AppCompatDrawableManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DisplayUtils {
 
@@ -74,5 +78,29 @@ public class DisplayUtils {
         int color = res.getColor(colorResId);
         drawable.setTint(color);
         return drawable;
+    }
+
+
+    public static String searchAndColor(String text, String searchText, @ColorInt int color) {
+
+        if (TextUtils.isEmpty(text) || TextUtils.isEmpty(searchText)) {
+            return text;
+        }
+
+        Matcher m = Pattern.compile(searchText, Pattern.CASE_INSENSITIVE | Pattern.LITERAL)
+                .matcher(text);
+
+        StringBuffer sb = new StringBuffer();
+
+        while (m.find()) {
+            String replacement = m.group().replace(
+                    m.group(),
+                    "<font color='" + color + "'><b>" + m.group() + "</b></font>"
+            );
+            m.appendReplacement(sb, Matcher.quoteReplacement(replacement));
+        }
+        m.appendTail(sb);
+
+        return sb.toString();
     }
 }

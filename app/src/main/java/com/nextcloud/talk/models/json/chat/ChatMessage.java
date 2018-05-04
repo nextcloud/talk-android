@@ -37,6 +37,25 @@ import lombok.Data;
 @JsonObject
 public class ChatMessage implements IMessage {
     String baseUrl;
+    @JsonField(name = "id")
+    int jsonMessageId;
+    @JsonField(name = "token")
+    String token;
+    // guests or users
+    @JsonField(name = "actorType")
+    String actorType;
+    @JsonField(name = "actorId")
+    String actorId;
+    // send when crafting a message
+    @JsonField(name = "actorDisplayName")
+    String actorDisplayName;
+    @JsonField(name = "timestamp")
+    long timestamp;
+    // send when crafting a message, max 1000 lines
+    @JsonField(name = "message")
+    String message;
+    @JsonField(name = "messageParameters")
+    HashMap<String, HashMap<String, String>> messageParameters;
 
     public String getBaseUrl() {
         return baseUrl;
@@ -45,33 +64,6 @@ public class ChatMessage implements IMessage {
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
     }
-
-    @JsonField(name = "id")
-    int jsonMessageId;
-
-    @JsonField(name = "token")
-    String token;
-
-    // guests or users
-    @JsonField(name = "actorType")
-    String actorType;
-
-    @JsonField(name = "actorId")
-    String actorId;
-
-    // send when crafting a message
-    @JsonField(name = "actorDisplayName")
-    String actorDisplayName;
-
-    @JsonField(name = "timestamp")
-    long timestamp;
-
-    // send when crafting a message, max 1000 lines
-    @JsonField(name = "message")
-    String message;
-
-    @JsonField(name = "messageParameters")
-    HashMap<String, HashMap<String, String>> messageParameters;
 
     @Override
     public String getId() {

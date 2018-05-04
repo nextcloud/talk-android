@@ -20,26 +20,48 @@
 
 package com.nextcloud.talk.adapters.messages;
 
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
+import java.util.HashMap;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@AutoInjector(NextcloudTalkApplication.class)
 public class MagicIncomingTextMessageViewHolder
         extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 
     @BindView(R.id.messageAuthor)
     TextView messageAuthor;
 
+    @BindView(R.id.messageText)
+    TextView messageText;
+
+    @Inject
+    UserUtils userUtils;
+
+    private UserEntity currentUser;
+
     public MagicIncomingTextMessageViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+
+        currentUser = userUtils.getCurrentUser();
     }
 
 
@@ -52,5 +74,32 @@ public class MagicIncomingTextMessageViewHolder
         } else {
             messageAuthor.setText(R.string.nc_nick_guest);
         }
+
+        HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
+
+        String messageString = message.getText();
+
+        if (messageParameters != null && message.getMessageParameters().size() > 0) {
+            for (String key : message.getMessageParameters().keySet()) {
+                HashMap<String, String> individualHashMap = message.getMessageParameters().get(key);
+                if (individualHashMap.get("type").equals("user")) {
+                    int color;
+
+                    if (messageParameters.get(key).get("id").equals(currentUser.getUserId())) {
+                        color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
+                                .colorAccent);
+                    } else {
+                        color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
+                                .colorAccentComplement);
+                    }
+
+                    messageString = DisplayUtils.searchAndColor(messageString,
+                            "@" + messageParameters.get(key).get("name"), color);
+                }
+            }
+
+        }
+
+        messageText.setText(Html.fromHtml(messageString));
     }
 }

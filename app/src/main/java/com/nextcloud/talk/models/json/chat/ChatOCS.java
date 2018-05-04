@@ -35,6 +35,7 @@ import lombok.Data;
 @Parcel
 @JsonObject
 public class ChatOCS extends GenericOCS {
-    @Nullable @JsonField(name = "data")
+    @Nullable
+    @JsonField(name = "data")
     List<ChatMessage> data;
 }

@@ -91,7 +91,7 @@ public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> 
             holder.menuTitle.setText(spannableString);
         } else {
             holder.menuTitle.setText(title);
-            holder.menuTitle.setCompoundDrawablesWithIntrinsicBounds(icon,null,null,null);
+            holder.menuTitle.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
             holder.menuTitle.setCompoundDrawablePadding(padding);
         }
     }

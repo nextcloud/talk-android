@@ -55,9 +55,10 @@ import butterknife.BindView;
  * The backstack of each {@link MenuItem} is switched out, in order to maintain a separate backstack
  * for each {@link MenuItem} - even though that is against the Google Design Guidelines:
  *
+ * @author chris6647@gmail.com
  * @see <a
- *     href="https://material.io/guidelines/components/bottom-navigation.html#bottom-navigation-behavior">Material
- *     Design Guidelines</a>
+ * href="https://material.io/guidelines/components/bottom-navigation.html#bottom-navigation-behavior">Material
+ * Design Guidelines</a>
  *
  * Internally works similarly to {@link com.bluelinelabs.conductor.support.RouterPagerAdapter},
  * in the sense that it keeps track of the currently active {@link MenuItem} and the paired
@@ -66,18 +67,14 @@ import butterknife.BindView;
  * of the Child {@link Router}, and cache it, so we have it available when we navigate to
  * another {@link MenuItem} and can then restore the correct Child {@link Router}
  * (and thus the entire backstack)
- *
- * @author chris6647@gmail.com
  */
 public abstract class BottomNavigationController extends BaseController {
 
     public static final String TAG = "BottomNavigationContr";
-
+    public static final int INVALID_INT = -1;
     private static final String KEY_MENU_RESOURCE = "key_menu_resource";
     private static final String KEY_STATE_ROUTER_BUNDLES = "key_state_router_bundles";
     private static final String KEY_STATE_CURRENTLY_SELECTED_ID = "key_state_currently_selected_id";
-    public static final int INVALID_INT = -1;
-
     @BindView(R.id.navigation)
     BottomNavigationView bottomNavigationView;
 

@@ -99,15 +99,15 @@ public class ServerSelectionController extends BaseController {
     @OnClick(R.id.cert_text_view)
     public void onCertClick() {
         if (getActivity() != null) {
-                KeyChain.choosePrivateKeyAlias(getActivity(), alias -> {
-                    if (alias != null) {
-                        appPreferences.setTemporaryClientCertAlias(alias);
-                    } else {
-                        appPreferences.removeTemporaryClientCertAlias();
-                    }
+            KeyChain.choosePrivateKeyAlias(getActivity(), alias -> {
+                if (alias != null) {
+                    appPreferences.setTemporaryClientCertAlias(alias);
+                } else {
+                    appPreferences.removeTemporaryClientCertAlias();
+                }
 
-                    setCertTextView();
-                }, new String[]{"RSA", "EC"}, null, null, -1, null);
+                setCertTextView();
+            }, new String[]{"RSA", "EC"}, null, null, -1, null);
         }
     }
 

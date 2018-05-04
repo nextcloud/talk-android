@@ -160,21 +160,21 @@ public class AccountRemovalJob extends Job {
                             userEntity.getBaseUrl())
                             .subscribeOn(Schedulers.newThread())
                             .subscribe(new CompletableObserver() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+                                @Override
+                                public void onSubscribe(Disposable d) {
 
-                        }
+                                }
 
-                        @Override
-                        public void onComplete() {
+                                @Override
+                                public void onComplete() {
 
-                        }
+                                }
 
-                        @Override
-                        public void onError(Throwable e) {
+                                @Override
+                                public void onError(Throwable e) {
 
-                        }
-                    });
+                                }
+                            });
                 }
             } catch (IOException e) {
                 Log.d(TAG, "Something went wrong while removing job at parsing PushConfigurationState");
@@ -182,21 +182,21 @@ public class AccountRemovalJob extends Job {
                         userEntity.getBaseUrl())
                         .subscribeOn(Schedulers.newThread())
                         .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
-                    }
+                            }
 
-                    @Override
-                    public void onComplete() {
+                            @Override
+                            public void onComplete() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
+                            @Override
+                            public void onError(Throwable e) {
 
-                    }
-                });
+                            }
+                        });
             }
         }
         return Result.SUCCESS;

@@ -118,6 +118,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private Menu globalMenu;
 
     private Autocomplete mentionAutocomplete;
+
     /*
     TODO:
         - format mentions

@@ -163,7 +163,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         public TextView contactDisplayName;
         @BindView(R.id.avatar_flip_view)
         public FlipView avatarFlipView;
-        @Nullable @BindView(R.id.secondary_text)
+        @Nullable
+        @BindView(R.id.secondary_text)
         public TextView contactMentionId;
 
         /**
