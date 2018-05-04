@@ -284,7 +284,6 @@ public interface NcApi {
                                                @FieldMap Map<String, String> fields);
 
 
-    //@Headers("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
     @GET
     Observable<MentionOverall> getMentionAutocompleteSuggestions(@Header("Authorization") String authorization,
                                                                            @Url String url, @Query("search") String query,
