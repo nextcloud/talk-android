@@ -22,6 +22,9 @@ package com.nextcloud.talk.controllers;
 
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +35,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -44,6 +48,7 @@ import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.callbacks.MentionAutocompleteCallback;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.Call;
@@ -51,10 +56,16 @@ import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.mention.Mention;
+import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
+import com.otaliastudios.autocomplete.Autocomplete;
+import com.otaliastudios.autocomplete.AutocompleteCallback;
+import com.otaliastudios.autocomplete.AutocompletePresenter;
+import com.otaliastudios.autocomplete.CharPolicy;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
@@ -106,6 +117,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private MessagesListAdapter<ChatMessage> adapter;
     private Menu globalMenu;
 
+    private Autocomplete mentionAutocomplete;
+    /*
+    TODO:
+        - format mentions
+        - copy message
+        - autocomplete nicks
+        - check push notifications
+        - new conversation handling
+     */
     public ChatController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
@@ -155,6 +175,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
         adapter.setDateHeadersFormatter(this::format);
         //adapter.enableSelectionMode(this);
 
+
+        setupMentionAutocomplete();
+
+        messageInput.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         messageInput.setInputListener(input -> {
             sendMessage(input.toString());
             return true;
@@ -163,6 +187,21 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (adapterWasNull) {
             joinRoomWithPassword();
         }
+    }
+
+    private void setupMentionAutocomplete() {
+        float elevation = 6f;
+        Drawable backgroundDrawable = new ColorDrawable(Color.WHITE);
+        AutocompletePresenter<Mention> presenter = new MentionAutocompletePresenter(getApplicationContext(), roomToken);
+        AutocompleteCallback<Mention> callback = new MentionAutocompleteCallback();
+
+        mentionAutocomplete = Autocomplete.<Mention>on(messageInput.getInputEditText())
+                .with(elevation)
+                .with(backgroundDrawable)
+                .with(new CharPolicy('@'))
+                .with(presenter)
+                .with(callback)
+                .build();
     }
 
     @Override

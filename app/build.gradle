@@ -151,6 +151,7 @@ dependencies {
     implementation 'com.github.wooplr:Spotlight:1.2.3'
 
     implementation 'com.github.stfalcon:chatkit:0.2.2'
+    implementation 'com.otaliastudios:autocomplete:1.1.0'
 
     implementation 'com.github.Kennyc1012:BottomSheet:2.4.0'
     implementation 'eu.davidea:flipview:1.1.3'

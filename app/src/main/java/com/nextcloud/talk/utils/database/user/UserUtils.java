@@ -245,8 +245,7 @@ public class UserUtils {
 
         return dataStore.upsert(user)
                 .toObservable()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.newThread());
     }
 
 }

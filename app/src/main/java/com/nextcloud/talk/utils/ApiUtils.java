@@ -130,6 +130,10 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token;
     }
 
+    public static String getUrlForMentionSuggestions(String baseUrl, String token) {
+        return getUrlForChat(baseUrl, token) + "/mentions";
+    }
+
     public static String getUrlForSignaling(String baseUrl, @Nullable String token) {
         String signalingUrl = baseUrl + ocsApiVersion + spreedApiVersion + "/signaling";
         if (token == null) {

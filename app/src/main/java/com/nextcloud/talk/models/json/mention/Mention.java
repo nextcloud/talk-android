@@ -17,24 +17,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.chat;
+package com.nextcloud.talk.models.json.mention;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.models.json.generic.GenericOCS;
 
 import org.parceler.Parcel;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import lombok.Data;
 
-@Data
 @Parcel
+@Data
 @JsonObject
-public class ChatOCS extends GenericOCS {
-    @Nullable @JsonField(name = "data")
-    List<ChatMessage> data;
+public class Mention {
+    @JsonField(name = "id")
+    String id;
+
+    @JsonField(name = "label")
+    String label;
+
+    // type of user (guests or users)
+    @JsonField(name = "source")
+    String source;
 }

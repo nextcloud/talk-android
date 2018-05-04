@@ -29,7 +29,7 @@ import lombok.Data;
 
 @Parcel
 @Data
-@JsonObject
+@JsonObject(serializeNullObjects = true)
 public class GenericMeta {
     @JsonField(name = "status")
     String status;

@@ -27,6 +27,7 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.generic.Status;
+import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
@@ -49,6 +50,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 
@@ -281,5 +283,11 @@ public interface NcApi {
     Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization, @Url String url,
                                                @FieldMap Map<String, String> fields);
 
+
+    //@Headers("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
+    @GET
+    Observable<MentionOverall> getMentionAutocompleteSuggestions(@Header("Authorization") String authorization,
+                                                                           @Url String url, @Query("search") String query,
+                                                                           @Nullable @Query("limit") Integer limit);
 
 }

@@ -17,24 +17,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.chat;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.models.json.generic.GenericOCS;
+package com.nextcloud.talk.callbacks;
 
-import org.parceler.Parcel;
+import android.text.Editable;
 
-import java.util.List;
+import com.nextcloud.talk.models.json.mention.Mention;
+import com.otaliastudios.autocomplete.AutocompleteCallback;
+import com.otaliastudios.autocomplete.CharPolicy;
 
-import javax.annotation.Nullable;
+public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
+    @Override
+    public boolean onPopupItemClicked(Editable editable, Mention item) {
+        int[] range = CharPolicy.getQueryRange(editable);
+        if (range == null) return false;
+        int start = range[0];
+        int end = range[1];
+        String replacement = item.getId() + " ";
+        editable.replace(start, end, replacement);
+        return true;
+    }
 
-import lombok.Data;
+    @Override
+    public void onPopupVisibilityChanged(boolean shown) {
 
-@Data
-@Parcel
-@JsonObject
-public class ChatOCS extends GenericOCS {
-    @Nullable @JsonField(name = "data")
-    List<ChatMessage> data;
+    }
 }

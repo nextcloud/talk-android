@@ -39,6 +39,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -161,6 +163,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         public TextView contactDisplayName;
         @BindView(R.id.avatar_flip_view)
         public FlipView avatarFlipView;
+        @Nullable @BindView(R.id.secondary_text)
+        public TextView contactMentionId;
 
         /**
          * Default constructor.
