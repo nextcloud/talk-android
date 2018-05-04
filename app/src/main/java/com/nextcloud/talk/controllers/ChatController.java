@@ -122,7 +122,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     /*
     TODO:
-        - format mentions
         - copy message
         - check push notifications
         - new conversation handling
