@@ -6,9 +6,9 @@
     <color name="secondaryColorAccent">#7CC4E6</color>
     <color name="nc_outcoming_text_default">#99DBFF</color>
     <color name="nc_outcoming_text_mention_others">@color/white</color>
-    <color name="nc_incoming_text_default">#27292B</color>
+    <color name="nc_incoming_text_default">#37505D</color>
     <color name="nc_incoming_text_mention_you">#C98879</color>
-    <color name="nc_incoming_text_mention_others">#1D1F20</color>
+    <color name="nc_incoming_text_mention_others">#37505D</color>
 
     <color name="nc_darkRed">#D32F2F</color>
     <color name="nc_darkGreen">#006400</color>

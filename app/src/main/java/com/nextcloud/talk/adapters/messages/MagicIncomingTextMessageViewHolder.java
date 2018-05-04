@@ -86,18 +86,16 @@ public class MagicIncomingTextMessageViewHolder
                 if (individualHashMap.get("type").equals("user")) {
                     int color;
 
-                    if (!individualHashMap.get("id").equals(message.getActorId())) {
-                        if (individualHashMap.get("id").equals(currentUser.getUserId())) {
-                            color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
-                                    .nc_incoming_text_mention_you);
-                        } else {
-                            color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
-                                    .nc_incoming_text_mention_others);
-                        }
-
-                        messageString = DisplayUtils.searchAndColor(messageText.getText().toString(),
-                                messageString, "@" + individualHashMap.get("name"), color);
+                    if (individualHashMap.get("id").equals(currentUser.getUserId())) {
+                        color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
+                                .nc_incoming_text_mention_you);
+                    } else {
+                        color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
+                                .nc_incoming_text_mention_others);
                     }
+
+                    messageString = DisplayUtils.searchAndColor(messageText.getText().toString(),
+                            messageString, "@" + individualHashMap.get("name"), color);
                 }
             }
 

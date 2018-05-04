@@ -60,7 +60,6 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
     private Context context;
 
     private String roomToken;
-    private List<AbstractFlexibleItem> userItemList = new ArrayList<>();
 
     public MentionAutocompletePresenter(Context context) {
         super(context);
@@ -77,7 +76,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
 
     @Override
     protected RecyclerView.Adapter instantiateAdapter() {
-        adapter = new FlexibleAdapter<>(userItemList, context, true);
+        adapter = new FlexibleAdapter<>(new ArrayList<AbstractFlexibleItem>(), context, true);
         adapter.addListener(this);
         return adapter;
     }
@@ -105,21 +104,18 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                             List<AbstractFlexibleItem> internalUserItemList = new ArrayList<>();
                             if (mentionsList.size() == 0 ||
                                     (mentionsList.size() == 1 && mentionsList.get(0).getId().equals(query.toString()))) {
-                                userItemList = new ArrayList<>();
                                 adapter.notifyDataSetChanged();
                             } else {
                                 for (Mention mention : mentionsList) {
                                     internalUserItemList.add(new MentionAutocompleteItem(mention.getId(), mention
                                             .getLabel(), currentUser));
                                 }
-                                userItemList = internalUserItemList;
                                 adapter.updateDataSet(internalUserItemList, true);
                             }
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            userItemList = new ArrayList<>();
                             adapter.updateDataSet(new ArrayList<>(), false);
                         }
 
@@ -129,7 +125,6 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                         }
                     });
         } else {
-            userItemList = new ArrayList<>();
             adapter.updateDataSet(new ArrayList<>(), false);
         }
     }
@@ -137,11 +132,13 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
     @Override
     public boolean onItemClick(View view, int position) {
         Mention mention = new Mention();
-        MentionAutocompleteItem mentionAutocompleteItem = (MentionAutocompleteItem) userItemList.get(position);
-        mention.setId(mentionAutocompleteItem.getUserId());
-        mention.setLabel(mentionAutocompleteItem.getDisplayName());
-        mention.setSource("users");
-        dispatchClick(mention);
+        MentionAutocompleteItem mentionAutocompleteItem = (MentionAutocompleteItem) adapter.getItem(position);
+        if (mentionAutocompleteItem != null) {
+            mention.setId(mentionAutocompleteItem.getUserId());
+            mention.setLabel(mentionAutocompleteItem.getDisplayName());
+            mention.setSource("users");
+            dispatchClick(mention);
+        }
         return true;
     }
 }
