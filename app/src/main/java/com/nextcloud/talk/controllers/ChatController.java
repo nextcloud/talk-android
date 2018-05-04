@@ -174,7 +174,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         adapter.setDateHeadersFormatter(this::format);
         //adapter.enableSelectionMode(this);
 
-
         setupMentionAutocomplete();
 
         messageInput.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
@@ -209,6 +208,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        if (mentionAutocomplete != null && mentionAutocomplete.isPopupShowing()) {
+            mentionAutocomplete.dismissPopup();
+        }
+
     }
 
     @Override
