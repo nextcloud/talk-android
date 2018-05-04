@@ -41,6 +41,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
+import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 
 public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder>
         implements IFilterable<String> {
@@ -86,8 +87,16 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
 
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, UserItem.UserItemViewHolder holder, int position, List<Object> payloads) {
-        holder.contactDisplayName.setText(displayName);
-        holder.contactMentionId.setText("@" + userId);
+
+        if (adapter.hasFilter()) {
+            FlexibleUtils.highlightText(holder.contactDisplayName, displayName,
+                    String.valueOf(adapter.getFilter(String.class)));
+            FlexibleUtils.highlightText(holder.contactMentionId, "@" + userId,
+                    String.valueOf(adapter.getFilter(String.class)));
+        } else {
+            holder.contactDisplayName.setText(displayName);
+            holder.contactMentionId.setText("@" + userId);
+        }
 
         GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
                 userId, false), new LazyHeaders.Builder()
@@ -110,7 +119,8 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
 
     @Override
     public boolean filter(String constraint) {
-        return userId != null && StringUtils.containsIgnoreCase(userId, constraint);
+        return userId != null && StringUtils.containsIgnoreCase(userId, constraint) ||
+                displayName != null && StringUtils.containsIgnoreCase(displayName, constraint);
 
     }
 }

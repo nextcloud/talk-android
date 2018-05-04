@@ -87,6 +87,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         if (query != null && query.length() > 0) {
             UserEntity currentUser = userUtils.getCurrentUser();
 
+            adapter.setFilter(query.toString());
             ncApi.getMentionAutocompleteSuggestions(ApiUtils.getCredentials(currentUser.getUserId(), currentUser
                             .getToken()), ApiUtils.getUrlForMentionSuggestions(currentUser.getBaseUrl(), roomToken),
                     query.toString(), null)
@@ -101,25 +102,23 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                         @Override
                         public void onNext(MentionOverall mentionOverall) {
                             List<Mention> mentionsList = mentionOverall.getOcs().getData();
-                            userItemList = new ArrayList<>();
-                            if (mentionsList.size() == 1 && mentionsList.get(0).getId().equals(query.toString())) {
-                                adapter.updateDataSet(userItemList, false);
-                                clearRecycledPool();
+                            List<AbstractFlexibleItem> internalUserItemList = new ArrayList<>();
+                            if (mentionsList.size() == 0 ||
+                                    (mentionsList.size() == 1 && mentionsList.get(0).getId().equals(query.toString()))) {
+                                userItemList = new ArrayList<>();
+                                adapter.notifyDataSetChanged();
                             } else {
                                 for (Mention mention : mentionsList) {
-                                    userItemList.add(new MentionAutocompleteItem(mention.getId(), mention
+                                    internalUserItemList.add(new MentionAutocompleteItem(mention.getId(), mention
                                             .getLabel(), currentUser));
                                 }
-                                adapter.updateDataSet(userItemList, true);
-                                clearRecycledPool();
+                                adapter.updateDataSet(internalUserItemList, true);
                             }
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            userItemList = new ArrayList<>();
-                            adapter.updateDataSet(userItemList, false);
-                            clearRecycledPool();
+                            adapter.updateDataSet(new ArrayList<>(), false);
                         }
 
                         @Override
@@ -128,15 +127,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                         }
                     });
         } else {
-            userItemList = new ArrayList<>();
-            adapter.updateDataSet(userItemList, false);
-            clearRecycledPool();
-        }
-    }
-
-    private void clearRecycledPool() {
-        if (getRecyclerView() != null) {
-            getRecyclerView().getRecycledViewPool().clear();
+            adapter.updateDataSet(new ArrayList<>(), false);
         }
     }
 
