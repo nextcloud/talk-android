@@ -411,7 +411,7 @@ public class CallActivity extends AppCompatActivity {
                         .headingTvColor(getResources().getColor(R.color.colorPrimary))
                         .headingTvSize(20)
                         .headingTvText(getString(R.string.nc_push_to_talk))
-                        .subHeadingTvColor(getResources().getColor(R.color.nc_white_color_complete))
+                        .subHeadingTvColor(getResources().getColor(R.color.white))
                         .subHeadingTvSize(16)
                         .subHeadingTvText(getString(R.string.nc_push_to_talk_desc))
                         .maskColor(Color.parseColor("#dc000000"))

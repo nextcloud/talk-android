@@ -43,11 +43,11 @@
         android:layout_below="@id/image_logo"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        app:errorColor="@color/nc_white_color_complete"
+        app:errorColor="@android:color/white"
         app:helperText=" "
         app:labelText="@string/nc_server_url"
         app:panelBackgroundColor="@color/colorPrimary"
-        app:primaryColor="@color/nc_white_color_complete">
+        app:primaryColor="@android:color/white">
 
         <studio.carbonylgroup.textfieldboxes.ExtendedEditText
             android:id="@+id/extended_edit_text"
@@ -56,7 +56,7 @@
             android:imeOptions="actionDone"
             android:inputType="textUri"
             android:singleLine="true"
-            android:textColor="@color/nc_white_color_complete"/>
+            android:textColor="@android:color/white"/>
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
@@ -70,7 +70,7 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="24dp"
         android:indeterminate="true"
-        android:indeterminateTint="@color/nc_white_color_complete"
+        android:indeterminateTint="@android:color/white"
         android:indeterminateTintMode="src_in"
         android:keepScreenOn="true"
         android:visibility="invisible"/>

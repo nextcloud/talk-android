@@ -42,7 +42,7 @@
             android:background="@color/nc_darkRed"
             android:text="@string/nc_contacts_clear"
             android:textAlignment="center"
-            android:textColor="@color/nc_white_color_complete"/>
+            android:textColor="@android:color/white"/>
 
         <Button
             android:id="@+id/done_button"
@@ -53,7 +53,7 @@
             android:background="@color/nc_darkGreen"
             android:text="@string/nc_contacts_done"
             android:textAlignment="center"
-            android:textColor="@color/nc_white_color_complete"/>
+            android:textColor="@android:color/white"/>
 
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -23,15 +23,23 @@ package com.nextcloud.talk.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.v7.widget.AppCompatDrawableManager;
+import android.text.Spannable;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
+
+import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -81,26 +89,26 @@ public class DisplayUtils {
     }
 
 
-    public static String searchAndColor(String text, String searchText, @ColorInt int color) {
+    public static Spannable searchAndColor(String text, Spannable spannable, String searchText, @ColorInt int color) {
 
         if (TextUtils.isEmpty(text) || TextUtils.isEmpty(searchText)) {
-            return text;
+            return spannable;
         }
 
         Matcher m = Pattern.compile(searchText, Pattern.CASE_INSENSITIVE | Pattern.LITERAL)
                 .matcher(text);
 
-        StringBuffer sb = new StringBuffer();
 
+        int textSize = NextcloudTalkApplication.getSharedApplication().getResources().getDimensionPixelSize(R.dimen
+                .chat_text_size);
         while (m.find()) {
-            String replacement = m.group().replace(
-                    m.group(),
-                    "<font color='" + color + "'><b>" + m.group() + "</b></font>"
-            );
-            m.appendReplacement(sb, Matcher.quoteReplacement(replacement));
+            int start = text.indexOf(m.group());
+            int end = text.indexOf(m.group()) + m.group().length();
+            spannable.setSpan(new ForegroundColorSpan(color), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new AbsoluteSizeSpan(textSize) , start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        m.appendTail(sb);
 
-        return sb.toString();
+        return spannable;
     }
 }

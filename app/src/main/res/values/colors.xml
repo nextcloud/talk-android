@@ -3,12 +3,16 @@
     <color name="colorPrimary">#0082C9</color>
     <color name="colorPrimaryDark">#006AA3</color>
     <color name="colorAccent">#007CC2</color>
-    <color name="colorAccentComplement">#C34700</color>
+    <color name="secondaryColorAccent">#7CC4E6</color>
+    <color name="nc_outcoming_text_default">#99DBFF</color>
+    <color name="nc_outcoming_text_mention_others">@color/white</color>
+    <color name="nc_incoming_text_default">#27292B</color>
+    <color name="nc_incoming_text_mention_you">#C98879</color>
+    <color name="nc_incoming_text_mention_others">#1D1F20</color>
 
     <color name="nc_darkRed">#D32F2F</color>
     <color name="nc_darkGreen">#006400</color>
     <color name="nc_white_color">@color/per70white</color>
-    <color name="nc_white_color_complete">#FFFFFF</color>
     <color name="nc_light_blue_color">#7FC0E3</color>
     <color name="nc_material_yellow">#FFEB3B</color>
     <color name="nc_light_grey">#E8E8E8</color>

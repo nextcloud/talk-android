@@ -22,7 +22,6 @@ package com.nextcloud.talk.adapters.messages;
 
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -43,12 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class MagicIncomingTextMessageViewHolder
-        extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
-
-    @BindView(R.id.messageAuthor)
-    TextView messageAuthor;
-
+public class MagicOutcomingTextMessageViewHolder extends MessageHolders.OutcomingTextMessageViewHolder<ChatMessage> {
     @BindView(R.id.messageText)
     TextView messageText;
 
@@ -57,7 +51,7 @@ public class MagicIncomingTextMessageViewHolder
 
     private UserEntity currentUser;
 
-    public MagicIncomingTextMessageViewHolder(View itemView) {
+    public MagicOutcomingTextMessageViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -65,16 +59,9 @@ public class MagicIncomingTextMessageViewHolder
         currentUser = userUtils.getCurrentUser();
     }
 
-
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
-        String author;
-        if (!TextUtils.isEmpty(author = message.getActorDisplayName())) {
-            messageAuthor.setText(author);
-        } else {
-            messageAuthor.setText(R.string.nc_nick_guest);
-        }
 
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
 
@@ -84,20 +71,12 @@ public class MagicIncomingTextMessageViewHolder
             for (String key : message.getMessageParameters().keySet()) {
                 HashMap<String, String> individualHashMap = message.getMessageParameters().get(key);
                 if (individualHashMap.get("type").equals("user")) {
-                    int color;
-
-                    if (!individualHashMap.get("id").equals(message.getActorId())) {
-                        if (individualHashMap.get("id").equals(currentUser.getUserId())) {
-                            color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
-                                    .nc_incoming_text_mention_you);
-                        } else {
-                            color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
-                                    .nc_incoming_text_mention_others);
-                        }
-
+                    if (!individualHashMap.get("id").equals(currentUser.getUserId())) {
                         messageString = DisplayUtils.searchAndColor(messageText.getText().toString(),
-                                messageString, "@" + individualHashMap.get("name"), color);
+                                messageString, "@" + individualHashMap.get("name"), NextcloudTalkApplication
+                                        .getSharedApplication().getResources().getColor(R.color.nc_outcoming_text_mention_others));
                     }
+
                 }
             }
 
@@ -105,4 +84,5 @@ public class MagicIncomingTextMessageViewHolder
 
         messageText.setText(messageString);
     }
+
 }

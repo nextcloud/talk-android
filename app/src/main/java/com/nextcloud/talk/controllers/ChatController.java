@@ -46,6 +46,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
+import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback;
@@ -154,6 +155,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             MessagesListAdapter.HoldersConfig holdersConfig = new MessagesListAdapter.HoldersConfig();
             holdersConfig.setIncoming(MagicIncomingTextMessageViewHolder.class,
                     R.layout.item_custom_incoming_text_message);
+            holdersConfig.setOutcomingTextHolder(MagicOutcomingTextMessageViewHolder.class);
 
             adapter = new MessagesListAdapter<>(currentUser.getUserId(), holdersConfig, new ImageLoader() {
                 @Override

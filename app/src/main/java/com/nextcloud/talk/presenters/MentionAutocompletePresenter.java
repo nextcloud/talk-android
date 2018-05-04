@@ -112,12 +112,14 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                                     internalUserItemList.add(new MentionAutocompleteItem(mention.getId(), mention
                                             .getLabel(), currentUser));
                                 }
+                                userItemList = internalUserItemList;
                                 adapter.updateDataSet(internalUserItemList, true);
                             }
                         }
 
                         @Override
                         public void onError(Throwable e) {
+                            userItemList = new ArrayList<>();
                             adapter.updateDataSet(new ArrayList<>(), false);
                         }
 
@@ -127,6 +129,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                         }
                     });
         } else {
+            userItemList = new ArrayList<>();
             adapter.updateDataSet(new ArrayList<>(), false);
         }
     }
