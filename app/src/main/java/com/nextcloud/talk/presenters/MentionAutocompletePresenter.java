@@ -79,7 +79,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
 
     @Override
     protected RecyclerView.Adapter instantiateAdapter() {
-        adapter = new FlexibleAdapter<>(abstractFlexibleItemList, context, true);
+        adapter = new FlexibleAdapter<>(abstractFlexibleItemList, context, false);
         adapter.addListener(this);
         return adapter;
     }
@@ -113,6 +113,10 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                                     internalAbstractFlexibleItemList.add(
                                             new MentionAutocompleteItem(mention.getId(), mention.getLabel(),
                                                     currentUser));
+                                }
+
+                                if (adapter.getItemCount() != 0) {
+                                    adapter.clear();
                                 }
 
                                 adapter.updateDataSet(internalAbstractFlexibleItemList);
