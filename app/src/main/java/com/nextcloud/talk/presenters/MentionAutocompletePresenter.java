@@ -23,6 +23,7 @@ package com.nextcloud.talk.presenters;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.nextcloud.talk.adapters.items.MentionAutocompleteItem;
@@ -61,6 +62,8 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
 
     private String roomToken;
 
+    private List<AbstractFlexibleItem> abstractFlexibleItemList = new ArrayList<>();
+
     public MentionAutocompletePresenter(Context context) {
         super(context);
         this.context = context;
@@ -76,14 +79,14 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
 
     @Override
     protected RecyclerView.Adapter instantiateAdapter() {
-        adapter = new FlexibleAdapter<>(new ArrayList<AbstractFlexibleItem>(), context, true);
+        adapter = new FlexibleAdapter<>(abstractFlexibleItemList, context, true);
         adapter.addListener(this);
         return adapter;
     }
 
     @Override
     protected void onQuery(@Nullable CharSequence query) {
-        if (query != null && query.length() > 0) {
+        if (!TextUtils.isEmpty(query)) {
             UserEntity currentUser = userUtils.getCurrentUser();
 
             adapter.setFilter(query.toString());
@@ -101,22 +104,24 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                         @Override
                         public void onNext(MentionOverall mentionOverall) {
                             List<Mention> mentionsList = mentionOverall.getOcs().getData();
-                            List<AbstractFlexibleItem> internalUserItemList = new ArrayList<>();
-                            if (mentionsList.size() == 0 ||
-                                    (mentionsList.size() == 1 && mentionsList.get(0).getId().equals(query.toString()))) {
-                                adapter.notifyDataSetChanged();
+
+                            if (mentionsList.size() == 0) {
+                                adapter.clear();
                             } else {
+                                List<AbstractFlexibleItem> internalAbstractFlexibleItemList = new ArrayList<>();
                                 for (Mention mention : mentionsList) {
-                                    internalUserItemList.add(new MentionAutocompleteItem(mention.getId(), mention
-                                            .getLabel(), currentUser));
+                                    internalAbstractFlexibleItemList.add(
+                                            new MentionAutocompleteItem(mention.getId(), mention.getLabel(),
+                                                    currentUser));
                                 }
-                                adapter.updateDataSet(internalUserItemList, true);
+
+                                adapter.updateDataSet(internalAbstractFlexibleItemList);
                             }
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            adapter.updateDataSet(new ArrayList<>(), false);
+                            adapter.clear();
                         }
 
                         @Override
@@ -125,7 +130,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                         }
                     });
         } else {
-            adapter.updateDataSet(new ArrayList<>(), false);
+            adapter.clear();
         }
     }
 
