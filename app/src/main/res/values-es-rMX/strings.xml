@@ -51,6 +51,8 @@
     <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">Compartir entre cuentas</string>
     <string name="nc_settings_reauthorize">Volver a autorizar</string>
+    <string name="nc_client_cert_setup">Configura un certificado de cliente</string>
+    <string name="nc_client_cert_change">Cambia el certificado del cliente</string>
     <string name="nc_settings_remove_account">Eliminar cuenta</string>
     <string name="nc_settings_add_account">Agregar una cuenta nueva</string>
     <string name="nc_settings_wrong_account">Solo la cuenta actual se puede volver a autorizar</string>
@@ -74,12 +76,15 @@
 
     <!-- Room menu -->
     <string name="nc_what">¿Qué te gustaría hacer el día de hoy?</string>
+    <string name="nc_leave">Dejar la conversación</string>
     <string name="nc_rename">Renombrar conversación</string>
     <string name="nc_set_password">Establecer una contraseña</string>
     <string name="nc_change_password">Cambiar una contraseña</string>
     <string name="nc_clear_password">Limpiar contraseña</string>
     <string name="nc_share_link">Compartir liga</string>
     <string name="nc_share_link_via">Compartir vínculo vía</string>
+    <string name="nc_make_call_public">Hacer la conversación pública</string>
+    <string name="nc_make_call_private">Hacer la conversación privada</string>
     <string name="nc_delete_call">Borrar conversación</string>
     <string name="nc_new_conversation">Iniciar una nueva conversación</string>
     <string name="nc_join_via_link">Únete vía una liga</string>
@@ -104,6 +109,9 @@
     <string name="nc_incoming_call">Llamada entrando</string>
     <string name="nc_nick_guest">Invitado</string>
     <string name="nc_public_call">Nueva conversación pública</string>
+    <string name="nc_public_call_explanation">Las conversaciones públicas te permiten invitar personas externas a través de
+una liga específicamente generada.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s en el canal de notifcación %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
@@ -113,6 +121,8 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">¡Lo sentimos, algo salió mal!</string>
+    <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas via
+teléfonos móviles. Puedes intentar unirte a la conversación a través de un navegador web. </string>
     <string name="nc_all_ok_operation">¡OK, ya terminamos!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nombre de la conversación</string>
@@ -128,6 +138,8 @@
     <string name="nc_push_to_talk">Presiona-para-hablar</string>
     <string name="nc_push_to_talk_desc">Con el microfono deshabilitado, haz click &amp; presiona para usar Presiona-para-hablar</string>
     <string name="nc_store_short_desc">Haz video llamadas y chats privados usnaod tu propio servidor.</string>
+    <string name="nc_configure_cert_auth">Seleccionar el certificado de autenticación</string>
+    <string name="nc_change_cert_auth">Cambiar el certificado de atuenticación</string>
     <string name="nc_store_full_desc">Usa Nextcloud Talk para hacer llamadas de audio o video en grupos o uno-a-uno, crear o unirse conferencias web y enviar mensajes de chat. Toda la comunicacion es completamente encriptada y mediada por tu propio servidor, proporcionando el más alto grado de privacidad posible.
 
 ¡Nextcloud Talk es fácil de usar y siempre será completamente gratis!
@@ -155,6 +167,8 @@ Conoce más en https://nextcloud.com/talk
 
 Visita a Nextcloud en https://nextcloud.com</string>
 
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Introduce un mensaje...</string>
     <string name="nc_date_header_yesterday">Ayer</string>
     <string name="nc_date_header_today">Hoy</string>
     <string name="conversation_menu_voice_call">Llamada de voz</string>
