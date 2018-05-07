@@ -449,35 +449,27 @@ public class AccountVerificationController extends BaseController {
         } else {
             ApplicationWideMessageHolder.getInstance().setMessageType(
                     ApplicationWideMessageHolder.MessageType.FAILED_TO_IMPORT_ACCOUNT);
-            new Handler().postDelayed(() -> {
-                if (getRouter().hasRootController()) {
-                    if (getActivity() != null) {
-                        getActivity().runOnUiThread(() -> {
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> new Handler().postDelayed(() -> {
+                    if (getRouter().hasRootController()) {
+                        if (getActivity() != null) {
                             getRouter().popToRoot();
-                        });
-
-                    }
-                } else {
-                    if (userUtils.anyUserExists()) {
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(() -> {
-
-                                getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                                        .pushChangeHandler(new HorizontalChangeHandler())
-                                        .popChangeHandler(new HorizontalChangeHandler()));
-                            });
                         }
+
+
                     } else {
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(() -> {
-                                getRouter().setRoot(RouterTransaction.with(new ServerSelectionController())
-                                        .pushChangeHandler(new HorizontalChangeHandler())
-                                        .popChangeHandler(new HorizontalChangeHandler()));
-                            });
+                        if (userUtils.anyUserExists()) {
+                            getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        } else {
+                            getRouter().setRoot(RouterTransaction.with(new ServerSelectionController())
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
                         }
                     }
-                }
-            }, 7500);
+                }, 7500));
+            }
         }
     }
 
