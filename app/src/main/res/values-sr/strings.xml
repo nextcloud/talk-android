@@ -1,4 +1,6 @@
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_conversations">Разговори</string>
     <string name="nc_bottom_navigation_title_contacts">Контакти</string>
     <string name="nc_bottom_navigation_title_settings">Поставке</string>
 
@@ -18,6 +20,7 @@
 
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Име за приказ добављено</string>
+    <string name="nc_push_disabled">Брза обавештења су искључена</string>
     <string name="nc_display_name_not_fetched">Име за приказ се не може добавити. Прекидам</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s апликација нађено</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s апликација није инсталирана на серверу, прекидам</string>
@@ -73,11 +76,16 @@
 
     <!-- Room menu -->
     <string name="nc_what">Шта желите да радите данас?</string>
+    <string name="nc_leave">Напусти разговор</string>
+    <string name="nc_rename">Преименуј разговор</string>
     <string name="nc_set_password">Постави лозинку</string>
     <string name="nc_change_password">Промени лозинку</string>
     <string name="nc_clear_password">Очисти лозинку</string>
     <string name="nc_share_link">Подели везу</string>
     <string name="nc_share_link_via">Подели везу преко</string>
+    <string name="nc_make_call_public">Учини разговор јавним</string>
+    <string name="nc_make_call_private">Учини разговор приватним</string>
+    <string name="nc_delete_call">Обриши разговор</string>
     <string name="nc_new_conversation">Започни нови разговор</string>
     <string name="nc_join_via_link">Придружи се преко везе</string>
     <string name="nc_join_via_web">Придружи се преко веба</string>
@@ -100,6 +108,7 @@
     <!-- Call -->
     <string name="nc_incoming_call">Долазни позив</string>
     <string name="nc_nick_guest">Гост</string>
+    <string name="nc_public_call">Нови јавни разговор</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s на каналу за обавештење о %2$s</string>
     <string name="nc_notification_channel_calls">Канал обавештења о позивима</string>
@@ -153,4 +162,11 @@ Nextcloud Talk апликација захтева да имате Некстк�
 
 Пронађите Некстклауд на https://nextcloud.com</string>
 
-    </resources>
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Унесите поруку…</string>
+    <string name="nc_date_header_yesterday">Јуче</string>
+    <string name="nc_date_header_today">Данас</string>
+    <string name="conversation_menu_voice_call">Аудио позив</string>
+    <string name="conversation_menu_video_call">Видео позив</string>
+
+</resources>
