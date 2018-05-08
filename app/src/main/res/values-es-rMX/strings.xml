@@ -21,6 +21,7 @@
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Se obtuvo el nombre a desplegar</string>
     <string name="nc_push_disabled">Notificaciones push deshabilitadas</string>
+    <string name="nc_capabilities_failed">Se presentó una falla al recuperar las capacidades, abortando</string>
     <string name="nc_display_name_not_fetched">No se pudo obtener el nombre a desplegar, abortando</string>
     <string name="nc_nextcloud_talk_app_installed">Aplicación %1$s encontrada</string>
     <string name="nc_nextcloud_talk_app_not_installed">La aplicación %1$s no está instalada en el servidor, abortando</string>
