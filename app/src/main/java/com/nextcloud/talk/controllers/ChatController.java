@@ -93,7 +93,7 @@ import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
-        MessagesListAdapter.Formatter<Date>, MessagesListAdapter.SelectionListener {
+        MessagesListAdapter.Formatter<Date> {
     private static final String TAG = "ChatController";
 
     @Inject
@@ -174,7 +174,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messagesList.setAdapter(adapter);
         adapter.setLoadMoreListener(this);
         adapter.setDateHeadersFormatter(this::format);
-        //adapter.enableSelectionMode(this);
 
         setupMentionAutocomplete();
 
@@ -510,10 +509,5 @@ public class ChatController extends BaseController implements MessagesListAdapte
         callIntent.putExtras(bundle);
 
         return callIntent;
-    }
-
-    @Override
-    public void onSelectionChanged(int count) {
-        //globalMenu.findItem(R.id.action_delete).setVisible(count > 0);
     }
 }
