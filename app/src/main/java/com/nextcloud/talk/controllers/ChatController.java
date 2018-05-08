@@ -157,7 +157,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
             MessagesListAdapter.HoldersConfig holdersConfig = new MessagesListAdapter.HoldersConfig();
             holdersConfig.setIncoming(MagicIncomingTextMessageViewHolder.class,
                     R.layout.item_custom_incoming_text_message);
-            holdersConfig.setOutcomingTextHolder(MagicOutcomingTextMessageViewHolder.class);
+            holdersConfig.setOutcoming(MagicOutcomingTextMessageViewHolder.class,
+                    R.layout.item_custom_outcoming_text_message);
 
             adapter = new MessagesListAdapter<>(currentUser.getUserId(), holdersConfig, new ImageLoader() {
                 @Override
