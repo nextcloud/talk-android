@@ -21,6 +21,9 @@
 package com.nextcloud.talk.controllers;
 
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -68,6 +71,7 @@ import com.otaliastudios.autocomplete.AutocompleteCallback;
 import com.otaliastudios.autocomplete.AutocompletePresenter;
 import com.otaliastudios.autocomplete.CharPolicy;
 import com.stfalcon.chatkit.commons.ImageLoader;
+import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
@@ -93,7 +97,7 @@ import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
-        MessagesListAdapter.Formatter<Date> {
+        MessagesListAdapter.Formatter<Date>, MessagesListAdapter.OnMessageLongClickListener {
     private static final String TAG = "ChatController";
 
     @Inject
@@ -122,7 +126,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     /*
     TODO:
-        - copy message
         - check push notifications
         - new conversation handling
      */
@@ -174,6 +177,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messagesList.setAdapter(adapter);
         adapter.setLoadMoreListener(this);
         adapter.setDateHeadersFormatter(this::format);
+
+        adapter.setOnMessageLongClickListener(this);
 
         setupMentionAutocomplete();
 
@@ -509,5 +514,19 @@ public class ChatController extends BaseController implements MessagesListAdapte
         callIntent.putExtras(bundle);
 
         return callIntent;
+    }
+
+
+    @Override
+    public void onMessageLongClick(IMessage message) {
+        if (getActivity() != null) {
+            ClipboardManager clipboardManager = (android.content.ClipboardManager)
+                    getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData = android.content.ClipData.newPlainText(
+                    getResources().getString(R.string.nc_app_name), message.getText());
+            if (clipboardManager != null) {
+                clipboardManager.setPrimaryClip(clipData);
+            }
+        }
     }
 }
