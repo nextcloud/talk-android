@@ -31,6 +31,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -76,6 +78,7 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
+import com.webianks.library.PopupBubble;
 
 import org.parceler.Parcels;
 
@@ -109,6 +112,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     MessageInput messageInput;
     @BindView(R.id.messagesList)
     MessagesList messagesList;
+    @BindView(R.id.popupBubble)
+    PopupBubble popupBubble;
     private List<Disposable> disposableList = new ArrayList<>();
     private String conversationName;
     private String roomToken;
@@ -122,8 +127,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private MessagesListAdapter<ChatMessage> adapter;
     private Menu globalMenu;
 
+    private RecyclerView.SmoothScroller smoothScroller;
     private Autocomplete mentionAutocomplete;
-
     /*
     TODO:
         - check push notifications
@@ -149,6 +154,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         boolean adapterWasNull = false;
+
+        if (getActivity() != null) {
+            smoothScroller = new LinearSmoothScroller(getActivity()) {
+                @Override
+                protected int getVerticalSnapPreference() {
+                    return LinearSmoothScroller.SNAP_TO_START;
+                }
+            };
+        }
 
         if (adapter == null) {
 
@@ -178,8 +192,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messagesList.setAdapter(adapter);
         adapter.setLoadMoreListener(this);
         adapter.setDateHeadersFormatter(this::format);
-
         adapter.setOnMessageLongClickListener(this);
+
+        popupBubble.setRecyclerView(messagesList);
 
         setupMentionAutocomplete();
 
@@ -312,7 +327,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
+                        LinearLayoutManager layoutManager = (LinearLayoutManager) messagesList.getLayoutManager();
 
+                        if (popupBubble.isShown()) {
+                            popupBubble.hide();
+                        }
+                        
+                        smoothScroller.setTargetPosition(0);
+                        layoutManager.startSmoothScroll(smoothScroller);
                     }
 
                     @Override
@@ -433,8 +455,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 LinearLayoutManager layoutManager = (LinearLayoutManager) messagesList.getLayoutManager();
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessageList.get(i).setBaseUrl(currentUser.getBaseUrl());
-                    adapter.addToStart(chatMessageList.get(i),
-                            layoutManager.findLastVisibleItemPosition() <= adapter.getItemCount() - 10);
+                    boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0;
+
+                    if (!shouldScroll && !popupBubble.isShown()) {
+                        popupBubble.show();
+                    }
+
+                    adapter.addToStart(chatMessageList.get(i), shouldScroll);
+
                 }
 
                 globalLastKnownFutureMessageId = Integer.parseInt(response.headers().get("X-Chat-Last-Given"));

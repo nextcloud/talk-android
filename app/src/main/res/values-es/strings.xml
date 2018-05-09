@@ -171,7 +171,7 @@ Encuentra Nextcloud en https://nextcloud.com</string>
     <string name="nc_hint_enter_a_message">Escribe un mensaje…</string>
     <string name="nc_date_header_yesterday">Ayer</string>
     <string name="nc_date_header_today">Hoy</string>
-    <string name="conversation_menu_voice_call">Llamada de audio</string>
-    <string name="conversation_menu_video_call">Llamada de vídeo</string>
+    <string name="nc_conversation_menu_voice_call">Llamada de audio</string>
+    <string name="nc_conversation_menu_video_call">Llamada de vídeo</string>
 
 </resources>
