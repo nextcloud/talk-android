@@ -29,9 +29,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -41,6 +41,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -65,6 +66,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
@@ -100,7 +102,7 @@ import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
-        MessagesListAdapter.Formatter<Date>, MessagesListAdapter.OnMessageLongClickListener {
+        MessagesListAdapter.Formatter<Date>, MessagesListAdapter.OnMessageLongClickListener{
     private static final String TAG = "ChatController";
 
     @Inject
@@ -127,8 +129,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private MessagesListAdapter<ChatMessage> adapter;
     private Menu globalMenu;
 
-    private RecyclerView.SmoothScroller smoothScroller;
     private Autocomplete mentionAutocomplete;
+    private LinearLayoutManager layoutManager;
+
+    private int newMessagesCount = 0;
+
     /*
     TODO:
         - check push notifications
@@ -155,15 +160,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         boolean adapterWasNull = false;
 
-        if (getActivity() != null) {
-            smoothScroller = new LinearSmoothScroller(getActivity()) {
-                @Override
-                protected int getVerticalSnapPreference() {
-                    return LinearSmoothScroller.SNAP_TO_START;
-                }
-            };
-        }
-
         if (adapter == null) {
 
             adapterWasNull = true;
@@ -189,12 +185,40 @@ public class ChatController extends BaseController implements MessagesListAdapte
             });
         }
 
+
         messagesList.setAdapter(adapter);
         adapter.setLoadMoreListener(this);
         adapter.setDateHeadersFormatter(this::format);
         adapter.setOnMessageLongClickListener(this);
 
+        layoutManager = (LinearLayoutManager) messagesList.getLayoutManager();
+
         popupBubble.setRecyclerView(messagesList);
+
+        popupBubble.setPopupBubbleListener(context -> {
+            if (newMessagesCount != 0) {
+                new Handler().postDelayed(() -> messagesList.smoothScrollToPosition(newMessagesCount - 1), 200);
+            }
+        });
+
+        messagesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    if (newMessagesCount != 0) {
+                        if (layoutManager.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
+                            newMessagesCount = 0;
+
+                            if (popupBubble.isShown()) {
+                                popupBubble.hide();
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         setupMentionAutocomplete();
 
@@ -235,6 +259,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
             mentionAutocomplete.dismissPopup();
         }
 
+        if (getActivity() != null) {
+            new KeyboardUtils(getActivity(), getView());
+        }
     }
 
     @Override
@@ -327,14 +354,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        LinearLayoutManager layoutManager = (LinearLayoutManager) messagesList.getLayoutManager();
-
                         if (popupBubble.isShown()) {
                             popupBubble.hide();
                         }
-                        
-                        smoothScroller.setTargetPosition(0);
-                        layoutManager.startSmoothScroll(smoothScroller);
+
+                        messagesList.smoothScrollToPosition(0);
                     }
 
                     @Override
@@ -452,17 +476,22 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 adapter.addToEnd(chatMessageList, false);
 
             } else {
-                LinearLayoutManager layoutManager = (LinearLayoutManager) messagesList.getLayoutManager();
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessageList.get(i).setBaseUrl(currentUser.getBaseUrl());
                     boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0;
 
-                    if (!shouldScroll && !popupBubble.isShown()) {
-                        popupBubble.show();
+                    if (!shouldScroll) {
+                        if (!popupBubble.isShown()) {
+                            newMessagesCount = 1;
+                            popupBubble.show();
+                        } else if (popupBubble.isShown()) {
+                            newMessagesCount++;
+                        }
+                    } else {
+                        newMessagesCount = 0;
                     }
 
                     adapter.addToStart(chatMessageList.get(i), shouldScroll);
-
                 }
 
                 globalLastKnownFutureMessageId = Integer.parseInt(response.headers().get("X-Chat-Last-Given"));
