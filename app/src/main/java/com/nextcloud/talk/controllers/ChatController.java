@@ -494,7 +494,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     adapter.addToStart(chatMessageList.get(i), shouldScroll);
                 }
 
-                globalLastKnownFutureMessageId = Integer.parseInt(response.headers().get("X-Chat-Last-Given"));
+                String xChatLastGivenHeader;
+                if (response.headers().size() > 0 && !TextUtils.isEmpty((xChatLastGivenHeader = response.headers().get
+                        ("X-Chat-Last-Given")))) {
+                    globalLastKnownFutureMessageId = Integer.parseInt(xChatLastGivenHeader);
+                }
             }
 
             if (shouldForceFuture) {
