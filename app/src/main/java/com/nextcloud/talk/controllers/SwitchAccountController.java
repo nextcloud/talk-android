@@ -111,7 +111,14 @@ public class SwitchAccountController extends BaseController {
                             public void onNext(UserEntity userEntity) {
                                 cookieManager.getCookieStore().removeAll();
                                 userUtils.disableAllUsersWithoutId(userEntity.getId());
-                                getRouter().popCurrentController();
+                                if (getActivity() != null) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            getRouter().popCurrentController();
+                                        }
+                                    });
+                                }
                             }
 
                             @Override
