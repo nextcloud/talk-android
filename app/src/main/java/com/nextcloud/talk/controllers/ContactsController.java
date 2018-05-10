@@ -57,7 +57,7 @@ import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
+import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -67,7 +67,6 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.animations.ViewHidingBehaviourAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -275,9 +274,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
 
                             if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
-                                conversationIntent.putExtras(bundle);
                                 bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
                                         roomOverall.getOcs().getData().getDisplayName());
+                                conversationIntent.putExtras(bundle);
                                 getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
                                         .pushChangeHandler(new HorizontalChangeHandler())
                                         .popChangeHandler(new HorizontalChangeHandler())));
@@ -657,7 +656,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
 
         getChildRouter((ViewGroup) view).setRoot(
-                RouterTransaction.with(new EntryMenuController(bundle))
+                RouterTransaction.with(new OperationsMenuController(bundle))
                         .popChangeHandler(new VerticalChangeHandler())
                         .pushChangeHandler(new VerticalChangeHandler()));
 
@@ -671,7 +670,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         });
 
-        bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout()));
+        bottomSheet.setOnShowListener(dialog -> eventBus.post(new BottomSheetLockEvent(false, 0,
+                false, false)));
 
         bottomSheet.show();
     }
@@ -689,7 +689,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         bottomSheet.setOnCancelListener(null);
                         bottomSheet.cancel();
 
-                        new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
+                        if (bottomSheetLockEvent.isDismissView()) {
+                            new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
+                        }
                     }, bottomSheetLockEvent.getDelay());
                 }
             }

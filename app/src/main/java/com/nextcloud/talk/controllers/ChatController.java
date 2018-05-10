@@ -137,7 +137,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     /*
     TODO:
         - check push notifications
-        - new conversation handling
      */
     public ChatController(Bundle args) {
         super(args);
