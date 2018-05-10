@@ -29,7 +29,15 @@
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/surface_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/avatarImageView"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_baseline_arrow_downward_24px"/>
 
     <ImageView
         android:id="@+id/remote_video_off"

@@ -40,6 +40,6 @@ public class PeerConnectionEvent {
     }
 
     public enum PeerConnectionEventType {
-        CLOSE_PEER, SENSOR_FAR, SENSOR_NEAR, NICK_CHANGE, AUDIO_CHANGE, VIDEO_CHANGE
+        PEER_CONNECTED, PEER_CLOSED, SENSOR_FAR, SENSOR_NEAR, NICK_CHANGE, AUDIO_CHANGE, VIDEO_CHANGE
     }
 }

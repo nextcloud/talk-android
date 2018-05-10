@@ -55,6 +55,7 @@ public class MagicPeerConnectionWrapper {
     private PeerConnection peerConnection;
     private String sessionId;
     private String nick;
+    private String userId;
     private MediaConstraints mediaConstraints;
     private DataChannel magicDataChannel;
     private MagicSdpObserver magicSdpObserver;
@@ -248,11 +249,15 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
-            if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED) && hasInitiated) {
-                sendInitialMediaStatus();
+            if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                        .PEER_CONNECTED, sessionId, null, null));
+                if (hasInitiated) {
+                    sendInitialMediaStatus();
+                }
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.CLOSED)) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .CLOSE_PEER, sessionId, null, null));
+                        .PEER_CLOSED, sessionId, null, null));
             }
         }
 

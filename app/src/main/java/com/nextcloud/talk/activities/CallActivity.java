@@ -198,10 +198,12 @@ public class CallActivity extends AppCompatActivity {
     private String credentials;
     private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
 
+    private List<String> basicUISetupList = new ArrayList<>();
     private boolean videoOn = false;
     private boolean audioOn = false;
 
     private boolean isMultiSession = false;
+    private boolean isVoiceOnlyCall = false;
 
     private Handler handler = new Handler();
 
@@ -210,8 +212,6 @@ public class CallActivity extends AppCompatActivity {
     private View.OnClickListener videoOnClickListener;
 
     private String baseUrl;
-
-    private boolean initialPermissionsCheck = true;
 
     private SpotlightView spotlightView;
 
@@ -249,6 +249,7 @@ public class CallActivity extends AppCompatActivity {
         userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable(BundleKeys.KEY_USER_ENTITY));
         callSession = getIntent().getExtras().getString(BundleKeys.KEY_CALL_SESSION, "0");
         credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
+        isVoiceOnlyCall = getIntent().getExtras().getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
 
         if (getIntent().getExtras().containsKey(BundleKeys.KEY_MODIFIED_BASE_URL)) {
             credentials = null;
@@ -442,6 +443,10 @@ public class CallActivity extends AppCompatActivity {
                 toggleMedia(true, false);
             }
 
+            if (isVoiceOnlyCall && !inCall) {
+                startCall();
+            }
+
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_MICROPHONE)) {
             // Microphone permission is permanently denied so we cannot request it normally.
             OpenAppDetailsDialogFragment.show(
@@ -547,29 +552,39 @@ public class CallActivity extends AppCompatActivity {
     }
 
     public void initViews() {
-        if (cameraEnumerator.getDeviceNames().length < 2) {
+        if (isVoiceOnlyCall) {
             cameraSwitchButton.setVisibility(View.GONE);
-        }
+            cameraControlButton.setVisibility(View.GONE);
+            pipVideoView.setVisibility(View.GONE);
+        } else {
+            if (cameraEnumerator.getDeviceNames().length < 2) {
+                cameraSwitchButton.setVisibility(View.GONE);
+            }
 
-        // setting this to true because it's not shown by default
-        pipVideoView.setMirror(true);
-        pipVideoView.init(rootEglBase.getEglBaseContext(), null);
-        pipVideoView.setZOrderMediaOverlay(true);
-        // disabled because it causes some devices to crash
-        pipVideoView.setEnableHardwareScaler(false);
-        pipVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+            // setting this to true because it's not shown by default
+            pipVideoView.setMirror(true);
+            pipVideoView.init(rootEglBase.getEglBaseContext(), null);
+            pipVideoView.setZOrderMediaOverlay(true);
+            // disabled because it causes some devices to crash
+            pipVideoView.setEnableHardwareScaler(false);
+            pipVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+        }
     }
 
     private void checkPermissions() {
-        EffortlessPermissions.requestPermissions(this, R.string.nc_permissions,
-                R.string.nc_proceed, R.string.nc_empty, 100, PERMISSIONS_CALL);
+        if (isVoiceOnlyCall) {
+            onMicrophoneClick();
+        } else {
+            EffortlessPermissions.requestPermissions(this, R.string.nc_permissions,
+                    R.string.nc_proceed, R.string.nc_empty, 100, PERMISSIONS_CALL);
+        }
 
     }
 
     @AfterPermissionGranted(100)
     private void onPermissionsGranted() {
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CALL)) {
-            if (!videoOn && !initialPermissionsCheck) {
+            if (!videoOn && !isVoiceOnlyCall) {
                 onCameraClick();
             }
 
@@ -577,15 +592,13 @@ public class CallActivity extends AppCompatActivity {
                 onMicrophoneClick();
             }
 
-            if (cameraEnumerator.getDeviceNames().length == 0) {
-                cameraControlButton.setVisibility(View.GONE);
-            }
+            if (!isVoiceOnlyCall) {
+                if (cameraEnumerator.getDeviceNames().length == 0) {
+                    cameraControlButton.setVisibility(View.GONE);
+                }
 
-            if (cameraEnumerator.getDeviceNames().length > 1) {
-                if (!initialPermissionsCheck) {
+                if (cameraEnumerator.getDeviceNames().length > 1) {
                     cameraSwitchButton.setVisibility(View.VISIBLE);
-                } else {
-                    cameraSwitchButton.setVisibility(View.GONE);
                 }
             }
 
@@ -597,26 +610,27 @@ public class CallActivity extends AppCompatActivity {
             checkIfSomeAreApproved();
         }
 
-        initialPermissionsCheck = false;
     }
 
     private void checkIfSomeAreApproved() {
-        if (cameraEnumerator.getDeviceNames().length == 0) {
-            cameraControlButton.setVisibility(View.GONE);
-        }
-
-        if (cameraEnumerator.getDeviceNames().length > 1) {
-            cameraSwitchButton.setVisibility(View.VISIBLE);
-        }
-
-        if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) && !initialPermissionsCheck) {
-            if (!videoOn) {
-                onCameraClick();
+        if (!isVoiceOnlyCall) {
+            if (cameraEnumerator.getDeviceNames().length == 0) {
+                cameraControlButton.setVisibility(View.GONE);
             }
-        } else {
-            cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_off_white_24px);
-            cameraControlButton.setAlpha(0.7f);
-            cameraSwitchButton.setVisibility(View.GONE);
+
+            if (cameraEnumerator.getDeviceNames().length > 1) {
+                cameraSwitchButton.setVisibility(View.VISIBLE);
+            }
+
+            if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA)) {
+                if (!videoOn) {
+                    onCameraClick();
+                }
+            } else {
+                cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_off_white_24px);
+                cameraControlButton.setAlpha(0.7f);
+                cameraSwitchButton.setVisibility(View.GONE);
+            }
         }
 
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
@@ -634,11 +648,12 @@ public class CallActivity extends AppCompatActivity {
 
     @AfterPermissionDenied(100)
     private void onPermissionsDenied() {
-        initialPermissionsCheck = false;
-        if (cameraEnumerator.getDeviceNames().length == 0) {
-            cameraControlButton.setVisibility(View.GONE);
-        } else if (cameraEnumerator.getDeviceNames().length == 1) {
-            cameraSwitchButton.setVisibility(View.GONE);
+        if (!isVoiceOnlyCall) {
+            if (cameraEnumerator.getDeviceNames().length == 0) {
+                cameraControlButton.setVisibility(View.GONE);
+            } else if (cameraEnumerator.getDeviceNames().length == 1) {
+                cameraSwitchButton.setVisibility(View.GONE);
+            }
         }
 
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) ||
@@ -685,11 +700,20 @@ public class CallActivity extends AppCompatActivity {
         //create sdpConstraints
         sdpConstraints = new MediaConstraints();
         sdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"));
-        sdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
+        String offerToReceiveVideoString = "true";
+
+        if (isVoiceOnlyCall) {
+            offerToReceiveVideoString = "false";
+        }
+
+        sdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo",
+                offerToReceiveVideoString));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
-        cameraInitialization();
+        if (!isVoiceOnlyCall) {
+            cameraInitialization();
+        }
         microphoneInitialization();
     }
 
@@ -1163,31 +1187,7 @@ public class CallActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        ncApi.leaveRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken))
-                                .subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Observer<GenericOverall>() {
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
-
-                                    }
-
-                                    @Override
-                                    public void onNext(GenericOverall genericOverall) {
-                                        finish();
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-
-                                    }
-
-                                    @Override
-                                    public void onComplete() {
-
-                                    }
-                                });
-
+                        finish();
                     }
 
                     @Override
@@ -1214,8 +1214,19 @@ public class CallActivity extends AppCompatActivity {
         RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionId);
         if (relativeLayout != null) {
             ImageView imageView;
+            ImageView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
+            SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id.surface_view);
+
             if (video) {
                 imageView = relativeLayout.findViewById(R.id.remote_video_off);
+
+                if (change) {
+                    avatarImageView.setVisibility(View.INVISIBLE);
+                    surfaceViewRenderer.setVisibility(View.VISIBLE);
+                } else {
+                    avatarImageView.setVisibility(View.VISIBLE);
+                    surfaceViewRenderer.setVisibility(View.INVISIBLE);
+                }
             } else {
                 imageView = relativeLayout.findViewById(R.id.remote_audio_off);
             }
@@ -1228,14 +1239,12 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private void gotRemoteStream(MediaStream stream, String session) {
-        removeMediaStream(session);
-
-        if (stream.videoTracks.size() == 1) {
-            VideoTrack videoTrack = stream.videoTracks.get(0);
-            try {
+    private void setupNewPeerLayout(String session) {
+        if (remoteRenderersLayout.findViewWithTag(session) == null) {
+            basicUISetupList.add(session);
+            runOnUiThread(() -> {
                 RelativeLayout relativeLayout = (RelativeLayout)
-                        getLayoutInflater().inflate(R.layout.surface_renderer, remoteRenderersLayout,
+                        getLayoutInflater().inflate(R.layout.call_item, remoteRenderersLayout,
                                 false);
                 relativeLayout.setTag(session);
                 SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id
@@ -1247,12 +1256,40 @@ public class CallActivity extends AppCompatActivity {
                 surfaceViewRenderer.setEnableHardwareScaler(false);
                 surfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
                 surfaceViewRenderer.setOnClickListener(videoOnClickListener);
-                VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
-                videoTrack.addRenderer(remoteRenderer);
                 remoteRenderersLayout.addView(relativeLayout);
                 gotNick(session, getPeerConnectionWrapperForSessionId(session).getNick());
-            } catch (Exception e) {
-                Log.d(TAG, "Failed to create a new video view");
+
+                basicUISetupList.remove(session);
+                callControls.setZ(100.0f);
+            });
+        }
+    }
+
+    private void setupVideoStreamForLayout(@Nullable MediaStream mediaStream, String session, boolean enable) {
+        boolean isInitialLayoutSetupForPeer = false;
+        if (remoteRenderersLayout.findViewWithTag(session) == null) {
+            setupNewPeerLayout(session);
+            isInitialLayoutSetupForPeer = true;
+        }
+
+        RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(session);
+        SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id.surface_view);
+        ImageView imageView = relativeLayout.findViewById(R.id.avatarImageView);
+
+        if (mediaStream != null && mediaStream.videoTracks != null && mediaStream.videoTracks.size() > 0 && enable) {
+            VideoTrack videoTrack = mediaStream.videoTracks.get(0);
+
+            VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
+            videoTrack.addRenderer(remoteRenderer);
+
+            imageView.setVisibility(View.INVISIBLE);
+            surfaceViewRenderer.setVisibility(View.VISIBLE);
+        } else {
+            imageView.setVisibility(View.VISIBLE);
+            surfaceViewRenderer.setVisibility(View.INVISIBLE);
+
+            if (isInitialLayoutSetupForPeer && isVoiceOnlyCall) {
+                gotAudioOrVideoChange(true, session, false);
             }
         }
 
@@ -1310,8 +1347,8 @@ public class CallActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
-        if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
-                .CLOSE_PEER)) {
+ if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
+                .PEER_CLOSED)) {
             endPeerConnection(peerConnectionEvent.getSessionId());
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.SENSOR_FAR) ||
@@ -1327,7 +1364,7 @@ public class CallActivity extends AppCompatActivity {
                 .PeerConnectionEventType.NICK_CHANGE)) {
             runOnUiThread(() -> gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick()));
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
-                .PeerConnectionEventType.VIDEO_CHANGE)) {
+                .PeerConnectionEventType.VIDEO_CHANGE) && !isVoiceOnlyCall) {
             runOnUiThread(() -> gotAudioOrVideoChange(true, peerConnectionEvent.getSessionId(),
                     peerConnectionEvent.getChangeValue()));
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
@@ -1362,9 +1399,11 @@ public class CallActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
         if (mediaStreamEvent.getMediaStream() != null) {
-            gotRemoteStream(mediaStreamEvent.getMediaStream(), mediaStreamEvent.getSession());
+            setupVideoStreamForLayout(mediaStreamEvent.getMediaStream(), mediaStreamEvent.getSession(),
+                    mediaStreamEvent.getMediaStream().videoTracks != null
+                            && mediaStreamEvent.getMediaStream().videoTracks.size() > 0);
         } else {
-            removeMediaStream(mediaStreamEvent.getSession());
+            setupVideoStreamForLayout(null, mediaStreamEvent.getSession(), false);
         }
     }
 

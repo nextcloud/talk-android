@@ -26,7 +26,6 @@
         android:id="@+id/conversation_voice_call"
         android:icon="@drawable/ic_call_white_24dp"
         android:title="@string/nc_conversation_menu_voice_call"
-        android:visible="false"
         app:showAsAction="always"/>
 
     <item
