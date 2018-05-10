@@ -25,8 +25,6 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.parceler.Parcel;
 
-import java.util.List;
-
 import lombok.Data;
 
 @Parcel
@@ -34,5 +32,5 @@ import lombok.Data;
 @JsonObject
 public class ParticipantsOverall {
     @JsonField(name = "ocs")
-    List<Participant> ocs;
+    ParticipantsOCS ocs;
 }

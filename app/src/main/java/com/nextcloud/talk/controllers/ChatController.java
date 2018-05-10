@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -84,6 +85,7 @@ import com.webianks.library.PopupBubble;
 
 import org.parceler.Parcels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -98,6 +100,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Cache;
 import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -109,6 +112,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     NcApi ncApi;
     @Inject
     UserUtils userUtils;
+    @Inject
+    Cache cache;
 
     @BindView(R.id.input)
     MessageInput messageInput;
@@ -131,6 +136,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private Autocomplete mentionAutocomplete;
     private LinearLayoutManager layoutManager;
+    private boolean lookingIntoFuture = false;
 
     private int newMessagesCount = 0;
 
@@ -160,6 +166,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
         boolean adapterWasNull = false;
 
         if (adapter == null) {
+
+            try {
+                cache.evictAll();
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to evict cache");
+            }
 
             adapterWasNull = true;
 
@@ -373,6 +385,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void pullChatMessages(int lookIntoFuture) {
+        if (!lookingIntoFuture && lookIntoFuture == 1) {
+            lookingIntoFuture = true;
+        }
+
         Map<String, Integer> fieldMap = new HashMap<>();
         fieldMap.put("lookIntoFuture", lookIntoFuture);
         fieldMap.put("limit", 25);
@@ -449,11 +465,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void processMessages(Response response, boolean isFromTheFuture) {
         if (response.code() == 200) {
-            boolean shouldForceFuture = false;
-            if (globalLastKnownFutureMessageId == -1) {
-                shouldForceFuture = true;
-            }
-
             ChatOverall chatOverall = (ChatOverall) response.body();
             List<ChatMessage> chatMessageList = chatOverall.getOcs().getData();
 
@@ -465,7 +476,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         globalLastKnownPastMessageId = chatMessageList.get(i).getJsonMessageId();
                     }
 
-                    if (shouldForceFuture) {
+                    if (globalLastKnownFutureMessageId == -1) {
                         if (chatMessageList.get(i).getJsonMessageId() > globalLastKnownFutureMessageId) {
                             globalLastKnownFutureMessageId = chatMessageList.get(i).getJsonMessageId();
                         }
@@ -477,7 +488,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
             } else {
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessageList.get(i).setBaseUrl(currentUser.getBaseUrl());
-                    boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0;
+                    boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0 ||
+                            adapter.getItemCount() == 0;
 
                     if (!shouldScroll) {
                         if (!popupBubble.isShown()) {
@@ -500,11 +512,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 }
             }
 
-            if (shouldForceFuture) {
+            if (!lookingIntoFuture) {
                 pullChatMessages(1);
             }
         } else if (response.code() == 304 && !isFromTheFuture) {
             historyRead = true;
+
+            if (!lookingIntoFuture) {
+                pullChatMessages(1);
+            }
         }
     }
 

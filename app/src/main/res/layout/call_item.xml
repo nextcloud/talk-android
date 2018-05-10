@@ -36,8 +36,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:id="@+id/avatarImageView"
-        android:layout_centerInParent="true"
-        android:src="@drawable/ic_baseline_arrow_downward_24px"/>
+        android:layout_centerInParent="true"/>
 
     <ImageView
         android:id="@+id/remote_video_off"

@@ -47,6 +47,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -57,6 +60,8 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
@@ -72,6 +77,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
@@ -110,6 +116,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -128,6 +135,7 @@ import io.reactivex.schedulers.Schedulers;
 import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied;
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
 import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
+import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -172,6 +180,8 @@ public class CallActivity extends AppCompatActivity {
     CookieManager cookieManager;
     @Inject
     AppPreferences appPreferences;
+    @Inject
+    Cache cache;
 
     PeerConnectionFactory peerConnectionFactory;
     MediaConstraints audioConstraints;
@@ -197,8 +207,8 @@ public class CallActivity extends AppCompatActivity {
     private MediaStream localMediaStream;
     private String credentials;
     private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
+    private Map<String, Participant> participantMap = new HashMap<>();
 
-    private List<String> basicUISetupList = new ArrayList<>();
     private boolean videoOn = false;
     private boolean audioOn = false;
 
@@ -261,6 +271,12 @@ public class CallActivity extends AppCompatActivity {
         callControls.setZ(100.0f);
         basicInitialization();
 
+        try {
+            cache.evictAll();
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to evict cache");
+        }
+
         if (!userEntity.getCurrent()) {
             userUtils.createOrUpdateUser(null,
                     null, null, null,
@@ -273,7 +289,6 @@ public class CallActivity extends AppCompatActivity {
 
                         @Override
                         public void onNext(UserEntity userEntity) {
-                            cookieManager.getCookieStore().removeAll();
                             userUtils.disableAllUsersWithoutId(userEntity.getId());
                             if (getIntent().getExtras().containsKey("fromNotification")) {
                                 handleFromNotification();
@@ -1088,6 +1103,10 @@ public class CallActivity extends AppCompatActivity {
             return;
         }
 
+        if (newSessions.size() > 0) {
+            getPeersForCall();
+        }
+
         for (String sessionId : newSessions) {
             alwaysGetPeerConnectionWrapperForSessionId(sessionId);
         }
@@ -1097,6 +1116,36 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+
+    private void getPeersForCall() {
+        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Observer<ParticipantsOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(ParticipantsOverall participantsOverall) {
+                        participantMap = new HashMap<>();
+                        for (Participant participant : participantsOverall.getOcs().getData()) {
+                            participantMap.put(participant.getSessionId(), participant);
+                            runOnUiThread(() -> setupAvatarForSession(participant.getSessionId()));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
 
     private void deleteMagicPeerConnection(MagicPeerConnectionWrapper magicPeerConnectionWrapper) {
         magicPeerConnectionWrapper.removePeerConnection();
@@ -1239,9 +1288,29 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    private void setupAvatarForSession(String session) {
+        RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(session);
+        if (relativeLayout != null) {
+            ImageView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
+
+            if (participantMap.containsKey(session) && avatarImageView.getDrawable() == null) {
+
+                int size = Math.round(getResources().getDimension(R.dimen.avatar_size_big));
+
+                GlideApp.with(this)
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .load(ApiUtils.getUrlForAvatarWithName(baseUrl, participantMap.get(session).getUserId(), true))
+                        .centerInside()
+                        .override(size, size)
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                        .into(avatarImageView);
+            }
+        }
+    }
+
     private void setupNewPeerLayout(String session) {
         if (remoteRenderersLayout.findViewWithTag(session) == null) {
-            basicUISetupList.add(session);
             runOnUiThread(() -> {
                 RelativeLayout relativeLayout = (RelativeLayout)
                         getLayoutInflater().inflate(R.layout.call_item, remoteRenderersLayout,
@@ -1249,6 +1318,7 @@ public class CallActivity extends AppCompatActivity {
                 relativeLayout.setTag(session);
                 SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id
                         .surface_view);
+
                 surfaceViewRenderer.setMirror(false);
                 surfaceViewRenderer.init(rootEglBase.getEglBaseContext(), null);
                 surfaceViewRenderer.setZOrderMediaOverlay(false);
@@ -1258,8 +1328,8 @@ public class CallActivity extends AppCompatActivity {
                 surfaceViewRenderer.setOnClickListener(videoOnClickListener);
                 remoteRenderersLayout.addView(relativeLayout);
                 gotNick(session, getPeerConnectionWrapperForSessionId(session).getNick());
+                setupAvatarForSession(session);
 
-                basicUISetupList.remove(session);
                 callControls.setZ(100.0f);
             });
         }
@@ -1347,7 +1417,7 @@ public class CallActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
- if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
+        if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
                 .PEER_CLOSED)) {
             endPeerConnection(peerConnectionEvent.getSessionId());
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
