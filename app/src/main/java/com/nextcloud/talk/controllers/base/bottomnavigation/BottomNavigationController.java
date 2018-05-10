@@ -287,7 +287,14 @@ public abstract class BottomNavigationController extends BaseController {
          */
         Router childRouter = getChildRouter(currentlySelectedItemId);
         if (childRouter != null) {
-            return childRouter.handleBack();
+            if (childRouter.getBackstackSize() > 1) {
+                return childRouter.handleBack();
+            } else if (currentlySelectedItemId != R.id.navigation_calls) {
+                navigateTo(R.id.navigation_calls);
+                return true;
+            } else {
+                return false;
+            }
         } else {
             Log.d(TAG, "handleBack called with getChildRouter(currentlySelectedItemId) == null.");
             return false;
