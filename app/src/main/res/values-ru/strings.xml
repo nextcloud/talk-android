@@ -170,7 +170,4 @@ Nextcloud ежедневно используется как для работы
     <string name="nc_hint_enter_a_message">Напишите сообщение…</string>
     <string name="nc_date_header_yesterday">Вчера</string>
     <string name="nc_date_header_today">Сегодня</string>
-    <string name="nc_conversation_menu_voice_call">Голосовой вызов</string>
-    <string name="nc_conversation_menu_video_call">Видеозвонок</string>
-
-</resources>
+    </resources>

@@ -166,7 +166,4 @@ Nextcloud Talk апликација захтева да имате Некстк�
     <string name="nc_hint_enter_a_message">Унесите поруку…</string>
     <string name="nc_date_header_yesterday">Јуче</string>
     <string name="nc_date_header_today">Данас</string>
-    <string name="nc_conversation_menu_voice_call">Аудио позив</string>
-    <string name="nc_conversation_menu_video_call">Видео позив</string>
-
-</resources>
+    </resources>

@@ -1,4 +1,6 @@
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_conversations">Rozhovory</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakty</string>
     <string name="nc_bottom_navigation_title_settings">Nastavenia</string>
 
@@ -18,6 +20,8 @@
 
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Zobrazované meno načítané</string>
+    <string name="nc_push_disabled">Push notifikácie vypnuté</string>
+    <string name="nc_capabilities_failed">Nepodarilo sa načítať funkcie, prerušujem</string>
     <string name="nc_display_name_not_fetched">Zobrazované meno sa nedalo načítať, ruším</string>
     <string name="nc_nextcloud_talk_app_installed">Aplikácia %1$s nájdená</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikácia %1$snie je nainštalovaná na servri, ruším</string>
@@ -48,6 +52,8 @@
     <string name="nc_settings_use_credentials_key">proxy_prihlasovacie_údaje</string>
     <string name="nc_settings_switch_account">Prepínať medzi účtami</string>
     <string name="nc_settings_reauthorize">Znova prihlásiť</string>
+    <string name="nc_client_cert_setup">Nastaviť klientský certifikát</string>
+    <string name="nc_client_cert_change">Zmeniť klientský certifikát</string>
     <string name="nc_settings_remove_account">Odstrániť účet</string>
     <string name="nc_settings_add_account">Pridať nový účet</string>
     <string name="nc_settings_wrong_account">Iba aktuálny účet môže byť znova prihlásený</string>
@@ -71,11 +77,16 @@
 
     <!-- Room menu -->
     <string name="nc_what">Čo by ste chceli dnes robiť?</string>
+    <string name="nc_leave">Odísť z rozhovoru</string>
+    <string name="nc_rename">Premenovať rozhovor</string>
     <string name="nc_set_password">Nastavte si heslo</string>
     <string name="nc_change_password">Zmeňte si heslo</string>
     <string name="nc_clear_password">Zrušiť heslo</string>
     <string name="nc_share_link">Zdieľať odkaz</string>
     <string name="nc_share_link_via">Zdieľať odkaz cez</string>
+    <string name="nc_make_call_public">Urobiť rozhovor verejným</string>
+    <string name="nc_make_call_private">Urobiť rozhovor súkromným</string>
+    <string name="nc_delete_call">Zmazať rozhovor</string>
     <string name="nc_new_conversation">Začať nový rozhovor</string>
     <string name="nc_join_via_link">Pripojiť sa cez odkaz</string>
     <string name="nc_join_via_web">Pripojiť sa cez web</string>
@@ -98,6 +109,10 @@
     <!-- Call -->
     <string name="nc_incoming_call">Prichádzajúci hovor</string>
     <string name="nc_nick_guest">Hosť</string>
+    <string name="nc_public_call">Nový verejný rozhovor</string>
+    <string name="nc_public_call_explanation">Verejné rozhovory Vám umožňujú pozvať ľudí z vonku cez špeciálne
+ vytvorený odkaz.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na %2$s notifikačný kanál</string>
     <string name="nc_notification_channel_calls">Oznamovací kanál hovorov</string>
@@ -107,14 +122,53 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa pokazilo!</string>
+    <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil 
+         Môžete sa pokúsiť pripojiť na rozhovor cez webový prehliadač.</string>
     <string name="nc_all_ok_operation">OK, všetko hotovo!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Názov rozhovoru</string>
     <string name="nc_proceed">Pokračovať</string>
     <string name="nc_call_name_is_same">Názov, ktorý ste zadali je zhodný s existujúcim</string>
     <string name="nc_wrong_link">Odkaz na rozhovor nie je platný!</string>
+    <string name="nc_share_text">Pripojte sa k rozhovoru na %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$sPozvánka</string>
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_empty"></string>
+    <string name="nc_push_to_talk">Stlač a hovor PTT</string>
+    <string name="nc_push_to_talk_desc">S vypnutým mikrofónom, kliknite &amp;podržte pre použitie funkcie Stlač a hovor PTT</string>
+    <string name="nc_store_short_desc">Používajte súkromné video hovory a chat na vlastnom serveri.</string>
     <string name="nc_configure_cert_auth">Vybrať autentifikačný certifikát</string>
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
+    <string name="nc_store_full_desc">Používajte Nextcloud Talk a majte súkromné alebo skupinové audio alebo video hovory, vytvorte alebo sa pripojte na web konferencie a posielajte chat správy. Všetka komunikácia je plne šifrovaná a sprostredkovaná vašim vlastným serverom, čo umožňuje najvyššiu možnú mieru súkromia.
+
+Nextcloud Talk je ľahko použiteľný a vždy bude úplne zdarma!
+
+Nextcloud Talk podporuje:
+* HD (H.265) audio/video hovory
+* Skupinové a súkromné hovory
+* Webináre&amp; verejné web stretnutia
+* Individuálny a skupinový chat
+* Ľahké zdieľanie obrazovky
+* Mobilné aplikácie pre Android a iOS
+* Push oznámenia mobilných hovorov &amp; chatu
+* Integrované v Nextcloud Files a Nextcloud Groupware
+* Plne na sľube, 100% open source
+* End-to-end Šifrované hovory
+* Prispôsobenie pre milióny používateľov
+* brána SIP: vytočte číslo telefónom
+
+Aplikácia Nextcloud Talk vyžaduje Nextcloud Talk server, aby fungovala. Nextcloud je privátna, sebou hosťovaná platforma na synchronizáciu súborov a komunikáciu, navrhnutá tak, aby ste získali späť kontrolu nad svojimi dátami. Beží na serveri podľa vlastného výberu, či už je to doma, u  poskytovateľa služieb alebo vo vašom podniku, a poskytuje vám prístup k vašim dokumentom, kalendárom, kontaktom, emailu a ostatným dátam. Môžete zdieľať s ostatnými aj cez iné Nextcloud servre a pracovať spolu na dokumentoch. Nextcloud je plne open source, čo vám dáva možnosť rozšíriť ich na vlastné použitie, podieľať sa na ich vývoji alebo si jednoducho overiť, že robia to, čo sľubujú.
+
+Milióny užívateľov používajú Nextcloud denne v podnikoch a domácnostiach po celom svete. Podnikoví používatelia sa spoliehajú na profesionálnu podporu spoločnosti Nextcloud GmbH, aby si boli istí, že majú plne podporovanú, podnikovo-pripravenú platformu pre produktivitu a spoluprácu, plne pod kontrolou ich IT oddelenia.
+
+Naučte sa viac na https://nextcloud.com/talk
+
+Nextcloud nájdete na https://nextcloud.com</string>
+
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Napíšte správu</string>
+    <string name="nc_date_header_yesterday">Včera</string>
+    <string name="nc_date_header_today">Dnes</string>
     </resources>
