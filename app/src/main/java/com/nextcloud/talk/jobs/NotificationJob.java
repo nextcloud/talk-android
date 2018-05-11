@@ -92,7 +92,8 @@ public class NotificationJob extends Job {
                         DecryptedPushMessage decryptedPushMessage = LoganSquare.parse(new String(decryptedSubject),
                                 DecryptedPushMessage.class);
 
-                        if (decryptedPushMessage.getApp().equals("spreed")) {
+                        if (decryptedPushMessage.getApp().equals("spreed") &&
+                                decryptedPushMessage.getType().equals("room")) {
                             int smallIcon;
                             Bitmap largeIcon;
                             String category = "";
