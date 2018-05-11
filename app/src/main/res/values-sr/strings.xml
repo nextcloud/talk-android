@@ -21,6 +21,7 @@
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Име за приказ добављено</string>
     <string name="nc_push_disabled">Брза обавештења су искључена</string>
+    <string name="nc_capabilities_failed">Грешка приликом дохватања могућности, прекидам</string>
     <string name="nc_display_name_not_fetched">Име за приказ се не може добавити. Прекидам</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s апликација нађено</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s апликација није инсталирана на серверу, прекидам</string>
@@ -166,4 +167,8 @@ Nextcloud Talk апликација захтева да имате Некстк�
     <string name="nc_hint_enter_a_message">Унесите поруку…</string>
     <string name="nc_date_header_yesterday">Јуче</string>
     <string name="nc_date_header_today">Данас</string>
-    </resources>
+    <string name="nc_conversation_menu_voice_call">Аудио позив</string>
+    <string name="nc_conversation_menu_video_call">Видео позив</string>
+    <string name="nc_new_messages">Нове поруке</string>
+
+</resources>

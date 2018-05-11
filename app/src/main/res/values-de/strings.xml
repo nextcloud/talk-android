@@ -170,4 +170,8 @@ Finden Sie Nextcloud auf https://nextcloud.com</string>
     <string name="nc_hint_enter_a_message">Neue Nachricht eingeben…</string>
     <string name="nc_date_header_yesterday">Gestern</string>
     <string name="nc_date_header_today">Heute</string>
-    </resources>
+    <string name="nc_conversation_menu_voice_call">Sprachanruf</string>
+    <string name="nc_conversation_menu_video_call">Videoanruf</string>
+    <string name="nc_new_messages">Neue Nachrichten</string>
+
+</resources>

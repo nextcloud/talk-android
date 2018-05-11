@@ -173,4 +173,8 @@ Nextcloud web sitesi https://nextcloud.com</string>
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
     <string name="nc_date_header_yesterday">Dün</string>
     <string name="nc_date_header_today">Bugün</string>
-    </resources>
+    <string name="nc_conversation_menu_voice_call">Sesli arama</string>
+    <string name="nc_conversation_menu_video_call">Görüntülü arama</string>
+    <string name="nc_new_messages">Yeni iletiler</string>
+
+</resources>
