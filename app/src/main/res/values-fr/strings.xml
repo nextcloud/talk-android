@@ -21,6 +21,7 @@
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Nom affiché récupéré</string>
     <string name="nc_push_disabled">Notifications push désactivées</string>
+    <string name="nc_capabilities_failed">Échec d\'extraction des capacités, abandon</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_nextcloud_talk_app_installed">Application %1$s trouvée</string>
     <string name="nc_nextcloud_talk_app_not_installed">Application %1$s non installée sur le serveur, abandon</string>
@@ -170,4 +171,8 @@ Trouvez Nextcloud sur https://nextcloud.com</string>
     <string name="nc_hint_enter_a_message">Saisir un message…</string>
     <string name="nc_date_header_yesterday">Hier</string>
     <string name="nc_date_header_today">Aujourd\'hui</string>
-    </resources>
+    <string name="nc_conversation_menu_voice_call">Appel vocal</string>
+    <string name="nc_conversation_menu_video_call">Appel vidéo</string>
+    <string name="nc_new_messages">Nouveaux messages</string>
+
+</resources>
