@@ -786,28 +786,35 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onNext(SignalingSettingsOverall signalingSettingsOverall) {
                         IceServer iceServer;
-                        for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
-                             i++) {
-                            iceServer = signalingSettingsOverall.getOcs().getSettings().getStunServers().get(i);
-                            if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
-                                    .getCredential())) {
-                                iceServers.add(new PeerConnection.IceServer(iceServer.getUrl()));
-                            } else {
-                                iceServers.add(new PeerConnection.IceServer(iceServer.getUrl(),
-                                        iceServer.getUsername(), iceServer.getCredential()));
+                        if (signalingSettingsOverall != null && signalingSettingsOverall.getOcs() != null &&
+                                signalingSettingsOverall.getOcs().getSettings() != null) {
+                            if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
+                                for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
+                                     i++) {
+                                    iceServer = signalingSettingsOverall.getOcs().getSettings().getStunServers().get(i);
+                                    if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
+                                            .getCredential())) {
+                                        iceServers.add(new PeerConnection.IceServer(iceServer.getUrl()));
+                                    } else {
+                                        iceServers.add(new PeerConnection.IceServer(iceServer.getUrl(),
+                                                iceServer.getUsername(), iceServer.getCredential()));
+                                    }
+                                }
                             }
-                        }
 
-                        for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getTurnServers().size();
-                             i++) {
-                            iceServer = signalingSettingsOverall.getOcs().getSettings().getTurnServers().get(i);
-                            for (int j = 0; j < iceServer.getUrls().size(); j++) {
-                                if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
-                                        .getCredential())) {
-                                    iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j)));
-                                } else {
-                                    iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j),
-                                            iceServer.getUsername(), iceServer.getCredential()));
+                            if (signalingSettingsOverall.getOcs().getSettings().getTurnServers() != null) {
+                                for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getTurnServers().size();
+                                     i++) {
+                                    iceServer = signalingSettingsOverall.getOcs().getSettings().getTurnServers().get(i);
+                                    for (int j = 0; j < iceServer.getUrls().size(); j++) {
+                                        if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
+                                                .getCredential())) {
+                                            iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j)));
+                                        } else {
+                                            iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j),
+                                                    iceServer.getUsername(), iceServer.getCredential()));
+                                        }
+                                    }
                                 }
                             }
                         }
