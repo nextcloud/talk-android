@@ -532,17 +532,20 @@ public class OperationsMenuController extends BaseController {
         }
         bundle.putString(BundleKeys.KEY_CALL_SESSION, callSession);
 
-        Intent callIntent = new Intent(getActivity(), CallActivity.class);
-        callIntent.putExtras(bundle);
-
         if (getActivity() != null) {
+
+            Intent callIntent = new Intent(getActivity(), CallActivity.class);
+            callIntent.putExtras(bundle);
+
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             }
+
+            startActivity(callIntent);
+
         }
 
-        startActivity(callIntent);
     }
 
     private class OperationsObserver implements Observer {
