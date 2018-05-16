@@ -91,6 +91,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -566,10 +567,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 return true;
 
             case R.id.conversation_video_call:
-                startActivity(getIntentForCall(false));
+                startActivity(Objects.requireNonNull(getIntentForCall(false)));
                 return true;
             case R.id.conversation_voice_call:
-                startActivity(getIntentForCall(true));
+                startActivity(Objects.requireNonNull(getIntentForCall(true)));
                 return true;
 
             default:
@@ -578,19 +579,23 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private Intent getIntentForCall(boolean isVoiceOnlyCall) {
-        Bundle bundle = new Bundle();
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
-        bundle.putString(BundleKeys.KEY_CALL_SESSION, currentCall.getSessionId());
+        if (currentCall != null && !TextUtils.isEmpty(currentCall.getSessionId())) {
+            Bundle bundle = new Bundle();
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
+            bundle.putString(BundleKeys.KEY_CALL_SESSION, currentCall.getSessionId());
 
-        if (isVoiceOnlyCall) {
-            bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true);
+            if (isVoiceOnlyCall) {
+                bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true);
+            }
+
+            Intent callIntent = new Intent(getActivity(), CallActivity.class);
+            callIntent.putExtras(bundle);
+
+            return callIntent;
+        } else {
+            return null;
         }
-
-        Intent callIntent = new Intent(getActivity(), CallActivity.class);
-        callIntent.putExtras(bundle);
-
-        return callIntent;
     }
 
 
