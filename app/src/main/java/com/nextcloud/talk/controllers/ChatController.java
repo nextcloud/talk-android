@@ -92,6 +92,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -125,15 +126,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private List<Disposable> disposableList = new ArrayList<>();
     private String conversationName;
     private String roomToken;
-    private UserEntity currentUser;
+    private UserEntity conversationUser;
     private String roomPassword;
+    private String credentials;
+    private String baseUrl;
     private Call currentCall;
     private boolean inChat = false;
     private boolean historyRead = false;
     private int globalLastKnownFutureMessageId = -1;
     private int globalLastKnownPastMessageId = -1;
     private MessagesListAdapter<ChatMessage> adapter;
-    private Menu globalMenu;
 
     private Autocomplete mentionAutocomplete;
     private LinearLayoutManager layoutManager;
@@ -149,9 +151,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
         super(args);
         setHasOptionsMenu(true);
         this.conversationName = args.getString(BundleKeys.KEY_CONVERSATION_NAME);
-        this.currentUser = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
+        if (args.containsKey(BundleKeys.KEY_USER_ENTITY)) {
+            this.conversationUser = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
+        }
+
         this.roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN);
-        this.roomPassword = args.getString(BundleKeys.KEY_ROOM_PASSWORD, "");
+
+        if (args.containsKey(BundleKeys.KEY_ACTIVE_CONVERSATION)) {
+            this.currentCall = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION));
+        }
+        this.baseUrl = args.getString(BundleKeys.KEY_MODIFIED_BASE_URL, "");
     }
 
     @Override
@@ -182,7 +191,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             holdersConfig.setOutcoming(MagicOutcomingTextMessageViewHolder.class,
                     R.layout.item_custom_outcoming_text_message);
 
-            adapter = new MessagesListAdapter<>(currentUser.getUserId(), holdersConfig, new ImageLoader() {
+            adapter = new MessagesListAdapter<>(conversationUser.getUserId(), holdersConfig, new ImageLoader() {
                 @Override
                 public void loadImage(ImageView imageView, String url) {
                     GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
@@ -241,7 +250,39 @@ public class ChatController extends BaseController implements MessagesListAdapte
         });
 
         if (adapterWasNull) {
-            joinRoomWithPassword();
+            UserEntity currentUser = userUtils.getCurrentUser();
+            if (conversationUser != null && !currentUser.equals(conversationUser)) {
+                userUtils.createOrUpdateUser(null,
+                        null, null, null,
+                        null, true, null, currentUser.getId(), null, null)
+                        .subscribe(new Observer<UserEntity>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(UserEntity userEntity) {
+                                joinRoomWithPassword();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            } else {
+                if (conversationUser == null) {
+                    conversationUser = new UserEntity();
+                    conversationUser.setDisplayName(currentUser.getDisplayName());
+                }
+                joinRoomWithPassword();
+            }
         }
     }
 
@@ -317,44 +358,60 @@ public class ChatController extends BaseController implements MessagesListAdapte
             password = roomPassword;
         }
 
-        ncApi.joinRoom(ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken()), ApiUtils
-                .getUrlForRoomParticipants(currentUser.getBaseUrl(), roomToken), password)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(3)
-                .subscribe(new Observer<CallOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposableList.add(d);
-                    }
+        if (TextUtils.isEmpty(baseUrl)) {
+            baseUrl = conversationUser.getBaseUrl();
+        }
 
-                    @Override
-                    public void onNext(CallOverall callOverall) {
-                        inChat = true;
-                        pullChatMessages(0);
-                        currentCall = callOverall.getOcs().getData();
-                    }
+        if (TextUtils.isEmpty(conversationUser.getUserId())) {
+            credentials = null;
+        } else {
+            credentials = ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken());
+        }
 
-                    @Override
-                    public void onError(Throwable e) {
+        if (currentCall == null) {
+            ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken), password)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .retry(3)
+                    .subscribe(new Observer<CallOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            disposableList.add(d);
+                        }
 
-                    }
+                        @Override
+                        public void onNext(CallOverall callOverall) {
+                            inChat = true;
+                            startPing();
+                            pullChatMessages(0);
+                            currentCall = callOverall.getOcs().getData();
+                        }
 
-                    @Override
-                    public void onComplete() {
+                        @Override
+                        public void onError(Throwable e) {
 
-                    }
-                });
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        } else {
+            inChat = true;
+            startPing();
+            pullChatMessages(0);
+        }
     }
 
     private void sendMessage(String message) {
         Map<String, String> fieldMap = new HashMap<>();
         fieldMap.put("message", message);
-        fieldMap.put("actorDisplayName", currentUser.getDisplayName());
+        fieldMap.put("actorDisplayName", conversationUser.getDisplayName());
 
 
-        ncApi.sendChatMessage(ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken()),
-                ApiUtils.getUrlForChat(currentUser.getBaseUrl(), roomToken), fieldMap)
+        ncApi.sendChatMessage(ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken()),
+                ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken), fieldMap)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3, observable -> inChat)
@@ -385,6 +442,35 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 });
     }
 
+    private void startPing() {
+        ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                .takeWhile(observable -> inChat)
+                .retry(3, observable -> inChat)
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposableList.add(d);
+                    }
+
+                    @Override
+                    public void onNext(GenericOverall genericOverall) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+
+    }
+
     private void pullChatMessages(int lookIntoFuture) {
         if (!lookingIntoFuture && lookIntoFuture == 1) {
             lookingIntoFuture = true;
@@ -406,8 +492,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         if (lookIntoFuture == 1) {
-            ncApi.pullChatMessages(ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken()),
-                    ApiUtils.getUrlForChat(currentUser.getBaseUrl(), roomToken), fieldMap)
+            ncApi.pullChatMessages(ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken()),
+                    ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken), fieldMap)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .takeWhile(observable -> inChat)
@@ -435,8 +521,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     });
 
         } else {
-            ncApi.pullChatMessages(ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken()),
-                    ApiUtils.getUrlForChat(currentUser.getBaseUrl(), roomToken), fieldMap)
+            ncApi.pullChatMessages(ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken()),
+                    ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken), fieldMap)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3, observable -> inChat)
@@ -471,7 +557,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             if (!isFromTheFuture) {
                 for (int i = 0; i < chatMessageList.size(); i++) {
-                    chatMessageList.get(i).setBaseUrl(currentUser.getBaseUrl());
+                    chatMessageList.get(i).setBaseUrl(conversationUser.getBaseUrl());
                     if (globalLastKnownPastMessageId == -1 || chatMessageList.get(i).getJsonMessageId() <
                             globalLastKnownPastMessageId) {
                         globalLastKnownPastMessageId = chatMessageList.get(i).getJsonMessageId();
@@ -488,7 +574,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             } else {
                 for (int i = 0; i < chatMessageList.size(); i++) {
-                    chatMessageList.get(i).setBaseUrl(currentUser.getBaseUrl());
+                    chatMessageList.get(i).setBaseUrl(conversationUser.getBaseUrl());
                     boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0 ||
                             adapter.getItemCount() == 0;
 
@@ -548,7 +634,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_conversation, menu);
-        globalMenu = menu;
     }
 
 
@@ -582,7 +667,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (currentCall != null && !TextUtils.isEmpty(currentCall.getSessionId())) {
             Bundle bundle = new Bundle();
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
             bundle.putString(BundleKeys.KEY_CALL_SESSION, currentCall.getSessionId());
 
             if (isVoiceOnlyCall) {

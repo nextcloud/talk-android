@@ -129,7 +129,7 @@ public class EntryMenuController extends BaseController {
             bundle = new Bundle();
             bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
             bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
-            bundle.putString(BundleKeys.KEY_CALL_PASSWORD, editText.getText().toString());
+            bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, editText.getText().toString());
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())

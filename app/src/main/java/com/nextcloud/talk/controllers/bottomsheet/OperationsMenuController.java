@@ -125,7 +125,7 @@ public class OperationsMenuController extends BaseController {
             this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
         }
 
-        this.callPassword = args.getString(BundleKeys.KEY_CALL_PASSWORD, "");
+        this.callPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "");
         this.callUrl = args.getString(BundleKeys.KEY_CALL_URL, "");
 
         if (args.containsKey(BundleKeys.KEY_INVITED_PARTICIPANTS)) {
