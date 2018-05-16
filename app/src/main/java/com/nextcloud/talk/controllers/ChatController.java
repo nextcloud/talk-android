@@ -91,7 +91,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -382,9 +381,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         @Override
                         public void onNext(CallOverall callOverall) {
                             inChat = true;
+                            currentCall = callOverall.getOcs().getData();
                             startPing();
                             pullChatMessages(0);
-                            currentCall = callOverall.getOcs().getData();
                         }
 
                         @Override
@@ -410,8 +409,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         fieldMap.put("actorDisplayName", conversationUser.getDisplayName());
 
 
-        ncApi.sendChatMessage(ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken()),
-                ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken), fieldMap)
+        ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(baseUrl, roomToken), fieldMap)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3, observable -> inChat)
@@ -492,8 +490,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         if (lookIntoFuture == 1) {
-            ncApi.pullChatMessages(ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken()),
-                    ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken), fieldMap)
+            ncApi.pullChatMessages(credentials, ApiUtils.getUrlForChat(baseUrl, roomToken), fieldMap)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .takeWhile(observable -> inChat)
@@ -521,8 +518,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     });
 
         } else {
-            ncApi.pullChatMessages(ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken()),
-                    ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken), fieldMap)
+            ncApi.pullChatMessages(credentials,
+                    ApiUtils.getUrlForChat(baseUrl, roomToken), fieldMap)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3, observable -> inChat)
@@ -652,10 +649,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 return true;
 
             case R.id.conversation_video_call:
-                startActivity(Objects.requireNonNull(getIntentForCall(false)));
+                Intent videoCallIntent = getIntentForCall(false);
+                if (videoCallIntent != null) {
+                    startActivity(videoCallIntent);
+                }
                 return true;
             case R.id.conversation_voice_call:
-                startActivity(Objects.requireNonNull(getIntentForCall(true)));
+                Intent voiceCallIntent = getIntentForCall(true);
+                if (voiceCallIntent != null) {
+                    startActivity(voiceCallIntent);
+                }
                 return true;
 
             default:
@@ -669,6 +672,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
             bundle.putString(BundleKeys.KEY_CALL_SESSION, currentCall.getSessionId());
+            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
 
             if (isVoiceOnlyCall) {
                 bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true);

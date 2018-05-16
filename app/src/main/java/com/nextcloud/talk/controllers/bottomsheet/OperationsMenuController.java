@@ -46,6 +46,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.call.Call;
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
@@ -108,7 +109,7 @@ public class OperationsMenuController extends BaseController {
     private String callUrl;
 
     private String baseUrl;
-    private String callSession;
+    private Call call;
     private String conversationToken;
 
     private Disposable disposable;
@@ -427,7 +428,7 @@ public class OperationsMenuController extends BaseController {
                                         .getCapabilities().getSpreedCapability()
                                         .getFeatures() != null && capabilitiesOverall.getOcs().getData()
                                 .getCapabilities().getSpreedCapability()
-                                .getFeatures().contains("guest-signaling")) {
+                                .getFeatures().contains("chat-v2")) {
                             if (room.isHasPassword() && room.isGuest()) {
                                 eventBus.post(new BottomSheetLockEvent(true, 0,
                                         true, false));
@@ -439,8 +440,16 @@ public class OperationsMenuController extends BaseController {
                                         .pushChangeHandler(new HorizontalChangeHandler())
                                         .popChangeHandler(new HorizontalChangeHandler()));
                             } else {
-                                initiateCall();
+                                initiateConversation(true);
                             }
+                        } else if (capabilitiesOverall.getOcs().getData()
+                                .getCapabilities().getSpreedCapability() != null &&
+                                capabilitiesOverall.getOcs().getData()
+                                        .getCapabilities().getSpreedCapability()
+                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
+                                .getCapabilities().getSpreedCapability()
+                                .getFeatures().contains("guest-signaling")) {
+                            initiateCall();
                         } else {
                             showResultImage(false, true);
                         }
@@ -494,24 +503,7 @@ public class OperationsMenuController extends BaseController {
                                 }
 
                                 if (localInvitedUsers.size() == 0) {
-                                    if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
-                                        eventBus.post(new BottomSheetLockEvent(true, 0,
-                                                true, true, false));
-
-                                        Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
-                                        bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
-                                        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
-                                        conversationIntent.putExtras(bundle);
-                                        getParentController().getRouter().pushController((RouterTransaction.with(
-                                                new ChatController(bundle)).pushChangeHandler(
-                                                        new HorizontalChangeHandler())
-                                                .popChangeHandler(new HorizontalChangeHandler())));
-
-                                    } else {
-                                        initiateCall();
-                                    }
+                                    initiateConversation(false);
                                 }
                                 dispose();
                             }
@@ -522,6 +514,34 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
+    private void initiateConversation(boolean dismissView) {
+        if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+            eventBus.post(new BottomSheetLockEvent(true, 0,
+                    true, true, dismissView));
+
+            Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
+            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
+            if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
+                bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
+            }
+
+            bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(call));
+
+            conversationIntent.putExtras(bundle);
+            getParentController().getParentController().getRouter().pushController((RouterTransaction.with(
+                    new ChatController(bundle)).pushChangeHandler(
+                    new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler())));
+
+        } else {
+            initiateCall();
+        }
+    }
+
+
     private void initiateCall() {
         eventBus.post(new BottomSheetLockEvent(true, 0, true, true));
         Bundle bundle = new Bundle();
@@ -530,7 +550,7 @@ public class OperationsMenuController extends BaseController {
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
         }
-        bundle.putString(BundleKeys.KEY_CALL_SESSION, callSession);
+        bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(call));
 
         if (getActivity() != null) {
 
@@ -561,8 +581,8 @@ public class OperationsMenuController extends BaseController {
                 showResultImage(true, false);
             } else {
                 CallOverall callOverall = (CallOverall) o;
-                callSession = callOverall.getOcs().getData().getSessionId();
-                initiateCall();
+                call = callOverall.getOcs().getData();
+                initiateConversation(true);
             }
         }
 
