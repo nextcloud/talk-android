@@ -225,6 +225,9 @@ public class CallActivity extends AppCompatActivity {
 
     private SpotlightView spotlightView;
 
+    private int camerasCount;
+    private int cameraSwitchCount;
+
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
         flags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
@@ -515,7 +518,24 @@ public class CallActivity extends AppCompatActivity {
     public void switchCamera() {
         CameraVideoCapturer cameraVideoCapturer = (CameraVideoCapturer) videoCapturer;
         if (cameraVideoCapturer != null) {
-            cameraVideoCapturer.switchCamera(null);
+            cameraVideoCapturer.switchCamera(new CameraVideoCapturer.CameraSwitchHandler() {
+                @Override
+                public void onCameraSwitchDone(boolean b) {
+                    if (b && cameraSwitchCount != -1) {
+                        if (cameraSwitchCount == camerasCount) {
+                            cameraSwitchCount = 0;
+                            pipVideoView.setMirror(true);
+                        } else {
+                            pipVideoView.setMirror(false);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCameraSwitchError(String s) {
+
+                }
+            });
         }
     }
 
@@ -537,6 +557,8 @@ public class CallActivity extends AppCompatActivity {
     private VideoCapturer createCameraCapturer(CameraEnumerator enumerator) {
         final String[] deviceNames = enumerator.getDeviceNames();
 
+        camerasCount = deviceNames.length;
+
         // First, try to find front facing camera
         Logging.d(TAG, "Looking for front facing cameras.");
         for (String deviceName : deviceNames) {
@@ -544,11 +566,14 @@ public class CallActivity extends AppCompatActivity {
                 Logging.d(TAG, "Creating front facing camera capturer.");
                 VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
 
+                cameraSwitchCount = 0;
                 if (videoCapturer != null) {
                     return videoCapturer;
                 }
             }
         }
+
+        cameraSwitchCount = -1;
 
         // Front facing camera not found, try something else
         Logging.d(TAG, "Looking for other cameras.");
@@ -558,6 +583,7 @@ public class CallActivity extends AppCompatActivity {
                 VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
 
                 if (videoCapturer != null) {
+                    pipVideoView.setMirror(false);
                     return videoCapturer;
                 }
             }
