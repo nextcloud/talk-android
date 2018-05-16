@@ -50,7 +50,6 @@ public class ApiUtils {
 
         queryMap.put("format", "json");
         queryMap.put("search", searchQuery);
-        queryMap.put("perPage", "200");
         queryMap.put("itemType", "call");
 
         retrofitBucket.setQueryMap(queryMap);

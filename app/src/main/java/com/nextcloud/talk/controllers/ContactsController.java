@@ -52,6 +52,7 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
+import com.nextcloud.talk.adapters.items.ProgressItem;
 import com.nextcloud.talk.adapters.items.UserHeaderItem;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
@@ -81,6 +82,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -101,10 +103,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
+import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ContactsController extends BaseController implements SearchView.OnQueryTextListener,
-        FlexibleAdapter.OnItemClickListener, FastScroller.OnScrollStateChangeListener {
+        FlexibleAdapter.OnItemClickListener, FastScroller.OnScrollStateChangeListener, FlexibleAdapter.EndlessScrollListener {
 
     public static final String TAG = "ContactsController";
 
@@ -144,6 +147,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private List<AbstractFlexibleItem> contactItems = new ArrayList<>();
     private BottomSheet bottomSheet;
     private View view;
+    private int currentPage;
 
     private SmoothScrollLinearLayoutManager layoutManager;
 
@@ -155,6 +159,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private boolean isPublicCall;
 
     private HashMap<String, UserHeaderItem> userHeaderItems = new HashMap<>();
+
+    private boolean alreadyFetching = false;
+    private boolean canFetchFurther = true;
 
     public ContactsController() {
         super();
@@ -213,13 +220,22 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
-            adapter.setNotifyChangeOfUnfilteredItems(true)
-                    .setMode(SelectableAdapter.Mode.MULTI);
 
             if (currentUser != null) {
-                fetchData();
+                fetchData(true);
             }
+
         }
+
+        setupAdapter();
+        prepareViews();
+    }
+
+    private void setupAdapter() {
+        adapter.setNotifyChangeOfUnfilteredItems(true)
+                .setMode(SelectableAdapter.Mode.MULTI);
+
+        adapter.setEndlessScrollListener(this, new ProgressItem());
 
         adapter.setStickyHeaderElevation(5)
                 .setUnlinkAllItemsOnRemoveHeaders(true)
@@ -227,7 +243,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 .setStickyHeaders(true);
 
         adapter.addListener(this);
-        prepareViews();
     }
 
     @Optional
@@ -408,119 +423,168 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     }
 
-    private void fetchData() {
+    private void fetchData(boolean startFromScratch) {
         dispose(null);
 
+        alreadyFetching = true;
         Set<Sharee> shareeHashSet = new HashSet<>();
 
-        contactItems = new ArrayList<>();
+        if (startFromScratch) {
+            contactItems = new ArrayList<>();
+        }
+
         userHeaderItems = new HashMap<>();
+
 
         RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearch(currentUser.getBaseUrl(),
                 "");
-        contactsQueryDisposable = ncApi.getContactsWithSearchParam(
+
+        int page = 1;
+        if (!startFromScratch) {
+            page = currentPage + 1;
+        }
+
+        Map<String, Object> modifiedQueryMap = new HashMap<>(retrofitBucket.getQueryMap());
+        modifiedQueryMap.put("page", page);
+        modifiedQueryMap.put("perPage", 100);
+        ncApi.getContactsWithSearchParam(
                 ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
-                retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                retrofitBucket.getUrl(), modifiedQueryMap)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
-                .subscribe((ShareesOverall shareesOverall) -> {
-                            if (shareesOverall != null) {
+                .subscribe(new Observer<Response>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        contactsQueryDisposable = d;
+                    }
 
-                                if (shareesOverall.getOcs().getData().getUsers() != null) {
-                                    shareeHashSet.addAll(shareesOverall.getOcs().getData().getUsers());
-                                }
+                    @Override
+                    public void onNext(Response response) {
+                        canFetchFurther = response.headers().size() > 0 &&
+                                !TextUtils.isEmpty((response.headers().get("Link")));
+                        if (response.body() != null) {
+                            ShareesOverall shareesOverall = (ShareesOverall) response.body();
 
-                                if (shareesOverall.getOcs().getData().getExactUsers() != null &&
-                                        shareesOverall.getOcs().getData().getExactUsers().getExactSharees() != null) {
-                                    shareeHashSet.addAll(shareesOverall.getOcs().getData().
-                                            getExactUsers().getExactSharees());
-                                }
+                            currentPage = (int) modifiedQueryMap.get("page");
 
-                                Participant participant;
-                                for (Sharee sharee : shareeHashSet) {
-                                    if (!sharee.getValue().getShareWith().equals(currentUser.getUsername())) {
-                                        participant = new Participant();
-                                        participant.setName(sharee.getLabel());
-                                        String headerTitle;
+                            if (shareesOverall.getOcs().getData().getUsers() != null) {
+                                shareeHashSet.addAll(shareesOverall.getOcs().getData().getUsers());
+                            }
 
-                                        headerTitle = sharee.getLabel().substring(0, 1).toUpperCase();
+                            if (shareesOverall.getOcs().getData().getExactUsers() != null &&
+                                    shareesOverall.getOcs().getData().getExactUsers().getExactSharees() != null) {
+                                shareeHashSet.addAll(shareesOverall.getOcs().getData().
+                                        getExactUsers().getExactSharees());
+                            }
 
-                                        UserHeaderItem userHeaderItem;
-                                        if (!userHeaderItems.containsKey(headerTitle)) {
-                                            userHeaderItem = new UserHeaderItem(headerTitle);
-                                            userHeaderItems.put(headerTitle, userHeaderItem);
-                                        }
+                            Participant participant;
+                            for (Sharee sharee : shareeHashSet) {
+                                if (!sharee.getValue().getShareWith().equals(currentUser.getUsername())) {
+                                    participant = new Participant();
+                                    participant.setName(sharee.getLabel());
+                                    String headerTitle;
 
-                                        participant.setUserId(sharee.getValue().getShareWith());
-                                        contactItems.add(new UserItem(participant, currentUser,
-                                                userHeaderItems.get(headerTitle)));
+                                    headerTitle = sharee.getLabel().substring(0, 1).toUpperCase();
+
+                                    UserHeaderItem userHeaderItem;
+                                    if (!userHeaderItems.containsKey(headerTitle)) {
+                                        userHeaderItem = new UserHeaderItem(headerTitle);
+                                        userHeaderItems.put(headerTitle, userHeaderItem);
+                                    }
+
+                                    participant.setUserId(sharee.getValue().getShareWith());
+
+                                    UserItem newContactItem = new UserItem(participant, currentUser,
+                                            userHeaderItems.get(headerTitle));
+
+                                    if (!contactItems.contains(newContactItem)) {
+                                        contactItems.add(newContactItem);
                                     }
 
                                 }
 
+                            }
 
-                                userHeaderItems = new HashMap<>();
 
-                                Collections.sort(contactItems, (o1, o2) -> {
-                                    String firstName;
-                                    String secondName;
+                            userHeaderItems = new HashMap<>();
 
-                                    if (o1 instanceof UserItem) {
-                                        firstName = ((UserItem) o1).getModel().getName();
-                                    } else {
-                                        firstName = ((UserHeaderItem) o1).getModel();
-                                    }
+                            Collections.sort(contactItems, (o1, o2) -> {
+                                String firstName;
+                                String secondName;
 
-                                    if (o2 instanceof UserItem) {
-                                        secondName = ((UserItem) o2).getModel().getName();
-                                    } else {
-                                        secondName = ((UserHeaderItem) o2).getModel();
-                                    }
+                                if (o1 instanceof UserItem) {
+                                    firstName = ((UserItem) o1).getModel().getName();
+                                } else {
+                                    firstName = ((UserHeaderItem) o1).getModel();
+                                }
 
-                                    return firstName.compareToIgnoreCase(secondName);
-                                });
+                                if (o2 instanceof UserItem) {
+                                    secondName = ((UserItem) o2).getModel().getName();
+                                } else {
+                                    secondName = ((UserHeaderItem) o2).getModel();
+                                }
 
+                                return firstName.compareToIgnoreCase(secondName);
+                            });
+
+                            if (startFromScratch) {
                                 adapter.updateDataSet(contactItems, true);
-                                searchItem.setVisible(contactItems.size() > 0);
-                                swipeRefreshLayout.setRefreshing(false);
-
-
-                                if (isNewConversationView) {
-                                    checkAndHandleBottomButtons();
-                                }
+                            } else {
+                                adapter.onLoadMoreComplete(null);
+                                adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
+                                recyclerView.setAdapter(adapter);
+                                setupAdapter();
+                                adapter.notifyDataSetChanged();
                             }
-
-                        }, throwable -> {
-                            if (searchItem != null) {
-                                searchItem.setVisible(false);
-                            }
-
-                            if (throwable instanceof HttpException) {
-                                HttpException exception = (HttpException) throwable;
-                                switch (exception.code()) {
-                                    case 401:
-                                        if (getParentController() != null &&
-                                                getParentController().getRouter() != null) {
-                                            getParentController().getRouter().pushController((RouterTransaction.with
-                                                    (new WebViewLoginController(currentUser.getBaseUrl(),
-                                                            true))
-                                                    .pushChangeHandler(new VerticalChangeHandler())
-                                                    .popChangeHandler(new VerticalChangeHandler())));
-                                        }
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-
+                            searchItem.setVisible(contactItems.size() > 0);
                             swipeRefreshLayout.setRefreshing(false);
-                            dispose(contactsQueryDisposable);
+
+
+                            if (isNewConversationView) {
+                                checkAndHandleBottomButtons();
+                            }
                         }
-                        , () -> {
-                            swipeRefreshLayout.setRefreshing(false);
-                            dispose(contactsQueryDisposable);
-                        });
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (searchItem != null) {
+                            searchItem.setVisible(false);
+                        }
+
+                        if (e instanceof HttpException) {
+                            HttpException exception = (HttpException) e;
+                            switch (exception.code()) {
+                                case 401:
+                                    if (getParentController() != null &&
+                                            getParentController().getRouter() != null) {
+                                        getParentController().getRouter().pushController((RouterTransaction.with
+                                                (new WebViewLoginController(currentUser.getBaseUrl(),
+                                                        true))
+                                                .pushChangeHandler(new VerticalChangeHandler())
+                                                .popChangeHandler(new VerticalChangeHandler())));
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        swipeRefreshLayout.setRefreshing(false);
+                        dispose(contactsQueryDisposable);
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        dispose(contactsQueryDisposable);
+                        alreadyFetching = false;
+
+                    }
+                });
+
     }
 
     private void prepareViews() {
@@ -529,7 +593,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        swipeRefreshLayout.setOnRefreshListener(this::fetchData);
+        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
         fastScroller.addOnScrollStateChangeListener(this);
@@ -538,8 +602,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             IFlexible abstractFlexibleItem = adapter.getItem(position);
             if (abstractFlexibleItem instanceof UserItem) {
                 return ((UserItem) adapter.getItem(position)).getHeader().getModel();
-            } else {
+            } else if (abstractFlexibleItem instanceof UserHeaderItem) {
                 return ((UserHeaderItem) adapter.getItem(position)).getModel();
+            } else {
+                return "";
             }
         });
 
@@ -777,6 +843,24 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         } else {
             initialRelativeLayout.setVisibility(View.GONE);
             secondaryRelativeLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void noMoreLoad(int newItemsSize) {
+    }
+
+    @Override
+    public void onLoadMore(int lastPosition, int currentPage) {
+        if (adapter.hasFilter()) {
+            adapter.onLoadMoreComplete(null);
+            return;
+        }
+
+        if (!alreadyFetching && canFetchFurther) {
+            fetchData(false);
+        } else {
+            return;
         }
     }
 }

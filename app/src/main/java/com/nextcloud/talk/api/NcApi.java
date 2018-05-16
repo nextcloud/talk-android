@@ -66,8 +66,8 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + /apps/files_sharing/api/v1/sharees
      */
     @GET
-    Observable<ShareesOverall> getContactsWithSearchParam(@Header("Authorization") String authorization, @Url String url,
-                                                          @QueryMap Map<String, String> options);
+    Observable<Response<ShareesOverall>> getContactsWithSearchParam(@Header("Authorization") String authorization, @Url String url,
+                                                          @QueryMap Map<String, Object> options);
 
 
     /*
