@@ -93,7 +93,7 @@ public class NotificationJob extends Job {
                                 DecryptedPushMessage.class);
 
                         if (decryptedPushMessage.getApp().equals("spreed") &&
-                                decryptedPushMessage.getType().equals("room")) {
+                                !decryptedPushMessage.getType().equals("room")) {
                             int smallIcon;
                             Bitmap largeIcon;
                             String category = "";
