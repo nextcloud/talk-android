@@ -566,8 +566,8 @@ public class CallActivity extends AppCompatActivity {
                 Logging.d(TAG, "Creating front facing camera capturer.");
                 VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
 
-                cameraSwitchCount = 0;
                 if (videoCapturer != null) {
+                    cameraSwitchCount = 0;
                     return videoCapturer;
                 }
             }
