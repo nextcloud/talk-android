@@ -148,6 +148,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private BottomSheet bottomSheet;
     private View view;
     private int currentPage;
+    private int currentSearchPage;
 
     private SmoothScrollLinearLayoutManager layoutManager;
 
@@ -162,6 +163,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private boolean alreadyFetching = false;
     private boolean canFetchFurther = true;
+    private boolean canFetchSearchFurther = true;
 
     public ContactsController() {
         super();
@@ -224,7 +226,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             if (currentUser != null) {
                 fetchData(true);
             }
-
         }
 
         setupAdapter();
@@ -236,6 +237,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 .setMode(SelectableAdapter.Mode.MULTI);
 
         adapter.setEndlessScrollListener(this, new ProgressItem());
+
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                adapter.filterItems();
+                adapter.onLoadMoreComplete(null);
+            }
+        });
 
         adapter.setStickyHeaderElevation(5)
                 .setUnlinkAllItemsOnRemoveHeaders(true)
@@ -429,19 +439,26 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         alreadyFetching = true;
         Set<Sharee> shareeHashSet = new HashSet<>();
 
-        if (startFromScratch) {
-            contactItems = new ArrayList<>();
-        }
-
         userHeaderItems = new HashMap<>();
 
 
+        String query = "";
+        if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
+            query = searchView.getQuery().toString();
+        } else if (startFromScratch) {
+            contactItems = new ArrayList<>();
+        }
+
         RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearch(currentUser.getBaseUrl(),
-                "");
+                query);
 
         int page = 1;
         if (!startFromScratch) {
-            page = currentPage + 1;
+            if (TextUtils.isEmpty(query)) {
+                page = currentPage + 1;
+            } else {
+                page = currentSearchPage + 1;
+            }
         }
 
         Map<String, Object> modifiedQueryMap = new HashMap<>(retrofitBucket.getQueryMap());
@@ -461,12 +478,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                     @Override
                     public void onNext(Response response) {
-                        canFetchFurther = response.headers().size() > 0 &&
-                                !TextUtils.isEmpty((response.headers().get("Link")));
                         if (response.body() != null) {
                             ShareesOverall shareesOverall = (ShareesOverall) response.body();
-
-                            currentPage = (int) modifiedQueryMap.get("page");
 
                             if (shareesOverall.getOcs().getData().getUsers() != null) {
                                 shareeHashSet.addAll(shareesOverall.getOcs().getData().getUsers());
@@ -478,7 +491,19 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                         getExactUsers().getExactSharees());
                             }
 
+                            if (TextUtils.isEmpty((CharSequence) modifiedQueryMap.get("search"))) {
+                                canFetchFurther = !shareeHashSet.isEmpty();
+                                currentPage = (int) modifiedQueryMap.get("page");
+                            } else {
+                                canFetchSearchFurther = !shareeHashSet.isEmpty();
+                                currentSearchPage = (int) modifiedQueryMap.get("page");
+                            }
+
+
                             Participant participant;
+
+                            List<AbstractFlexibleItem> newUserItemList = new ArrayList<>();
+                            newUserItemList.addAll(contactItems);
                             for (Sharee sharee : shareeHashSet) {
                                 if (!sharee.getValue().getShareWith().equals(currentUser.getUsername())) {
                                     participant = new Participant();
@@ -499,7 +524,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                             userHeaderItems.get(headerTitle));
 
                                     if (!contactItems.contains(newContactItem)) {
-                                        contactItems.add(newContactItem);
+                                        newUserItemList.add(newContactItem);
                                     }
 
                                 }
@@ -507,9 +532,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             }
 
 
+                            boolean shouldFilterManually = false;
+                            if (newUserItemList.size() == contactItems.size()) {
+                                shouldFilterManually = true;
+                            }
+
+                            contactItems = newUserItemList;
                             userHeaderItems = new HashMap<>();
 
-                            Collections.sort(contactItems, (o1, o2) -> {
+                            Collections.sort(newUserItemList, (o1, o2) -> {
                                 String firstName;
                                 String secondName;
 
@@ -528,16 +559,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 return firstName.compareToIgnoreCase(secondName);
                             });
 
-                            if (startFromScratch) {
-                                adapter.updateDataSet(contactItems, true);
+
+                            if (!shouldFilterManually) {
+                                adapter.updateDataSet(newUserItemList, false);
                             } else {
+                                adapter.filterItems();
                                 adapter.onLoadMoreComplete(null);
-                                adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
-                                recyclerView.setAdapter(adapter);
-                                setupAdapter();
-                                adapter.notifyDataSetChanged();
                             }
-                            searchItem.setVisible(contactItems.size() > 0);
+
+                            searchItem.setVisible(newUserItemList.size() > 0);
                             swipeRefreshLayout.setRefreshing(false);
 
 
@@ -661,11 +691,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
             if (!TextUtils.isEmpty(searchQuery)) {
                 adapter.setFilter(searchQuery);
-                searchQuery = "";
                 adapter.filterItems();
+                searchQuery = "";
             } else {
                 adapter.setFilter(newText);
-                adapter.filterItems(300);
+                if (TextUtils.isEmpty(newText)) {
+                    adapter.filterItems();
+                } else {
+                    fetchData(true);
+                }
             }
         }
 
@@ -852,15 +886,17 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     public void onLoadMore(int lastPosition, int currentPage) {
-        if (adapter.hasFilter()) {
-            adapter.onLoadMoreComplete(null);
-            return;
+        String query = "";
+
+        if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
+            query = searchView.getQuery().toString();
         }
 
-        if (!alreadyFetching && canFetchFurther) {
+        if (!alreadyFetching && ((searchView != null && searchView.isIconified() && canFetchFurther)
+                || (!TextUtils.isEmpty(query) && canFetchSearchFurther))) {
             fetchData(false);
         } else {
-            return;
+            adapter.onLoadMoreComplete(null);
         }
     }
 }

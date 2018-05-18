@@ -42,12 +42,15 @@ public class ApiUtils {
         return userAgent + BuildConfig.VERSION_NAME;
     }
 
-    public static RetrofitBucket getRetrofitBucketForContactsSearch(String baseUrl, String searchQuery) {
+    public static RetrofitBucket getRetrofitBucketForContactsSearch(String baseUrl, @Nullable String searchQuery) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
         retrofitBucket.setUrl(baseUrl + ocsApiVersion + "/apps/files_sharing/api/v1/sharees");
 
         Map<String, String> queryMap = new HashMap<>();
 
+        if (searchQuery == null) {
+            searchQuery = "";
+        }
         queryMap.put("format", "json");
         queryMap.put("search", searchQuery);
         queryMap.put("itemType", "call");
