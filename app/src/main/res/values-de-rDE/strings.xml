@@ -174,4 +174,10 @@ Finden Sie Nextcloud auf https://nextcloud.com</string>
     <string name="nc_conversation_menu_video_call">Videoanruf</string>
     <string name="nc_new_messages">Neue Nachrichten</string>
 
-    </resources>
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Keine weiteren Kontakte zum Laden. Neuanstoßen zum Ladne.</string>
+    <string name="nc_endless_disabled">Keine weiteren Kontakte zum Laden (Grenze erreicht).</string>
+    <string name="nc_endless_cancel">Abbruch durch den Benutzer.</string>
+    <string name="nc_endless_error">Es ist ein Fehler beim Laden weiterer Kontakte aufgetreten.</string>
+
+</resources>

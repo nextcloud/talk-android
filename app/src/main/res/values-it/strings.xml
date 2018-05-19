@@ -175,4 +175,10 @@ Trovi Nextcloud su https://nextcloud.com</string>
     <string name="nc_conversation_menu_video_call">Chiamata video</string>
     <string name="nc_new_messages">Nuovi messaggi</string>
 
-    </resources>
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Non ci sono altri elementi da caricare. Aggiorna per riprovare.</string>
+    <string name="nc_endless_disabled">Non ci sono altri elementi da caricare (massimo raggiunto).</string>
+    <string name="nc_endless_cancel">Annullato dall\'utente.</string>
+    <string name="nc_endless_error">Si è verificato un errore durante il caricamento di altri elementi.</string>
+
+</resources>
