@@ -177,4 +177,10 @@ Nextcloud web sitesi https://nextcloud.com</string>
     <string name="nc_conversation_menu_video_call">Görüntülü arama</string>
     <string name="nc_new_messages">Yeni iletiler</string>
 
-    </resources>
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Yüklenecek başka bir öge yok. Yeniden denemek için yenileyin.</string>
+    <string name="nc_endless_disabled">Yüklenecek başka bir öge yok (en çok sayıya ulaşıldı)</string>
+    <string name="nc_endless_cancel">Kullanıcı tarafından iptal edildi.</string>
+    <string name="nc_endless_error">Daha fazla öge yüklenirken bir sorun çıktı.</string>
+
+</resources>

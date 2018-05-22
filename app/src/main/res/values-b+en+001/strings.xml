@@ -171,4 +171,14 @@ Find Nextcloud on https://nextcloud.com</string>
     <string name="nc_hint_enter_a_message">Enter a message…</string>
     <string name="nc_date_header_yesterday">Yesterday</string>
     <string name="nc_date_header_today">Today</string>
-    </resources>
+    <string name="nc_conversation_menu_voice_call">Voice call</string>
+    <string name="nc_conversation_menu_video_call">Video call</string>
+    <string name="nc_new_messages">New messages</string>
+
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">No more items to load. Refresh to retry.</string>
+    <string name="nc_endless_disabled">No more items to load (max reached).</string>
+    <string name="nc_endless_cancel">Cancelled by the user.</string>
+    <string name="nc_endless_error">An error occurred while loading more items.</string>
+
+</resources>
