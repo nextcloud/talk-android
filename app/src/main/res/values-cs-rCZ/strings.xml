@@ -15,6 +15,8 @@
     <string name="nc_server_failed_to_import_account">Vyznačený účet se nepodařilo naimportovat</string>
     <string name="nc_Server_account_imported">Vyznačený účet byl importován a je k dispozici</string>
     <string name="nc_nextcloud_talk_app_installed">nalezena aplikace %1$s</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Aplikace %1$s není na serveru nainstalována, ruší se</string>
+    <string name="nc_never">Nikdy nepřipojeno</string>
     <string name="nc_search">Hledat</string>
 
     <string name="nc_certificate_dialog_title">Zkontrolovat certifikát</string>
