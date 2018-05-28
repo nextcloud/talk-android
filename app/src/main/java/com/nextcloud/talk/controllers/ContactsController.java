@@ -296,6 +296,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
+                            bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
 
                             if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
                                 bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
@@ -826,6 +827,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
+                                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
                                     conversationIntent.putExtras(bundle);
 
                                     if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {

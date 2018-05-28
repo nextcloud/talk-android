@@ -74,6 +74,7 @@ import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -223,6 +224,7 @@ public class CallActivity extends AppCompatActivity {
     private View.OnClickListener videoOnClickListener;
 
     private String baseUrl;
+    private String roomId;
 
     private SpotlightView spotlightView;
 
@@ -259,6 +261,7 @@ public class CallActivity extends AppCompatActivity {
                 .setRepeatCount(PulseAnimation.INFINITE)
                 .setRepeatMode(PulseAnimation.REVERSE);
 
+        roomId = getIntent().getExtras().getString(BundleKeys.KEY_ROOM_ID, "");
         roomToken = getIntent().getExtras().getString(BundleKeys.KEY_ROOM_TOKEN, "");
         userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable(BundleKeys.KEY_USER_ENTITY));
 
@@ -930,8 +933,13 @@ public class CallActivity extends AppCompatActivity {
                     public void onNext(GenericOverall genericOverall) {
                         inCall = true;
 
+
                         // start pinging the call
                         if (!hasChatSupport) {
+                            ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+                            ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
+                            ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(userEntity);
+
                             ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -959,6 +967,8 @@ public class CallActivity extends AppCompatActivity {
                                             dispose(pingDisposable);
                                         }
                                     });
+                        } else {
+                            ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
                         }
 
                         // Start pulling signaling messages
@@ -1415,6 +1425,12 @@ public class CallActivity extends AppCompatActivity {
     public void onDestroy() {
         if (inCall) {
             hangup(false);
+        }
+
+        if (hasChatSupport) {
+            ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
+        } else {
+            ApplicationWideCurrentRoomHolder.getInstance().clear();
         }
         //this.unregisterReceiver(networkBroadcastReceier);
         rootEglBase.release();

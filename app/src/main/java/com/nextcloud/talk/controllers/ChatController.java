@@ -56,6 +56,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
@@ -153,7 +154,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private int newMessagesCount = 0;
     private Boolean startCallFromNotification;
-
+    private String roomId;
     /*
     TODO:
         - check push notifications
@@ -170,6 +171,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
         } else {
             this.conversationUser = currentUser;
         }
+
+        this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
+
+        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+        ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
+        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
 
         this.roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "");
 
@@ -211,7 +218,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     @Override
                     public void onNext(RoomsOverall roomsOverall) {
                         for (Room room : roomsOverall.getOcs().getData()) {
-                            if (roomToken.equals(room.getRoomId())) {
+                            if (roomId.equals(room.getRoomId())) {
                                 roomToken = room.getToken();
                                 conversationName = room.getDisplayName();
                                 setTitle();
@@ -393,6 +400,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     public void onDestroy() {
         inChat = false;
         dispose();
+        ApplicationWideCurrentRoomHolder.getInstance().clear();
         super.onDestroy();
     }
 
@@ -745,6 +753,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (currentCall != null && !TextUtils.isEmpty(currentCall.getSessionId())) {
             Bundle bundle = new Bundle();
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+            bundle.putString(BundleKeys.KEY_ROOM_ID, roomId);
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword);
             bundle.putString(BundleKeys.KEY_CALL_SESSION, currentCall.getSessionId());

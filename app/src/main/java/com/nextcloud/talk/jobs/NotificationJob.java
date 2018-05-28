@@ -39,6 +39,7 @@ import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
+import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.activities.MainActivity;
@@ -48,6 +49,7 @@ import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
+import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import org.parceler.Parcels;
 
@@ -59,6 +61,7 @@ import java.util.zip.CRC32;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
+import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 
@@ -66,9 +69,14 @@ import autodagger.AutoInjector;
 public class NotificationJob extends Job {
     public static final String TAG = "NotificationJob";
 
+    @Inject
+    UserUtils userUtils;
+
     @NonNull
     @Override
     protected Result onRunJob(Params params) {
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+
         Context context = getContext();
         PersistableBundleCompat persistableBundleCompat = getParams().getExtras();
         String subject = persistableBundleCompat.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT, "");
@@ -96,7 +104,15 @@ public class NotificationJob extends Job {
                         boolean hasChatSupport = signatureVerification.getUserEntity().hasSpreedCapabilityWithName
                                 ("chat-v2");
 
-                        if (decryptedPushMessage.getApp().equals("spreed")) {
+                        boolean isInTheSameRoomAsNotification = ApplicationWideCurrentRoomHolder.getInstance().
+                                getCurrentRoomId().equals(decryptedPushMessage.getId()) &&
+                                signatureVerification.getUserEntity().equals(ApplicationWideCurrentRoomHolder
+                                        .getInstance().getUserInRoom());
+
+                        boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed") &&
+                                !(isInTheSameRoomAsNotification && !decryptedPushMessage.getType().equals("call"));
+
+                        if (shouldShowNotification) {
                             int smallIcon;
                             Bitmap largeIcon;
                             String category = "";
@@ -115,7 +131,7 @@ public class NotificationJob extends Job {
                                 bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, true);
                             }
 
-                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
+                            bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage.getId());
                             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(signatureVerification
                                     .getUserEntity()));
 

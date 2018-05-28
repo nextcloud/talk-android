@@ -544,6 +544,7 @@ public class OperationsMenuController extends BaseController {
 
             Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
+            bundle.putString(BundleKeys.KEY_ROOM_ID, room.getToken());
             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
             bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(call));
 
