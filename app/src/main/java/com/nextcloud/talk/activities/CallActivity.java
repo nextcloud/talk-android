@@ -213,6 +213,7 @@ public class CallActivity extends AppCompatActivity {
     private boolean audioOn = false;
 
     private boolean isMultiSession = false;
+    private boolean hasChatSupport = false;
     private boolean isVoiceOnlyCall = false;
 
     private Handler handler = new Handler();
@@ -858,6 +859,14 @@ public class CallActivity extends AppCompatActivity {
                                 .getCapabilities().getSpreedCapability()
                                 .getFeatures().contains("multi-room-users");
 
+                        hasChatSupport = capabilitiesOverall.getOcs().getData()
+                                .getCapabilities().getSpreedCapability() != null &&
+                                capabilitiesOverall.getOcs().getData()
+                                        .getCapabilities().getSpreedCapability()
+                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
+                                .getCapabilities().getSpreedCapability()
+                                .getFeatures().contains("chat-v2");
+
                         joinRoomAndCall();
                     }
 
@@ -887,7 +896,7 @@ public class CallActivity extends AppCompatActivity {
 
                         @Override
                         public void onNext(CallOverall callOverall) {
-                            performCall(callOverall.getOcs().getData().getSessionId());
+                            performCall();
                         }
 
                         @Override
@@ -901,11 +910,11 @@ public class CallActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            performCall(callSession);
+            performCall();
         }
     }
 
-    private void performCall(@Nullable String callSessionId) {
+    private void performCall() {
         ncApi.joinCall(credentials,
                 ApiUtils.getUrlForCall(baseUrl, roomToken))
                 .subscribeOn(Schedulers.newThread())
@@ -922,33 +931,35 @@ public class CallActivity extends AppCompatActivity {
                         inCall = true;
 
                         // start pinging the call
-                        ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
-                                .subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                                .takeWhile(observable -> inCall)
-                                .retry(3, observable -> inCall)
-                                .subscribe(new Observer<GenericOverall>() {
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
-                                        pingDisposable = d;
-                                    }
+                        if (!hasChatSupport) {
+                            ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
+                                    .subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                                    .takeWhile(observable -> inCall)
+                                    .retry(3, observable -> inCall)
+                                    .subscribe(new Observer<GenericOverall>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+                                            pingDisposable = d;
+                                        }
 
-                                    @Override
-                                    public void onNext(GenericOverall genericOverall) {
+                                        @Override
+                                        public void onNext(GenericOverall genericOverall) {
 
-                                    }
+                                        }
 
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        dispose(pingDisposable);
-                                    }
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            dispose(pingDisposable);
+                                        }
 
-                                    @Override
-                                    public void onComplete() {
-                                        dispose(pingDisposable);
-                                    }
-                                });
+                                        @Override
+                                        public void onComplete() {
+                                            dispose(pingDisposable);
+                                        }
+                                    });
+                        }
 
                         // Start pulling signaling messages
                         String urlToken = null;

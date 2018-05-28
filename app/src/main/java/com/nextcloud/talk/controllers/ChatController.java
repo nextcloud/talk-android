@@ -164,7 +164,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         UserEntity currentUser = userUtils.getCurrentUser();
-        this.conversationName = args.getString(BundleKeys.KEY_CONVERSATION_NAME);
+        this.conversationName = args.getString(BundleKeys.KEY_CONVERSATION_NAME, "");
         if (args.containsKey(BundleKeys.KEY_USER_ENTITY)) {
             this.conversationUser = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
         } else {
@@ -213,6 +213,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         for (Room room : roomsOverall.getOcs().getData()) {
                             if (roomToken.equals(room.getRoomId())) {
                                 roomToken = room.getToken();
+                                conversationName = room.getDisplayName();
+                                setTitle();
                                 break;
                             }
                         }

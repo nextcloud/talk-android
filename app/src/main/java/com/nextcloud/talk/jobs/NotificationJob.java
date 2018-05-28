@@ -93,6 +93,9 @@ public class NotificationJob extends Job {
                         DecryptedPushMessage decryptedPushMessage = LoganSquare.parse(new String(decryptedSubject),
                                 DecryptedPushMessage.class);
 
+                        boolean hasChatSupport = signatureVerification.getUserEntity().hasSpreedCapabilityWithName
+                                ("chat-v2");
+
                         if (decryptedPushMessage.getApp().equals("spreed")) {
                             int smallIcon;
                             Bitmap largeIcon;
@@ -103,8 +106,6 @@ public class NotificationJob extends Job {
 
                             Bundle bundle = new Bundle();
 
-                            boolean hasChatSupport = signatureVerification.getUserEntity().hasSpreedCapabilityWithName
-                                    ("chat-v2");
 
                             if (hasChatSupport) {
                                 intent = new Intent(context, MainActivity.class);
@@ -118,21 +119,13 @@ public class NotificationJob extends Job {
                             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(signatureVerification
                                     .getUserEntity()));
 
-
-                            if (hasChatSupport) {
-                                if (decryptedPushMessage.getType().equals("call")) {
-                                    bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, true);
-                                } else {
-                                    bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false);
-                                }
-                            }  else {
-                                bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, true);
-                            }
+                            bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL,
+                                    decryptedPushMessage.getType().equals("call") || !hasChatSupport);
 
                             intent.putExtras(bundle);
 
                             PendingIntent pendingIntent = PendingIntent.getActivity(context,
-                                    0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                                    0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
                             NotificationManager notificationManager =
                                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -150,9 +143,6 @@ public class NotificationJob extends Job {
                                     priority = Notification.PRIORITY_HIGH;
                                     break;
                                 case "chat":
-                                    if (hasChatSupport) {
-                                        bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false);
-                                    }
                                     smallIcon = R.drawable.ic_chat_black_24dp;
                                     category = Notification.CATEGORY_MESSAGE;
                                     break;

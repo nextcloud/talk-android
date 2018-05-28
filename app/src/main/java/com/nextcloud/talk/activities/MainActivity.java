@@ -21,6 +21,7 @@
 package com.nextcloud.talk.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +34,6 @@ import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.ChatController;
@@ -53,6 +53,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -108,34 +109,44 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         }
 
         if (getIntent().hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                    .pushChangeHandler(new NoOpControllerChangeHandler())
-                    .popChangeHandler(new NoOpControllerChangeHandler()));
-
-            router.pushController(RouterTransaction.with(new ChatController(getIntent().getExtras()))
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler()));
-
-        } else {
-
-            if (!router.hasRootController()) {
-                if (hasDb) {
-                    if (userUtils.anyUserExists()) {
-                        router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                                .pushChangeHandler(new HorizontalChangeHandler())
-                                .popChangeHandler(new HorizontalChangeHandler()));
-                    } else {
-                        router.setRoot(RouterTransaction.with(new ServerSelectionController())
-                                .pushChangeHandler(new HorizontalChangeHandler())
-                                .popChangeHandler(new HorizontalChangeHandler()));
-                    }
+            onNewIntent(getIntent());
+        } else if (!router.hasRootController()) {
+            if (hasDb) {
+                if (userUtils.anyUserExists()) {
+                    router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
                 } else {
                     router.setRoot(RouterTransaction.with(new ServerSelectionController())
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler()));
-
                 }
+            } else {
+                router.setRoot(RouterTransaction.with(new ServerSelectionController())
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler()));
+
             }
+        }
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+            List<RouterTransaction> newBackstack = new ArrayList<>();
+
+            newBackstack.add(RouterTransaction.with(new MagicBottomNavigationController())
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
+
+            router.setBackstack(newBackstack, new HorizontalChangeHandler());
+
+            router.pushController(RouterTransaction.with(new ChatController(intent.getExtras()))
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
         }
     }
 
