@@ -188,6 +188,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         this.roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "");
+
+        if (conversationUser.getUserId().equals("-1")) {
+            credentials = null;
+        } else {
+            credentials = ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken());
+        }
+
         this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL);
     }
 
@@ -325,7 +332,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (adapterWasNull && startCallFromNotification == null) {
             setupMentionAutocomplete();
             joinRoomWithPassword();
-        } else if (adapterWasNull) {
+        } else {
             handleFromNotification();
         }
     }
@@ -396,21 +403,39 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
     }
 
+    private void startPing() {
+        ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                .takeWhile(observable -> inChat)
+                .retry(3, observable -> inChat)
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposableList.add(d);
+                    }
+
+                    @Override
+                    public void onNext(GenericOverall genericOverall) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+
+    }
+
     private void joinRoomWithPassword() {
-        String password = "";
-
-        if (!TextUtils.isEmpty(roomPassword)) {
-            password = roomPassword;
-        }
-
-        if (conversationUser.getUserId().equals("-1")) {
-            credentials = null;
-        } else {
-            credentials = ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken());
-        }
 
         if (currentCall == null) {
-            ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken), password)
+            ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken), roomPassword)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
@@ -499,35 +524,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     }
                 });
-    }
-
-    private void startPing() {
-        ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                .takeWhile(observable -> inChat)
-                .retry(3, observable -> inChat)
-                .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposableList.add(d);
-                    }
-
-                    @Override
-                    public void onNext(GenericOverall genericOverall) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
-
     }
 
     private void pullChatMessages(int lookIntoFuture) {

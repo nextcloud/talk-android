@@ -57,6 +57,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.Authenticator;
 import okhttp3.Cache;
 import okhttp3.Credentials;
+import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
@@ -165,10 +166,19 @@ public class RestModule {
 
     @Provides
     @Singleton
+    Dispatcher provideDispatcher() {
+        Dispatcher dispatcher = new Dispatcher();
+        dispatcher.setMaxRequestsPerHost(100);
+        dispatcher.setMaxRequests(100);
+        return dispatcher;
+    }
+
+    @Provides
+    @Singleton
     OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
                                    MagicTrustManager magicTrustManager,
                                    SSLSocketFactoryCompat sslSocketFactoryCompat, Cache cache,
-                                   CookieManager cookieManager) {
+                                   CookieManager cookieManager, Dispatcher dispatcher) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         httpClient.connectTimeout(45, TimeUnit.SECONDS);
@@ -189,6 +199,7 @@ public class RestModule {
         httpClient.retryOnConnectionFailure(true);
         httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE));
 
+        httpClient.dispatcher(dispatcher);
         if (!Proxy.NO_PROXY.equals(proxy)) {
             httpClient.proxy(proxy);
 
