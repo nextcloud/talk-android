@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +64,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -117,6 +119,7 @@ public class OperationsMenuController extends BaseController {
     private Room.RoomType conversationType;
     private ArrayList<String> invitedUsers = new ArrayList<>();
 
+    private List<String> spreedCapabilities;
     private String credentials;
 
     public OperationsMenuController(Bundle args) {
@@ -135,6 +138,10 @@ public class OperationsMenuController extends BaseController {
 
         if (args.containsKey(BundleKeys.KEY_CONVERSATION_TYPE)) {
             this.conversationType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_CONVERSATION_TYPE));
+        }
+
+        if (args.containsKey(BundleKeys.KEY_SPREED_CAPABILITIES)) {
+            this.spreedCapabilities = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_SPREED_CAPABILITIES));
         }
     }
 
@@ -435,12 +442,17 @@ public class OperationsMenuController extends BaseController {
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
                                 bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
+                                bundle.putParcelable(BundleKeys.KEY_SPREED_CAPABILITIES,
+                                        Parcels.wrap(capabilitiesOverall.getOcs().getData().getCapabilities()
+                                                .getSpreedCapability().getFeatures()));
                                 bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
                                 getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
                                         .pushChangeHandler(new HorizontalChangeHandler())
                                         .popChangeHandler(new HorizontalChangeHandler()));
                             } else {
-                                initiateConversation(true);
+                                initiateConversation(false, capabilitiesOverall.getOcs().getData()
+                                        .getCapabilities().getSpreedCapability()
+                                        .getFeatures());
                             }
                         } else if (capabilitiesOverall.getOcs().getData()
                                 .getCapabilities().getSpreedCapability() != null &&
@@ -503,7 +515,7 @@ public class OperationsMenuController extends BaseController {
                                 }
 
                                 if (localInvitedUsers.size() == 0) {
-                                    initiateConversation(false);
+                                    initiateConversation(false, null);
                                 }
                                 dispose();
                             }
@@ -514,18 +526,29 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
-    private void initiateConversation(boolean dismissView) {
-        if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+    private void initiateConversation(boolean dismissView, @Nullable List<String> spreedCapabilities) {
+        Bundle bundle = new Bundle();
+        boolean hasChatCapability;
+        boolean isGuest = false;
+
+        if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
+            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
+            hasChatCapability = spreedCapabilities != null && spreedCapabilities.contains("chat-v2");
+            isGuest = true;
+        } else {
+            hasChatCapability = currentUser.hasSpreedCapabilityWithName("chat-v2");
+        }
+
+
+        if (hasChatCapability) {
             eventBus.post(new BottomSheetLockEvent(true, 0,
                     true, true, dismissView));
 
             Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
-            Bundle bundle = new Bundle();
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
-            if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
-                bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
+            if (!isGuest) {
+                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
             }
 
             bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(call));
@@ -582,7 +605,7 @@ public class OperationsMenuController extends BaseController {
             } else {
                 CallOverall callOverall = (CallOverall) o;
                 call = callOverall.getOcs().getData();
-                initiateConversation(true);
+                initiateConversation(true, spreedCapabilities);
             }
         }
 

@@ -92,6 +92,7 @@ import com.webianks.library.PopupBubble;
 import org.parceler.Parcels;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -142,11 +143,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private int globalLastKnownPastMessageId = -1;
     private MessagesListAdapter<ChatMessage> adapter;
 
+    private String myFirstMessage;
+
     private Autocomplete mentionAutocomplete;
     private LinearLayoutManager layoutManager;
     private boolean lookingIntoFuture = false;
 
     private int newMessagesCount = 0;
+    private String senderId;
 
     /*
     TODO:
@@ -166,6 +170,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             this.currentCall = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION));
         }
         this.baseUrl = args.getString(BundleKeys.KEY_MODIFIED_BASE_URL, "");
+        this.roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "");
     }
 
     @Override
@@ -179,6 +184,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         boolean adapterWasNull = false;
+
+        if (conversationUser != null && conversationUser.getUserId() != null) {
+            senderId = conversationUser.getUserId();
+        } else {
+            senderId = "-1";
+        }
 
         if (adapter == null) {
 
@@ -196,7 +207,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             holdersConfig.setOutcoming(MagicOutcomingTextMessageViewHolder.class,
                     R.layout.item_custom_outcoming_text_message);
 
-            adapter = new MessagesListAdapter<>(conversationUser.getUserId(), holdersConfig, new ImageLoader() {
+            adapter = new MessagesListAdapter<>(senderId, holdersConfig, new ImageLoader() {
                 @Override
                 public void loadImage(ImageView imageView, String url) {
                     GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
@@ -297,6 +308,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 if (conversationUser == null) {
                     conversationUser = new UserEntity();
                     conversationUser.setDisplayName(currentUser.getDisplayName());
+                    conversationUser.setBaseUrl(baseUrl);
                 }
                 joinRoomWithPassword();
             }
@@ -371,7 +383,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private void joinRoomWithPassword() {
         String password = "";
 
-        if (TextUtils.isEmpty(roomPassword)) {
+        if (!TextUtils.isEmpty(roomPassword)) {
             password = roomPassword;
         }
 
@@ -421,6 +433,20 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
     }
 
+    private void setSenderId(String guestSenderId) {
+        if (senderId.equals("-1")) {
+            try {
+                final Field senderId = adapter.getClass().getDeclaredField("senderId");
+                senderId.setAccessible(true);
+                senderId.set(adapter, guestSenderId);
+            } catch (NoSuchFieldException e) {
+                Log.e(TAG, "Failed to set sender id");
+            } catch (IllegalAccessException e) {
+                Log.e(TAG, "Failed to access and set field");
+            }
+        }
+    }
+
     private void sendMessage(String message) {
         Map<String, String> fieldMap = new HashMap<>();
         fieldMap.put("message", message);
@@ -439,6 +465,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
+                        if (senderId.equals("-1") && TextUtils.isEmpty(myFirstMessage)) {
+                            myFirstMessage = message;
+                        }
+
                         if (popupBubble.isShown()) {
                             popupBubble.hide();
                         }
@@ -590,6 +620,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
             } else {
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessageList.get(i).setBaseUrl(conversationUser.getBaseUrl());
+                    if (senderId.equals("-1") && !TextUtils.isEmpty(myFirstMessage)) {
+                        ChatMessage chatMessage = chatMessageList.get(i);
+                        if (chatMessage.getActorType().equals("guests") &&
+                                chatMessage.getActorDisplayName().equals(conversationUser.getDisplayName())) {
+                            setSenderId(chatMessage.getActorId());
+                        }
+                    }
                     boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0 ||
                             adapter.getItemCount() == 0;
 

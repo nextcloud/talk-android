@@ -1257,6 +1257,33 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    private void leaveRoom() {
+        ncApi.leaveRoom(credentials, ApiUtils.getRoom(baseUrl, roomToken))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GenericOverall genericOverall) {
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
     private void hangupNetworkCalls() {
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
                 .subscribeOn(Schedulers.newThread())
@@ -1269,7 +1296,11 @@ public class CallActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        finish();
+                        if (isMultiSession) {
+                            finish();
+                        } else {
+                            leaveRoom();
+                        }
                     }
 
                     @Override
