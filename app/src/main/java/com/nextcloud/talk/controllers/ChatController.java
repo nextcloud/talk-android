@@ -47,6 +47,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bumptech.glide.load.DataSource;
@@ -56,7 +57,6 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
@@ -76,6 +76,7 @@ import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -282,7 +283,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             .listener(new RequestListener<Bitmap>() {
                                 @Override
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                                    imageView.setVisibility(View.GONE);
+                                    TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
+                                            .width(imageView.getMeasuredWidth()).height(imageView.getMeasuredHeight())
+                                            .endConfig().buildRound("?", getResources().getColor(R.color.nc_grey));
+                                    imageView.setImageDrawable(drawable);
                                     return true;
                                 }
 
