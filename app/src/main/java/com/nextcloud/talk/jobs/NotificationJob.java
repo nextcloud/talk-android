@@ -41,6 +41,7 @@ import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
+import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
@@ -98,13 +99,36 @@ public class NotificationJob extends Job {
                             String category = "";
                             int priority = Notification.PRIORITY_DEFAULT;
                             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            Intent intent;
 
-                            Intent intent = new Intent(context, CallActivity.class);
                             Bundle bundle = new Bundle();
+
+                            boolean hasChatSupport = signatureVerification.getUserEntity().hasSpreedCapabilityWithName
+                                    ("chat-v2");
+
+                            if (hasChatSupport) {
+                                intent = new Intent(context, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            } else {
+                                intent = new Intent(context, CallActivity.class);
+                                bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, true);
+                            }
+
                             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
                             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(signatureVerification
                                     .getUserEntity()));
-                            bundle.putBoolean("fromNotification", true);
+
+
+                            if (hasChatSupport) {
+                                if (decryptedPushMessage.getType().equals("call")) {
+                                    bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, true);
+                                } else {
+                                    bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false);
+                                }
+                            }  else {
+                                bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, true);
+                            }
+
                             intent.putExtras(bundle);
 
                             PendingIntent pendingIntent = PendingIntent.getActivity(context,
@@ -126,6 +150,9 @@ public class NotificationJob extends Job {
                                     priority = Notification.PRIORITY_HIGH;
                                     break;
                                 case "chat":
+                                    if (hasChatSupport) {
+                                        bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false);
+                                    }
                                     smallIcon = R.drawable.ic_chat_black_24dp;
                                     category = Notification.CATEGORY_MESSAGE;
                                     break;

@@ -260,6 +260,11 @@ public class CallActivity extends AppCompatActivity {
 
         roomToken = getIntent().getExtras().getString(BundleKeys.KEY_ROOM_TOKEN, "");
         userEntity = Parcels.unwrap(getIntent().getExtras().getParcelable(BundleKeys.KEY_USER_ENTITY));
+
+        if (userEntity == null) {
+            userEntity = userUtils.getCurrentUser();
+        }
+
         callSession = getIntent().getExtras().getString(BundleKeys.KEY_CALL_SESSION, "0");
         credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
         isVoiceOnlyCall = getIntent().getExtras().getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
@@ -280,39 +285,7 @@ public class CallActivity extends AppCompatActivity {
             Log.e(TAG, "Failed to evict cache");
         }
 
-        if (!userEntity.getCurrent()) {
-            userUtils.createOrUpdateUser(null,
-                    null, null, null,
-                    null, true, null, userEntity.getId(), null, null)
-                    .subscribe(new Observer<UserEntity>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(UserEntity userEntity) {
-                            userUtils.disableAllUsersWithoutId(userEntity.getId());
-                            if (getIntent().getExtras().containsKey("fromNotification")) {
-                                handleFromNotification();
-                            } else {
-                                initViews();
-                                checkPermissions();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-
-        } else if (getIntent().getExtras().containsKey("fromNotification")) {
+    if (getIntent().getExtras().containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             handleFromNotification();
         } else {
             initViews();
@@ -928,7 +901,7 @@ public class CallActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            performCall(null);
+            performCall(callSession);
         }
     }
 
@@ -947,9 +920,6 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onNext(GenericOverall genericOverall) {
                         inCall = true;
-                        if (callSessionId != null) {
-                            callSession = callSessionId;
-                        }
 
                         // start pinging the call
                         ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))

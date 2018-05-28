@@ -529,12 +529,10 @@ public class OperationsMenuController extends BaseController {
     private void initiateConversation(boolean dismissView, @Nullable List<String> spreedCapabilities) {
         Bundle bundle = new Bundle();
         boolean hasChatCapability;
-        boolean isGuest = false;
 
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
             hasChatCapability = spreedCapabilities != null && spreedCapabilities.contains("chat-v2");
-            isGuest = true;
         } else {
             hasChatCapability = currentUser.hasSpreedCapabilityWithName("chat-v2");
         }
@@ -547,10 +545,6 @@ public class OperationsMenuController extends BaseController {
             Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
-            if (!isGuest) {
-                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
-            }
-
             bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(call));
 
             conversationIntent.putExtras(bundle);

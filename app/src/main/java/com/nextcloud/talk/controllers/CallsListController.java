@@ -494,7 +494,6 @@ public class CallsListController extends BaseController implements SearchView.On
             Room room = callItem.getModel();
             Bundle bundle = new Bundle();
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, callItem.getModel().getToken());
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
 
             if (room.hasPassword && (room.participantType.equals(Participant.ParticipantType.GUEST) ||
                     room.participantType.equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {

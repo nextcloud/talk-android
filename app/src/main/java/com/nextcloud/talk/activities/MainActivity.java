@@ -33,12 +33,15 @@ import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.controllers.ChatController;
 import com.nextcloud.talk.controllers.MagicBottomNavigationController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
 import com.nextcloud.talk.events.CertificateEvent;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
@@ -104,22 +107,34 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
             hasDb = false;
         }
 
-        if (!router.hasRootController()) {
-            if (hasDb) {
-                if (userUtils.anyUserExists()) {
-                    router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler()));
+        if (getIntent().hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+            router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                    .pushChangeHandler(new NoOpControllerChangeHandler())
+                    .popChangeHandler(new NoOpControllerChangeHandler()));
+
+            router.pushController(RouterTransaction.with(new ChatController(getIntent().getExtras()))
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
+
+        } else {
+
+            if (!router.hasRootController()) {
+                if (hasDb) {
+                    if (userUtils.anyUserExists()) {
+                        router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                                .pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()));
+                    } else {
+                        router.setRoot(RouterTransaction.with(new ServerSelectionController())
+                                .pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()));
+                    }
                 } else {
                     router.setRoot(RouterTransaction.with(new ServerSelectionController())
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler()));
-                }
-            } else {
-                router.setRoot(RouterTransaction.with(new ServerSelectionController())
-                        .pushChangeHandler(new HorizontalChangeHandler())
-                        .popChangeHandler(new HorizontalChangeHandler()));
 
+                }
             }
         }
     }

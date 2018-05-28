@@ -92,6 +92,7 @@ public class CapabilitiesJob extends Job {
 
             ncApi.getCapabilities(ApiUtils.getCredentials(internalUserEntity.getUsername(),
                     internalUserEntity.getToken()), ApiUtils.getUrlForCapabilities(internalUserEntity.getBaseUrl()))
+                    .retry(3)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(new Observer<CapabilitiesOverall>() {
                         @Override
