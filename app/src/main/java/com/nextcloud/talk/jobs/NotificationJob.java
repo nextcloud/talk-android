@@ -110,7 +110,7 @@ public class NotificationJob extends Job {
                                         .getInstance().getUserInRoom());
 
                         boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed") &&
-                                !(isInTheSameRoomAsNotification && !decryptedPushMessage.getType().equals("call"));
+                                (!isInTheSameRoomAsNotification || decryptedPushMessage.getType().equals("call"));
 
                         if (shouldShowNotification) {
                             int smallIcon;
