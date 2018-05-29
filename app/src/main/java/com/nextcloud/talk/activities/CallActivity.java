@@ -501,9 +501,9 @@ public class CallActivity extends AppCompatActivity {
                     if (b && cameraSwitchCount != -1) {
                         if (cameraSwitchCount == camerasCount) {
                             cameraSwitchCount = 0;
-                            pipVideoView.setMirror(true);
-                        } else {
                             pipVideoView.setMirror(false);
+                        } else {
+                            pipVideoView.setMirror(true);
                         }
                     }
                 }
@@ -688,7 +688,7 @@ public class CallActivity extends AppCompatActivity {
 
         //Create a new PeerConnectionFactory instance.
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
-        peerConnectionFactory = new PeerConnectionFactory(options);
+        peerConnectionFactory = PeerConnectionFactory.builder().createPeerConnectionFactory();
 
         peerConnectionFactory.setVideoHwAccelerationOptions(rootEglBase.getEglBaseContext(),
                 rootEglBase.getEglBaseContext());
@@ -745,11 +745,7 @@ public class CallActivity extends AppCompatActivity {
             localMediaStream.addTrack(localVideoTrack);
             localVideoTrack.setEnabled(false);
 
-            //create a videoRenderer based on SurfaceViewRenderer instance
-            localRenderer = new VideoRenderer(pipVideoView);
-            // And finally, with our VideoRenderer ready, we
-            // can add our renderer to the VideoTrack.
-            localVideoTrack.addRenderer(localRenderer);
+            localVideoTrack.addSink(pipVideoView);
         }
 
     }
@@ -1405,8 +1401,7 @@ public class CallActivity extends AppCompatActivity {
         if (mediaStream != null && mediaStream.videoTracks != null && mediaStream.videoTracks.size() > 0 && enable) {
             VideoTrack videoTrack = mediaStream.videoTracks.get(0);
 
-            VideoRenderer remoteRenderer = new VideoRenderer(surfaceViewRenderer);
-            videoTrack.addRenderer(remoteRenderer);
+            videoTrack.addSink(surfaceViewRenderer);
 
             imageView.setVisibility(View.INVISIBLE);
             surfaceViewRenderer.setVisibility(View.VISIBLE);

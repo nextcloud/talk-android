@@ -405,7 +405,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         inChat = false;
         dispose();
         ApplicationWideCurrentRoomHolder.getInstance().clear();
-        super.onDestroy();
+        leaveRoom();
     }
 
     private void dispose() {
@@ -486,6 +486,33 @@ public class ChatController extends BaseController implements MessagesListAdapte
             startPing();
             pullChatMessages(0);
         }
+    }
+
+    private void leaveRoom() {
+        ncApi.leaveRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(GenericOverall genericOverall) {
+                        getRouter().popCurrentController();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     private void setSenderId() {
