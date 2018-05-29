@@ -289,7 +289,7 @@ public class CallActivity extends AppCompatActivity {
             Log.e(TAG, "Failed to evict cache");
         }
 
-    if (getIntent().getExtras().containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+        if (getIntent().getExtras().containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             handleFromNotification();
         } else {
             initViews();
@@ -940,37 +940,37 @@ public class CallActivity extends AppCompatActivity {
                             ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
                             ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
                             ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(userEntity);
-
-                            ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
-                                    .subscribeOn(Schedulers.newThread())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                                    .takeWhile(observable -> inCall)
-                                    .retry(3, observable -> inCall)
-                                    .subscribe(new Observer<GenericOverall>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-                                            pingDisposable = d;
-                                        }
-
-                                        @Override
-                                        public void onNext(GenericOverall genericOverall) {
-
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            dispose(pingDisposable);
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-                                            dispose(pingDisposable);
-                                        }
-                                    });
                         } else {
                             ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
                         }
+
+                        ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                                .takeWhile(observable -> inCall)
+                                .retry(3, observable -> inCall)
+                                .subscribe(new Observer<GenericOverall>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+                                        pingDisposable = d;
+                                    }
+
+                                    @Override
+                                    public void onNext(GenericOverall genericOverall) {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        dispose(pingDisposable);
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+                                        dispose(pingDisposable);
+                                    }
+                                });
 
                         // Start pulling signaling messages
                         String urlToken = null;
