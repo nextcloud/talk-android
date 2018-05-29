@@ -899,6 +899,7 @@ public class CallActivity extends AppCompatActivity {
 
                         @Override
                         public void onNext(CallOverall callOverall) {
+                            callSession = callOverall.getOcs().getData().getSessionId();
                             performCall();
                         }
 
@@ -1249,7 +1250,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void leaveRoom() {
-        ncApi.leaveRoom(credentials, ApiUtils.getRoom(baseUrl, roomToken))
+        ncApi.leaveRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
