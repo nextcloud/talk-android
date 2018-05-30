@@ -16,7 +16,7 @@
     <string name="nc_server_import_accounts">%1$s uygulamasındaki hesapları içe aktar</string>
     <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
     <string name="nc_Server_account_imported">Seçilmiş hesap içe aktarıldı ve kullanılabilir</string>
-    <string name="nc_get_from_provider">Henüz bir sunucunuz yok mu?\Hizmet sağlayıcılardan yararlanabilirsiniz</string>
+    <string name="nc_get_from_provider">Henüz bir sunucunuz yok mu?\Listeden bir hizmet sağlayıcısı seçebilirsiniz</string>
 
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Görüntülenecek ad alındı</string>
@@ -141,7 +141,7 @@
     <string name="nc_store_short_desc">Kendi sunucunuz üzerinden görüntülü görüşme ve sohbet yapın.</string>
     <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
-    <string name="nc_store_full_desc">Birebir ya da grup ile ses ya da görüntü çağrıları yapmak, web konferansları oluşturmak ve sohbet iletileri göndermek için Nextcloud Talk uygulamasını kullanabilisiniz. Tüm bilgiler tamamen şifrelenmiş olarak sizin sunucunuz üzerinden iletilerek olabilecek en yüksek gizlilik düzeyi sağlanır.
+    <string name="nc_store_full_desc">Birebir ya da grup ile ses ya da görüntü çağrıları yapmak, web konferansları oluşturmak ve sohbet iletileri göndermek için Nextcloud Talk uygulamasını kullanabilirsiniz. Tüm bilgiler tamamen şifrelenmiş olarak sizin sunucunuz üzerinden iletilerek, olabilecek en yüksek gizlilik düzeyi sağlanır.
 
 Nextcloud Talk uygulamasının kullanımı kolaydır ve herhangi bir ücret ödemeniz gerekmez!
 
@@ -159,7 +159,7 @@ Nextcloud Talk şu özellikleri destekler:
 * Milyonlarca kullanıcıya göre
 * SIP geçidi üzerinden telefon ile arama
 
-Nextcloud Talk uygulamasının kullanılabilmesi için Nextcloud Talk sunucusu gereklidir. Nextcloud verilerinizin kontrolunu yeniden size veren, size özel, kendi sunucularınızda barındırabileceğiniz bir dosya eşitleme ve iletişim platformudur. Evinizde, hizmet sağlayıcınızda ya da kurumunuzda bulunan bir sunucu üzerinde kullanarak, belgelerinize, takvimlerinize, kişilerinize, e-postalarınıza ve diğer verilerinize erişmenizi sağlar. Verilerinizi farklı Nextcloud sunucuları kullanan kişiler ile paylaşarak dosyalar üzerinde birlikte çalışabilirsiniz. Nextcloud tamamen açık kaynaklı olduğundan özelliklerini gereksinimlerinize göre genişletebilir, geliştirilmesine katkıda bulunabilir ya da vaatlerimizin doğruluğunu görebilirsiniz.
+Nextcloud Talk uygulamasının kullanılabilmesi için Nextcloud Talk sunucusu gereklidir. Nextcloud verilerinizin denetiminin yeniden size veren, size özel, kendi sunucularınızda barındırabileceğiniz bir dosya eşitleme ve iletişim platformudur. Evinizde, hizmet sağlayıcınızda ya da kurumunuzda bulunan bir sunucu üzerinde kullanarak, belgelerinize, takvimlerinize, kişilerinize, e-postalarınıza ve diğer verilerinize erişmenizi sağlar. Verilerinizi farklı Nextcloud sunucuları kullanan kişiler ile paylaşarak dosyalar üzerinde birlikte çalışabilirsiniz. Nextcloud tamamen açık kaynaklı olduğundan özelliklerini gereksinimlerinize göre genişletebilir, geliştirilmesine katkıda bulunabilir ya da vaatlerimizin doğruluğunu görebilirsiniz.
 
 
 Dünya üzerinde milyonlarca kullanıcı ev ya da iş yerlerinde günlük işlemleri için Nextcloud kullanıyor. Kurumsal kullanıcılar Nextcloud GmbH tarafından sunulan destek hizmetleri ile tamamen kendi BT bölümlerinin denetimindeki kurumsal üretim ve iş birliği platformu için eksiksiz destek alıyorlar. 
