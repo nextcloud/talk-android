@@ -544,11 +544,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             myFirstMessage = message;
                         }
 
-                        if (popupBubble.isShown()) {
-                            popupBubble.hide();
-                        }
+                        getActivity().runOnUiThread(() -> {
+                            if (popupBubble.isShown()) {
+                                popupBubble.hide();
+                            }
 
-                        messagesList.smoothScrollToPosition(0);
+                            messagesList.smoothScrollToPosition(0);
+                        });
                     }
 
                     @Override
