@@ -229,7 +229,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             }
                         }
 
-                        setupMentionAutocomplete();
+                        getActivity().runOnUiThread(() -> setupMentionAutocomplete());
                         joinRoomWithPassword();
                     }
 
