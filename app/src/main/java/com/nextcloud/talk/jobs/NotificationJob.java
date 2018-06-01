@@ -148,18 +148,18 @@ public class NotificationJob extends Job {
 
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
-                                    smallIcon = R.drawable.ic_call_black_24dp;
+                                    smallIcon = R.drawable.ic_call_white_24dp;
                                     category = Notification.CATEGORY_CALL;
                                     priority = Notification.PRIORITY_HIGH;
                                     soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                                     break;
                                 case "room":
-                                    smallIcon = R.drawable.ic_notifications_black_24dp;
+                                    smallIcon = R.drawable.ic_notifications_white_24dp;
                                     category = Notification.CATEGORY_CALL;
                                     priority = Notification.PRIORITY_HIGH;
                                     break;
                                 case "chat":
-                                    smallIcon = R.drawable.ic_chat_black_24dp;
+                                    smallIcon = R.drawable.ic_chat_white_24dp;
                                     category = Notification.CATEGORY_MESSAGE;
                                     break;
                                 default:
