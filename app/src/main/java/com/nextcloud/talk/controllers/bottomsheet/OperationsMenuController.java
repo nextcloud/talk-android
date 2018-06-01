@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -589,6 +590,7 @@ public class OperationsMenuController extends BaseController {
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             }
 
+            new Handler().postDelayed(() -> getParentController().getRouter().popCurrentController(), 100);
             startActivity(callIntent);
 
         }

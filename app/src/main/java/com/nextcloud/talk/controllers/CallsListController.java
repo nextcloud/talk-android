@@ -173,7 +173,6 @@ public class CallsListController extends BaseController implements SearchView.On
         }
 
         currentUser = userUtils.getCurrentUser();
-
     }
 
     @Override

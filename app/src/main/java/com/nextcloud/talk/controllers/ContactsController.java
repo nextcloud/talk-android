@@ -201,6 +201,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 getActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }
+
+        currentUser = userUtils.getCurrentUser();
     }
 
     @Override
