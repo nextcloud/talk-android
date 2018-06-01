@@ -330,6 +330,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             } else {
                 roomType = Room.RoomType.ROOM_GROUP_CALL;
             }
+
             bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));
             ArrayList<String> userIds = new ArrayList<>();
             Set<Integer> selectedPositions = adapter.getSelectedPositionsAsSet();
@@ -789,9 +790,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         bottomSheet.setOnCancelListener(null);
                         bottomSheet.cancel();
 
-                        if (bottomSheetLockEvent.isDismissView()) {
-                            new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
-                        }
                     }, bottomSheetLockEvent.getDelay());
                 }
             }

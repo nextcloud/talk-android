@@ -50,6 +50,7 @@ import android.widget.ImageView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
@@ -156,6 +157,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private int newMessagesCount = 0;
     private Boolean startCallFromNotification;
     private String roomId;
+
     /*
     TODO:
         - check push notifications
@@ -388,19 +390,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     @Override
-    public boolean handleBack() {
-        if (getRouter().hasRootController()) {
-            getRouter().popToRoot(new HorizontalChangeHandler());
-        } else {
-            getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler()));
-        }
-
-        return true;
-    }
-
-    @Override
     public void onDestroy() {
         inChat = false;
         dispose();
@@ -500,7 +489,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        getRouter().popCurrentController();
+                        if (getRouter().hasRootController()) {
+                            getRouter().popToRoot(new VerticalChangeHandler());
+                        } else {
+                            getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));
+                        }
                     }
 
                     @Override
@@ -744,14 +739,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                inChat = false;
-                if (getRouter().hasRootController()) {
-                    getRouter().popToRoot(new HorizontalChangeHandler());
-                } else {
-                    getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler()));
-                }
+                onDestroy();
                 return true;
 
             case R.id.conversation_video_call:

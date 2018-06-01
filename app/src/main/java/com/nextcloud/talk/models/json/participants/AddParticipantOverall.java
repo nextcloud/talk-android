@@ -24,6 +24,9 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.rooms.RoomsOCS;
 
+import lombok.Data;
+
+@Data
 @JsonObject
 public class AddParticipantOverall {
     @JsonField(name = "ocs")

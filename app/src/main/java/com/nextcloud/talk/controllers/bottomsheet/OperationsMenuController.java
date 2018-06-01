@@ -500,7 +500,6 @@ public class OperationsMenuController extends BaseController {
 
                             @Override
                             public void onNext(AddParticipantOverall addParticipantOverall) {
-
                             }
 
                             @Override
@@ -515,7 +514,7 @@ public class OperationsMenuController extends BaseController {
                                 }
 
                                 if (localInvitedUsers.size() == 0) {
-                                    initiateConversation(false, null);
+                                    initiateConversation(true, null);
                                 }
                                 dispose();
                             }
@@ -544,15 +543,15 @@ public class OperationsMenuController extends BaseController {
 
             Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
-            bundle.putString(BundleKeys.KEY_ROOM_ID, room.getToken());
+            bundle.putString(BundleKeys.KEY_ROOM_ID, room.getRoomId());
             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
             bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(call));
 
             conversationIntent.putExtras(bundle);
-            getParentController().getParentController().getRouter().pushController((RouterTransaction.with(
-                    new ChatController(bundle)).pushChangeHandler(
-                    new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler())));
+
+            getParentController().getRouter().pushController(RouterTransaction.with(new ChatController(bundle))
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
 
         } else {
             initiateCall();
