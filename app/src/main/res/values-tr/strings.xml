@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Sohbetler</string>
+    <string name="nc_bottom_navigation_title_conversations">Konuşmalar</string>
     <string name="nc_bottom_navigation_title_contacts">Kişiler</string>
     <string name="nc_bottom_navigation_title_settings">Ayarlar</string>
 
@@ -64,7 +64,7 @@
     <string name="nc_no_proxy">Vekil sunucu yok</string>
     <string name="nc_username">Kullanıcı adı</string>
     <string name="nc_password">Parola</string>
-    <string name="nc_conversation_link">Sohbet bağlantısı</string>
+    <string name="nc_conversation_link">Konuşma bağlantısı</string>
     <string name="nc_new_password">Yeni parola</string>
     <string name="nc_wrong_password">Parola yanlış</string>
     <string name="nc_about">Hakkında</string>
@@ -77,17 +77,17 @@
 
     <!-- Room menu -->
     <string name="nc_what">Bugün ne yapmak istersiniz?</string>
-    <string name="nc_leave">Sohbetten ayrıl</string>
-    <string name="nc_rename">Sohbeti yeniden adlandır</string>
+    <string name="nc_leave">Konuşmadan ayrıl</string>
+    <string name="nc_rename">Konuşmayı yeniden adlandır</string>
     <string name="nc_set_password">Bir parola ayarlayın</string>
     <string name="nc_change_password">Bir parolayı değiştirin</string>
     <string name="nc_clear_password">Parolayı temizle</string>
     <string name="nc_share_link">Bağlantıyı paylaş</string>
     <string name="nc_share_link_via">Bağlantıyı şununla paylaş</string>
-    <string name="nc_make_call_public">Sohbeti herkese açık yap</string>
-    <string name="nc_make_call_private">Sohbeti özel yap</string>
-    <string name="nc_delete_call">Sohbeti sil</string>
-    <string name="nc_new_conversation">Yeni bir sohbet başlat</string>
+    <string name="nc_make_call_public">Konuşmayı herkese açık yap</string>
+    <string name="nc_make_call_private">Konuşmayı özel yap</string>
+    <string name="nc_delete_call">Konuşmayı sil</string>
+    <string name="nc_new_conversation">Yeni bir konuşma başlat</string>
     <string name="nc_join_via_link">Bağlantı ile katıl</string>
     <string name="nc_join_via_web">Web üzerinden katıl</string>
 
@@ -109,8 +109,8 @@
     <!-- Call -->
     <string name="nc_incoming_call">Gelen çağrı</string>
     <string name="nc_nick_guest">Konuk</string>
-    <string name="nc_public_call">Herkese açık sohbet ekle</string>
-    <string name="nc_public_call_explanation">Herkese açık sohbetlere dışarıdan kişiler özel oluşturulmuş bir bağlantı
+    <string name="nc_public_call">Herkese açık konuşma ekle</string>
+    <string name="nc_public_call_explanation">Herkese açık konuşmalara dışarıdan kişiler özel oluşturulmuş bir bağlantı
         ile katılabilir.</string>
 
     <!-- Notification channels -->
@@ -122,15 +122,15 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
-    <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık sohbetlere katılmayı
-        desteklemiyor. Sohbete web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
+    <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık konuşmalara katılmayı
+        desteklemiyor. Konuşmaya web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_all_ok_operation">Hepsi tamam!</string>
     <string name="nc_ok">Tamam</string>
-    <string name="nc_call_name">Sohbet adı</string>
+    <string name="nc_call_name">Konuşma adı</string>
     <string name="nc_proceed">İlerle</string>
     <string name="nc_call_name_is_same">Yazdığınız ad var olan ad ile aynı</string>
-    <string name="nc_wrong_link">Sohbet bağlantısı geçersiz</string>
-    <string name="nc_share_text">Sohbete şuradan katılın %1$s/index.php/call/%2$s</string>
+    <string name="nc_wrong_link">Konuşma bağlantısı geçersiz</string>
+    <string name="nc_share_text">Konuşmaya şuradan katılın %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s çağrısı</string>
     <string name="nc_share_text_pass">\nParola: %1$s</string>
 
