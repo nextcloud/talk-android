@@ -27,15 +27,12 @@ import org.parceler.Parcel;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class ChatOCS extends GenericOCS {
-    @Nullable
     @JsonField(name = "data")
     List<ChatMessage> data;
 }

@@ -114,6 +114,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
+import retrofit2.HttpException;
 import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -158,10 +159,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private Boolean startCallFromNotification;
     private String roomId;
 
-    /*
-    TODO:
-        - check push notifications
-     */
     public ChatController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
@@ -340,7 +337,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         messageInput.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         messageInput.setInputListener(input -> {
-            sendMessage(input.toString());
+            sendMessage(input.toString(), 1);
             return true;
         });
 
@@ -522,46 +519,61 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
     }
 
-    private void sendMessage(String message) {
-        Map<String, String> fieldMap = new HashMap<>();
-        fieldMap.put("message", message);
-        fieldMap.put("actorDisplayName", conversationUser.getDisplayName());
+    private void sendMessage(String message, int attempt) {
+        if (attempt < 4) {
+            Map<String, String> fieldMap = new HashMap<>();
+            fieldMap.put("message", message);
+            fieldMap.put("actorDisplayName", conversationUser.getDisplayName());
 
+            ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(baseUrl, roomToken), fieldMap)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<GenericOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-        ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(baseUrl, roomToken), fieldMap)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(3, observable -> inChat)
-                .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(GenericOverall genericOverall) {
-                        if (conversationUser.getUserId().equals("-1") && TextUtils.isEmpty(myFirstMessage)) {
-                            myFirstMessage = message;
                         }
 
-                        getActivity().runOnUiThread(() -> {
-                            if (popupBubble.isShown()) {
-                                popupBubble.hide();
+                        @Override
+                        public void onNext(GenericOverall genericOverall) {
+                            if (conversationUser.getUserId().equals("-1") && TextUtils.isEmpty(myFirstMessage)) {
+                                myFirstMessage = message;
                             }
 
-                            messagesList.smoothScrollToPosition(0);
-                        });
-                    }
+                            getActivity().runOnUiThread(() -> {
+                                if (popupBubble.isShown()) {
+                                    popupBubble.hide();
+                                }
 
-                    @Override
-                    public void onError(Throwable e) {
-                    }
+                                messagesList.smoothScrollToPosition(0);
+                            });
+                        }
 
-                    @Override
-                    public void onComplete() {
+                        @Override
+                        public void onError(Throwable e) {
+                            if (e instanceof HttpException && ((HttpException) e).code() == 201) {
+                                if (conversationUser.getUserId().equals("-1") && TextUtils.isEmpty(myFirstMessage)) {
+                                    myFirstMessage = message;
+                                }
 
-                    }
-                });
+                                getActivity().runOnUiThread(() -> {
+                                    if (popupBubble.isShown()) {
+                                        popupBubble.hide();
+                                    }
+
+                                    messagesList.smoothScrollToPosition(0);
+                                });
+                            } else {
+                                sendMessage(message, attempt + 1);
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
     }
 
     private void pullChatMessages(int lookIntoFuture) {
@@ -679,7 +691,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             adapter.getItemCount() == 0;
 
                     if (!shouldScroll) {
-                        if (!popupBubble.isShown()) {
+                        if (!popupBubble.isShown() && layoutManager.findFirstVisibleItemPosition() != 0) {
                             newMessagesCount = 1;
                             popupBubble.show();
                         } else if (popupBubble.isShown()) {
