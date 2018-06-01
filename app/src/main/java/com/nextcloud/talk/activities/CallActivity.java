@@ -851,6 +851,7 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onNext(CapabilitiesOverall capabilitiesOverall) {
                         isMultiSession = capabilitiesOverall.getOcs().getData()
+                                .getCapabilities() != null && capabilitiesOverall.getOcs().getData()
                                 .getCapabilities().getSpreedCapability() != null &&
                                 capabilitiesOverall.getOcs().getData()
                                         .getCapabilities().getSpreedCapability()
@@ -859,6 +860,7 @@ public class CallActivity extends AppCompatActivity {
                                 .getFeatures().contains("multi-room-users");
 
                         hasChatSupport = capabilitiesOverall.getOcs().getData()
+                                .getCapabilities() != null && capabilitiesOverall.getOcs().getData()
                                 .getCapabilities().getSpreedCapability() != null &&
                                 capabilitiesOverall.getOcs().getData()
                                         .getCapabilities().getSpreedCapability()
