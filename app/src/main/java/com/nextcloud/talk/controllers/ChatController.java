@@ -687,11 +687,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             setSenderId();
                         }
                     }
+
                     boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0 ||
                             adapter.getItemCount() == 0;
 
                     if (!shouldScroll) {
-                        if (!popupBubble.isShown() && layoutManager.findFirstVisibleItemPosition() != 0) {
+                        if (!popupBubble.isShown()) {
                             newMessagesCount = 1;
                             popupBubble.show();
                         } else if (popupBubble.isShown()) {
