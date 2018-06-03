@@ -149,4 +149,6 @@ Lær mer her: https://nextcloud.com/talk
 
 Finn Nextcloud her: https://nextcloud.com</string>
 
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Skriv en melding …</string>
     </resources>
