@@ -490,8 +490,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             getRouter().popToRoot(new VerticalChangeHandler());
                         } else {
                             getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler()));
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
                         }
                     }
 
@@ -540,13 +540,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
                                 myFirstMessage = message;
                             }
 
-                            getActivity().runOnUiThread(() -> {
-                                if (popupBubble.isShown()) {
-                                    popupBubble.hide();
-                                }
+                            if (popupBubble != null && popupBubble.isShown()) {
+                                popupBubble.hide();
+                            }
 
+                            if (messagesList != null) {
                                 messagesList.smoothScrollToPosition(0);
-                            });
+                            }
                         }
 
                         @Override
