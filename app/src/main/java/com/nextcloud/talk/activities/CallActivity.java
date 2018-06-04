@@ -273,10 +273,13 @@ public class CallActivity extends AppCompatActivity {
         credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
         isVoiceOnlyCall = getIntent().getExtras().getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
 
-        if (getIntent().getExtras().containsKey(BundleKeys.KEY_MODIFIED_BASE_URL)) {
+        if (userEntity.getUserId().equals("-1")) {
             credentials = null;
-            baseUrl = getIntent().getExtras().getString(BundleKeys.KEY_MODIFIED_BASE_URL);
-        } else {
+        }
+
+        baseUrl = getIntent().getExtras().getString(BundleKeys.KEY_MODIFIED_BASE_URL, "");
+
+        if (TextUtils.isEmpty(baseUrl)) {
             baseUrl = userEntity.getBaseUrl();
         }
 
@@ -289,7 +292,7 @@ public class CallActivity extends AppCompatActivity {
             Log.e(TAG, "Failed to evict cache");
         }
 
-    if (getIntent().getExtras().containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+        if (getIntent().getExtras().containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             handleFromNotification();
         } else {
             initViews();
@@ -498,14 +501,7 @@ public class CallActivity extends AppCompatActivity {
             cameraVideoCapturer.switchCamera(new CameraVideoCapturer.CameraSwitchHandler() {
                 @Override
                 public void onCameraSwitchDone(boolean b) {
-                    if (b && cameraSwitchCount != -1) {
-                        if (cameraSwitchCount == camerasCount) {
-                            cameraSwitchCount = 0;
-                            pipVideoView.setMirror(false);
-                        } else {
-                            pipVideoView.setMirror(true);
-                        }
-                    }
+                    pipVideoView.setMirror(false);
                 }
 
                 @Override
@@ -580,7 +576,7 @@ public class CallActivity extends AppCompatActivity {
             }
 
             // setting this to true because it's not shown by default
-            pipVideoView.setMirror(true);
+            pipVideoView.setMirror(false);
             pipVideoView.init(rootEglBase.getEglBaseContext(), null);
             pipVideoView.setZOrderMediaOverlay(true);
             // disabled because it causes some devices to crash
