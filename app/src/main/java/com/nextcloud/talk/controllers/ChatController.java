@@ -226,7 +226,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             }
                         }
 
-                        getActivity().runOnUiThread(() -> setupMentionAutocomplete());
+                        setupMentionAutocomplete();
                         joinRoomWithPassword();
                     }
 
@@ -356,13 +356,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
         AutocompletePresenter<Mention> presenter = new MentionAutocompletePresenter(getApplicationContext(), roomToken);
         AutocompleteCallback<Mention> callback = new MentionAutocompleteCallback();
 
-        mentionAutocomplete = Autocomplete.<Mention>on(messageInput.getInputEditText())
-                .with(elevation)
-                .with(backgroundDrawable)
-                .with(new CharPolicy('@'))
-                .with(presenter)
-                .with(callback)
-                .build();
+        if (messageInput != null && messageInput.getInputEditText() != null) {
+            mentionAutocomplete = Autocomplete.<Mention>on(messageInput.getInputEditText())
+                    .with(elevation)
+                    .with(backgroundDrawable)
+                    .with(new CharPolicy('@'))
+                    .with(presenter)
+                    .with(callback)
+                    .build();
+        }
     }
 
     @Override
