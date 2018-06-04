@@ -16,7 +16,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         versionCode 39
-        versionName "2.0.0beta6"
+        versionName "2.0.0"
 
         flavorDimensions "default"
 

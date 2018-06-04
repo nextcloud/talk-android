@@ -228,8 +228,6 @@ public class CallActivity extends AppCompatActivity {
 
     private SpotlightView spotlightView;
 
-    private int camerasCount;
-    private int cameraSwitchCount;
 
     private static int getSystemUiVisibility() {
         int flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -283,14 +281,14 @@ public class CallActivity extends AppCompatActivity {
             baseUrl = userEntity.getBaseUrl();
         }
 
-        callControls.setZ(100.0f);
-        basicInitialization();
-
         try {
             cache.evictAll();
         } catch (IOException e) {
             Log.e(TAG, "Failed to evict cache");
         }
+
+        callControls.setZ(100.0f);
+        basicInitialization();
 
         if (getIntent().getExtras().containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             handleFromNotification();
@@ -302,6 +300,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void handleFromNotification() {
         ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
+                .retry(3)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RoomsOverall>() {
@@ -313,7 +312,7 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onNext(RoomsOverall roomsOverall) {
                         for (Room room : roomsOverall.getOcs().getData()) {
-                            if (roomToken.equals(room.getRoomId())) {
+                            if (roomId.equals(room.getRoomId())) {
                                 roomToken = room.getToken();
                                 break;
                             }
@@ -530,8 +529,6 @@ public class CallActivity extends AppCompatActivity {
     private VideoCapturer createCameraCapturer(CameraEnumerator enumerator) {
         final String[] deviceNames = enumerator.getDeviceNames();
 
-        camerasCount = deviceNames.length;
-
         // First, try to find front facing camera
         Logging.d(TAG, "Looking for front facing cameras.");
         for (String deviceName : deviceNames) {
@@ -540,13 +537,11 @@ public class CallActivity extends AppCompatActivity {
                 VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
 
                 if (videoCapturer != null) {
-                    cameraSwitchCount = 0;
                     return videoCapturer;
                 }
             }
         }
 
-        cameraSwitchCount = -1;
 
         // Front facing camera not found, try something else
         Logging.d(TAG, "Looking for other cameras.");
@@ -771,6 +766,7 @@ public class CallActivity extends AppCompatActivity {
 
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
                 .subscribeOn(Schedulers.newThread())
+                .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SignalingSettingsOverall>() {
                     @Override
@@ -836,6 +832,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void checkCapabilities() {
         ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
+                .retry(3)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<CapabilitiesOverall>() {
