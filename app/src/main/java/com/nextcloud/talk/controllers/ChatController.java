@@ -325,7 +325,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         if (layoutManager.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
                             newMessagesCount = 0;
 
-                            if (popupBubble.isShown()) {
+                            if (popupBubble != null && popupBubble.isShown()) {
                                 popupBubble.hide();
                             }
                         }
@@ -693,7 +693,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0 ||
                             adapter.getItemCount() == 0;
 
-                    if (!shouldScroll) {
+                    if (!shouldScroll && popupBubble != null) {
                         if (!popupBubble.isShown()) {
                             newMessagesCount = 1;
                             popupBubble.show();
