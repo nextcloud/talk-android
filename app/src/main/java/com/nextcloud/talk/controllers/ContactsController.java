@@ -839,9 +839,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
                                         bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
                                                 roomOverall.getOcs().getData().getDisplayName());
-                                        getParentController().getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
-                                                .pushChangeHandler(new HorizontalChangeHandler())
-                                                .popChangeHandler(new HorizontalChangeHandler())));
+                                        if (getParentController() != null) {
+                                            getParentController().getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
+                                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                                    .popChangeHandler(new HorizontalChangeHandler())));
+                                        }
                                     } else {
                                         startActivity(conversationIntent);
                                     }
