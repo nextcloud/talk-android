@@ -311,7 +311,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         popupBubble.setPopupBubbleListener(context -> {
             if (newMessagesCount != 0) {
-                new Handler().postDelayed(() -> messagesList.smoothScrollToPosition(newMessagesCount - 1), 200);
+                int scrollPosition;
+                if (newMessagesCount - 1 < 0) {
+                    scrollPosition = 0;
+                } else {
+                    scrollPosition = newMessagesCount - 1;
+                }
+                new Handler().postDelayed(() -> messagesList.smoothScrollToPosition(scrollPosition), 200);
             }
         });
 
