@@ -87,9 +87,8 @@ public class UserUtils {
         return (UserEntity) findUserQueryResult.firstOrNull();
     }
 
-    public Completable deleteUser(String username, String serverUrl) {
-        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
-                and(UserEntity.BASE_URL.eq(serverUrl))).limit(1).get();
+    public Completable deleteUser(long internalId) {
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)).limit(1).get();
 
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
 

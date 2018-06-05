@@ -113,23 +113,23 @@ public class AccountRemovalJob extends Job {
 
                                                     @Override
                                                     public void onNext(Void aVoid) {
-                                                        userUtils.deleteUser(userEntity.getUsername(),
-                                                                userEntity.getBaseUrl()).subscribe(new CompletableObserver() {
-                                                            @Override
-                                                            public void onSubscribe(Disposable d) {
+                                                        userUtils.deleteUser(userEntity.getId()).subscribe(new
+                                                                                                                   CompletableObserver() {
+                                                                                                                       @Override
+                                                                                                                       public void onSubscribe(Disposable d) {
 
-                                                            }
+                                                                                                                       }
 
-                                                            @Override
-                                                            public void onComplete() {
+                                                                                                                       @Override
+                                                                                                                       public void onComplete() {
 
-                                                            }
+                                                                                                                       }
 
-                                                            @Override
-                                                            public void onError(Throwable e) {
+                                                                                                                       @Override
+                                                                                                                       public void onError(Throwable e) {
 
-                                                            }
-                                                        });
+                                                                                                                       }
+                                                                                                                   });
                                                     }
 
                                                     @Override
@@ -156,8 +156,7 @@ public class AccountRemovalJob extends Job {
                                 }
                             });
                 } else {
-                    userUtils.deleteUser(userEntity.getUsername(),
-                            userEntity.getBaseUrl())
+                    userUtils.deleteUser(userEntity.getId())
                             .subscribeOn(Schedulers.newThread())
                             .subscribe(new CompletableObserver() {
                                 @Override
@@ -178,8 +177,7 @@ public class AccountRemovalJob extends Job {
                 }
             } catch (IOException e) {
                 Log.d(TAG, "Something went wrong while removing job at parsing PushConfigurationState");
-                userUtils.deleteUser(userEntity.getUsername(),
-                        userEntity.getBaseUrl())
+                userUtils.deleteUser(userEntity.getId())
                         .subscribeOn(Schedulers.newThread())
                         .subscribe(new CompletableObserver() {
                             @Override
