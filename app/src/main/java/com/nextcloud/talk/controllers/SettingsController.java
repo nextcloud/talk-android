@@ -331,22 +331,16 @@ public class SettingsController extends BaseController {
                         }
 
 
-                        boolean needsToUpdateUserId = !TextUtils.isEmpty(userProfileOverall.getOcs().getData().getUserId()) &&
-                                !userProfileOverall.getOcs().getData().getUserId().equals(userEntity.getUserId());
-                        if ((!TextUtils.isEmpty(displayName) && !displayName.equals(userEntity.getDisplayName())) ||
-                                needsToUpdateUserId) {
+                        if ((!TextUtils.isEmpty(displayName) && !displayName.equals(userEntity.getDisplayName()))) {
 
                             dbQueryDisposable = userUtils.createOrUpdateUser(null,
                                     null,
                                     null, displayName, null, null,
-                                    userProfileOverall.getOcs().getData().getUserId(), userEntity.getId(), null, null)
+                                    null, userEntity.getId(), null, null)
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(userEntityResult -> {
                                                 displayNameTextView.setText(userEntityResult.getDisplayName());
-                                                if (needsToUpdateUserId) {
-                                                    loadAvatarImage();
-                                                }
                                             },
                                             throwable -> {
                                                 dispose(dbQueryDisposable);
