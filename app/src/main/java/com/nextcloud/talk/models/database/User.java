@@ -62,15 +62,17 @@ public interface User extends Parcelable, Persistable, Serializable {
     boolean getScheduledForDeletion();
 
     default boolean hasSpreedCapabilityWithName(String capabilityName) {
-        try {
-            Capabilities capabilities = LoganSquare.parse(this.getCapabilities(), Capabilities.class);
-            if (capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null) {
-                return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
+        if (getCapabilities() != null) {
+            try {
+                Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                if (capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null) {
+                    return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to get capabilities for the user");
             }
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to get capabilities for the user");
         }
-
         return false;
+
     }
 }
