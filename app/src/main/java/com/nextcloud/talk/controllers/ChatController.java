@@ -48,9 +48,6 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
@@ -494,13 +491,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        if (getRouter().hasRootController()) {
-                            getRouter().popToRoot(new VerticalChangeHandler());
-                        } else {
-                            getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
-                                    .pushChangeHandler(new HorizontalChangeHandler())
-                                    .popChangeHandler(new HorizontalChangeHandler()));
-                        }
+                        getRouter().popToRoot();
                     }
 
                     @Override

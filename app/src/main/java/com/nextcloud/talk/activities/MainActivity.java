@@ -53,7 +53,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -109,6 +108,11 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         }
 
         if (getIntent().hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+            if (!router.hasRootController()) {
+                router.setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler()));
+            }
             onNewIntent(getIntent());
         } else if (!router.hasRootController()) {
             if (hasDb) {
@@ -136,14 +140,6 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         super.onNewIntent(intent);
 
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            List<RouterTransaction> newBackstack = new ArrayList<>();
-
-            newBackstack.add(RouterTransaction.with(new MagicBottomNavigationController())
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler()));
-
-            router.setBackstack(newBackstack, new HorizontalChangeHandler());
-
             router.pushController(RouterTransaction.with(new ChatController(intent.getExtras()))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
