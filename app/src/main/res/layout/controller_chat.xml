@@ -28,7 +28,7 @@
         android:id="@+id/messagesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/input"
+        android:layout_above="@+id/nc_message_input"
         app:incomingDefaultBubbleColor="@color/white_two"
         app:incomingDefaultBubblePressedColor="@color/white_two"
         app:incomingDefaultBubbleSelectedColor="@color/colorPrimaryDark"
@@ -63,13 +63,13 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_above="@+id/input"
+        android:layout_above="@+id/nc_message_input"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:background="@color/nc_light_grey"/>
 
     <com.stfalcon.chatkit.messages.MessageInput
-        android:id="@+id/input"
+        android:id="@+id/nc_message_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

@@ -129,7 +129,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Inject
     Cache cache;
 
-    @BindView(R.id.input)
+    @BindView(R.id.nc_message_input)
     MessageInput messageInput;
     @BindView(R.id.messagesList)
     MessagesList messagesList;
