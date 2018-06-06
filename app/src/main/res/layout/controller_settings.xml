@@ -23,7 +23,8 @@
                                               xmlns:apc="http://schemas.android.com/apk/res-auto"
                                               android:id="@+id/settings_screen"
                                               android:layout_width="match_parent"
-                                              android:layout_height="match_parent">
+                                              android:layout_height="match_parent"
+                                              android:layout_marginBottom="48dp">
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
         android:id="@+id/message_view"
@@ -205,7 +206,6 @@
             android:id="@+id/settings_version"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="48dp"
             apc:mp_summary="v0.1"
             apc:mp_title="@string/nc_app_name">
         </com.yarolegovich.mp.MaterialStandardPreference>
