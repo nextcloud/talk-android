@@ -126,11 +126,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Inject
     Cache cache;
 
-    @BindView(R.id.messagesList)
-    MessagesList messagesList;
-    @BindView(R.id.nc_message_input)
-    MessageInput messageInput;
-    @BindView(R.id.nc_popup_bubble)
+    @BindView(R.id.messagesListView)
+    MessagesList messagesListView;
+    @BindView(R.id.messageInputView)
+    MessageInput messageInputView;
+    @BindView(R.id.popupBubbleView)
     PopupBubble popupBubble;
     private List<Disposable> disposableList = new ArrayList<>();
     private String conversationName;
@@ -297,14 +297,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
 
-        messagesList.setAdapter(adapter);
+        messagesListView.setAdapter(adapter);
         adapter.setLoadMoreListener(this);
         adapter.setDateHeadersFormatter(this::format);
         adapter.setOnMessageLongClickListener(this);
 
-        layoutManager = (LinearLayoutManager) messagesList.getLayoutManager();
+        layoutManager = (LinearLayoutManager) messagesListView.getLayoutManager();
 
-        popupBubble.setRecyclerView(messagesList);
+        popupBubble.setRecyclerView(messagesListView);
 
         popupBubble.setPopupBubbleListener(context -> {
             if (newMessagesCount != 0) {
@@ -314,11 +314,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 } else {
                     scrollPosition = newMessagesCount - 1;
                 }
-                new Handler().postDelayed(() -> messagesList.smoothScrollToPosition(scrollPosition), 200);
+                new Handler().postDelayed(() -> messagesListView.smoothScrollToPosition(scrollPosition), 200);
             }
         });
 
-        messagesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        messagesListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -338,8 +338,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
         });
 
 
-        messageInput.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-        messageInput.setInputListener(input -> {
+        messageInputView.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+        messageInputView.setInputListener(input -> {
             sendMessage(input.toString(), 1);
             return true;
         });
@@ -359,8 +359,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
         AutocompletePresenter<Mention> presenter = new MentionAutocompletePresenter(getApplicationContext(), roomToken);
         AutocompleteCallback<Mention> callback = new MentionAutocompleteCallback();
 
-        if (messageInput != null && messageInput.getInputEditText() != null) {
-            mentionAutocomplete = Autocomplete.<Mention>on(messageInput.getInputEditText())
+        if (messageInputView != null && messageInputView.getInputEditText() != null) {
+            mentionAutocomplete = Autocomplete.<Mention>on(messageInputView.getInputEditText())
                     .with(elevation)
                     .with(backgroundDrawable)
                     .with(new CharPolicy('@'))
@@ -543,8 +543,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                                 popupBubble.hide();
                             }
 
-                            if (messagesList != null) {
-                                messagesList.smoothScrollToPosition(0);
+                            if (messagesListView != null) {
+                                messagesListView.smoothScrollToPosition(0);
                             }
                         }
 
@@ -559,7 +559,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                                     popupBubble.hide();
                                 }
 
-                                messagesList.smoothScrollToPosition(0);
+                                messagesListView.smoothScrollToPosition(0);
                             } else {
                                 sendMessage(message, attempt + 1);
                             }
