@@ -125,10 +125,8 @@ public class NotificationJob extends Job {
 
                             if (hasChatSupport) {
                                 intent = new Intent(context, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             } else {
                                 intent = new Intent(context, CallActivity.class);
-                                bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, true);
                             }
 
                             bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage.getId());
