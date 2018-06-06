@@ -129,11 +129,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Inject
     Cache cache;
 
-    @BindView(R.id.nc_message_input)
-    MessageInput messageInput;
     @BindView(R.id.messagesList)
     MessagesList messagesList;
-    @BindView(R.id.popupBubble)
+    @BindView(R.id.nc_message_input)
+    MessageInput messageInput;
+    @BindView(R.id.nc_popup_bubble)
     PopupBubble popupBubble;
     private List<Disposable> disposableList = new ArrayList<>();
     private String conversationName;
@@ -564,13 +564,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                                     myFirstMessage = message;
                                 }
 
-                                getActivity().runOnUiThread(() -> {
-                                    if (popupBubble.isShown()) {
-                                        popupBubble.hide();
-                                    }
+                                if (popupBubble != null && popupBubble.isShown()) {
+                                    popupBubble.hide();
+                                }
 
-                                    messagesList.smoothScrollToPosition(0);
-                                });
+                                messagesList.smoothScrollToPosition(0);
                             } else {
                                 sendMessage(message, attempt + 1);
                             }
