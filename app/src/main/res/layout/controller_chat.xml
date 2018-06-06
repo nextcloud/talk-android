@@ -47,7 +47,7 @@
         app:textAutoLink="all"/>
 
     <com.webianks.library.PopupBubble
-        android:id="@+id/popupBubble"
+        android:id="@+id/nc_popup_bubble"
         android:layout_margin="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
