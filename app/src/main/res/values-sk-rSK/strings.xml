@@ -171,4 +171,14 @@ Nextcloud nájdete na https://nextcloud.com</string>
     <string name="nc_hint_enter_a_message">Napíšte správu</string>
     <string name="nc_date_header_yesterday">Včera</string>
     <string name="nc_date_header_today">Dnes</string>
-    </resources>
+    <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
+    <string name="nc_conversation_menu_video_call">Video hovor</string>
+    <string name="nc_new_messages">Nové správy</string>
+
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Už žiadne položky pre načítanie. Obnovte pre opakovanie.</string>
+    <string name="nc_endless_disabled">Už žiadne ďalšie položky pre načítanie (dosiahnuté maximum).</string>
+    <string name="nc_endless_cancel">Zrušené používateľom</string>
+    <string name="nc_endless_error">Počas načítavania ďalších položiek sa vyskytla chyba.</string>
+
+</resources>
