@@ -115,6 +115,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
+        apc:mpc_title="@string/nc_settings_notification_sounds"
+        apc:mpc_title_color="@color/colorPrimary">
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/settings_call_sound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_key="@string/nc_settings_call_ringtone_key"
+            apc:mp_title="@string/nc_settings_call_ringtone"/>
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/settings_message_sound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_key="@string/nc_settings_message_ringtone_key"
+            apc:mp_title="@string/nc_settings_message_ringtone"/>
+
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         apc:mpc_title="@string/nc_settings_proxy_title"
         apc:mpc_title_color="@color/colorPrimary">
 

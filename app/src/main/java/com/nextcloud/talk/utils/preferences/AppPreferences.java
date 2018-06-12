@@ -138,6 +138,27 @@ public interface AppPreferences {
     @RemoveMethod
     void removePushToTalkIntroShown();
 
+    @KeyByString("call_ringtone")
+    String getCallRingtoneUri();
+
+    @KeyByString("call_ringtone")
+    void setCallRingtoneUri(String value);
+
+    @KeyByString("call_ringtone")
+    @RemoveMethod
+    void removeCallRingtoneUri();
+
+    @KeyByString("message_ringtone")
+    String getMessageRingtoneUri();
+
+    @KeyByString("message_ringtone")
+    void setMessageRingtoneUri(String value);
+
+    @KeyByString("message_ringtone")
+    @RemoveMethod
+    void removeMessageRingtoneUri();
+
+
     @ClearMethod
     void clear();
 }

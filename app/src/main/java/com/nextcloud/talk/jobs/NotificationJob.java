@@ -129,6 +129,7 @@ public class NotificationJob extends Job {
                                 intent = new Intent(context, CallActivity.class);
                             }
 
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage.getId());
                             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(signatureVerification
                                     .getUserEntity()));
@@ -177,6 +178,7 @@ public class NotificationJob extends Job {
                                     .setSubText(signatureVerification.getUserEntity().getDisplayName())
                                     .setContentTitle(decryptedPushMessage.getSubject())
                                     .setSound(soundUri)
+                                    .setFullScreenIntent(pendingIntent, true)
                                     .setAutoCancel(true);
 
                             if (Build.VERSION.SDK_INT >= 23) {
@@ -221,7 +223,8 @@ public class NotificationJob extends Job {
                                 notificationBuilder.setGroup(Long.toString(crc32.getValue()));
                             }
 
-                            notificationBuilder.setContentIntent(pendingIntent);
+                            //notificationBuilder.setContentIntent(pendingIntent);
+                            notificationBuilder.setFullScreenIntent(pendingIntent, true);
 
                             String stringForCrc = decryptedPushMessage.getSubject() + " " + signatureVerification
                                     .getUserEntity().getDisplayName() + " " + signatureVerification.getUserEntity

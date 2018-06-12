@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:orientation="vertical">
+
+
+    <com.nextcloud.talk.utils.MagicFlipView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/magicFlipView"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="24dp"
+        app:animationDuration="170"
+        app:checked="false"
+        app:enableInitialAnimation="true"
+        app:frontBackgroundColor="@color/colorPrimary"
+        app:frontImage="@drawable/ic_play_circle_outline_white_24dp"
+        app:rearBackgroundColor="@color/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/notificationNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="8dp"
+        android:layout_toEndOf="@id/magicFlipView"
+        android:ellipsize="end"
+        android:textAppearance="?android:attr/textAppearanceListItem"/>
+
+</RelativeLayout>

@@ -156,6 +156,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private int newMessagesCount = 0;
     private Boolean startCallFromNotification;
     private String roomId;
+    private boolean voiceOnly = false;
 
     public ChatController(Bundle args) {
         super(args);
@@ -201,6 +202,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL);
+        this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
     }
 
     private void getRoomInfo() {
@@ -250,17 +252,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         for (Room room : roomsOverall.getOcs().getData()) {
                             if (roomId.equals(room.getRoomId())) {
                                 roomToken = room.getToken();
+                                conversationName = room.getDisplayName();
+                                setTitle();
                                 break;
                             }
                         }
 
                         if (!TextUtils.isEmpty(roomToken)) {
-                            if (TextUtils.isEmpty(conversationName)) {
-                                getRoomInfo();
-                            } else {
-                                setupMentionAutocomplete();
-                                joinRoomWithPassword();
-                            }
+                            setupMentionAutocomplete();
+                            joinRoomWithPassword();
                         }
                     }
 
@@ -285,6 +285,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
 
+        getActionBar().show();
         boolean adapterWasNull = false;
 
         if (adapter == null) {
@@ -476,7 +477,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private void joinRoomWithPassword() {
 
         if (currentCall == null) {
-            ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken), roomPassword)
+            ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken), roomPassword)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
@@ -494,7 +495,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             pullChatMessages(0);
                             if (startCallFromNotification != null && startCallFromNotification) {
                                 startCallFromNotification = false;
-                                startACall(false);
+                                startACall(voiceOnly);
                             }
                         }
 
@@ -516,7 +517,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void leaveRoom() {
-        ncApi.leaveRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken))
+        ncApi.leaveRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {

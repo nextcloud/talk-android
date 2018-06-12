@@ -230,7 +230,7 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(operationsObserver);
                     break;
                 case 9:
-                    ncApi.deleteRoom(credentials, ApiUtils.getUrlForRoomParticipants(currentUser.getBaseUrl(), room.getToken()))
+                    ncApi.deleteRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(currentUser.getBaseUrl(), room.getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
@@ -317,7 +317,7 @@ public class OperationsMenuController extends BaseController {
 
                     break;
                 case 99:
-                    ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, conversationToken),
+                    ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, conversationToken),
                             callPassword)
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())

@@ -290,7 +290,8 @@ public class CallActivity extends AppCompatActivity {
         callControls.setZ(100.0f);
         basicInitialization();
 
-        if (getIntent().getExtras().containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+        if (getIntent().getExtras().containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL) && TextUtils.isEmpty
+                (roomToken)) {
             handleFromNotification();
         } else {
             initViews();
@@ -878,7 +879,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void joinRoomAndCall() {
         if ("0".equals(callSession)) {
-            ncApi.joinRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken), null)
+            ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken), null)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
@@ -1241,7 +1242,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void leaveRoom() {
-        ncApi.leaveRoom(credentials, ApiUtils.getUrlForRoomParticipants(baseUrl, roomToken))
+        ncApi.leaveRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {

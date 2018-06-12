@@ -36,6 +36,7 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.controllers.CallNotificationController;
 import com.nextcloud.talk.controllers.ChatController;
 import com.nextcloud.talk.controllers.MagicBottomNavigationController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
@@ -140,9 +141,15 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         super.onNewIntent(intent);
 
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            router.pushController(RouterTransaction.with(new ChatController(intent.getExtras()))
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler()));
+            if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
+                router.pushController(RouterTransaction.with(new CallNotificationController(intent.getExtras()))
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler()));
+            } else {
+                router.pushController(RouterTransaction.with(new ChatController(intent.getExtras()))
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler()));
+            }
         }
     }
 

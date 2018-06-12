@@ -60,8 +60,13 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
-    public static String getUrlForRoomParticipants(String baseUrl, String token) {
+    public static String getUrlForSettingMyselfAsActiveParticipant(String baseUrl, String token) {
         return getRoom(baseUrl, token) + "/participants/active";
+    }
+
+
+    public static String getUrlForParticipants(String baseUrl, String token) {
+        return getRoom(baseUrl, token) + "/participants";
     }
 
     public static String getUrlForCapabilities(String baseUrl) {

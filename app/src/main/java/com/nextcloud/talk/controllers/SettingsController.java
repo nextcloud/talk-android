@@ -24,6 +24,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.security.KeyChain;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,7 +37,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -48,9 +51,11 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.AccountRemovalJob;
+import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -65,6 +70,7 @@ import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.IOException;
 import java.net.CookieManager;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -115,6 +121,12 @@ public class SettingsController extends BaseController {
 
     @BindView(R.id.base_url_text)
     TextView baseUrlTextView;
+
+    @BindView(R.id.settings_call_sound)
+    MaterialStandardPreference settingsCallSounds;
+
+    @BindView(R.id.settings_message_sound)
+    MaterialStandardPreference settingsMessageSound;
 
     @BindView(R.id.settings_remove_account)
     MaterialStandardPreference removeAccountButton;
@@ -217,6 +229,21 @@ public class SettingsController extends BaseController {
 
         versionInfo.setSummary("v" + BuildConfig.VERSION_NAME);
 
+        settingsCallSounds.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(BundleKeys.KEY_ARE_CALL_SOUNDS, true);
+            getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
+                    .pushChangeHandler(new HorizontalChangeHandler()
+                    ).popChangeHandler(new HorizontalChangeHandler()));
+        });
+
+        settingsMessageSound.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(BundleKeys.KEY_ARE_CALL_SOUNDS, false);
+            getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
+                    .pushChangeHandler(new HorizontalChangeHandler()
+                    ).popChangeHandler(new HorizontalChangeHandler()));
+        });
 
         addAccountButton.addPreferenceClickListener(view15 -> {
             getParentController().getRouter().pushController(RouterTransaction.with(new
@@ -281,6 +308,28 @@ public class SettingsController extends BaseController {
             certificateSetup.setTitle(R.string.nc_client_cert_change);
         } else {
             certificateSetup.setTitle(R.string.nc_client_cert_setup);
+        }
+
+        String ringtoneName = "";
+        RingtoneSettings ringtoneSettings;
+        if (!TextUtils.isEmpty(appPreferences.getCallRingtoneUri())) {
+            try {
+                ringtoneSettings = LoganSquare.parse(appPreferences.getCallRingtoneUri(), RingtoneSettings.class);
+                ringtoneName = ringtoneSettings.getRingtoneName();
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to parse ringtone name");
+            }
+            settingsCallSounds.setSummary(ringtoneName);
+        }
+
+        if (!TextUtils.isEmpty(appPreferences.getMessageRingtoneUri())) {
+            try {
+                ringtoneSettings = LoganSquare.parse(appPreferences.getMessageRingtoneUri(), RingtoneSettings.class);
+                ringtoneName = ringtoneSettings.getRingtoneName();
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to parse ringtone name");
+            }
+            settingsMessageSound.setSummary(ringtoneName);
         }
 
         if ("No proxy".equals(appPreferences.getProxyType()) || appPreferences.getProxyType() == null) {
