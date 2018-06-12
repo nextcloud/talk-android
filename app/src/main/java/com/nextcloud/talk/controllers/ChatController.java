@@ -71,6 +71,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -202,6 +203,38 @@ public class ChatController extends BaseController implements MessagesListAdapte
         this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL);
     }
 
+    private void getRoomInfo() {
+        ncApi.getRoom(credentials, ApiUtils.getRoom(baseUrl, roomToken))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<RoomOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(RoomOverall roomOverall) {
+                        conversationName = roomOverall.getOcs().getData().getDisplayName();
+                        setTitle();
+
+                        setupMentionAutocomplete();
+                        joinRoomWithPassword();
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
     private void handleFromNotification() {
         ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
                 .subscribeOn(Schedulers.newThread())
@@ -217,14 +250,18 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         for (Room room : roomsOverall.getOcs().getData()) {
                             if (roomId.equals(room.getRoomId())) {
                                 roomToken = room.getToken();
-                                conversationName = room.getDisplayName();
-                                setTitle();
                                 break;
                             }
                         }
 
-                        setupMentionAutocomplete();
-                        joinRoomWithPassword();
+                        if (!TextUtils.isEmpty(roomToken)) {
+                            if (TextUtils.isEmpty(conversationName)) {
+                                getRoomInfo();
+                            } else {
+                                setupMentionAutocomplete();
+                                joinRoomWithPassword();
+                            }
+                        }
                     }
 
                     @Override
@@ -345,8 +382,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         });
 
         if (adapterWasNull && startCallFromNotification == null) {
-            setupMentionAutocomplete();
-            joinRoomWithPassword();
+            getRoomInfo();
         } else {
             handleFromNotification();
         }
