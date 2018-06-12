@@ -570,46 +570,44 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 adapter.onLoadMoreComplete(null);
                             }
 
-                            getActivity().runOnUiThread(() -> {
-                                searchItem.setVisible(newUserItemList.size() > 0);
-                                swipeRefreshLayout.setRefreshing(false);
+                            searchItem.setVisible(newUserItemList.size() > 0);
+                            swipeRefreshLayout.setRefreshing(false);
 
 
-                                if (isNewConversationView) {
-                                    checkAndHandleBottomButtons();
-                                }
-                            });
+                            if (isNewConversationView) {
+                                checkAndHandleBottomButtons();
+                            }
                         }
+                        ;
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        getActivity().runOnUiThread(() -> {
-                            if (searchItem != null) {
-                                searchItem.setVisible(false);
-                            }
+                        if (searchItem != null) {
+                            searchItem.setVisible(false);
+                        }
 
-                            if (e instanceof HttpException) {
-                                HttpException exception = (HttpException) e;
-                                switch (exception.code()) {
-                                    case 401:
-                                        if (getParentController() != null &&
-                                                getParentController().getRouter() != null) {
-                                            getParentController().getRouter().pushController((RouterTransaction.with
-                                                    (new WebViewLoginController(currentUser.getBaseUrl(),
-                                                            true))
-                                                    .pushChangeHandler(new VerticalChangeHandler())
-                                                    .popChangeHandler(new VerticalChangeHandler())));
-                                        }
-                                        break;
-                                    default:
-                                        break;
-                                }
+                        if (e instanceof HttpException) {
+                            HttpException exception = (HttpException) e;
+                            switch (exception.code()) {
+                                case 401:
+                                    if (getParentController() != null &&
+                                            getParentController().getRouter() != null) {
+                                        getParentController().getRouter().pushController((RouterTransaction.with
+                                                (new WebViewLoginController(currentUser.getBaseUrl(),
+                                                        true))
+                                                .pushChangeHandler(new VerticalChangeHandler())
+                                                .popChangeHandler(new VerticalChangeHandler())));
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
 
                             swipeRefreshLayout.setRefreshing(false);
 
-                        });
+                        }
+                        ;
 
                         dispose(contactsQueryDisposable);
 
@@ -617,7 +615,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                     @Override
                     public void onComplete() {
-                        getActivity().runOnUiThread(() -> swipeRefreshLayout.setRefreshing(false));
+                        swipeRefreshLayout.setRefreshing(false);
                         dispose(contactsQueryDisposable);
                         alreadyFetching = false;
 
