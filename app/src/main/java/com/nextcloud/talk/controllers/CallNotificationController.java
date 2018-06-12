@@ -147,15 +147,20 @@ public class CallNotificationController extends BaseController {
                     @Override
                     public void onNext(ParticipantsOverall participantsOverall) {
                         boolean hasParticipantsInCall = false;
+                        boolean inCallOnDifferentDevice = false;
                         List<Participant> participantList = participantsOverall.getOcs().getData();
                         for (Participant participant : participantList) {
                             if (participant.isInCall()) {
                                 hasParticipantsInCall = true;
+
+                                if (participant.getUserId().equals(userBeingCalled.getUserId())) {
+                                    inCallOnDifferentDevice = true;
+                                }
                                 break;
                             }
                         }
 
-                        if (!hasParticipantsInCall) {
+                        if (!hasParticipantsInCall || inCallOnDifferentDevice) {
                             if (getActivity() != null) {
                                 getActivity().runOnUiThread(() -> hangup());
                             }
