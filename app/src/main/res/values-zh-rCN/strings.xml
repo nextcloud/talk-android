@@ -54,7 +54,6 @@
     <string name="nc_settings_wrong_account">仅当前帐户可以重新授权</string>
     <string name="nc_settings_no_talk_installed">你尝试授权的服务器上未安装 Talk 应用</string>
     <string name="nc_account_scheduled_for_deletion">此账户已计划删除，且无法更改</string>
-
     <string name="nc_no_proxy">无代理</string>
     <string name="nc_username">用户名</string>
     <string name="nc_password">密码</string>

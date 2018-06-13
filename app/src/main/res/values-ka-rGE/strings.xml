@@ -54,7 +54,6 @@
     <string name="nc_settings_no_talk_installed">Talk აპლიკაცია სერვერზე, რომლის მიმართაც სცადეთ ავტორიზაცია, დაყენებული არაა</string>
     <string name="nc_settings_account_updated">ახლის დამატების სანაცვლოდ, განახლდა არსებული ანგარიში</string>
     <string name="nc_account_scheduled_for_deletion">დაიგეგმა ანგარიშის გაუქმება, ეს ვერ შეიცვლება</string>
-
     <string name="nc_no_proxy">პროქსი არაა</string>
     <string name="nc_username">მომხმარებელი</string>
     <string name="nc_password">პაროლი</string>

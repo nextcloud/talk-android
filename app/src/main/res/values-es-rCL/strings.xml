@@ -60,7 +60,6 @@
     <string name="nc_settings_no_talk_installed">La aplicación Talk no está instalada en el servidor contra el cual te intentaste autorizar</string>
     <string name="nc_settings_account_updated">Tu cuenta existente ha sido actualizada, en lugar de agregar una nueva</string>
     <string name="nc_account_scheduled_for_deletion">La cuenta está calendarizada para ser borrada, y no puede ser modificada</string>
-
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Usuario</string>
     <string name="nc_password">Contraseña</string>

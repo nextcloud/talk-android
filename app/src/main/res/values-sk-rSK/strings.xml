@@ -60,7 +60,6 @@
     <string name="nc_settings_no_talk_installed">Aplikácia Talk nieje nainštalovaná na servri ku ktorému ste sa pokúsili prihlásiť</string>
     <string name="nc_settings_account_updated">Namiesto pridania nového účtu, bol aktualizovaný existujúci účet</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánovaný na zrušenie a preto nemôže byť zmenený</string>
-
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Používateľské meno</string>
     <string name="nc_password">Heslo</string>
