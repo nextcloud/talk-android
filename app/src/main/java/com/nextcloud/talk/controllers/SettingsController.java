@@ -320,6 +320,8 @@ public class SettingsController extends BaseController {
                 Log.e(TAG, "Failed to parse ringtone name");
             }
             settingsCallSounds.setSummary(ringtoneName);
+        } else {
+            settingsMessageSound.setSummary(R.string.nc_settings_default_ringtone);
         }
 
         if (!TextUtils.isEmpty(appPreferences.getMessageRingtoneUri())) {
@@ -330,6 +332,8 @@ public class SettingsController extends BaseController {
                 Log.e(TAG, "Failed to parse ringtone name");
             }
             settingsMessageSound.setSummary(ringtoneName);
+        } else {
+            settingsMessageSound.setSummary(R.string.nc_settings_default_ringtone);
         }
 
         if ("No proxy".equals(appPreferences.getProxyType()) || appPreferences.getProxyType() == null) {

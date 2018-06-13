@@ -20,11 +20,13 @@
 
 package com.nextcloud.talk.controllers;
 
+import android.annotation.SuppressLint;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,7 @@ import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
@@ -42,6 +45,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
@@ -50,9 +54,11 @@ import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.glide.GlideApp;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import org.parceler.Parcels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,8 +75,13 @@ import io.reactivex.schedulers.Schedulers;
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallNotificationController extends BaseController {
 
+    private static final String TAG = "CallNotificationController";
+
     @Inject
     NcApi ncApi;
+
+    @Inject
+    AppPreferences appPreferences;
 
     @BindView(R.id.conversationNameTextView)
     TextView conversationNameTextView;
@@ -84,7 +95,6 @@ public class CallNotificationController extends BaseController {
     private String credentials;
     private Room currentRoom;
     private MediaPlayer mediaPlayer;
-    private boolean participantsCheckIsRunning;
     private boolean leavingScreen = false;
 
     public CallNotificationController(Bundle args) {
@@ -141,7 +151,6 @@ public class CallNotificationController extends BaseController {
                     @Override
                     public void onSubscribe(Disposable d) {
                         disposablesList.add(d);
-                        participantsCheckIsRunning = true;
                     }
 
                     @Override
@@ -219,6 +228,7 @@ public class CallNotificationController extends BaseController {
                 });
     }
 
+    @SuppressLint("LongLogTag")
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
@@ -227,11 +237,27 @@ public class CallNotificationController extends BaseController {
 
         handleFromNotification();
 
-        Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
+        Uri ringtoneUri = null;
 
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), ringtoneUri);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+        if (TextUtils.isEmpty(callRingtonePreferenceString)) {
+            // play default sound
+            ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName()+
+                    "/raw/librem_by_feandesign_call");
+        } else {
+            try {
+                RingtoneSettings ringtoneSettings = LoganSquare.parse(callRingtonePreferenceString, RingtoneSettings.class);
+                ringtoneUri = ringtoneSettings.getRingtoneUri();
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to parse ringtone settings");
+            }
+        }
+
+        if (ringtoneUri != null) {
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), ringtoneUri);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }
     }
 
     private void loadAvatar() {

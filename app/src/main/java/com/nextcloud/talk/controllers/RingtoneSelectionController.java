@@ -149,7 +149,24 @@ public class RingtoneSelectionController extends BaseController implements Flexi
         abstractFlexibleItemList = new ArrayList<>();
         abstractFlexibleItemList.add(new NotificationSoundItem("None", null));
 
-        int positionToToggle = -1;
+        String ringtoneString;
+
+        if (callNotificationSounds) {
+            ringtoneString = "android.resource://" + getApplicationContext().getPackageName() +
+                    "/raw/librem_by_feandesign_call";
+        } else {
+            ringtoneString = "android.resource://" + getApplicationContext().getPackageName() +
+                    "/raw/librem_by_feandesign_message";
+        }
+
+        abstractFlexibleItemList.add(new NotificationSoundItem(getResources()
+                .getString(R.string.nc_settings_default_ringtone), ringtoneString));
+
+        String preferencesString = null;
+        if ((TextUtils.isEmpty((preferencesString = appPreferences.getCallRingtoneUri())))
+                || TextUtils.isEmpty((preferencesString = appPreferences.getMessageRingtoneUri()))) {
+            ((NotificationSoundItem) abstractFlexibleItemList.get(1)).setSelected(true);
+        }
 
         if (getActivity() != null) {
             RingtoneManager manager = new RingtoneManager(getActivity());
@@ -164,6 +181,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
 
             NotificationSoundItem notificationSoundItem;
 
+            boolean foundDefault = false;
             while (cursor.moveToNext()) {
                 String notificationTitle = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
                 String notificationUri = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
@@ -174,23 +192,23 @@ public class RingtoneSelectionController extends BaseController implements Flexi
 
                 abstractFlexibleItemList.add(notificationSoundItem);
 
-                String preferencesString;
-                if (callNotificationSounds && !TextUtils.isEmpty(preferencesString = appPreferences
-                        .getCallRingtoneUri()) ||
-                        !callNotificationSounds && !TextUtils.isEmpty(preferencesString = appPreferences
-                                .getMessageRingtoneUri())) {
+                if (!TextUtils.isEmpty(preferencesString) && !foundDefault) {
                     try {
                         RingtoneSettings ringtoneSettings = LoganSquare.parse(preferencesString, RingtoneSettings.class);
                         if (ringtoneSettings.getRingtoneUri() == null) {
-                            ((NotificationSoundItem)abstractFlexibleItemList.get(0)).setSelected(true);
+                            ((NotificationSoundItem) abstractFlexibleItemList.get(0)).setSelected(true);
+                            foundDefault = true;
                         } else if (completeNotificationUri.equals(ringtoneSettings.getRingtoneUri().toString())) {
                             notificationSoundItem.setSelected(true);
+                            foundDefault = true;
+                        } else if (completeNotificationUri.equals(ringtoneString)) {
+                            ((NotificationSoundItem) abstractFlexibleItemList.get(1)).setSelected(true);
+                            foundDefault = true;
                         }
                     } catch (IOException e) {
                         Log.e(TAG, "Failed to parse ringtone settings");
                     }
                 }
-
             }
 
             cursor.close();
