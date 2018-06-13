@@ -155,8 +155,8 @@ public class CallNotificationController extends BaseController {
 
                                 if (participant.getUserId().equals(userBeingCalled.getUserId())) {
                                     inCallOnDifferentDevice = true;
+                                    break;
                                 }
-                                break;
                             }
                         }
 
