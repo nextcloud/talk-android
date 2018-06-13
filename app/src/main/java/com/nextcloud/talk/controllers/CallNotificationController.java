@@ -88,7 +88,7 @@ public class CallNotificationController extends BaseController {
 
     @BindView(R.id.avatarImageView)
     ImageView avatarImageView;
-    List<Disposable> disposablesList = new ArrayList<>();
+    private List<Disposable> disposablesList = new ArrayList<>();
     private Bundle originalBundle;
     private String roomId;
     private UserEntity userBeingCalled;

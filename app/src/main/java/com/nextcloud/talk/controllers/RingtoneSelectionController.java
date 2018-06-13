@@ -162,10 +162,13 @@ public class RingtoneSelectionController extends BaseController implements Flexi
         abstractFlexibleItemList.add(new NotificationSoundItem(getResources()
                 .getString(R.string.nc_settings_default_ringtone), ringtoneString));
 
+        boolean foundDefault = false;
+
         String preferencesString = null;
         if ((TextUtils.isEmpty((preferencesString = appPreferences.getCallRingtoneUri())))
                 || TextUtils.isEmpty((preferencesString = appPreferences.getMessageRingtoneUri()))) {
             ((NotificationSoundItem) abstractFlexibleItemList.get(1)).setSelected(true);
+            foundDefault = true;
         }
 
         if (getActivity() != null) {
@@ -181,7 +184,6 @@ public class RingtoneSelectionController extends BaseController implements Flexi
 
             NotificationSoundItem notificationSoundItem;
 
-            boolean foundDefault = false;
             while (cursor.moveToNext()) {
                 String notificationTitle = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
                 String notificationUri = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
