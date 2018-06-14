@@ -1348,7 +1348,7 @@ public class CallActivity extends AppCompatActivity {
                 GlideApp.with(this)
                         .asBitmap()
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(ApiUtils.getUrlForAvatarWithName(baseUrl, participantMap.get(session).getUserId(), true))
+                        .load(ApiUtils.getUrlForAvatarWithName(baseUrl, participantMap.get(session).getUserId(), R.dimen.avatar_size_big))
                         .centerInside()
                         .override(size, size)
                         .apply(RequestOptions.bitmapTransform(new CircleCrop()))

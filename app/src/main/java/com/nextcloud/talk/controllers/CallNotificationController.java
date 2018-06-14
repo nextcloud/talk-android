@@ -262,14 +262,14 @@ public class CallNotificationController extends BaseController {
 
     private void loadAvatar() {
         int avatarSize = Math.round(NextcloudTalkApplication
-                .getSharedApplication().getResources().getDimension(R.dimen.avatar_size_big));
+                .getSharedApplication().getResources().getDimension(R.dimen.avatar_size_very_big));
 
         switch (currentRoom.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
                 avatarImageView.setVisibility(View.VISIBLE);
 
                 GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
-                        currentRoom.getName(), true), new LazyHeaders.Builder()
+                        currentRoom.getName(), R.dimen.avatar_size_very_big), new LazyHeaders.Builder()
                         .setHeader("Accept", "image/*")
                         .setHeader("User-Agent", ApiUtils.getUserAgent())
                         .build());

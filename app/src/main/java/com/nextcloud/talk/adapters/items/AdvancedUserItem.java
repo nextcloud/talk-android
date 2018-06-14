@@ -123,7 +123,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         if (userEntity.getBaseUrl().startsWith("http://") || userEntity.getBaseUrl().startsWith("https://")) {
             holder.avatarImageView.setVisibility(View.VISIBLE);
             GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                    participant.getUserId(), false), new LazyHeaders.Builder()
+                    participant.getUserId(), R.dimen.avatar_size), new LazyHeaders.Builder()
                     .setHeader("Accept", "image/*")
                     .setHeader("User-Agent", ApiUtils.getUserAgent())
                     .build());

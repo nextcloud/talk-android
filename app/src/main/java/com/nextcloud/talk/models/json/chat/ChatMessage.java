@@ -21,6 +21,7 @@ package com.nextcloud.talk.models.json.chat;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.R;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
@@ -90,7 +91,7 @@ public class ChatMessage implements IMessage {
 
             @Override
             public String getAvatar() {
-                return ApiUtils.getUrlForAvatarWithName(getBaseUrl(), actorId, false);
+                return ApiUtils.getUrlForAvatarWithName(getBaseUrl(), actorId, R.dimen.avatar_size);
             }
         };
     }

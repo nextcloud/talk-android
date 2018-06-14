@@ -99,7 +99,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
         }
 
         GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
-                userId, false), new LazyHeaders.Builder()
+                userId, R.dimen.avatar_size), new LazyHeaders.Builder()
                 .setHeader("Accept", "image/*")
                 .setHeader("User-Agent", ApiUtils.getUserAgent())
                 .build());
