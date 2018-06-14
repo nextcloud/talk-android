@@ -165,9 +165,6 @@ public class ApiUtils {
     }
 
     public static String getUrlForAvatarWithName(String baseUrl, String name, @DimenRes int avatarSize) {
-        avatarSize = Math.round(NextcloudTalkApplication
-                    .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
-
         return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize;
     }
 
