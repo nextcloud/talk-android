@@ -18,84 +18,90 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white">
-
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
     <TextView
+        android:id="@+id/incomingCallTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_alignParentTop="true"
+        android:layout_marginTop="32dp"
         android:text="@string/nc_incoming_call"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:textSize="20sp"
-        android:layout_marginTop="48dp"
-        android:id="@+id/incomingCallTextView"/>
-
-    <ImageView
-        android:id="@+id/avatarImageView"
-        android:layout_width="@dimen/avatar_size_big"
-        android:layout_height="@dimen/avatar_size_big"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/incomingCallTextView"
-        android:layout_margin="16dp"/>
+        android:textColor="@color/white30"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/conversationNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/avatarImageView"
-        android:layout_centerInParent="true"
+        android:ellipsize="marquee"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:textSize="16sp"
-        />
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        app:layout_constraintTop_toBottomOf="@+id/incomingCallTextView"
+        tools:text="Victor Gregorius Magnus" />
 
+    <ImageView
+        android:id="@+id/avatarImageView"
+        android:layout_width="@dimen/avatar_size_very_big"
+        android:layout_height="@dimen/avatar_size_very_big"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.498"
+        tools:src="@color/white" />
 
     <com.nextcloud.talk.utils.MagicFlipView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/callAnswerVoiceOnlyView"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_above="@id/callControlHangupView"
-        android:layout_centerHorizontal="true"
-        android:layout_toStartOf="@id/callControlHangupView"
+        android:layout_marginBottom="48dp"
         app:checked="false"
         app:enableInitialAnimation="false"
         app:frontBackgroundColor="@color/colorPrimary"
-        app:frontImage="@drawable/ic_mic_white_24px"/>
+        app:frontImage="@drawable/ic_mic_white_24px"
+        app:layout_anchorGravity="top|center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.129"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.nextcloud.talk.utils.MagicFlipView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/callAnswerCameraView"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_above="@id/callControlHangupView"
-        android:layout_toEndOf="@id/callControlHangupView"
+        android:layout_marginBottom="48dp"
         app:checked="false"
         app:enableInitialAnimation="false"
         app:frontBackgroundColor="@color/colorPrimary"
-        app:frontImage="@drawable/ic_videocam_white_24px"/>
+        app:frontImage="@drawable/ic_videocam_white_24px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <com.nextcloud.talk.utils.MagicFlipView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/callControlHangupView"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="48dp"
         app:checked="false"
         app:enableInitialAnimation="false"
         app:frontBackgroundColor="@color/nc_darkRed"
-        app:frontImage="@drawable/ic_call_end_white_24px"/>
+        app:frontImage="@drawable/ic_call_end_white_24px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.87"
+        app:layout_constraintStart_toStartOf="parent" />
 
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
