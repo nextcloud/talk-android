@@ -60,6 +60,10 @@
     <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem du versucht hast dich zu autorisieren</string>
     <string name="nc_settings_account_updated">Dein bereits existierendes Konto wurde aktualisiert, anstelle ein Neues hinzuzufügen</string>
     <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann nicht verändert werden</string>
+    <string name="nc_settings_notification_sounds">Benachrichtigungstöne</string>
+    <string name="nc_settings_call_ringtone">Anrufe</string>
+    <string name="nc_settings_message_ringtone">Nachrichten</string>
+    <string name="nc_settings_message_ringtone_key">message_ringtone</string>
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Nutzername</string>
     <string name="nc_password">Passwort</string>
