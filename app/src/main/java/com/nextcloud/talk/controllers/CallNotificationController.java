@@ -269,7 +269,7 @@ public class CallNotificationController extends BaseController {
                 avatarImageView.setVisibility(View.VISIBLE);
 
                 GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
-                        currentRoom.getName(), true), new LazyHeaders.Builder()
+                        currentRoom.getName(), R.dimen.avatar_size_very_big), new LazyHeaders.Builder()
                         .setHeader("Accept", "image/*")
                         .setHeader("User-Agent", ApiUtils.getUserAgent())
                         .build());

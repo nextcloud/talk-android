@@ -20,6 +20,7 @@
 package com.nextcloud.talk.utils;
 
 import android.net.Uri;
+import android.support.annotation.DimenRes;
 import android.support.annotation.Nullable;
 
 import com.nextcloud.talk.BuildConfig;
@@ -163,16 +164,9 @@ public class ApiUtils {
         return "/status.php";
     }
 
-    public static String getUrlForAvatarWithName(String baseUrl, String name, boolean isLargeAvatar) {
-        int avatarSize;
-
-        if (isLargeAvatar) {
-            avatarSize = Math.round(NextcloudTalkApplication
-                    .getSharedApplication().getResources().getDimension(R.dimen.avatar_size_big));
-        } else {
-            avatarSize = Math.round(NextcloudTalkApplication
+    public static String getUrlForAvatarWithName(String baseUrl, String name, @DimenRes int avatarSize) {
+        avatarSize = Math.round(NextcloudTalkApplication
                     .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
-        }
 
         return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize;
     }

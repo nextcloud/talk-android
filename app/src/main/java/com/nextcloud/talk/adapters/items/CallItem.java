@@ -131,7 +131,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
 
                 if (!TextUtils.isEmpty(room.getName())) {
                     GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                            room.getName(), false), new LazyHeaders.Builder()
+                            room.getName(), R.dimen.avatar_size), new LazyHeaders.Builder()
                             .setHeader("Accept", "image/*")
                             .setHeader("User-Agent", ApiUtils.getUserAgent())
                             .build());
