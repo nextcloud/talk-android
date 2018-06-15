@@ -136,8 +136,10 @@ public class CallNotificationController extends BaseController {
         originalBundle.putString(BundleKeys.KEY_ROOM_TOKEN, currentRoom.getToken());
 
         List<RouterTransaction> routerTransactions = new ArrayList<>();
-        routerTransactions.add(RouterTransaction.with(new MagicBottomNavigationController()));
-        routerTransactions.add(RouterTransaction.with(new ChatController(originalBundle)));
+        routerTransactions.add(RouterTransaction.with(new MagicBottomNavigationController())
+                .popChangeHandler(new HorizontalChangeHandler()).pushChangeHandler(new HorizontalChangeHandler()));
+        routerTransactions.add(RouterTransaction.with(new ChatController(originalBundle)).popChangeHandler(new
+                HorizontalChangeHandler()).pushChangeHandler(new HorizontalChangeHandler()));
         getRouter().setBackstack(routerTransactions, new HorizontalChangeHandler());
     }
 
