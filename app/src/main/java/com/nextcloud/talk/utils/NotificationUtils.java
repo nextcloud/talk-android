@@ -25,8 +25,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.graphics.Color;
-import android.media.AudioAttributes;
-import android.net.Uri;
 import android.os.Build;
 
 public class NotificationUtils {
@@ -37,7 +35,7 @@ public class NotificationUtils {
     public static void createNotificationChannel(NotificationManager notificationManager,
                                                  String channelId, String channelName,
                                                  String channelDescription, boolean vibrate,
-                                                 int importance, Uri soundUri) {
+                                                 int importance) {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O
                 && notificationManager.getNotificationChannel(channelId) == null) {
@@ -45,15 +43,6 @@ public class NotificationUtils {
             NotificationChannel channel = new NotificationChannel(channelId, channelName,
                     importance);
 
-            int usage;
-
-            if (channelId.equals(NotificationUtils.NOTIFICATION_CHANNEL_CALLS)) {
-                usage = AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST;
-            } else {
-                usage = AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT;
-            }
-
-            channel.setSound(soundUri, new AudioAttributes.Builder().setUsage(usage).build());
             channel.setDescription(channelDescription);
             channel.enableLights(vibrate);
             channel.enableVibration(vibrate);

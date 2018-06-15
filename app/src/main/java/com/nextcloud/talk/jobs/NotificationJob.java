@@ -27,7 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,20 +39,23 @@ import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
-import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
+import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import org.parceler.Parcels;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -71,6 +74,9 @@ public class NotificationJob extends Job {
 
     @Inject
     UserUtils userUtils;
+
+    @Inject
+    AppPreferences appPreferences;
 
     @NonNull
     @Override
@@ -116,9 +122,9 @@ public class NotificationJob extends Job {
                             int smallIcon;
                             Bitmap largeIcon;
                             String category = "";
-                            int priority = Notification.PRIORITY_DEFAULT;
-                            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            int priority = Notification.PRIORITY_HIGH;
                             Intent intent;
+                            Uri soundUri = null;
 
                             Bundle bundle = new Bundle();
 
@@ -145,19 +151,31 @@ public class NotificationJob extends Job {
                             NotificationManager notificationManager =
                                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
+                            String ringtonePreferencesString;
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
                                     smallIcon = R.drawable.ic_call_white_24dp;
                                     category = Notification.CATEGORY_CALL;
-                                    priority = Notification.PRIORITY_HIGH;
-                                    soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                                     break;
                                 case "room":
                                     smallIcon = R.drawable.ic_notifications_white_24dp;
                                     category = Notification.CATEGORY_CALL;
-                                    priority = Notification.PRIORITY_HIGH;
                                     break;
                                 case "chat":
+                                    ringtonePreferencesString = appPreferences.getMessageRingtoneUri();
+                                    if (TextUtils.isEmpty(ringtonePreferencesString)) {
+                                        soundUri = Uri.parse("android.resource://" + context.getPackageName() +
+                                                "/raw/librem_by_feandesign_message");
+                                    } else {
+                                        try {
+                                            RingtoneSettings ringtoneSettings = LoganSquare.parse
+                                                    (ringtonePreferencesString, RingtoneSettings.class);
+                                            soundUri = ringtoneSettings.getRingtoneUri();
+                                        } catch (IOException exception) {
+                                            soundUri = Uri.parse("android.resource://" + context.getPackageName() +
+                                                    "/raw/librem_by_feandesign_message");
+                                        }
+                                    }
                                     smallIcon = R.drawable.ic_chat_white_24dp;
                                     category = Notification.CATEGORY_MESSAGE;
                                     break;
@@ -177,7 +195,6 @@ public class NotificationJob extends Job {
                                     .setShowWhen(true)
                                     .setSubText(signatureVerification.getUserEntity().getDisplayName())
                                     .setContentTitle(decryptedPushMessage.getSubject())
-                                    .setSound(soundUri)
                                     .setFullScreenIntent(pendingIntent, true)
                                     .setAutoCancel(true);
 
@@ -205,7 +222,7 @@ public class NotificationJob extends Job {
                                                             .string.nc_notification_channel_calls), context.getResources()
                                                     .getString
                                                             (R.string.nc_notification_channel_calls_description), true,
-                                            NotificationManager.IMPORTANCE_HIGH, soundUri);
+                                            NotificationManager.IMPORTANCE_HIGH);
 
                                     notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_CALLS);
                                 } else {
@@ -215,7 +232,7 @@ public class NotificationJob extends Job {
                                                             .string.nc_notification_channel_messages), context.getResources()
                                                     .getString
                                                             (R.string.nc_notification_channel_messages_description), true,
-                                            NotificationManager.IMPORTANCE_DEFAULT, soundUri);
+                                            NotificationManager.IMPORTANCE_DEFAULT);
 
                                     notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES);
                                 }
@@ -223,8 +240,7 @@ public class NotificationJob extends Job {
                                 notificationBuilder.setGroup(Long.toString(crc32.getValue()));
                             }
 
-                            //notificationBuilder.setContentIntent(pendingIntent);
-                            notificationBuilder.setFullScreenIntent(pendingIntent, true);
+                            notificationBuilder.setContentIntent(pendingIntent);
 
                             String stringForCrc = decryptedPushMessage.getSubject() + " " + signatureVerification
                                     .getUserEntity().getDisplayName() + " " + signatureVerification.getUserEntity
@@ -235,6 +251,13 @@ public class NotificationJob extends Job {
 
                             if (notificationManager != null) {
                                 notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
+
+                                if (soundUri != null) {
+                                    MediaPlayer mediaPlayer = MediaPlayer.create(context, soundUri);
+                                    mediaPlayer.start();
+                                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+
+                                }
                             }
                         }
 
