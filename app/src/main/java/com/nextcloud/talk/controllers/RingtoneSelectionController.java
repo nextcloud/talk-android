@@ -96,8 +96,6 @@ public class RingtoneSelectionController extends BaseController implements Flexi
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
-        setHasOptionsMenu(true);
-
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(abstractFlexibleItemList, getActivity(), false);
 
@@ -118,6 +116,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
 
+        setHasOptionsMenu(true);
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -165,11 +164,13 @@ public class RingtoneSelectionController extends BaseController implements Flexi
         boolean foundDefault = false;
 
         String preferencesString = null;
-        if ((TextUtils.isEmpty((preferencesString = appPreferences.getCallRingtoneUri())))
-                || TextUtils.isEmpty((preferencesString = appPreferences.getMessageRingtoneUri()))) {
+        if ((callNotificationSounds && TextUtils.isEmpty((preferencesString = appPreferences.getCallRingtoneUri())))
+                || (!callNotificationSounds && TextUtils.isEmpty((preferencesString = appPreferences
+                .getMessageRingtoneUri())))) {
             ((NotificationSoundItem) abstractFlexibleItemList.get(1)).setSelected(true);
             foundDefault = true;
         }
+
 
         if (getActivity() != null) {
             RingtoneManager manager = new RingtoneManager(getActivity());
@@ -203,7 +204,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
                         } else if (completeNotificationUri.equals(ringtoneSettings.getRingtoneUri().toString())) {
                             notificationSoundItem.setSelected(true);
                             foundDefault = true;
-                        } else if (completeNotificationUri.equals(ringtoneString)) {
+                        } else if (ringtoneSettings.getRingtoneUri().toString().equals(ringtoneString)) {
                             ((NotificationSoundItem) abstractFlexibleItemList.get(1)).setSelected(true);
                             foundDefault = true;
                         }
@@ -243,23 +244,25 @@ public class RingtoneSelectionController extends BaseController implements Flexi
             mediaPlayer.start();
         }
 
-        RingtoneSettings ringtoneSettings = new RingtoneSettings();
-        ringtoneSettings.setRingtoneName(notificationSoundItem.getNotificationSoundName());
-        ringtoneSettings.setRingtoneUri(ringtoneUri);
+        if (adapter.getSelectedPositions().get(0) != position) {
+            RingtoneSettings ringtoneSettings = new RingtoneSettings();
+            ringtoneSettings.setRingtoneName(notificationSoundItem.getNotificationSoundName());
+            ringtoneSettings.setRingtoneUri(ringtoneUri);
 
-        if (callNotificationSounds) {
-            try {
-                appPreferences.setCallRingtoneUri(LoganSquare.serialize(ringtoneSettings));
-                toggleSelection(position);
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to store selected ringtone for calls");
-            }
-        } else {
-            try {
-                appPreferences.setMessageRingtoneUri(LoganSquare.serialize(ringtoneSettings));
-                toggleSelection(position);
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to store selected ringtone for calls");
+            if (callNotificationSounds) {
+                try {
+                    appPreferences.setCallRingtoneUri(LoganSquare.serialize(ringtoneSettings));
+                    toggleSelection(position);
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to store selected ringtone for calls");
+                }
+            } else {
+                try {
+                    appPreferences.setMessageRingtoneUri(LoganSquare.serialize(ringtoneSettings));
+                    toggleSelection(position);
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to store selected ringtone for calls");
+                }
             }
         }
 
