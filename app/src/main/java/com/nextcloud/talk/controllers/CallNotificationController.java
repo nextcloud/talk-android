@@ -238,7 +238,7 @@ public class CallNotificationController extends BaseController {
         handleFromNotification();
 
         String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
-        Uri ringtoneUri = null;
+        Uri ringtoneUri;
 
         if (TextUtils.isEmpty(callRingtonePreferenceString)) {
             // play default sound
@@ -250,6 +250,8 @@ public class CallNotificationController extends BaseController {
                 ringtoneUri = ringtoneSettings.getRingtoneUri();
             } catch (IOException e) {
                 Log.e(TAG, "Failed to parse ringtone settings");
+                ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName()+
+                        "/raw/librem_by_feandesign_call");
             }
         }
 
