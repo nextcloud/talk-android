@@ -233,16 +233,16 @@ public class SettingsController extends BaseController {
             Bundle bundle = new Bundle();
             bundle.putBoolean(BundleKeys.KEY_ARE_CALL_SOUNDS, true);
             getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
-                    .pushChangeHandler(new HorizontalChangeHandler()
-                    ).popChangeHandler(new HorizontalChangeHandler()));
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
         });
 
         settingsMessageSound.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putBoolean(BundleKeys.KEY_ARE_CALL_SOUNDS, false);
             getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
-                    .pushChangeHandler(new HorizontalChangeHandler()
-                    ).popChangeHandler(new HorizontalChangeHandler()));
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler()));
         });
 
         addAccountButton.addPreferenceClickListener(view15 -> {

@@ -82,7 +82,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
 
     public RingtoneSelectionController(Bundle args) {
         super(args);
-
+        setHasOptionsMenu(true);
         this.callNotificationSounds = args.getBoolean(BundleKeys.KEY_ARE_CALL_SOUNDS, false);
     }
 
@@ -116,11 +116,9 @@ public class RingtoneSelectionController extends BaseController implements Flexi
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
 
-        setHasOptionsMenu(true);
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
     }
 
     @Override

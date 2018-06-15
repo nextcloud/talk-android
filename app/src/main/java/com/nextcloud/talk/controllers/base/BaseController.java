@@ -27,6 +27,7 @@ import android.view.View;
 import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.AccountVerificationController;
+import com.nextcloud.talk.controllers.MagicBottomNavigationController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
 import com.nextcloud.talk.controllers.SwitchAccountController;
 import com.nextcloud.talk.controllers.WebViewLoginController;
@@ -91,7 +92,9 @@ public abstract class BaseController extends RefWatchingController {
     @Override
     protected void onAttach(@NonNull View view) {
         setTitle();
-        getActionBar().setDisplayHomeAsUpEnabled(false);
+        if (!MagicBottomNavigationController.class.getName().equals(getClass().getName())) {
+            getActionBar().setDisplayHomeAsUpEnabled(false);
+        }
 
         super.onAttach(view);
     }
