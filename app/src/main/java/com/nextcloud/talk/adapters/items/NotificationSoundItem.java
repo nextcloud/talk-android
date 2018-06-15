@@ -98,7 +98,8 @@ public class NotificationSoundItem extends AbstractFlexibleItem<NotificationSoun
 
         holder.magicFlipView.flipSilently(adapter.isSelected(position) || isSelected());
 
-        if (isSelected()) {
+        if (isSelected() && !adapter.isSelected(position)) {
+            adapter.toggleSelection(position);
             selected = false;
         }
 

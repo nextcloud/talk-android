@@ -123,7 +123,7 @@ public class SettingsController extends BaseController {
     TextView baseUrlTextView;
 
     @BindView(R.id.settings_call_sound)
-    MaterialStandardPreference settingsCallSounds;
+    MaterialStandardPreference settingsCallSound;
 
     @BindView(R.id.settings_message_sound)
     MaterialStandardPreference settingsMessageSound;
@@ -229,7 +229,7 @@ public class SettingsController extends BaseController {
 
         versionInfo.setSummary("v" + BuildConfig.VERSION_NAME);
 
-        settingsCallSounds.setOnClickListener(v -> {
+        settingsCallSound.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putBoolean(BundleKeys.KEY_ARE_CALL_SOUNDS, true);
             getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
@@ -319,10 +319,12 @@ public class SettingsController extends BaseController {
             } catch (IOException e) {
                 Log.e(TAG, "Failed to parse ringtone name");
             }
-            settingsCallSounds.setSummary(ringtoneName);
+            settingsCallSound.setSummary(ringtoneName);
         } else {
-            settingsCallSounds.setSummary(R.string.nc_settings_default_ringtone);
+            settingsCallSound.setSummary(R.string.nc_settings_default_ringtone);
         }
+
+        ringtoneName = "";
 
         if (!TextUtils.isEmpty(appPreferences.getMessageRingtoneUri())) {
             try {
