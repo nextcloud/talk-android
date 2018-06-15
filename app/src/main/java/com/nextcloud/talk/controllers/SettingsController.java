@@ -321,7 +321,7 @@ public class SettingsController extends BaseController {
             }
             settingsCallSounds.setSummary(ringtoneName);
         } else {
-            settingsMessageSound.setSummary(R.string.nc_settings_default_ringtone);
+            settingsCallSounds.setSummary(R.string.nc_settings_default_ringtone);
         }
 
         if (!TextUtils.isEmpty(appPreferences.getMessageRingtoneUri())) {
