@@ -100,8 +100,6 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
     <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" permissies in de systeeminstellingen.</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
 
-    <!-- Call -->
-    <string name="nc_incoming_call">Inkomend gesprek</string>
     <string name="nc_nick_guest">Gast</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>

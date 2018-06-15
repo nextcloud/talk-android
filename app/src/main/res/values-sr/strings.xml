@@ -105,8 +105,6 @@
     <string name="nc_microphone_permission_permanently_denied">Да бисте омогућили аудио комуникацију, дозволите приступ микрофону у системским поставкама.</string>
     <string name="nc_permissions_settings">Отвори поставке</string>
 
-    <!-- Call -->
-    <string name="nc_incoming_call">Долазни позив</string>
     <string name="nc_nick_guest">Гост</string>
     <string name="nc_public_call">Нови јавни разговор</string>
     <string name="nc_public_call_explanation">Јавни разговори Вам дозвољавају да позовете људе споља кроз

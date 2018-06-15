@@ -105,8 +105,6 @@
     <string name="nc_microphone_permission_permanently_denied">Para habilitar la comunicacion con voz por favor otorga el privilegio de \"Microfono\" en las configuraciones del sistema. </string>
     <string name="nc_permissions_settings">Abrir configuraciones</string>
 
-    <!-- Call -->
-    <string name="nc_incoming_call">Llamada entrando</string>
     <string name="nc_nick_guest">Invitado</string>
     <string name="nc_public_call">Nueva conversación pública</string>
     <string name="nc_public_call_explanation">Las conversaciones públicas te permiten invitar personas externas a través de

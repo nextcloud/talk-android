@@ -105,8 +105,6 @@
     <string name="nc_microphone_permission_permanently_denied">Sesli iletişim kurabilmek için sistem ayarlarından \"Mikrofon\" erişme iznini verin.</string>
     <string name="nc_permissions_settings">Ayarları aç</string>
 
-    <!-- Call -->
-    <string name="nc_incoming_call">Gelen çağrı</string>
     <string name="nc_nick_guest">Konuk</string>
     <string name="nc_public_call">Herkese açık konuşma ekle</string>
     <string name="nc_public_call_explanation">Herkese açık konuşmalara dışarıdan kişiler özel oluşturulmuş bir bağlantı

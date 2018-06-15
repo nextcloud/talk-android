@@ -105,8 +105,6 @@
     <string name="nc_microphone_permission_permanently_denied">Pour établir une communication audio, veuillez autoriser l’utilisation du microphone dans les paramètres du système.</string>
     <string name="nc_permissions_settings">Ouvrir les paramètres</string>
 
-    <!-- Call -->
-    <string name="nc_incoming_call">Appel rentrant</string>
     <string name="nc_nick_guest">Invité</string>
     <string name="nc_public_call">Nouvelle conversation public</string>
     <string name="nc_public_call_explanation">Les conversations publiques vous permet d\'inviter des personnes extérieures

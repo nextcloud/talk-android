@@ -105,8 +105,6 @@
     <string name="nc_microphone_permission_permanently_denied">Para permitir la comunicación de voz, concede el permiso de \"Micrófono\" en la configuración del sistema.</string>
     <string name="nc_permissions_settings">Abrir configuración</string>
 
-    <!-- Call -->
-    <string name="nc_incoming_call">Llamada entrante</string>
     <string name="nc_nick_guest">Invitado</string>
     <string name="nc_public_call">Nueva conversación pública</string>
     <string name="nc_public_call_explanation">Las conversaciones públicas te permiten invitar a gente del exterior a través de un

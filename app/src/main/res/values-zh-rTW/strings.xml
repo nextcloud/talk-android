@@ -76,8 +76,6 @@
     <string name="nc_microphone_permission_permanently_denied">為了開啟聲音的通訊請在系統設定內同意\"麥克風\"的需求。</string>
     <string name="nc_permissions_settings">開啟設定</string>
 
-    <!-- Call -->
-    <string name="nc_incoming_call">來電</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
     <string name="nc_notification_channel_calls">來電通知頻道</string>

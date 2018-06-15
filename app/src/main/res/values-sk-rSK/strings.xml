@@ -105,8 +105,6 @@
     <string name="nc_microphone_permission_permanently_denied">Na zapnutie hlasovej komunikácie, prosím povoľte \"Mikrofón\" v nastaveniach systému.</string>
     <string name="nc_permissions_settings">Otvoriť nastavenia</string>
 
-    <!-- Call -->
-    <string name="nc_incoming_call">Prichádzajúci hovor</string>
     <string name="nc_nick_guest">Hosť</string>
     <string name="nc_public_call">Nový verejný rozhovor</string>
     <string name="nc_public_call_explanation">Verejné rozhovory Vám umožňujú pozvať ľudí z vonku cez špeciálne

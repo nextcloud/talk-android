@@ -88,8 +88,6 @@
 
     <string name="nc_permissions_settings">打开设置</string>
 
-    <!-- Call -->
-    <string name="nc_incoming_call">来电</string>
     <string name="nc_nick_guest">来宾</string>
     <string name="nc_notification_channel_calls_description">显示来电</string>
     <string name="nc_all_ok_operation">OK，已完成！</string>
