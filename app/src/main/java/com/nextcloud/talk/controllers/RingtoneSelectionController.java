@@ -144,7 +144,8 @@ public class RingtoneSelectionController extends BaseController implements Flexi
     @SuppressLint("LongLogTag")
     private void fetchNotificationSounds() {
         abstractFlexibleItemList = new ArrayList<>();
-        abstractFlexibleItemList.add(new NotificationSoundItem("None", null));
+        abstractFlexibleItemList.add(new NotificationSoundItem(getResources().getString(R.string.nc_settings_no_ringtone),
+                null));
 
         String ringtoneString;
 
@@ -242,7 +243,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
             mediaPlayer.start();
         }
 
-        if (adapter.getSelectedPositions().get(0) != position) {
+        if (adapter.getSelectedPositions().size() == 0 || adapter.getSelectedPositions().get(0) != position) {
             RingtoneSettings ringtoneSettings = new RingtoneSettings();
             ringtoneSettings.setRingtoneName(notificationSoundItem.getNotificationSoundName());
             ringtoneSettings.setRingtoneUri(ringtoneUri);

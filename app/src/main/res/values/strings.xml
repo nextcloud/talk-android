@@ -66,6 +66,7 @@
     <string name="nc_settings_message_ringtone">Messages</string>
     <string name="nc_settings_message_ringtone_key">message_ringtone</string>
     <string name="nc_settings_default_ringtone" translatable="false">Librem by feandesign</string>
+    <string name="nc_settings_no_ringtone">No sound</string>
 
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_username">Username</string>
