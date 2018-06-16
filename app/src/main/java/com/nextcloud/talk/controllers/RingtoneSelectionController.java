@@ -80,8 +80,6 @@ public class RingtoneSelectionController extends BaseController implements Flexi
     private MediaPlayer mediaPlayer;
     private Handler cancelMediaPlayerHandler;
 
-    private Cursor cursor;
-
     public RingtoneSelectionController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
@@ -182,7 +180,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
                 manager.setType(RingtoneManager.TYPE_NOTIFICATION);
             }
 
-            cursor = manager.getCursor();
+            Cursor cursor = manager.getCursor();
 
             NotificationSoundItem notificationSoundItem;
 
@@ -214,6 +212,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
                     }
                 }
             }
+
         }
 
         adapter.updateDataSet(abstractFlexibleItemList, true);
@@ -299,9 +298,6 @@ public class RingtoneSelectionController extends BaseController implements Flexi
     @Override
     public void onDestroy() {
         endMediaPlayer();
-        if (cursor != null) {
-            cursor.close();
-        }
         super.onDestroy();
     }
 
