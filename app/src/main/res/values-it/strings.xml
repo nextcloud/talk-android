@@ -110,6 +110,8 @@
     <string name="nc_microphone_permission_permanently_denied">Per abilitare la comunicazione vocale devi accordare il permesso per  \"Microfono\" nelle impostazioni di sistema.</string>
     <string name="nc_permissions_settings">Apri impostazioni</string>
 
+    <!-- Call -->
+    <string name="nc_incoming_call">Chiamata in ingresso da</string>
     <string name="nc_nick_guest">Ospite</string>
     <string name="nc_public_call">Nuova conversazione pubblica</string>
     <string name="nc_public_call_explanation">Le conversazioni pubbliche ti consentono di invitare persone esterne tramite un
