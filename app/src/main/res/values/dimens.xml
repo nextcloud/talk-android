@@ -16,7 +16,8 @@
     <dimen name="margin_between_elements">8dp</dimen>
     <dimen name="avatar_size">40dp</dimen>
     <dimen name="avatar_size_big">80dp</dimen>
-    <dimen name="avatar_size_very_big">120dp</dimen>
+    <dimen name="avatar_size_very_big">@dimen/avatar_fetching_size_very_big</dimen>
+    <dimen name="avatar_fetching_size_very_big">140dp</dimen>
     <dimen name="avatar_corner_radius">20dp</dimen>
 
     <dimen name="chat_text_size">14sp</dimen>

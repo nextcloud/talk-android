@@ -5,4 +5,6 @@
 
     <dimen name="display_target_image_size">120dp</dimen>
     <dimen name="display_target_image_margin">16dp</dimen>
+
+    <dimen name="avatar_size_very_big">120dp</dimen>
 </resources>
