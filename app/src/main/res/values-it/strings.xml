@@ -65,6 +65,8 @@
     <string name="nc_settings_call_ringtone_key">call_ringtone</string>
     <string name="nc_settings_message_ringtone">Messaggi</string>
     <string name="nc_settings_message_ringtone_key">message_ringtone</string>
+    <string name="nc_settings_no_ringtone">Nessun suono</string>
+
     <string name="nc_no_proxy">Nessun proxy</string>
     <string name="nc_username">Nome utente</string>
     <string name="nc_password">Password</string>

@@ -60,6 +60,11 @@
     <string name="nc_settings_no_talk_installed">La app Talk no está instalada en el servidor contra el que has intentado autorizarte</string>
     <string name="nc_settings_account_updated">Tu cuenta ya existente ha sido actualizada en lugar de añadir una nueva</string>
     <string name="nc_account_scheduled_for_deletion">La cuenta está programada para borrado y no se puede operar con ella</string>
+    <string name="nc_settings_notification_sounds">Sonidos de notificación</string>
+    <string name="nc_settings_call_ringtone">Llamadas</string>
+    <string name="nc_settings_message_ringtone">Mensajes</string>
+    <string name="nc_settings_no_ringtone">Sonido NO</string>
+
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Nombre de usuario</string>
     <string name="nc_password">Contraseña</string>
@@ -105,6 +110,8 @@
     <string name="nc_microphone_permission_permanently_denied">Para permitir la comunicación de voz, concede el permiso de \"Micrófono\" en la configuración del sistema.</string>
     <string name="nc_permissions_settings">Abrir configuración</string>
 
+    <!-- Call -->
+    <string name="nc_incoming_call">Llamada entrante de</string>
     <string name="nc_nick_guest">Invitado</string>
     <string name="nc_public_call">Nueva conversación pública</string>
     <string name="nc_public_call_explanation">Las conversaciones públicas te permiten invitar a gente del exterior a través de un
