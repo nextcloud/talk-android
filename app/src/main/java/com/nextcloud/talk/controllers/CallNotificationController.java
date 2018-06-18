@@ -266,7 +266,7 @@ public class CallNotificationController extends BaseController {
 
     private void loadAvatar() {
         int avatarSize = Math.round(NextcloudTalkApplication
-                .getSharedApplication().getResources().getDimension(R.dimen.avatar_size_very_big));
+                .getSharedApplication().getResources().getDimension(R.dimen.avatar_fetching_size_very_big));
 
         switch (currentRoom.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
