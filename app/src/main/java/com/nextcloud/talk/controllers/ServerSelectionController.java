@@ -45,7 +45,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.utils.AccountUtils;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
+import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;

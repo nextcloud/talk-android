@@ -75,7 +75,7 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;

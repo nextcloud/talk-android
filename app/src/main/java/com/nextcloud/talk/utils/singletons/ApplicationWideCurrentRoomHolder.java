@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.utils;
+package com.nextcloud.talk.utils.singletons;
 
 import com.nextcloud.talk.models.database.UserEntity;
 

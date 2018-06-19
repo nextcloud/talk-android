@@ -49,7 +49,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
+import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;

@@ -46,12 +46,13 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
-import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.ApplicationWideStateHolder;
 
 import org.parceler.Parcels;
 
@@ -117,7 +118,9 @@ public class NotificationJob extends Job {
 
                         boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed") &&
                                 !decryptedPushMessage.getType().equals("room") &&
-                                (!isInTheSameRoomAsNotification || decryptedPushMessage.getType().equals("call"));
+                                (!isInTheSameRoomAsNotification ||
+                                        !ApplicationWideStateHolder.getInstance().isInForeground() ||
+                                        decryptedPushMessage.getType().equals("call"));
 
                         if (shouldShowNotification) {
                             int smallIcon = 0;

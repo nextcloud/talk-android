@@ -46,7 +46,7 @@ import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.ApplicationWideMessageHolder;
+import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;

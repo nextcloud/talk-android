@@ -20,6 +20,10 @@
  */
 package com.nextcloud.talk.application;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.OnLifecycleEvent;
+import android.arch.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
 import android.os.Build;
 import android.support.multidex.MultiDex;
@@ -41,6 +45,7 @@ import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.DeviceUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserModule;
+import com.nextcloud.talk.utils.singletons.ApplicationWideStateHolder;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -69,7 +74,7 @@ import autodagger.AutoInjector;
 
 @Singleton
 @AutoInjector(NextcloudTalkApplication.class)
-public class NextcloudTalkApplication extends MultiDexApplication {
+public class NextcloudTalkApplication extends MultiDexApplication implements LifecycleObserver {
     private static final String TAG = NextcloudTalkApplication.class.getSimpleName();
 
     //region Public variables
@@ -112,6 +117,7 @@ public class NextcloudTalkApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         JobManager.create(this).addJobCreator(new MagicJobCreator());
 
@@ -188,4 +194,14 @@ public class NextcloudTalkApplication extends MultiDexApplication {
         MultiDex.install(this);
     }
     //endregion
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    private void onAppBackgrounded() {
+        ApplicationWideStateHolder.getInstance().setInForeground(false);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    private void onAppForegrounded() {
+        ApplicationWideStateHolder.getInstance().setInForeground(true);
+    }
 }
