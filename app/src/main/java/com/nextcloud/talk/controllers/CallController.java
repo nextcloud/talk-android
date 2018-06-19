@@ -422,7 +422,7 @@ public class CallController extends BaseController {
 
     @AfterPermissionGranted(100)
     private void onPermissionsGranted() {
-        if (getActivity() != null && EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CALL)) {
+        if (EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CALL)) {
             if (!videoOn && !isVoiceOnlyCall) {
                 onCameraClick();
             }
