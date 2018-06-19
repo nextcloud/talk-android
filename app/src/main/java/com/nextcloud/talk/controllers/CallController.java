@@ -24,6 +24,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -414,8 +415,7 @@ public class CallController extends BaseController {
         if (isVoiceOnlyCall) {
             onMicrophoneClick();
         } else if (getActivity() != null) {
-            EffortlessPermissions.requestPermissions(getActivity(), R.string.nc_permissions,
-                    R.string.nc_proceed, R.string.nc_empty, 100, PERMISSIONS_CALL);
+            requestPermissions(PERMISSIONS_CALL, 100);
         }
 
     }
@@ -472,7 +472,7 @@ public class CallController extends BaseController {
             }
         }
 
-        if (getActivity() != null && EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_MICROPHONE)) {
+        if (EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_MICROPHONE)) {
             if (!audioOn) {
                 onMicrophoneClick();
             }
@@ -634,10 +634,7 @@ public class CallController extends BaseController {
                     R.string.nc_microphone_permission_permanently_denied,
                     R.string.nc_permissions_settings, (AppCompatActivity) getActivity());
         } else {
-            if (getActivity() != null) {
-                EffortlessPermissions.requestPermissions(getActivity(), R.string.nc_permissions_audio,
-                        R.string.nc_proceed, R.string.nc_empty, 100, PERMISSIONS_MICROPHONE);
-            }
+            requestPermissions(PERMISSIONS_MICROPHONE, 100);
         }
     }
 
@@ -673,10 +670,7 @@ public class CallController extends BaseController {
                     R.string.nc_camera_permission_permanently_denied,
                     R.string.nc_permissions_settings, (AppCompatActivity) getActivity());
         } else {
-            if (getActivity() != null) {
-                EffortlessPermissions.requestPermissions(getActivity(), R.string.nc_permissions_video,
-                        R.string.nc_proceed, R.string.nc_empty, 100, PERMISSIONS_CAMERA);
-            }
+            requestPermissions(PERMISSIONS_CAMERA, 100);
         }
 
     }
@@ -1406,7 +1400,9 @@ public class CallController extends BaseController {
             }
         }
 
-        callControls.setZ(100.0f);
+        if (callControls != null) {
+            callControls.setZ(100.0f);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1629,6 +1625,12 @@ public class CallController extends BaseController {
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
         eventBus.register(this);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            remoteRenderersLayout.setOrientation(LinearLayout.HORIZONTAL);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            remoteRenderersLayout.setOrientation(LinearLayout.VERTICAL);
+        }
     }
 
     @Override

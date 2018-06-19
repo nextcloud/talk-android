@@ -69,6 +69,7 @@ public class MagicCallActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(getSystemUiVisibility());
 
         setContentView(R.layout.activity_magic_call);
+
         ButterKnife.bind(this);
         router = Conductor.attachRouter(this, container, savedInstanceState);
         router.setPopsLastView(true);
@@ -85,10 +86,4 @@ public class MagicCallActivity extends AppCompatActivity {
             }
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        finish();
-    }
-
 }
