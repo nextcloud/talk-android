@@ -21,12 +21,16 @@
 package com.nextcloud.talk.jobs;
 
 
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.evernote.android.job.Job;
+import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -38,6 +42,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.util.HashMap;
+import java.util.zip.CRC32;
 
 import javax.inject.Inject;
 
@@ -113,6 +118,21 @@ public class AccountRemovalJob extends Job {
 
                                                     @Override
                                                     public void onNext(Void aVoid) {
+                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                            String groupName = String.format(getContext().getResources().getString(R.string
+                                                                    .nc_notification_channel), userEntity.getUserId(), userEntity.getBaseUrl());
+                                                            CRC32 crc32 = new CRC32();
+                                                            crc32.update(groupName.getBytes());
+                                                            NotificationManager notificationManager =
+                                                                    (NotificationManager) getContext().getSystemService(Context
+                                                                            .NOTIFICATION_SERVICE);
+
+                                                            if (notificationManager != null) {
+                                                                notificationManager.deleteNotificationChannelGroup(Long
+                                                                        .toString(crc32.getValue()));
+                                                            }
+                                                        }
+
                                                         userUtils.deleteUser(userEntity.getId()).subscribe(new
                                                                                                                    CompletableObserver() {
                                                                                                                        @Override

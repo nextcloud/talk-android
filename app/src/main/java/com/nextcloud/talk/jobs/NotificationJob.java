@@ -26,7 +26,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -44,6 +47,7 @@ import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
+import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -55,6 +59,8 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.Calendar;
+import java.util.zip.CRC32;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -110,10 +116,11 @@ public class NotificationJob extends Job {
                                         .getInstance().getUserInRoom());
 
                         boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed") &&
+                                !decryptedPushMessage.getType().equals("room") &&
                                 (!isInTheSameRoomAsNotification || decryptedPushMessage.getType().equals("call"));
 
                         if (shouldShowNotification) {
-                            int smallIcon;
+                            int smallIcon = 0;
                             Bitmap largeIcon;
                             String category = "";
                             int priority = Notification.PRIORITY_HIGH;
@@ -152,8 +159,7 @@ public class NotificationJob extends Job {
                                     getContext().startActivity(intent);
                                     break;
                                 case "room":
-                                    smallIcon = R.drawable.ic_notifications_white_24dp;
-                                    category = Notification.CATEGORY_CALL;
+                                    // do absolutely nothing, we won't even come to this point
                                     break;
                                 case "chat":
                                     ringtonePreferencesString = appPreferences.getMessageRingtoneUri();
@@ -177,84 +183,70 @@ public class NotificationJob extends Job {
                                     smallIcon = R.drawable.ic_logo;
                             }
 
-                            /*largeIcon = BitmapFactory.decodeResource(context.getResources(), smallIcon);
-                            CRC32 crc32 = new CRC32();
+                            if (decryptedPushMessage.getType().equals("chat")) {
+                                largeIcon = BitmapFactory.decodeResource(context.getResources(), smallIcon);
+                                CRC32 crc32 = new CRC32();
 
-                            Notification.Builder notificationBuilder = new Notification.Builder(context)
-                                    .setLargeIcon(largeIcon)
-                                    .setSmallIcon(smallIcon)
-                                    .setCategory(category)
-                                    .setPriority(priority)
-                                    .setWhen(Calendar.getInstance().getTimeInMillis())
-                                    .setShowWhen(true)
-                                    .setSubText(signatureVerification.getUserEntity().getDisplayName())
-                                    .setContentTitle(decryptedPushMessage.getSubject())
-                                    .setFullScreenIntent(pendingIntent, true)
-                                    .setAutoCancel(true);
+                                Notification.Builder notificationBuilder = new Notification.Builder(context)
+                                        .setLargeIcon(largeIcon)
+                                        .setSmallIcon(smallIcon)
+                                        .setCategory(category)
+                                        .setPriority(priority)
+                                        .setWhen(Calendar.getInstance().getTimeInMillis())
+                                        .setShowWhen(true)
+                                        .setSubText(signatureVerification.getUserEntity().getDisplayName())
+                                        .setContentTitle(decryptedPushMessage.getSubject())
+                                        .setContentIntent(pendingIntent)
+                                        .setAutoCancel(true);
 
-                            if (Build.VERSION.SDK_INT >= 23) {
-                                // This method should exist since API 21, but some phones don't have it
-                                // So as a safeguard, we don't use it until 23
-                                notificationBuilder.setColor(context.getResources().getColor(R.color.colorPrimary));
-                            }
+                                if (Build.VERSION.SDK_INT >= 23) {
+                                    // This method should exist since API 21, but some phones don't have it
+                                    // So as a safeguard, we don't use it until 23
+                                    notificationBuilder.setColor(context.getResources().getColor(R.color.colorPrimary));
+                                }
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-                                String groupName = String.format(context.getResources().getString(R.string
-                                        .nc_notification_channel), signatureVerification.getUserEntity()
-                                        .getDisplayName(), signatureVerification.getUserEntity().getBaseUrl());
-                                crc32.update(groupName.getBytes());
+                                    String groupName = String.format(context.getResources().getString(R.string
+                                            .nc_notification_channel), signatureVerification.getUserEntity()
+                                            .getUserId(), signatureVerification.getUserEntity().getBaseUrl());
+                                    crc32.update(groupName.getBytes());
 
-                                NotificationUtils.createNotificationChannelGroup(notificationManager,
-                                        Long.toString(crc32.getValue()),
-                                        groupName);
+                                    NotificationUtils.createNotificationChannelGroup(notificationManager,
+                                            Long.toString(crc32.getValue()),
+                                            groupName);
 
-                                if (category.equals(Notification.CATEGORY_CALL)) {
                                     NotificationUtils.createNotificationChannel(notificationManager,
-                                            NotificationUtils.NOTIFICATION_CHANNEL_CALLS, context.getResources()
-                                                    .getString(R
-                                                            .string.nc_notification_channel_calls), context.getResources()
-                                                    .getString
-                                                            (R.string.nc_notification_channel_calls_description), true,
+                                            NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2, context.getResources()
+                                                    .getString(R.string.nc_notification_channel_messages), context.getResources()
+                                                    .getString(R.string.nc_notification_channel_messages_description), true,
                                             NotificationManager.IMPORTANCE_HIGH);
 
-                                    notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_CALLS);
-                                } else {
-                                    NotificationUtils.createNotificationChannel(notificationManager,
-                                            NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES, context.getResources()
-                                                    .getString(R
-                                                            .string.nc_notification_channel_messages), context.getResources()
-                                                    .getString
-                                                            (R.string.nc_notification_channel_messages_description), true,
-                                            NotificationManager.IMPORTANCE_DEFAULT);
-
-                                    notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES);
+                                    notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2);
+                                    notificationBuilder.setGroup(Long.toString(crc32.getValue()));
                                 }
 
-                                notificationBuilder.setGroup(Long.toString(crc32.getValue()));
+                                notificationBuilder.setContentIntent(pendingIntent);
+
+                                String stringForCrc = decryptedPushMessage.getSubject() + " " + signatureVerification
+                                        .getUserEntity().getDisplayName() + " " + signatureVerification.getUserEntity
+                                        ().getBaseUrl() + System.currentTimeMillis();
+
+                                crc32 = new CRC32();
+                                crc32.update(stringForCrc.getBytes());
+
+                                if (notificationManager != null) {
+                                    notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
+
+                                    if (soundUri != null) {
+                                        MediaPlayer mediaPlayer = MediaPlayer.create(context, soundUri);
+                                        mediaPlayer.start();
+                                        mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+
+                                    }
+                                }
                             }
-
-                            notificationBuilder.setContentIntent(pendingIntent);
-
-                            String stringForCrc = decryptedPushMessage.getSubject() + " " + signatureVerification
-                                    .getUserEntity().getDisplayName() + " " + signatureVerification.getUserEntity
-                                    ().getBaseUrl();
-
-                            crc32 = new CRC32();
-                            crc32.update(stringForCrc.getBytes());
-
-                            if (notificationManager != null) {
-                                notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
-
-                                if (soundUri != null) {
-                                    MediaPlayer mediaPlayer = MediaPlayer.create(context, soundUri);
-                                    mediaPlayer.start();
-                                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-
-                                }
-                            }*/
                         }
-
                     }
                 } catch (NoSuchAlgorithmException e1) {
                     Log.d(TAG, "No proper algorithm to decrypt the message " + e1.getLocalizedMessage());

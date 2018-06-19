@@ -132,7 +132,7 @@
 
         <com.nextcloud.talk.utils.MagicFlipView
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/call_control_hangup"
+            android:id="@+id/callControlHangupView"
             android:layout_width="60dp"
             android:layout_height="60dp"
             app:checked="false"

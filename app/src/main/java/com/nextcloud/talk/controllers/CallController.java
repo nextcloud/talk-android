@@ -102,7 +102,6 @@ import org.webrtc.RendererCommon;
 import org.webrtc.SessionDescription;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
-import org.webrtc.VideoRenderer;
 import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
 
@@ -165,6 +164,7 @@ public class CallController extends BaseController {
     FlipView cameraControlButton;
     @BindView(R.id.call_control_switch_camera)
     FlipView cameraSwitchButton;
+
     @BindView(R.id.connectingRelativeLayoutView)
     RelativeLayout connectingView;
 
@@ -182,23 +182,22 @@ public class CallController extends BaseController {
     @Inject
     Cache cache;
 
-    PeerConnectionFactory peerConnectionFactory;
-    MediaConstraints audioConstraints;
-    MediaConstraints videoConstraints;
-    MediaConstraints sdpConstraints;
-    MagicAudioManager audioManager;
-    VideoSource videoSource;
-    VideoTrack localVideoTrack;
-    AudioSource audioSource;
-    AudioTrack localAudioTrack;
-    VideoCapturer videoCapturer;
-    VideoRenderer localRenderer;
-    EglBase rootEglBase;
-    boolean leavingCall = false;
-    boolean inCall = false;
-    Disposable signalingDisposable;
-    Disposable pingDisposable;
-    List<PeerConnection.IceServer> iceServers;
+    private PeerConnectionFactory peerConnectionFactory;
+    private MediaConstraints audioConstraints;
+    private MediaConstraints videoConstraints;
+    private MediaConstraints sdpConstraints;
+    private MagicAudioManager audioManager;
+    private VideoSource videoSource;
+    private VideoTrack localVideoTrack;
+    private AudioSource audioSource;
+    private AudioTrack localAudioTrack;
+    private VideoCapturer videoCapturer;
+    private EglBase rootEglBase;
+    private boolean leavingCall = false;
+    private boolean inCall = false;
+    private Disposable signalingDisposable;
+    private Disposable pingDisposable;
+    private List<PeerConnection.IceServer> iceServers;
     private CameraEnumerator cameraEnumerator;
     private String roomToken;
     private UserEntity userEntity;
@@ -252,8 +251,7 @@ public class CallController extends BaseController {
             baseUrl = userEntity.getBaseUrl();
         }
 
-        isFromNotification = args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL) && TextUtils.isEmpty
-                (roomToken);
+        isFromNotification = TextUtils.isEmpty(roomToken);
     }
 
     @Override
@@ -636,12 +634,14 @@ public class CallController extends BaseController {
                     R.string.nc_microphone_permission_permanently_denied,
                     R.string.nc_permissions_settings, (AppCompatActivity) getActivity());
         } else {
-            EffortlessPermissions.requestPermissions(getActivity(), R.string.nc_permissions_audio,
-                    R.string.nc_proceed, R.string.nc_empty, 100, PERMISSIONS_MICROPHONE);
+            if (getActivity() != null) {
+                EffortlessPermissions.requestPermissions(getActivity(), R.string.nc_permissions_audio,
+                        R.string.nc_proceed, R.string.nc_empty, 100, PERMISSIONS_MICROPHONE);
+            }
         }
     }
 
-    @OnClick(R.id.call_control_hangup)
+    @OnClick(R.id.callControlHangupView)
     public void onHangupClick() {
         if (inCall) {
             hangup(false);
@@ -652,7 +652,7 @@ public class CallController extends BaseController {
 
     @OnClick(R.id.call_control_camera)
     public void onCameraClick() {
-        if (EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA)) {
+        if (getActivity() != null && EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA)) {
             videoOn = !videoOn;
 
             if (videoOn) {
@@ -824,7 +824,7 @@ public class CallController extends BaseController {
         super.onDestroy();
     }
 
-    public void startPullingSignalingMessages() {
+    private void startPullingSignalingMessages() {
         leavingCall = false;
 
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
@@ -1055,6 +1055,7 @@ public class CallController extends BaseController {
 
                                     @Override
                                     public void onError(Throwable e) {
+                                        Log.d("MARIO", e.getLocalizedMessage());
                                         dispose(signalingDisposable);
                                     }
 
@@ -1396,7 +1397,7 @@ public class CallController extends BaseController {
     }
 
     private void removeMediaStream(String sessionId) {
-        if (remoteRenderersLayout.getChildCount() > 0) {
+        if (remoteRenderersLayout != null && remoteRenderersLayout.getChildCount() > 0) {
             RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionId);
             if (relativeLayout != null) {
                 SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id.surface_view);

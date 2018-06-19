@@ -66,5 +66,10 @@
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"/>
 
+        <receiver android:name=".receivers.PackageReplacedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

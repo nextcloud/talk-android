@@ -30,6 +30,8 @@ import android.os.Build;
 public class NotificationUtils {
     public static final String NOTIFICATION_CHANNEL_CALLS = "NOTIFICATION_CHANNEL_CALLS";
     public static final String NOTIFICATION_CHANNEL_MESSAGES = "NOTIFICATION_CHANNEL_MESSAGES";
+    public static final String NOTIFICATION_CHANNEL_CALLS_V2 = "NOTIFICATION_CHANNEL_CALLS_V2";
+    public static final String NOTIFICATION_CHANNEL_MESSAGES_V2 = "NOTIFICATION_CHANNEL_MESSAGES_V2";
 
     @TargetApi(Build.VERSION_CODES.O)
     public static void createNotificationChannel(NotificationManager notificationManager,

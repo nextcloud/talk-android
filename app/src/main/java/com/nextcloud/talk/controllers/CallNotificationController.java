@@ -126,16 +126,16 @@ public class CallNotificationController extends BaseController {
     @OnClick(R.id.callAnswerCameraView)
     void answerWithCamera() {
         originalBundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
-        setBackstackAndProceed();
+        proceedToCall();
     }
 
     @OnClick(R.id.callAnswerVoiceOnlyView)
     void answerVoiceOnly() {
         originalBundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true);
-        setBackstackAndProceed();
+        proceedToCall();
     }
 
-    private void setBackstackAndProceed() {
+    private void proceedToCall() {
         originalBundle.putString(BundleKeys.KEY_ROOM_TOKEN, currentRoom.getToken());
 
         getRouter().setRoot(RouterTransaction.with(new CallController(originalBundle))
