@@ -11,7 +11,7 @@ Nextcloud Talk supports:
 * Mobile apps for Android and iOS
 * Mobile call & chat push notifications
 * Integration in Nextcloud Files and Nextcloud Groupware
-* Fully on-premise, 100% open source
+* Fully on-premise, completely open source
 * End-to-end Encrypted calls
 * Scaling to millions of users
 * SIP gate: dial in by phone

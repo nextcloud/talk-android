@@ -138,32 +138,6 @@
     <string name="nc_store_short_desc">Používajte súkromné video hovory a chat na vlastnom serveri.</string>
     <string name="nc_configure_cert_auth">Vybrať autentifikačný certifikát</string>
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
-    <string name="nc_store_full_desc">Používajte Nextcloud Talk a majte súkromné alebo skupinové audio alebo video hovory, vytvorte alebo sa pripojte na web konferencie a posielajte chat správy. Všetka komunikácia je plne šifrovaná a sprostredkovaná vašim vlastným serverom, čo umožňuje najvyššiu možnú mieru súkromia.
-
-Nextcloud Talk je ľahko použiteľný a vždy bude úplne zdarma!
-
-Nextcloud Talk podporuje:
-* HD (H.265) audio/video hovory
-* Skupinové a súkromné hovory
-* Webináre&amp; verejné web stretnutia
-* Individuálny a skupinový chat
-* Ľahké zdieľanie obrazovky
-* Mobilné aplikácie pre Android a iOS
-* Push oznámenia mobilných hovorov &amp; chatu
-* Integrované v Nextcloud Files a Nextcloud Groupware
-* Plne na sľube, 100% open source
-* End-to-end Šifrované hovory
-* Prispôsobenie pre milióny používateľov
-* brána SIP: vytočte číslo telefónom
-
-Aplikácia Nextcloud Talk vyžaduje Nextcloud Talk server, aby fungovala. Nextcloud je privátna, sebou hosťovaná platforma na synchronizáciu súborov a komunikáciu, navrhnutá tak, aby ste získali späť kontrolu nad svojimi dátami. Beží na serveri podľa vlastného výberu, či už je to doma, u  poskytovateľa služieb alebo vo vašom podniku, a poskytuje vám prístup k vašim dokumentom, kalendárom, kontaktom, emailu a ostatným dátam. Môžete zdieľať s ostatnými aj cez iné Nextcloud servre a pracovať spolu na dokumentoch. Nextcloud je plne open source, čo vám dáva možnosť rozšíriť ich na vlastné použitie, podieľať sa na ich vývoji alebo si jednoducho overiť, že robia to, čo sľubujú.
-
-Milióny užívateľov používajú Nextcloud denne v podnikoch a domácnostiach po celom svete. Podnikoví používatelia sa spoliehajú na profesionálnu podporu spoločnosti Nextcloud GmbH, aby si boli istí, že majú plne podporovanú, podnikovo-pripravenú platformu pre produktivitu a spoluprácu, plne pod kontrolou ich IT oddelenia.
-
-Naučte sa viac na https://nextcloud.com/talk
-
-Nextcloud nájdete na https://nextcloud.com</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Napíšte správu</string>
     <string name="nc_date_header_yesterday">Včera</string>
