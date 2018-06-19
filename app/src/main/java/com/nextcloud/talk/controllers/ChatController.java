@@ -156,7 +156,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private int newMessagesCount = 0;
     private Boolean startCallFromNotification;
     private String roomId;
-    private boolean voiceOnly = false;
+    private boolean voiceOnly;
 
     public ChatController(Bundle args) {
         super(args);
@@ -172,10 +172,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
-
-        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
-        ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
-        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
 
         this.roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "");
 
@@ -413,6 +409,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+        ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
+        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
 
         if (mentionAutocomplete != null && mentionAutocomplete.isPopupShowing()) {
             mentionAutocomplete.dismissPopup();

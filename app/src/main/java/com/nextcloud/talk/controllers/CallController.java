@@ -979,42 +979,37 @@ public class CallController extends BaseController {
                         connectingView.setVisibility(View.GONE);
                         conversationView.setVisibility(View.VISIBLE);
 
-                        // start pinging the call
-                        if (!hasChatSupport) {
-                            ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
-                            ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
-                            ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(userEntity);
+                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+                        ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
+                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(userEntity);
 
-                            ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
-                                    .subscribeOn(Schedulers.newThread())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                                    .takeWhile(observable -> inCall)
-                                    .retry(3, observable -> inCall)
-                                    .subscribe(new Observer<GenericOverall>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-                                            pingDisposable = d;
-                                        }
+                        ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                                .takeWhile(observable -> inCall)
+                                .retry(3, observable -> inCall)
+                                .subscribe(new Observer<GenericOverall>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+                                        pingDisposable = d;
+                                    }
 
-                                        @Override
-                                        public void onNext(GenericOverall genericOverall) {
+                                    @Override
+                                    public void onNext(GenericOverall genericOverall) {
 
-                                        }
+                                    }
 
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            dispose(pingDisposable);
-                                        }
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        dispose(pingDisposable);
+                                    }
 
-                                        @Override
-                                        public void onComplete() {
-                                            dispose(pingDisposable);
-                                        }
-                                    });
-                        } else {
-                            ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
-                        }
+                                    @Override
+                                    public void onComplete() {
+                                        dispose(pingDisposable);
+                                    }
+                                });
 
                         // Start pulling signaling messages
                         String urlToken = null;
