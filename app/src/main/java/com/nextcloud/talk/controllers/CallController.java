@@ -1055,7 +1055,6 @@ public class CallController extends BaseController {
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        Log.d("MARIO", e.getLocalizedMessage());
                                         dispose(signalingDisposable);
                                     }
 

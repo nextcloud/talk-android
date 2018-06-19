@@ -88,9 +88,7 @@ public class MagicCallActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!router.handleBack()) {
-            super.onBackPressed();
-        }
+        finish();
     }
 
 }
