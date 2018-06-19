@@ -92,7 +92,7 @@ public abstract class BaseController extends RefWatchingController {
     @Override
     protected void onAttach(@NonNull View view) {
         setTitle();
-        if (!MagicBottomNavigationController.class.getName().equals(getClass().getName())) {
+        if (!MagicBottomNavigationController.class.getName().equals(getClass().getName()) && getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(false);
         }
 

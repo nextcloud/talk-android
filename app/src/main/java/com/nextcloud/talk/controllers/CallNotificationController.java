@@ -117,7 +117,10 @@ public class CallNotificationController extends BaseController {
     @OnClick(R.id.callControlHangupView)
     void hangup() {
         leavingScreen = true;
-        getRouter().popCurrentController();
+
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @OnClick(R.id.callAnswerCameraView)
@@ -135,12 +138,9 @@ public class CallNotificationController extends BaseController {
     private void setBackstackAndProceed() {
         originalBundle.putString(BundleKeys.KEY_ROOM_TOKEN, currentRoom.getToken());
 
-        List<RouterTransaction> routerTransactions = new ArrayList<>();
-        routerTransactions.add(RouterTransaction.with(new MagicBottomNavigationController())
-                .popChangeHandler(new HorizontalChangeHandler()).pushChangeHandler(new HorizontalChangeHandler()));
-        routerTransactions.add(RouterTransaction.with(new ChatController(originalBundle)).popChangeHandler(new
-                HorizontalChangeHandler()).pushChangeHandler(new HorizontalChangeHandler()));
-        getRouter().setBackstack(routerTransactions, new HorizontalChangeHandler());
+        getRouter().setRoot(RouterTransaction.with(new CallController(originalBundle))
+                .popChangeHandler(new HorizontalChangeHandler())
+                .pushChangeHandler(new HorizontalChangeHandler()));
     }
 
     private void checkIfAnyParticipantsRemainInRoom() {
@@ -234,8 +234,6 @@ public class CallNotificationController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-
-        getActionBar().hide();
 
         handleFromNotification();
 

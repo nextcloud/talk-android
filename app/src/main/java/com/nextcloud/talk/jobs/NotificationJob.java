@@ -26,10 +26,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -40,14 +37,13 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.CallActivity;
+import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.utils.ApplicationWideCurrentRoomHolder;
-import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -59,8 +55,6 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.util.Calendar;
-import java.util.zip.CRC32;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -129,10 +123,11 @@ public class NotificationJob extends Job {
                             Bundle bundle = new Bundle();
 
 
-                            if (hasChatSupport) {
-                                intent = new Intent(context, MainActivity.class);
+                            boolean startACall = decryptedPushMessage.getType().equals("call") || !hasChatSupport;
+                            if (startACall) {
+                                intent = new Intent(context, MagicCallActivity.class);
                             } else {
-                                intent = new Intent(context, CallActivity.class);
+                                intent = new Intent(context, MainActivity.class);
                             }
 
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -141,7 +136,7 @@ public class NotificationJob extends Job {
                                     .getUserEntity()));
 
                             bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL,
-                                    decryptedPushMessage.getType().equals("call") || !hasChatSupport);
+                                    startACall);
 
                             intent.putExtras(bundle);
 
@@ -154,8 +149,7 @@ public class NotificationJob extends Job {
                             String ringtonePreferencesString;
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
-                                    smallIcon = R.drawable.ic_call_white_24dp;
-                                    category = Notification.CATEGORY_CALL;
+                                    getContext().startActivity(intent);
                                     break;
                                 case "room":
                                     smallIcon = R.drawable.ic_notifications_white_24dp;
@@ -183,7 +177,7 @@ public class NotificationJob extends Job {
                                     smallIcon = R.drawable.ic_logo;
                             }
 
-                            largeIcon = BitmapFactory.decodeResource(context.getResources(), smallIcon);
+                            /*largeIcon = BitmapFactory.decodeResource(context.getResources(), smallIcon);
                             CRC32 crc32 = new CRC32();
 
                             Notification.Builder notificationBuilder = new Notification.Builder(context)
@@ -258,7 +252,7 @@ public class NotificationJob extends Job {
                                     mediaPlayer.setOnCompletionListener(MediaPlayer::release);
 
                                 }
-                            }
+                            }*/
                         }
 
                     }

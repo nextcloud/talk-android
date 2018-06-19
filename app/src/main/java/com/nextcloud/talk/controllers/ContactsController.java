@@ -51,7 +51,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.CallActivity;
+import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.items.ProgressItem;
 import com.nextcloud.talk.adapters.items.UserHeaderItem;
 import com.nextcloud.talk.adapters.items.UserItem;
@@ -295,7 +295,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                         @Override
                         public void onNext(RoomOverall roomOverall) {
-                            Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
+                            Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                             bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
@@ -828,7 +828,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             @Override
                             public void onNext(RoomOverall roomOverall) {
                                 if (getActivity() != null) {
-                                    Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
+                                    Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                                     bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());

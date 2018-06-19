@@ -50,7 +50,7 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.CallActivity;
+import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.items.CallItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -508,7 +508,7 @@ public class CallsListController extends BaseController implements SearchView.On
                 } else {
                     overridePushHandler(new NoOpControllerChangeHandler());
                     overridePopHandler(new NoOpControllerChangeHandler());
-                    Intent callIntent = new Intent(getActivity(), CallActivity.class);
+                    Intent callIntent = new Intent(getActivity(), MagicCallActivity.class);
                     callIntent.putExtras(bundle);
                     startActivity(callIntent);
                 }

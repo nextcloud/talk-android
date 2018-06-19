@@ -56,7 +56,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.CallActivity;
+import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder;
 import com.nextcloud.talk.api.NcApi;
@@ -831,7 +831,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true);
             }
 
-            Intent callIntent = new Intent(getActivity(), CallActivity.class);
+            Intent callIntent = new Intent(getActivity(), MagicCallActivity.class);
             callIntent.putExtras(bundle);
 
             return callIntent;

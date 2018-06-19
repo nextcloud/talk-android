@@ -40,7 +40,7 @@ import android.widget.TextView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.CallActivity;
+import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.ChatController;
@@ -542,7 +542,7 @@ public class OperationsMenuController extends BaseController {
             eventBus.post(new BottomSheetLockEvent(true, 0,
                     true, true, dismissView));
 
-            Intent conversationIntent = new Intent(getActivity(), CallActivity.class);
+            Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
             bundle.putString(BundleKeys.KEY_ROOM_ID, room.getRoomId());
             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
@@ -582,7 +582,7 @@ public class OperationsMenuController extends BaseController {
 
         if (getActivity() != null) {
 
-            Intent callIntent = new Intent(getActivity(), CallActivity.class);
+            Intent callIntent = new Intent(getActivity(), MagicCallActivity.class);
             callIntent.putExtras(bundle);
 
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);

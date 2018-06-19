@@ -114,6 +114,7 @@
     <string name="nc_permissions_settings">Open settings</string>
 
     <!-- Call -->
+    <string name="nc_connecting_call">Connecting…</string>
     <string name="nc_incoming_call">Incoming call from</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_public_call">New public conversation</string>

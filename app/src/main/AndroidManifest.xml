@@ -46,7 +46,9 @@
         tools:replace="label, icon, roundIcon, theme, name, allowBackup">
 
 
-        <meta-data android:name="android.max_aspect" android:value="10" />
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="10"/>
 
         <activity
             android:name=".activities.MainActivity"
@@ -60,7 +62,7 @@
         </activity>
 
         <activity
-            android:name=".activities.CallActivity"
+            android:name=".activities.MagicCallActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"/>
 
