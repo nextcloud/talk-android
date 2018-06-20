@@ -245,7 +245,7 @@ public class CallController extends BaseController {
         credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
         isVoiceOnlyCall = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
 
-        if (userEntity.getUserId().equals("-1")) {
+        if (userEntity.getUserId().equals("?")) {
             credentials = null;
         }
 

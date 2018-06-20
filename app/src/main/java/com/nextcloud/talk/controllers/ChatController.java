@@ -183,7 +183,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         if (!TextUtils.isEmpty(baseUrl)) {
             conversationUser.setBaseUrl(baseUrl);
-            conversationUser.setUserId("-1");
+            conversationUser.setUserId("?");
             conversationUser.setDisplayName(currentUser.getDisplayName());
         } else {
             baseUrl = conversationUser.getBaseUrl();
@@ -191,7 +191,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         this.roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "");
 
-        if (conversationUser.getUserId().equals("-1")) {
+        if (conversationUser.getUserId().equals("?")) {
             credentials = null;
         } else {
             credentials = ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken());
@@ -572,7 +572,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                         @Override
                         public void onNext(GenericOverall genericOverall) {
-                            if (conversationUser.getUserId().equals("-1") && TextUtils.isEmpty(myFirstMessage)) {
+                            if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage)) {
                                 myFirstMessage = message;
                             }
 
@@ -588,7 +588,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         @Override
                         public void onError(Throwable e) {
                             if (e instanceof HttpException && ((HttpException) e).code() == 201) {
-                                if (conversationUser.getUserId().equals("-1") && TextUtils.isEmpty(myFirstMessage)) {
+                                if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage)) {
                                     myFirstMessage = message;
                                 }
 
@@ -713,7 +713,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             } else {
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessageList.get(i).setBaseUrl(conversationUser.getBaseUrl());
-                    if (conversationUser.getUserId().equals("-1") && !TextUtils.isEmpty(myFirstMessage)) {
+                    if (conversationUser.getUserId().equals("?") && !TextUtils.isEmpty(myFirstMessage)) {
                         ChatMessage chatMessage = chatMessageList.get(i);
                         if (chatMessage.getActorType().equals("guests") &&
                                 chatMessage.getActorDisplayName().equals(conversationUser.getDisplayName())) {
