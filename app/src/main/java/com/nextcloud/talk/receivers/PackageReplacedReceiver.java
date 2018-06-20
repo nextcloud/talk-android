@@ -29,29 +29,64 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
+import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.NotificationUtils;
+import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 
+import java.util.zip.CRC32;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+
+@AutoInjector(NextcloudTalkApplication.class)
 public class PackageReplacedReceiver extends BroadcastReceiver {
     private static final String TAG = "PackageReplacedReceiver";
 
+    @Inject
+    UserUtils userUtils;
+
+    @Inject
+    AppPreferences appPreferences;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent != null && intent.getAction() != null &&
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+
+        if (!appPreferences.getIsNotificationChannelUpgradedToV2() && intent != null && intent.getAction() != null &&
                 intent.getAction().equals("android.intent.action.MY_PACKAGE_REPLACED")) {
             try {
                 PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-                if (packageInfo.versionCode == 99 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (packageInfo.versionCode > 42 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationManager notificationManager =
                             (NotificationManager) context.getSystemService(Context
                                     .NOTIFICATION_SERVICE);
 
+
                     if (notificationManager != null) {
+                        CRC32 crc32;
+                        UserEntity userEntity;
+                        String groupName;
+                        for (Object userEntityObject : userUtils.getUsers()) {
+                            crc32 = new CRC32();
+                            userEntity = (UserEntity) userEntityObject;
+                            groupName = String.format(context.getResources().getString(R.string
+                                    .nc_notification_channel), userEntity.getDisplayName(), userEntity.getBaseUrl());
+                            crc32.update(groupName.getBytes());
+                            notificationManager.deleteNotificationChannelGroup(Long.toString(crc32.getValue()));
+                        }
                         notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS);
                         notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES);
+
+                        appPreferences.setNotificationChannelIsUpgradedToV2(true);
                     }
+
                 }
             } catch (PackageManager.NameNotFoundException e) {
-                Log.e(TAG, "Failed to find package info");
+                Log.e(TAG, "Failed to fetch package info");
             }
         }
     }

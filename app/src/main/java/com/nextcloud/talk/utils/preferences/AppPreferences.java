@@ -158,6 +158,15 @@ public interface AppPreferences {
     @RemoveMethod
     void removeMessageRingtoneUri();
 
+    @KeyByString("notification_channels_upgrade_to_v2")
+    boolean getIsNotificationChannelUpgradedToV2();
+
+    @KeyByString("notification_channels_upgrade_to_v2")
+    void setNotificationChannelIsUpgradedToV2(boolean value);
+
+    @KeyByString("notification_channels_upgrade_to_v2")
+    @RemoveMethod
+    void removeNotificationChannelUpgradeToV2();
 
     @ClearMethod
     void clear();
