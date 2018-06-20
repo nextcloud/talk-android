@@ -51,6 +51,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.MediaStreamEvent;
+import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.CallOverall;
@@ -70,12 +71,12 @@ import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
@@ -165,6 +166,8 @@ public class CallController extends BaseController {
     FlipView cameraControlButton;
     @BindView(R.id.call_control_switch_camera)
     FlipView cameraSwitchButton;
+    @BindView(R.id.connectingTextView)
+    TextView connectingTextView;
 
     @BindView(R.id.connectingRelativeLayoutView)
     RelativeLayout connectingView;
@@ -743,14 +746,15 @@ public class CallController extends BaseController {
     }
 
     private void startCall() {
-        if (!isPTTActive) {
-            animateCallControls(false, 7500);
-        }
         startPullingSignalingMessages();
     }
 
     private void animateCallControls(boolean show, long startDelay) {
-        if (!isPTTActive) {
+        if (isVoiceOnlyCall) {
+            if (spotlightView != null && spotlightView.getVisibility() != View.GONE) {
+                spotlightView.setVisibility(View.GONE);
+            }
+        } else if (!isPTTActive) {
             float alpha;
             long duration;
 
@@ -978,6 +982,10 @@ public class CallController extends BaseController {
 
                         connectingView.setVisibility(View.GONE);
                         conversationView.setVisibility(View.VISIBLE);
+
+                        if (!isPTTActive) {
+                            animateCallControls(false, 5000);
+                        }
 
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
                         ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
@@ -1397,6 +1405,36 @@ public class CallController extends BaseController {
 
         if (callControls != null) {
             callControls.setZ(100.0f);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
+        if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
+                .PEER_CLOSED)) {
+            endPeerConnection(peerConnectionEvent.getSessionId());
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.SENSOR_FAR) ||
+                peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                        .PeerConnectionEventType.SENSOR_NEAR)) {
+            boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                    .PeerConnectionEventType.SENSOR_FAR) && videoOn;
+            if (getActivity() != null && EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA) &&
+                    inCall && videoOn
+                    && enableVideo != localVideoTrack.enabled()) {
+                toggleMedia(enableVideo, true);
+            }
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.NICK_CHANGE)) {
+            gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick());
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.VIDEO_CHANGE) && !isVoiceOnlyCall) {
+            gotAudioOrVideoChange(true, peerConnectionEvent.getSessionId(),
+                    peerConnectionEvent.getChangeValue());
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                .PeerConnectionEventType.AUDIO_CHANGE)) {
+            gotAudioOrVideoChange(false, peerConnectionEvent.getSessionId(),
+                    peerConnectionEvent.getChangeValue());
         }
     }
 

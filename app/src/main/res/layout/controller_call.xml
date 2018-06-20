@@ -54,7 +54,8 @@
             android:layout_margin="16dp"
             android:text="@string/nc_connecting_call"
             android:textAlignment="center"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:id="@+id/connectingTextView"/>
 
     </RelativeLayout>
 
