@@ -46,12 +46,12 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
-import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideStateHolder;
 
 import org.parceler.Parcels;
@@ -78,6 +78,7 @@ public class NotificationJob extends Job {
 
     @Inject
     AppPreferences appPreferences;
+
 
     @NonNull
     @Override
@@ -159,8 +160,8 @@ public class NotificationJob extends Job {
                             String ringtonePreferencesString;
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
-                                    getContext().startActivity(intent);
-                                    break;
+                                    context.startActivity(intent);
+                                    return Result.SUCCESS;
                                 case "room":
                                     // do absolutely nothing, we won't even come to this point
                                     break;
@@ -220,12 +221,12 @@ public class NotificationJob extends Job {
                                             groupName);
 
                                     NotificationUtils.createNotificationChannel(notificationManager,
-                                            NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2, context.getResources()
+                                            NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2, context.getResources()
                                                     .getString(R.string.nc_notification_channel_messages), context.getResources()
                                                     .getString(R.string.nc_notification_channel_messages_description), true,
                                             NotificationManager.IMPORTANCE_HIGH);
 
-                                    notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2);
+                                    notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2);
                                     notificationBuilder.setGroup(Long.toString(crc32.getValue()));
                                 }
 
