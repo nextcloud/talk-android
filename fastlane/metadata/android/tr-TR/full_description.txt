@@ -11,7 +11,7 @@ Nextcloud Talk şu özellikleri destekler:
 * Android ve iOS uygulamaları
 * Mobil çağrı ve anında sohbet bildirimleri
 * Nextcloud Files ve Nextcloud Groupware ile bütünleşme
-* Kendi veri merkezinizde, %100 açık kaynaklı
+* Kendi veri merkezinizde, tamamen açık kaynaklı
 * Uçtan uca şifrelenmiş çağrılar
 * Milyonlarca kullanıcıya göre
 * SIP geçidi üzerinden telefon ile arama

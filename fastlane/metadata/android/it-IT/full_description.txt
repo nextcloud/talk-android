@@ -1,4 +1,4 @@
-Usa Nextcloud Talk per avere chiamate audio e video uno a uno o di gruppo, creare o partecipare a conferenze web e inviare messaggi di chat. Tutte le comunicazioni sono completamente cifrate e mediate dal proprio server, fornendo il più alto grado di riservatezza possibile.
+Usa Nextcloud Talk per effettuare chiamate audio o video uno a uno o di gruppo, creare o partecipare a conferenze web e inviare messaggi di chat. Tutte le comunicazioni sono completamente cifrate e mediate dal tuo server, fornendo il più alto grado di riservatezza possibile.
 
 Nextcloud Talk è semplice da utilizzare e sarà sempre completamente gratuito e libero!
 
@@ -11,7 +11,7 @@ Nextcloud Talk supporta:
 * Applicazione mobile per Android e iOS
 * Chiamate da mobile e notifiche push delle chat
 * Integrazione in Nextcloud File e Nextcloud Groupware
-* Completamente on-premise, 100% open source
+* Completamente on-premise, completamente open source
 * Chiamate cifrate end-to-end
 * Capacità di scalare fino a milioni di utenti
 * Gateway SIP: chiamate tramite telefono

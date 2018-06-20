@@ -11,14 +11,14 @@ Nextcloud Talk soporta:
 * Apps móviles para Android y iOS.
 * Notificaciones push de llamadas y chats.
 * Integración con los archivos y el groupware de Nextcloud.
-* Totalmente en tus instalaciones, 100% código abierto.
+* Totalmente en tus instalaciones, totalmente código abierto.
 * Llamadas cifradas punto a punto.
 * Escala hasta millones de usuarios.
 * Gate SIP: llama por teléfono.
 
 La app Nextcloud Talk necesita un servidor de Nextcloud Talk para funcionar. Nextcloud es una plataforma autohospedada de sincronización de archivos y comunicación, diseñada para devolverte el control sobre tus datos. Funciona sobre un servidor de tu elección, sea en casa, en un proveedor de servidos o en tu empresa, y te da acceso a tus documentos, calendarios, contactos, correo electrónico y otros datos. Puedes compartir con otros incluso entre servidores Nextcloud diferentes y trabajar juntos en documentos. Nextcloud es totalmente código abierto, dándote la opción de extenderlo para tu propio uso, participar en su desarrollo o simplemente verificar que hace lo que prometemos.
 
-Millones de usuarios usan Nextcloud diariamente en negocios y hogares de todo el mundl. Los usuarios empresariales se apoyan en el soporte profesional de Nextcloud GmbH, asegurándose de tener una plataforma totalmente soportada, ypreparada para empresas de productividad y colaboración, totalmente bajo el control de su departamento informático.
+Millones de usuarios usan Nextcloud diariamente en negocios y hogares de todo el mundo. Los usuarios empresariales se apoyan en el soporte profesional de Nextcloud GmbH, asegurándose de tener una plataforma totalmente soportada, ypreparada para empresas de productividad y colaboración, totalmente bajo el control de su departamento informático.
 
 Descubre más en https://nextcloud.com/talk
 

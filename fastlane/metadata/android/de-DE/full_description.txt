@@ -1,25 +1,25 @@
-Verwende Nextcloud Talk, um Einzel- oder Gruppen-Audio- oder Videoanrufe zu führen, Webkonferenzen zu erstellen oder daran teilzunehmen und Chatnachrichten zu senden. Die gesamte Kommunikation wird vollständig verschlüsselt und von deinem eigenen Server vermittelt, um ein höchstmögliches Maß an Privatsphäre zu gewährleisten.
+Verwenden Sie Nextcloud Talk, um Einzel- oder Gruppen-Audio- oder Videoanrufe zu führen, Webkonferenzen zu erstellen oder daran teilzunehmen und Chat-Nachrichten zu senden. Die gesamte Kommunikation wird von Ihrem eigenen Server verschlüsselt und vermittelt, so dass ein Höchstmaß an Privatsphäre gewährleistet ist.
 
-Nextcloud Talk ist einfach zu bedienen und wird immer komplett kostenlos sein!
+Nextcloud Talk ist einfach zu bedienen und wird immer kostenlos sein!
 
 Nextcloud Talk unterstützt:
-* HD (H.265) Audio- / Videoanrufe
-* Gruppen- und Einzelanrufe
+* HD (H.265) Audio/Video-Anrufe
+* Gruppen- und Einzelgespräche
 * Webinare öffentliche Web-Meetings
 * Einzel- und Gruppenchat
 * Einfache Bildschirmfreigabe
-* Mobile Apps für Android und iOS
-* Mobile Chat-Push-Benachrichtigungen
-* Integration in Nextcloud-Dateien und Nextcloud Groupware
-* Vollständig on-premise, 100% Open Source
-* Ende-zu-Ende verschlüsselte Anrufe
-* Skalierung für Millionen von Benutzern
-* SIP-Gate: per Telefon einwählen
+* Mobile Anwendungen für Android und iOS
+* Mobile Call-Chat-Push-Benachrichtigungen
+* Integration in Nextcloud-Dateien und Nextcloud-Groupware
+* Vollständig lokal, komplett Open Source
+* End-to-End Verschlüsselte Anrufe
+* Skalierung auf Millionen von Benutzern
+* SIP-Gate: Einwahl per Telefon
 
-Die App Nextcloud Talk benötigt einen Nextcloud Talk-Server, um zu funktionieren. Nextcloud ist eine private, selbst gehostete Dateisynchronisations- und Kommunikationsplattform, die dir die Kontrolle über deine Daten zurückgibt. Es läuft auf einem Server deiner Wahl, sei es zu Hause, bei einem Dienstanbieter oder in deinem Unternehmen, und gibt dir Zugriff auf deine Dokumente, Kalender, Kontakte, E-Mails und andere Daten. Du kannst mit anderen sogar über verschiedene Nextcloud-Server teilen und gemeinsam an Dokumenten arbeiten. Nextcloud ist eine Open-Source-Lösung, die dir die Möglichkeit bietet, sie für deine eigenen Zwecke zu erweitern, an deren Entwicklung teilzunehmen oder einfach zu überprüfen, ob sie das tun, was wir versprechen.
+Die Nextcloud Talk App benötigt einen Nextcloud Talk Server. Nextcloud ist eine private, selbst gehostete Dateisynchronisations- und Kommunikationsplattform, die Ihnen die Kontrolle über Ihre Daten zurückgibt. Es läuft auf einem Server Ihrer Wahl, sei es zu Hause, bei einem Dienstleister oder in Ihrem Unternehmen, und gibt Ihnen Zugriff auf Ihre Dokumente, Kalender, Kontakte, E-Mails und andere Daten. Sie können sogar über verschiedene Nextcloud-Server hinweg mit anderen teilen und gemeinsam an Dokumenten arbeiten. Nextcloud ist vollständig Open Source und gibt Ihnen die Möglichkeit, sie für Ihren eigenen Gebrauch zu erweitern, an ihrer Entwicklung teilzunehmen oder einfach zu überprüfen, ob sie halten, was wir versprechen.
 
-Millionen von Benutzern nutzen Nextcloud täglich in Unternehmen und zu Hause auf der ganzen Welt. Geschäftsanwender verlassen sich auf die professionelle Unterstützung der Nextcloud GmbH und stellen sicher, dass sie über eine vollständig unterstützte, unternehmensbereite Plattform für Produktivität und Zusammenarbeit verfügen, die vollständig von ihrer IT-Abteilung gesteuert wird.
+Millionen von Anwendern nutzen Nextcloud täglich in Unternehmen und Privathaushalten auf der ganzen Welt. Fachanwender verlassen sich auf den professionellen Support der Nextcloud GmbH und stellen sicher, dass sie über eine vollständig unterstützte, unternehmensweite Plattform für Produktivität und Zusammenarbeit verfügen, die vollständig von ihrer IT-Abteilung gesteuert wird.
 
-Weitere Informationen erhälst du unter https://nextcloud.com/talk
+Erfahren Sie mehr auf https://nextcloud.com/talk
 
 Finden Sie Nextcloud auf https://nextcloud.com
