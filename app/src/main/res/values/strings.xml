@@ -84,8 +84,8 @@
 
     <!-- Room menu -->
     <string name="nc_start_conversation">Start a conversation</string>
-    <string name="nc_configure_room">Configure room</string>
-    <string name="nc_configure_named_room">Configure room %1$s</string>
+    <string name="nc_configure_room">Configure conversation</string>
+    <string name="nc_configure_named_room">Configure conversation %1$s</string>
     <string name="nc_leave">Leave conversation</string>
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_set_password">Set a password</string>
