@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,7 +124,18 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         menuItems = new ArrayList<>();
 
         if (menuType.equals(MenuType.REGULAR)) {
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
+            if (!TextUtils.isEmpty(room.getDisplayName())) {
+                menuItems.add(new MenuItem(
+                        getResources().getString(
+                                R.string.nc_configure_named_room, room.getDisplayName()), 0, null)
+                );
+            } else if (!TextUtils.isEmpty(room.getName())) {
+                menuItems.add(new MenuItem(getResources().getString(
+                        R.string.nc_configure_named_room, room.getName()), 0, null)
+                );
+            } else {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
+            }
 
             if (room.isNameEditable()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename), 2, getResources().getDrawable(R.drawable
