@@ -83,7 +83,8 @@
     <string name="nc_select_an_account">Select an account</string>
 
     <!-- Room menu -->
-    <string name="nc_what">What would you like to do today?</string>
+    <string name="nc_start_conversation">Start a conversation</string>
+    <string name="nc_configure_room">Configure room</string>
     <string name="nc_leave">Leave conversation</string>
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_set_password">Set a password</string>
@@ -94,7 +95,7 @@
     <string name="nc_make_call_public">Make conversation public</string>
     <string name="nc_make_call_private">Make conversation private</string>
     <string name="nc_delete_call">Delete conversation</string>
-    <string name="nc_new_conversation">Start a new conversation</string>
+    <string name="nc_new_conversation">New conversation</string>
     <string name="nc_join_via_link">Join via link</string>
     <string name="nc_join_via_web">Join via web</string>
 
