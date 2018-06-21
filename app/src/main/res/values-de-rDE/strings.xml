@@ -64,6 +64,8 @@
     <string name="nc_settings_call_ringtone">Anrufe</string>
     <string name="nc_settings_message_ringtone">Nachrichten</string>
     <string name="nc_settings_message_ringtone_key">message_ringtone</string>
+    <string name="nc_settings_no_ringtone">Kein Ton</string>
+
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Nutzername</string>
     <string name="nc_password">Passwort</string>
@@ -109,6 +111,9 @@
     <string name="nc_microphone_permission_permanently_denied">Um Audioanrufe zu ermöglichen, gewähren Sie die Berechtigung für das \"Mikrofon\" in den Systemeinstellungen</string>
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
+    <!-- Call -->
+    <string name="nc_connecting_call">Verbinde…</string>
+    <string name="nc_incoming_call">Eingehender Anruf von</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
     <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über einen speziellen Link eingeladen werden.</string>

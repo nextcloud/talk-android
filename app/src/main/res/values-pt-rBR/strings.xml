@@ -112,6 +112,8 @@
     <string name="nc_microphone_permission_permanently_denied">Para habilitar a comunicação por voz, conceda a permissão \"Microfone\" nas configurações do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
+    <!-- Call -->
+    <string name="nc_connecting_call">Conectando...</string>
     <string name="nc_incoming_call">Chamada de</string>
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_public_call">Nova conversa pública</string>
