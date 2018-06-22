@@ -78,8 +78,6 @@
 
     <string name="nc_select_an_account">Choisissez un compte</string>
 
-    <!-- Room menu -->
-    <string name="nc_what">Que voulez-vous faire aujourd\'hui ?</string>
     <string name="nc_leave">Quitter la conversation</string>
     <string name="nc_rename">Renommer la conversation</string>
     <string name="nc_set_password">Saisissez un mot de passe</string>
@@ -90,7 +88,6 @@
     <string name="nc_make_call_public">Effectuer une conversation privée</string>
     <string name="nc_make_call_private">Effectuer une conversation privée</string>
     <string name="nc_delete_call">Supprimer la conversation</string>
-    <string name="nc_new_conversation">Commencer une nouvelle conversation</string>
     <string name="nc_join_via_link">Joindre via le lien</string>
     <string name="nc_join_via_web">Joindre via le web</string>
 

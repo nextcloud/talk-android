@@ -65,14 +65,11 @@
 
     <string name="nc_select_an_account">Välj ett konto</string>
 
-    <!-- Room menu -->
-    <string name="nc_what">Vad vill du göra idag?</string>
     <string name="nc_set_password">Sätt ett lösenord</string>
     <string name="nc_change_password">Ändra ett lösenord</string>
     <string name="nc_clear_password">Rensa lösenord</string>
     <string name="nc_share_link">Dela länk</string>
     <string name="nc_share_link_via">Dela länk via</string>
-    <string name="nc_new_conversation">Starta en ny konversation</string>
     <string name="nc_one_contact_selected">kontakt vald</string>
     <string name="nc_more_contacts_selected">kontakter valda</string>
     <string name="nc_contacts_clear">Rensa</string>

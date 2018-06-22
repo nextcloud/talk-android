@@ -71,14 +71,11 @@
 
     <string name="nc_select_an_account">Fiók kiválasztása</string>
 
-    <!-- Room menu -->
-    <string name="nc_what">Mit szeretnél ma csinálni?</string>
     <string name="nc_set_password">Jelszó beállítása</string>
     <string name="nc_change_password">Jelszó módosítása</string>
     <string name="nc_clear_password">Jelszó törlése</string>
     <string name="nc_share_link">Megosztás hivatkozása</string>
     <string name="nc_share_link_via">Link megosztása ezzel</string>
-    <string name="nc_new_conversation">Új beszélgetés indítása</string>
     <string name="nc_join_via_link">Csatlakozás linken kersztül</string>
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
 
