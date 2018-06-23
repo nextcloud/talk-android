@@ -80,6 +80,10 @@
 
     <string name="nc_select_an_account">Konto auswählen</string>
 
+    <!-- Room menu -->
+    <string name="nc_start_conversation">Starte eine Unterhaltung</string>
+    <string name="nc_configure_room">Unterhaltung einrichten</string>
+    <string name="nc_configure_named_room">Unterhaltung %1$s einrichten</string>
     <string name="nc_leave">Unterhaltung verlassen</string>
     <string name="nc_rename">Unterhaltung umbenennen</string>
     <string name="nc_set_password">Passwort setzen</string>
@@ -90,6 +94,7 @@
     <string name="nc_make_call_public">Unterhaltung öffentlich machen</string>
     <string name="nc_make_call_private">Unterhaltung privat machen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
+    <string name="nc_new_conversation">Neue Unterhaltung</string>
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
 
