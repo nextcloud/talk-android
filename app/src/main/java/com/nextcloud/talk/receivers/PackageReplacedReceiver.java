@@ -60,7 +60,7 @@ public class PackageReplacedReceiver extends BroadcastReceiver {
                 intent.getAction().equals("android.intent.action.MY_PACKAGE_REPLACED")) {
             try {
                 PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-                if (packageInfo.versionCode > 42 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (packageInfo.versionCode > 43 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationManager notificationManager =
                             (NotificationManager) context.getSystemService(Context
                                     .NOTIFICATION_SERVICE);

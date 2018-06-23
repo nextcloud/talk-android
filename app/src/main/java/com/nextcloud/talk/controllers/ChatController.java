@@ -831,10 +831,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true);
             }
 
-            Intent callIntent = new Intent(getActivity(), MagicCallActivity.class);
-            callIntent.putExtras(bundle);
+            if (getActivity() != null) {
+                Intent callIntent = new Intent(getActivity(), MagicCallActivity.class);
+                callIntent.putExtras(bundle);
 
-            return callIntent;
+                return callIntent;
+            } else {
+                return null;
+            }
         } else {
             return null;
         }

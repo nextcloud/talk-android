@@ -571,8 +571,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             }
 
                             searchItem.setVisible(newUserItemList.size() > 0);
-                            swipeRefreshLayout.setRefreshing(false);
-
+                            if (swipeRefreshLayout != null) {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
 
                             if (isNewConversationView) {
                                 checkAndHandleBottomButtons();
@@ -604,10 +605,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     break;
                             }
 
-                            swipeRefreshLayout.setRefreshing(false);
-
+                            if (swipeRefreshLayout != null) {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
                         }
-                        ;
 
                         dispose(contactsQueryDisposable);
 
@@ -615,7 +616,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                     @Override
                     public void onComplete() {
-                        swipeRefreshLayout.setRefreshing(false);
+                        if (swipeRefreshLayout != null) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
                         dispose(contactsQueryDisposable);
                         alreadyFetching = false;
 
