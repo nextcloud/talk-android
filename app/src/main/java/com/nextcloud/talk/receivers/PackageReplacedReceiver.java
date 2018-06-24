@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.receivers;
 
+import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,14 +30,10 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
-import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
-
-import java.util.zip.CRC32;
 
 import javax.inject.Inject;
 
@@ -67,17 +64,11 @@ public class PackageReplacedReceiver extends BroadcastReceiver {
 
 
                     if (notificationManager != null) {
-                        CRC32 crc32;
-                        UserEntity userEntity;
-                        String groupName;
-                        for (Object userEntityObject : userUtils.getUsers()) {
-                            crc32 = new CRC32();
-                            userEntity = (UserEntity) userEntityObject;
-                            groupName = String.format(context.getResources().getString(R.string
-                                    .nc_notification_channel), userEntity.getDisplayName(), userEntity.getBaseUrl());
-                            crc32.update(groupName.getBytes());
-                            notificationManager.deleteNotificationChannelGroup(Long.toString(crc32.getValue()));
+                        for (NotificationChannelGroup notificationChannelGroup : notificationManager
+                                .getNotificationChannelGroups()) {
+                            notificationManager.deleteNotificationChannelGroup(notificationChannelGroup.getId());
                         }
+
                         notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS);
                         notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES);
 
