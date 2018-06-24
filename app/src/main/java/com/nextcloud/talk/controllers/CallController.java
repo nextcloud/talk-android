@@ -26,6 +26,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -418,7 +419,11 @@ public class CallController extends BaseController {
         if (isVoiceOnlyCall) {
             onMicrophoneClick();
         } else if (getActivity() != null) {
-            requestPermissions(PERMISSIONS_CALL, 100);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(PERMISSIONS_CALL, 100);
+            } else {
+                onRequestPermissionsResult(100, PERMISSIONS_CALL, new int[]{1});
+            }
         }
 
     }
@@ -637,7 +642,11 @@ public class CallController extends BaseController {
                     R.string.nc_microphone_permission_permanently_denied,
                     R.string.nc_permissions_settings, (AppCompatActivity) getActivity());
         } else {
-            requestPermissions(PERMISSIONS_MICROPHONE, 100);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(PERMISSIONS_MICROPHONE, 100);
+            } else {
+                onRequestPermissionsResult(100, PERMISSIONS_MICROPHONE, new int[]{1});
+            }
         }
     }
 
@@ -673,7 +682,12 @@ public class CallController extends BaseController {
                     R.string.nc_camera_permission_permanently_denied,
                     R.string.nc_permissions_settings, (AppCompatActivity) getActivity());
         } else {
-            requestPermissions(PERMISSIONS_CAMERA, 100);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(PERMISSIONS_CAMERA, 100);
+            } else {
+                onRequestPermissionsResult(100, PERMISSIONS_CAMERA, new int[]{1});
+            }
         }
 
     }
