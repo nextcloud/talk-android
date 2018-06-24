@@ -19,11 +19,11 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey950">
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             android:background="@color/grey950">
 
     <TextView
         android:id="@+id/incomingCallTextView"
@@ -36,7 +36,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/conversationNameTextView"
@@ -47,7 +47,7 @@
         android:textColor="@color/white"
         android:textSize="28sp"
         app:layout_constraintTop_toBottomOf="@+id/incomingCallTextView"
-        tools:text="Victor Gregorius Magnus" />
+        tools:text="Victor Gregorius Magnus"/>
 
     <ImageView
         android:id="@+id/avatarImageView"
@@ -58,34 +58,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.45"
-        tools:src="@color/white" />
+        tools:src="@color/white"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
         <com.nextcloud.talk.utils.MagicFlipView
             android:id="@+id/callAnswerVoiceOnlyView"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="24dp"
+            android:visibility="gone"
             app:checked="false"
             app:enableInitialAnimation="false"
             app:frontBackgroundColor="@color/colorPrimary"
-            app:frontImage="@drawable/ic_mic_white_24px" />
+            app:frontImage="@drawable/ic_mic_white_24px"/>
 
         <com.nextcloud.talk.utils.MagicFlipView
             android:id="@+id/callAnswerCameraView"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="24dp"
+            android:visibility="gone"
             app:checked="false"
             app:enableInitialAnimation="false"
             app:frontBackgroundColor="@color/colorPrimary"
-            app:frontImage="@drawable/ic_videocam_white_24px" />
-
+            app:frontImage="@drawable/ic_videocam_white_24px"/>
 
         <com.nextcloud.talk.utils.MagicFlipView
             android:id="@+id/callControlHangupView"
@@ -95,7 +98,7 @@
             app:checked="false"
             app:enableInitialAnimation="false"
             app:frontBackgroundColor="@color/nc_darkRed"
-            app:frontImage="@drawable/ic_call_end_white_24px" />
+            app:frontImage="@drawable/ic_call_end_white_24px"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

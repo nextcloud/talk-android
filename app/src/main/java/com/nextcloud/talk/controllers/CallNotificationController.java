@@ -52,6 +52,7 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.MagicFlipView;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -88,6 +89,13 @@ public class CallNotificationController extends BaseController {
 
     @BindView(R.id.avatarImageView)
     ImageView avatarImageView;
+
+    @BindView(R.id.callAnswerVoiceOnlyView)
+    MagicFlipView callAnswerVoiceOnlyView;
+
+    @BindView(R.id.callAnswerCameraView)
+    MagicFlipView callAnswerCameraView;
+
     private List<Disposable> disposablesList = new ArrayList<>();
     private Bundle originalBundle;
     private String roomId;
@@ -112,6 +120,11 @@ public class CallNotificationController extends BaseController {
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_call_notification, container, false);
+    }
+
+    private void showAnswerControls() {
+        callAnswerCameraView.setVisibility(View.VISIBLE);
+        callAnswerVoiceOnlyView.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.callControlHangupView)
@@ -212,6 +225,7 @@ public class CallNotificationController extends BaseController {
                                 conversationNameTextView.setText(room.getDisplayName());
                                 loadAvatar();
                                 checkIfAnyParticipantsRemainInRoom();
+                                showAnswerControls();
                                 break;
                             }
                         }
