@@ -7,18 +7,18 @@ Nextcloud Talk supporte :
 * Appels en groupe et en tête-à-tête
 * Webinaires & réunions web publiques
 * Discussion individuelle et en groupe
-* Partage d'écran facile
+* Partage d\'écran facile
 * Application mobile pour Android et iOS
 * Notifications des appels mobiles & des messages
 * Intégration avec les fichiers dans Nextcloud et la suite de logiciel Nextcloud (calendrier, contact et mail)
-* 100% open source
+* Complètement open source
 * Appels chiffrés de bout en bout
-* Possibilité de gérer jusqu'à un million d'utilisateurs
+* Possibilité de gérer jusqu\'à un million d\'utilisateurs
 * SIP gate: composez avec votre téléphone
 
-L'application Nextcloud Talk nécessite un serveur Nextcloud Talk pour fonctionner. Nextcloud est une plateforme privé et auto-hébergé de communication et de synchronisation de fichiers, conçue pour vous permettre de reprendre le contrôle de vos données. Il fonctionne sur un serveur de votre choix, que ce soit chez vous, chez un fournisseur de services ou dans votre entreprise, et vous donne accès à vos documents, calendriers, contacts, e-mails et autres données. Vous pouvez partager avec Vous pouvez partager avec d'autres même sur différents serveurs Nextcloud et travailler ensemble sur des documents. Nextcloud est entièrement open source, vous donnant la possibilité de les étendre pour votre propre usage, de participer à leur développement ou simplement de vérifier qu'ils font ce que nous promettons.
+L\'application Nextcloud Talk nécessite un serveur Nextcloud Talk pour fonctionner. Nextcloud est une plateforme privé et auto-hébergé de communication et de synchronisation de fichiers, conçue pour vous permettre de reprendre le contrôle de vos données. Il fonctionne sur un serveur de votre choix, que ce soit chez vous, chez un fournisseur de services ou dans votre entreprise, et vous donne accès à vos documents, calendriers, contacts, e-mails et autres données. Vous pouvez partager avec Vous pouvez partager avec d\'autres même sur différents serveurs Nextcloud et travailler ensemble sur des documents. Nextcloud est entièrement open source, vous donnant la possibilité de les étendre pour votre propre usage, de participer à leur développement ou simplement de vérifier qu\'ils font ce que nous promettons.
 
-Des millions d'utilisateurs utilisent Nextcloud quotidiennement dans les entreprises et les foyers du monde entier. Les utilisateurs professionnels s'appuient sur le support professionnel de Nextcloud GmbH, en s'assurant qu'ils disposent d'une plateforme entièrement supportée et prête à l'emploi pour la productivité et la collaboration, entièrement sous le contrôle de leur service informatique..
+Des millions d\'utilisateurs utilisent Nextcloud quotidiennement dans les entreprises et les foyers du monde entier. Les utilisateurs professionnels s\'appuient sur le support professionnel de Nextcloud GmbH, en s\'assurant qu\'ils disposent d\'une plateforme entièrement supportée et prête à l\'emploi pour la productivité et la collaboration, entièrement sous le contrôle de leur service informatique..
 
 En savoir plus sur https://nextcloud.com/talk
 
