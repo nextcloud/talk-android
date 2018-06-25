@@ -113,7 +113,8 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(),
-                    String.valueOf(adapter.getFilter(String.class)));
+                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                            .getResources().getColor(R.color.colorPrimary));
         } else {
             holder.contactDisplayName.setText(participant.getName());
         }

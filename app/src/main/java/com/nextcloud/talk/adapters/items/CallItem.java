@@ -104,7 +104,8 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
     public void bindViewHolder(final FlexibleAdapter adapter, RoomItemViewHolder holder, int position, List payloads) {
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.roomDisplayName, room.getDisplayName(),
-                    String.valueOf(adapter.getFilter(String.class)));
+                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                            .getResources().getColor(R.color.colorPrimary));
         } else {
             holder.roomDisplayName.setText(room.getDisplayName());
         }

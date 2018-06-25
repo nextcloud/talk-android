@@ -116,7 +116,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(),
-                    String.valueOf(adapter.getFilter(String.class)));
+                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                            .getResources().getColor(R.color.colorPrimary));
         } else {
             holder.contactDisplayName.setText(participant.getName());
         }

@@ -90,9 +90,11 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, displayName,
-                    String.valueOf(adapter.getFilter(String.class)));
+                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                            .getResources().getColor(R.color.colorPrimary));
             FlexibleUtils.highlightText(holder.contactMentionId, "@" + userId,
-                    String.valueOf(adapter.getFilter(String.class)));
+                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                            .getResources().getColor(R.color.colorPrimary));
         } else {
             holder.contactDisplayName.setText(displayName);
             holder.contactMentionId.setText("@" + userId);
