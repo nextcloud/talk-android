@@ -161,7 +161,7 @@ public class NotificationJob extends Job {
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
                                     context.startActivity(intent);
-                                    return Result.SUCCESS;
+                                    break;
                                 case "room":
                                     // do absolutely nothing, we won't even come to this point
                                     break;
