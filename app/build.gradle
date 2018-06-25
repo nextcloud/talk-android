@@ -160,6 +160,8 @@ dependencies {
     implementation 'com.webianks.library:popup-bubble:1.0.5'
 
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    implementation 'com.kevalpatel2106:emoticongifkeyboard:1.1'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'

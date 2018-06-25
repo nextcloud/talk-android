@@ -26,6 +26,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.parceler.Parcel;
 
 import java.util.Date;
@@ -113,6 +114,7 @@ public class ChatMessage implements IMessage {
             }
         }
 
-        return message;
+
+        return StringEscapeUtils.unescapeJava(message);
     }
 }

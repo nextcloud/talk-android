@@ -42,7 +42,7 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
-        <TextView
+        <com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView
             android:id="@id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

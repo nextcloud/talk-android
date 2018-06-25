@@ -23,8 +23,8 @@ package com.nextcloud.talk.adapters.messages;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.View;
-import android.widget.TextView;
 
+import com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -44,7 +44,7 @@ import butterknife.ButterKnife;
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicOutcomingTextMessageViewHolder extends MessageHolders.OutcomingTextMessageViewHolder<ChatMessage> {
     @BindView(R.id.messageText)
-    TextView messageText;
+    EmoticonTextView messageText;
 
     @Inject
     UserUtils userUtils;

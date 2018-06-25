@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -50,7 +51,7 @@ public class MagicIncomingTextMessageViewHolder
     TextView messageAuthor;
 
     @BindView(R.id.messageText)
-    TextView messageText;
+    EmoticonTextView messageText;
 
     @Inject
     UserUtils userUtils;

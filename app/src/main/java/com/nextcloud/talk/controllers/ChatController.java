@@ -75,11 +75,11 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.otaliastudios.autocomplete.Autocomplete;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
 import com.otaliastudios.autocomplete.AutocompletePresenter;
@@ -92,6 +92,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
 import com.webianks.library.PopupBubble;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.parceler.Parcels;
 
 import java.io.IOException;
@@ -374,7 +375,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         messageInputView.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         messageInputView.setInputListener(input -> {
-            sendMessage(input.toString(), 1);
+            sendMessage(StringEscapeUtils.escapeJava(input.toString()), 1);
             return true;
         });
 
