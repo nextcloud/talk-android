@@ -59,7 +59,7 @@ public class MagicAudioManager {
     private static final String SPEAKERPHONE_FALSE = "false";
     private final Context magicContext;
     // Contains speakerphone setting: auto, true or false
-    private final String useSpeakerphone;
+    private String useSpeakerphone;
     // Handles all tasks related to Bluetooth headset devices.
     private final MagicBluetoothManager bluetoothManager;
     private AudioManager audioManager;
@@ -96,7 +96,23 @@ public class MagicAudioManager {
     // Callback method for changes in audio focus.
     private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
 
-    private MagicAudioManager(Context context) {
+    public void toggleUseSpeakerphone() {
+        if (useSpeakerphone.equals(SPEAKERPHONE_FALSE)) {
+            useSpeakerphone = SPEAKERPHONE_AUTO;
+            setDefaultAudioDevice(AudioDevice.SPEAKER_PHONE);
+        } else {
+            useSpeakerphone = SPEAKERPHONE_FALSE;
+            setDefaultAudioDevice(AudioDevice.EARPIECE);
+        }
+
+        updateAudioDeviceState();
+    }
+
+    public boolean isSpeakerphoneAutoOn() {
+        return (useSpeakerphone.equals(SPEAKERPHONE_AUTO));
+    }
+
+    private MagicAudioManager(Context context, boolean useProximitySensor) {
         Log.d(TAG, "ctor");
         ThreadUtils.checkIsOnMainThread();
         magicContext = context;
@@ -105,7 +121,13 @@ public class MagicAudioManager {
         wiredHeadsetReceiver = new WiredHeadsetReceiver();
         amState = AudioManagerState.UNINITIALIZED;
 
-        useSpeakerphone = SPEAKERPHONE_AUTO;
+        if (useProximitySensor) {
+            useSpeakerphone = SPEAKERPHONE_AUTO;
+        } else {
+            useSpeakerphone = SPEAKERPHONE_FALSE;
+        }
+
+
         if (useSpeakerphone.equals(SPEAKERPHONE_FALSE)) {
             defaultAudioDevice = AudioDevice.EARPIECE;
         } else {
@@ -130,8 +152,8 @@ public class MagicAudioManager {
     /**
      * Construction.
      */
-    public static MagicAudioManager create(Context context) {
-        return new MagicAudioManager(context);
+    public static MagicAudioManager create(Context context, boolean useProximitySensor) {
+        return new MagicAudioManager(context, useProximitySensor);
     }
 
     /**
@@ -139,14 +161,6 @@ public class MagicAudioManager {
      * e.g. from "NEAR to FAR" or from "FAR to NEAR".
      */
     private void onProximitySensorChangedState() {
-
-        if (proximitySensor.sensorReportsNearState()) {
-            EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                    .SENSOR_NEAR, null, null, null));
-        } else {
-            EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                    .SENSOR_FAR, null, null, null));
-        }
 
         if (!useSpeakerphone.equals(SPEAKERPHONE_AUTO)) {
             return;
@@ -160,10 +174,17 @@ public class MagicAudioManager {
                 // Sensor reports that a "handset is being held up to a person's ear",
                 // or "something is covering the light sensor".
                 setAudioDeviceInternal(MagicAudioManager.AudioDevice.EARPIECE);
+
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                        .SENSOR_FAR, null, null, null));
+
             } else {
                 // Sensor reports that a "handset is removed from a person's ear", or
                 // "the light sensor is no longer covered".
                 setAudioDeviceInternal(MagicAudioManager.AudioDevice.SPEAKER_PHONE);
+
+                EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                        .SENSOR_NEAR, null, null, null));
             }
         }
     }

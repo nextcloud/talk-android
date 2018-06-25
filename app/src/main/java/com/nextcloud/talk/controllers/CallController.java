@@ -72,6 +72,7 @@ import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.MagicFlipView;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -151,6 +152,9 @@ public class CallController extends BaseController {
     private static final String[] PERMISSIONS_MICROPHONE = {
             Manifest.permission.RECORD_AUDIO
     };
+
+    @BindView(R.id.callControlEnableSpeaker)
+    MagicFlipView callControlEnableSpeaker;
 
     @BindView(R.id.pip_video_view)
     SurfaceViewRenderer pipVideoView;
@@ -300,6 +304,10 @@ public class CallController extends BaseController {
             Log.e(TAG, "Failed to evict cache");
         }
 
+        if (isVoiceOnlyCall) {
+            callControlEnableSpeaker.setVisibility(View.VISIBLE);
+        }
+
         callControls.setZ(100.0f);
         basicInitialization();
 
@@ -330,7 +338,7 @@ public class CallController extends BaseController {
 
         // Create and audio manager that will take care of audio routing,
         // audio modes, audio device enumeration etc.
-        audioManager = MagicAudioManager.create(getApplicationContext());
+        audioManager = MagicAudioManager.create(getApplicationContext(), !isVoiceOnlyCall);
         // Store existing audio settings and change audio mode to
         // MODE_IN_COMMUNICATION for best possible VoIP performance.
         Log.d(TAG, "Starting the audio manager...");
@@ -422,7 +430,7 @@ public class CallController extends BaseController {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(PERMISSIONS_CALL, 100);
             } else {
-                onRequestPermissionsResult(100, PERMISSIONS_CALL, new int[]{1});
+                onRequestPermissionsResult(100, PERMISSIONS_CALL, new int[]{1, 1});
             }
         }
 
@@ -584,6 +592,20 @@ public class CallController extends BaseController {
 
         onMicrophoneClick();
         return true;
+    }
+
+    @OnClick(R.id.callControlEnableSpeaker)
+    public void onEnableSpeakerphoneClick() {
+        if (audioManager != null) {
+            audioManager.toggleUseSpeakerphone();
+            if (audioManager.isSpeakerphoneAutoOn()) {
+                callControlEnableSpeaker.getFrontImageView().setImageDrawable(getResources().getDrawable(R.drawable
+                        .ic_speaker_white_24dp));
+            } else {
+                callControlEnableSpeaker.getFrontImageView().setImageDrawable(getResources().getDrawable(R.drawable
+                        .ic_hearing_white_24dp));
+            }
+        }
     }
 
     @OnClick(R.id.call_control_microphone)
