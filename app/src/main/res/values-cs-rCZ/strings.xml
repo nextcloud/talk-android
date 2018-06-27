@@ -36,6 +36,7 @@
     <string name="nc_client_cert_change">Změnit klientský certifikát</string>
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
+    <string name="nc_settings_call_ringtone">Volání</string>
     <string name="nc_settings_message_ringtone">Zprávy</string>
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Uživatelské jméno</string>
@@ -70,6 +71,8 @@
 
     <string name="nc_permissions_settings">Otevřít nastavení</string>
 
+    <!-- Call -->
+    <string name="nc_connecting_call">Připojování...</string>
     <string name="nc_nick_guest">Host</string>
     <string name="nc_public_call">Nová veřejná konverzace</string>
     <string name="nc_notification_channel_calls_description">Zobrazit příchozí hovory</string>
@@ -77,8 +80,11 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
+    <string name="nc_all_ok_operation">OK, vše hotovo!</string>
+    <string name="nc_ok">OK</string>
     <string name="nc_call_name">Název konverzace</string>
     <string name="nc_proceed">Pokračovat</string>
+    <string name="nc_call_name_is_same">Zadané jméno je stejné jako stávající</string>
     <string name="nc_wrong_link">Odkaz na konverzaci není platný</string>
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
 
