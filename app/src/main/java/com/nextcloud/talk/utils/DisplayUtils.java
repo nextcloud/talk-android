@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
 
 public class DisplayUtils {
 
-    private static final String TAG = "DIsplayHelper";
+    private static final String TAG = "DisplayUtils";
 
     public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
