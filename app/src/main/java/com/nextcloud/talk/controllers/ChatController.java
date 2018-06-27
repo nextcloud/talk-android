@@ -92,7 +92,6 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
 import com.webianks.library.PopupBubble;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.parceler.Parcels;
 
 import java.io.IOException;
@@ -148,7 +147,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private int globalLastKnownPastMessageId = -1;
     private MessagesListAdapter<ChatMessage> adapter;
 
-    private String myFirstMessage;
+    private CharSequence myFirstMessage;
 
     private Autocomplete mentionAutocomplete;
     private LinearLayoutManager layoutManager;
@@ -375,7 +374,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         messageInputView.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         messageInputView.setInputListener(input -> {
-            sendMessage(StringEscapeUtils.escapeJava(input.toString()), 1);
+            sendMessage(input, 1);
             return true;
         });
 
@@ -556,13 +555,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
     }
 
-    private void sendMessage(String message, int attempt) {
+    private void sendMessage(CharSequence message, int attempt) {
         if (attempt < 4) {
-            Map<String, String> fieldMap = new HashMap<>();
-            fieldMap.put("message", message);
-            fieldMap.put("actorDisplayName", conversationUser.getDisplayName());
 
-            ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(baseUrl, roomToken), fieldMap)
+            ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(baseUrl, roomToken), message, conversationUser
+                    .getDisplayName())
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<GenericOverall>() {
@@ -573,7 +570,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                         @Override
                         public void onNext(GenericOverall genericOverall) {
-                            if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage)) {
+                            if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage.toString())) {
                                 myFirstMessage = message;
                             }
 
@@ -589,7 +586,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         @Override
                         public void onError(Throwable e) {
                             if (e instanceof HttpException && ((HttpException) e).code() == 201) {
-                                if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage)) {
+                                if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage.toString())) {
                                     myFirstMessage = message;
                                 }
 
@@ -714,7 +711,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             } else {
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessageList.get(i).setBaseUrl(conversationUser.getBaseUrl());
-                    if (conversationUser.getUserId().equals("?") && !TextUtils.isEmpty(myFirstMessage)) {
+                    if (conversationUser.getUserId().equals("?") && !TextUtils.isEmpty(myFirstMessage.toString())) {
                         ChatMessage chatMessage = chatMessageList.get(i);
                         if (chatMessage.getActorType().equals("guests") &&
                                 chatMessage.getActorDisplayName().equals(conversationUser.getDisplayName())) {

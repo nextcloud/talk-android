@@ -281,8 +281,8 @@ public interface NcApi {
     @FormUrlEncoded
     @POST
     Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization, @Url String url,
-                                               @FieldMap Map<String, String> fields);
-
+                                               @Field("message") CharSequence message,
+                                               @Field("actorDisplayName") String actorDisplayName);
 
     @GET
     Observable<MentionOverall> getMentionAutocompleteSuggestions(@Header("Authorization") String authorization,
