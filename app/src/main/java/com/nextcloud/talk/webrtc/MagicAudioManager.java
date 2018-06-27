@@ -176,7 +176,7 @@ public class MagicAudioManager {
                 setAudioDeviceInternal(MagicAudioManager.AudioDevice.EARPIECE);
 
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .SENSOR_FAR, null, null, null));
+                        .SENSOR_NEAR, null, null, null));
 
             } else {
                 // Sensor reports that a "handset is removed from a person's ear", or
@@ -184,7 +184,7 @@ public class MagicAudioManager {
                 setAudioDeviceInternal(MagicAudioManager.AudioDevice.SPEAKER_PHONE);
 
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .SENSOR_NEAR, null, null, null));
+                        .SENSOR_FAR, null, null, null));
             }
         }
     }

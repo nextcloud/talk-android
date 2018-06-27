@@ -1453,12 +1453,15 @@ public class CallController extends BaseController {
                 .PeerConnectionEventType.SENSOR_FAR) ||
                 peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                         .PeerConnectionEventType.SENSOR_NEAR)) {
-            boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
-                    .PeerConnectionEventType.SENSOR_FAR) && videoOn;
-            if (getActivity() != null && EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA) &&
-                    inCall && videoOn
-                    && enableVideo != localVideoTrack.enabled()) {
-                toggleMedia(enableVideo, true);
+            
+            if (!isVoiceOnlyCall) {
+                boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                        .PeerConnectionEventType.SENSOR_FAR) && videoOn;
+                if (getActivity() != null && EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA) &&
+                        inCall && videoOn
+                        && enableVideo != localVideoTrack.enabled()) {
+                    toggleMedia(enableVideo, true);
+                }
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.NICK_CHANGE)) {
