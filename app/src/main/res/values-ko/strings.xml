@@ -68,7 +68,6 @@
     <string name="nc_select_an_account">계정 선택</string>
 
     <string name="nc_set_password">암호 설정</string>
-    <string name="nc_change_password">암호 변경</string>
     <string name="nc_clear_password">암호 삭제</string>
     <string name="nc_share_link">링크 공유</string>
     <string name="nc_share_link_via">다음으로 링크 공유</string>

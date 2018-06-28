@@ -72,7 +72,6 @@
     <string name="nc_select_an_account">Fiók kiválasztása</string>
 
     <string name="nc_set_password">Jelszó beállítása</string>
-    <string name="nc_change_password">Jelszó módosítása</string>
     <string name="nc_clear_password">Jelszó törlése</string>
     <string name="nc_share_link">Megosztás hivatkozása</string>
     <string name="nc_share_link_via">Link megosztása ezzel</string>

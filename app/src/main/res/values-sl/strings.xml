@@ -80,7 +80,6 @@
     <string name="nc_leave">Zapusti pogovor</string>
     <string name="nc_rename">Preimenuj pogovor</string>
     <string name="nc_set_password">Nastavi geslo</string>
-    <string name="nc_change_password">Spremeni geslo</string>
     <string name="nc_clear_password">Počisti geslo</string>
     <string name="nc_share_link">Objavi povezavo</string>
     <string name="nc_share_link_via">Objavi povezavo prek</string>

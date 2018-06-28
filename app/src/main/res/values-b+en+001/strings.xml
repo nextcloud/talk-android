@@ -77,7 +77,6 @@
     <string name="nc_leave">Leave conversation</string>
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_set_password">Set a password</string>
-    <string name="nc_change_password">Change a password</string>
     <string name="nc_clear_password">Clear password</string>
     <string name="nc_share_link">Share link</string>
     <string name="nc_share_link_via">Share link via</string>

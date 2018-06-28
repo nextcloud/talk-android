@@ -54,7 +54,6 @@
     <string name="nc_leave">Opustit konverzaci</string>
     <string name="nc_rename">Přejmenovat konverzaci</string>
     <string name="nc_set_password">Nastavit heslo</string>
-    <string name="nc_change_password">Změnit heslo</string>
     <string name="nc_clear_password">Vyčistit heslo</string>
     <string name="nc_share_link">Sdílet odkaz</string>
     <string name="nc_share_link_via">Sdílet odkaz prostřednictvím</string>

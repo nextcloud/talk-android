@@ -84,11 +84,9 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Yeni bir konuşma başlat</string>
     <string name="nc_configure_room">Konuşmayı yapılandır</string>
-    <string name="nc_configure_named_room">%1$s konuşmasını yapılandır</string>
     <string name="nc_leave">Konuşmadan ayrıl</string>
     <string name="nc_rename">Konuşmayı yeniden adlandır</string>
     <string name="nc_set_password">Bir parola ayarlayın</string>
-    <string name="nc_change_password">Bir parolayı değiştirin</string>
     <string name="nc_clear_password">Parolayı temizle</string>
     <string name="nc_share_link">Bağlantıyı paylaş</string>
     <string name="nc_share_link_via">Bağlantıyı şununla paylaş</string>
