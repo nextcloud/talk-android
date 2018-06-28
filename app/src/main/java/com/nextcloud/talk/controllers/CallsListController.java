@@ -500,6 +500,8 @@ public class CallsListController extends BaseController implements SearchView.On
                 bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
                 prepareAndShowBottomSheetWithBundle(bundle, false);
             } else {
+                currentUser = userUtils.getCurrentUser();
+
                 if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
                     bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
                     getParentController().getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
