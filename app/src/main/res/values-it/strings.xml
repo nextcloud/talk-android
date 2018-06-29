@@ -84,9 +84,11 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Inizia una conversazione</string>
     <string name="nc_configure_room">Configura conversazione</string>
+    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Lascia la conversazione</string>
     <string name="nc_rename">Rinomina conversazione</string>
     <string name="nc_set_password">Imposta una password</string>
+    <string name="nc_change_password">Modifica password</string>
     <string name="nc_clear_password">Cancella la password</string>
     <string name="nc_share_link">Condividi collegamento</string>
     <string name="nc_share_link_via">Condividi collegamento tramite</string>

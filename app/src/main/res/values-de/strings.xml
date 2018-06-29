@@ -84,9 +84,11 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Starte eine Unterhaltung</string>
     <string name="nc_configure_room">Unterhaltung einrichten</string>
+    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Unterhaltung verlassen</string>
     <string name="nc_rename">Unterhaltung umbenennen</string>
     <string name="nc_set_password">Passwort setzen</string>
+    <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_clear_password">Passwort leeren</string>
     <string name="nc_share_link">Link teilen</string>
     <string name="nc_share_link_via">Link teilen via</string>
