@@ -75,6 +75,8 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
@@ -415,6 +417,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         if (mentionAutocomplete != null && mentionAutocomplete.isPopupShowing()) {
             mentionAutocomplete.dismissPopup();
+        }
+
+        if (getActivity() != null) {
+            new KeyboardUtils(getActivity(), getView());
         }
     }
 
