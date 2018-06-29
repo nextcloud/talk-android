@@ -19,83 +19,68 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <RelativeLayout
+    <com.stfalcon.chatkit.messages.MessagesList
+        android:id="@+id/messagesListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/messageInputView"
+        app:incomingDefaultBubbleColor="@color/white_two"
+        app:incomingDefaultBubblePressedColor="@color/white_two"
+        app:incomingDefaultBubbleSelectedColor="@color/colorPrimaryDark"
+        app:incomingTextColor="@color/nc_incoming_text_default"
+        app:incomingTextLinkColor="@color/nc_incoming_text_default"
+        app:incomingTextSize="@dimen/chat_text_size"
+        app:incomingTimeTextSize="12sp"
+        app:outcomingDefaultBubbleColor="@color/colorPrimary"
+        app:outcomingDefaultBubblePressedColor="@color/colorPrimary"
+        app:outcomingDefaultBubbleSelectedColor="@color/colorPrimaryDark"
+        app:outcomingTextColor="@color/nc_outcoming_text_default"
+        app:outcomingTextLinkColor="@color/nc_outcoming_text_default"
+        app:outcomingTextSize="@dimen/chat_text_size"
+        app:outcomingTimeTextColor="@color/warm_grey_four"
+        app:outcomingTimeTextSize="12sp"
+        app:textAutoLink="all"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/inputLinearLayout">
+    <com.webianks.library.PopupBubble
+        android:id="@+id/popupBubbleView"
+        android:layout_margin="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/separator"
+        android:layout_centerHorizontal="true"
+        android:paddingEnd="8dp"
+        app:pb_backgroundColor="@color/colorPrimary"
+        app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
+        app:pb_text="@string/nc_new_messages"
+        app:pb_textColor="@color/white"/>
 
-            <View
-                android:id="@+id/separator"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@color/nc_light_grey"/>
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/messageInputView"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/nc_light_grey"/>
 
-            <com.stfalcon.chatkit.messages.MessageInput
-                android:id="@+id/messageInputView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="1000"
-                app:inputButtonDefaultBgColor="@color/colorPrimary"
-                app:inputButtonDefaultBgPressedColor="@color/colorPrimaryDark"
-                app:inputButtonHeight="30dp"
-                app:inputButtonMargin="16dp"
-                app:inputButtonWidth="30dp"
-                app:inputHint="@string/nc_hint_enter_a_message"
-                app:inputTextColor="@color/black"
-                app:inputTextSize="16sp"/>
-        </LinearLayout>
+    <com.stfalcon.chatkit.messages.MessageInput
+        android:id="@+id/messageInputView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:maxLength="1000"
+        app:inputButtonDefaultBgColor="@color/colorPrimary"
+        app:inputButtonDefaultBgPressedColor="@color/colorPrimaryDark"
+        app:inputButtonHeight="30dp"
+        app:inputButtonMargin="16dp"
+        app:inputButtonWidth="30dp"
+        app:inputHint="@string/nc_hint_enter_a_message"
+        app:inputTextColor="@color/black"
+        app:inputTextSize="16sp"/>
 
-        <com.stfalcon.chatkit.messages.MessagesList
-            android:id="@+id/messagesListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/inputLinearLayout"
-            app:incomingDefaultBubbleColor="@color/white_two"
-            app:incomingDefaultBubblePressedColor="@color/white_two"
-            app:incomingDefaultBubbleSelectedColor="@color/colorPrimaryDark"
-            app:incomingTextColor="@color/nc_incoming_text_default"
-            app:incomingTextLinkColor="@color/nc_incoming_text_default"
-            app:incomingTextSize="@dimen/chat_text_size"
-            app:incomingTimeTextSize="12sp"
-            app:outcomingDefaultBubbleColor="@color/colorPrimary"
-            app:outcomingDefaultBubblePressedColor="@color/colorPrimary"
-            app:outcomingDefaultBubbleSelectedColor="@color/colorPrimaryDark"
-            app:outcomingTextColor="@color/nc_outcoming_text_default"
-            app:outcomingTextLinkColor="@color/nc_outcoming_text_default"
-            app:outcomingTextSize="@dimen/chat_text_size"
-            app:outcomingTimeTextColor="@color/warm_grey_four"
-            app:outcomingTimeTextSize="12sp"
-            app:textAutoLink="all"/>
-
-        <com.webianks.library.PopupBubble
-            android:id="@+id/popupBubbleView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|center_horizontal"
-            android:layout_margin="16dp"
-            android:paddingEnd="8dp"
-            app:pb_backgroundColor="@color/colorPrimary"
-            app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
-            app:pb_text="@string/nc_new_messages"
-            android:layout_above="@id/inputLinearLayout"
-            android:layout_centerHorizontal="true"
-            app:pb_textColor="@color/white"/>
-
-    </RelativeLayout>
-
-
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>
