@@ -191,4 +191,10 @@ Find Nextcloud on https://nextcloud.com</string>
     <string name="nc_endless_cancel">Cancelled by the user.</string>
     <string name="nc_endless_error">An error occurred while loading more items.</string>
 
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">Menu for conversation with %1$s</string>
+    <string name="nc_description_more_menu_public">Menu for group conversation %1$s</string>
+    <string name="nc_description_more_menu_group">Menu for public conversation %1$s</string>
+    <string name="nc_description_send_message_button">Send message</string>
+
 </resources>

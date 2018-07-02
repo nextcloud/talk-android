@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.content.res.Resources;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -126,9 +127,13 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
         int avatarSize = Math.round(NextcloudTalkApplication
                 .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
 
+        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
         switch (room.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
                 holder.avatarImageView.setVisibility(View.VISIBLE);
+
+                holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
+                        .nc_description_more_menu_one_to_one), room.getDisplayName()));
 
                 if (!TextUtils.isEmpty(room.getName())) {
                     GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
@@ -151,6 +156,9 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 }
                 break;
             case ROOM_GROUP_CALL:
+                holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
+                        .nc_description_more_menu_group), room.getDisplayName()));
+
                 GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                         .asBitmap()
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -162,6 +170,9 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 holder.avatarImageView.setVisibility(View.VISIBLE);
                 break;
             case ROOM_PUBLIC_CALL:
+                holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
+                        .nc_description_more_menu_public), room.getDisplayName()));
+
                 GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                         .asBitmap()
                         .diskCacheStrategy(DiskCacheStrategy.NONE)

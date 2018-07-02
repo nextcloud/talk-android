@@ -284,6 +284,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         getActionBar().show();
         boolean adapterWasNull = false;
 
+
         if (adapter == null) {
 
             try {
@@ -377,6 +378,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
             sendMessage(input, 1);
             return true;
         });
+
+        messageInputView.getButton().setContentDescription(getResources()
+                .getString(R.string.nc_description_send_message_button));
 
         if (adapterWasNull && startCallFromNotification == null) {
             getRoomInfo();
