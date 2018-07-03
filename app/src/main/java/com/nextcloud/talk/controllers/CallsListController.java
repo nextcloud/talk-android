@@ -471,7 +471,7 @@ public class CallsListController extends BaseController implements SearchView.On
             bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
         }
 
-        bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout()));
+        bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true));
         bottomSheet.show();
     }
 

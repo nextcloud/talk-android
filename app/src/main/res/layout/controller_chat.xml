@@ -28,6 +28,7 @@
         android:id="@+id/messagesListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="16dp"
         android:layout_above="@+id/messageInputView"
         app:incomingDefaultBubbleColor="@color/white_two"
         app:incomingDefaultBubblePressedColor="@color/white_two"
@@ -52,6 +53,7 @@
         app:outcomingTextSize="@dimen/chat_text_size"
         app:outcomingTimeTextColor="@color/warm_grey_four"
         app:outcomingTimeTextSize="12sp"
+        app:dateHeaderTextSize="13sp"
         app:textAutoLink="all"/>
 
     <com.webianks.library.PopupBubble

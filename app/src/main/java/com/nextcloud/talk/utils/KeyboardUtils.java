@@ -31,6 +31,7 @@ import android.view.inputmethod.InputMethodManager;
 public class KeyboardUtils {
     private View decorView;
     private View contentView;
+    private boolean isUsedInBottomSheet;
     //a small helper to allow showing the editText focus
     ViewTreeObserver.OnGlobalLayoutListener onGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
@@ -44,9 +45,9 @@ public class KeyboardUtils {
 
             int diff = height - r.bottom;
 
-            if (diff > 0) {
-                // if the use-able screen height differs from the total screen height we assume that it shows a keyboard now
-                //check if the padding is 0 (if yes set the padding for the keyboard)
+            boolean shouldSetBottomPadding = (isUsedInBottomSheet && diff != 0) || (diff > 0);
+
+            if (shouldSetBottomPadding) {
                 if (contentView.getPaddingBottom() != diff) {
                     //set the padding of the contentView for the keyboard
                     contentView.setPadding(0, 0, 0,  diff);
@@ -61,9 +62,10 @@ public class KeyboardUtils {
         }
     };
 
-    public KeyboardUtils(Activity act, View contentView) {
+    public KeyboardUtils(Activity act, View contentView, boolean isUsedInBottomSheet) {
         this.decorView = act.getWindow().getDecorView();
         this.contentView = contentView;
+        this.isUsedInBottomSheet = isUsedInBottomSheet;
 
         decorView.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
     }

@@ -423,7 +423,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         if (getActivity() != null) {
-            new KeyboardUtils(getActivity(), getView());
+            new KeyboardUtils(getActivity(), getView(), false);
         }
     }
 
