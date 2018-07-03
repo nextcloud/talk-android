@@ -35,7 +35,7 @@
         app:incomingTextColor="@color/nc_incoming_text_default"
         app:incomingTextLinkColor="@color/nc_incoming_text_default"
         app:incomingTextSize="@dimen/chat_text_size"
-        app:incomingTimeTextSize="12dp"
+        app:incomingTimeTextSize="12sp"
         app:incomingBubblePaddingTop="@dimen/message_bubble_corners_padding"
         app:incomingBubblePaddingBottom="@dimen/message_bubble_corners_padding"
         app:incomingBubblePaddingLeft="@dimen/message_bubble_corners_padding"
