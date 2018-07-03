@@ -1016,8 +1016,13 @@ public class CallController extends BaseController {
                     public void onNext(GenericOverall genericOverall) {
                         inCall = true;
 
-                        connectingView.setVisibility(View.GONE);
-                        conversationView.setVisibility(View.VISIBLE);
+                        if (connectingView != null) {
+                            connectingView.setVisibility(View.GONE);
+                        }
+
+                        if (conversationView != null) {
+                            conversationView.setVisibility(View.VISIBLE);
+                        }
 
                         if (!isPTTActive) {
                             animateCallControls(false, 5000);
