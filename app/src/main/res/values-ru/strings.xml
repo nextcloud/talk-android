@@ -186,4 +186,4 @@ Nextcloud Talk поддерживает:
     <string name="nc_endless_cancel">Прервано пользователем</string>
     <string name="nc_endless_error">Ошибка загрузки дополнительных объектов.</string>
 
-</resources>
+    </resources>
