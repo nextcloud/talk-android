@@ -37,16 +37,10 @@
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">代理</string>
-    <string name="nc_settings_proxy_type_key">代理服务类型</string>
     <string name="nc_settings_proxy_type_title">代理类型</string>
-    <string name="nc_settings_proxy_host_key">代理主机地址</string>
     <string name="nc_settings_proxy_host_title">代理主机</string>
-    <string name="nc_settings_proxy_port_key">代理主机端口</string>
     <string name="nc_settings_proxy_port_title">代理端口</string>
-    <string name="nc_settings_proxy_username_key">代理用户名</string>
-    <string name="nc_settings_proxy_password_key">代理密码</string>
     <string name="nc_settings_use_credentials_title">使用凭据</string>
-    <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">切换账户</string>
     <string name="nc_settings_reauthorize">重新认证</string>
     <string name="nc_settings_remove_account">移除账户</string>

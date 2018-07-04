@@ -40,16 +40,10 @@
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
-    <string name="nc_settings_proxy_type_key">typ_proxy</string>
     <string name="nc_settings_proxy_type_title">Typ proxy</string>
-    <string name="nc_settings_proxy_host_key">proxy_host</string>
     <string name="nc_settings_proxy_host_title">Proxy host</string>
-    <string name="nc_settings_proxy_port_key">proxy_port</string>
     <string name="nc_settings_proxy_port_title">Proxy port</string>
-    <string name="nc_settings_proxy_username_key">proxy_užívateľské_meno</string>
-    <string name="nc_settings_proxy_password_key">proxy_heslo</string>
     <string name="nc_settings_use_credentials_title">Použi prihlasovacie údaje</string>
-    <string name="nc_settings_use_credentials_key">proxy_prihlasovacie_údaje</string>
     <string name="nc_settings_switch_account">Prepínať medzi účtami</string>
     <string name="nc_settings_reauthorize">Znova prihlásiť</string>
     <string name="nc_client_cert_setup">Nastaviť klientský certifikát</string>

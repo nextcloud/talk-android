@@ -36,16 +36,10 @@
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
-    <string name="nc_settings_proxy_type_key">proxy_type</string>
     <string name="nc_settings_proxy_type_title">Proxy-typ</string>
-    <string name="nc_settings_proxy_host_key">proxy_host</string>
     <string name="nc_settings_proxy_host_title">Proxy-värd</string>
-    <string name="nc_settings_proxy_port_key">proxy_port</string>
     <string name="nc_settings_proxy_port_title">Proxy-port</string>
-    <string name="nc_settings_proxy_username_key">proxy_username</string>
-    <string name="nc_settings_proxy_password_key">proxy_password</string>
     <string name="nc_settings_use_credentials_title">Använd uppgifter</string>
-    <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">Växla mellan konton</string>
     <string name="nc_settings_reauthorize">Återautentisera</string>
     <string name="nc_settings_remove_account">Ta bort konto</string>

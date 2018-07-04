@@ -38,16 +38,10 @@
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Milliþjónn</string>
-    <string name="nc_settings_proxy_type_key">proxy_type</string>
     <string name="nc_settings_proxy_type_title">Gerð milliþjóns</string>
-    <string name="nc_settings_proxy_host_key">proxy_host</string>
     <string name="nc_settings_proxy_host_title">Milliþjónn</string>
-    <string name="nc_settings_proxy_port_key">proxy_port</string>
     <string name="nc_settings_proxy_port_title">Gátt milliþjóns</string>
-    <string name="nc_settings_proxy_username_key">proxy_username</string>
-    <string name="nc_settings_proxy_password_key">proxy_password</string>
     <string name="nc_settings_use_credentials_title">Auðkenni notanda</string>
-    <string name="nc_settings_use_credentials_key">proxy_credentials</string>
     <string name="nc_settings_switch_account">Skipta á milli aðganga</string>
     <string name="nc_settings_reauthorize">Endurheimila</string>
     <string name="nc_client_cert_setup">Setja upp skilríki biðlara</string>

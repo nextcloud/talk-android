@@ -36,16 +36,10 @@
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">პროქსი</string>
-    <string name="nc_settings_proxy_type_key">პროქსი_სახეობა</string>
     <string name="nc_settings_proxy_type_title">პროქსი სახეობა</string>
-    <string name="nc_settings_proxy_host_key">პროქსი_ჰოსტი</string>
     <string name="nc_settings_proxy_host_title">პროქსი ჰოსტი</string>
-    <string name="nc_settings_proxy_port_key">პროქსი_პორტი</string>
     <string name="nc_settings_proxy_port_title">პროქსი პორტი</string>
-    <string name="nc_settings_proxy_username_key">პროქსი_მომხმარებლისსახელი</string>
-    <string name="nc_settings_proxy_password_key">პროქსი_პაროლი</string>
     <string name="nc_settings_use_credentials_title">უფლებამოსილებების გამოყენება</string>
-    <string name="nc_settings_use_credentials_key">პროქსი_უფლებამოსილებები</string>
     <string name="nc_settings_switch_account">ანგარიშების შეცვლა</string>
     <string name="nc_settings_reauthorize">რეავტორიზაცია</string>
     <string name="nc_settings_remove_account">ანგარიშის გაუქმება</string>

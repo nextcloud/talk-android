@@ -36,16 +36,10 @@
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Posredniški strežnik</string>
-    <string name="nc_settings_proxy_type_key">vrsta_posredniškega_strežnika</string>
     <string name="nc_settings_proxy_type_title">Vrsta posredniškega strežnika</string>
-    <string name="nc_settings_proxy_host_key">gostitelj_posredniškega_strežnika</string>
     <string name="nc_settings_proxy_host_title">Gostitelj posredniškega strežnika</string>
-    <string name="nc_settings_proxy_port_key">vrata_posredniškega_strežnika</string>
     <string name="nc_settings_proxy_port_title">Vrata posredniškega strežnika</string>
-    <string name="nc_settings_proxy_username_key">uporabniško_ime_posredniškega_strežnika</string>
-    <string name="nc_settings_proxy_password_key">geslo_posredniškega_strežnika</string>
     <string name="nc_settings_use_credentials_title">Uporabi poverila</string>
-    <string name="nc_settings_use_credentials_key">poverila_posredniškega_strežnika</string>
     <string name="nc_settings_switch_account">Preklopi med računi</string>
     <string name="nc_settings_reauthorize">Ponovno overi dostop</string>
     <string name="nc_client_cert_setup">Nastavi potrdilo odjemalca</string>
@@ -58,9 +52,7 @@
     <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
     <string name="nc_settings_notification_sounds">Obvestilni zvoki</string>
     <string name="nc_settings_call_ringtone">Klici</string>
-    <string name="nc_settings_call_ringtone_key">zvokovni_opomnik_klica</string>
     <string name="nc_settings_message_ringtone">Sporočila</string>
-    <string name="nc_settings_message_ringtone_key">zvokovni_opomnik_sporočila</string>
     <string name="nc_settings_no_ringtone">Brez zvoka</string>
 
     <string name="nc_no_proxy">Brez posredniškega strežnika</string>
