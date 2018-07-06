@@ -76,9 +76,11 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Yeni bir konuşma başlat</string>
     <string name="nc_configure_room">Konuşmayı yapılandır</string>
+    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Konuşmadan ayrıl</string>
     <string name="nc_rename">Konuşmayı yeniden adlandır</string>
     <string name="nc_set_password">Bir parola ayarlayın</string>
+    <string name="nc_change_password">Parolayı değiştir</string>
     <string name="nc_clear_password">Parolayı temizle</string>
     <string name="nc_share_link">Bağlantıyı paylaş</string>
     <string name="nc_share_link_via">Bağlantıyı şununla paylaş</string>
@@ -182,4 +184,10 @@ Nextcloud web sitesi https://nextcloud.com</string>
     <string name="nc_endless_cancel">Kullanıcı tarafından iptal edildi.</string>
     <string name="nc_endless_error">Daha fazla öge yüklenirken bir sorun çıktı.</string>
 
-    </resources>
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">%1$s görüşmesinin menüsü</string>
+    <string name="nc_description_more_menu_public">%1$s grup konuşmasının menüsü</string>
+    <string name="nc_description_more_menu_group">%1$s herkese açık konuşma menüsü</string>
+    <string name="nc_description_send_message_button">İleti gönder</string>
+
+</resources>

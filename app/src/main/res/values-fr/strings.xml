@@ -182,4 +182,6 @@ Trouvez Nextcloud sur https://nextcloud.com</string>
     <string name="nc_endless_cancel">Annulé par l\'utilisateur.</string>
     <string name="nc_endless_error">Une erreur est survenue lors du chargement d\'éléments supplémentaires.</string>
 
-    </resources>
+    <string name="nc_description_send_message_button">Envoyer un message</string>
+
+</resources>

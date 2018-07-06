@@ -70,6 +70,10 @@
 
     <string name="nc_permissions_settings">Öppna inställningar</string>
 
+    <!-- Call -->
+    <string name="nc_connecting_call">Ansluter...</string>
+    <string name="nc_incoming_call">Inkommande samtal från</string>
+    <string name="nc_nick_guest">Gäst</string>
     <string name="nc_notification_channel_calls_description">Visar inkommande samtal</string>
     <string name="nc_notification_channel_messages_description">Visar inkommande meddelanden</string>
 
