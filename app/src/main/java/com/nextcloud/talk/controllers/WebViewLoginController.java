@@ -223,14 +223,14 @@ public class WebViewLoginController extends BaseController {
 
             @Override
             public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
-                UserEntity userEntity;
+                UserEntity userEntity = userUtils.getCurrentUser();
 
                 String alias = null;
                 if (!isPasswordUpdate) {
                     alias = appPreferences.getTemporaryClientCertAlias();
                 }
 
-                if (TextUtils.isEmpty(alias) && (userEntity = userUtils.getCurrentUser()) != null) {
+                if (TextUtils.isEmpty(alias) && (userEntity != null)) {
                     alias = userEntity.getClientCertificate();
                 }
 
