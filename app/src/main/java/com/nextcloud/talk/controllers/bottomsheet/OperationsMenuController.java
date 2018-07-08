@@ -522,7 +522,11 @@ public class OperationsMenuController extends BaseController {
                         });
             }
         } else {
-            showResultImage(true, false);
+            if (!currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+                showResultImage(true, false);
+            } else {
+                initiateConversation(true, null);
+            }
         }
     }
 

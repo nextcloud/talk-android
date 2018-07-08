@@ -197,7 +197,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
             credentials = ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken());
         }
 
-        this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL);
+        if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+            this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL);
+        }
         this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
     }
 
@@ -382,7 +384,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
-        if (adapterWasNull && startCallFromNotification == null) {
+        if (adapterWasNull && TextUtils.isEmpty(conversationName) && startCallFromNotification == null) {
             getRoomInfo();
         } else {
             handleFromNotification();
