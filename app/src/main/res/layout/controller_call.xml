@@ -151,7 +151,10 @@
             android:visibility="gone"
             app:enableInitialAnimation="false"
             app:frontBackgroundColor="@color/colorPrimary"
-            app:frontImage="@drawable/ic_hearing_white_24dp"/>
+            app:animateRearImage="false"
+            app:rearBackgroundColor="@color/colorPrimaryDark"
+            app:frontImage="@drawable/ic_volume_up_white_24dp"
+            app:rearImage="@drawable/ic_volume_up_white_24dp"/>
 
     </LinearLayout>
 
