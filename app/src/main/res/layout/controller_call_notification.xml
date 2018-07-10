@@ -52,6 +52,7 @@
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="28sp"
+            android:layout_marginBottom="16dp"
             android:layout_below="@+id/incomingCallTextView"
             tools:text="Victor Gregorius Magnus"/>
 
