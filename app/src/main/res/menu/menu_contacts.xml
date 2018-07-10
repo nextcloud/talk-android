@@ -3,7 +3,7 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
-  ~ Copyright (C) 2017 Mario Danic
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -22,24 +22,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<!-- Search, should appear as action button -->
-	<item android:id="@+id/action_search"
-	      android:title="@string/nc_search"
-	      android:icon="@drawable/ic_search_white_24dp"
-	      app:showAsAction="collapseActionView|always"
-	      android:animateLayoutChanges="true"
-	      app:actionViewClass="android.support.v7.widget.SearchView"
-        />
-
-    <item android:id="@+id/action_new_conversation"
-          android:title="@string/nc_new_conversation"
-          android:icon="@drawable/ic_add_white_24px"
-          app:showAsAction="ifRoom"/>
-
-	<item
-		android:id="@+id/contacts_selection_done"
-		android:title="@string/nc_contacts_done"
-		app:showAsAction="always"
-		android:visible="false"/>
-
+    <item
+        android:id="@+id/contacts_selection_done"
+        android:title="@string/nc_contacts_done"
+        app:showAsAction="always"
+        android:visible="false"/>
 </menu>

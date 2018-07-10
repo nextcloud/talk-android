@@ -28,7 +28,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -43,7 +42,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -68,7 +66,6 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.animations.ViewHidingBehaviourAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -130,15 +127,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    @BindView(R.id.bottom_buttons_layout)
-    CoordinatorLayout bottomButtonsLinearLayout;
-
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
-
-    @Nullable
-    @BindView(R.id.clear_button)
-    Button clearButton;
 
     private UserEntity currentUser;
     private Disposable contactsQueryDisposable;
@@ -164,6 +154,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private boolean alreadyFetching = false;
     private boolean canFetchFurther = true;
     private boolean canFetchSearchFurther = true;
+
+    private MenuItem doneMenuItem;
 
     public ContactsController() {
         super();
@@ -195,7 +187,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (isNewConversationView) {
             toggleNewCallHeaderVisibility(!isPublicCall);
 
-            checkAndHandleBottomButtons();
+            checkAndHandleDoneMenuItem();
 
             if (getActionBar() != null) {
                 getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -257,29 +249,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         adapter.addListener(this);
     }
 
-    @Optional
-    @OnClick(R.id.clear_button)
-    public void onClearButtonClick() {
-        if (adapter != null) {
-            List<Integer> selectedPositions = adapter.getSelectedPositions();
-            for (Integer position : selectedPositions) {
-                if (adapter.getItem(position) instanceof UserItem) {
-                    UserItem userItem = (UserItem) adapter.getItem(position);
-                    adapter.toggleSelection(position);
-                    if (userItem != null) {
-                        userItem.flipItemSelection();
-                    }
-                }
-            }
-        }
-
-        checkAndHandleBottomButtons();
-    }
-
-    @Optional
-    @OnClick(R.id.done_button)
-    public void onDoneButtonClick() {
-
+    private void selectionDone() {
         if (!isPublicCall && adapter.getSelectedPositions().size() == 1) {
             RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), "1",
                     ((UserItem) adapter.getItem(adapter.getSelectedPositions().get(0))).getModel().getUserId(), null);
@@ -411,6 +381,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             case android.R.id.home:
                 getRouter().popCurrentController();
                 return true;
+            case R.id.contacts_selection_done:
+                selectionDone();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -421,7 +394,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
         searchItem = menu.findItem(R.id.action_search);
+        doneMenuItem = menu.findItem(R.id.contacts_selection_done);
         menu.findItem(R.id.action_new_conversation).setVisible(false);
+
         initSearchView();
     }
 
@@ -576,7 +551,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             }
 
                             if (isNewConversationView) {
-                                checkAndHandleBottomButtons();
+                                checkAndHandleDoneMenuItem();
                             }
                         }
                         ;
@@ -648,9 +623,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 return "";
             }
         });
-
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomButtonsLinearLayout.getLayoutParams();
-        layoutParams.setBehavior(new ViewHidingBehaviourAnimation());
     }
 
     private void dispose(@Nullable Disposable disposable) {
@@ -725,23 +697,18 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         return onQueryTextChange(query);
     }
 
-    private void checkAndHandleBottomButtons() {
-        if (adapter != null && bottomButtonsLinearLayout != null && clearButton != null) {
+    private void checkAndHandleDoneMenuItem() {
+        if (adapter != null && doneMenuItem != null) {
             if (adapter.getSelectedItemCount() > 0 || isPublicCall) {
-                if (bottomButtonsLinearLayout.getVisibility() != View.VISIBLE) {
-                    bottomButtonsLinearLayout.setVisibility(View.VISIBLE);
+                if (!doneMenuItem.isVisible()) {
+                    doneMenuItem.setVisible(true);
                 }
 
-                if (adapter.getSelectedItemCount() == 0) {
-                    clearButton.setVisibility(View.GONE);
-                } else {
-                    clearButton.setVisibility(View.VISIBLE);
-                }
             } else {
-                bottomButtonsLinearLayout.setVisibility(View.GONE);
+                doneMenuItem.setVisible(false);
             }
-        } else if (bottomButtonsLinearLayout != null) {
-            bottomButtonsLinearLayout.setVisibility(View.GONE);
+        } else if (doneMenuItem != null) {
+            doneMenuItem.setVisible(false);
         }
     }
 
@@ -865,7 +832,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 ((UserItem) adapter.getItem(position)).flipItemSelection();
                 adapter.toggleSelection(position);
 
-                checkAndHandleBottomButtons();
+                checkAndHandleDoneMenuItem();
             }
         }
         return true;
@@ -876,7 +843,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     void toggleCallHeader() {
         toggleNewCallHeaderVisibility(isPublicCall);
         isPublicCall = !isPublicCall;
-        checkAndHandleBottomButtons();
+        checkAndHandleDoneMenuItem();
     }
 
     private void toggleNewCallHeaderVisibility(boolean showInitialLayout) {
