@@ -19,6 +19,8 @@ android {
         versionName "2.1.0beta5"
 
         flavorDimensions "default"
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
 
         productFlavors {
             // used for f-droid
