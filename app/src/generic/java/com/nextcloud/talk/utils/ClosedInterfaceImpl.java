@@ -28,4 +28,9 @@ public class ClosedInterfaceImpl implements ClosedInterface {
     public void providerInstallerInstallIfNeededAsync() {
         // does absolutely nothing :)
     }
+
+    @Override
+    public boolean isGooglePlayServicesAvailable() {
+        return false;
+    }
 }
