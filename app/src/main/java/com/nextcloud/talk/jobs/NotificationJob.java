@@ -242,7 +242,7 @@ public class NotificationJob extends Job {
                                 if (notificationManager != null) {
                                     notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
 
-                                    if (soundUri != null) {
+                                    if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
                                         MediaPlayer mediaPlayer = MediaPlayer.create(context, soundUri);
                                         mediaPlayer.start();
                                         mediaPlayer.setOnCompletionListener(MediaPlayer::release);
