@@ -20,8 +20,10 @@
 
 package com.nextcloud.talk.adapters.messages;
 
+import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 
 import com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView;
@@ -31,6 +33,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.emoticons.EmoticonUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import java.util.HashMap;
@@ -51,11 +54,14 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
 
     private UserEntity currentUser;
 
+    private View itemView;
+
     public MagicOutcomingTextMessageViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
+        this.itemView = itemView;
         currentUser = userUtils.getCurrentUser();
     }
 
@@ -66,6 +72,10 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
 
         Spannable messageString = new SpannableString(message.getText());
+
+        Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+
+        itemView.setSelected(false);
 
         if (messageParameters != null && message.getMessageParameters().size() > 0) {
             for (String key : message.getMessageParameters().keySet()) {
@@ -80,9 +90,13 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                 }
             }
 
+        } else if (EmoticonUtils.isMessageWithSingleEmoticonOnly(context, message.getText())) {
+            messageString.setSpan(new RelativeSizeSpan(2.5f), 0, messageString.length(),
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            itemView.setSelected(true);
         }
+
 
         messageText.setText(messageString);
     }
-
 }

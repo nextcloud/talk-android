@@ -20,9 +20,11 @@
 
 package com.nextcloud.talk.adapters.messages;
 
+import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -33,6 +35,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.emoticons.EmoticonUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import java.util.HashMap;
@@ -57,12 +60,14 @@ public class MagicIncomingTextMessageViewHolder
     UserUtils userUtils;
 
     private UserEntity currentUser;
+    private View itemView;
 
     public MagicIncomingTextMessageViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
+        this.itemView = itemView;
         currentUser = userUtils.getCurrentUser();
     }
 
@@ -78,6 +83,8 @@ public class MagicIncomingTextMessageViewHolder
         }
 
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
+
+        Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
 
         Spannable messageString = new SpannableString(message.getText());
 
@@ -100,6 +107,10 @@ public class MagicIncomingTextMessageViewHolder
                 }
             }
 
+        } else if (EmoticonUtils.isMessageWithSingleEmoticonOnly(context, message.getText())) {
+            messageString.setSpan(new RelativeSizeSpan(2.5f), 0, messageString.length(),
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            itemView.setSelected(true);
         }
 
         messageText.setText(messageString);
