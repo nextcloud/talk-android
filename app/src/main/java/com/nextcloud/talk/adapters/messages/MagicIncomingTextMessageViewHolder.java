@@ -103,6 +103,7 @@ public class MagicIncomingTextMessageViewHolder
 
         Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
         itemView.setSelected(false);
+        messageTimeView.setTextColor(context.getResources().getColor(R.color.warm_grey_four));
 
         FlexboxLayout.LayoutParams layoutParams = (FlexboxLayout.LayoutParams) messageTimeView.getLayoutParams();
         layoutParams.setWrapBefore(false);

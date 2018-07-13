@@ -39,9 +39,9 @@ public class ClosedInterfaceImpl implements ClosedInterface, ProviderInstallList
 
     @Override
     public boolean isGooglePlayServicesAvailable() {
-        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(context);
-        return resultCode == ConnectionResult.SUCCESS;
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int code = api.isGooglePlayServicesAvailable(NextcloudTalkApplication.getSharedApplication().getApplicationContext());
+        return code == ConnectionResult.SUCCESS;
     }
 
     @Override
