@@ -28,6 +28,7 @@ import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -37,6 +38,7 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.emoticons.EmoticonUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
+import com.stfalcon.chatkit.utils.ShapeImageView;
 
 import java.util.HashMap;
 
@@ -55,6 +57,9 @@ public class MagicIncomingTextMessageViewHolder
 
     @BindView(R.id.messageText)
     EmoticonTextView messageText;
+
+    @BindView(R.id.messageUserAvatar)
+    ShapeImageView messageUserAvatarView;
 
     @Inject
     UserUtils userUtils;
@@ -80,6 +85,14 @@ public class MagicIncomingTextMessageViewHolder
             messageAuthor.setText(author);
         } else {
             messageAuthor.setText(R.string.nc_nick_guest);
+        }
+
+        if (message.getActorType().equals("guests")) {
+            TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
+                    .endConfig().buildRound(String.valueOf(messageAuthor.getText().charAt(0)), NextcloudTalkApplication
+                            .getSharedApplication().getResources().getColor(R.color.nc_grey));
+            messageUserAvatarView.setVisibility(View.VISIBLE);
+            messageUserAvatarView.setImageDrawable(drawable);
         }
 
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();

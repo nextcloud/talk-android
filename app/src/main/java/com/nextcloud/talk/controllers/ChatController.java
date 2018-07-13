@@ -316,7 +316,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                                 @Override
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
                                     TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
-                                            .width(imageView.getMeasuredWidth()).height(imageView.getMeasuredHeight())
                                             .endConfig().buildRound("?", getResources().getColor(R.color.nc_grey));
                                     imageView.setImageDrawable(drawable);
                                     return true;
