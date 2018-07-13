@@ -104,6 +104,9 @@ public class MagicIncomingTextMessageViewHolder
         Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
         itemView.setSelected(false);
 
+        FlexboxLayout.LayoutParams layoutParams = (FlexboxLayout.LayoutParams) messageTimeView.getLayoutParams();
+        layoutParams.setWrapBefore(false);
+
         Spannable messageString = new SpannableString(message.getText());
 
         if (messageParameters != null && message.getMessageParameters().size() > 0) {
@@ -128,12 +131,11 @@ public class MagicIncomingTextMessageViewHolder
         } else if (EmoticonUtils.isMessageWithSingleEmoticonOnly(context, message.getText())) {
             messageString.setSpan(new RelativeSizeSpan(2.5f), 0, messageString.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-            FlexboxLayout.LayoutParams layoutParams = (FlexboxLayout.LayoutParams) messageTimeView.getLayoutParams();
             layoutParams.setWrapBefore(true);
-            messageTimeView.setLayoutParams(layoutParams);
             itemView.setSelected(true);
         }
 
+        messageTimeView.setLayoutParams(layoutParams);
         messageText.setText(messageString);
     }
 }
