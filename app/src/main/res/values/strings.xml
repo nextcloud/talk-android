@@ -85,7 +85,6 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Start a conversation</string>
     <string name="nc_configure_room">Configure conversation</string>
-    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Leave conversation</string>
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_set_password">Set a password</string>
@@ -145,7 +144,6 @@
     <string name="nc_share_text_pass">\nPassword: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">With microphone disabled, click&amp;hold to use Push-to-talk</string>
     <string name="nc_store_short_desc">Have private video calls and chat using your own server.</string>
