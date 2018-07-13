@@ -86,6 +86,7 @@ import com.otaliastudios.autocomplete.AutocompletePresenter;
 import com.otaliastudios.autocomplete.CharPolicy;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.commons.models.IMessage;
+import com.stfalcon.chatkit.messages.MessageHolders;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
@@ -297,13 +298,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             adapterWasNull = true;
 
-            MessagesListAdapter.HoldersConfig holdersConfig = new MessagesListAdapter.HoldersConfig();
-            holdersConfig.setIncoming(MagicIncomingTextMessageViewHolder.class,
-                    R.layout.item_custom_incoming_text_message);
-            holdersConfig.setOutcoming(MagicOutcomingTextMessageViewHolder.class,
-                    R.layout.item_custom_outcoming_text_message);
+            MessageHolders messageHolders = new MessageHolders();
+            messageHolders.setIncomingTextConfig(MagicIncomingTextMessageViewHolder.class, R.layout.item_custom_incoming_text_message);
+            messageHolders.setOutcomingTextConfig(MagicOutcomingTextMessageViewHolder.class, R.layout.item_custom_outcoming_text_message);
 
-            adapter = new MessagesListAdapter<>(conversationUser.getUserId(), holdersConfig, new ImageLoader() {
+            adapter = new MessagesListAdapter<>(conversationUser.getUserId(), messageHolders, new ImageLoader() {
                 @Override
                 public void loadImage(ImageView imageView, String url) {
                     GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
