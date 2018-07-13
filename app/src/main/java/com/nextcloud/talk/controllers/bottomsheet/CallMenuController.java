@@ -125,18 +125,9 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
         if (menuType.equals(MenuType.REGULAR)) {
             if (!TextUtils.isEmpty(room.getDisplayName())) {
-<<<<<<< Updated upstream
-                menuItems.add(new MenuItem(
-                        getResources().getString(
-                                R.string.nc_configure_named_room, room.getDisplayName()), 0, null));
-            } else if (!TextUtils.isEmpty(room.getName())) {
-                menuItems.add(new MenuItem(getResources().getString(
-                        R.string.nc_configure_named_room, room.getName()), 0, null));
-=======
                 menuItems.add(new MenuItem(room.getDisplayName(), 0, null));
             } else if (!TextUtils.isEmpty(room.getName())) {
                 menuItems.add(new MenuItem(room.getName(), 0, null));
->>>>>>> Stashed changes
             } else {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
             }
