@@ -23,6 +23,8 @@ package com.nextcloud.talk.utils;
 
 import android.content.Intent;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.gms.security.ProviderInstaller.ProviderInstallListener;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -33,6 +35,13 @@ public class ClosedInterfaceImpl implements ClosedInterface, ProviderInstallList
     public void providerInstallerInstallIfNeededAsync() {
         ProviderInstaller.installIfNeededAsync(NextcloudTalkApplication.getSharedApplication().getApplicationContext(),
                 this);
+    }
+
+    @Override
+    public boolean isGooglePlayServicesAvailable() {
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int code = api.isGooglePlayServicesAvailable(NextcloudTalkApplication.getSharedApplication().getApplicationContext());
+        return code == ConnectionResult.SUCCESS;
     }
 
     @Override
