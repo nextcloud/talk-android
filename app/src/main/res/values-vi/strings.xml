@@ -77,8 +77,8 @@
     <string name="nc_start_conversation">Bắt đầu một cuộc Đàm thoại</string>
     <string name="nc_configure_room">Cấu hình đàm thoại</string>
     <string name="nc_configure_named_room">%1$s</string>
-    <string name="nc_leave">Thoát đàm thoại</string>
-    <string name="nc_rename">Đổi tên đàm thoại</string>
+    <string name="nc_leave">Rời khỏi cuộc đàm thoại</string>
+    <string name="nc_rename">Đổi tên cuộc đàm thoại</string>
     <string name="nc_set_password">Đặt mật khẩu</string>
     <string name="nc_change_password">Đổi mật khẩu</string>
     <string name="nc_clear_password">Xóa mật khẩu</string>
