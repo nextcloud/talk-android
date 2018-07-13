@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.flexbox.FlexboxLayout;
 import com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -60,6 +61,9 @@ public class MagicIncomingTextMessageViewHolder
 
     @BindView(R.id.messageUserAvatar)
     ShapeImageView messageUserAvatarView;
+
+    @BindView(R.id.messageTime)
+    TextView messageTimeView;
 
     @Inject
     UserUtils userUtils;
@@ -98,6 +102,7 @@ public class MagicIncomingTextMessageViewHolder
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
 
         Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+        itemView.setSelected(false);
 
         Spannable messageString = new SpannableString(message.getText());
 
@@ -123,6 +128,9 @@ public class MagicIncomingTextMessageViewHolder
         } else if (EmoticonUtils.isMessageWithSingleEmoticonOnly(context, message.getText())) {
             messageString.setSpan(new RelativeSizeSpan(2.5f), 0, messageString.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            FlexboxLayout.LayoutParams layoutParams = (FlexboxLayout.LayoutParams) messageTimeView.getLayoutParams();
+            layoutParams.setWrapBefore(true);
+            messageTimeView.setLayoutParams(layoutParams);
             itemView.setSelected(true);
         }
 

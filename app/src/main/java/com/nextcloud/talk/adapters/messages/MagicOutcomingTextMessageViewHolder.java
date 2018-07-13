@@ -25,7 +25,9 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -48,6 +50,9 @@ import butterknife.ButterKnife;
 public class MagicOutcomingTextMessageViewHolder extends MessageHolders.OutcomingTextMessageViewHolder<ChatMessage> {
     @BindView(R.id.messageText)
     EmoticonTextView messageText;
+
+    @BindView(R.id.messageTime)
+    TextView messageTimeView;
 
     @Inject
     UserUtils userUtils;
@@ -93,6 +98,10 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
         } else if (EmoticonUtils.isMessageWithSingleEmoticonOnly(context, message.getText())) {
             messageString.setSpan(new RelativeSizeSpan(2.5f), 0, messageString.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            FlexboxLayout.LayoutParams layoutParams = (FlexboxLayout.LayoutParams) messageTimeView.getLayoutParams();
+            layoutParams.setWrapBefore(true);
+            messageTimeView.setLayoutParams(layoutParams);
+            messageTimeView.setTextColor(context.getResources().getColor(R.color.warm_grey_four));
             itemView.setSelected(true);
         }
 

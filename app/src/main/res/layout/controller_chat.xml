@@ -51,7 +51,6 @@
         app:outcomingTextColor="@color/nc_outcoming_text_default"
         app:outcomingTextLinkColor="@color/nc_outcoming_text_default"
         app:outcomingTextSize="@dimen/chat_text_size"
-        app:outcomingTimeTextColor="@color/warm_grey_four"
         app:outcomingTimeTextSize="12sp"
         app:dateHeaderTextSize="13sp"
         app:textAutoLink="all"/>
@@ -62,8 +61,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/separator"
-        android:layout_centerHorizontal="true"
         android:paddingEnd="8dp"
+        android:layout_centerHorizontal="true"
         app:pb_backgroundColor="@color/colorPrimary"
         app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
         app:pb_text="@string/nc_new_messages"

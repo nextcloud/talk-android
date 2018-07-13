@@ -33,7 +33,7 @@
         android:id="@id/messageUserAvatar"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_marginEnd="8dp"/>
 
     <com.google.android.flexbox.FlexboxLayout
@@ -64,14 +64,13 @@
             app:layout_wrapBefore="true"/>
 
 
+        <TextView
+            android:id="@id/messageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/messageText"
+            android:layout_marginStart="8dp"
+            app:layout_alignSelf="center"/>
+
     </com.google.android.flexbox.FlexboxLayout>
-
-    <TextView
-        android:id="@id/messageTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/bubble"
-        android:layout_below="@id/bubble"
-        android:layout_marginStart="16dp"/>
-
 </RelativeLayout>

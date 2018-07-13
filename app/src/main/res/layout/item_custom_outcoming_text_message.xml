@@ -47,14 +47,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignWithParentIfMissing="true"/>
+
+        <TextView
+            android:id="@id/messageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/messageText"
+            android:layout_marginStart="8dp"
+            app:layout_alignSelf="center"/>
+
     </com.google.android.flexbox.FlexboxLayout>
-
-    <TextView
-        android:id="@id/messageTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/bubble"
-        android:layout_below="@id/bubble"
-        android:layout_marginStart="16dp"/>
-
 </RelativeLayout>
