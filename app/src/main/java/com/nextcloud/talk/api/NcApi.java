@@ -289,4 +289,13 @@ public interface NcApi {
                                                                  @Url String url, @Query("search") String query,
                                                                  @Nullable @Query("limit") Integer limit);
 
+    // Url is: /api/{apiVersion}/room/{token}/favorite
+    @POST
+    Observable<GenericOverall> addConversationToFavorites(@Header("Authorization") String authorization,
+                                                   @Url String url);
+
+    // Url is: /api/{apiVersion}/room/{token}/favorite
+    @DELETE
+    Observable<GenericOverall> removeConversationFromFavorites(@Header("Authorization") String authorization,
+                                                          @Url String url);
 }
