@@ -129,7 +129,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
-    implementation 'com.github.HITGIF:TextFieldBoxes:1.4.4'
+    implementation 'com.github.HITGIF:TextFieldBoxes:1.4.3'
 
     implementation 'eu.davidea:flexible-adapter:5.0.5'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b5'
