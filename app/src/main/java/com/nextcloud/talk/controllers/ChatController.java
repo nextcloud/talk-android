@@ -853,7 +853,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
             case android.R.id.home:
                 onDestroy();
                 return true;
-
             case R.id.conversation_video_call:
                 startACall(false);
                 return true;
