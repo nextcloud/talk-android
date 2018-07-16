@@ -598,13 +598,7 @@ public class CallController extends BaseController {
     public void onEnableSpeakerphoneClick() {
         if (audioManager != null) {
             audioManager.toggleUseSpeakerphone();
-            if (audioManager.isSpeakerphoneAutoOn()) {
-                callControlEnableSpeaker.getFrontImageView().setImageDrawable(getResources().getDrawable(R.drawable
-                        .ic_speaker_white_24dp));
-            } else {
-                callControlEnableSpeaker.getFrontImageView().setImageDrawable(getResources().getDrawable(R.drawable
-                        .ic_hearing_white_24dp));
-            }
+            callControlEnableSpeaker.flipSilently(!callControlEnableSpeaker.isFlipped());
         }
     }
 

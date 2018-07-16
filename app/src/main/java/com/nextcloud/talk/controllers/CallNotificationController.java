@@ -21,10 +21,17 @@
 package com.nextcloud.talk.controllers;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +47,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -96,6 +106,9 @@ public class CallNotificationController extends BaseController {
     @BindView(R.id.callAnswerCameraView)
     MagicFlipView callAnswerCameraView;
 
+    @BindView(R.id.constraintLayout)
+    ConstraintLayout constraintLayout;
+
     private List<Disposable> disposablesList = new ArrayList<>();
     private Bundle originalBundle;
     private String roomId;
@@ -104,6 +117,7 @@ public class CallNotificationController extends BaseController {
     private Room currentRoom;
     private MediaPlayer mediaPlayer;
     private boolean leavingScreen = false;
+    private RenderScript renderScript;
 
     public CallNotificationController(Bundle args) {
         super(args);
@@ -249,6 +263,7 @@ public class CallNotificationController extends BaseController {
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
 
+        renderScript = RenderScript.create(getActivity());
         handleFromNotification();
 
         String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
@@ -296,8 +311,27 @@ public class CallNotificationController extends BaseController {
                         .load(glideUrl)
                         .centerInside()
                         .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(avatarImageView);
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                                if (getActivity() != null) {
+                                    avatarImageView.setImageBitmap(TransformationUtils.circleCrop(GlideApp.get
+                                            (getActivity()).getBitmapPool(), resource, avatarSize, avatarSize));
+                                }
+
+                                final Allocation input = Allocation.createFromBitmap(renderScript, resource);
+                                final Allocation output = Allocation.createTyped(renderScript, input.getType());
+                                final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(renderScript, Element
+                                        .U8_4(renderScript));
+                                script.setRadius(15f);
+                                script.setInput(input);
+                                script.forEach(output);
+                                output.copyTo(resource);
+
+                                constraintLayout.setBackground(new BitmapDrawable(resource));
+                            }
+                        });
+
 
                 break;
             case ROOM_GROUP_CALL:

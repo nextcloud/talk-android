@@ -20,10 +20,14 @@
 
 package com.nextcloud.talk.adapters.messages;
 
+import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -31,6 +35,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.emoticons.EmoticonUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import java.util.HashMap;
@@ -46,16 +51,22 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
     @BindView(R.id.messageText)
     EmoticonTextView messageText;
 
+    @BindView(R.id.messageTime)
+    TextView messageTimeView;
+
     @Inject
     UserUtils userUtils;
 
     private UserEntity currentUser;
+
+    private View itemView;
 
     public MagicOutcomingTextMessageViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
+        this.itemView = itemView;
         currentUser = userUtils.getCurrentUser();
     }
 
@@ -66,6 +77,13 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
 
         Spannable messageString = new SpannableString(message.getText());
+
+        Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+        itemView.setSelected(false);
+        messageTimeView.setTextColor(context.getResources().getColor(R.color.white60));
+
+        FlexboxLayout.LayoutParams layoutParams = (FlexboxLayout.LayoutParams) messageTimeView.getLayoutParams();
+        layoutParams.setWrapBefore(false);
 
         if (messageParameters != null && message.getMessageParameters().size() > 0) {
             for (String key : message.getMessageParameters().keySet()) {
@@ -80,9 +98,15 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                 }
             }
 
+        } else if (EmoticonUtils.isMessageWithSingleEmoticonOnly(context, message.getText())) {
+            messageString.setSpan(new RelativeSizeSpan(2.5f), 0, messageString.length(),
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            layoutParams.setWrapBefore(true);
+            messageTimeView.setTextColor(context.getResources().getColor(R.color.warm_grey_four));
+            itemView.setSelected(true);
         }
 
+        messageTimeView.setLayoutParams(layoutParams);
         messageText.setText(messageString);
     }
-
 }

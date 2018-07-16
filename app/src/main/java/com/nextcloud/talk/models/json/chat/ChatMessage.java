@@ -91,7 +91,11 @@ public class ChatMessage implements IMessage {
 
             @Override
             public String getAvatar() {
-                return ApiUtils.getUrlForAvatarWithName(getBaseUrl(), actorId, R.dimen.avatar_size);
+                if (getActorType().equals("users")) {
+                    return ApiUtils.getUrlForAvatarWithName(getBaseUrl(), actorId, R.dimen.avatar_size);
+                } else {
+                    return null;
+                }
             }
         };
     }

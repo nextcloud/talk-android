@@ -46,10 +46,11 @@ import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
+import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -261,7 +262,13 @@ public class AccountVerificationController extends BaseController {
                     public void onNext(UserEntity userEntity) {
                         internalAccountId = userEntity.getId();
 
-                        registerForPush();
+                        if (new ClosedInterfaceImpl().isGooglePlayServicesAvailable()) {
+                            registerForPush();
+                        } else {
+                            getActivity().runOnUiThread(() -> progressText.setText(progressText.getText().toString() + "\n" +
+                                    getResources().getString(R.string.nc_push_disabled)));
+                            fetchAndStoreCapabilities();
+                        }
                     }
 
                     @Override

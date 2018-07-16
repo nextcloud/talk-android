@@ -21,33 +21,42 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                              xmlns:app="http://schemas.android.com/apk/res-auto"
                                              xmlns:tools="http://schemas.android.com/tools"
+                                             android:id="@+id/constraintLayout"
                                              android:layout_width="match_parent"
                                              android:layout_height="match_parent"
                                              android:background="@color/grey950">
 
-    <TextView
-        android:id="@+id/incomingCallTextView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/nc_incoming_call"
-        android:textAlignment="center"
-        android:textColor="@color/white30"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:background="@drawable/incoming_gradient">
 
-    <TextView
-        android:id="@+id/conversationNameTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ellipsize="marquee"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        app:layout_constraintTop_toBottomOf="@+id/incomingCallTextView"
-        tools:text="Victor Gregorius Magnus"/>
+        <TextView
+            android:id="@+id/incomingCallTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/nc_incoming_call"
+            android:textAlignment="center"
+            android:textColor="@color/white30"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/conversationNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:layout_marginBottom="16dp"
+            android:layout_below="@+id/incomingCallTextView"
+            tools:text="Victor Gregorius Magnus"/>
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/avatarImageView"

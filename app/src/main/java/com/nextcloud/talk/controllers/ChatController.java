@@ -46,6 +46,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.load.DataSource;
@@ -86,6 +89,7 @@ import com.otaliastudios.autocomplete.AutocompletePresenter;
 import com.otaliastudios.autocomplete.CharPolicy;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.commons.models.IMessage;
+import com.stfalcon.chatkit.messages.MessageHolders;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
@@ -107,6 +111,7 @@ import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -133,6 +138,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
     MessageInput messageInputView;
     @BindView(R.id.popupBubbleView)
     PopupBubble popupBubble;
+    @BindView(R.id.emptyLayout)
+    RelativeLayout emptyLayout;
+    @BindView(R.id.sendHiTextView)
+    TextView sendHiTextView;
+    @BindView(R.id.progressBar)
+    ProgressBar loadingProgressBar;
     private List<Disposable> disposableList = new ArrayList<>();
     private String conversationName;
     private String roomToken;
@@ -157,6 +168,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private Boolean startCallFromNotification;
     private String roomId;
     private boolean voiceOnly;
+
+    private boolean isFirstMessagesProcessing = true;
+    private boolean isHelloClicked;
 
     public ChatController(Bundle args) {
         super(args);
@@ -286,8 +300,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
         getActionBar().show();
         boolean adapterWasNull = false;
 
+        sendHiTextView.setText(String.format(getResources().getString(R.string.nc_chat_empty), getResources()
+                .getString(R.string.nc_hello)));
 
         if (adapter == null) {
+
+            loadingProgressBar.setVisibility(View.VISIBLE);
 
             try {
                 cache.evictAll();
@@ -297,13 +315,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             adapterWasNull = true;
 
-            MessagesListAdapter.HoldersConfig holdersConfig = new MessagesListAdapter.HoldersConfig();
-            holdersConfig.setIncoming(MagicIncomingTextMessageViewHolder.class,
-                    R.layout.item_custom_incoming_text_message);
-            holdersConfig.setOutcoming(MagicOutcomingTextMessageViewHolder.class,
-                    R.layout.item_custom_outcoming_text_message);
+            MessageHolders messageHolders = new MessageHolders();
+            messageHolders.setIncomingTextConfig(MagicIncomingTextMessageViewHolder.class, R.layout.item_custom_incoming_text_message);
+            messageHolders.setOutcomingTextConfig(MagicOutcomingTextMessageViewHolder.class, R.layout.item_custom_outcoming_text_message);
 
-            adapter = new MessagesListAdapter<>(conversationUser.getUserId(), holdersConfig, new ImageLoader() {
+            adapter = new MessagesListAdapter<>(conversationUser.getUserId(), messageHolders, new ImageLoader() {
                 @Override
                 public void loadImage(ImageView imageView, String url) {
                     GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
@@ -317,7 +333,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                                 @Override
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
                                     TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
-                                            .width(imageView.getMeasuredWidth()).height(imageView.getMeasuredHeight())
                                             .endConfig().buildRound("?", getResources().getColor(R.color.nc_grey));
                                     imageView.setImageDrawable(drawable);
                                     return true;
@@ -331,6 +346,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             .into(imageView);
                 }
             });
+        } else {
+            if (adapter.getItemCount() == 0) {
+                emptyLayout.setVisibility(View.VISIBLE);
+            } else {
+                messagesListView.setVisibility(View.VISIBLE);
+            }
         }
 
 
@@ -478,6 +499,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
                 });
 
+    }
+
+    @OnClick(R.id.emptyLayout)
+    public void sendHello() {
+        if (!isHelloClicked) {
+            isHelloClicked = true;
+            sendMessage(getResources().getString(R.string.nc_hello) + " 👋", 1);
+        }
     }
 
     private void joinRoomWithPassword() {
@@ -697,7 +726,26 @@ public class ChatController extends BaseController implements MessagesListAdapte
             ChatOverall chatOverall = (ChatOverall) response.body();
             List<ChatMessage> chatMessageList = chatOverall.getOcs().getData();
 
+            if (isFirstMessagesProcessing) {
+                isFirstMessagesProcessing = false;
+                loadingProgressBar.setVisibility(View.GONE);
+
+                if (chatMessageList.size() == 0) {
+                    emptyLayout.setVisibility(View.VISIBLE);
+                } else {
+                    messagesListView.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (emptyLayout.getVisibility() != View.GONE) {
+                    emptyLayout.setVisibility(View.GONE);
+                }
+                if (messagesListView.getVisibility() != View.VISIBLE) {
+                    messagesListView.setVisibility(View.VISIBLE);
+                }
+            }
+
             if (!isFromTheFuture) {
+
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessageList.get(i).setBaseUrl(conversationUser.getBaseUrl());
                     if (globalLastKnownPastMessageId == -1 || chatMessageList.get(i).getJsonMessageId() <
@@ -712,7 +760,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
                 }
 
+
                 adapter.addToEnd(chatMessageList, false);
+
 
             } else {
                 for (int i = 0; i < chatMessageList.size(); i++) {
@@ -754,6 +804,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 pullChatMessages(1);
             }
         } else if (response.code() == 304 && !isFromTheFuture) {
+            if (isFirstMessagesProcessing) {
+                isFirstMessagesProcessing  = false;
+                loadingProgressBar.setVisibility(View.GONE);
+
+                if (emptyLayout.getVisibility() != View.VISIBLE) {
+                    emptyLayout.setVisibility(View.VISIBLE);
+                }
+            }
+
             historyRead = true;
 
             if (!lookingIntoFuture) {
@@ -794,7 +853,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
             case android.R.id.home:
                 onDestroy();
                 return true;
-
             case R.id.conversation_video_call:
                 startACall(false);
                 return true;
