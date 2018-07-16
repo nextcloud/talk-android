@@ -196,7 +196,7 @@ Find Nextcloud on https://nextcloud.com</string>
     <string name="nc_description_send_message_button">Send message</string>
 
     <!-- Chat empty state -->
-    <string name="nc_chat_empty">Click to be the first to say %1$s!</string>
+    <string name="nc_chat_empty">Tap to be the first to say %1$s!</string>
     <string name="nc_hello">Hello</string>
 
 </resources>
