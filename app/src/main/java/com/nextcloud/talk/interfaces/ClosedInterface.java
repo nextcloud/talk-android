@@ -22,4 +22,5 @@ package com.nextcloud.talk.interfaces;
 
 public interface ClosedInterface {
     void providerInstallerInstallIfNeededAsync();
+    boolean isGooglePlayServicesAvailable();
 }
