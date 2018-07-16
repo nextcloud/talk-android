@@ -34,6 +34,10 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
     @SuppressLint("LongLogTag")
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        if (remoteMessage == null) {
+            return;
+        }
+
         if (remoteMessage.getData() != null) {
             PersistableBundleCompat persistableBundleCompat = new PersistableBundleCompat();
             persistableBundleCompat.putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, remoteMessage.getData().get
