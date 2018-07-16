@@ -67,6 +67,10 @@ public class MagicWebRTCUtils {
         add("ONE E1003"); // OnePlus X
         add("One"); // OnePlus One
         add("Moto G5");
+        add("Moto G (5S) Plus");
+        add("Moto G4");
+        add("TA-1053");
+        add("E5823"); // Sony Z5 Compact
     }};
 
     public static Set<String> OPEN_SL_ES_WHITELIST = new HashSet<String>() {{
