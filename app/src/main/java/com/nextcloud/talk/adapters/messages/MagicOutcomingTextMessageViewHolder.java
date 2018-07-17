@@ -34,8 +34,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.EmojiDetection;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.utils.emoticons.EmoticonUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import java.util.HashMap;
@@ -98,7 +98,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                 }
             }
 
-        } else if (EmoticonUtils.isMessageWithSingleEmoticonOnly(context, message.getText())) {
+        } else if (EmojiDetection.isMessageWithSingleEmoticonOnly(context, message.getText())) {
             messageString.setSpan(new RelativeSizeSpan(2.5f), 0, messageString.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             layoutParams.setWrapBefore(true);
