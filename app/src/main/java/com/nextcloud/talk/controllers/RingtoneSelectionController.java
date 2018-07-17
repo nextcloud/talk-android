@@ -229,7 +229,6 @@ public class RingtoneSelectionController extends BaseController implements Flexi
         NotificationSoundItem notificationSoundItem = (NotificationSoundItem) adapter.getItem(position);
 
         Uri ringtoneUri = null;
-        Runnable runnable = () -> endMediaPlayer();
 
         if (!TextUtils.isEmpty(notificationSoundItem.getNotificationSoundUri())) {
             ringtoneUri = Uri.parse(notificationSoundItem.getNotificationSoundUri());
@@ -238,7 +237,12 @@ public class RingtoneSelectionController extends BaseController implements Flexi
             mediaPlayer = MediaPlayer.create(getActivity(), ringtoneUri);
 
             cancelMediaPlayerHandler = new Handler();
-            cancelMediaPlayerHandler.postDelayed(runnable, mediaPlayer.getDuration() + 25);
+            cancelMediaPlayerHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    endMediaPlayer();
+                }
+            }, mediaPlayer.getDuration() + 25);
             mediaPlayer.start();
         }
 
