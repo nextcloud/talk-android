@@ -76,7 +76,6 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Yeni bir konuşma başlat</string>
     <string name="nc_configure_room">Konuşmayı yapılandır</string>
-    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Konuşmadan ayrıl</string>
     <string name="nc_rename">Konuşmayı yeniden adlandır</string>
     <string name="nc_set_password">Bir parola ayarlayın</string>
@@ -136,7 +135,6 @@
     <string name="nc_share_text_pass">\nParola: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Bas-konuş</string>
     <string name="nc_push_to_talk_desc">Mikrofon devre dışı iken, Bas-konuş üzerine tıklayıp basılı tutun</string>
     <string name="nc_store_short_desc">Kendi sunucunuz üzerinden görüntülü görüşme ve sohbet yapın.</string>
@@ -190,4 +188,4 @@ Nextcloud web sitesi https://nextcloud.com</string>
     <string name="nc_description_more_menu_group">%1$s herkese açık konuşma menüsü</string>
     <string name="nc_description_send_message_button">İleti gönder</string>
 
-</resources>
+    </resources>

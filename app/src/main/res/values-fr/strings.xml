@@ -76,7 +76,6 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Commencer une conversation</string>
     <string name="nc_configure_room">Configurer la conversation</string>
-    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Quitter la conversation</string>
     <string name="nc_rename">Renommer la conversation</string>
     <string name="nc_set_password">Saisissez un mot de passe</string>
@@ -136,7 +135,6 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_share_text_pass">\nLe mot de passe : %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">fonction Talkie-Walkie</string>
     <string name="nc_push_to_talk_desc">Si le micro est désactivé, maintenez &amp; pour utiliser la fonction Talkie-Walkie</string>
     <string name="nc_store_short_desc">Ayez des appels vidéos et des discussions privés en utilisant votre propre serveur.</string>
@@ -184,4 +182,4 @@ Trouvez Nextcloud sur https://nextcloud.com</string>
 
     <string name="nc_description_send_message_button">Envoyer un message</string>
 
-</resources>
+    </resources>

@@ -76,7 +76,6 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Comienza una conversación</string>
     <string name="nc_configure_room">Configura la conversación</string>
-    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Abandonar conversación</string>
     <string name="nc_rename">Renombrar conversación</string>
     <string name="nc_set_password">Configura una contraseña</string>
@@ -136,7 +135,6 @@
     <string name="nc_share_text_pass">\nContraseña: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Con el micrófono deshabilitado, mantén pulsado &amp; para usar Push-to-talk</string>
     <string name="nc_store_short_desc">Haz llamadas de vídeo y conversaciones usando tu propio servidor.</string>
@@ -188,4 +186,4 @@ Encuentra Nextcloud en https://nextcloud.com</string>
     <string name="nc_description_more_menu_group">Menú para la conversación pública %1$s</string>
     <string name="nc_description_send_message_button">Enviar mensaje</string>
 
-</resources>
+    </resources>

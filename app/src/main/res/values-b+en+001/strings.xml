@@ -122,7 +122,6 @@
     <string name="nc_share_text_pass">\nPassword: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Press-to-transmit</string>
     <string name="nc_push_to_talk_desc">With the microphone disabled, click&amp;hold to use Press-to-transmit</string>
     <string name="nc_store_short_desc">Have private video calls and chat using your own server.</string>

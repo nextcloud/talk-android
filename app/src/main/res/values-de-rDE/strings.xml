@@ -76,7 +76,6 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Starte eine Unterhaltung</string>
     <string name="nc_configure_room">Unterhaltung einrichten</string>
-    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Unterhaltung verlassen</string>
     <string name="nc_rename">Unterhaltung umbenennen</string>
     <string name="nc_set_password">Passwort setzen</string>
@@ -135,7 +134,6 @@
     <string name="nc_share_text_pass">\nPasswort: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Funkgerät-Modus</string>
     <string name="nc_push_to_talk_desc">Bei stummgeschaltetem Mikrofon drücken&amp;halten Sie die Sprechtaste um zu senden (Funkgerät-Modus)</string>
     <string name="nc_store_short_desc">Nutzen Sie private Videoanrufe und den Chat durch die Verwendung eines eigenen Servers.</string>
@@ -187,4 +185,4 @@ Finden Sie Nextcloud auf https://nextcloud.com</string>
     <string name="nc_description_more_menu_group">Menü für die öffentliche Unterhaltung %1$s</string>
     <string name="nc_description_send_message_button">Nachricht senden</string>
 
-</resources>
+    </resources>

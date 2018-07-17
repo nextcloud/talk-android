@@ -72,7 +72,6 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">התחלת דיון</string>
     <string name="nc_configure_room">הגדרת דיון</string>
-    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">יציאה מהדיון</string>
     <string name="nc_rename">שינוי שם הדיון</string>
     <string name="nc_set_password">הגדרת ססמה</string>
@@ -135,4 +134,4 @@
     <string name="nc_description_more_menu_group">תפריט לדיון ציבורי %1$s</string>
     <string name="nc_description_send_message_button">שליחת הודעה</string>
 
-</resources>
+    </resources>

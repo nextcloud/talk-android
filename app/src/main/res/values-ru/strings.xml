@@ -76,7 +76,6 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Начать беседу</string>
     <string name="nc_configure_room">Настроить беседу</string>
-    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Покинуть беседу</string>
     <string name="nc_rename">Переименовать разговор</string>
     <string name="nc_set_password">Задать пароль</string>
@@ -134,7 +133,6 @@
     <string name="nc_share_text_pass">\nПароль: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk"> PTT (нажми чтобы говорить)</string>
     <string name="nc_push_to_talk_desc">Нажмите и удерживайте для использования PTT при отключенном микрофоне</string>
     <string name="nc_store_short_desc">Личные видеовызовы и переписка с использованием собственного сервера.</string>
@@ -186,4 +184,4 @@ Nextcloud Talk поддерживает:
     <string name="nc_description_more_menu_group">Меню для общей беседы %1$s</string>
     <string name="nc_description_send_message_button">Отправить сообщение</string>
 
-</resources>
+    </resources>

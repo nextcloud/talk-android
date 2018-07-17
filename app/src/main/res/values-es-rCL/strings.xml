@@ -122,7 +122,6 @@ teléfonos móviles. Puedes intentar unirte a la conversación a través de un n
     <string name="nc_share_text_pass">\nContraseña:%1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Presiona-para-hablar</string>
     <string name="nc_push_to_talk_desc">Con el microfono deshabilitado, haz click &amp; presiona para usar Presiona-para-hablar</string>
     <string name="nc_store_short_desc">Haz video llamadas y chats privados usnaod tu propio servidor.</string>

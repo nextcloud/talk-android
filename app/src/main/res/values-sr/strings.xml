@@ -76,7 +76,6 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Започни разговор</string>
     <string name="nc_configure_room">Подеси разговор</string>
-    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Напусти разговор</string>
     <string name="nc_rename">Преименуј разговор</string>
     <string name="nc_set_password">Постави лозинку</string>
@@ -136,7 +135,6 @@
     <string name="nc_share_text_pass">\nЛозинка: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Притисни за разговор</string>
     <string name="nc_push_to_talk_desc">Са онемогућеним микрофоном, кликните &amp; држите да користите притисак за разговор</string>
     <string name="nc_store_short_desc">Обављајте приватне видео позиве и ћаскајте користећи Ваш сервер.</string>
@@ -189,4 +187,4 @@ Nextcloud Talk апликација захтева да имате Некстк�
     <string name="nc_description_more_menu_group">Мени јавног разговора %1$s</string>
     <string name="nc_description_send_message_button">Пошаљи поруку</string>
 
-</resources>
+    </resources>

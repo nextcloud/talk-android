@@ -76,7 +76,6 @@
     <!-- Room menu -->
     <string name="nc_start_conversation">Bắt đầu một cuộc Đàm thoại</string>
     <string name="nc_configure_room">Cấu hình đàm thoại</string>
-    <string name="nc_configure_named_room">%1$s</string>
     <string name="nc_leave">Rời khỏi cuộc đàm thoại</string>
     <string name="nc_rename">Đổi tên cuộc đàm thoại</string>
     <string name="nc_set_password">Đặt mật khẩu</string>
@@ -136,7 +135,6 @@
     <string name="nc_share_text_pass">\nMật khẩu: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Bấm để nói</string>
     <string name="nc_push_to_talk_desc">Mới Micro bị tắt, hãy bấm và giữ  &amp; để trò chuyện</string>
     <string name="nc_store_short_desc">Có cuộc gọi và trò chuyện video riêng tư bằng máy chủ của riêng bạn.</string>
@@ -162,4 +160,4 @@
     <string name="nc_description_more_menu_group">Danh mục Đàm thoại công khai %1$s</string>
     <string name="nc_description_send_message_button">Gửi thông điệp</string>
 
-</resources>
+    </resources>

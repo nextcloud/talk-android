@@ -111,7 +111,6 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
     <string name="nc_share_text_pass">\nWachtwoord: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Druk-om-te-praten</string>
     <string name="nc_push_to_talk_desc">Met uitgeschakelde microfoon, klik&amp;indrukken om Druk-om-te-praten te gebruiken</string>
     <string name="nc_store_short_desc">Heb vertrouwelijke videogesprekken en chats via je eigen server.</string>

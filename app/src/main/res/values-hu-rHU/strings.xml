@@ -130,7 +130,6 @@
     <string name="nc_share_text_pass">\nJelszó: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Letiltott mikorfonnal kattintson a &amp; tartásra, hogy használni tudja az adóvevőt</string>
     <string name="nc_store_short_desc">Intézz videóhívásokat és magánbeszélgetéseket saját szervered segítségével.</string>
@@ -182,4 +181,4 @@ A Nextcloudról: https://nextcloud.com
     <string name="nc_description_more_menu_group">Menü a nyilvános beszélgetéshez: %1$s</string>
     <string name="nc_description_send_message_button">Üzenet küldése</string>
 
-</resources>
+    </resources>

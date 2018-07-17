@@ -115,7 +115,6 @@
     <string name="nc_share_text_pass">\nGeslo: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_empty"></string>
     <string name="nc_push_to_talk">Možnost »push-to-talk«</string>
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Vpis sporočila ...</string>
