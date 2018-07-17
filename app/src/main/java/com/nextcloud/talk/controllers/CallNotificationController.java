@@ -236,10 +236,12 @@ public class CallNotificationController extends BaseController {
                         for (Room room : roomsOverall.getOcs().getData()) {
                             if (roomId.equals(room.getRoomId())) {
                                 currentRoom = room;
-                                conversationNameTextView.setText(currentRoom.getDisplayName());
-                                loadAvatar();
-                                checkIfAnyParticipantsRemainInRoom();
-                                showAnswerControls();
+                                if (conversationNameTextView != null) {
+                                    conversationNameTextView.setText(currentRoom.getDisplayName());
+                                    loadAvatar();
+                                    checkIfAnyParticipantsRemainInRoom();
+                                    showAnswerControls();
+                                }
                                 break;
                             }
                         }
