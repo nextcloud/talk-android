@@ -26,6 +26,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.nextcloud.talk.R;
 
@@ -38,6 +39,8 @@ import java.util.regex.Pattern;
 
 public final class EmojiDetection {
 
+    private static final String TAG = "EmojiDetection";
+
     private static Pattern regexPattern;
 
     public static boolean isMessageWithSingleEmoticonOnly(@NonNull final Context context,
@@ -45,9 +48,8 @@ public final class EmojiDetection {
 
         int startPosition = -1;
         int endPosition = -1;
+
         if (!TextUtils.isEmpty(text)) {
-
-
             final Matcher matcher = getRegex(context).matcher(text);
             while (matcher.find()) {
                 if (startPosition == -1 && endPosition == -1) {
@@ -76,7 +78,7 @@ public final class EmojiDetection {
 
     @NonNull
     private static String readTextFile(@NonNull Context context, int rowResource) {
-        InputStream inputStream = context.getResources().openRawResource(rowResource); // getting json
+        InputStream inputStream = context.getResources().openRawResource(rowResource);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
         StringBuilder builder = new StringBuilder();
@@ -84,16 +86,16 @@ public final class EmojiDetection {
             String sCurrentLine;
             while ((sCurrentLine = br.readLine()) != null) builder.append(sCurrentLine);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getLocalizedMessage());
         } finally {
             try {
                 inputStream.close();
                 br.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getLocalizedMessage());
             }
         }
+
         return builder.toString();
     }
-
 }
