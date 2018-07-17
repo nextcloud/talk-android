@@ -15,8 +15,8 @@ android {
         targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        versionCode 49
-        versionName "2.1.0"
+        versionCode 50
+        versionName "2.1.1"
 
         flavorDimensions "default"
 
