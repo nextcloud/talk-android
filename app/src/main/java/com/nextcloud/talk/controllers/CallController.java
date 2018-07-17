@@ -1577,23 +1577,25 @@ public class CallController extends BaseController {
     }
 
     private void setupAvatarForSession(String session) {
-        RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(session);
-        if (relativeLayout != null) {
-            ImageView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
+        if (remoteRenderersLayout != null) {
+            RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(session);
+            if (relativeLayout != null) {
+                ImageView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
 
-            if (participantMap.containsKey(session) && avatarImageView.getDrawable() == null) {
+                if (participantMap.containsKey(session) && avatarImageView.getDrawable() == null) {
 
-                int size = Math.round(getResources().getDimension(R.dimen.avatar_size_big));
+                    int size = Math.round(getResources().getDimension(R.dimen.avatar_size_big));
 
-                if (getActivity() != null) {
-                    GlideApp.with(getActivity())
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(ApiUtils.getUrlForAvatarWithName(baseUrl, participantMap.get(session).getUserId(), R.dimen.avatar_size_big))
-                            .centerInside()
-                            .override(size, size)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(avatarImageView);
+                    if (getActivity() != null) {
+                        GlideApp.with(getActivity())
+                                .asBitmap()
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .load(ApiUtils.getUrlForAvatarWithName(baseUrl, participantMap.get(session).getUserId(), R.dimen.avatar_size_big))
+                                .centerInside()
+                                .override(size, size)
+                                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                                .into(avatarImageView);
+                    }
                 }
             }
         }
