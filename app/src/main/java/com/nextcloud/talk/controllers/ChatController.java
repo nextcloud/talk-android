@@ -214,6 +214,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL);
         }
+
         this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
     }
 
@@ -473,32 +474,33 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void startPing() {
-        ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                .takeWhile(observable -> inChat)
-                .retry(3, observable -> inChat)
-                .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposableList.add(d);
-                    }
+        if (!conversationUser.hasSpreedCapabilityWithName("no-ping")) {
+            ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                    .takeWhile(observable -> inChat)
+                    .retry(3, observable -> inChat)
+                    .subscribe(new Observer<GenericOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            disposableList.add(d);
+                        }
 
-                    @Override
-                    public void onNext(GenericOverall genericOverall) {
+                        @Override
+                        public void onNext(GenericOverall genericOverall) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                        }
 
-                    @Override
-                    public void onComplete() {
-                    }
-                });
-
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
+        }
     }
 
     @OnClick(R.id.emptyLayout)

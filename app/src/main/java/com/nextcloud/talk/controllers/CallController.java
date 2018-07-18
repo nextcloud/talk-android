@@ -221,7 +221,9 @@ public class CallController extends BaseController {
 
     private boolean isMultiSession = false;
     private boolean hasChatSupport = false;
-    private boolean isVoiceOnlyCall = false;
+    private boolean needsPing = true;
+
+    private boolean isVoiceOnlyCall;
     private boolean isFromNotification;
     private Handler handler = new Handler();
 
@@ -946,6 +948,15 @@ public class CallController extends BaseController {
                                 .getCapabilities().getSpreedCapability()
                                 .getFeatures().contains("chat-v2");
 
+                        needsPing = !(capabilitiesOverall.getOcs().getData()
+                                .getCapabilities() != null && capabilitiesOverall.getOcs().getData()
+                                .getCapabilities().getSpreedCapability() != null &&
+                                capabilitiesOverall.getOcs().getData()
+                                        .getCapabilities().getSpreedCapability()
+                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
+                                .getCapabilities().getSpreedCapability()
+                                .getFeatures().contains("no-ping"));
+
                         joinRoomAndCall();
                     }
 
@@ -1026,33 +1037,35 @@ public class CallController extends BaseController {
                         ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
                         ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(userEntity);
 
-                        ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
-                                .subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                                .takeWhile(observable -> inCall)
-                                .retry(3, observable -> inCall)
-                                .subscribe(new Observer<GenericOverall>() {
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
-                                        pingDisposable = d;
-                                    }
+                        if (needsPing) {
+                            ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
+                                    .subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                                    .takeWhile(observable -> inCall)
+                                    .retry(3, observable -> inCall)
+                                    .subscribe(new Observer<GenericOverall>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+                                            pingDisposable = d;
+                                        }
 
-                                    @Override
-                                    public void onNext(GenericOverall genericOverall) {
+                                        @Override
+                                        public void onNext(GenericOverall genericOverall) {
 
-                                    }
+                                        }
 
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        dispose(pingDisposable);
-                                    }
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            dispose(pingDisposable);
+                                        }
 
-                                    @Override
-                                    public void onComplete() {
-                                        dispose(pingDisposable);
-                                    }
-                                });
+                                        @Override
+                                        public void onComplete() {
+                                            dispose(pingDisposable);
+                                        }
+                                    });
+                        }
 
                         // Start pulling signaling messages
                         String urlToken = null;
