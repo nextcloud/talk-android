@@ -225,7 +225,8 @@ public class CallController extends BaseController {
 
     private boolean isVoiceOnlyCall;
     private boolean isFromNotification;
-    private Handler handler = new Handler();
+    private Handler callControlHandler = new Handler();
+    private Handler cameraSwitchHandler = new Handler();
 
     private boolean isPTTActive = false;
     private PulseAnimation pulseAnimation;
@@ -587,9 +588,11 @@ public class CallController extends BaseController {
     @OnLongClick(R.id.call_control_microphone)
     public boolean onMicrophoneLongClick() {
         if (!audioOn) {
-            handler.removeCallbacksAndMessages(null);
+            callControlHandler.removeCallbacksAndMessages(null);
+            cameraSwitchHandler.removeCallbacksAndMessages(null);
             isPTTActive = true;
             callControls.setVisibility(View.VISIBLE);
+            cameraSwitchButton.setVisibility(View.VISIBLE);
         }
 
         onMicrophoneClick();
@@ -791,20 +794,18 @@ public class CallController extends BaseController {
             long duration;
 
             if (show) {
-                handler.removeCallbacksAndMessages(null);
+                callControlHandler.removeCallbacksAndMessages(null);
+                cameraSwitchHandler.removeCallbacksAndMessages(null);
                 alpha = 1.0f;
                 duration = 1000;
                 if (callControls.getVisibility() != View.VISIBLE) {
                     callControls.setAlpha(0.0f);
                     callControls.setVisibility(View.VISIBLE);
-                } else {
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            animateCallControls(false, 0);
 
-                        }
-                    }, 5000);
+                    cameraSwitchButton.setAlpha(0.0f);
+                    cameraSwitchButton.setVisibility(View.VISIBLE);
+                } else {
+                    callControlHandler.postDelayed(() -> animateCallControls(false, 0), 5000);
                     return;
                 }
             } else {
@@ -830,7 +831,7 @@ public class CallController extends BaseController {
                                             spotlightView.setVisibility(View.GONE);
                                         }
                                     } else {
-                                        handler.postDelayed(new Runnable() {
+                                        callControlHandler.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
                                                 if (!isPTTActive) {
@@ -845,6 +846,29 @@ public class CallController extends BaseController {
                             }
                         });
             }
+
+            if (cameraSwitchButton != null) {
+                cameraSwitchButton.setEnabled(false);
+                cameraSwitchButton.animate()
+                        .translationY(0)
+                        .alpha(alpha)
+                        .setDuration(duration)
+                        .setStartDelay(startDelay)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                if (cameraSwitchButton != null) {
+                                    if (!show) {
+                                        cameraSwitchButton.setVisibility(View.GONE);
+                                    }
+
+                                    cameraSwitchButton.setEnabled(true);
+                                }
+                            }
+                        });
+            }
+
         }
     }
 

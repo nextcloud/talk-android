@@ -89,6 +89,16 @@
             app:frontImage="@drawable/ic_mic_white_24px"/>
 
         <com.nextcloud.talk.utils.MagicFlipView
+            android:id="@+id/callControlHangupView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="24dp"
+            app:checked="false"
+            app:enableInitialAnimation="false"
+            app:frontBackgroundColor="@color/nc_darkRed"
+            app:frontImage="@drawable/ic_call_end_white_24px"/>
+
+        <com.nextcloud.talk.utils.MagicFlipView
             android:id="@+id/callAnswerCameraView"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -98,16 +108,6 @@
             app:enableInitialAnimation="false"
             app:frontBackgroundColor="@color/colorPrimary"
             app:frontImage="@drawable/ic_videocam_white_24px"/>
-
-        <com.nextcloud.talk.utils.MagicFlipView
-            android:id="@+id/callControlHangupView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_margin="24dp"
-            app:checked="false"
-            app:enableInitialAnimation="false"
-            app:frontBackgroundColor="@color/nc_darkRed"
-            app:frontImage="@drawable/ic_call_end_white_24px"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

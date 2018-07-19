@@ -74,14 +74,33 @@
             android:orientation="vertical">
         </LinearLayout>
 
-        <org.webrtc.SurfaceViewRenderer
-            android:id="@+id/pip_video_view"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_alignParentEnd="true"
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_margin="16dp"
-            android:visibility="invisible"/>
+            android:layout_alignParentEnd="true">
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/pip_video_view"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:visibility="invisible"/>
+
+            <com.nextcloud.talk.utils.MagicFlipView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/call_control_switch_camera"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="20dp"
+                android:layout_gravity="center_horizontal|bottom"
+
+                app:checked="false"
+                app:enableInitialAnimation="false"
+                app:frontBackgroundColor="@color/colorPrimary"
+                app:frontImage="@drawable/ic_switch_video_white_24px"/>
+        </FrameLayout>
     </RelativeLayout>
 
     <LinearLayout
@@ -109,10 +128,20 @@
 
         <com.nextcloud.talk.utils.MagicFlipView
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/call_control_camera"
+            android:id="@+id/callControlHangupView"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginEnd="20dp"
+            app:checked="false"
+            app:enableInitialAnimation="false"
+            app:frontBackgroundColor="@color/nc_darkRed"
+            app:frontImage="@drawable/ic_call_end_white_24px"/>
+
+        <com.nextcloud.talk.utils.MagicFlipView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/call_control_camera"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:alpha="0.7"
             app:checked="false"
             app:enableInitialAnimation="false"
@@ -121,32 +150,9 @@
 
         <com.nextcloud.talk.utils.MagicFlipView
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/call_control_switch_camera"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="20dp"
-            android:visibility="gone"
-            app:checked="false"
-            app:enableInitialAnimation="false"
-            app:frontBackgroundColor="@color/colorPrimary"
-            app:frontImage="@drawable/ic_switch_video_white_24px"/>
-
-        <com.nextcloud.talk.utils.MagicFlipView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/callControlHangupView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:checked="false"
-            app:enableInitialAnimation="false"
-            app:frontBackgroundColor="@color/nc_darkRed"
-            app:frontImage="@drawable/ic_call_end_white_24px"/>
-
-        <com.nextcloud.talk.utils.MagicFlipView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/callControlEnableSpeaker"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginStart="20dp"
             app:checked="false"
             android:visibility="gone"
             app:enableInitialAnimation="false"
