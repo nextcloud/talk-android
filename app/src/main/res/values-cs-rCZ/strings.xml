@@ -28,6 +28,7 @@
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Typ proxy</string>
+    <string name="nc_settings_proxy_host_title">Stroj s proxy</string>
     <string name="nc_settings_proxy_port_title">Port proxy</string>
     <string name="nc_settings_use_credentials_title">Použít přihlašovací údaje</string>
     <string name="nc_settings_switch_account">Přepnout mezi účty</string>
@@ -36,8 +37,11 @@
     <string name="nc_client_cert_change">Změnit klientský certifikát</string>
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
+    <string name="nc_settings_notification_sounds">Zvuky oznamování</string>
     <string name="nc_settings_call_ringtone">Volání</string>
     <string name="nc_settings_message_ringtone">Zprávy</string>
+    <string name="nc_settings_no_ringtone">Žádný zvuk</string>
+
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Uživatelské jméno</string>
     <string name="nc_password">Heslo</string>
@@ -54,10 +58,12 @@
     <string name="nc_leave">Opustit konverzaci</string>
     <string name="nc_rename">Přejmenovat konverzaci</string>
     <string name="nc_set_password">Nastavit heslo</string>
+    <string name="nc_change_password">Změnit heslo</string>
     <string name="nc_clear_password">Vyčistit heslo</string>
     <string name="nc_share_link">Sdílet odkaz</string>
     <string name="nc_share_link_via">Sdílet odkaz prostřednictvím</string>
     <string name="nc_delete_call">Smazat konverzaci</string>
+    <string name="nc_new_conversation">Nová konverzace</string>
     <string name="nc_join_via_link">Připojit prostřednictvím odkazu</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
 
@@ -72,6 +78,7 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Připojování...</string>
+    <string name="nc_incoming_call">Příchozí hovor od</string>
     <string name="nc_nick_guest">Host</string>
     <string name="nc_public_call">Nová veřejná konverzace</string>
     <string name="nc_notification_channel_calls_description">Zobrazit příchozí hovory</string>
@@ -85,8 +92,10 @@
     <string name="nc_proceed">Pokračovat</string>
     <string name="nc_call_name_is_same">Zadané jméno je stejné jako stávající</string>
     <string name="nc_wrong_link">Odkaz na konverzaci není platný</string>
+    <string name="nc_share_subject">%1$s pozvání</string>
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
 
+    <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování totožnosti</string>
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Zadejte zprávu…</string>
     <string name="nc_date_header_yesterday">Včera</string>
@@ -96,4 +105,6 @@
     <string name="nc_new_messages">Nové zprávy</string>
 
     <string name="nc_endless_cancel">Zrušeno uživatelem.</string>
+    <string name="nc_description_send_message_button">Poslat zprávu</string>
+
     </resources>
