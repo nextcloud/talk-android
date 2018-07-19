@@ -39,7 +39,7 @@ LANG_MAP = {
     'values-uk': 'uk-UK',
     'values-vi': 'vi-VI',
     'values-ro': 'ro-RO',
-    'values-ou': 'ru-RU',
+    'values-ru': 'ru-RU',
     'values-sr': 'sr-SR',
     'values-pl': 'pl-PL',
     'values-el': 'el-GR',
