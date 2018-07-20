@@ -21,6 +21,9 @@
 package com.nextcloud.talk.adapters.messages;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
@@ -104,6 +107,19 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
             layoutParams.setWrapBefore(true);
             messageTimeView.setTextColor(context.getResources().getColor(R.color.warm_grey_four));
             itemView.setSelected(true);
+        }
+
+        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        if (message.isGrouped()) {
+            Drawable bubbleDrawable =  DisplayUtils.getMessageSelector(resources.getColor(R.color.colorPrimary),
+                    resources.getColor(R.color.transparent),
+                    resources.getColor(R.color.colorPrimary), R.drawable.shape_grouped_outcoming_message);
+            ViewCompat.setBackground(bubble, bubbleDrawable);
+        } else {
+            Drawable bubbleDrawable =  DisplayUtils.getMessageSelector(resources.getColor(R.color.colorPrimary),
+                    resources.getColor(R.color.transparent),
+                    resources.getColor(R.color.colorPrimary), R.drawable.shape_outcoming_message);
+            ViewCompat.setBackground(bubble, bubbleDrawable);
         }
 
         messageTimeView.setLayoutParams(layoutParams);

@@ -21,6 +21,9 @@
 package com.nextcloud.talk.adapters.messages;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -92,12 +95,29 @@ public class MagicIncomingTextMessageViewHolder
             messageAuthor.setText(R.string.nc_nick_guest);
         }
 
-        if (message.getActorType().equals("guests")) {
+        if (message.getActorType().equals("guests") && !message.isGrouped()) {
             TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
                     .endConfig().buildRound(String.valueOf(messageAuthor.getText().charAt(0)), NextcloudTalkApplication
                             .getSharedApplication().getResources().getColor(R.color.nc_grey));
             messageUserAvatarView.setVisibility(View.VISIBLE);
             messageUserAvatarView.setImageDrawable(drawable);
+        }
+
+        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        if (message.isGrouped()) {
+            messageUserAvatarView.setVisibility(View.INVISIBLE);
+            Drawable bubbleDrawable =  DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
+                    resources.getColor(R.color.transparent),
+                    resources.getColor(R.color.white_two), R.drawable.shape_grouped_incoming_message);
+            ViewCompat.setBackground(bubble, bubbleDrawable);
+            messageAuthor.setVisibility(View.GONE);
+        } else {
+            messageUserAvatarView.setVisibility(View.VISIBLE);
+            Drawable bubbleDrawable =  DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
+                    resources.getColor(R.color.transparent),
+                    resources.getColor(R.color.white_two), R.drawable.shape_incoming_message);
+            ViewCompat.setBackground(bubble, bubbleDrawable);
+            messageAuthor.setVisibility(View.VISIBLE);
         }
 
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();

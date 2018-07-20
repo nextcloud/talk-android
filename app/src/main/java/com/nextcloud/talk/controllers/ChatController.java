@@ -172,6 +172,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private boolean isFirstMessagesProcessing = true;
     private boolean isHelloClicked;
 
+    private final short VIEW_TYPE_DATE_HEADER = 130;
     public ChatController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
@@ -748,7 +749,17 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             if (!isFromTheFuture) {
 
+                int countGroupedMessages = 0;
                 for (int i = 0; i < chatMessageList.size(); i++) {
+                    if (chatMessageList.size() > i + 1) {
+                        if (chatMessageList.get(i + 1).getActorId().equals(chatMessageList.get(i).getActorId()) &&
+                                countGroupedMessages < 4) {
+                            chatMessageList.get(i).setGrouped(true);
+                            countGroupedMessages++;
+                        } else {
+                            countGroupedMessages = 0;
+                        }
+                    }
                     chatMessageList.get(i).setBaseUrl(conversationUser.getBaseUrl());
                     if (globalLastKnownPastMessageId == -1 || chatMessageList.get(i).getJsonMessageId() <
                             globalLastKnownPastMessageId) {
@@ -762,15 +773,17 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
                 }
 
-
                 adapter.addToEnd(chatMessageList, false);
 
-
             } else {
+
+                ChatMessage chatMessage;
+
                 for (int i = 0; i < chatMessageList.size(); i++) {
-                    chatMessageList.get(i).setBaseUrl(conversationUser.getBaseUrl());
+                    chatMessage = chatMessageList.get(i);
+
+                    chatMessage.setBaseUrl(conversationUser.getBaseUrl());
                     if (conversationUser.getUserId().equals("?") && !TextUtils.isEmpty(myFirstMessage.toString())) {
-                        ChatMessage chatMessage = chatMessageList.get(i);
                         if (chatMessage.getActorType().equals("guests") &&
                                 chatMessage.getActorDisplayName().equals(conversationUser.getDisplayName())) {
                             conversationUser.setUserId(chatMessage.getActorId());
@@ -792,7 +805,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         newMessagesCount = 0;
                     }
 
-                    adapter.addToStart(chatMessageList.get(i), shouldScroll);
+                    if (i == 0) {
+                        if (adapter.isPreviousSameAuthor(chatMessage.getActorId(), 0)) {
+                            chatMessage.setGrouped(true);
+                        }
+                    } else if (chatMessage.getActorId().equals(chatMessageList.get(i - 1).getActorId())) {
+                        chatMessage.setGrouped(true);
+                    }
+
+                    adapter.addToStart(chatMessage, shouldScroll);
                 }
 
                 String xChatLastGivenHeader;

@@ -22,6 +22,7 @@ package com.nextcloud.talk.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -29,6 +30,8 @@ import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.text.Spannable;
 import android.text.TextUtils;
@@ -111,4 +114,25 @@ public class DisplayUtils {
 
         return spannable;
     }
+
+    public static Drawable getMessageSelector(@ColorInt int normalColor, @ColorInt int selectedColor,
+                                        @ColorInt int pressedColor, @DrawableRes int shape) {
+
+        Drawable vectorDrawable = ContextCompat.getDrawable(NextcloudTalkApplication.getSharedApplication()
+                .getApplicationContext(),
+                shape);
+        Drawable drawable = DrawableCompat.wrap(vectorDrawable).mutate();
+        DrawableCompat.setTintList(
+                drawable,
+                new ColorStateList(
+                        new int[][]{
+                                new int[]{android.R.attr.state_selected},
+                                new int[]{android.R.attr.state_pressed},
+                                new int[]{-android.R.attr.state_pressed, -android.R.attr.state_selected}
+                        },
+                        new int[]{selectedColor, pressedColor, normalColor}
+                ));
+        return drawable;
+    }
+
 }

@@ -57,6 +57,7 @@ public class ChatMessage implements IMessage {
     String message;
     @JsonField(name = "messageParameters")
     HashMap<String, HashMap<String, String>> messageParameters;
+    boolean isGrouped;
 
     public String getBaseUrl() {
         return baseUrl;

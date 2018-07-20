@@ -156,7 +156,7 @@ dependencies {
 
     implementation 'com.github.wooplr:Spotlight:1.2.3'
 
-    implementation 'com.github.stfalcon:chatkit:0.3.0'
+    implementation 'com.github.mario:ChatKit:master-SNAPSHOT'
     implementation 'com.otaliastudios:autocomplete:1.1.0'
 
     implementation 'com.github.Kennyc1012:BottomSheet:2.4.0'
