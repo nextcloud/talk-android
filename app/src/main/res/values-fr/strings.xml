@@ -180,6 +180,14 @@ Trouvez Nextcloud sur https://nextcloud.com</string>
     <string name="nc_endless_cancel">Annulé par l\'utilisateur.</string>
     <string name="nc_endless_error">Une erreur est survenue lors du chargement d\'éléments supplémentaires.</string>
 
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">Menu pour la conversation avec %1$s</string>
+    <string name="nc_description_more_menu_public">Menu pour la conversation de groupe %1$s</string>
+    <string name="nc_description_more_menu_group">Menu pour la conversation publique %1$s</string>
     <string name="nc_description_send_message_button">Envoyer un message</string>
 
-    </resources>
+    <!-- Chat empty state -->
+    <string name="nc_chat_empty">Touchez pour être la première personne à dire %1$s !</string>
+    <string name="nc_hello">Bonjour</string>
+
+</resources>
