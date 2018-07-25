@@ -160,7 +160,7 @@ Nextcloud Talk supports:
 * Individual and group chat
 * Easy screen sharing
 * Mobile apps for Android and iOS
-* Mobile call &amp; chat push notifications
+* Mobile call &amp; chat push notifications (only if installed from Google Play)
 * Integration in Nextcloud Files and Nextcloud Groupware
 * Fully on-premise, completely open source
 * End-to-end Encrypted calls
