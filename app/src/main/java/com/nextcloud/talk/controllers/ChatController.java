@@ -731,7 +731,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             if (isFirstMessagesProcessing) {
                 isFirstMessagesProcessing = false;
-                loadingProgressBar.setVisibility(View.GONE);
+                if (loadingProgressBar != null) {
+                    loadingProgressBar.setVisibility(View.GONE);
+                }
 
                 if (chatMessageList.size() == 0) {
                     emptyLayout.setVisibility(View.VISIBLE);
@@ -747,13 +749,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 }
             }
 
+            int countGroupedMessages = 0;
             if (!isFromTheFuture) {
 
-                int countGroupedMessages = 0;
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     if (chatMessageList.size() > i + 1) {
                         if (chatMessageList.get(i + 1).getActorId().equals(chatMessageList.get(i).getActorId()) &&
-                                countGroupedMessages < 4) {
+                                countGroupedMessages < 4 && DateFormatter.isSameDay(chatMessageList.get(i).getCreatedAt(),
+                                chatMessageList.get(i + 1).getCreatedAt())) {
                             chatMessageList.get(i).setGrouped(true);
                             countGroupedMessages++;
                         } else {
@@ -805,13 +808,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         newMessagesCount = 0;
                     }
 
-                    if (i == 0) {
-                        if (adapter.isPreviousSameAuthor(chatMessage.getActorId(), 0)) {
-                            chatMessage.setGrouped(true);
-                        }
-                    } else if (chatMessage.getActorId().equals(chatMessageList.get(i - 1).getActorId())) {
-                        chatMessage.setGrouped(true);
-                    }
+                    chatMessage.setGrouped(adapter.isPreviousSameAuthor(chatMessage.getActorId(), -1) && (adapter.getSameAuthorLastMessagesCount(chatMessage.getActorId()) % 5) > 0);
 
                     adapter.addToStart(chatMessage, shouldScroll);
                 }
