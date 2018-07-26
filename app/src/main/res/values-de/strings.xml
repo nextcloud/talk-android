@@ -139,32 +139,6 @@ Probiere mit einem Internetbrowser der Unterhaltung beizutreten.</string>
     <string name="nc_store_short_desc">Nutze private Videoanrufe und den Chat durch die Verwendung eines eigenen Servers.</string>
     <string name="nc_configure_cert_auth">Authentifizierungs-Zertifikat auswählen</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
-    <string name="nc_store_full_desc">Verwende Nextcloud Talk, um Einzel- oder Gruppen-Audio- oder Videoanrufe zu führen, Webkonferenzen zu erstellen oder daran teilzunehmen und Chat-Nachrichten zu senden. Die gesamte Kommunikation wird von deinem eigenen Server verschlüsselt und vermittelt, so dass ein Höchstmaß an Privatsphäre gewährleistet ist.
-
-Nextcloud Talk ist einfach zu bedienen und wird immer kostenlos sein!
-
-Nextcloud Talk unterstützt:
-* HD (H.265) Audio/Video-Anrufe
-* Gruppen- und Einzelgespräche
-* Webinare &amp; öffentliche Web-Meetings
-* Einzel- und Gruppenchat
-* Einfache Bildschirmfreigabe
-* Mobile Anwendungen für Android und iOS
-* Mobile Call-&amp;Chat-Push-Benachrichtigungen
-* Integration in Nextcloud-Dateien und Nextcloud-Groupware
-* Vollständig lokal, komplett Open Source
-* End-to-End Verschlüsselte Anrufe
-* Skalierung auf Millionen von Benutzern
-* SIP-Gate: Einwahl per Telefon
-
-Die Nextcloud Talk App benötigt einen Nextcloud Talk Server. Nextcloud ist eine private, selbst gehostete Dateisynchronisations- und Kommunikationsplattform, die dir die Kontrolle über deine Daten zurückgibt. Es läuft auf einem Server deiner Wahl, sei es zu Hause, bei einem Dienstleister oder in deinem Unternehmen, und gibt dir Zugriff auf deine Dokumente, Kalender, Kontakte, E-Mails und andere Daten. Du kannst sogar über verschiedene Nextcloud-Server hinweg mit anderen teilen und gemeinsam an Dokumenten arbeiten. Nextcloud ist vollständig Open Source und gibt dir die Möglichkeit, sie für Ihren eigenen Gebrauch zu erweitern, an ihrer Entwicklung teilzunehmen oder einfach zu überprüfen, ob gehalten wird, was wir versprechen.
-
-Millionen von Anwendern nutzen Nextcloud täglich in Unternehmen und Privathaushalten auf der ganzen Welt. Fachanwender verlassen sich auf den professionellen Support der Nextcloud GmbH und stellen sicher, dass sie über eine vollständig unterstützte, unternehmensweite Plattform für Produktivität und Zusammenarbeit verfügen, die vollständig von ihrer IT-Abteilung gesteuert wird.
-
-Erfahre mehr auf https://nextcloud.com/talk
-
-Finde Nextcloud auf https://nextcloud.com</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Neue Nachricht eingeben…</string>
     <string name="nc_date_header_yesterday">Gestern</string>

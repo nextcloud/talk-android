@@ -160,4 +160,8 @@
     <string name="nc_description_more_menu_group">Danh mục Đàm thoại công khai %1$s</string>
     <string name="nc_description_send_message_button">Gửi thông điệp</string>
 
-    </resources>
+    <!-- Chat empty state -->
+    <string name="nc_chat_empty">Đầu tiên hãy bấm vào đây để nói %1$s!</string>
+    <string name="nc_hello">Xin chào</string>
+
+</resources>

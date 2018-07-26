@@ -135,32 +135,6 @@
     <string name="nc_store_short_desc">Intézz videóhívásokat és magánbeszélgetéseket saját szervered segítségével.</string>
     <string name="nc_configure_cert_auth">Autentikációs tanúsítvány kiválasztása</string>
     <string name="nc_change_cert_auth">Autentikációs tanúsítvány módosítása</string>
-    <string name="nc_store_full_desc">Használd a Nextcloud Talk-ot magán- vagy csoportos videó és hanghívásokhoz, hozz létre, vagy csatlakozz videó konferenciákhoz és küldj szöveges üzeneteket. Minden kapcsolat teljesen titkosított, mindez a saját szervereden keresztül, ezzel biztosítva az elérhető legmagasabb biztonsági szintet.
-
-A Nextcloud Talk könnyen használható és mindíg ingyenes marad!
-
-A Nextcloud Talk az alábbiakat támogatja:
-* HD (H.265) audió/videó hívások
-* Csoportos és magán hívások
-* Webinar-ok &amp; nyilvános web találkozók
-* Egyéni és csoportos csevegés
-* Egyszerű képernyőmegosztás
-* Mobil alkalmazás Android-ra és iOS-ra
-* Mobil hívás &amp; chat push értesítések
-* Integráció a Nextcloud Fájlokkal és Nextcloud Groupware-el
-* Saját futtatású, 100% nyílt forrás
-* Végpontok közötti titkosított hívások
-* Több millió felhasználóra méretezve
-* SIP átjáró: behívás telefonnal
-
-A Nextcloud Talk app működéséhez szükség van egy Nextcloud Talk szerverre. A Nextcloud egy privát, saját kiszolgálású fájlszinkronizációs és kommunikciós platform, melyet az adataid feletti felügyelet visszanyerésére terveztek. Az általad választott szerveren fut, legyen az otthon, egy szolgáltatónál vagy a cégednél. Hozzáférést biztosít a dokumentumaidhoz, naptáraidhoz, kapcsolataidhoz, email-jeidhez és egyéb adataidhoz. Dokumentumaidat megoszthatod másokkal és közösen dolgozhatsz rajtuk akár más Nextcloud szervereken keresztül is. A Nextcloud teljesen nyílt forráskódú, lehetőséget adva arra, hogy teljesen személyre szabd, részt vehetsz a fejlesztésben, vagy csak meggyőződhetsz arról, hogy azt teszi amit ígérünk.
-
-Millióan használják a Nextcloud-ot naponta üzleti és magáncélra szerte a világon. Az üzleti felhasználók a Nextcloud GmbH professzionális támogatására támaszkodnak, megbizonyosodva arról, hogy egy teljes mértékben támogatott, a termelést és közös munkát támogató üzleti célra is alkalmazható platformmal rendelkeznek, amely ugyanakkor teljes mértékben a saját IT szervezetük felügyelete alatt áll.
-
-Bővebben: https://nextcloud.com/talk
-A Nextcloudról: https://nextcloud.com 
-</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Írj üzenetet...</string>
     <string name="nc_date_header_yesterday">Tegnap</string>

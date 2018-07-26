@@ -23,6 +23,8 @@
     <string name="nc_push_disabled">התראות בדחיפה הושבתו</string>
     <string name="nc_capabilities_failed">אחזור היכולות נכשל, התהליך נפסק</string>
     <string name="nc_display_name_not_fetched">לא ניתן לאחזר את שם התצוגה, התהליך נפסק</string>
+    <string name="nc_nextcloud_talk_app_installed">נמצא היישומון %1$s</string>
+    <string name="nc_nextcloud_talk_app_not_installed">היישומון %1$s אינו מותקן על השרת, הפעולה מבוטלת</string>
     <string name="nc_display_name_stored">שם התצוגה אוחסן</string>
     <string name="nc_display_name_not_stored">לא ניתן לאחסן את שם התצוגה, התהליך נפסק</string>
 
@@ -93,6 +95,8 @@
 
     <string name="nc_permissions_settings">פתיחת הגדרות</string>
 
+    <!-- Call -->
+    <string name="nc_connecting_call">מתבצעת התחברות…</string>
     <string name="nc_incoming_call">שיחה נכנסת מאת</string>
     <string name="nc_nick_guest">אורח/ת</string>
     <string name="nc_public_call">דיון ציבורי חדש</string>

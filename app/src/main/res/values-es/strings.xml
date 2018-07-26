@@ -140,32 +140,6 @@
     <string name="nc_store_short_desc">Haz llamadas de vídeo y conversaciones usando tu propio servidor.</string>
     <string name="nc_configure_cert_auth">Seleccionar certificado de autenticación</string>
     <string name="nc_change_cert_auth">Cambiar certificado de autenticación</string>
-    <string name="nc_store_full_desc">Usa Nextcloud Talk para tener llamadas de audio y vídeo individuales o de grupo, crear o unirte a conferencias web y enviar mensajes de chat. Todas las comunicaciones están totalmente cifradas y mediadas por tu propio servidor, proporcionando el máximo grado posible de privacidad.
-
-Nextcloud Talk es fácil de usar y siempre será completamente gratuito.
-
-Nextcloud Talk soporta:
-*Llamadas de audio/vídeo HD (H.265) 
-* Llamadas individuales y de grupo.
-* Webinares y encuentros web públicos.
-* Chat individual y de grupo.
-* Una forma fácil de compartir la pantalla.
-* Apps móviles para Android y iOS.
-* Notificaciones push de llamadas y chats.
-* Integración con los archivos y el groupware de Nextcloud.
-* Totalmente en tus instalaciones, totalmente código abierto.
-* Llamadas cifradas punto a punto.
-* Escala hasta millones de usuarios.
-* Gate SIP: llama por teléfono.
-
-La app Nextcloud Talk necesita un servidor de Nextcloud Talk para funcionar. Nextcloud es una plataforma autohospedada de sincronización de archivos y comunicación, diseñada para devolverte el control sobre tus datos. Funciona sobre un servidor de tu elección, sea en casa, en un proveedor de servidos o en tu empresa, y te da acceso a tus documentos, calendarios, contactos, correo electrónico y otros datos. Puedes compartir con otros incluso entre servidores Nextcloud diferentes y trabajar juntos en documentos. Nextcloud es totalmente código abierto, dándote la opción de extenderlo para tu propio uso, participar en su desarrollo o simplemente verificar que hace lo que prometemos.
-
-Millones de usuarios usan Nextcloud diariamente en negocios y hogares de todo el mundo. Los usuarios empresariales se apoyan en el soporte profesional de Nextcloud GmbH, asegurándose de tener una plataforma totalmente soportada, ypreparada para empresas de productividad y colaboración, totalmente bajo el control de su departamento informático.
-
-Descubre más en https://nextcloud.com/talk
-
-Encuentra Nextcloud en https://nextcloud.com</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Escribe un mensaje…</string>
     <string name="nc_date_header_yesterday">Ayer</string>
