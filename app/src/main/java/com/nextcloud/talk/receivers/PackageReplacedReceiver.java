@@ -53,7 +53,7 @@ public class PackageReplacedReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
-        if (!appPreferences.getIsNotificationChannelUpgradedToV2() && intent != null && intent.getAction() != null &&
+        if (intent != null && intent.getAction() != null &&
                 intent.getAction().equals("android.intent.action.MY_PACKAGE_REPLACED")) {
             try {
                 PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -62,17 +62,23 @@ public class PackageReplacedReceiver extends BroadcastReceiver {
                             (NotificationManager) context.getSystemService(Context
                                     .NOTIFICATION_SERVICE);
 
-
                     if (notificationManager != null) {
-                        for (NotificationChannelGroup notificationChannelGroup : notificationManager
-                                .getNotificationChannelGroups()) {
-                            notificationManager.deleteNotificationChannelGroup(notificationChannelGroup.getId());
+                        if (!appPreferences.getIsNotificationChannelUpgradedToV2()) {
+                            for (NotificationChannelGroup notificationChannelGroup : notificationManager
+                                    .getNotificationChannelGroups()) {
+                                notificationManager.deleteNotificationChannelGroup(notificationChannelGroup.getId());
+                            }
+
+                            notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS);
+                            notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES);
+
+                            appPreferences.setNotificationChannelIsUpgradedToV2(true);
                         }
 
-                        notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS);
-                        notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES);
-
-                        appPreferences.setNotificationChannelIsUpgradedToV2(true);
+                        if (!appPreferences.getIsMessagesNotificationChannelUpgradedToV3() && packageInfo.versionCode > 51) {
+                            notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2);
+                            appPreferences.setNotificationChannelIsUpgradedToV2(true);
+                        }
                     }
 
                 }
