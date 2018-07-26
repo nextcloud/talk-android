@@ -32,11 +32,12 @@ public class NotificationUtils {
     public static final String NOTIFICATION_CHANNEL_MESSAGES = "NOTIFICATION_CHANNEL_MESSAGES";
     public static final String NOTIFICATION_CHANNEL_CALLS_V2 = "NOTIFICATION_CHANNEL_CALLS_V2";
     public static final String NOTIFICATION_CHANNEL_MESSAGES_V2 = "NOTIFICATION_CHANNEL_MESSAGES_V2";
+    public static final String NOTIFICATION_CHANNEL_MESSAGES_V3 = "NOTIFICATION_CHANNEL_MESSAGES_V2";
 
     @TargetApi(Build.VERSION_CODES.O)
     public static void createNotificationChannel(NotificationManager notificationManager,
                                                  String channelId, String channelName,
-                                                 String channelDescription, boolean vibrate,
+                                                 String channelDescription, boolean enableLights,
                                                  int importance) {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O
@@ -46,10 +47,9 @@ public class NotificationUtils {
                     importance);
 
             channel.setDescription(channelDescription);
-            channel.enableLights(vibrate);
-            channel.enableVibration(vibrate);
-
+            channel.enableLights(enableLights);
             channel.setLightColor(Color.RED);
+
             notificationManager.createNotificationChannel(channel);
         }
     }
