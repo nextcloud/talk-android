@@ -55,8 +55,6 @@
     <string name="nc_settings_account_updated">Nous avons mis à jour votre compte existant au lieu d’en ajouter un nouveau</string>
     <string name="nc_account_scheduled_for_deletion">Le compte va être supprimé et ne peut donc pas être utilisé</string>
     <string name="nc_settings_notification_sounds">Sons de notification</string>
-    <string name="nc_settings_call_ringtone">Appels</string>
-    <string name="nc_settings_message_ringtone">Messages</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
 
     <string name="nc_no_proxy">Aucun proxy</string>
@@ -140,6 +138,32 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_store_short_desc">Ayez des appels vidéos et des discussions privés en utilisant votre propre serveur.</string>
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
+    <string name="nc_store_full_desc">Utilisez Nextcloud Talk pour passer des appels audio ou vidéo en tête-à-tête ou en groupe, créer ou participer à des conférences Web et envoyer des messages instantanés. Toutes les communications sont entièrement chiffrées et transmises par votre propre serveur, offrant ainsi le plus haut degré de confidentialité possible.
+
+Nextcloud Talk est facile à utiliser et sera toujours entièrement gratuit !
+
+Nextcloud Talk prend en charge :
+* Appels audio/vidéo HD (H.265)
+* Appels de groupe et en tête-à-tête
+* Webinaires et réunions publiques sur le Web
+* Chat individuel et de groupe
+* Partage d\'écran facile
+* Applications mobiles pour Android et iOS
+* Notifications de chat mobile (seulement si installé à partir de Google Play)
+* Intégration dans Nextcloud Files et Nextcloud Groupware.
+* Entièrement sur votre serveur, complètement open source.
+* Appels chiffrés de bout en bout
+* Adapté pour des millions d\'utilisateurs
+* Support du protocole SIP : composer le numéro avec votre téléphone
+
+L\'application Nextcloud Talk nécessite un serveur Nextcloud Talk pour fonctionner. Nextcloud est une plateforme privée de synchronisation de fichiers et de communication, conçue pour vous permettre de reprendre le contrôle de vos données. Il fonctionne sur le serveur de votre choix, que ce soit à la maison, chez un fournisseur de services ou dans votre entreprise, et vous donne accès à vos documents, calendriers, contacts, courriels et autres données. Vous pouvez partager avec d\'autres personnes, même sur différents serveurs Nextcloud et travailler ensemble sur des documents. Nextcloud est entièrement open source, vous donnant la possibilité de les étendre pour votre propre usage, de participer à leur développement ou simplement de vérifier qu\'ils font ce que nous promettons.
+
+Des millions d\'utilisateurs utilisent Nextcloud quotidiennement dans les entreprises et les foyers du monde entier. Les utilisateurs professionnels s\'appuient sur le support professionnel de Nextcloud GmbH pour s\'assurer qu\'ils disposent d\'une plate-forme de productivité et de collaboration entièrement prise en charge et prête pour l\'entreprise, sous le contrôle total de leur département informatique.
+
+Pour en savoir plus, rendez-vous sur https://nextcloud.com/talk
+
+Retrouvez Nextcloud sur https://nextcloud.com</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Saisir un message…</string>
     <string name="nc_date_header_yesterday">Hier</string>

@@ -52,8 +52,6 @@
     <string name="nc_settings_account_updated">Új fiók hozzáadása helyett frissítettük a már létező fiókot</string>
     <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
     <string name="nc_settings_notification_sounds">Értesítés hanja</string>
-    <string name="nc_settings_call_ringtone">Hívások</string>
-    <string name="nc_settings_message_ringtone">Üzenetek</string>
     <string name="nc_settings_no_ringtone">Nincs hang</string>
 
     <string name="nc_no_proxy">Nincs proxy</string>

@@ -55,8 +55,6 @@
     <string name="nc_settings_account_updated">Tu cuenta ya existente ha sido actualizada en lugar de añadir una nueva</string>
     <string name="nc_account_scheduled_for_deletion">La cuenta está programada para borrado y no se puede operar con ella</string>
     <string name="nc_settings_notification_sounds">Sonidos de notificación</string>
-    <string name="nc_settings_call_ringtone">Llamadas</string>
-    <string name="nc_settings_message_ringtone">Mensajes</string>
     <string name="nc_settings_no_ringtone">Sonido NO</string>
 
     <string name="nc_no_proxy">Sin proxy</string>
