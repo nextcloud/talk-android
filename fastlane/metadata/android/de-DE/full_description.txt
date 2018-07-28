@@ -3,17 +3,17 @@ Verwende Nextcloud Talk, um Einzel- oder Gruppen-Audio- oder Videoanrufe zu füh
 Nextcloud Talk ist einfach zu bedienen und wird immer kostenlos sein!
 
 Nextcloud Talk unterstützt:
-* HD (H.265) Audio/Video-Anrufe
+* HD (H.265) Audio-/Videoanrufe
 * Gruppen- und Einzelgespräche
-* Webinare & öffentliche Web-Meetings
+* Webinare  öffentliche Web-Meetings
 * Einzel- und Gruppenchat
 * Einfache Bildschirmfreigabe
-* Mobile Anwendungen für Android und iOS
-* Mobile Call-&Chat-Push-Benachrichtigungen
+* Mobile Apps für Android und iOS
+* Mobile Anrufe-&Chat-Push-Benachrichtigungen (nur bei Installation von Google Play)
 * Integration in Nextcloud-Dateien und Nextcloud-Groupware
 * Vollständig lokal, komplett Open Source
-* End-to-End Verschlüsselte Anrufe
-* Skalierung auf Millionen von Benutzern
+* Ende-zu-Ende verschlüsselte Anrufe
+* Skalierung für Millionen von Benutzern
 * SIP-Gate: Einwahl per Telefon
 
 Die Nextcloud Talk App benötigt einen Nextcloud Talk Server. Nextcloud ist eine private, selbst gehostete Dateisynchronisations- und Kommunikationsplattform, die dir die Kontrolle über deine Daten zurückgibt. Es läuft auf einem Server deiner Wahl, sei es zu Hause, bei einem Dienstleister oder in deinem Unternehmen, und gibt dir Zugriff auf deine Dokumente, Kalender, Kontakte, E-Mails und andere Daten. Du kannst sogar über verschiedene Nextcloud-Server hinweg mit anderen teilen und gemeinsam an Dokumenten arbeiten. Nextcloud ist vollständig Open Source und gibt dir die Möglichkeit, sie für Ihren eigenen Gebrauch zu erweitern, an ihrer Entwicklung teilzunehmen oder einfach zu überprüfen, ob gehalten wird, was wir versprechen.

@@ -55,6 +55,8 @@
     <string name="nc_settings_account_updated">Ihr bereits existierendes Konto wurde aktualisiert, anstelle ein Neues hinzuzufügen</string>
     <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann nicht verändert werden</string>
     <string name="nc_settings_notification_sounds">Benachrichtigungstöne</string>
+    <string name="nc_settings_call_ringtone">Eins-Zu-Eins-Anrufe</string>
+    <string name="nc_settings_message_ringtone">Andere</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
 
     <string name="nc_no_proxy">Kein Proxy</string>
@@ -137,6 +139,32 @@
     <string name="nc_store_short_desc">Nutzen Sie private Videoanrufe und den Chat durch die Verwendung eines eigenen Servers.</string>
     <string name="nc_configure_cert_auth">Authentifizierungs-Zertifikat auswählen</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
+    <string name="nc_store_full_desc">Verwenden Sie Nextcloud Talk, um Einzel- oder Gruppen-Audio- oder Videoanrufe zu führen, Webkonferenzen zu erstellen oder daran teilzunehmen und Chatnachrichten zu senden. Die gesamte Kommunikation wird vollständig verschlüsselt und von Ihrem eigenen Server vermittelt, um ein höchstmögliches Maß an Privatsphäre zu gewährleisten.
+
+Nextcloud Talk ist einfach zu bedienen und wird immer kostenlos sein!
+
+Nextcloud Talk unterstützt:
+* HD (H.265) Audio- / Videoanrufe
+* Gruppen- und Einzelanrufe
+* Webinare&amp; öffentliche Web-Meetings
+* Einzel- und Gruppenchat
+* Einfache Bildschirmfreigabe
+* Mobile Apps für Android und iOS
+* Mobile Anrufe&amp; Chat-Push-Benachrichtigungen (nur bei Installation von Google Play)
+* Integration in Nextcloud-Dateien und Nextcloud Groupware
+* Vollständig on-premise, 100% Open Source
+* Ende-zu-Ende verschlüsselte Anrufe
+* Skalierung für Millionen von Benutzern
+* SIP-Gate: per Telefon einwählen
+
+Die App Nextcloud Talk benötigt einen Nextcloud Talk-Server, um zu funktionieren. Nextcloud ist eine private, selbst gehostete Dateisynchronisations- und Kommunikationsplattform, die Ihnen die Kontrolle über Ihre Daten zurückgibt. Es läuft auf einem Server Ihrer Wahl, sei es zu Hause, bei einem Dienstanbieter oder in Ihrem Unternehmen, und gibt Ihnen Zugriff auf Ihre Dokumente, Kalender, Kontakte, E-Mails und andere Daten. Sie können mit anderen sogar über verschiedene Nextcloud-Server teilen und gemeinsam an Dokumenten arbeiten. Nextcloud ist eine Open-Source-Lösung, die Ihnen die Möglichkeit bietet, sie für Ihre eigenen Zwecke zu erweitern, an deren Entwicklung teilzunehmen oder einfach zu überprüfen, ob sie das tun, was wir versprechen.
+
+Millionen von Benutzern nutzen Nextcloud täglich in Unternehmen und zu Hause auf der ganzen Welt. Geschäftsanwender verlassen sich auf die professionelle Unterstützung der Nextcloud GmbH und stellen sicher, dass sie über eine vollständig unterstützte, unternehmensbereite Plattform für Produktivität und Zusammenarbeit verfügen, die vollständig von ihrer IT-Abteilung gesteuert wird.
+
+Weitere Informationen erhalten Sie unter https://nextcloud.com/talk
+
+Finden Sie Nextcloud auf https://nextcloud.com</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Eine Nachricht eingeben…</string>
     <string name="nc_date_header_yesterday">Gestern</string>

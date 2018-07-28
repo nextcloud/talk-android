@@ -1,6 +1,6 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Konuşmalar</string>
+    <string name="nc_bottom_navigation_title_conversations">Görüşmeler</string>
     <string name="nc_bottom_navigation_title_contacts">Kişiler</string>
     <string name="nc_bottom_navigation_title_settings">Ayarlar</string>
 
@@ -55,12 +55,14 @@
     <string name="nc_settings_account_updated">Zaten bir hesabınız bulunduğundan yeni hesap eklenmesi yerine geçerli hesap güncellendi</string>
     <string name="nc_account_scheduled_for_deletion">Hesap silinmek üzere zamanlandı ve üzerinde işlem yapılamaz</string>
     <string name="nc_settings_notification_sounds"> Bildirim sesleri</string>
+    <string name="nc_settings_call_ringtone">Bire Bir Görüşmeler</string>
+    <string name="nc_settings_message_ringtone">Diğer</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
 
     <string name="nc_no_proxy">Vekil sunucu yok</string>
     <string name="nc_username">Kullanıcı adı</string>
     <string name="nc_password">Parola</string>
-    <string name="nc_conversation_link">Konuşma bağlantısı</string>
+    <string name="nc_conversation_link">Görüşme bağlantısı</string>
     <string name="nc_new_password">Yeni parola</string>
     <string name="nc_wrong_password">Parola yanlış</string>
     <string name="nc_about">Hakkında</string>
@@ -72,19 +74,19 @@
     <string name="nc_select_an_account">Bir hesap seçin</string>
 
     <!-- Room menu -->
-    <string name="nc_start_conversation">Yeni bir konuşma başlat</string>
-    <string name="nc_configure_room">Konuşmayı yapılandır</string>
-    <string name="nc_leave">Konuşmadan ayrıl</string>
-    <string name="nc_rename">Konuşmayı yeniden adlandır</string>
+    <string name="nc_start_conversation">Yeni bir görüşme başlat</string>
+    <string name="nc_configure_room">Görüşmeyi yapılandır</string>
+    <string name="nc_leave">Görüşmeden ayrıl</string>
+    <string name="nc_rename">Görüşmeyi yeniden adlandır</string>
     <string name="nc_set_password">Bir parola ayarlayın</string>
     <string name="nc_change_password">Parolayı değiştir</string>
     <string name="nc_clear_password">Parolayı temizle</string>
     <string name="nc_share_link">Bağlantıyı paylaş</string>
     <string name="nc_share_link_via">Bağlantıyı şununla paylaş</string>
-    <string name="nc_make_call_public">Konuşmayı herkese açık yap</string>
-    <string name="nc_make_call_private">Konuşmayı özel yap</string>
-    <string name="nc_delete_call">Konuşmayı sil</string>
-    <string name="nc_new_conversation">Yeni konuşma</string>
+    <string name="nc_make_call_public">Görüşmeyi herkese açık yap</string>
+    <string name="nc_make_call_private">Görüşmeyi özel yap</string>
+    <string name="nc_delete_call">Görüşmeyi sil</string>
+    <string name="nc_new_conversation">Yeni görüşme</string>
     <string name="nc_join_via_link">Bağlantı ile katıl</string>
     <string name="nc_join_via_web">Web üzerinden katıl</string>
 
@@ -96,39 +98,39 @@
     <string name="nc_contacts_done">Tamam</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Bir görüntülü ya da ses çağrısı başlatmak için bazı izinlerin verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
-    <string name="nc_permissions_audio">Sesli çağrı başlatmak için mikrofona erişme izni verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
-    <string name="nc_permissions_video">Görüntülü çağrı başlatmak için kameraya erişme izni verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
+    <string name="nc_permissions">Bir görüntülü ya da sesli görüşmeyi başlatabilmek için bazı izinlerin verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
+    <string name="nc_permissions_audio">Sesli görüşmeleri başlatabilmek için mikrofona erişme izni verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
+    <string name="nc_permissions_video">Görüntülü görüşmeleri başlatabilmek için kameraya erişme izni verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
     <string name="nc_camera_permission_permanently_denied">Görüntülü iletişim kurabilmek için sistem ayarlarından \"Kamera\" erişme iznini verin.</string>
     <string name="nc_microphone_permission_permanently_denied">Sesli iletişim kurabilmek için sistem ayarlarından \"Mikrofon\" erişme iznini verin.</string>
     <string name="nc_permissions_settings">Ayarları aç</string>
 
     <!-- Call -->
     <string name="nc_connecting_call">Bağlantı kuruluyor…</string>
-    <string name="nc_incoming_call">Şuradan gelen çağrı</string>
+    <string name="nc_incoming_call">Gelen görüşme çağrısı</string>
     <string name="nc_nick_guest">Konuk</string>
-    <string name="nc_public_call">Herkese açık konuşma ekle</string>
-    <string name="nc_public_call_explanation">Herkese açık konuşmalara dışarıdan kişiler özel oluşturulmuş bir bağlantı
+    <string name="nc_public_call">Herkese açık görüşme ekle</string>
+    <string name="nc_public_call_explanation">Herkese açık görüşmelere dışarıdan kişiler özel oluşturulmuş bir bağlantı
         ile katılabilir.</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
-    <string name="nc_notification_channel_calls">Bildirim kanalındaki çağrı</string>
+    <string name="nc_notification_channel_calls">Görüşme bildirimi kanalı</string>
     <string name="nc_notification_channel_messages">Bildirim kanalındaki ileti</string>
-    <string name="nc_notification_channel_calls_description">Gelen çağrıları görüntüler</string>
+    <string name="nc_notification_channel_calls_description">Gelen görüşme çağrılarını görüntüler</string>
     <string name="nc_notification_channel_messages_description">Gelen iletileri görüntüler</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
-    <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık konuşmalara katılmayı
-        desteklemiyor. Konuşmaya web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
+    <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı
+        desteklemiyor. Görüşmeye web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_all_ok_operation">Hepsi tamam!</string>
     <string name="nc_ok">Tamam</string>
-    <string name="nc_call_name">Konuşma adı</string>
+    <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_proceed">İlerle</string>
     <string name="nc_call_name_is_same">Yazdığınız ad var olan ad ile aynı</string>
-    <string name="nc_wrong_link">Konuşma bağlantısı geçersiz</string>
-    <string name="nc_share_text">Konuşmaya şuradan katılın %1$s/index.php/call/%2$s</string>
+    <string name="nc_wrong_link">Görüşme bağlantısı geçersiz</string>
+    <string name="nc_share_text">Görüşmeye şuradan katılın %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s çağrısı</string>
     <string name="nc_share_text_pass">\nParola: %1$s</string>
 
@@ -138,12 +140,40 @@
     <string name="nc_store_short_desc">Kendi sunucunuz üzerinden görüntülü görüşme ve sohbet yapın.</string>
     <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
+    <string name="nc_store_full_desc">Birebir ya da grup ile sesli ya da görüntülü görüşmeler yapmak, web konferansları oluşturmak ve sohbet iletileri göndermek için Nextcloud Talk uygulamasını kullanabilirsiniz. Tüm bilgiler tamamen şifrelenmiş olarak sizin sunucunuz üzerinden iletilerek olabilecek en yüksek gizlilik düzeyi sağlanır.
+
+Nextcloud Talk uygulamasının kullanımı kolaydır ve herhangi bir ücret ödemeniz gerekmez!
+
+Nextcloud Talk şu özellikleri destekler:
+* HD (H.265) sesli ve görüntü görüşmeler
+* Grup ve birebir görüşmeler
+* Webinar &amp; ve herkese açık web toplantıları
+* Bireysel ve grup sohbetleri
+* Kolay ekran paylaşımı
+* Android ve iOS uygulamaları
+* Mobil görüşme &amp; ve anında sohbet bildirimleri
+* Nextcloud Files ve Nextcloud Groupware ile bütünleşme
+* Kendi veri merkezinizde, tamamen açık kaynaklı
+* Uçtan uca şifrelenmiş çağrılar
+* Milyonlarca kullanıcıya hazır
+* SIP geçidi üzerinden standart telefon ile görüşme
+
+Nextcloud Talk uygulamasının kullanılabilmesi için Nextcloud Talk sunucusu gereklidir. Nextcloud verilerinizin denetiminin yeniden size veren, size özel ve kendi sunucularınızda barındırabileceğiniz bir dosya eşitleme ve iletişim platformudur. Evinizde, hizmet sağlayıcınızda ya da kurumunuzda bulunan bir sunucu üzerine kurarak, belgelerinize, takvimlerinize, kişilerinize, e-postalarınıza ve diğer verilerinize erişmenizi sağlar. Verilerinizi farklı Nextcloud sunucuları kullanan kişiler ile paylaşarak dosyalar üzerinde birlikte çalışabilirsiniz. Nextcloud tamamen açık kaynaklı olduğundan özelliklerini gereksinimlerinize göre genişletebilir, geliştirilmesine katkıda bulunabilir ya da söylediklerimizin doğru olup olmadığını görebilirsiniz.
+
+
+Dünya üzerinde milyonlarca kullanıcı ev ya da iş yerlerinde günlük işlemleri için Nextcloud kullanıyor. Kurumsal kullanıcılar Nextcloud GmbH tarafından sunulan destek hizmetleri ile tamamen kendi BT bölümlerinin denetimindeki kurumsal üretim ve iş birliği platformu için eksiksiz destek alıyor. 
+
+
+Ayrıntılı bilgi almak için https://nextcloud.com/talk adresine bakabilirsiniz.
+
+Nextcloud web sitesi https://nextcloud.com</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
     <string name="nc_date_header_yesterday">Dün</string>
     <string name="nc_date_header_today">Bugün</string>
-    <string name="nc_conversation_menu_voice_call">Sesli arama</string>
-    <string name="nc_conversation_menu_video_call">Görüntülü arama</string>
+    <string name="nc_conversation_menu_voice_call">Sesli görüşme</string>
+    <string name="nc_conversation_menu_video_call">Görüntülü görüşme</string>
     <string name="nc_new_messages">Yeni iletiler</string>
 
     <!-- Contacts endless loading -->
@@ -154,8 +184,12 @@
 
     <!-- Content descriptions -->
     <string name="nc_description_more_menu_one_to_one">%1$s görüşmesinin menüsü</string>
-    <string name="nc_description_more_menu_public">%1$s grup konuşmasının menüsü</string>
-    <string name="nc_description_more_menu_group">%1$s herkese açık konuşma menüsü</string>
+    <string name="nc_description_more_menu_public">%1$s grup görüşmesi menüsü</string>
+    <string name="nc_description_more_menu_group">%1$s herkese açık görüşme menüsü</string>
     <string name="nc_description_send_message_button">İleti gönder</string>
 
-    </resources>
+    <!-- Chat empty state -->
+    <string name="nc_chat_empty">%1$s demek için dokunun!</string>
+    <string name="nc_hello">Merhaba</string>
+
+</resources>
