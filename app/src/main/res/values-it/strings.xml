@@ -55,6 +55,8 @@
     <string name="nc_settings_account_updated">Il tuo account preesistente è stato aggiornato, invece di aggiungerne un nuovo</string>
     <string name="nc_account_scheduled_for_deletion">L\'eliminazione dell\'account è stata pianificata, e non può essere modificata</string>
     <string name="nc_settings_notification_sounds">Suoni delle notifiche</string>
+    <string name="nc_settings_call_ringtone">Chiamate uno a uno</string>
+    <string name="nc_settings_message_ringtone">Altro</string>
     <string name="nc_settings_no_ringtone">Nessun suono</string>
 
     <string name="nc_no_proxy">Nessun proxy</string>
