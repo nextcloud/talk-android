@@ -55,6 +55,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
@@ -67,6 +68,9 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcels;
 
 import java.io.IOException;
@@ -94,6 +98,9 @@ public class CallNotificationController extends BaseController {
 
     @Inject
     AppPreferences appPreferences;
+
+    @Inject
+    EventBus eventBus;
 
     @BindView(R.id.conversationNameTextView)
     TextView conversationNameTextView;
@@ -312,6 +319,31 @@ public class CallNotificationController extends BaseController {
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
         }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) avatarImageView.getLayoutParams();
+        int dimen = (int) getResources().getDimension(R.dimen.avatar_size_very_big);
+
+        layoutParams.width = dimen;
+        layoutParams.height = dimen;
+
+        avatarImageView.setLayoutParams(layoutParams);
+    }
+
+    @Override
+    protected void onDetach(@NonNull View view) {
+        super.onDetach(view);
+        eventBus.unregister(this);
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+        eventBus.register(this);
+
     }
 
     private void loadAvatar() {

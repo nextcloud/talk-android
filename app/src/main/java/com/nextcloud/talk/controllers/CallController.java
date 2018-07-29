@@ -51,6 +51,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
@@ -1481,6 +1482,15 @@ public class CallController extends BaseController {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            remoteRenderersLayout.setOrientation(LinearLayout.HORIZONTAL);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            remoteRenderersLayout.setOrientation(LinearLayout.VERTICAL);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
         if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
                 .PEER_CLOSED)) {
@@ -1735,12 +1745,6 @@ public class CallController extends BaseController {
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
         eventBus.register(this);
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            remoteRenderersLayout.setOrientation(LinearLayout.HORIZONTAL);
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            remoteRenderersLayout.setOrientation(LinearLayout.VERTICAL);
-        }
     }
 
     @Override

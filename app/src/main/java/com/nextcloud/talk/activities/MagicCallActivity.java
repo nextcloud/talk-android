@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.activities;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -35,7 +36,12 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.CallController;
 import com.nextcloud.talk.controllers.CallNotificationController;
+import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
+
+import org.greenrobot.eventbus.EventBus;
+
+import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 import butterknife.BindView;
@@ -44,6 +50,9 @@ import butterknife.ButterKnife;
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicCallActivity extends AppCompatActivity {
     private static final String TAG = "MagicCallActivity";
+
+    @Inject
+    EventBus eventBus;
 
     @BindView(R.id.controller_container)
     ViewGroup container;
@@ -85,5 +94,12 @@ public class MagicCallActivity extends AppCompatActivity {
                         .popChangeHandler(new HorizontalChangeHandler()));
             }
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        eventBus.post(new ConfigurationChangeEvent());
     }
 }
