@@ -217,6 +217,7 @@ public class NotificationJob extends Job {
                     public void onNext(RoomOverall roomOverall) {
                         Room room = roomOverall.getOcs().getData();
 
+                        intent.putExtra(BundleKeys.KEY_ROOM, Parcels.wrap(room));
                         if (room.getType().equals(Room.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
                             context.startActivity(intent);
                         } else {
@@ -226,7 +227,10 @@ public class NotificationJob extends Job {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        intent.putExtra(BundleKeys.KEY_ROOM_ID, intent.getExtras().getString(BundleKeys
+                                .KEY_ROOM_TOKEN));
+                        intent.removeExtra(BundleKeys.KEY_ROOM_TOKEN);
+                        context.startActivity(intent);
                     }
 
                     @Override

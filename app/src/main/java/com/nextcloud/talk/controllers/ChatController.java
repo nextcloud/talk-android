@@ -165,7 +165,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private boolean lookingIntoFuture = false;
 
     private int newMessagesCount = 0;
-    private Boolean startCallFromNotification;
+    private Boolean startCallFromNotification = null;
     private String roomId;
     private boolean voiceOnly;
 
@@ -187,7 +187,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
-
         this.roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "");
 
         if (args.containsKey(BundleKeys.KEY_ACTIVE_CONVERSATION)) {
@@ -232,6 +231,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     @Override
                     public void onNext(RoomOverall roomOverall) {
                         conversationName = roomOverall.getOcs().getData().getDisplayName();
+                        Log.d("MARIO", getTitle());
                         setTitle();
 
                         setupMentionAutocomplete();
@@ -267,6 +267,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             if (roomId.equals(room.getRoomId())) {
                                 roomToken = room.getToken();
                                 conversationName = room.getDisplayName();
+                                Log.d("MARIO", getTitle());
                                 setTitle();
                                 break;
                             }
@@ -407,10 +408,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
-        if (adapterWasNull && TextUtils.isEmpty(conversationName) && startCallFromNotification == null) {
-            getRoomInfo();
-        } else {
-            handleFromNotification();
+        if (adapterWasNull) {
+            // we're starting
+            if (TextUtils.isEmpty(roomToken)) {
+                handleFromNotification();
+            } else if (TextUtils.isEmpty(conversationName)){
+                getRoomInfo();
+            } else {
+                setupMentionAutocomplete();
+                joinRoomWithPassword();
+            }
         }
     }
 

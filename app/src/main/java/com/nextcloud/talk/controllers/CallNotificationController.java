@@ -82,6 +82,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Cache;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallNotificationController extends BaseController {
@@ -109,6 +110,9 @@ public class CallNotificationController extends BaseController {
     @BindView(R.id.constraintLayout)
     ConstraintLayout constraintLayout;
 
+    @Inject
+    Cache cache;
+
     private List<Disposable> disposablesList = new ArrayList<>();
     private Bundle originalBundle;
     private String roomId;
@@ -124,6 +128,7 @@ public class CallNotificationController extends BaseController {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
+        this.currentRoom = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
         this.userBeingCalled = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
 
         this.originalBundle = args;
@@ -236,12 +241,7 @@ public class CallNotificationController extends BaseController {
                         for (Room room : roomsOverall.getOcs().getData()) {
                             if (roomId.equals(room.getRoomId())) {
                                 currentRoom = room;
-                                if (conversationNameTextView != null) {
-                                    conversationNameTextView.setText(currentRoom.getDisplayName());
-                                    loadAvatar();
-                                    checkIfAnyParticipantsRemainInRoom();
-                                    showAnswerControls();
-                                }
+                                runAllThings();
                                 break;
                             }
                         }
@@ -260,13 +260,34 @@ public class CallNotificationController extends BaseController {
                 });
     }
 
+    private void runAllThings() {
+        if (conversationNameTextView != null) {
+            conversationNameTextView.setText(currentRoom.getDisplayName());
+        }
+
+        loadAvatar();
+        checkIfAnyParticipantsRemainInRoom();
+        showAnswerControls();
+    }
+
     @SuppressLint("LongLogTag")
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
 
         renderScript = RenderScript.create(getActivity());
-        handleFromNotification();
+
+        try {
+            cache.evictAll();
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to evict cache");
+        }
+
+        if (currentRoom == null) {
+            handleFromNotification();
+        } else {
+            runAllThings();
+        }
 
         String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
         Uri ringtoneUri;
