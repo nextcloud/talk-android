@@ -52,8 +52,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginStart="@dimen/margin_between_elements"
         android:layout_marginEnd="@dimen/margin_between_elements"
+        android:layout_marginStart="@dimen/margin_between_elements"
         android:layout_toEndOf="@id/frame_layout"
         android:orientation="vertical">
 
@@ -70,8 +70,8 @@
             android:id="@+id/secondary_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
             android:ellipsize="middle"
+            android:singleLine="true"
             android:textColor="?android:attr/textColorSecondary"
             tools:text="A week ago"/>
 

@@ -20,11 +20,11 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 xmlns:tools="http://schemas.android.com/tools"
-                                                 android:fitsSystemWindows="true"
-                                                 tools:context=".activities.MagicCallActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                tools:context=".activities.MagicCallActivity">
 
     <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
         android:id="@+id/controller_container"

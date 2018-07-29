@@ -22,10 +22,10 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white">
 
     <TextView
         android:id="@+id/menu_text"
@@ -35,9 +35,9 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:gravity="center_vertical"
-        android:textSize="16sp"
         android:textColor="@color/black"
+        android:textSize="16sp"
         tools:drawableLeft="@drawable/ic_add_grey600_24px"
         tools:drawablePadding="16dp"
-        tools:text="Start a new conversation" />
+        tools:text="Start a new conversation"/>
 </RelativeLayout>

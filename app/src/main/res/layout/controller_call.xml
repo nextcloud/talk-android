@@ -47,6 +47,7 @@
             android:indeterminateTintMode="src_in"/>
 
         <TextView
+            android:id="@+id/connectingTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/progress_bar"
@@ -54,8 +55,7 @@
             android:layout_margin="16dp"
             android:text="@string/nc_connecting_call"
             android:textAlignment="center"
-            android:textColor="@color/white"
-            android:id="@+id/connectingTextView"/>
+            android:textColor="@color/white"/>
 
     </RelativeLayout>
 
@@ -77,8 +77,8 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true">
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true">
 
             <org.webrtc.SurfaceViewRenderer
                 android:id="@+id/pip_video_view"
@@ -93,8 +93,8 @@
                 android:id="@+id/call_control_switch_camera"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="20dp"
                 android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="20dp"
 
                 app:checked="false"
                 app:enableInitialAnimation="false"
@@ -153,13 +153,13 @@
             android:id="@+id/callControlEnableSpeaker"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            app:checked="false"
             android:visibility="gone"
+            app:animateRearImage="false"
+            app:checked="false"
             app:enableInitialAnimation="false"
             app:frontBackgroundColor="@color/colorPrimary"
-            app:animateRearImage="false"
-            app:rearBackgroundColor="@color/colorPrimaryDark"
             app:frontImage="@drawable/ic_volume_up_white_24dp"
+            app:rearBackgroundColor="@color/colorPrimaryDark"
             app:rearImage="@drawable/ic_volume_up_white_24dp"/>
 
     </LinearLayout>

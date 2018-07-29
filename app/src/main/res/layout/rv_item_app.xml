@@ -20,12 +20,12 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingBottom="16dp"
-    android:paddingTop="16dp">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp">
 
     <ImageView
         android:id="@+id/icon_image_view"
@@ -47,8 +47,8 @@
         android:layout_toEndOf="@id/icon_image_view"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:textSize="16sp"
         android:textColor="@color/black"
+        android:textSize="16sp"
         tools:text="Start a new conversation"/>
 
 </RelativeLayout>
