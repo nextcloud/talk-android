@@ -566,7 +566,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        disposableList.add(d);
                     }
 
                     @Override
@@ -576,12 +576,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onError(Throwable e) {
-
                     }
 
                     @Override
                     public void onComplete() {
-
+                        dispose();
                     }
                 });
     }

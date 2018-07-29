@@ -68,7 +68,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/messageInputView"
-        android:paddingBottom="16dp"
         android:visibility="gone"
         app:dateHeaderTextSize="13sp"
         app:incomingBubblePaddingBottom="@dimen/message_bubble_corners_padding"
