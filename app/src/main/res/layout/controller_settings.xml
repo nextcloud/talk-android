@@ -130,7 +130,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_message_ringtone_key"
-            apc:mp_title="@string/nc_settings_message_ringtone"/>
+            apc:mp_title="@string/nc_settings_other_notifications_ringtone"/>
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 

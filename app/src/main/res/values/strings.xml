@@ -63,7 +63,7 @@
     <string name="nc_settings_notification_sounds">Notification sounds</string>
     <string name="nc_settings_call_ringtone">One-on-One Calls</string>
     <string name="nc_settings_call_ringtone_key" translatable="false">call_ringtone</string>
-    <string name="nc_settings_message_ringtone">Other</string>
+    <string name="nc_settings_other_notifications_ringtone">Other</string>
     <string name="nc_settings_message_ringtone_key" translatable="false">message_ringtone</string>
     <string name="nc_settings_default_ringtone" translatable="false">Librem by feandesign</string>
     <string name="nc_settings_no_ringtone">No sound</string>
