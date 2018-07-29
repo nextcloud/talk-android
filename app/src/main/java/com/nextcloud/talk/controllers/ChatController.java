@@ -225,13 +225,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 .subscribe(new Observer<RoomOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        disposableList.add(d);
                     }
 
                     @Override
                     public void onNext(RoomOverall roomOverall) {
                         conversationName = roomOverall.getOcs().getData().getDisplayName();
-                        Log.d("MARIO", getTitle());
                         setTitle();
 
                         setupMentionAutocomplete();
@@ -258,7 +257,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 .subscribe(new Observer<RoomsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        disposableList.add(d);
                     }
 
                     @Override
@@ -267,7 +266,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             if (roomId.equals(room.getRoomId())) {
                                 roomToken = room.getToken();
                                 conversationName = room.getDisplayName();
-                                Log.d("MARIO", getTitle());
                                 setTitle();
                                 break;
                             }
