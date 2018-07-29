@@ -126,8 +126,10 @@ public class NotificationJob extends Job {
                         boolean hasChatSupport = signatureVerification.getUserEntity().hasSpreedCapabilityWithName
                                 ("chat-v2");
 
-                        boolean isInTheSameRoomAsNotification = ApplicationWideCurrentRoomHolder.getInstance().
-                                getCurrentRoomId().equals(decryptedPushMessage.getId()) &&
+                        boolean isInTheSameRoomAsNotification = (ApplicationWideCurrentRoomHolder.getInstance().
+                                getCurrentRoomId().equals(decryptedPushMessage.getId()) ||
+                                ApplicationWideCurrentRoomHolder.getInstance()
+                                        .getCurrentRoomToken().equals(decryptedPushMessage.getId())) &&
                                 signatureVerification.getUserEntity().equals(ApplicationWideCurrentRoomHolder
                                         .getInstance().getUserInRoom());
 

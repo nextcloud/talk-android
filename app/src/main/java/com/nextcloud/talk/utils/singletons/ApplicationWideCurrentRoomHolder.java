@@ -24,6 +24,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 
 public class ApplicationWideCurrentRoomHolder {
     private String currentRoomId = "";
+    private String currentRoomToken = "";
     private UserEntity userInRoom = new UserEntity();
     private boolean inCall = false;
 
@@ -37,6 +38,15 @@ public class ApplicationWideCurrentRoomHolder {
         currentRoomId = "";
         userInRoom = new UserEntity();
         inCall = false;
+        currentRoomToken = "";
+    }
+
+    public String getCurrentRoomToken() {
+        return currentRoomToken;
+    }
+
+    public void setCurrentRoomToken(String currentRoomToken) {
+        this.currentRoomToken = currentRoomToken;
     }
 
     public String getCurrentRoomId() {

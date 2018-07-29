@@ -1059,6 +1059,7 @@ public class CallController extends BaseController {
                         }
 
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
                         ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
                         ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(userEntity);
 

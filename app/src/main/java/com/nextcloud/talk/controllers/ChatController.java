@@ -445,6 +445,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomId);
         ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
         ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
 
