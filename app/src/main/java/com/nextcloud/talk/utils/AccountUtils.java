@@ -56,22 +56,27 @@ public class AccountUtils {
             for (int i = 0; i < userEntitiesList.size(); i++) {
                 internalUserEntity = userEntitiesList.get(i);
                 importAccount = getInformationFromAccount(account);
-                if (importAccount.getBaseUrl().startsWith("http://") ||
-                        importAccount.getBaseUrl().startsWith("https://")) {
-                    if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
-                            internalUserEntity.getBaseUrl().equals(importAccount.getBaseUrl())) {
-                        accountFound = true;
-                        break;
+                if (importAccount.getToken() != null) {
+                    if (importAccount.getBaseUrl().startsWith("http://") ||
+                            importAccount.getBaseUrl().startsWith("https://")) {
+                        if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
+                                internalUserEntity.getBaseUrl().equals(importAccount.getBaseUrl())) {
+                            accountFound = true;
+                            break;
+                        }
+                    } else {
+                        if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
+                                (internalUserEntity.getBaseUrl().equals("http://" + importAccount.getBaseUrl()) ||
+                                        internalUserEntity.getBaseUrl().equals("https://" +
+                                                importAccount.getBaseUrl()))) {
+                            accountFound = true;
+                            break;
+                        }
+
                     }
                 } else {
-                    if (internalUserEntity.getUsername().equals(importAccount.getUsername()) &&
-                            (internalUserEntity.getBaseUrl().equals("http://" + importAccount.getBaseUrl()) ||
-                                    internalUserEntity.getBaseUrl().equals("https://" +
-                                            importAccount.getBaseUrl()))) {
-                        accountFound = true;
-                        break;
-                    }
-
+                    accountFound = true;
+                    break;
                 }
             }
 
@@ -105,7 +110,12 @@ public class AccountUtils {
         Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
         final AccountManager accMgr = AccountManager.get(context);
 
-        String password = accMgr.getPassword(account);
+        String password = null;
+        try {
+            password = accMgr.getPassword(account);
+        } catch (Exception exception) {
+            Log.e(TAG, "Failed to import account");
+        }
 
         if (urlString.endsWith("/")) {
             urlString = urlString.substring(0, urlString.length() - 1);
