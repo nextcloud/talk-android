@@ -825,7 +825,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 }
             }
 
-            if (!lookingIntoFuture) {
+            if (!lookingIntoFuture && inChat) {
                 pullChatMessages(1);
             }
         } else if (response.code() == 304 && !isFromTheFuture) {
@@ -840,7 +840,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             historyRead = true;
 
-            if (!lookingIntoFuture) {
+            if (!lookingIntoFuture && inChat) {
                 pullChatMessages(1);
             }
         }
@@ -848,7 +848,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     @Override
     public void onLoadMore(int page, int totalItemsCount) {
-        if (!historyRead) {
+        if (!historyRead && inChat) {
             pullChatMessages(0);
         }
     }
