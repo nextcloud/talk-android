@@ -302,7 +302,7 @@ public class NotificationJob extends Job {
                                 .getString(R.string.nc_notification_channel_messages), true,
                         NotificationManager.IMPORTANCE_HIGH);
 
-                notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2);
+                notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V3);
             } else {
                 NotificationUtils.createNotificationChannel(notificationManager,
                         NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2, context.getResources()
