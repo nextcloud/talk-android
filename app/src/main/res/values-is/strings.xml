@@ -50,7 +50,6 @@
     <string name="nc_settings_remove_account">Fjarlægja notandaaðgang</string>
     <string name="nc_settings_add_account">Bæta við nýjum notandaaðgangi</string>
     <string name="nc_settings_notification_sounds">Hljóð með tilkynningum</string>
-    <string name="nc_settings_other_notifications_ringtone">Annað</string>
     <string name="nc_settings_no_ringtone">Ekkert hljóð</string>
 
     <string name="nc_no_proxy">Enginn milliþjónn</string>
