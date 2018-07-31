@@ -55,6 +55,8 @@
     <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>
     <string name="nc_account_scheduled_for_deletion">Учётная запись запланирована к удалению и не может быть использована</string>
     <string name="nc_settings_notification_sounds">Звук уведомления</string>
+    <string name="nc_settings_call_ringtone">Звонки</string>
+    <string name="nc_settings_other_notifications_ringtone">Групповые вызовы</string>
     <string name="nc_settings_no_ringtone">Нет звука</string>
 
     <string name="nc_no_proxy">Не использовать прокси-сервер</string>
@@ -96,16 +98,16 @@
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Для выполнения вызова или видеоконференции необходимо предоставить дополнительные разрешения этому приложению. Выберите «Разрешить» в открывшемся диалоге.</string>
-    <string name="nc_permissions_audio">Для выполнения вызова необходимо предоставить этому приложению доступ к микрофону. Выберите «Разрешить» в открывшемся диалоге.</string>
-    <string name="nc_permissions_video">Для выполнения видеовызова необходимо предоставить этому приложению доступ к камере. Выберите «Разрешить» в открывшемся диалоге.</string>
+    <string name="nc_permissions">Для выполнения вызова или видеоконференции приложению необходимо предоставить дополнительные разрешения. Выберите «Разрешить» в открывшемся диалоге.</string>
+    <string name="nc_permissions_audio">Для выполнения вызова необходимо предоставить приложению доступ к микрофону. Выберите «Разрешить» в открывшемся диалоге.</string>
+    <string name="nc_permissions_video">Для выполнения видеовызова необходимо предоставить приложению доступ к камере. Выберите «Разрешить» в открывшемся диалоге.</string>
     <string name="nc_camera_permission_permanently_denied">Для выполнения видеовызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к камере в системных настройках.</string>
     <string name="nc_microphone_permission_permanently_denied">Для выполнения вызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к микрофону  в системных настройках.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
 
     <!-- Call -->
-    <string name="nc_connecting_call">Соединение...</string>
-    <string name="nc_incoming_call">Входящий звонок от</string>
+    <string name="nc_connecting_call">Соединение…</string>
+    <string name="nc_incoming_call">Входящий вызов от</string>
     <string name="nc_nick_guest">Гость</string>
     <string name="nc_public_call">Начать открытую беседу</string>
     <string name="nc_public_call_explanation">Открытые беседы позволяют приглашать участников при помощи специальной ссылки.</string>
@@ -182,6 +184,8 @@ Nextcloud Talk поддерживает:
     <string name="nc_description_more_menu_group">Меню для общей беседы %1$s</string>
     <string name="nc_description_send_message_button">Отправить сообщение</string>
 
+    <!-- Chat empty state -->
+    <string name="nc_chat_empty">Нажмите чтобы первым сказать «%1$s»!</string>
     <string name="nc_hello">Привет</string>
 
 </resources>

@@ -55,6 +55,8 @@
     <string name="nc_settings_account_updated">Nous avons mis à jour votre compte existant au lieu d’en ajouter un nouveau</string>
     <string name="nc_account_scheduled_for_deletion">Le compte va être supprimé et ne peut donc pas être utilisé</string>
     <string name="nc_settings_notification_sounds">Sons de notification</string>
+    <string name="nc_settings_call_ringtone">Appels en tête-à-tête</string>
+    <string name="nc_settings_other_notifications_ringtone">Autre</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
 
     <string name="nc_no_proxy">Aucun proxy</string>

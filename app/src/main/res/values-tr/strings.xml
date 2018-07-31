@@ -56,6 +56,7 @@
     <string name="nc_account_scheduled_for_deletion">Hesap silinmek üzere zamanlandı ve üzerinde işlem yapılamaz</string>
     <string name="nc_settings_notification_sounds"> Bildirim sesleri</string>
     <string name="nc_settings_call_ringtone">Bire Bir Görüşmeler</string>
+    <string name="nc_settings_other_notifications_ringtone">Diğer</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
 
     <string name="nc_no_proxy">Vekil sunucu yok</string>
