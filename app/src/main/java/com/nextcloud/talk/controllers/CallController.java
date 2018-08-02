@@ -221,7 +221,6 @@ public class CallController extends BaseController {
     private boolean audioOn = false;
 
     private boolean isMultiSession = false;
-    private boolean hasChatSupport = false;
     private boolean needsPing = true;
 
     private boolean isVoiceOnlyCall;
@@ -963,15 +962,6 @@ public class CallController extends BaseController {
                                         .getFeatures() != null && capabilitiesOverall.getOcs().getData()
                                 .getCapabilities().getSpreedCapability()
                                 .getFeatures().contains("multi-room-users");
-
-                        hasChatSupport = capabilitiesOverall.getOcs().getData()
-                                .getCapabilities() != null && capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability() != null &&
-                                capabilitiesOverall.getOcs().getData()
-                                        .getCapabilities().getSpreedCapability()
-                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability()
-                                .getFeatures().contains("chat-v2");
 
                         needsPing = !(capabilitiesOverall.getOcs().getData()
                                 .getCapabilities() != null && capabilitiesOverall.getOcs().getData()
