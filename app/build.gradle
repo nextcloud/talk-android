@@ -83,6 +83,7 @@ dependencies {
     implementation "com.android.support:design:${supportLibraryVersion}"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation "com.android.support:support-emoji-bundled:${supportLibraryVersion}"
+    implementation "com.android.support:palette-v7:${supportLibraryVersion}"
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
@@ -138,9 +139,9 @@ dependencies {
     implementation 'eu.davidea:flexible-adapter:5.0.5'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b5'
 
-    implementation 'com.github.bumptech.glide:glide:4.3.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.0'
-    implementation 'com.github.bumptech.glide:okhttp3-integration:4.3.0@aar'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.7.1@aar'
     implementation 'org.webrtc:google-webrtc:1.0.23295'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
 

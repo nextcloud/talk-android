@@ -32,12 +32,14 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -67,6 +69,7 @@ import com.nextcloud.talk.utils.MagicFlipView;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -116,6 +119,9 @@ public class CallNotificationController extends BaseController {
 
     @BindView(R.id.constraintLayout)
     ConstraintLayout constraintLayout;
+
+    @BindView(R.id.incomingTextRelativeLayout)
+    RelativeLayout incomingTextRelativeLayout;
 
     @Inject
     Cache cache;
@@ -374,16 +380,24 @@ public class CallNotificationController extends BaseController {
                                             (getActivity()).getBitmapPool(), resource, avatarSize, avatarSize));
                                 }
 
-                                final Allocation input = Allocation.createFromBitmap(renderScript, resource);
-                                final Allocation output = Allocation.createTyped(renderScript, input.getType());
-                                final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(renderScript, Element
-                                        .U8_4(renderScript));
-                                script.setRadius(15f);
-                                script.setInput(input);
-                                script.forEach(output);
-                                output.copyTo(resource);
+                                if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200) {
+                                    final Allocation input = Allocation.createFromBitmap(renderScript, resource);
+                                    final Allocation output = Allocation.createTyped(renderScript, input.getType());
+                                    final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(renderScript, Element
+                                            .U8_4(renderScript));
+                                    script.setRadius(15f);
+                                    script.setInput(input);
+                                    script.forEach(output);
+                                    output.copyTo(resource);
 
-                                constraintLayout.setBackground(new BitmapDrawable(resource));
+                                    incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
+                                            .incoming_gradient));
+                                    constraintLayout.setBackground(new BitmapDrawable(resource));
+                                } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
+                                    Palette palette = Palette.from(resource).generate();
+                                    constraintLayout.setBackgroundColor(palette.getDominantColor(
+                                            getResources().getColor(R.color.grey950)));
+                                }
                             }
                         });
 
@@ -425,6 +439,7 @@ public class CallNotificationController extends BaseController {
 
     @Override
     public void onDestroy() {
+        AvatarStatusCodeHolder.getInstance().setStatusCode(0);
         leavingScreen = true;
         dispose();
         endMediaPlayer();
