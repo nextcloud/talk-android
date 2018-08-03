@@ -741,9 +741,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 }
 
                 if (chatMessageList.size() == 0) {
-                    emptyLayout.setVisibility(View.VISIBLE);
+                    if (emptyLayout != null) {
+                        emptyLayout.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    messagesListView.setVisibility(View.VISIBLE);
+                    if (messagesListView != null) {
+                        messagesListView.setVisibility(View.VISIBLE);
+                    }
                 }
             } else {
                 if (emptyLayout.getVisibility() != View.GONE) {
