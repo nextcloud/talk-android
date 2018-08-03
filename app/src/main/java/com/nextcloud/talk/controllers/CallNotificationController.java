@@ -65,6 +65,7 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.MagicFlipView;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.glide.GlideApp;
@@ -302,28 +303,30 @@ public class CallNotificationController extends BaseController {
             runAllThings();
         }
 
-        String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
-        Uri ringtoneUri;
+        if (DoNotDisturbUtils.shouldPlaySound()) {
+            String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
+            Uri ringtoneUri;
 
-        if (TextUtils.isEmpty(callRingtonePreferenceString)) {
-            // play default sound
-            ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName()+
-                    "/raw/librem_by_feandesign_call");
-        } else {
-            try {
-                RingtoneSettings ringtoneSettings = LoganSquare.parse(callRingtonePreferenceString, RingtoneSettings.class);
-                ringtoneUri = ringtoneSettings.getRingtoneUri();
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to parse ringtone settings");
-                ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName()+
+            if (TextUtils.isEmpty(callRingtonePreferenceString)) {
+                // play default sound
+                ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
                         "/raw/librem_by_feandesign_call");
+            } else {
+                try {
+                    RingtoneSettings ringtoneSettings = LoganSquare.parse(callRingtonePreferenceString, RingtoneSettings.class);
+                    ringtoneUri = ringtoneSettings.getRingtoneUri();
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to parse ringtone settings");
+                    ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+                            "/raw/librem_by_feandesign_call");
+                }
             }
-        }
 
-        if (ringtoneUri != null) {
-            mediaPlayer = MediaPlayer.create(getApplicationContext(), ringtoneUri);
-            mediaPlayer.setLooping(true);
-            mediaPlayer.start();
+            if (ringtoneUri != null) {
+                mediaPlayer = MediaPlayer.create(getApplicationContext(), ringtoneUri);
+                mediaPlayer.setLooping(true);
+                mediaPlayer.start();
+            }
         }
     }
 

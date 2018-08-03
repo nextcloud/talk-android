@@ -51,6 +51,7 @@ import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.rooms.Room;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -345,7 +346,8 @@ public class NotificationJob extends Job {
         if (notificationManager != null) {
             notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
 
-            if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall()) {
+            if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
+                    DoNotDisturbUtils.shouldPlaySound()) {
                 MediaPlayer mediaPlayer = MediaPlayer.create(context, soundUri);
                 mediaPlayer.start();
                 mediaPlayer.setOnCompletionListener(MediaPlayer::release);
