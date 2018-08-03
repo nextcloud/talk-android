@@ -287,7 +287,6 @@ public class CallsListController extends BaseController implements SearchView.On
                                 Room room2 = o2.getModel();
                                 return new CompareToBuilder()
                                         .append(room1.isPinned(), room2.isPinned())
-                                        .append(room1.getUnreadMessages(), room2.getUnreadMessages())
                                         .append(room1.getLastActivity(), room2.getLastActivity())
                                         .toComparison();
                             });
