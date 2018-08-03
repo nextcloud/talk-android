@@ -27,10 +27,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -349,9 +352,22 @@ public class NotificationJob extends Job {
             if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
                     DoNotDisturbUtils.shouldPlaySound()) {
                 MediaPlayer mediaPlayer = MediaPlayer.create(context, soundUri);
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION);
                 mediaPlayer.start();
                 mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+            }
 
+
+            if (DoNotDisturbUtils.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
+                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
+                if (vibrator != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        vibrator.vibrate(500);
+                    }
+                }
             }
         }
     }

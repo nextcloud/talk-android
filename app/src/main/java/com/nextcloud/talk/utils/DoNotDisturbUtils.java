@@ -24,6 +24,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Build;
+import android.os.Vibrator;
 
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 
@@ -49,6 +50,31 @@ public class DoNotDisturbUtils {
                 shouldPlaySound = false;
             }
         }
+
         return shouldPlaySound;
+    }
+
+    public static boolean hasVibrator() {
+        Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        return (vibrator != null && vibrator.hasVibrator());
+    }
+
+    public static boolean shouldVibrate(boolean vibrate) {
+
+        if (hasVibrator()) {
+            Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+            if (audioManager != null) {
+                if (vibrate) {
+                    return (audioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT);
+                } else {
+                    return (audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE);
+                }
+            }
+        }
+
+        return false;
     }
 }

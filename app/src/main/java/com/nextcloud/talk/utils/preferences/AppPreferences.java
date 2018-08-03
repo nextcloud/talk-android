@@ -21,6 +21,7 @@
 package com.nextcloud.talk.utils.preferences;
 
 import net.orange_box.storebox.annotations.method.ClearMethod;
+import net.orange_box.storebox.annotations.method.DefaultValue;
 import net.orange_box.storebox.annotations.method.KeyByString;
 import net.orange_box.storebox.annotations.method.RegisterChangeListenerMethod;
 import net.orange_box.storebox.annotations.method.RemoveMethod;
@@ -177,6 +178,17 @@ public interface AppPreferences {
     @KeyByString("messages_notification_channel_upgrade_to_v3")
     @RemoveMethod
     void removeMessagesNotificationChannelUpgradeToV3();
+
+    @KeyByString("notifications_vibrate")
+    @DefaultValue(1)
+    boolean getShouldVibrateSetting();
+
+    @KeyByString("notifications_vibrate")
+    void setVibrateSetting(boolean value);
+
+    @KeyByString("notifications_vibrate")
+    @RemoveMethod
+    void removeVibrateSetting();
 
     @ClearMethod
     void clear();

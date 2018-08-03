@@ -21,11 +21,17 @@
 package com.nextcloud.talk.controllers;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -136,6 +142,8 @@ public class CallNotificationController extends BaseController {
     private MediaPlayer mediaPlayer;
     private boolean leavingScreen = false;
     private RenderScript renderScript;
+    private Vibrator vibrator;
+    private Handler handler;
 
     public CallNotificationController(Bundle args) {
         super(args);
@@ -325,8 +333,37 @@ public class CallNotificationController extends BaseController {
             if (ringtoneUri != null) {
                 mediaPlayer = MediaPlayer.create(getApplicationContext(), ringtoneUri);
                 mediaPlayer.setLooping(true);
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
                 mediaPlayer.start();
             }
+        }
+
+        if (DoNotDisturbUtils.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
+            vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+
+            if (vibrator != null) {
+                long[] vibratePattern = new long[]{0, 400, 800, 600, 800, 800, 800, 1000};
+                int[] amplitudes = new int[]{0, 255, 0, 255, 0, 255, 0, 255};
+
+                VibrationEffect vibrationEffect;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (vibrator.hasAmplitudeControl()) {
+                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, amplitudes, 0);
+                        vibrator.vibrate(vibrationEffect);
+                    } else {
+                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, 0);
+                        vibrator.vibrate(vibrationEffect);
+                    }
+                } else {
+                    vibrator.vibrate(vibratePattern, 0);
+                }
+            }
+
+            handler.postDelayed(() -> {
+                if (vibrator != null) {
+                    vibrator.cancel();
+                }
+            }, 10000);
         }
     }
 
@@ -429,7 +466,7 @@ public class CallNotificationController extends BaseController {
         }
     }
 
-    private void endMediaPlayer() {
+    private void endMediaAndVibratorNotifications() {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
@@ -438,14 +475,20 @@ public class CallNotificationController extends BaseController {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+
+        if (vibrator != null) {
+            vibrator.cancel();
+        }
     }
 
     @Override
     public void onDestroy() {
         AvatarStatusCodeHolder.getInstance().setStatusCode(0);
         leavingScreen = true;
+        handler.removeCallbacksAndMessages(null);
+        handler = null;
         dispose();
-        endMediaPlayer();
+        endMediaAndVibratorNotifications();
         super.onDestroy();
     }
 

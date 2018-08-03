@@ -54,17 +54,19 @@ import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
+import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule;
+import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.yarolegovich.mp.MaterialChoicePreference;
 import com.yarolegovich.mp.MaterialEditTextPreference;
 import com.yarolegovich.mp.MaterialPreferenceCategory;
 import com.yarolegovich.mp.MaterialPreferenceScreen;
 import com.yarolegovich.mp.MaterialStandardPreference;
+import com.yarolegovich.mp.MaterialSwitchPreference;
 
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
 
@@ -146,6 +148,9 @@ public class SettingsController extends BaseController {
     @BindView(R.id.settings_client_cert)
     MaterialStandardPreference certificateSetup;
 
+    @BindView(R.id.settings_always_vibrate)
+    MaterialSwitchPreference shouldVibrateSwitchPreference;
+
     @BindView(R.id.message_text)
     TextView messageText;
 
@@ -205,6 +210,10 @@ public class SettingsController extends BaseController {
             });
         } else {
             licenceButton.setVisibility(View.GONE);
+        }
+
+        if (!DoNotDisturbUtils.hasVibrator()) {
+            shouldVibrateSwitchPreference.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(getResources().getString(R.string.nc_privacy_url))) {
