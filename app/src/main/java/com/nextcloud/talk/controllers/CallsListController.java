@@ -280,8 +280,13 @@ public class CallsListController extends BaseController implements SearchView.On
 
                         adapter.updateDataSet(callItems, true);
 
-                        Collections.sort(callItems, (callItem, t1) ->
-                                Long.compare(t1.getModel().getLastPing(), callItem.getModel().getLastPing()));
+                        if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
+                            Collections.sort(callItems, (callItem, t1) ->
+                                    Long.compare(t1.getModel().getLastActivity(), callItem.getModel().getLastActivity()));
+                        } else {
+                            Collections.sort(callItems, (callItem, t1) ->
+                                    Long.compare(t1.getModel().getLastPing(), callItem.getModel().getLastPing()));
+                        }
 
                         if (searchItem != null) {
                             searchItem.setVisible(callItems.size() > 0);

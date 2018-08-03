@@ -65,6 +65,8 @@ public class Room {
     public String password;
     @JsonField(name = "isFavorite")
     public boolean isFavorite;
+    @JsonField(name = "lastActivity")
+    public long lastActivity;
 
     public boolean isPublic() {
         return (RoomType.ROOM_PUBLIC_CALL.equals(type));
