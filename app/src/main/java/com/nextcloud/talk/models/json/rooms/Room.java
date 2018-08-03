@@ -22,6 +22,7 @@ package com.nextcloud.talk.models.json.rooms;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
@@ -67,6 +68,12 @@ public class Room {
     public boolean isFavorite;
     @JsonField(name = "lastActivity")
     public long lastActivity;
+    @JsonField(name = "unreadMessages")
+    public int unreadMessages;
+    @JsonField(name = "unreadMention")
+    public boolean unreadMention;
+    @JsonField(name =  "lastMessage")
+    public ChatMessage lastMessage;
 
     public boolean isPublic() {
         return (RoomType.ROOM_PUBLIC_CALL.equals(type));
