@@ -67,6 +67,7 @@ import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -281,8 +282,15 @@ public class CallsListController extends BaseController implements SearchView.On
                         adapter.updateDataSet(callItems, true);
 
                         if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
-                            Collections.sort(callItems, (callItem, t1) ->
-                                    Long.compare(t1.getModel().getLastActivity(), callItem.getModel().getLastActivity()));
+                            Collections.sort(callItems, (o1, o2) -> {
+                                Room room1 = o1.getModel();
+                                Room room2 = o2.getModel();
+                                return new CompareToBuilder()
+                                        .append(room1.isPinned(), room2.isPinned())
+                                        .append(room1.getUnreadMessages(), room2.getUnreadMessages())
+                                        .append(room1.getLastActivity(), room2.getLastActivity())
+                                        .toComparison();
+                            });
                         } else {
                             Collections.sort(callItems, (callItem, t1) ->
                                     Long.compare(t1.getModel().getLastPing(), callItem.getModel().getLastPing()));
