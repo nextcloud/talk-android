@@ -64,8 +64,8 @@ public class Room {
     @JsonField(name = "sessionId")
     public String sessionId;
     public String password;
-    @JsonField(name = "isFavorite")
-    public boolean isFavorite;
+    @JsonField(name = "isPinned")
+    public boolean isPinned;
     @JsonField(name = "lastActivity")
     public long lastActivity;
     @JsonField(name = "unreadMessages")

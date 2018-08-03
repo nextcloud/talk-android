@@ -22,6 +22,7 @@ package com.nextcloud.talk.models.json.chat;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
@@ -37,6 +38,24 @@ import lombok.Data;
 @Data
 @JsonObject
 public class ChatMessage implements IMessage {
+
+    public enum SystemMessageType {
+        DUMMY,
+        CONVERSATION_CREATED,
+        CONVERSATION_RENAMED,
+        CALL_JOINED,
+        CALL_LEFT,
+        CALL_ENDED,
+        GUESTS_ALLOWED,
+        GUESTS_DISALLOWED,
+        PASSWORD_SET,
+        PASSWORD_REMOVED,
+        USER_ADDED,
+        USER_REMOVED,
+        MODERATOR_PROMOTED,
+        MODERATOR_DEMOTED
+    }
+
     String baseUrl;
     @JsonField(name = "id")
     int jsonMessageId;
@@ -57,7 +76,12 @@ public class ChatMessage implements IMessage {
     String message;
     @JsonField(name = "messageParameters")
     HashMap<String, HashMap<String, String>> messageParameters;
+
+    @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
+    SystemMessageType systemMessageType;
+
     boolean isGrouped;
+
 
     public String getBaseUrl() {
         return baseUrl;
