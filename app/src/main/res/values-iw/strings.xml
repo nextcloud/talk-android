@@ -54,7 +54,6 @@
     <string name="nc_account_scheduled_for_deletion">החשבון מועמד למחיקה ולא ניתן לשנות אותו</string>
     <string name="nc_settings_notification_sounds">צלילי הודעות</string>
     <string name="nc_settings_no_ringtone">אין צליל</string>
-
     <string name="nc_no_proxy">אין מתווך</string>
     <string name="nc_username">שם משתמש</string>
     <string name="nc_password">ססמה</string>

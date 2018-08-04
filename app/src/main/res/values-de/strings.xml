@@ -58,7 +58,6 @@
     <string name="nc_settings_call_ringtone">Eins-Zu-Eins-Anrufe</string>
     <string name="nc_settings_other_notifications_ringtone">Andere</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
-
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Nutzername</string>
     <string name="nc_password">Passwort</string>

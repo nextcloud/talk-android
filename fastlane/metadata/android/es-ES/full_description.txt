@@ -9,10 +9,10 @@ Nextcloud Talk soporta:
 * Chat individual y de grupo.
 * Una forma fácil de compartir la pantalla.
 * Apps móviles para Android y iOS.
-* Notificaciones push de llamadas y chats.
+* Notificaciones push de llamadas y chats (solo si se instalal desde Google Play).
 * Integración con los archivos y el groupware de Nextcloud.
-* Totalmente en tus instalaciones, totalmente código abierto.
-* Llamadas cifradas punto a punto.
+* Totalmente en tus instalaciones, completamente código abierto.
+* Llamadas cifradas de extremo a extremo.
 * Escala hasta millones de usuarios.
 * Gate SIP: llama por teléfono.
 

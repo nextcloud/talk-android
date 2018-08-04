@@ -58,7 +58,6 @@
     <string name="nc_settings_call_ringtone">Chiamate uno a uno</string>
     <string name="nc_settings_other_notifications_ringtone">Altro</string>
     <string name="nc_settings_no_ringtone">Nessun suono</string>
-
     <string name="nc_no_proxy">Nessun proxy</string>
     <string name="nc_username">Nome utente</string>
     <string name="nc_password">Password</string>

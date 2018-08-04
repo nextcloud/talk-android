@@ -56,7 +56,6 @@
     <string name="nc_account_scheduled_for_deletion">Účet je naplánovaný na zrušenie a preto nemôže byť zmenený</string>
     <string name="nc_settings_notification_sounds">Zvuky hlásení</string>
     <string name="nc_settings_no_ringtone">Žiadny zvuk</string>
-
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Používateľské meno</string>
     <string name="nc_password">Heslo</string>
