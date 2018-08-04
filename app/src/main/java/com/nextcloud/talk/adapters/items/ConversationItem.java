@@ -196,14 +196,16 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             case ROOM_TYPE_ONE_TO_ONE_CALL:
                 holder.onlineIndicator.setVisibility(View.VISIBLE);
 
-                if (conversation.getParticipants() == null || conversation.getParticipants().isEmpty()) {
-                    holder.onlineIndicator.setBackground(context.getDrawable(R.drawable.shape_bubble_offline));
+                if (conversation.getCount() > 0) {
+                    if (conversation.getCount() == 2 || (conversation.getCount() == 1 &&
+                            conversation.getSessionId().equals("0"))) {
+                        holder.onlineIndicator.setBackground(context.getDrawable(R.drawable.shape_bubble_online));
+                    } else {
+                        holder.onlineIndicator.setBackground(context.getDrawable(R.drawable.shape_bubble_offline));
+                    }
                 } else {
-                    holder.onlineIndicator.setBackground(context.getDrawable(R.drawable.shape_bubble_online));
+                    holder.onlineIndicator.setBackground(context.getDrawable(R.drawable.shape_bubble_offline));
                 }
-
-                //holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
-                //        .nc_description_more_menu_one_to_one), conversation.getDisplayName()));
 
                 if (!TextUtils.isEmpty(conversation.getName())) {
                     GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
@@ -226,9 +228,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 }
                 break;
             case ROOM_GROUP_CALL:
-                //holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
-                //        .nc_description_more_menu_group), conversation.getDisplayName()));
-
                 holder.onlineIndicator.setVisibility(View.GONE);
 
                 GlideApp.with(context)
@@ -241,8 +240,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         .into(holder.dialogAvatar);
                 break;
             case ROOM_PUBLIC_CALL:
-                //holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
-                //        .nc_description_more_menu_public), conversation.getDisplayName()));
                 holder.onlineIndicator.setVisibility(View.GONE);
                 GlideApp.with(context)
                         .asBitmap()

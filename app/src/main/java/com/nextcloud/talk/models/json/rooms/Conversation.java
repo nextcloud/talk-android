@@ -29,7 +29,7 @@ import com.nextcloud.talk.models.json.participants.Participant;
 
 import org.parceler.Parcel;
 
-import java.util.List;
+import java.util.HashMap;
 
 import lombok.Data;
 
@@ -54,9 +54,9 @@ public class Conversation {
     @JsonField(name = "numGuests")
     public long numberOfGuests;
     @JsonField(name = "guestList")
-    public List<Participant> guestList;
+    public HashMap<String, HashMap<String, Object>> guestList;
     @JsonField(name = "participants")
-    public List<Participant> participants;
+    public HashMap<String, HashMap<String, Object>> participants;
     @JsonField(name = "participantType", typeConverter = EnumParticipantTypeConverter.class)
     public Participant.ParticipantType participantType;
     @JsonField(name = "hasPassword")
