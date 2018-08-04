@@ -92,11 +92,11 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class CallsListController extends BaseController implements SearchView.OnQueryTextListener,
+public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
         FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, FastScroller
                 .OnScrollStateChangeListener {
 
-    public static final String TAG = "CallsListController";
+    public static final String TAG = "ConversationsListController";
 
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
 
@@ -130,7 +130,7 @@ public class CallsListController extends BaseController implements SearchView.On
     private View view;
     private boolean shouldUseLastMessageLayout;
 
-    public CallsListController() {
+    public ConversationsListController() {
         super();
         setHasOptionsMenu(true);
     }

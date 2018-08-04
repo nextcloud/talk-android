@@ -28,7 +28,7 @@ import android.support.annotation.IdRes;
 
 import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.controllers.CallsListController;
+import com.nextcloud.talk.controllers.ConversationsListController;
 import com.nextcloud.talk.controllers.ContactsController;
 import com.nextcloud.talk.controllers.SettingsController;
 import com.nextcloud.talk.utils.BottomNavigationUtils;
@@ -37,7 +37,7 @@ import com.nextcloud.talk.utils.BottomNavigationUtils;
  * Enum representation of valid Bottom Navigation Menu Items
  */
 public enum BottomNavigationMenuItem {
-    CALLS(R.id.navigation_calls, CallsListController.class),
+    CALLS(R.id.navigation_calls, ConversationsListController.class),
     CONTACTS(R.id.navigation_contacts, ContactsController.class),
     SETTINGS(R.id.navigation_settings, SettingsController.class);
 
