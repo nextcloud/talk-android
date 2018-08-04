@@ -113,7 +113,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             if (conversation.getUnreadMessages() < 10) {
                 holder.dialogUnreadBubble.setText(Long.toString(conversation.getUnreadMessages()));
             } else {
-                holder.dialogUnreadBubble.setText("+");
+                holder.dialogUnreadBubble.setText("9+");
             }
 
             if (conversation.isUnreadMention()) {
@@ -126,6 +126,18 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         }
 
         String authorDisplayName = "";
+
+        if (conversation.isHasPassword()) {
+            holder.passwordProtectedRoomImageView.setVisibility(View.VISIBLE);
+        } else {
+            holder.passwordProtectedRoomImageView.setVisibility(View.GONE);
+        }
+
+        if (conversation.isPinned()) {
+            holder.pinnedConversationImageView.setVisibility(View.VISIBLE);
+        } else {
+            holder.pinnedConversationImageView.setVisibility(View.GONE);
+        }
 
         if (conversation.getLastMessage() != null) {
             holder.dialogDate.setVisibility(View.VISIBLE);
@@ -153,7 +165,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 spannableString.setSpan(boldStyleSpan, 0, fullString.indexOf(":") + 1, Spannable
                         .SPAN_INCLUSIVE_INCLUSIVE);
 
-                holder.dialogLastMessage.setText(spannableString, TextView.BufferType.SPANNABLE);
+                holder.dialogLastMessage.setText(spannableString);
                 holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
 
                 int smallAvatarSize = Math.round(context.getResources().getDimension(R.dimen.small_item_height));
@@ -280,6 +292,10 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         TextView dialogUnreadBubble;
         @BindView(R.id.onlineIndicator)
         ImageView onlineIndicator;
+        @BindView(R.id.passwordProtectedRoomImageView)
+        ImageView passwordProtectedRoomImageView;
+        @BindView(R.id.pinnedConversationImageView)
+        ImageView pinnedConversationImageView;
 
         ConversationItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
