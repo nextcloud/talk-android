@@ -20,15 +20,15 @@
 
 package com.nextcloud.talk.events;
 
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 
 import lombok.Data;
 
 @Data
 public class MoreMenuClickEvent {
-    private final Room room;
+    private final Conversation conversation;
 
-    public MoreMenuClickEvent(Room room) {
-        this.room = room;
+    public MoreMenuClickEvent(Conversation conversation) {
+        this.conversation = conversation;
     }
 }

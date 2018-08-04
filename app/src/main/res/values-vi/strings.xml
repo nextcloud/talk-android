@@ -70,7 +70,7 @@
 
     <string name="nc_select_an_account">Chọn một tài khoản</string>
 
-    <!-- Room menu -->
+    <!-- Conversation menu -->
     <string name="nc_start_conversation">Bắt đầu một cuộc Đàm thoại</string>
     <string name="nc_configure_room">Cấu hình đàm thoại</string>
     <string name="nc_leave">Rời khỏi cuộc đàm thoại</string>

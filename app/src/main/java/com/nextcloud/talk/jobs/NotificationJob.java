@@ -51,7 +51,7 @@ import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
@@ -221,10 +221,10 @@ public class NotificationJob extends Job {
 
                     @Override
                     public void onNext(RoomOverall roomOverall) {
-                        Room room = roomOverall.getOcs().getData();
+                        Conversation conversation = roomOverall.getOcs().getData();
 
-                        intent.putExtra(BundleKeys.KEY_ROOM, Parcels.wrap(room));
-                        if (room.getType().equals(Room.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
+                        intent.putExtra(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
+                        if (conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
                             context.startActivity(intent);
                         } else {
                             showNotification(intent);

@@ -30,5 +30,5 @@ import lombok.Data;
 @JsonObject
 public class RoomOCS extends GenericOCS {
     @JsonField(name = "data")
-    Room data;
+    Conversation data;
 }

@@ -23,7 +23,7 @@ package com.nextcloud.talk.models.json.participants;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 
 @JsonObject
 public class AddParticipantOCS extends GenericOCS {
@@ -31,5 +31,5 @@ public class AddParticipantOCS extends GenericOCS {
         Returned room will have only type set, and sometimes even that will be null
      */
     @JsonField(name = "data")
-    Room data;
+    Conversation data;
 }

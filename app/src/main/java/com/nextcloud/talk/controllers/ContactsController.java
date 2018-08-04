@@ -61,7 +61,7 @@ import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
@@ -296,11 +296,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         } else {
 
             Bundle bundle = new Bundle();
-            Room.RoomType roomType;
+            Conversation.RoomType roomType;
             if (isPublicCall) {
-                roomType = Room.RoomType.ROOM_PUBLIC_CALL;
+                roomType = Conversation.RoomType.ROOM_PUBLIC_CALL;
             } else {
-                roomType = Room.RoomType.ROOM_GROUP_CALL;
+                roomType = Conversation.RoomType.ROOM_GROUP_CALL;
             }
 
             bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));

@@ -72,7 +72,7 @@
 
     <string name="nc_select_an_account">Bir hesap seçin</string>
 
-    <!-- Room menu -->
+    <!-- Conversation menu -->
     <string name="nc_start_conversation">Yeni bir görüşme başlat</string>
     <string name="nc_configure_room">Görüşmeyi yapılandır</string>
     <string name="nc_leave">Görüşmeden ayrıl</string>

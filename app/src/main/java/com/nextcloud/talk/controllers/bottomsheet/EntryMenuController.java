@@ -40,7 +40,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -76,7 +76,7 @@ public class EntryMenuController extends BaseController {
     UserUtils userUtils;
 
     private int operationCode;
-    private Room room;
+    private Conversation conversation;
     private Intent shareIntent;
     private String packageName;
     private String name;
@@ -90,7 +90,7 @@ public class EntryMenuController extends BaseController {
 
         this.operationCode = args.getInt(BundleKeys.KEY_OPERATION_CODE);
         if (args.containsKey(BundleKeys.KEY_ROOM)) {
-            this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+            this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
         }
 
         if (args.containsKey(BundleKeys.KEY_SHARE_INTENT)) {
@@ -127,7 +127,7 @@ public class EntryMenuController extends BaseController {
         if (operationCode == 99) {
             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
-            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
             bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, editText.getText().toString());
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
@@ -141,11 +141,11 @@ public class EntryMenuController extends BaseController {
             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
             if (operationCode == 4 || operationCode == 6) {
-                room.setPassword(editText.getText().toString());
+                conversation.setPassword(editText.getText().toString());
             } else {
-                room.setName(editText.getText().toString());
+                conversation.setName(editText.getText().toString());
             }
-            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
@@ -153,7 +153,7 @@ public class EntryMenuController extends BaseController {
         } else if (operationCode == 7) {
             if (getActivity() != null) {
                 shareIntent.putExtra(Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(getActivity(),
-                        editText.getText().toString(), userUtils, room));
+                        editText.getText().toString(), userUtils, conversation));
                 Intent intent = new Intent(shareIntent);
                 intent.setComponent(new ComponentName(packageName, name));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -184,8 +184,8 @@ public class EntryMenuController extends BaseController {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
-        if (room != null && operationCode == 2) {
-            editText.setText(room.getName());
+        if (conversation != null && operationCode == 2) {
+            editText.setText(conversation.getName());
         }
 
         editText.setOnEditorActionListener((v, actionId, event) -> {
@@ -211,7 +211,7 @@ public class EntryMenuController extends BaseController {
             public void afterTextChanged(Editable s) {
                 if (!TextUtils.isEmpty(s)) {
                     if (operationCode == 2) {
-                        if (room.getName() == null || !room.getName().equals(s.toString())) {
+                        if (conversation.getName() == null || !conversation.getName().equals(s.toString())) {
                             if (!proceedButton.isEnabled()) {
                                 proceedButton.setEnabled(true);
                                 proceedButton.setAlpha(1.0f);
@@ -269,7 +269,7 @@ public class EntryMenuController extends BaseController {
             case 6:
             case 7:
             case 99:
-                // 99 is joining a room via password
+                // 99 is joining a conversation via password
                 labelText = getResources().getString(R.string.nc_password);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 break;

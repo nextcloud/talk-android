@@ -70,7 +70,7 @@
 
     <string name="nc_select_an_account">Zvoľte si účet</string>
 
-    <!-- Room menu -->
+    <!-- Conversation menu -->
     <string name="nc_start_conversation">Začať rozhovor</string>
     <string name="nc_configure_room">Nastavenia rozhovoru</string>
     <string name="nc_leave">Odísť z rozhovoru</string>

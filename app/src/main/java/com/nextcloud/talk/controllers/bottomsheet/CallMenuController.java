@@ -42,7 +42,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.ContactsController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -73,7 +73,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     @Inject
     UserUtils userUtils;
 
-    private Room room;
+    private Conversation conversation;
     private List<AbstractFlexibleItem> menuItems;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
     private MenuType menuType;
@@ -81,7 +81,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
     public CallMenuController(Bundle args) {
         super(args);
-        this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
         if (args.containsKey(BundleKeys.KEY_MENU_TYPE)) {
             this.menuType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_MENU_TYPE));
         }
@@ -124,25 +124,25 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         menuItems = new ArrayList<>();
 
         if (menuType.equals(MenuType.REGULAR)) {
-            if (!TextUtils.isEmpty(room.getDisplayName())) {
-                menuItems.add(new MenuItem(room.getDisplayName(), 0, null));
-            } else if (!TextUtils.isEmpty(room.getName())) {
-                menuItems.add(new MenuItem(room.getName(), 0, null));
+            if (!TextUtils.isEmpty(conversation.getDisplayName())) {
+                menuItems.add(new MenuItem(conversation.getDisplayName(), 0, null));
+            } else if (!TextUtils.isEmpty(conversation.getName())) {
+                menuItems.add(new MenuItem(conversation.getName(), 0, null));
             } else {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
             }
 
-            if (room.isNameEditable()) {
+            if (conversation.isNameEditable()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename), 2, getResources().getDrawable(R.drawable
                         .ic_pencil_grey600_24dp)));
             }
 
-            if (room.canModerate()) {
-                if (!room.isPublic()) {
+            if (conversation.canModerate()) {
+                if (!conversation.isPublic()) {
                     menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public), 3, getResources().getDrawable(R.drawable
                             .ic_link_grey600_24px)));
                 } else {
-                    if (room.isHasPassword()) {
+                    if (conversation.isHasPassword()) {
                         menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password), 4, getResources().getDrawable(R.drawable
                                 .ic_lock_grey600_24px)));
                         menuItems.add(new MenuItem(getResources().getString(R.string.nc_clear_password), 5, getResources().getDrawable(R.drawable
@@ -154,16 +154,16 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 }
             }
 
-            if (room.isPublic()) {
+            if (conversation.isPublic()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link), 7, getResources().getDrawable(R.drawable
                         .ic_link_grey600_24px)));
-                if (room.canModerate()) {
+                if (conversation.canModerate()) {
                     menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private), 8, getResources().getDrawable(R.drawable
                             .ic_group_grey600_24px)));
                 }
             }
 
-            if (room.isDeletable()) {
+            if (conversation.isDeletable()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9, getResources().getDrawable(R.drawable
                         .ic_delete_grey600_24dp)));
             }
@@ -191,7 +191,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     @Override
     public boolean onItemClick(View view, int position) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
 
         if (menuType.equals(MenuType.REGULAR)) {
             MenuItem menuItem = (MenuItem) adapter.getItem(position);
@@ -199,7 +199,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
                 int tag = menuItem.getTag();
                 if (tag == 5) {
-                    room.setPassword("");
+                    conversation.setPassword("");
                 }
 
                 if (tag > 0 && tag < 10) {
@@ -224,9 +224,9 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         } else if (menuType.equals(MenuType.SHARE) && position != 0) {
             AppItem appItem = (AppItem) adapter.getItem(position);
             if (appItem != null && getActivity() != null) {
-                if (!room.hasPassword) {
+                if (!conversation.hasPassword) {
                     shareIntent.putExtra(Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(getActivity(), null,
-                            userUtils, room));
+                            userUtils, conversation));
                     Intent intent = new Intent(shareIntent);
                     intent.setComponent(new ComponentName(appItem.getPackageName(), appItem.getName()));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

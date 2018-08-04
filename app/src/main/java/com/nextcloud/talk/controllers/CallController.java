@@ -61,7 +61,7 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
@@ -382,9 +382,9 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(RoomsOverall roomsOverall) {
-                        for (Room room : roomsOverall.getOcs().getData()) {
-                            if (roomId.equals(room.getRoomId())) {
-                                roomToken = room.getToken();
+                        for (Conversation conversation : roomsOverall.getOcs().getData()) {
+                            if (roomId.equals(conversation.getRoomId())) {
+                                roomToken = conversation.getToken();
                                 break;
                             }
                         }

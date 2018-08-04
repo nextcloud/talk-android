@@ -53,7 +53,7 @@ import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
@@ -105,7 +105,7 @@ public class OperationsMenuController extends BaseController {
     EventBus eventBus;
 
     private int operationCode;
-    private Room room;
+    private Conversation conversation;
 
     private UserEntity currentUser;
     private String callPassword;
@@ -117,7 +117,7 @@ public class OperationsMenuController extends BaseController {
 
     private Disposable disposable;
 
-    private Room.RoomType conversationType;
+    private Conversation.RoomType conversationType;
     private ArrayList<String> invitedUsers = new ArrayList<>();
 
     private List<String> spreedCapabilities;
@@ -127,7 +127,7 @@ public class OperationsMenuController extends BaseController {
         super(args);
         this.operationCode = args.getInt(BundleKeys.KEY_OPERATION_CODE);
         if (args.containsKey(BundleKeys.KEY_ROOM)) {
-            this.room = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+            this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
         }
 
         this.callPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "");
@@ -182,22 +182,22 @@ public class OperationsMenuController extends BaseController {
             switch (operationCode) {
                 case 1:
                     ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForRemoveSelfFromRoom(currentUser.getBaseUrl
-                            (), room.getToken()))
+                            (), conversation.getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
                             .subscribe(operationsObserver);
                     break;
                 case 2:
-                    ncApi.renameRoom(credentials, ApiUtils.getRoom(currentUser.getBaseUrl(), room.getToken()),
-                            room.getName())
+                    ncApi.renameRoom(credentials, ApiUtils.getRoom(currentUser.getBaseUrl(), conversation.getToken()),
+                            conversation.getName())
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
                             .subscribe(operationsObserver);
                     break;
                 case 3:
-                    ncApi.makeRoomPublic(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), room
+                    ncApi.makeRoomPublic(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), conversation
                             .getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -208,11 +208,11 @@ public class OperationsMenuController extends BaseController {
                 case 5:
                 case 6:
                     String pass = "";
-                    if (room.getPassword() != null) {
-                        pass = room.getPassword();
+                    if (conversation.getPassword() != null) {
+                        pass = conversation.getPassword();
                     }
                     ncApi.setPassword(credentials, ApiUtils.getUrlForPassword(currentUser.getBaseUrl(),
-                            room.getToken()), pass)
+                            conversation.getToken()), pass)
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
@@ -222,7 +222,7 @@ public class OperationsMenuController extends BaseController {
                     // Operation 7 is sharing, so we handle this differently
                     break;
                 case 8:
-                    ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), room
+                    ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), conversation
                             .getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -230,7 +230,7 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(operationsObserver);
                     break;
                 case 9:
-                    ncApi.deleteRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(currentUser.getBaseUrl(), room.getToken()))
+                    ncApi.deleteRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(currentUser.getBaseUrl(), conversation.getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
@@ -249,7 +249,7 @@ public class OperationsMenuController extends BaseController {
 
                                 @Override
                                 public void onNext(RoomOverall roomOverall) {
-                                    room = roomOverall.getOcs().getData();
+                                    conversation = roomOverall.getOcs().getData();
                                     fetchCapabilities(credentials);
                                 }
 
@@ -268,13 +268,13 @@ public class OperationsMenuController extends BaseController {
                 case 11:
                     RetrofitBucket retrofitBucket;
                     boolean isGroupCallWorkaround = false;
-                    if (conversationType.equals(Room.RoomType.ROOM_PUBLIC_CALL) ||
-                            !currentUser.hasSpreedCapabilityWithName("empty-group-room")) {
+                    if (conversationType.equals(Conversation.RoomType.ROOM_PUBLIC_CALL) ||
+                            !currentUser.hasSpreedCapabilityWithName("empty-group-conversation")) {
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
                                 "3", null, null);
                     } else {
                         String roomType = "2";
-                        if (!currentUser.hasSpreedCapabilityWithName("empty-group-room")) {
+                        if (!currentUser.hasSpreedCapabilityWithName("empty-group-conversation")) {
                             isGroupCallWorkaround = true;
                             roomType = "3";
                         }
@@ -295,8 +295,8 @@ public class OperationsMenuController extends BaseController {
 
                                 @Override
                                 public void onNext(RoomOverall roomOverall) {
-                                    room = roomOverall.getOcs().getData();
-                                    if (conversationType.equals(Room.RoomType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
+                                    conversation = roomOverall.getOcs().getData();
+                                    if (conversationType.equals(Conversation.RoomType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
                                         performGroupCallWorkaround(credentials);
                                     } else {
                                         inviteUsersToAConversation();
@@ -331,7 +331,7 @@ public class OperationsMenuController extends BaseController {
     }
 
     private void performGroupCallWorkaround(String credentials) {
-        ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), room.getToken()))
+        ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), conversation.getToken()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(1)
@@ -437,11 +437,11 @@ public class OperationsMenuController extends BaseController {
                                         .getFeatures() != null && capabilitiesOverall.getOcs().getData()
                                 .getCapabilities().getSpreedCapability()
                                 .getFeatures().contains("chat-v2")) {
-                            if (room.isHasPassword() && room.isGuest()) {
+                            if (conversation.isHasPassword() && conversation.isGuest()) {
                                 eventBus.post(new BottomSheetLockEvent(true, 0,
                                         true, false));
                                 Bundle bundle = new Bundle();
-                                bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+                                bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
                                 bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
                                 bundle.putParcelable(BundleKeys.KEY_SPREED_CAPABILITIES,
                                         Parcels.wrap(capabilitiesOverall.getOcs().getData().getCapabilities()
@@ -486,7 +486,7 @@ public class OperationsMenuController extends BaseController {
         if (localInvitedUsers.size() > 0) {
             for (int i = 0; i < invitedUsers.size(); i++) {
                 final String userId = invitedUsers.get(i);
-                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(currentUser.getBaseUrl(), room.getToken(),
+                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(currentUser.getBaseUrl(), conversation.getToken(),
                         userId);
 
                 ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
@@ -547,9 +547,9 @@ public class OperationsMenuController extends BaseController {
                     true, true, dismissView));
 
             Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
-            bundle.putString(BundleKeys.KEY_ROOM_ID, room.getRoomId());
-            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
+            bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.getRoomId());
+            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversation.getDisplayName());
             bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(call));
 
             conversationIntent.putExtras(bundle);
@@ -577,7 +577,7 @@ public class OperationsMenuController extends BaseController {
     private void initiateCall() {
         eventBus.post(new BottomSheetLockEvent(true, 0, true, true));
         Bundle bundle = new Bundle();
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, room.getToken());
+        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);

@@ -37,7 +37,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
@@ -57,11 +57,11 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements IFilterable<String> {
 
-    private Room room;
+    private Conversation conversation;
     private UserEntity userEntity;
 
-    public CallItem(Room room, UserEntity userEntity) {
-        this.room = room;
+    public CallItem(Conversation conversation, UserEntity userEntity) {
+        this.conversation = conversation;
         this.userEntity = userEntity;
     }
 
@@ -69,22 +69,22 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
     public boolean equals(Object o) {
         if (o instanceof CallItem) {
             CallItem inItem = (CallItem) o;
-            return room.equals(inItem.getModel());
+            return conversation.equals(inItem.getModel());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return room.hashCode();
+        return conversation.hashCode();
     }
 
     /**
      * @return the model object
      */
 
-    public Room getModel() {
-        return room;
+    public Conversation getModel() {
+        return conversation;
     }
 
     /**
@@ -104,21 +104,21 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
     @Override
     public void bindViewHolder(final FlexibleAdapter adapter, RoomItemViewHolder holder, int position, List payloads) {
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.roomDisplayName, room.getDisplayName(),
+            FlexibleUtils.highlightText(holder.roomDisplayName, conversation.getDisplayName(),
                     String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
         } else {
-            holder.roomDisplayName.setText(room.getDisplayName());
+            holder.roomDisplayName.setText(conversation.getDisplayName());
         }
 
-        if (room.getLastPing() == 0) {
+        if (conversation.getLastPing() == 0) {
             holder.roomLastPing.setText(R.string.nc_never);
         } else {
-            holder.roomLastPing.setText(DateUtils.getRelativeTimeSpanString(room.getLastPing() * 1000L,
+            holder.roomLastPing.setText(DateUtils.getRelativeTimeSpanString(conversation.getLastPing() * 1000L,
                     System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
         }
 
-        if (room.hasPassword) {
+        if (conversation.hasPassword) {
             holder.passwordProtectedImageView.setVisibility(View.VISIBLE);
         } else {
             holder.passwordProtectedImageView.setVisibility(View.GONE);
@@ -128,16 +128,16 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
 
         Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
-        switch (room.getType()) {
+        switch (conversation.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
                 holder.avatarImageView.setVisibility(View.VISIBLE);
 
                 holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
-                        .nc_description_more_menu_one_to_one), room.getDisplayName()));
+                        .nc_description_more_menu_one_to_one), conversation.getDisplayName()));
 
-                if (!TextUtils.isEmpty(room.getName())) {
+                if (!TextUtils.isEmpty(conversation.getName())) {
                     GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                            room.getName(), R.dimen.avatar_size), new LazyHeaders.Builder()
+                            conversation.getName(), R.dimen.avatar_size), new LazyHeaders.Builder()
                             .setHeader("Accept", "image/*")
                             .setHeader("User-Agent", ApiUtils.getUserAgent())
                             .build());
@@ -157,7 +157,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 break;
             case ROOM_GROUP_CALL:
                 holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
-                        .nc_description_more_menu_group), room.getDisplayName()));
+                        .nc_description_more_menu_group), conversation.getDisplayName()));
 
                 GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                         .asBitmap()
@@ -171,7 +171,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 break;
             case ROOM_PUBLIC_CALL:
                 holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
-                        .nc_description_more_menu_public), room.getDisplayName()));
+                        .nc_description_more_menu_public), conversation.getDisplayName()));
 
                 GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                         .asBitmap()
@@ -188,13 +188,13 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
 
         }
 
-        holder.moreMenuButton.setOnClickListener(view -> EventBus.getDefault().post(new MoreMenuClickEvent(room)));
+        holder.moreMenuButton.setOnClickListener(view -> EventBus.getDefault().post(new MoreMenuClickEvent(conversation)));
     }
 
     @Override
     public boolean filter(String constraint) {
-        return room.getDisplayName() != null &&
-                StringUtils.containsIgnoreCase(room.getDisplayName().trim(), constraint);
+        return conversation.getDisplayName() != null &&
+                StringUtils.containsIgnoreCase(conversation.getDisplayName().trim(), constraint);
 
     }
 
@@ -211,9 +211,6 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
         @BindView(R.id.password_protected_image_view)
         ImageView passwordProtectedImageView;
 
-        /**
-         * Default constructor.
-         */
         RoomItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             ButterKnife.bind(this, view);

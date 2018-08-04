@@ -73,7 +73,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.mention.Mention;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
@@ -262,10 +262,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(RoomsOverall roomsOverall) {
-                        for (Room room : roomsOverall.getOcs().getData()) {
-                            if (roomId.equals(room.getRoomId())) {
-                                roomToken = room.getToken();
-                                conversationName = room.getDisplayName();
+                        for (Conversation conversation : roomsOverall.getOcs().getData()) {
+                            if (roomId.equals(conversation.getRoomId())) {
+                                roomToken = conversation.getToken();
+                                conversationName = conversation.getDisplayName();
                                 setTitle();
                                 break;
                             }

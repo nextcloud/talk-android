@@ -34,7 +34,7 @@ import android.text.TextUtils;
 import com.kennyc.bottomsheet.adapters.AppAdapter;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.util.ArrayList;
@@ -43,14 +43,14 @@ import java.util.Set;
 
 public class ShareUtils {
 
-    public static String getStringForIntent(Context context, @Nullable String password, UserUtils userUtils, Room
-            room) {
+    public static String getStringForIntent(Context context, @Nullable String password, UserUtils userUtils, Conversation
+            conversation) {
         UserEntity userEntity = userUtils.getCurrentUser();
 
         String shareString = "";
         if (userEntity != null && context != null) {
             shareString = String.format(context.getResources().getString(R.string.nc_share_text),
-                    userEntity.getBaseUrl(), room.getToken());
+                    userEntity.getBaseUrl(), conversation.getToken());
 
             if (!TextUtils.isEmpty(password)) {
                 shareString += String.format(context.getResources().getString(R.string.nc_share_text_pass), password);

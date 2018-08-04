@@ -36,7 +36,7 @@ import lombok.Data;
 @Parcel
 @Data
 @JsonObject
-public class Room {
+public class Conversation {
     @JsonField(name = "id")
     public String roomId;
     @JsonField(name = "token")

@@ -68,7 +68,7 @@ import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
@@ -138,7 +138,7 @@ public class CallNotificationController extends BaseController {
     private String roomId;
     private UserEntity userBeingCalled;
     private String credentials;
-    private Room currentRoom;
+    private Conversation currentConversation;
     private MediaPlayer mediaPlayer;
     private boolean leavingScreen = false;
     private RenderScript renderScript;
@@ -150,7 +150,7 @@ public class CallNotificationController extends BaseController {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
-        this.currentRoom = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        this.currentConversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
         this.userBeingCalled = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
 
         this.originalBundle = args;
@@ -190,7 +190,7 @@ public class CallNotificationController extends BaseController {
     }
 
     private void proceedToCall() {
-        originalBundle.putString(BundleKeys.KEY_ROOM_TOKEN, currentRoom.getToken());
+        originalBundle.putString(BundleKeys.KEY_ROOM_TOKEN, currentConversation.getToken());
 
         getRouter().setRoot(RouterTransaction.with(new CallController(originalBundle))
                 .popChangeHandler(new HorizontalChangeHandler())
@@ -199,7 +199,7 @@ public class CallNotificationController extends BaseController {
 
     private void checkIfAnyParticipantsRemainInRoom() {
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(userBeingCalled.getBaseUrl(),
-                currentRoom.getToken()))
+                currentConversation.getToken()))
                 .subscribeOn(Schedulers.newThread())
                 .takeWhile(observable -> !leavingScreen)
                 .retry(3)
@@ -260,9 +260,9 @@ public class CallNotificationController extends BaseController {
 
                     @Override
                     public void onNext(RoomsOverall roomsOverall) {
-                        for (Room room : roomsOverall.getOcs().getData()) {
-                            if (roomId.equals(room.getRoomId())) {
-                                currentRoom = room;
+                        for (Conversation conversation : roomsOverall.getOcs().getData()) {
+                            if (roomId.equals(conversation.getRoomId())) {
+                                currentConversation = conversation;
                                 runAllThings();
                                 break;
                             }
@@ -284,7 +284,7 @@ public class CallNotificationController extends BaseController {
 
     private void runAllThings() {
         if (conversationNameTextView != null) {
-            conversationNameTextView.setText(currentRoom.getDisplayName());
+            conversationNameTextView.setText(currentConversation.getDisplayName());
         }
 
         loadAvatar();
@@ -305,7 +305,7 @@ public class CallNotificationController extends BaseController {
             Log.e(TAG, "Failed to evict cache");
         }
 
-        if (currentRoom == null) {
+        if (currentConversation == null) {
             handleFromNotification();
         } else {
             runAllThings();
@@ -396,12 +396,12 @@ public class CallNotificationController extends BaseController {
         int avatarSize = Math.round(NextcloudTalkApplication
                 .getSharedApplication().getResources().getDimension(R.dimen.avatar_fetching_size_very_big));
 
-        switch (currentRoom.getType()) {
+        switch (currentConversation.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
                 avatarImageView.setVisibility(View.VISIBLE);
 
                 GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
-                        currentRoom.getName(), R.dimen.avatar_size_very_big), new LazyHeaders.Builder()
+                        currentConversation.getName(), R.dimen.avatar_size_very_big), new LazyHeaders.Builder()
                         .setHeader("Accept", "image/*")
                         .setHeader("User-Agent", ApiUtils.getUserAgent())
                         .build());

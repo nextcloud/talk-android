@@ -21,25 +21,25 @@
 package com.nextcloud.talk.models.json.converters;
 
 import com.bluelinelabs.logansquare.typeconverters.IntBasedTypeConverter;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 
-public class EnumRoomTypeConverter extends IntBasedTypeConverter<Room.RoomType> {
+public class EnumRoomTypeConverter extends IntBasedTypeConverter<Conversation.RoomType> {
     @Override
-    public Room.RoomType getFromInt(int i) {
+    public Conversation.RoomType getFromInt(int i) {
         switch (i) {
             case 1:
-                return Room.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL;
+                return Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL;
             case 2:
-                return Room.RoomType.ROOM_GROUP_CALL;
+                return Conversation.RoomType.ROOM_GROUP_CALL;
             case 3:
-                return Room.RoomType.ROOM_PUBLIC_CALL;
+                return Conversation.RoomType.ROOM_PUBLIC_CALL;
             default:
-                return Room.RoomType.DUMMY;
+                return Conversation.RoomType.DUMMY;
         }
     }
 
     @Override
-    public int convertToInt(Room.RoomType object) {
+    public int convertToInt(Conversation.RoomType object) {
         switch (object) {
             case DUMMY:
                 return 0;

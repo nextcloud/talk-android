@@ -52,6 +52,7 @@ import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.items.CallItem;
+import com.nextcloud.talk.adapters.items.ConversationItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -61,7 +62,7 @@ import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.rooms.Room;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -84,6 +85,7 @@ import butterknife.BindView;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -116,8 +118,8 @@ public class CallsListController extends BaseController implements SearchView.On
 
     private UserEntity currentUser;
     private Disposable roomsQueryDisposable;
-    private FlexibleAdapter<CallItem> adapter;
-    private List<CallItem> callItems = new ArrayList<>();
+    private FlexibleAdapter<AbstractFlexibleItem> adapter;
+    private List<AbstractFlexibleItem> callItems = new ArrayList<>();
 
     private BottomSheet bottomSheet;
     private MenuItem searchItem;
@@ -125,6 +127,7 @@ public class CallsListController extends BaseController implements SearchView.On
     private String searchQuery;
 
     private View view;
+    private boolean shouldUseLastMessageLayout;
 
     public CallsListController() {
         super();
@@ -154,9 +157,11 @@ public class CallsListController extends BaseController implements SearchView.On
                     .popChangeHandler(new HorizontalChangeHandler())));
         }
 
+
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
             if (currentUser != null) {
+                shouldUseLastMessageLayout = currentUser.hasSpreedCapabilityWithName("last-room-activity");
                 fetchData(false);
             }
         }
@@ -276,24 +281,31 @@ public class CallsListController extends BaseController implements SearchView.On
 
                     if (roomsOverall != null) {
                         for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
-                            callItems.add(new CallItem(roomsOverall.getOcs().getData().get(i), currentUser));
+                            if (shouldUseLastMessageLayout) {
+                                callItems.add(new ConversationItem(roomsOverall.getOcs().getData().get(i),
+                                        currentUser));
+                            } else {
+                                callItems.add(new CallItem(roomsOverall.getOcs().getData().get(i), currentUser));
+                            }
                         }
 
-                        adapter.updateDataSet(callItems, true);
 
                         if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
                             Collections.sort(callItems, (o1, o2) -> {
-                                Room room1 = o1.getModel();
-                                Room room2 = o2.getModel();
+                                Conversation conversation1 = ((ConversationItem) o1).getModel();
+                                Conversation conversation2 = ((ConversationItem) o2).getModel();
                                 return new CompareToBuilder()
-                                        .append(room1.isPinned(), room2.isPinned())
-                                        .append(room1.getLastActivity(), room2.getLastActivity())
+                                        .append(conversation2.isPinned(), conversation1.isPinned())
+                                        .append(conversation2.getLastActivity(), conversation1.getLastActivity())
                                         .toComparison();
                             });
                         } else {
                             Collections.sort(callItems, (callItem, t1) ->
-                                    Long.compare(t1.getModel().getLastPing(), callItem.getModel().getLastPing()));
+                                    Long.compare(((CallItem) t1).getModel().getLastPing(),
+                                            ((CallItem) callItem).getModel().getLastPing()));
                         }
+
+                        adapter.updateDataSet(callItems, true);
 
                         if (searchItem != null) {
                             searchItem.setVisible(callItems.size() > 0);
@@ -368,7 +380,13 @@ public class CallsListController extends BaseController implements SearchView.On
         fastScroller.addOnScrollStateChangeListener(this);
         adapter.setFastScroller(fastScroller);
         fastScroller.setBubbleTextCreator(position -> {
-            String displayName = adapter.getItem(position).getModel().getDisplayName();
+            String displayName;
+            if (shouldUseLastMessageLayout) {
+                displayName = ((ConversationItem)adapter.getItem(position)).getModel().getDisplayName();
+            } else {
+                displayName = ((CallItem)adapter.getItem(position)).getModel().getDisplayName();
+            }
+
             if (displayName.length() > 8) {
                 displayName = displayName.substring(0, 4) + "...";
             }
@@ -455,8 +473,8 @@ public class CallsListController extends BaseController implements SearchView.On
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MoreMenuClickEvent moreMenuClickEvent) {
         Bundle bundle = new Bundle();
-        Room room = moreMenuClickEvent.getRoom();
-        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(room));
+        Conversation conversation = moreMenuClickEvent.getConversation();
+        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
         bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(CallMenuController.MenuType.REGULAR));
 
         prepareAndShowBottomSheetWithBundle(bundle, true);
@@ -500,23 +518,29 @@ public class CallsListController extends BaseController implements SearchView.On
 
     @Override
     public boolean onItemClick(View view, int position) {
-        CallItem callItem = adapter.getItem(position);
-        if (callItem != null && getActivity() != null) {
-            Room room = callItem.getModel();
-            Bundle bundle = new Bundle();
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, callItem.getModel().getToken());
-            bundle.putString(BundleKeys.KEY_ROOM_ID, callItem.getModel().getRoomId());
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, callItem.getModel().getToken());
+        Object clickedItem = adapter.getItem(position);
+        if (clickedItem != null && getActivity() != null) {
+            Conversation conversation;
+            if (shouldUseLastMessageLayout) {
+                conversation = ((ConversationItem)clickedItem).getModel();
+            } else {
+                conversation = ((CallItem)clickedItem).getModel();
+            }
 
-            if (room.hasPassword && (room.participantType.equals(Participant.ParticipantType.GUEST) ||
-                    room.participantType.equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
+            Bundle bundle = new Bundle();
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
+            bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.getRoomId());
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
+
+            if (conversation.hasPassword && (conversation.participantType.equals(Participant.ParticipantType.GUEST) ||
+                    conversation.participantType.equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
                 bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
                 prepareAndShowBottomSheetWithBundle(bundle, false);
             } else {
                 currentUser = userUtils.getCurrentUser();
 
                 if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
-                    bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, room.getDisplayName());
+                    bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversation.getDisplayName());
                     getParentController().getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler())));
