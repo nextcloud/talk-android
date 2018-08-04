@@ -93,7 +93,8 @@ import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallsListController extends BaseController implements SearchView.OnQueryTextListener,
-        FlexibleAdapter.OnItemClickListener, FastScroller.OnScrollStateChangeListener {
+        FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, FastScroller
+                .OnScrollStateChangeListener {
 
     public static final String TAG = "CallsListController";
 
@@ -382,9 +383,9 @@ public class CallsListController extends BaseController implements SearchView.On
         fastScroller.setBubbleTextCreator(position -> {
             String displayName;
             if (shouldUseLastMessageLayout) {
-                displayName = ((ConversationItem)adapter.getItem(position)).getModel().getDisplayName();
+                displayName = ((ConversationItem) adapter.getItem(position)).getModel().getDisplayName();
             } else {
-                displayName = ((CallItem)adapter.getItem(position)).getModel().getDisplayName();
+                displayName = ((CallItem) adapter.getItem(position)).getModel().getDisplayName();
             }
 
             if (displayName.length() > 8) {
@@ -522,9 +523,9 @@ public class CallsListController extends BaseController implements SearchView.On
         if (clickedItem != null && getActivity() != null) {
             Conversation conversation;
             if (shouldUseLastMessageLayout) {
-                conversation = ((ConversationItem)clickedItem).getModel();
+                conversation = ((ConversationItem) clickedItem).getModel();
             } else {
-                conversation = ((CallItem)clickedItem).getModel();
+                conversation = ((CallItem) clickedItem).getModel();
             }
 
             Bundle bundle = new Bundle();
@@ -555,5 +556,23 @@ public class CallsListController extends BaseController implements SearchView.On
         }
 
         return true;
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
+            Object clickedItem = adapter.getItem(position);
+            if (clickedItem != null) {
+                Conversation conversation;
+                if (shouldUseLastMessageLayout) {
+                    conversation = ((ConversationItem) clickedItem).getModel();
+                } else {
+                    conversation = ((CallItem) clickedItem).getModel();
+                }
+
+                MoreMenuClickEvent moreMenuClickEvent = new MoreMenuClickEvent(conversation);
+                onMessageEvent(moreMenuClickEvent);
+            }
+        }
     }
 }
