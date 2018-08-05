@@ -79,6 +79,7 @@ import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
+import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
@@ -124,14 +125,12 @@ import retrofit2.Response;
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
         MessagesListAdapter.Formatter<Date>, MessagesListAdapter.OnMessageLongClickListener {
     private static final String TAG = "ChatController";
-
     @Inject
     NcApi ncApi;
     @Inject
     UserUtils userUtils;
     @Inject
     Cache cache;
-
     @BindView(R.id.messagesListView)
     MessagesList messagesListView;
     @BindView(R.id.messageInputView)
@@ -157,22 +156,17 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private int globalLastKnownFutureMessageId = -1;
     private int globalLastKnownPastMessageId = -1;
     private MessagesListAdapter<ChatMessage> adapter;
-
     private CharSequence myFirstMessage;
-
     private Autocomplete mentionAutocomplete;
     private LinearLayoutManager layoutManager;
     private boolean lookingIntoFuture = false;
-
     private int newMessagesCount = 0;
     private Boolean startCallFromNotification = null;
     private String roomId;
     private boolean voiceOnly;
-
     private boolean isFirstMessagesProcessing = true;
     private boolean isHelloClicked;
 
-    private final short VIEW_TYPE_DATE_HEADER = 130;
     public ChatController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
@@ -410,7 +404,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             // we're starting
             if (TextUtils.isEmpty(roomToken)) {
                 handleFromNotification();
-            } else if (TextUtils.isEmpty(conversationName)){
+            } else if (TextUtils.isEmpty(conversationName)) {
                 getRoomInfo();
             } else {
                 setupMentionAutocomplete();
@@ -735,6 +729,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
             List<ChatMessage> chatMessageList = chatOverall.getOcs().getData();
 
             if (isFirstMessagesProcessing) {
+                NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+
                 isFirstMessagesProcessing = false;
                 if (loadingProgressBar != null) {
                     loadingProgressBar.setVisibility(View.GONE);
@@ -834,7 +830,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
             }
         } else if (response.code() == 304 && !isFromTheFuture) {
             if (isFirstMessagesProcessing) {
-                isFirstMessagesProcessing  = false;
+                NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+
+                isFirstMessagesProcessing = false;
                 loadingProgressBar.setVisibility(View.GONE);
 
                 if (emptyLayout.getVisibility() != View.VISIBLE) {
@@ -934,7 +932,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
             return null;
         }
     }
-
 
     @Override
     public void onMessageLongClick(IMessage message) {

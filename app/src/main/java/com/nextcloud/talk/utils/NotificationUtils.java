@@ -24,8 +24,15 @@ import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.service.notification.StatusBarNotification;
+
+import com.nextcloud.talk.R;
+import com.nextcloud.talk.models.database.UserEntity;
+
+import java.util.zip.CRC32;
 
 public class NotificationUtils {
     public static final String NOTIFICATION_CHANNEL_CALLS = "NOTIFICATION_CHANNEL_CALLS";
@@ -64,4 +71,29 @@ public class NotificationUtils {
             }
         }
     }
+
+    public static void cancelExistingNotifications(Context context, UserEntity conversationUser) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            CRC32 crc32 = new CRC32();
+            String groupName = String.format(context.getResources().getString(R.string
+                    .nc_notification_channel), conversationUser.getUserId(), conversationUser.getBaseUrl());
+            crc32.update(groupName.getBytes());
+            String crc32GroupString = Long.toString(crc32.getValue());
+
+            if (notificationManager != null) {
+                StatusBarNotification statusBarNotifications[] = notificationManager.getActiveNotifications();
+                for (StatusBarNotification statusBarNotification : statusBarNotifications) {
+
+                    if (statusBarNotification.getGroupKey().equals(crc32GroupString)) {
+                        notificationManager.cancel(statusBarNotification.getId());
+                    }
+                }
+            }
+        }
+    }
+
 }
