@@ -173,7 +173,6 @@ Nextcloud Talk апликација захтева да имате Некстк�
     <string name="nc_conversation_menu_voice_call">Аудио позив</string>
     <string name="nc_conversation_menu_video_call">Видео позив</string>
     <string name="nc_new_messages">Нове поруке</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Нема више контаката. Освежите да пробате поново.</string>
     <string name="nc_endless_disabled">Нема више ставки за учитавање (достигнут максимум).</string>

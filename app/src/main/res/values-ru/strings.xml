@@ -170,7 +170,6 @@ Nextcloud Talk поддерживает:
     <string name="nc_conversation_menu_voice_call">Голосовой вызов</string>
     <string name="nc_conversation_menu_video_call">Видеозвонок</string>
     <string name="nc_new_messages">Новые сообщения</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Все объекты загружены. Попробуйте обновить.</string>
     <string name="nc_endless_disabled">Достигнут предел количества загрузки объектов.</string>

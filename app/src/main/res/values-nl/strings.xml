@@ -51,6 +51,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waarmee je probeert te verbinden.</string>
     <string name="nc_settings_account_updated">Je al bestaande account werd bijgewerkt, in plaats van een nieuwe aan te maken</string>
     <string name="nc_account_scheduled_for_deletion">Het account is gemarkeerd voor verwijdering en kan niet worden gewijzigd</string>
+    <string name="nc_settings_other_notifications_ringtone">Overig</string>
     <string name="nc_no_proxy">geen proxy</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
@@ -66,6 +67,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_select_an_account">Selecteer een account</string>
 
     <string name="nc_set_password">Instellen wachtwoord</string>
+    <string name="nc_change_password">Wachtwoord wijzigen</string>
     <string name="nc_clear_password">Wachtwoord legen</string>
     <string name="nc_share_link">Deel link</string>
     <string name="nc_share_link_via">Deel link via</string>
@@ -100,6 +102,8 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
+    <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons.
+Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_all_ok_operation">OK, alles gedaan!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Gespreksnaam</string>

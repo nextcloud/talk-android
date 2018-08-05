@@ -139,7 +139,6 @@
     <string name="nc_conversation_menu_voice_call">Hanghívás</string>
     <string name="nc_conversation_menu_video_call">Videohívás</string>
     <string name="nc_new_messages">Új üzenetek</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Nincs több betöltésre váró elem. Újra próbálkozáshoz frissíts.</string>
     <string name="nc_endless_disabled">Nincs több betöltésre váró elem (maximum elérve)</string>

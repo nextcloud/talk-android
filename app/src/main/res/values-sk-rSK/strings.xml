@@ -170,7 +170,6 @@ Nextcloud nájdete na https://nextcloud.com</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
     <string name="nc_conversation_menu_video_call">Video hovor</string>
     <string name="nc_new_messages">Nové správy</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Už žiadne položky pre načítanie. Obnovte pre opakovanie.</string>
     <string name="nc_endless_disabled">Už žiadne ďalšie položky pre načítanie (dosiahnuté maximum).</string>

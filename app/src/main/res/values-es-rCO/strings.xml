@@ -134,7 +134,6 @@ teléfonos móviles. Puedes intentar unirte a la conversación a través de un n
     <string name="nc_conversation_menu_voice_call">Llamada de voz</string>
     <string name="nc_conversation_menu_video_call">Video llamada</string>
     <string name="nc_new_messages">Nuevos mensajes</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">No hay más elementos para cargar. Actualiza para reintentar.</string>
     <string name="nc_endless_disabled">No hay más elementos para cargar (máximo alcanzado).</string>

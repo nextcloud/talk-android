@@ -172,7 +172,6 @@ Encuentra Nextcloud en https://nextcloud.com</string>
     <string name="nc_conversation_menu_voice_call">Llamada de voz</string>
     <string name="nc_conversation_menu_video_call">Llamada de vídeo</string>
     <string name="nc_new_messages">Mensajes nuevos</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">No hay más ítems que cargar. Recarga para volver a intentarlo.</string>
     <string name="nc_endless_disabled">No hay más ítems que cargar (se ha alcanzado el máximo).</string>

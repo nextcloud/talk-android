@@ -120,7 +120,6 @@
     <string name="nc_conversation_menu_voice_call">Glasovni klic</string>
     <string name="nc_conversation_menu_video_call">Video klic</string>
     <string name="nc_new_messages">Nova sporočila</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Ni več predmetov za nalaganje. Osvežite seznam in poskusite znova.</string>
     <string name="nc_endless_disabled">Ni mogoče naložiti novih predmetov (dosežena je najvišja omejitev).</string>
