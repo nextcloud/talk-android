@@ -73,7 +73,7 @@ public class NotificationUtils {
     }
 
     public static void cancelExistingNotifications(Context context, UserEntity conversationUser) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && conversationUser.getId() != -1) {
 
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
