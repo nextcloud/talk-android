@@ -74,6 +74,7 @@ import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.MagicFlipView;
+import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -210,7 +211,7 @@ public class CallController extends BaseController {
     private List<PeerConnection.IceServer> iceServers;
     private CameraEnumerator cameraEnumerator;
     private String roomToken;
-    private UserEntity userEntity;
+    private UserEntity conversationUser;
     private String callSession;
     private MediaStream localMediaStream;
     private String credentials;
@@ -243,24 +244,24 @@ public class CallController extends BaseController {
 
         roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
         roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "");
-        userEntity = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
+        conversationUser = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
 
-        if (userEntity == null) {
-            userEntity = userUtils.getCurrentUser();
+        if (conversationUser == null) {
+            conversationUser = userUtils.getCurrentUser();
         }
 
         callSession = args.getString(BundleKeys.KEY_CALL_SESSION, "0");
-        credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
+        credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
         isVoiceOnlyCall = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
 
-        if (userEntity.getUserId().equals("?")) {
+        if (conversationUser.getUserId().equals("?")) {
             credentials = null;
         }
 
         baseUrl = args.getString(BundleKeys.KEY_MODIFIED_BASE_URL, "");
 
         if (TextUtils.isEmpty(baseUrl)) {
-            baseUrl = userEntity.getBaseUrl();
+            baseUrl = conversationUser.getBaseUrl();
         }
 
         isFromNotification = TextUtils.isEmpty(roomToken);
@@ -1051,7 +1052,7 @@ public class CallController extends BaseController {
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
                         ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
-                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(userEntity);
+                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
 
                         if (needsPing) {
                             ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
@@ -1088,6 +1089,9 @@ public class CallController extends BaseController {
                         if (isMultiSession) {
                             urlToken = roomToken;
                         }
+
+                        NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+
                         ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -1539,7 +1543,7 @@ public class CallController extends BaseController {
 
         if (!"candidate".equals(sessionDescriptionSend.getType())) {
             ncMessagePayload.setSdp(sessionDescriptionSend.getSessionDescription().description);
-            ncMessagePayload.setNick(userEntity.getDisplayName());
+            ncMessagePayload.setNick(conversationUser.getDisplayName());
         } else {
             ncMessagePayload.setIceCandidate(sessionDescriptionSend.getNcIceCandidate());
         }
