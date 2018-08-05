@@ -450,6 +450,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (getActivity() != null) {
             new KeyboardUtils(getActivity(), getView(), false);
         }
+
+        if (inChat) {
+            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+        }
     }
 
     @Override
