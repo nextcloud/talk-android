@@ -28,6 +28,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
+import android.text.TextUtils;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -88,8 +89,11 @@ public class NotificationUtils {
                 StatusBarNotification statusBarNotifications[] = notificationManager.getActiveNotifications();
                 for (StatusBarNotification statusBarNotification : statusBarNotifications) {
 
-                    if (statusBarNotification.getGroupKey().equals(crc32GroupString)) {
-                        notificationManager.cancel(statusBarNotification.getId());
+                    if (statusBarNotification.getNotification() != null &&
+                            !TextUtils.isEmpty(statusBarNotification.getNotification().getGroup())) {
+                        if (statusBarNotification.getNotification().getGroup().equals(crc32GroupString)) {
+                            notificationManager.cancel(statusBarNotification.getId());
+                        }
                     }
                 }
             }

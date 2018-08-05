@@ -371,5 +371,4 @@ public class NotificationJob extends Job {
             }
         }
     }
-
 }
