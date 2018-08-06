@@ -28,6 +28,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.mention.MentionOverall;
+import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
@@ -298,4 +299,8 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> unpinConversation(@Header("Authorization") String authorization,
                                                           @Url String url);
+
+    @GET
+    Observable<NotificationOverall> getNotification(@Header("Authorization") String authorization,
+                                                    @Url String url);
 }

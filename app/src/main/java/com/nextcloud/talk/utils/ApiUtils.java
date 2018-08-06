@@ -191,4 +191,8 @@ public class ApiUtils {
     public static String getUrlForConversationPin(String baseUrl, String roomToken) {
         return baseUrl + ocsApiVersion + "/room/" + roomToken + "/pin";
     }
+
+    public static String getUrlForNotificationWithId(String baseUrl, String notificationId) {
+        return baseUrl + ocsApiVersion + "/apps/notifications/api/v2/notifications/" + notificationId;
+    }
 }

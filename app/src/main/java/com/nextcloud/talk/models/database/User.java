@@ -61,6 +61,20 @@ public interface User extends Parcelable, Persistable, Serializable {
 
     boolean getScheduledForDeletion();
 
+    default boolean hasNotificationsCapability(String capabilityName) {
+        if (getCapabilities() != null) {
+            try {
+                Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                if (capabilities.getNotificationsCapability() != null && capabilities.getNotificationsCapability().getFeatures() != null) {
+                    return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to get capabilities for the user");
+            }
+        }
+        return false;
+    }
+
     default boolean hasSpreedCapabilityWithName(String capabilityName) {
         if (getCapabilities() != null) {
             try {
@@ -73,6 +87,5 @@ public interface User extends Parcelable, Persistable, Serializable {
             }
         }
         return false;
-
     }
 }

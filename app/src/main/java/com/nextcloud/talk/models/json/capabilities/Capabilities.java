@@ -33,4 +33,7 @@ import lombok.Data;
 public class Capabilities {
     @JsonField(name = "spreed")
     SpreedCapability spreedCapability;
+
+    @JsonField(name = "notifications")
+    NotificationsCapability notificationsCapability;
 }

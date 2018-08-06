@@ -50,6 +50,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
@@ -185,7 +186,12 @@ public class NotificationJob extends Job {
                                     // do absolutely nothing, we won't even come to this point
                                     break;
                                 case "chat":
-                                    showNotification(intent);
+                                    if (signatureVerification.getUserEntity().hasSpreedCapabilityWithName("object-data") &&
+                                            signatureVerification.getUserEntity().hasNotificationsCapability("rich-strings")) {
+                                        showMessageNotificationWithObjectData(intent);
+                                    } else {
+                                        showNotification(intent);
+                                    }
                                     break;
                                 default:
                                     break;
@@ -240,6 +246,34 @@ public class NotificationJob extends Job {
 
                     }
                 });
+    }
+
+    private void showMessageNotificationWithObjectData(Intent intent) {
+        UserEntity userEntity = signatureVerification.getUserEntity();
+        ncApi.getNotification(ApiUtils.getCredentials(userEntity.getUserId(),
+                userEntity.getToken()), ApiUtils.getUrlForNotificationWithId(userEntity.getBaseUrl(),
+                        Long.toString(decryptedPushMessage.getNotificationId())))
+                        .subscribeOn(Schedulers.newThread())
+                        .subscribe(new Observer<NotificationOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(NotificationOverall notificationOverall) {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                showNotification(intent);
+                            }
+                        });
     }
 
     private void showNotification(Intent intent) {

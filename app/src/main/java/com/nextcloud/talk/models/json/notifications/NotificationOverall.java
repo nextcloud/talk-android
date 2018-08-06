@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,32 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.nextcloud.talk.models.json.push;
+package com.nextcloud.talk.models.json.notifications;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.parceler.Parcel;
-
 import lombok.Data;
 
 @Data
-@Parcel
 @JsonObject
-public class DecryptedPushMessage {
-    @JsonField(name = "app")
-    String app;
-
-    @JsonField(name = "type")
-    String type;
-
-    @JsonField(name = "subject")
-    String subject;
-
-    @JsonField(name = "id")
-    String id;
-
-    @JsonField(name = "nid")
-    long notificationId;
+public class NotificationOverall {
+    @JsonField(name = "ocs")
+    NotificationOCS ocs;
 }
