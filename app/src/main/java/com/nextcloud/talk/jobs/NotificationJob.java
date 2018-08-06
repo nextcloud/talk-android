@@ -50,6 +50,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.chat.ChatUtils;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.rooms.Conversation;
@@ -186,8 +187,7 @@ public class NotificationJob extends Job {
                                     // do absolutely nothing, we won't even come to this point
                                     break;
                                 case "chat":
-                                    if (signatureVerification.getUserEntity().hasSpreedCapabilityWithName("object-data") &&
-                                            signatureVerification.getUserEntity().hasNotificationsCapability("rich-strings")) {
+                                    if (decryptedPushMessage.getNotificationId() != Long.MIN_VALUE) {
                                         showMessageNotificationWithObjectData(intent);
                                     } else {
                                         showNotification(intent);
@@ -252,28 +252,39 @@ public class NotificationJob extends Job {
         UserEntity userEntity = signatureVerification.getUserEntity();
         ncApi.getNotification(ApiUtils.getCredentials(userEntity.getUserId(),
                 userEntity.getToken()), ApiUtils.getUrlForNotificationWithId(userEntity.getBaseUrl(),
-                        Long.toString(decryptedPushMessage.getNotificationId())))
-                        .subscribeOn(Schedulers.newThread())
-                        .subscribe(new Observer<NotificationOverall>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                Long.toString(decryptedPushMessage.getNotificationId())))
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Observer<NotificationOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                            }
+                    }
 
-                            @Override
-                            public void onNext(NotificationOverall notificationOverall) {
+                    @Override
+                    public void onNext(NotificationOverall notificationOverall) {
+                        com.nextcloud.talk.models.json.notifications.Notification notification =
+                                notificationOverall.getOcs().getNotification();
 
-                            }
+                        if (notification.getMessageRichParameters() != null &&
+                                notification.getMessageRichParameters().size() > 0) {
+                            decryptedPushMessage.setText(ChatUtils.getParsedMessage(notification.getMessageRich(),
+                                    notification.getMessageRichParameters()));
+                        } else {
+                            decryptedPushMessage.setText(notification.getMessage());
+                        }
 
-                            @Override
-                            public void onError(Throwable e) {
-                            }
+                        showNotification(intent);
+                    }
 
-                            @Override
-                            public void onComplete() {
-                                showNotification(intent);
-                            }
-                        });
+                    @Override
+                    public void onError(Throwable e) {
+                        showNotification(intent);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 
     private void showNotification(Intent intent) {
@@ -311,6 +322,10 @@ public class NotificationJob extends Job {
                 .setContentTitle(decryptedPushMessage.getSubject())
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
+
+        if (!TextUtils.isEmpty(decryptedPushMessage.getText())) {
+            notificationBuilder.setContentText(decryptedPushMessage.getText());
+        }
 
         if (Build.VERSION.SDK_INT >= 23) {
             // This method should exist since API 21, but some phones don't have it

@@ -21,6 +21,7 @@
 package com.nextcloud.talk.models.json.push;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.parceler.Parcel;
@@ -45,4 +46,7 @@ public class DecryptedPushMessage {
 
     @JsonField(name = "nid")
     long notificationId;
+
+    @JsonIgnore
+    String text;
 }

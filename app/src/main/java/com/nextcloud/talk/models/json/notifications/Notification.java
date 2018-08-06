@@ -60,7 +60,7 @@ public class Notification {
     String subjectRich;
 
     @JsonField(name = "subjectRichParameters")
-    Map<String, NotificationRichObject> subjectRichParameters;
+    Map<String, Map<String, String>> subjectRichParameters;
 
     @JsonField(name = "message")
     String message;
@@ -69,7 +69,7 @@ public class Notification {
     String messageRich;
 
     @JsonField(name = "messageRichParameters")
-    Map<String, NotificationRichObject> messageRichParameters;
+    Map<String, Map<String, String>> messageRichParameters;
 
     @JsonField(name = "link")
     String link;

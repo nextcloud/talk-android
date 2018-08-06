@@ -20,6 +20,8 @@
 
 package com.nextcloud.talk.utils.preferences;
 
+import com.nextcloud.talk.R;
+
 import net.orange_box.storebox.annotations.method.ClearMethod;
 import net.orange_box.storebox.annotations.method.DefaultValue;
 import net.orange_box.storebox.annotations.method.KeyByString;
@@ -180,7 +182,7 @@ public interface AppPreferences {
     void removeMessagesNotificationChannelUpgradeToV3();
 
     @KeyByString("notifications_vibrate")
-    @DefaultValue(1)
+    @DefaultValue(R.bool.value_true)
     boolean getShouldVibrateSetting();
 
     @KeyByString("notifications_vibrate")
