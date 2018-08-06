@@ -233,10 +233,6 @@ public class NotificationJob extends Job {
 
                     @Override
                     public void onError(Throwable e) {
-                        intent.putExtra(BundleKeys.KEY_ROOM_ID, intent.getExtras().getString(BundleKeys
-                                .KEY_ROOM_TOKEN));
-                        intent.removeExtra(BundleKeys.KEY_ROOM_TOKEN);
-                        context.startActivity(intent);
                     }
 
                     @Override
