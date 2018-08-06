@@ -187,7 +187,7 @@ public class NotificationJob extends Job {
                                     // do absolutely nothing, we won't even come to this point
                                     break;
                                 case "chat":
-                                    if (decryptedPushMessage.getNotificationId() != Long.MIN_VALUE) {
+                                    if (decryptedPushMessage.getNotificationId() != null) {
                                         showMessageNotificationWithObjectData(intent);
                                     } else {
                                         showNotification(intent);
