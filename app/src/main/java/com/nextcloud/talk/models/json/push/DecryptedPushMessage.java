@@ -45,7 +45,7 @@ public class DecryptedPushMessage {
     String id;
 
     @JsonField(name = "nid")
-    Long notificationId;
+    long notificationId;
 
     @JsonIgnore
     String text;
