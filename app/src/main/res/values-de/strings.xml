@@ -173,6 +173,9 @@ Finde Nextcloud auf https://nextcloud.com</string>
     <string name="nc_conversation_menu_voice_call">Sprachanruf</string>
     <string name="nc_conversation_menu_video_call">Videoanruf</string>
     <string name="nc_new_messages">Neue Nachrichten</string>
+    <string name="nc_no_messages_yet">Bislang keine Nachrichten</string>
+    <string name="nc_chat_you">Du</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Keine weiteren Kontakte zum Laden. Neuanstoßen zum Ladne.</string>
     <string name="nc_endless_disabled">Keine weiteren Kontakte zum Laden (Grenze erreicht).</string>

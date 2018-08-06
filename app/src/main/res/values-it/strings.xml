@@ -174,6 +174,9 @@ Trovi Nextcloud su https://nextcloud.com</string>
     <string name="nc_conversation_menu_voice_call">Chiamata vocale</string>
     <string name="nc_conversation_menu_video_call">Chiamata video</string>
     <string name="nc_new_messages">Nuovi messaggi</string>
+    <string name="nc_no_messages_yet">Ancora nessun messaggio</string>
+    <string name="nc_chat_you">Tu</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Non ci sono altri elementi da caricare. Aggiorna per riprovare.</string>
     <string name="nc_endless_disabled">Non ci sono altri elementi da caricare (massimo raggiunto).</string>
