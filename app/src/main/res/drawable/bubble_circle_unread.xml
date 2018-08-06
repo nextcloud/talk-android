@@ -21,7 +21,7 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="oval">
-    <solid android:color="@color/nc_darkRed" />
+    <solid android:color="#757575" />
     <stroke
         android:width="2dp"
         android:color="@color/white" />
