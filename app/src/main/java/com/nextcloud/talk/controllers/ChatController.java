@@ -744,16 +744,44 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     if (emptyLayout != null) {
                         emptyLayout.setVisibility(View.VISIBLE);
                     }
-                } else {
+
                     if (messagesListView != null) {
-                        messagesListView.setVisibility(View.VISIBLE);
+                        messagesListView.setVisibility(View.GONE);
+                    }
+
+                } else {
+                    boolean foundRealMessage = false;
+                    for (int i = 0; i < chatMessageList.size(); i++) {
+                        if (TextUtils.isEmpty(chatMessageList.get(i).getSystemMessage())) {
+                            foundRealMessage = true;
+                            break;
+                        }
+                    }
+
+                    if (foundRealMessage) {
+                        if (emptyLayout != null) {
+                            emptyLayout.setVisibility(View.GONE);
+                        }
+
+                        if (messagesListView != null) {
+                            messagesListView.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        if (emptyLayout != null && emptyLayout.getVisibility() != View.VISIBLE) {
+                            emptyLayout.setVisibility(View.VISIBLE);
+                        }
+
+                        if (messagesListView != null && messagesListView.getVisibility() != View.GONE) {
+                            messagesListView.setVisibility(View.GONE);
+                        }
                     }
                 }
             } else {
-                if (emptyLayout.getVisibility() != View.GONE) {
+                if (emptyLayout != null) {
                     emptyLayout.setVisibility(View.GONE);
                 }
-                if (messagesListView.getVisibility() != View.VISIBLE) {
+
+                if (messagesListView != null) {
                     messagesListView.setVisibility(View.VISIBLE);
                 }
             }

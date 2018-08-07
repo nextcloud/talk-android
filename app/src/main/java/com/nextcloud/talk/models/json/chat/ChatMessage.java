@@ -130,4 +130,9 @@ public class ChatMessage implements IMessage, MessageContentType {
     public Date getCreatedAt() {
         return new Date(timestamp * 1000L);
     }
+
+    @Override
+    public String getSystemMessage() {
+        return new EnumSystemMessageTypeConverter().convertToString(getSystemMessageType());
+    }
 }
