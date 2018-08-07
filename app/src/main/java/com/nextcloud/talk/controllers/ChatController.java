@@ -751,10 +751,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                 } else {
                     boolean foundRealMessage = false;
-                    for (int i = 0; i < chatMessageList.size(); i++) {
-                        if (TextUtils.isEmpty(chatMessageList.get(i).getSystemMessage())) {
-                            foundRealMessage = true;
-                            break;
+
+                    if (conversationUser.hasSpreedCapabilityWithName("system-messages")) {
+                        for (int i = 0; i < chatMessageList.size(); i++) {
+                            if (TextUtils.isEmpty(chatMessageList.get(i).getSystemMessage())) {
+                                foundRealMessage = true;
+                                break;
+                            }
                         }
                     }
 
