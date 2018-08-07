@@ -157,7 +157,7 @@ dependencies {
 
     implementation 'com.github.wooplr:Spotlight:1.2.3'
 
-    implementation 'com.github.mario:ChatKit:40a8e9cf69'
+    implementation 'com.github.mario:ChatKit:64c1a2fee1'
 
     implementation 'com.otaliastudios:autocomplete:1.1.0'
 

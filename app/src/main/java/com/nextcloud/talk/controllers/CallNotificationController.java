@@ -485,8 +485,10 @@ public class CallNotificationController extends BaseController {
     public void onDestroy() {
         AvatarStatusCodeHolder.getInstance().setStatusCode(0);
         leavingScreen = true;
-        handler.removeCallbacksAndMessages(null);
-        handler = null;
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+            handler = null;
+        }
         dispose();
         endMediaAndVibratorNotifications();
         super.onDestroy();

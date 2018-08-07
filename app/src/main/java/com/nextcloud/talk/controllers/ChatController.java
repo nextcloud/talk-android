@@ -62,6 +62,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder;
+import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback;
@@ -123,7 +124,7 @@ import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
-        MessagesListAdapter.Formatter<Date>, MessagesListAdapter.OnMessageLongClickListener {
+        MessagesListAdapter.Formatter<Date>, MessagesListAdapter.OnMessageLongClickListener, MessageHolders.ContentChecker {
     private static final String TAG = "ChatController";
     @Inject
     NcApi ncApi;
@@ -166,6 +167,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private boolean voiceOnly;
     private boolean isFirstMessagesProcessing = true;
     private boolean isHelloClicked;
+
+    private static final byte CONTENT_TYPE_SYSTEM_MESSAGE = 1;
 
     public ChatController(Bundle args) {
         super(args);
@@ -313,6 +316,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
             MessageHolders messageHolders = new MessageHolders();
             messageHolders.setIncomingTextConfig(MagicIncomingTextMessageViewHolder.class, R.layout.item_custom_incoming_text_message);
             messageHolders.setOutcomingTextConfig(MagicOutcomingTextMessageViewHolder.class, R.layout.item_custom_outcoming_text_message);
+
+            messageHolders.registerContentType(CONTENT_TYPE_SYSTEM_MESSAGE, MagicSystemMessageViewHolder.class,
+                    R.layout.item_system_message, MagicSystemMessageViewHolder.class, R.layout.item_system_message,
+                    this);
 
             adapter = new MessagesListAdapter<>(conversationUser.getUserId(), messageHolders, new ImageLoader() {
                 @Override
@@ -794,7 +801,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     if (chatMessageList.size() > i + 1) {
-                        if (chatMessageList.get(i + 1).getActorId().equals(chatMessageList.get(i).getActorId()) &&
+                        if (TextUtils.isEmpty(chatMessageList.get(i).getSystemMessage()) &&
+                                TextUtils.isEmpty(chatMessageList.get(i + 1).getSystemMessage()) &&
+                                chatMessageList.get(i + 1).getActorId().equals(chatMessageList.get(i).getActorId()) &&
                                 countGroupedMessages < 4 && DateFormatter.isSameDay(chatMessageList.get(i).getCreatedAt(),
                                 chatMessageList.get(i + 1).getCreatedAt())) {
                             chatMessageList.get(i).setGrouped(true);
@@ -979,5 +988,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 clipboardManager.setPrimaryClip(clipData);
             }
         }
+    }
+
+    @Override
+    public boolean hasContentFor(IMessage message, byte type) {
+        switch (type) {
+            case CONTENT_TYPE_SYSTEM_MESSAGE:
+                return !TextUtils.isEmpty(message.getSystemMessage());
+        }
+
+        return false;
     }
 }
