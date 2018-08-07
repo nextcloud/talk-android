@@ -41,6 +41,7 @@ import com.nextcloud.talk.utils.EmojiDetection;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -77,7 +78,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
     public void onBind(ChatMessage message) {
         super.onBind(message);
 
-        Map<String, Map<String, String>> messageParameters = message.getMessageParameters();
+        HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
 
         Spannable messageString = new SpannableString(message.getText());
 

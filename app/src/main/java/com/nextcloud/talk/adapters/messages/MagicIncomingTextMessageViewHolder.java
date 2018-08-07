@@ -44,6 +44,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 import com.stfalcon.chatkit.utils.ShapeImageView;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -120,7 +121,7 @@ public class MagicIncomingTextMessageViewHolder
             messageAuthor.setVisibility(View.VISIBLE);
         }
 
-        Map<String, Map<String, String>> messageParameters = message.getMessageParameters();
+        HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
 
         Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
         itemView.setSelected(false);

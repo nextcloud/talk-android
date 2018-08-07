@@ -26,8 +26,8 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import org.parceler.Parcel;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Data;
 
@@ -60,7 +60,7 @@ public class Notification {
     String subjectRich;
 
     @JsonField(name = "subjectRichParameters")
-    Map<String, Map<String, String>> subjectRichParameters;
+    HashMap<String, HashMap<String, String>> subjectRichParameters;
 
     @JsonField(name = "message")
     String message;
@@ -69,7 +69,7 @@ public class Notification {
     String messageRich;
 
     @JsonField(name = "messageRichParameters")
-    Map<String, Map<String, String>> messageRichParameters;
+    HashMap<String, HashMap<String, String>> messageRichParameters;
 
     @JsonField(name = "link")
     String link;

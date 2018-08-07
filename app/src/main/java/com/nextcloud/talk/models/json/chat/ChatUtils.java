@@ -20,14 +20,14 @@
 
 package com.nextcloud.talk.models.json.chat;
 
-import java.util.Map;
+import java.util.HashMap;
 
 public class ChatUtils {
 
-    public static String getParsedMessage(String message, Map<String, Map<String, String>> messageParameters) {
+    public static String getParsedMessage(String message, HashMap<String, HashMap<String, String>> messageParameters) {
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
-                Map<String, String> individualHashMap = messageParameters.get(key);
+                HashMap<String, String> individualHashMap = messageParameters.get(key);
                 if (individualHashMap.get("type").equals("user")) {
                     message = message.replaceAll("\\{" + key + "\\}", "@" +
                             messageParameters.get(key).get("name"));

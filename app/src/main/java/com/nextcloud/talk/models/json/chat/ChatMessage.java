@@ -26,18 +26,19 @@ import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
+import com.stfalcon.chatkit.commons.models.MessageContentType;
 
 import org.parceler.Parcel;
 
 import java.util.Date;
-import java.util.Map;
+import java.util.HashMap;
 
 import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
-public class ChatMessage implements IMessage {
+public class ChatMessage implements IMessage, MessageContentType {
 
     public enum SystemMessageType {
         DUMMY,
@@ -75,7 +76,7 @@ public class ChatMessage implements IMessage {
     @JsonField(name = "message")
     String message;
     @JsonField(name = "messageParameters")
-    Map<String, Map<String, String>> messageParameters;
+    HashMap<String, HashMap<String, String>> messageParameters;
 
     @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
     SystemMessageType systemMessageType;

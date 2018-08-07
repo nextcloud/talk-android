@@ -265,6 +265,11 @@ public class NotificationJob extends Job {
                         com.nextcloud.talk.models.json.notifications.Notification notification =
                                 notificationOverall.getOcs().getNotification();
 
+                        // subject: group name
+                        // content -
+                        // group: name of author: message
+                        // user: message
+
                         if (notification.getMessageRichParameters() != null &&
                                 notification.getMessageRichParameters().size() > 0) {
                             decryptedPushMessage.setText(ChatUtils.getParsedMessage(notification.getMessageRich(),
