@@ -163,7 +163,7 @@ public class OperationsMenuController extends BaseController {
         currentUser = userUtils.getCurrentUser();
         OperationsObserver operationsObserver = new OperationsObserver();
 
-        if (!TextUtils.isEmpty(callUrl)) {
+        if (!TextUtils.isEmpty(callUrl) ) {
             conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1, callUrl.length());
             if (callUrl.contains("/index.php")) {
                 baseUrl = callUrl.substring(0, callUrl.indexOf("/index.php"));
@@ -315,6 +315,24 @@ public class OperationsMenuController extends BaseController {
                                 }
                             });
 
+                    break;
+                case 97:
+                case 98:
+                    if (operationCode == 97) {
+                        ncApi.unpinConversation(credentials, ApiUtils.getUrlForConversationPin(currentUser.getBaseUrl(),
+                                conversation.getToken()))
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .retry(1)
+                                .subscribe(operationsObserver);
+                    } else {
+                        ncApi.pinConversation(credentials, ApiUtils.getUrlForConversationPin(currentUser.getBaseUrl(),
+                                conversation.getToken()))
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .retry(1)
+                                .subscribe(operationsObserver);
+                    }
                     break;
                 case 99:
                     ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, conversationToken),

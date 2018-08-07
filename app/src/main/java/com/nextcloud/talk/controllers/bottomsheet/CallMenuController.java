@@ -132,6 +132,14 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
             }
 
+            if (conversation.isPinned()) {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_unpin), 97, getResources()
+                        .getDrawable(R.drawable.ic_unpin_grey600_24px)));
+            } else {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_pin_to_top), 98, getResources()
+                        .getDrawable(R.drawable.ic_pin_grey600_24px)));
+            }
+
             if (conversation.isNameEditable()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename), 2, getResources().getDrawable(R.drawable
                         .ic_pencil_grey600_24dp)));
@@ -202,7 +210,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     conversation.setPassword("");
                 }
 
-                if (tag > 0 && tag < 10) {
+                if (tag > 0 && tag < 11) {
                     bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
                     if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
                         eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
