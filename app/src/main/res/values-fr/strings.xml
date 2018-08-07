@@ -58,6 +58,8 @@
     <string name="nc_settings_call_ringtone">Appels en tête-à-tête</string>
     <string name="nc_settings_other_notifications_ringtone">Autre</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
+    <string name="nc_settings_vibrate">Vibrer</string>
+    <string name="nc_settings_vibrate_desc">Si activé, votre téléphone va vibrer</string>
     <string name="nc_no_proxy">Aucun proxy</string>
     <string name="nc_username">Nom d\'utilisateur</string>
     <string name="nc_password">Mot de passe</string>
@@ -172,6 +174,9 @@ Retrouvez Nextcloud sur https://nextcloud.com</string>
     <string name="nc_conversation_menu_voice_call">Appel vocal</string>
     <string name="nc_conversation_menu_video_call">Appel vidéo</string>
     <string name="nc_new_messages">Nouveaux messages</string>
+    <string name="nc_no_messages_yet">Pas de messages</string>
+    <string name="nc_chat_you">Vous</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Plus aucun élément à charger. Rafraichissez pour réessayer.</string>
     <string name="nc_endless_disabled">Plus aucun élément à charger (maximum atteint).</string>
