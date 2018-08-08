@@ -90,7 +90,6 @@
     <string name="nc_new_conversation">Nuova conversazione</string>
     <string name="nc_join_via_link">Unisciti tramite collegamento</string>
     <string name="nc_join_via_web">Unisciti tramite web</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Seleziona contatti</string>
     <string name="nc_one_contact_selected">contatto selezionato</string>

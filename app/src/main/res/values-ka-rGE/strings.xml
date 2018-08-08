@@ -68,7 +68,6 @@
     <string name="nc_share_link_via">ბმულის გაზიარება მეთოდით</string>
     <string name="nc_join_via_link">შეუერთდით ბმულით</string>
     <string name="nc_join_via_web">შეუერთდით ვებით</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">აირჩიეთ კონტაქტები</string>
     <string name="nc_one_contact_selected">კონტაქტი იქნა არჩეულ</string>

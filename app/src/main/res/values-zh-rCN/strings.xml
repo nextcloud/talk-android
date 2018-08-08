@@ -83,7 +83,6 @@
     <string name="nc_new_conversation">新的会话</string>
     <string name="nc_join_via_link">通过链接加入</string>
     <string name="nc_join_via_web">通过网页加入</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">选择联系人</string>
     <string name="nc_one_contact_selected">已选联系人</string>

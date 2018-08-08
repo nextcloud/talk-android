@@ -1,4 +1,6 @@
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_conversations">Samtaler</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakter</string>
     <string name="nc_bottom_navigation_title_settings">Innstillinger</string>
 
@@ -68,7 +70,6 @@
     <string name="nc_share_link_via">Del lenke via</string>
     <string name="nc_join_via_link">Ta del via lenke</string>
     <string name="nc_join_via_web">Ta del via nett</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Velg kontakter</string>
     <string name="nc_one_contact_selected">kontakt valgt</string>

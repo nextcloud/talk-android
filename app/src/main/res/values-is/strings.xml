@@ -82,7 +82,6 @@
     <string name="nc_new_conversation">Nýtt samtal</string>
     <string name="nc_join_via_link">Taka þátt í gegnum tengil</string>
     <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Veldu tengiliði</string>
     <string name="nc_one_contact_selected">tengiliður valinn</string>

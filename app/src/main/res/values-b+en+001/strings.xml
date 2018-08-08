@@ -79,7 +79,6 @@
     <string name="nc_delete_call">Delete conversation</string>
     <string name="nc_join_via_link">Join via link</string>
     <string name="nc_join_via_web">Join via web</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Select contacts</string>
     <string name="nc_one_contact_selected">contact selected</string>

@@ -79,7 +79,6 @@
     <string name="nc_delete_call">Borrar conversación</string>
     <string name="nc_join_via_link">Únete vía una liga</string>
     <string name="nc_join_via_web">Únete vía web</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecciona los contactos</string>
     <string name="nc_one_contact_selected">contacto seleccionado</string>

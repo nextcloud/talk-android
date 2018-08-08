@@ -83,7 +83,6 @@
     <string name="nc_new_conversation">Új beszélgetés</string>
     <string name="nc_join_via_link">Csatlakozás linken kersztül</string>
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Kapcsolat kiválasztása</string>
     <string name="nc_one_contact_selected">kapcsolat kiválasztva</string>
