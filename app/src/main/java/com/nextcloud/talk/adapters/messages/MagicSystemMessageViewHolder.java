@@ -20,6 +20,9 @@
 
 package com.nextcloud.talk.adapters.messages;
 
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.View;
@@ -41,6 +44,13 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
+
+        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+
+        Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
+                resources.getColor(R.color.transparent),
+                resources.getColor(R.color.white_two), R.drawable.shape_grouped_incoming_message);
+        ViewCompat.setBackground(bubble, bubbleDrawable);
 
         Spannable messageString = new SpannableString(message.getText());
 
