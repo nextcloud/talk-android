@@ -188,8 +188,8 @@ public class ApiUtils {
                 getApplicationContext().getResources().getString(R.string.nc_push_server_url) + "/devices";
     }
 
-    public static String getUrlForConversationPin(String baseUrl, String roomToken) {
-        return baseUrl + ocsApiVersion + "/room/" + roomToken + "/pin";
+    public static String getUrlForConversationFavorites(String baseUrl, String roomToken) {
+        return baseUrl + ocsApiVersion + "/room/" + roomToken + "/favorite";
     }
 
     public static String getUrlForNotificationWithId(String baseUrl, String notificationId) {

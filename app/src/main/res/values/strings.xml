@@ -102,8 +102,8 @@
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_join_via_link">Join via link</string>
     <string name="nc_join_via_web">Join via web</string>
-    <string name="nc_pin_to_top">Pin to top</string>
-    <string name="nc_unpin">Unpin</string>
+    <string name="nc_add_to_favorites">Add to favorites</string>
+    <string name="nc_remove_from_favorites">Remove from favorites</string>
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Select contacts</string>

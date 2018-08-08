@@ -131,17 +131,17 @@
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_marginBottom="4dp"
-            android:layout_toStartOf="@id/pinnedConversationImageView"
+            android:layout_toStartOf="@id/favoriteConversationImageView"
             android:src="@drawable/ic_lock_grey600_24px"
             android:visibility="visible"/>
 
         <ImageView
-            android:id="@+id/pinnedConversationImageView"
+            android:id="@+id/favoriteConversationImageView"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_marginBottom="4dp"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_pin_grey600_24px"
+            android:src="@drawable/ic_star_grey600_24dp"
             android:visibility="visible"/>
 
     </RelativeLayout>

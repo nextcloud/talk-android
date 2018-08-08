@@ -133,7 +133,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.passwordProtectedRoomImageView.setVisibility(View.GONE);
         }
 
-        if (conversation.isPinned()) {
+        if (conversation.isFavorite()) {
             holder.pinnedConversationImageView.setVisibility(View.VISIBLE);
         } else {
             holder.pinnedConversationImageView.setVisibility(View.GONE);
@@ -294,7 +294,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         ImageView onlineIndicator;
         @BindView(R.id.passwordProtectedRoomImageView)
         ImageView passwordProtectedRoomImageView;
-        @BindView(R.id.pinnedConversationImageView)
+        @BindView(R.id.favoriteConversationImageView)
         ImageView pinnedConversationImageView;
 
         ConversationItemViewHolder(View view, FlexibleAdapter adapter) {

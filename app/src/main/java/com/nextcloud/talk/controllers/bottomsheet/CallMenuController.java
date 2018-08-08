@@ -132,12 +132,12 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
             }
 
-            if (conversation.isPinned()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_unpin), 97, getResources()
-                        .getDrawable(R.drawable.ic_unpin_grey600_24px)));
+            if (conversation.isFavorite()) {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, getResources()
+                        .getDrawable(R.drawable.ic_star_border_grey600_24dp)));
             } else {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_pin_to_top), 98, getResources()
-                        .getDrawable(R.drawable.ic_pin_grey600_24px)));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites), 98, getResources()
+                        .getDrawable(R.drawable.ic_star_grey600_24dp)));
             }
 
             if (conversation.isNameEditable()) {

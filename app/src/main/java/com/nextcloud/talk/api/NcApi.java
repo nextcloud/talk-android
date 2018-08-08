@@ -292,13 +292,13 @@ public interface NcApi {
 
     // Url is: /api/{apiVersion}/room/{token}/pin
     @POST
-    Observable<GenericOverall> pinConversation(@Header("Authorization") String authorization,
-                                                   @Url String url);
-
-    // Url is: /api/{apiVersion}/room/{token}/pin
-    @DELETE
-    Observable<GenericOverall> unpinConversation(@Header("Authorization") String authorization,
+    Observable<GenericOverall> addConversationToFavorites(@Header("Authorization") String authorization,
                                                           @Url String url);
+
+    // Url is: /api/{apiVersion}/room/{token}/favorites
+    @DELETE
+    Observable<GenericOverall> removeConversationFromFavorites(@Header("Authorization") String authorization,
+                                                               @Url String url);
 
     @GET
     Observable<NotificationOverall> getNotification(@Header("Authorization") String authorization,
