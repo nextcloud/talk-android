@@ -80,6 +80,10 @@ public class EnumSystemMessageTypeConverter extends StringBasedTypeConverter<Cha
     @Override
     public String convertToString(ChatMessage.SystemMessageType object) {
 
+        if (object == null) {
+            return "";
+        }
+
         switch (object) {
             case CONVERSATION_CREATED:
                 return "conversation_created";
