@@ -20,6 +20,7 @@
 package com.nextcloud.talk.models.json.chat;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
@@ -81,7 +82,10 @@ public class ChatMessage implements IMessage, MessageContentType {
     @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
     SystemMessageType systemMessageType;
 
+    @JsonIgnore
     boolean isGrouped;
+    @JsonIgnore
+    String activeUserId;
 
 
     public String getBaseUrl() {

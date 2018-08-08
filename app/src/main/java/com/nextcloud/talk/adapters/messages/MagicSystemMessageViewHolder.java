@@ -20,10 +20,17 @@
 
 package com.nextcloud.talk.adapters.messages;
 
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.View;
 
+import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
+
+import java.util.Map;
 
 public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 
@@ -34,6 +41,30 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
-        text.setText(message.getText());
+
+        Spannable messageString = new SpannableString(message.getText());
+
+        if (message.getMessageParameters() != null && message.getMessageParameters().size() > 0) {
+            for (String key : message.getMessageParameters().keySet()) {
+                Map<String, String> individualHashMap = message.getMessageParameters().get(key);
+                if (individualHashMap.get("type").equals("user")) {
+                    int color;
+
+                    if (individualHashMap.get("id").equals(message.getActiveUserId())) {
+                        color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
+                                .nc_incoming_text_mention_you);
+                    } else {
+                        color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
+                                .nc_incoming_text_mention_others);
+                    }
+
+                    messageString = DisplayUtils.searchAndColor(message.getText(),
+                            messageString, "@" + individualHashMap.get("name"), color);
+                }
+            }
+
+        }
+
+        text.setText(messageString);
     }
 }

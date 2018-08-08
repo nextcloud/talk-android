@@ -34,7 +34,6 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.EmojiDetection;
@@ -61,8 +60,6 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
     @Inject
     UserUtils userUtils;
 
-    private UserEntity currentUser;
-
     private View itemView;
 
     public MagicOutcomingTextMessageViewHolder(View itemView) {
@@ -71,7 +68,6 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         this.itemView = itemView;
-        currentUser = userUtils.getCurrentUser();
     }
 
     @Override
@@ -89,11 +85,11 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
         FlexboxLayout.LayoutParams layoutParams = (FlexboxLayout.LayoutParams) messageTimeView.getLayoutParams();
         layoutParams.setWrapBefore(false);
 
-        if (messageParameters != null && message.getMessageParameters().size() > 0) {
-            for (String key : message.getMessageParameters().keySet()) {
+        if (messageParameters != null && messageParameters.size() > 0) {
+            for (String key : messageParameters.keySet()) {
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
                 if (individualHashMap.get("type").equals("user")) {
-                    if (!individualHashMap.get("id").equals(currentUser.getUserId())) {
+                    if (!individualHashMap.get("id").equals(message.getActiveUserId())) {
                         messageString = DisplayUtils.searchAndColor(messageText.getText().toString(),
                                 messageString, "@" + individualHashMap.get("name"), NextcloudTalkApplication
                                         .getSharedApplication().getResources().getColor(R.color.nc_outcoming_text_default));
