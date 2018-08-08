@@ -296,7 +296,7 @@ public class ConversationsListController extends BaseController implements Searc
                                 Conversation conversation1 = ((ConversationItem) o1).getModel();
                                 Conversation conversation2 = ((ConversationItem) o2).getModel();
                                 return new CompareToBuilder()
-                                        .append(conversation2.isPinned(), conversation1.isPinned())
+                                        .append(conversation2.isFavorite(), conversation1.isFavorite())
                                         .append(conversation2.getLastActivity(), conversation1.getLastActivity())
                                         .toComparison();
                             });

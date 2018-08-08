@@ -319,14 +319,14 @@ public class OperationsMenuController extends BaseController {
                 case 97:
                 case 98:
                     if (operationCode == 97) {
-                        ncApi.unpinConversation(credentials, ApiUtils.getUrlForConversationPin(currentUser.getBaseUrl(),
+                        ncApi.removeConversationFromFavorites(credentials, ApiUtils.getUrlForConversationFavorites(currentUser.getBaseUrl(),
                                 conversation.getToken()))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .retry(1)
                                 .subscribe(operationsObserver);
                     } else {
-                        ncApi.pinConversation(credentials, ApiUtils.getUrlForConversationPin(currentUser.getBaseUrl(),
+                        ncApi.addConversationToFavorites(credentials, ApiUtils.getUrlForConversationFavorites(currentUser.getBaseUrl(),
                                 conversation.getToken()))
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
