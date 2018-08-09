@@ -420,25 +420,26 @@ public class CallNotificationController extends BaseController {
                                             (getActivity()).getBitmapPool(), resource, avatarSize, avatarSize));
                                 }
 
-                                if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200) {
-                                    final Allocation input = Allocation.createFromBitmap(renderScript, resource);
-                                    final Allocation output = Allocation.createTyped(renderScript, input.getType());
-                                    final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(renderScript, Element
-                                            .U8_4(renderScript));
-                                    script.setRadius(15f);
-                                    script.setInput(input);
-                                    script.forEach(output);
-                                    output.copyTo(resource);
+                                    if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 &&
+                                            userBeingCalled.hasSpreedCapabilityWithName("no-ping")) {
+                                        final Allocation input = Allocation.createFromBitmap(renderScript, resource);
+                                        final Allocation output = Allocation.createTyped(renderScript, input.getType());
+                                        final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(renderScript, Element
+                                                .U8_4(renderScript));
+                                        script.setRadius(15f);
+                                        script.setInput(input);
+                                        script.forEach(output);
+                                        output.copyTo(resource);
 
-                                    incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
-                                            .incoming_gradient));
-                                    constraintLayout.setBackground(new BitmapDrawable(resource));
-                                } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
-                                    Palette palette = Palette.from(resource).generate();
-                                    constraintLayout.setBackgroundColor(palette.getDominantColor(
-                                            getResources().getColor(R.color.grey950)));
+                                        incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
+                                                .incoming_gradient));
+                                        constraintLayout.setBackground(new BitmapDrawable(resource));
+                                    } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
+                                        Palette palette = Palette.from(resource).generate();
+                                        constraintLayout.setBackgroundColor(palette.getDominantColor(
+                                                getResources().getColor(R.color.grey950)));
+                                    }
                                 }
-                            }
                         });
 
 
