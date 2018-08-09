@@ -43,7 +43,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -756,34 +755,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
 
                 } else {
-                    boolean foundRealMessage = false;
-
-                    if (conversationUser.hasSpreedCapabilityWithName("system-messages")) {
-                        for (int i = 0; i < chatMessageList.size(); i++) {
-                            if (TextUtils.isEmpty(chatMessageList.get(i).getSystemMessage())) {
-                                foundRealMessage = true;
-                                break;
-                            }
-                        }
+                    if (emptyLayout != null) {
+                        emptyLayout.setVisibility(View.GONE);
                     }
 
-                    if (foundRealMessage) {
-                        if (emptyLayout != null) {
-                            emptyLayout.setVisibility(View.GONE);
-                        }
-
-                        if (messagesListView != null) {
-                            messagesListView.setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        if (emptyLayout != null && emptyLayout.getVisibility() != View.VISIBLE) {
-                            emptyLayout.setVisibility(View.VISIBLE);
-                        }
-
-                        if (messagesListView != null && messagesListView.getVisibility() != View.GONE) {
-                            messagesListView.setVisibility(View.GONE);
-                        }
+                    if (messagesListView != null) {
+                        messagesListView.setVisibility(View.VISIBLE);
                     }
+
                 }
             } else {
                 if (emptyLayout != null) {
