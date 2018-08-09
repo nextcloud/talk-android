@@ -162,7 +162,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                         .asBitmap()
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(R.drawable.ic_group_white_24px)
+                        .load(R.drawable.ic_people_group_white_24px)
                         .centerInside()
                         .override(avatarSize, avatarSize)
                         .apply(RequestOptions.bitmapTransform(new CircleCrop()))

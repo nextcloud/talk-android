@@ -245,7 +245,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 GlideApp.with(context)
                         .asBitmap()
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(R.drawable.ic_group_white_24px)
+                        .load(R.drawable.ic_people_group_white_24px)
                         .centerInside()
                         .override(avatarSize, avatarSize)
                         .apply(RequestOptions.bitmapTransform(new CircleCrop()))

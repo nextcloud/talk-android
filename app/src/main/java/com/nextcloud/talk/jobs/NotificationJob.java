@@ -72,6 +72,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.zip.CRC32;
 
 import javax.crypto.Cipher;
@@ -99,6 +100,7 @@ public class NotificationJob extends Job {
     private DecryptedPushMessage decryptedPushMessage;
     private Context context;
     private SignatureVerification signatureVerification;
+    private String conversationType = "";
 
     @NonNull
     @Override
@@ -233,6 +235,11 @@ public class NotificationJob extends Job {
                         if (conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
                             context.startActivity(intent);
                         } else {
+                            if (conversation.getType().equals(Conversation.RoomType.ROOM_GROUP_CALL)) {
+                                conversationType = "group";
+                            } else {
+                                conversationType = "public";
+                            }
                             showNotification(intent);
                         }
                     }
@@ -265,17 +272,30 @@ public class NotificationJob extends Job {
                         com.nextcloud.talk.models.json.notifications.Notification notification =
                                 notificationOverall.getOcs().getNotification();
 
-                        // subject: group name
-                        // content -
-                        // group: name of author: message
-                        // user: message
-
                         if (notification.getMessageRichParameters() != null &&
                                 notification.getMessageRichParameters().size() > 0) {
                             decryptedPushMessage.setText(ChatUtils.getParsedMessage(notification.getMessageRich(),
                                     notification.getMessageRichParameters()));
                         } else {
                             decryptedPushMessage.setText(notification.getMessage());
+                        }
+
+                        HashMap<String, HashMap<String, String>> subjectRichParametersRichParameters = notification
+                                .getSubjectRichParameters();
+
+                        if (subjectRichParametersRichParameters != null && subjectRichParametersRichParameters
+                                .size() > 0 && subjectRichParametersRichParameters.containsKey("call")
+                                && subjectRichParametersRichParameters.containsKey("user")) {
+                            HashMap<String, String> callHashMap = subjectRichParametersRichParameters.get("call");
+                            HashMap<String, String> userHashMap = subjectRichParametersRichParameters.get("user");
+
+                            if (callHashMap.containsKey("call-type")) {
+                                conversationType = callHashMap.get("call-type");
+
+                                if ("one2one".equals(conversationType)) {
+                                    decryptedPushMessage.setSubject(userHashMap.get("name"));
+                                }
+                            }
                         }
 
                         showNotification(intent);
@@ -294,26 +314,47 @@ public class NotificationJob extends Job {
 
     private void showNotification(Intent intent) {
         int smallIcon;
-        Bitmap largeIcon;
+        Bitmap largeIcon = null;
         String category;
         int priority = Notification.PRIORITY_HIGH;
         Uri soundUri;
 
+        smallIcon = R.drawable.ic_logo;
+
         if (decryptedPushMessage.getType().equals("chat")) {
-            smallIcon = R.drawable.ic_chat_white_24dp;
             category = Notification.CATEGORY_MESSAGE;
         } else {
-            smallIcon = R.drawable.ic_call_white_24dp;
             category = Notification.CATEGORY_CALL;
         }
 
+        switch (conversationType) {
+            case "one2one":
+                if (decryptedPushMessage.getType().equals("chat")) {
+                    largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_chat_black_24dp);
+                } else {
+                    largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_call_black_24dp);
+                }
+                break;
+            case "group":
+                largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_people_group_black_24px);
+                break;
+            case "public":
+                largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_link_black_24px);
+                break;
+            default:
+                if (decryptedPushMessage.getType().equals("chat")) {
+                    largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_chat_black_24dp);
+                } else {
+                    largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_call_black_24dp);
+                }
+        }
+        
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
                 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        largeIcon = BitmapFactory.decodeResource(context.getResources(), smallIcon);
         CRC32 crc32 = new CRC32();
 
         Notification.Builder notificationBuilder = new Notification.Builder(context)
