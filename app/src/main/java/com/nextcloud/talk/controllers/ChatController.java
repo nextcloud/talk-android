@@ -398,7 +398,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         });
 
 
-        messageInputView.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         messageInputView.setInputListener(input -> {
             sendMessage(input, 1);
             return true;
