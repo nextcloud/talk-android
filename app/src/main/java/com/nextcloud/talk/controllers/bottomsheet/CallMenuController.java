@@ -210,7 +210,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     conversation.setPassword("");
                 }
 
-                if (tag > 0 && tag < 11) {
+                if (tag > 0) {
                     bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
                     if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
                         eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
