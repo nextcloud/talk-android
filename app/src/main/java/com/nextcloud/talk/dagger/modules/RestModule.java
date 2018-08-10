@@ -48,7 +48,6 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Singleton;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509KeyManager;
 
@@ -76,13 +75,11 @@ public class RestModule {
     private static final String TAG = "RestModule";
 
     @Provides
-    @Singleton
     NcApi provideNcApi(Retrofit retrofit) {
         return retrofit.create(NcApi.class);
     }
 
     @Provides
-    @Singleton
     Proxy provideProxy(AppPreferences appPreferences) {
         if (!TextUtils.isEmpty(appPreferences.getProxyType()) && !"No proxy".equals(appPreferences.getProxyType())
                 && !TextUtils.isEmpty(appPreferences.getProxyHost())) {
@@ -102,7 +99,6 @@ public class RestModule {
     }
 
     @Provides
-    @Singleton
     Retrofit provideRetrofit(OkHttpClient httpClient) {
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .client(httpClient)
@@ -114,13 +110,11 @@ public class RestModule {
     }
 
     @Provides
-    @Singleton
     MagicTrustManager provideMagicTrustManager() {
         return new MagicTrustManager();
     }
 
     @Provides
-    @Singleton
     MagicKeyManager provideKeyManager(AppPreferences appPreferences, UserUtils userUtils) {
         KeyStore keyStore = null;
         try {
@@ -146,27 +140,23 @@ public class RestModule {
     }
 
     @Provides
-    @Singleton
     SSLSocketFactoryCompat provideSslSocketFactoryCompat(MagicKeyManager keyManager, MagicTrustManager
             magicTrustManager) {
         return new SSLSocketFactoryCompat(keyManager, magicTrustManager);
     }
 
     @Provides
-    @Singleton
     CookieManager provideCookieManager() {
         return new CookieManager();
     }
 
     @Provides
-    @Singleton
     Cache provideCache() {
         int cacheSize = 128 * 1024 * 1024; // 128 MB
         return new Cache(NextcloudTalkApplication.getSharedApplication().getCacheDir(), cacheSize);
     }
 
     @Provides
-    @Singleton
     Dispatcher provideDispatcher() {
         Dispatcher dispatcher = new Dispatcher();
         dispatcher.setMaxRequestsPerHost(100);
@@ -175,7 +165,6 @@ public class RestModule {
     }
 
     @Provides
-    @Singleton
     OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
                                    MagicTrustManager magicTrustManager,
                                    SSLSocketFactoryCompat sslSocketFactoryCompat, Cache cache,
