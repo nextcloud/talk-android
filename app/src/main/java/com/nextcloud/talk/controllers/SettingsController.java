@@ -44,13 +44,12 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
-import com.evernote.android.job.JobRequest;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.jobs.AccountRemovalJob;
+import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -83,6 +82,8 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -419,8 +420,9 @@ public class SettingsController extends BaseController {
             removeAccountButton.addPreferenceClickListener(view1 -> {
                 cookieManager.getCookieStore().removeAll();
                 boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(userEntity.getId());
-                new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true)
-                        .startNow().build().scheduleAsync();
+
+                OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
+                WorkManager.getInstance().enqueue(accountRemovalWork);
 
                 if (otherUserExists && getView() != null) {
                     onViewBound(getView());

@@ -148,9 +148,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:okhttp3-integration:4.7.1@aar'
     implementation 'org.webrtc:google-webrtc:1.0.23295'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
-
-    implementation 'com.evernote:android-job:1.2.6'
-
+    
     implementation 'com.yarolegovich:lovely-dialog:1.1.0'
     implementation 'com.yarolegovich:lovelyinput:1.0.9'
     implementation 'com.yarolegovich:mp:1.0.9'

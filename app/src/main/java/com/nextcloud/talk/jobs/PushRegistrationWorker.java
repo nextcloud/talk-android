@@ -22,15 +22,16 @@ package com.nextcloud.talk.jobs;
 
 import android.support.annotation.NonNull;
 
-import com.evernote.android.job.Job;
 import com.nextcloud.talk.utils.PushUtils;
 
-public class PushRegistrationJob extends Job {
-    public static final String TAG = "PushRegistrationJob";
+import androidx.work.Worker;
+
+public class PushRegistrationWorker extends Worker {
+    public static final String TAG = "PushRegistrationWorker";
 
     @NonNull
     @Override
-    protected Result onRunJob(Params params) {
+    public Result doWork() {
         PushUtils pushUtils = new PushUtils();
         pushUtils.generateRsa2048KeyPair();
         pushUtils.pushRegistrationToServer();

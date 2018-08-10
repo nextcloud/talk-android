@@ -30,17 +30,14 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
-import com.evernote.android.job.JobManager;
-import com.evernote.android.job.JobRequest;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
 import com.nextcloud.talk.dagger.modules.DatabaseModule;
 import com.nextcloud.talk.dagger.modules.RestModule;
-import com.nextcloud.talk.jobs.AccountRemovalJob;
-import com.nextcloud.talk.jobs.CapabilitiesJob;
-import com.nextcloud.talk.jobs.PushRegistrationJob;
-import com.nextcloud.talk.jobs.creator.MagicJobCreator;
+import com.nextcloud.talk.jobs.AccountRemovalWorker;
+import com.nextcloud.talk.jobs.CapabilitiesWorker;
+import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.DeviceUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -55,10 +52,16 @@ import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 import autodagger.AutoComponent;
 import autodagger.AutoInjector;
 
@@ -119,8 +122,6 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         super.onCreate();
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
-        JobManager.create(this).addJobCreator(new MagicJobCreator());
-
         sharedApplication = this;
 
         initializeWebRtc();
@@ -140,27 +141,19 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         new ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync();
         DeviceUtils.ignoreSpecialBatteryFeatures();
 
-        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().scheduleAsync();
-        new JobRequest.Builder(AccountRemovalJob.TAG).setUpdateCurrent(true).startNow().build().scheduleAsync();
+        OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
+        OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
+        OneTimeWorkRequest capabilitiesUpdateWork = new OneTimeWorkRequest.Builder(CapabilitiesWorker.class).build();
+        PeriodicWorkRequest periodicCapabilitiesWork = new PeriodicWorkRequest.Builder(CapabilitiesWorker.class, 1,
+                        TimeUnit.DAYS).build();
 
-        schedulePeriodCapabilitiesJob();
-        new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent(false).startNow().build().scheduleAsync();
-    }
+        List<WorkRequest> workRequests = new ArrayList<>();
+        workRequests.add(pushRegistrationWork);
+        workRequests.add(accountRemovalWork);
+        workRequests.add(capabilitiesUpdateWork);
+        workRequests.add(periodicCapabilitiesWork);
 
-    private void schedulePeriodCapabilitiesJob() {
-        boolean periodicJobFound = false;
-        for (JobRequest jobRequest : JobManager.instance().getAllJobRequestsForTag(CapabilitiesJob.TAG)) {
-            if (jobRequest.isPeriodic()) {
-                periodicJobFound = true;
-                break;
-            }
-        }
-
-        if (!periodicJobFound) {
-            new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent(true)
-                    .setPeriodic(TimeUnit.DAYS.toMillis(1), TimeUnit.HOURS.toMillis(1))
-                    .build().scheduleAsync();
-        }
+        WorkManager.getInstance().enqueue(workRequests);
     }
 
     @Override

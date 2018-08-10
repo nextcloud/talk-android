@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.evernote.android.job.Job;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -46,6 +45,7 @@ import java.util.zip.CRC32;
 
 import javax.inject.Inject;
 
+import androidx.work.Worker;
 import autodagger.AutoInjector;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
@@ -56,8 +56,8 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class AccountRemovalJob extends Job {
-    public static final String TAG = "AccountRemovalJob";
+public class AccountRemovalWorker extends Worker {
+    public static final String TAG = "AccountRemovalWorker";
 
     @Inject
     UserUtils userUtils;
@@ -72,7 +72,7 @@ public class AccountRemovalJob extends Job {
 
     @NonNull
     @Override
-    protected Result onRunJob(Params params) {
+    public Result doWork() {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         PushConfigurationState pushConfigurationState;
@@ -119,13 +119,14 @@ public class AccountRemovalJob extends Job {
                                                     @Override
                                                     public void onNext(Void aVoid) {
                                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                            String groupName = String.format(getContext().getResources().getString(R.string
-                                                                    .nc_notification_channel), userEntity.getUserId(), userEntity.getBaseUrl());
+                                                            String groupName = String.format(getApplicationContext().getResources()
+                                                                    .getString(R.string
+                                                                            .nc_notification_channel), userEntity.getUserId(), userEntity.getBaseUrl());
                                                             CRC32 crc32 = new CRC32();
                                                             crc32.update(groupName.getBytes());
                                                             NotificationManager notificationManager =
-                                                                    (NotificationManager) getContext().getSystemService(Context
-                                                                            .NOTIFICATION_SERVICE);
+                                                                    (NotificationManager) getApplicationContext().getSystemService
+                                                                            (Context.NOTIFICATION_SERVICE);
 
                                                             if (notificationManager != null) {
                                                                 notificationManager.deleteNotificationChannelGroup(Long

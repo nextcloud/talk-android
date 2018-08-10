@@ -46,10 +46,10 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
                     .putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, remoteMessage.getData().get("signature"))
                     .build();
 
-            OneTimeWorkRequest mathWork = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+            OneTimeWorkRequest pushNotificationWork = new OneTimeWorkRequest.Builder(NotificationWorker.class)
                     .setInputData(messageData)
                     .build();
-            WorkManager.getInstance().enqueue(mathWork);
+            WorkManager.getInstance().enqueue(pushNotificationWork);
         }
     }
 }

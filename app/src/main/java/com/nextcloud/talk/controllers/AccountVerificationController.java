@@ -32,15 +32,13 @@ import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.evernote.android.job.JobRequest;
-import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.EventStatus;
-import com.nextcloud.talk.jobs.CapabilitiesJob;
-import com.nextcloud.talk.jobs.PushRegistrationJob;
+import com.nextcloud.talk.jobs.CapabilitiesWorker;
+import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
@@ -62,6 +60,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import io.reactivex.CompletableObserver;
@@ -340,8 +341,8 @@ public class AccountVerificationController extends BaseController {
     }
 
     private void registerForPush() {
-        new JobRequest.Builder(PushRegistrationJob.TAG).
-                setUpdateCurrent(true).startNow().build().schedule();
+        OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
+        WorkManager.getInstance().enqueue(pushRegistrationWork);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -367,14 +368,14 @@ public class AccountVerificationController extends BaseController {
     }
 
     private void fetchAndStoreCapabilities() {
-        PersistableBundleCompat persistableBundleCompat = new
-                PersistableBundleCompat();
-        persistableBundleCompat.putLong(BundleKeys
-                .KEY_INTERNAL_USER_ID, internalAccountId);
+        Data userData = new Data.Builder()
+                .putLong(BundleKeys.KEY_INTERNAL_USER_ID, internalAccountId)
+                .build();
 
-        new JobRequest.Builder(CapabilitiesJob.TAG).setUpdateCurrent
-                (false).addExtras(persistableBundleCompat).startNow()
-                .build().scheduleAsync();
+        OneTimeWorkRequest pushNotificationWork = new OneTimeWorkRequest.Builder(CapabilitiesWorker.class)
+                .setInputData(userData)
+                .build();
+        WorkManager.getInstance().enqueue(pushNotificationWork);
     }
 
     private void proceedWithLogin() {

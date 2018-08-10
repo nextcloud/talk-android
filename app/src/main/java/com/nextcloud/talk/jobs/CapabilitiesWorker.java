@@ -24,7 +24,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.evernote.android.job.Job;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.EventStatus;
@@ -42,6 +41,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.work.Data;
+import androidx.work.Worker;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -51,8 +52,8 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class CapabilitiesJob extends Job {
-    public static final String TAG = "CapabilitiesJob";
+public class CapabilitiesWorker extends Worker {
+    public static final String TAG = "CapabilitiesWorker";
 
     @Inject
     UserUtils userUtils;
@@ -68,12 +69,50 @@ public class CapabilitiesJob extends Job {
 
     NcApi ncApi;
 
+    private void updateUser(CapabilitiesOverall capabilitiesOverall, UserEntity internalUserEntity) {
+        try {
+            userUtils.createOrUpdateUser(null, null,
+                    null, null,
+                    null, null, null, internalUserEntity.getId(),
+                    LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()), null)
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Observer<UserEntity>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(UserEntity userEntity) {
+                            eventBus.post(new EventStatus(userEntity.getId(),
+                                    EventStatus.EventType.CAPABILITIES_FETCH, true));
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            eventBus.post(new EventStatus(internalUserEntity.getId(),
+                                    EventStatus.EventType.CAPABILITIES_FETCH, false));
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to create or update user");
+        }
+
+    }
+
     @NonNull
     @Override
-    protected Result onRunJob(Params params) {
+    public Result doWork() {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
-        long internalUserId = getParams().getExtras().getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1);
+        Data data = getInputData();
+
+        long internalUserId = data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1);
 
         UserEntity userEntity;
         List userEntityObjectList = new ArrayList();
@@ -120,41 +159,5 @@ public class CapabilitiesJob extends Job {
         }
 
         return Result.SUCCESS;
-    }
-
-    private void updateUser(CapabilitiesOverall capabilitiesOverall, UserEntity internalUserEntity) {
-        try {
-            userUtils.createOrUpdateUser(null, null,
-                    null, null,
-                    null, null, null, internalUserEntity.getId(),
-                    LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()), null)
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribe(new Observer<UserEntity>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(UserEntity userEntity) {
-                            eventBus.post(new EventStatus(userEntity.getId(),
-                                    EventStatus.EventType.CAPABILITIES_FETCH, true));
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            eventBus.post(new EventStatus(internalUserEntity.getId(),
-                                    EventStatus.EventType.CAPABILITIES_FETCH, false));
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to create or update user");
-        }
-
     }
 }

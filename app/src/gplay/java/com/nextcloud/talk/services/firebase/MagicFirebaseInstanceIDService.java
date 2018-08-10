@@ -20,15 +20,16 @@
 
 package com.nextcloud.talk.services.firebase;
 
-import com.evernote.android.job.JobRequest;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.jobs.PushRegistrationJob;
+import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import javax.inject.Inject;
 
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -46,6 +47,7 @@ public class MagicFirebaseInstanceIDService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
         appPreferences.setPushToken(FirebaseInstanceId.getInstance().getToken());
-        new JobRequest.Builder(PushRegistrationJob.TAG).setUpdateCurrent(true).startNow().build().schedule();
+        OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
+        WorkManager.getInstance().enqueue(pushRegistrationWork);
     }
 }
