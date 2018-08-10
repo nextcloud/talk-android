@@ -89,7 +89,6 @@ public class AccountRemovalWorker extends Worker {
 
                     ncApi.unregisterDeviceForNotificationsWithNextcloud(ApiUtils.getCredentials(userEntity.getUsername(),
                             userEntity.getToken()), ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()))
-                            .subscribeOn(Schedulers.newThread())
                             .subscribe(new Observer<GenericOverall>() {
                                 @Override
                                 public void onSubscribe(Disposable d) {
@@ -109,7 +108,6 @@ public class AccountRemovalWorker extends Worker {
                                         ncApi.unregisterDeviceForNotificationsWithProxy
                                                 (ApiUtils.getCredentials(userEntity.getUsername(),
                                                         userEntity.getToken()), ApiUtils.getUrlPushProxy(), queryMap)
-                                                .subscribeOn(Schedulers.newThread())
                                                 .subscribe(new Observer<Void>() {
                                                     @Override
                                                     public void onSubscribe(Disposable d) {
@@ -178,7 +176,6 @@ public class AccountRemovalWorker extends Worker {
                             });
                 } else {
                     userUtils.deleteUser(userEntity.getId())
-                            .subscribeOn(Schedulers.newThread())
                             .subscribe(new CompletableObserver() {
                                 @Override
                                 public void onSubscribe(Disposable d) {
@@ -199,7 +196,6 @@ public class AccountRemovalWorker extends Worker {
             } catch (IOException e) {
                 Log.d(TAG, "Something went wrong while removing job at parsing PushConfigurationState");
                 userUtils.deleteUser(userEntity.getId())
-                        .subscribeOn(Schedulers.newThread())
                         .subscribe(new CompletableObserver() {
                             @Override
                             public void onSubscribe(Disposable d) {

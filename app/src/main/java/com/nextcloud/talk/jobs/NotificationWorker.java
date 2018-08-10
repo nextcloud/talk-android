@@ -82,7 +82,6 @@ import androidx.work.Worker;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class NotificationWorker extends Worker {
@@ -107,7 +106,6 @@ public class NotificationWorker extends Worker {
         ncApi.getRoom(ApiUtils.getCredentials(userEntity.getUserId(),
                 userEntity.getToken()), ApiUtils.getRoom(userEntity.getBaseUrl(),
                 intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN)))
-                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Observer<RoomOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -147,7 +145,6 @@ public class NotificationWorker extends Worker {
         ncApi.getNotification(ApiUtils.getCredentials(userEntity.getUserId(),
                 userEntity.getToken()), ApiUtils.getUrlForNotificationWithId(userEntity.getBaseUrl(),
                 Long.toString(decryptedPushMessage.getNotificationId())))
-                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Observer<NotificationOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {

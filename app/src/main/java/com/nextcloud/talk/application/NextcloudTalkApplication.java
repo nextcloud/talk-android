@@ -52,16 +52,14 @@ import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 import autodagger.AutoComponent;
 import autodagger.AutoInjector;
 
@@ -143,17 +141,14 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
 
         OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
         OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
-        OneTimeWorkRequest capabilitiesUpdateWork = new OneTimeWorkRequest.Builder(CapabilitiesWorker.class).build();
-        PeriodicWorkRequest periodicCapabilitiesWork = new PeriodicWorkRequest.Builder(CapabilitiesWorker.class, 1,
-                        TimeUnit.DAYS).build();
+        PeriodicWorkRequest periodicCapabilitiesUpdateWork = new PeriodicWorkRequest.Builder(CapabilitiesWorker.class,
+                1, TimeUnit.DAYS).build();
 
-        List<WorkRequest> workRequests = new ArrayList<>();
-        workRequests.add(pushRegistrationWork);
-        workRequests.add(accountRemovalWork);
-        workRequests.add(capabilitiesUpdateWork);
-        workRequests.add(periodicCapabilitiesWork);
+        WorkManager.getInstance().enqueue(pushRegistrationWork);
+        WorkManager.getInstance().enqueue(accountRemovalWork);
+        WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork",
+                ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork);
 
-        WorkManager.getInstance().enqueue(workRequests);
     }
 
     @Override

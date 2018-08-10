@@ -132,7 +132,6 @@ public class CapabilitiesWorker extends Worker {
             ncApi.getCapabilities(ApiUtils.getCredentials(internalUserEntity.getUsername(),
                     internalUserEntity.getToken()), ApiUtils.getUrlForCapabilities(internalUserEntity.getBaseUrl()))
                     .retry(3)
-                    .subscribeOn(Schedulers.newThread())
                     .subscribe(new Observer<CapabilitiesOverall>() {
                         @Override
                         public void onSubscribe(Disposable d) {
