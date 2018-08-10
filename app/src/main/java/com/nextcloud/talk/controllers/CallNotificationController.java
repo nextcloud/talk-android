@@ -299,10 +299,14 @@ public class CallNotificationController extends BaseController {
 
         renderScript = RenderScript.create(getActivity());
 
-        try {
-            cache.evictAll();
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to evict cache");
+        if (handler == null) {
+            handler = new Handler();
+
+            try {
+                cache.evictAll();
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to evict cache");
+            }
         }
 
         if (currentConversation == null) {

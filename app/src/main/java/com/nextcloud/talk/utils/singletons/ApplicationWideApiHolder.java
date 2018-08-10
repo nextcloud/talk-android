@@ -38,8 +38,8 @@ import autodagger.AutoInjector;
 import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class ApiHolder {
-    private static final String TAG = "ApiHolder";
+public class ApplicationWideApiHolder {
+    private static final String TAG = "ApplicationWideApiHolder";
 
     @SuppressLint("UseSparseArrays")
     private Map<Long, NcApi> ncApiHashMap;
@@ -50,9 +50,9 @@ public class ApiHolder {
     @Inject
     Retrofit retrofit;
 
-    private static final ApiHolder holder = new ApiHolder();
+    private static final ApplicationWideApiHolder holder = new ApplicationWideApiHolder();
 
-    public static ApiHolder getInstance() {
+    public static ApplicationWideApiHolder getInstance() {
         return holder;
     }
 
