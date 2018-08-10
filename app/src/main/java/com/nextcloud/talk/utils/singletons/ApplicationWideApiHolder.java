@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.utils.singletons;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -29,6 +30,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -39,7 +41,8 @@ import retrofit2.Retrofit;
 public class ApiHolder {
     private static final String TAG = "ApiHolder";
 
-    private HashMap<Long, NcApi> ncApiHashMap;
+    @SuppressLint("UseSparseArrays")
+    private Map<Long, NcApi> ncApiHashMap;
 
     @Inject
     UserUtils userUtils;
@@ -53,15 +56,21 @@ public class ApiHolder {
         return holder;
     }
 
+    @SuppressLint("UseSparseArrays")
     public NcApi getNcApiInstanceForAccountId(long accountId, @Nullable String baseUrl) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+
+        if (ncApiHashMap == null) {
+            ncApiHashMap = new HashMap<>();
+        }
+
         if (!ncApiHashMap.containsKey(accountId)) {
             UserEntity userAccount = userUtils.getUserWithId(accountId);
             if (userAccount == null || !TextUtils.isEmpty(baseUrl)) {
                 retrofit = retrofit.newBuilder().baseUrl(baseUrl).build();
                 return retrofit.create(NcApi.class);
             } else {
-                retrofit = retrofit.newBuilder().baseUrl(userAccount.getBaseUrl()).build();
+                retrofit = retrofit.newBuilder().baseUrl(userAccount.getBaseUrl() + "/").build();
                 ncApiHashMap.put(accountId, retrofit.create(NcApi.class));
             }
         }

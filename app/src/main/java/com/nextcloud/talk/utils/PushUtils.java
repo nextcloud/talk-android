@@ -36,6 +36,7 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -44,7 +45,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.CookieManager;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -68,9 +68,6 @@ import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.JavaNetCookieJar;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class PushUtils {
@@ -84,12 +81,6 @@ public class PushUtils {
 
     @Inject
     EventBus eventBus;
-
-    @Inject
-    OkHttpClient okHttpClient;
-
-    @Inject
-    Retrofit retrofit;
 
     NcApi ncApi;
 
@@ -231,6 +222,7 @@ public class PushUtils {
         String token = appPreferences.getPushToken();
 
         if (!TextUtils.isEmpty(token)) {
+            String credentials;
             String pushTokenHash = generateSHA512Hash(token).toLowerCase();
             PublicKey devicePublicKey = (PublicKey) readKeyFromFile(true);
             if (devicePublicKey != null) {
@@ -268,11 +260,12 @@ public class PushUtils {
                             queryMap.put("devicePublicKey", publicKey);
                             queryMap.put("proxyServer", proxyServer);
 
-                            ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
-                                    JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
+                            ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(userEntity.getId(), null);
+                            credentials = ApiUtils.getCredentials(userEntity.getUserId(), userEntity.getToken());
 
+                            String finalCredentials = credentials;
                             ncApi.registerDeviceForNotificationsWithNextcloud(
-                                    ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+                                    credentials,
                                     ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()), queryMap)
                                     .subscribeOn(Schedulers.newThread())
                                     .subscribe(new Observer<PushRegistrationOverall>() {
@@ -293,8 +286,7 @@ public class PushUtils {
                                                     .getData().getPublicKey());
 
 
-                                            ncApi.registerDeviceForNotificationsWithProxy(ApiUtils.getCredentials
-                                                            (userEntity.getUsername(), userEntity.getToken()),
+                                            ncApi.registerDeviceForNotificationsWithProxy(finalCredentials,
                                                     ApiUtils.getUrlPushProxy(), proxyMap)
                                                     .subscribeOn(Schedulers.newThread())
                                                     .subscribe(new Observer<Void>() {

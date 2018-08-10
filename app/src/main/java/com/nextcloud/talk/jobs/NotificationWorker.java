@@ -60,6 +60,7 @@ import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideStateHolder;
 
@@ -93,7 +94,6 @@ public class NotificationWorker extends Worker {
     @Inject
     AppPreferences appPreferences;
 
-    @Inject
     NcApi ncApi;
 
     private DecryptedPushMessage decryptedPushMessage;
@@ -101,10 +101,11 @@ public class NotificationWorker extends Worker {
     private SignatureVerification signatureVerification;
     private String conversationType = "";
 
+    private String credentials;
+
     private void showNotificationForCallWithNoPing(Intent intent) {
         UserEntity userEntity = signatureVerification.getUserEntity();
-        ncApi.getRoom(ApiUtils.getCredentials(userEntity.getUserId(),
-                userEntity.getToken()), ApiUtils.getRoom(userEntity.getBaseUrl(),
+        ncApi.getRoom(credentials, ApiUtils.getRoom(userEntity.getBaseUrl(),
                 intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN)))
                 .blockingSubscribe(new Observer<RoomOverall>() {
                     @Override
@@ -142,8 +143,7 @@ public class NotificationWorker extends Worker {
 
     private void showMessageNotificationWithObjectData(Intent intent) {
         UserEntity userEntity = signatureVerification.getUserEntity();
-        ncApi.getNotification(ApiUtils.getCredentials(userEntity.getUserId(),
-                userEntity.getToken()), ApiUtils.getUrlForNotificationWithId(userEntity.getBaseUrl(),
+        ncApi.getNotification(credentials, ApiUtils.getUrlForNotificationWithId(userEntity.getBaseUrl(),
                 Long.toString(decryptedPushMessage.getNotificationId())))
                 .blockingSubscribe(new Observer<NotificationOverall>() {
                     @Override
@@ -164,16 +164,16 @@ public class NotificationWorker extends Worker {
                             decryptedPushMessage.setText(notification.getMessage());
                         }
 
-                        HashMap<String, HashMap<String, String>> subjectRichParametersRichParameters = notification
+                        HashMap<String, HashMap<String, String>> subjectRichParameters = notification
                                 .getSubjectRichParameters();
 
-                        if (subjectRichParametersRichParameters != null && subjectRichParametersRichParameters
-                                .size() > 0 && subjectRichParametersRichParameters.containsKey("call")
-                                && subjectRichParametersRichParameters.containsKey("user")) {
-                            HashMap<String, String> callHashMap = subjectRichParametersRichParameters.get("call");
-                            HashMap<String, String> userHashMap = subjectRichParametersRichParameters.get("user");
+                        if (subjectRichParameters != null && subjectRichParameters
+                                .size() > 0 && subjectRichParameters.containsKey("call")
+                                && subjectRichParameters.containsKey("user")) {
+                            HashMap<String, String> callHashMap = subjectRichParameters.get("call");
+                            HashMap<String, String> userHashMap = subjectRichParameters.get("user");
 
-                            if (callHashMap.containsKey("call-type")) {
+                            if (callHashMap != null && callHashMap.size() > 0 && callHashMap.containsKey("call-type")) {
                                 conversationType = callHashMap.get("call-type");
 
                                 if ("one2one".equals(conversationType)) {
@@ -374,8 +374,12 @@ public class NotificationWorker extends Worker {
                     decryptedPushMessage = LoganSquare.parse(new String(decryptedSubject),
                             DecryptedPushMessage.class);
 
-                    boolean hasChatSupport = signatureVerification.getUserEntity().hasSpreedCapabilityWithName
-                            ("chat-v2");
+                    ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(signatureVerification.getUserEntity().getId(), null);
+                    credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUserId(),
+                            signatureVerification.getUserEntity().getToken());
+
+                    boolean hasChatSupport = signatureVerification.getUserEntity().
+                            hasSpreedCapabilityWithName("chat-v2");
 
                     boolean isInTheSameRoomAsNotification = (ApplicationWideCurrentRoomHolder.getInstance().
                             getCurrentRoomId().equals(decryptedPushMessage.getId()) ||
@@ -452,7 +456,7 @@ public class NotificationWorker extends Worker {
                 Log.d(TAG, "Invalid private key " + e1.getLocalizedMessage());
             }
         } catch (Exception exception) {
-            Log.d(TAG, "Something went very wrong" + exception.getLocalizedMessage());
+            Log.d(TAG, "Something went very wrong " + exception.getLocalizedMessage());
         }
         return Result.SUCCESS;
     }

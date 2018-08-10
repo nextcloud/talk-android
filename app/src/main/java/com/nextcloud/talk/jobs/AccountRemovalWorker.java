@@ -37,9 +37,9 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 
 import java.io.IOException;
-import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.zip.CRC32;
 
@@ -50,7 +50,6 @@ import autodagger.AutoInjector;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
@@ -75,6 +74,7 @@ public class AccountRemovalWorker extends Worker {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         PushConfigurationState pushConfigurationState;
+        String credentials;
         for (Object userEntityObject : userUtils.getUsersScheduledForDeletion()) {
             UserEntity userEntity = (UserEntity) userEntityObject;
             try {
@@ -83,11 +83,12 @@ public class AccountRemovalWorker extends Worker {
                             PushConfigurationState.class);
                     PushConfigurationState finalPushConfigurationState = pushConfigurationState;
 
-                    ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
-                            JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
+                    ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(userEntity.getId(), null);
+                    credentials = ApiUtils.getCredentials(userEntity.getUserId(), userEntity.getToken());
 
-                    ncApi.unregisterDeviceForNotificationsWithNextcloud(ApiUtils.getCredentials(userEntity.getUsername(),
-                            userEntity.getToken()), ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()))
+                    String finalCredentials = credentials;
+                    ncApi.unregisterDeviceForNotificationsWithNextcloud(credentials, ApiUtils.getUrlNextcloudPush(userEntity
+                            .getBaseUrl()))
                             .blockingSubscribe(new Observer<GenericOverall>() {
                                 @Override
                                 public void onSubscribe(Disposable d) {
@@ -105,8 +106,7 @@ public class AccountRemovalWorker extends Worker {
                                                 finalPushConfigurationState.getDeviceIdentifierSignature());
 
                                         ncApi.unregisterDeviceForNotificationsWithProxy
-                                                (ApiUtils.getCredentials(userEntity.getUsername(),
-                                                        userEntity.getToken()), ApiUtils.getUrlPushProxy(), queryMap)
+                                                (finalCredentials, ApiUtils.getUrlPushProxy(), queryMap)
                                                 .blockingSubscribe(new Observer<Void>() {
                                                     @Override
                                                     public void onSubscribe(Disposable d) {

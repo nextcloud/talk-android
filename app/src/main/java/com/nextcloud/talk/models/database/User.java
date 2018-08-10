@@ -79,7 +79,8 @@ public interface User extends Parcelable, Persistable, Serializable {
         if (getCapabilities() != null) {
             try {
                 Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
-                if (capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null) {
+                if (capabilities != null && capabilities.getSpreedCapability() != null &&
+                        capabilities.getSpreedCapability().getFeatures() != null) {
                     return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
                 }
             } catch (IOException e) {
