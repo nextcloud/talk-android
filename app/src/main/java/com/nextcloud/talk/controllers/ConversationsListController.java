@@ -67,6 +67,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.greenrobot.eventbus.EventBus;
@@ -106,8 +107,8 @@ public class ConversationsListController extends BaseController implements Searc
     @Inject
     EventBus eventBus;
 
-    @Inject
     NcApi ncApi;
+
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -130,6 +131,8 @@ public class ConversationsListController extends BaseController implements Searc
     private View view;
     private boolean shouldUseLastMessageLayout;
 
+    private String credentials;
+
     public ConversationsListController() {
         super();
         setHasOptionsMenu(true);
@@ -149,20 +152,17 @@ public class ConversationsListController extends BaseController implements Searc
             getActionBar().show();
         }
 
-        currentUser = userUtils.getCurrentUser();
-
-        if (currentUser == null &&
-                getParentController() != null && getParentController().getRouter() != null) {
-            getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler())));
-        }
-
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
+            currentUser = userUtils.getCurrentUser();
+
             if (currentUser != null) {
                 shouldUseLastMessageLayout = currentUser.hasSpreedCapabilityWithName("last-room-activity");
+
+                ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(currentUser.getId(), null);
+                credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
+
                 fetchData(false);
             }
         }
@@ -178,8 +178,6 @@ public class ConversationsListController extends BaseController implements Searc
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(false);
         }
-
-        currentUser = userUtils.getCurrentUser();
     }
 
     @Override
@@ -274,8 +272,7 @@ public class ConversationsListController extends BaseController implements Searc
 
         callItems = new ArrayList<>();
 
-        roomsQueryDisposable = ncApi.getRooms(ApiUtils.getCredentials(currentUser.getUsername(),
-                currentUser.getToken()), ApiUtils.getUrlForGetRooms(currentUser.getBaseUrl()))
+        roomsQueryDisposable = ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(currentUser.getBaseUrl()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(roomsOverall -> {
