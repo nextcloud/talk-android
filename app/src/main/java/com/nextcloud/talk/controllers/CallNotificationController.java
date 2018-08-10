@@ -76,6 +76,7 @@ import com.nextcloud.talk.utils.MagicFlipView;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
 
 import org.greenrobot.eventbus.EventBus;
@@ -96,15 +97,13 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Cache;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallNotificationController extends BaseController {
 
     private static final String TAG = "CallNotificationController";
 
-    @Inject
-    NcApi ncApi;
+    private NcApi ncApi;
 
     @Inject
     AppPreferences appPreferences;
@@ -129,9 +128,6 @@ public class CallNotificationController extends BaseController {
 
     @BindView(R.id.incomingTextRelativeLayout)
     RelativeLayout incomingTextRelativeLayout;
-
-    @Inject
-    Cache cache;
 
     private List<Disposable> disposablesList = new ArrayList<>();
     private Bundle originalBundle;
@@ -302,11 +298,7 @@ public class CallNotificationController extends BaseController {
         if (handler == null) {
             handler = new Handler();
 
-            try {
-                cache.evictAll();
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to evict cache");
-            }
+            ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(userBeingCalled.getId(), null);
         }
 
         if (currentConversation == null) {
