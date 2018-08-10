@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
 import com.nextcloud.talk.jobs.AccountRemovalJob;
 import com.nextcloud.talk.jobs.CapabilitiesJob;
-import com.nextcloud.talk.jobs.NotificationJob;
+import com.nextcloud.talk.jobs.NotificationWorker;
 import com.nextcloud.talk.jobs.PushRegistrationJob;
 
 public class MagicJobCreator implements JobCreator {
@@ -40,8 +40,8 @@ public class MagicJobCreator implements JobCreator {
                 return new PushRegistrationJob();
             case AccountRemovalJob.TAG:
                 return new AccountRemovalJob();
-            case NotificationJob.TAG:
-                return new NotificationJob();
+            case NotificationWorker.TAG:
+                return new NotificationWorker();
             case CapabilitiesJob.TAG:
                 return new CapabilitiesJob();
             default:

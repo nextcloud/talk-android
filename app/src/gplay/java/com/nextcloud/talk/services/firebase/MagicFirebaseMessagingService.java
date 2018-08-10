@@ -22,12 +22,14 @@ package com.nextcloud.talk.services.firebase;
 
 import android.annotation.SuppressLint;
 
-import com.evernote.android.job.JobRequest;
-import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.nextcloud.talk.jobs.NotificationJob;
+import com.nextcloud.talk.jobs.NotificationWorker;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
+
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 public class MagicFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -39,17 +41,15 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         if (remoteMessage.getData() != null) {
-            PersistableBundleCompat persistableBundleCompat = new PersistableBundleCompat();
-            persistableBundleCompat.putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, remoteMessage.getData().get
-                    ("subject"));
-            persistableBundleCompat.putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, remoteMessage.getData().get
-                    ("signature"));
-            new JobRequest.Builder(NotificationJob.TAG)
-                    .addExtras(persistableBundleCompat)
-                    .setUpdateCurrent(false)
-                    .startNow()
-                    .build()
-                    .schedule();
+            Data messageData = new Data.Builder()
+                    .putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, remoteMessage.getData().get("subject"))
+                    .putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, remoteMessage.getData().get("signature"))
+                    .build();
+
+            OneTimeWorkRequest mathWork = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+                    .setInputData(messageData)
+                    .build();
+            WorkManager.getInstance().enqueue(mathWork);
         }
     }
 }
