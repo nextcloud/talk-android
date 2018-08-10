@@ -106,7 +106,7 @@ public class NotificationWorker extends Worker {
         ncApi.getRoom(ApiUtils.getCredentials(userEntity.getUserId(),
                 userEntity.getToken()), ApiUtils.getRoom(userEntity.getBaseUrl(),
                 intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN)))
-                .subscribe(new Observer<RoomOverall>() {
+                .blockingSubscribe(new Observer<RoomOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
@@ -145,7 +145,7 @@ public class NotificationWorker extends Worker {
         ncApi.getNotification(ApiUtils.getCredentials(userEntity.getUserId(),
                 userEntity.getToken()), ApiUtils.getUrlForNotificationWithId(userEntity.getBaseUrl(),
                 Long.toString(decryptedPushMessage.getNotificationId())))
-                .subscribe(new Observer<NotificationOverall>() {
+                .blockingSubscribe(new Observer<NotificationOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 

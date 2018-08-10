@@ -50,7 +50,6 @@ import autodagger.AutoInjector;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -89,7 +88,7 @@ public class AccountRemovalWorker extends Worker {
 
                     ncApi.unregisterDeviceForNotificationsWithNextcloud(ApiUtils.getCredentials(userEntity.getUsername(),
                             userEntity.getToken()), ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()))
-                            .subscribe(new Observer<GenericOverall>() {
+                            .blockingSubscribe(new Observer<GenericOverall>() {
                                 @Override
                                 public void onSubscribe(Disposable d) {
 
@@ -108,7 +107,7 @@ public class AccountRemovalWorker extends Worker {
                                         ncApi.unregisterDeviceForNotificationsWithProxy
                                                 (ApiUtils.getCredentials(userEntity.getUsername(),
                                                         userEntity.getToken()), ApiUtils.getUrlPushProxy(), queryMap)
-                                                .subscribe(new Observer<Void>() {
+                                                .blockingSubscribe(new Observer<Void>() {
                                                     @Override
                                                     public void onSubscribe(Disposable d) {
 
@@ -132,8 +131,7 @@ public class AccountRemovalWorker extends Worker {
                                                             }
                                                         }
 
-                                                        userUtils.deleteUser(userEntity.getId()).subscribe(new
-                                                                                                                   CompletableObserver() {
+                                                        userUtils.deleteUser(userEntity.getId()).subscribe(new CompletableObserver() {
                                                                                                                        @Override
                                                                                                                        public void onSubscribe(Disposable d) {
 
@@ -214,6 +212,7 @@ public class AccountRemovalWorker extends Worker {
                         });
             }
         }
+
         return Result.SUCCESS;
     }
 }

@@ -46,7 +46,6 @@ import androidx.work.Worker;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -75,8 +74,7 @@ public class CapabilitiesWorker extends Worker {
                     null, null,
                     null, null, null, internalUserEntity.getId(),
                     LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()), null)
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribe(new Observer<UserEntity>() {
+                    .blockingSubscribe(new Observer<UserEntity>() {
                         @Override
                         public void onSubscribe(Disposable d) {
 
@@ -132,7 +130,7 @@ public class CapabilitiesWorker extends Worker {
             ncApi.getCapabilities(ApiUtils.getCredentials(internalUserEntity.getUsername(),
                     internalUserEntity.getToken()), ApiUtils.getUrlForCapabilities(internalUserEntity.getBaseUrl()))
                     .retry(3)
-                    .subscribe(new Observer<CapabilitiesOverall>() {
+                    .blockingSubscribe(new Observer<CapabilitiesOverall>() {
                         @Override
                         public void onSubscribe(Disposable d) {
 
