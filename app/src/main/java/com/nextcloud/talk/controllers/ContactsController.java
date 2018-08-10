@@ -68,6 +68,7 @@ import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -118,8 +119,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Inject
     UserUtils userUtils;
     @Inject
-    NcApi ncApi;
-    @Inject
     EventBus eventBus;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -130,6 +129,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
 
+    private NcApi ncApi;
+    private String credentials;
     private UserEntity currentUser;
     private Disposable contactsQueryDisposable;
     private Disposable cacheQueryDisposable;
@@ -194,7 +195,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         }
 
-        currentUser = userUtils.getCurrentUser();
     }
 
     @Override
@@ -205,19 +205,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         FlipView.resetLayoutAnimationDelay(true, 1000L);
         FlipView.stopLayoutAnimation();
 
-        currentUser = userUtils.getCurrentUser();
-
-        if (currentUser == null &&
-                getParentController() != null && getParentController().getRouter() != null) {
-            getParentController().getRouter().setRoot((RouterTransaction.with(new ServerSelectionController())
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler())));
-        }
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
 
+            currentUser = userUtils.getCurrentUser();
+
             if (currentUser != null) {
+                ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(currentUser.getId(), null);
+                credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
+
                 fetchData(true);
             }
         }
@@ -253,7 +250,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (!isPublicCall && adapter.getSelectedPositions().size() == 1) {
             RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), "1",
                     ((UserItem) adapter.getItem(adapter.getSelectedPositions().get(0))).getModel().getUserId(), null);
-            ncApi.createRoom(ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
+            ncApi.createRoom(credentials,
                     retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -443,7 +440,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         modifiedQueryMap.put("page", page);
         modifiedQueryMap.put("perPage", 100);
         ncApi.getContactsWithSearchParam(
-                ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
+                credentials,
                 retrofitBucket.getUrl(), modifiedQueryMap)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -785,7 +782,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 UserItem userItem = (UserItem) adapter.getItem(position);
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), "1",
                         userItem.getModel().getUserId(), null);
-                ncApi.createRoom(ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
+                ncApi.createRoom(credentials,
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
