@@ -34,6 +34,7 @@ import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 import com.otaliastudios.autocomplete.RecyclerViewPresenter;
 
 import java.util.ArrayList;
@@ -51,8 +52,8 @@ import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention> implements FlexibleAdapter.OnItemClickListener {
-    @Inject
-    NcApi ncApi;
+    private NcApi ncApi;
+    private UserEntity currentUser;
 
     @Inject
     UserUtils userUtils;
@@ -77,6 +78,11 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
 
+    private void setupNcApi() {
+        currentUser = userUtils.getCurrentUser();
+        ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(currentUser.getId(), null);
+    }
+
     @Override
     protected RecyclerView.Adapter instantiateAdapter() {
         adapter = new FlexibleAdapter<>(abstractFlexibleItemList, context, false);
@@ -87,7 +93,6 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
     @Override
     protected void onQuery(@Nullable CharSequence query) {
         if (!TextUtils.isEmpty(query)) {
-            UserEntity currentUser = userUtils.getCurrentUser();
 
             adapter.setFilter(query.toString());
             ncApi.getMentionAutocompleteSuggestions(ApiUtils.getCredentials(currentUser.getUserId(), currentUser

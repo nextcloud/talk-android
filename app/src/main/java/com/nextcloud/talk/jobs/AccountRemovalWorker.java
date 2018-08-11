@@ -83,6 +83,7 @@ public class AccountRemovalWorker extends Worker {
                             PushConfigurationState.class);
                     PushConfigurationState finalPushConfigurationState = pushConfigurationState;
 
+                    ApplicationWideApiHolder.getInstance().removeNcApiInstanceForAccountId(userEntity.getId());
                     ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(userEntity.getId(), null);
                     credentials = ApiUtils.getCredentials(userEntity.getUserId(), userEntity.getToken());
 
@@ -139,7 +140,6 @@ public class AccountRemovalWorker extends Worker {
 
                                                                                                                        @Override
                                                                                                                        public void onComplete() {
-
                                                                                                                        }
 
                                                                                                                        @Override

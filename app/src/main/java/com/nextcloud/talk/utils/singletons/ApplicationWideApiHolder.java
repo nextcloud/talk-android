@@ -77,4 +77,8 @@ public class ApplicationWideApiHolder {
 
         return ncApiHashMap.get(accountId);
     }
+
+    public void removeNcApiInstanceForAccountId(long accountId) {
+        ncApiHashMap.remove(accountId);
+    }
 }
