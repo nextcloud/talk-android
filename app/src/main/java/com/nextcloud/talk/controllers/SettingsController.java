@@ -161,8 +161,7 @@ public class SettingsController extends BaseController {
     @Inject
     AppPreferences appPreferences;
 
-    @Inject
-    NcApi ncApi;
+    private NcApi ncApi;
 
     @Inject
     UserUtils userUtils;
@@ -170,7 +169,8 @@ public class SettingsController extends BaseController {
     @Inject
     CookieManager cookieManager;
 
-    private UserEntity userEntity;
+    private UserEntity currentUser;
+    private String credentials;
 
     private OnPreferenceValueChangedListener<String> proxyTypeChangeListener;
     private OnPreferenceValueChangedListener<Boolean> proxyCredentialsChangeListener;
@@ -183,13 +183,18 @@ public class SettingsController extends BaseController {
         return inflater.inflate(R.layout.controller_settings, container, false);
     }
 
+    private void getCurrentUser() {
+        currentUser = userUtils.getCurrentUser();
+        credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
+    }
+
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
 
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
-        userEntity = userUtils.getCurrentUser();
+        getCurrentUser();
 
         appPreferences.registerProxyTypeListener(proxyTypeChangeListener = new ProxyTypeChangeListener());
         appPreferences.registerProxyCredentialsListener(proxyCredentialsChangeListener = new
@@ -273,7 +278,7 @@ public class SettingsController extends BaseController {
 
         URI uri;
         try {
-            uri = new URI(userEntity.getBaseUrl());
+            uri = new URI(currentUser.getBaseUrl());
             host = uri.getHost();
             port = uri.getPort();
         } catch (URISyntaxException e) {
@@ -297,9 +302,9 @@ public class SettingsController extends BaseController {
             }
 
 
-            userUtils.createOrUpdateUser(null, null, null, null, null, null, null, userEntity.getId(),
+            userUtils.createOrUpdateUser(null, null, null, null, null, null, null, currentUser.getId(),
                     null, alias);
-        }, new String[]{"RSA", "EC"}, null, finalHost, finalPort, userEntity.getClientCertificate
+        }, new String[]{"RSA", "EC"}, null, finalHost, finalPort, currentUser.getClientCertificate
                 ()));
     }
 
@@ -312,9 +317,9 @@ public class SettingsController extends BaseController {
         }
 
         dispose(null);
-        userEntity = userUtils.getCurrentUser();
+        getCurrentUser();
 
-        if (!TextUtils.isEmpty(userEntity.getClientCertificate())) {
+        if (!TextUtils.isEmpty(currentUser.getClientCertificate())) {
             certificateSetup.setTitle(R.string.nc_client_cert_change);
         } else {
             certificateSetup.setTitle(R.string.nc_client_cert_setup);
@@ -360,26 +365,25 @@ public class SettingsController extends BaseController {
             hideProxyCredentials();
         }
 
-        if (userEntity != null) {
+        if (currentUser != null) {
 
-            baseUrlTextView.setText(userEntity.getBaseUrl());
+            baseUrlTextView.setText(currentUser.getBaseUrl());
 
             reauthorizeButton.addPreferenceClickListener(view14 -> {
                 getParentController().getRouter().pushController(RouterTransaction.with(
-                        new WebViewLoginController(userEntity.getBaseUrl(), true))
+                        new WebViewLoginController(currentUser.getBaseUrl(), true))
                         .pushChangeHandler(new VerticalChangeHandler())
                         .popChangeHandler(new VerticalChangeHandler()));
             });
 
-            if (userEntity.getDisplayName() != null) {
-                displayNameTextView.setText(userEntity.getDisplayName());
+            if (currentUser.getDisplayName() != null) {
+                displayNameTextView.setText(currentUser.getDisplayName());
             }
 
             loadAvatarImage();
 
-            profileQueryDisposable = ncApi.getUserProfile(ApiUtils.getCredentials(userEntity.getUsername(),
-                    userEntity.getToken()),
-                    ApiUtils.getUrlForUserProfile(userEntity.getBaseUrl()))
+            profileQueryDisposable = ncApi.getUserProfile(credentials,
+                    ApiUtils.getUrlForUserProfile(currentUser.getBaseUrl()))
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(userProfileOverall -> {
@@ -396,12 +400,12 @@ public class SettingsController extends BaseController {
                         }
 
 
-                        if ((!TextUtils.isEmpty(displayName) && !displayName.equals(userEntity.getDisplayName()))) {
+                        if ((!TextUtils.isEmpty(displayName) && !displayName.equals(currentUser.getDisplayName()))) {
 
                             dbQueryDisposable = userUtils.createOrUpdateUser(null,
                                     null,
                                     null, displayName, null, null,
-                                    null, userEntity.getId(), null, null)
+                                    null, currentUser.getId(), null, null)
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(userEntityResult -> {
@@ -419,7 +423,7 @@ public class SettingsController extends BaseController {
 
             removeAccountButton.addPreferenceClickListener(view1 -> {
                 cookieManager.getCookieStore().removeAll();
-                boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(userEntity.getId());
+                boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser.getId());
 
                 OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
                 WorkManager.getInstance().enqueue(accountRemovalWork);
@@ -505,13 +509,13 @@ public class SettingsController extends BaseController {
 
     private void loadAvatarImage() {
         String avatarId;
-        if (!TextUtils.isEmpty(userEntity.getUserId())) {
-            avatarId = userEntity.getUserId();
+        if (!TextUtils.isEmpty(currentUser.getUserId())) {
+            avatarId = currentUser.getUserId();
         } else {
-            avatarId = userEntity.getUsername();
+            avatarId = currentUser.getUsername();
         }
 
-        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
                 avatarId, R.dimen.avatar_size_big), new LazyHeaders.Builder()
                 .setHeader("Accept", "image/*")
                 .setHeader("User-Agent", ApiUtils.getUserAgent())
