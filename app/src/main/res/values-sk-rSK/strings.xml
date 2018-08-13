@@ -55,7 +55,11 @@
     <string name="nc_settings_account_updated">Namiesto pridania nového účtu, bol aktualizovaný existujúci účet</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánovaný na zrušenie a preto nemôže byť zmenený</string>
     <string name="nc_settings_notification_sounds">Zvuky hlásení</string>
+    <string name="nc_settings_call_ringtone">Individuálne telefonáty</string>
+    <string name="nc_settings_other_notifications_ringtone">Iné</string>
     <string name="nc_settings_no_ringtone">Žiadny zvuk</string>
+    <string name="nc_settings_vibrate">Vibrovať</string>
+    <string name="nc_settings_vibrate_desc">Ak je zapnuté, telefón bude vibrovať pokiaľ nieje stíšený. </string>
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Používateľské meno</string>
     <string name="nc_password">Heslo</string>
@@ -86,6 +90,9 @@
     <string name="nc_new_conversation">Nový rozhovor</string>
     <string name="nc_join_via_link">Pripojiť sa cez odkaz</string>
     <string name="nc_join_via_web">Pripojiť sa cez web</string>
+    <string name="nc_add_to_favorites">Pridať do obľúbených</string>
+    <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Vyberte si kontakty</string>
     <string name="nc_one_contact_selected">kontakt označený</string>
@@ -169,6 +176,9 @@ Nextcloud nájdete na https://nextcloud.com</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
     <string name="nc_conversation_menu_video_call">Video hovor</string>
     <string name="nc_new_messages">Nové správy</string>
+    <string name="nc_no_messages_yet">Ešte žiadne správy</string>
+    <string name="nc_chat_you">Vy</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Už žiadne položky pre načítanie. Obnovte pre opakovanie.</string>
     <string name="nc_endless_disabled">Už žiadne ďalšie položky pre načítanie (dosiahnuté maximum).</string>
