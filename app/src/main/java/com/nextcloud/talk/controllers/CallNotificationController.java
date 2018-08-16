@@ -494,7 +494,7 @@ public class CallNotificationController extends BaseController {
     private void dispose() {
         Disposable disposable;
         for (int i = 0; i < disposablesList.size(); i++) {
-            if ((disposable = disposablesList.get(i)).isDisposed()) {
+            if (!(disposable = disposablesList.get(i)).isDisposed()) {
                 disposable.dispose();
             }
         }
