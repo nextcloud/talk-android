@@ -132,7 +132,7 @@ public class MagicIncomingTextMessageViewHolder
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
-                if (individualHashMap.get("type").equals("user")) {
+                if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest")) {
                     int color;
 
                     if (individualHashMap.get("id").equals(message.getActiveUserId())) {

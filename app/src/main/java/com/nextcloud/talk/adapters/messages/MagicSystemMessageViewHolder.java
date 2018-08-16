@@ -57,7 +57,7 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         if (message.getMessageParameters() != null && message.getMessageParameters().size() > 0) {
             for (String key : message.getMessageParameters().keySet()) {
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
-                if (individualHashMap.get("type").equals("user")) {
+                if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest")) {
                     int color;
 
                     if (individualHashMap.get("id").equals(message.getActiveUserId())) {

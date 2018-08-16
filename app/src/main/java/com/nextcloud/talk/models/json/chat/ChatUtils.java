@@ -28,7 +28,7 @@ public class ChatUtils {
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
                 HashMap<String, String> individualHashMap = messageParameters.get(key);
-                if (individualHashMap.get("type").equals("user")) {
+                if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest")) {
                     message = message.replaceAll("\\{" + key + "\\}", "@" +
                             messageParameters.get(key).get("name"));
                 }

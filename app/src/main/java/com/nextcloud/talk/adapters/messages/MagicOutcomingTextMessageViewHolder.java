@@ -88,7 +88,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
-                if (individualHashMap.get("type").equals("user")) {
+                if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest")) {
                     if (!individualHashMap.get("id").equals(message.getActiveUserId())) {
                         messageString = DisplayUtils.searchAndColor(messageText.getText().toString(),
                                 messageString, "@" + individualHashMap.get("name"), NextcloudTalkApplication
