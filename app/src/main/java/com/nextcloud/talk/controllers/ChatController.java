@@ -468,8 +468,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         inChat = false;
-        dispose();
         ApplicationWideCurrentRoomHolder.getInstance().clear();
         leaveRoom();
     }
@@ -477,7 +477,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private void dispose() {
         Disposable disposable;
         for (int i = 0; i < disposableList.size(); i++) {
-            if ((disposable = disposableList.get(i)).isDisposed()) {
+            if (!(disposable = disposableList.get(i)).isDisposed()) {
                 disposable.dispose();
             }
         }
@@ -575,6 +575,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
+                        dispose();
                         getRouter().popToRoot();
                     }
 
@@ -655,6 +656,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void pullChatMessages(int lookIntoFuture) {
+        if (!inChat) {
+            return;
+        }
+
         if (!lookingIntoFuture && lookIntoFuture == 1) {
             lookingIntoFuture = true;
         }
@@ -708,6 +713,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3, observable -> inChat)
+                    .takeWhile(observable -> inChat)
                     .subscribe(new Observer<Response>() {
                         @Override
                         public void onSubscribe(Disposable d) {

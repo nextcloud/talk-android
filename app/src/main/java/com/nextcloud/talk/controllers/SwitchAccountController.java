@@ -107,12 +107,7 @@ public class SwitchAccountController extends BaseController {
                             public void onNext(UserEntity userEntity) {
                                 userUtils.disableAllUsersWithoutId(userEntity.getId());
                                 if (getActivity() != null) {
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            getRouter().popCurrentController();
-                                        }
-                                    });
+                                    getActivity().runOnUiThread(() -> getRouter().popCurrentController());
                                 }
                             }
 

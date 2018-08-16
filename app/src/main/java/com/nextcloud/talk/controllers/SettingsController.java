@@ -73,7 +73,6 @@ import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
-import java.net.CookieManager;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -166,9 +165,6 @@ public class SettingsController extends BaseController {
 
     @Inject
     UserUtils userUtils;
-
-    @Inject
-    CookieManager cookieManager;
 
     private UserEntity currentUser;
     private String credentials;
@@ -424,7 +420,6 @@ public class SettingsController extends BaseController {
 
 
             removeAccountButton.addPreferenceClickListener(view1 -> {
-                cookieManager.getCookieStore().removeAll();
                 boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser.getId());
 
                 OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();

@@ -30,7 +30,6 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
-import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
 import com.nextcloud.talk.dagger.modules.DatabaseModule;
@@ -51,11 +50,11 @@ import org.webrtc.PeerConnectionFactory;
 import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
-import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import androidx.work.Configuration;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
@@ -124,14 +123,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
 
         initializeWebRtc();
         DisplayUtils.useCompatVectorIfNeeded();
-
-        try {
-            buildComponent();
-        } catch (final GeneralSecurityException exception) {
-            if (BuildConfig.DEBUG) {
-                exception.printStackTrace();
-            }
-        }
+        buildComponent();
 
         componentApplication.inject(this);
         refWatcher = LeakCanary.install(this);
@@ -144,6 +136,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         PeriodicWorkRequest periodicCapabilitiesUpdateWork = new PeriodicWorkRequest.Builder(CapabilitiesWorker.class,
                 1, TimeUnit.DAYS).build();
 
+        WorkManager.initialize(getApplicationContext(), new Configuration.Builder().build());
         WorkManager.getInstance().enqueue(pushRegistrationWork);
         WorkManager.getInstance().enqueue(accountRemovalWork);
         WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork",
@@ -166,7 +159,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
     //endregion
 
     //region Protected methods
-    protected void buildComponent() throws GeneralSecurityException {
+    protected void buildComponent() {
         componentApplication = DaggerNextcloudTalkApplicationComponent.builder()
                 .busModule(new BusModule())
                 .contextModule(new ContextModule(getApplicationContext()))
