@@ -58,6 +58,8 @@
             android:id="@id/dialogName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/nc_incoming_text_default"
+            android:textSize="16sp"
             android:layout_alignTop="@id/dialogAvatarFrameLayout"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@id/dialogAvatarFrameLayout"
@@ -72,6 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:ellipsize="end"
+            android:textColor="@color/warm_grey_two"
             android:maxLines="1"/>
 
         <RelativeLayout
@@ -97,6 +100,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/dialogLastMessageUserAvatar"
                 android:layout_toStartOf="@id/dialogUnreadBubble"
+                android:textColor="@color/warm_grey_four"
                 android:ellipsize="end"
                 android:gravity="top"
                 android:singleLine="false"
