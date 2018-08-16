@@ -469,6 +469,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Override
     public void onDestroy() {
         super.onDestroy();
+        adapter = null;
         inChat = false;
         ApplicationWideCurrentRoomHolder.getInstance().clear();
         leaveRoom();

@@ -297,7 +297,6 @@ public class CallNotificationController extends BaseController {
 
         if (handler == null) {
             handler = new Handler();
-
             ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(userBeingCalled.getId(), null);
         }
 
