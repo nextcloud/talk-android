@@ -152,16 +152,18 @@ public class ConversationsListController extends BaseController implements Searc
             getActionBar().show();
         }
 
+        currentUser = userUtils.getCurrentUser();
+
+        if (currentUser != null) {
+            ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(currentUser.getId(), null);
+            credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
+        }
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
-            currentUser = userUtils.getCurrentUser();
 
             if (currentUser != null) {
                 shouldUseLastMessageLayout = currentUser.hasSpreedCapabilityWithName("last-room-activity");
-
-                ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(currentUser.getId(), null);
-                credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
 
                 fetchData(false);
             }

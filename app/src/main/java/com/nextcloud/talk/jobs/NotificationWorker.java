@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -328,6 +329,16 @@ public class NotificationWorker extends Worker {
                     DoNotDisturbUtils.shouldPlaySound()) {
                 MediaPlayer mediaPlayer = MediaPlayer.create(context, soundUri);
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION);
+                AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
+                        (AudioAttributes.CONTENT_TYPE_SONIFICATION);
+
+                if (decryptedPushMessage.getType().equals("chat")) {
+                    audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
+                } else {
+                    audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST);
+                }
+
+                mediaPlayer.setAudioAttributes(audioAttributesBuilder.build());
                 mediaPlayer.start();
                 mediaPlayer.setOnCompletionListener(MediaPlayer::release);
             }

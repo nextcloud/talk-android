@@ -205,6 +205,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         FlipView.resetLayoutAnimationDelay(true, 1000L);
         FlipView.stopLayoutAnimation();
 
+        currentUser = userUtils.getCurrentUser();
+
+        if (currentUser != null) {
+            ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(currentUser.getId(), null);
+            credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
+        }
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
@@ -212,9 +218,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             currentUser = userUtils.getCurrentUser();
 
             if (currentUser != null) {
-                ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(currentUser.getId(), null);
-                credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
-
                 fetchData(true);
             }
         }

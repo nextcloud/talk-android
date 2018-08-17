@@ -24,7 +24,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.AudioManager;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -328,7 +328,9 @@ public class CallNotificationController extends BaseController {
             if (ringtoneUri != null) {
                 mediaPlayer = MediaPlayer.create(getApplicationContext(), ringtoneUri);
                 mediaPlayer.setLooping(true);
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
+                AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes
+                        .CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
+                mediaPlayer.setAudioAttributes(audioAttributes);
                 mediaPlayer.start();
             }
         }
@@ -343,14 +345,14 @@ public class CallNotificationController extends BaseController {
                 VibrationEffect vibrationEffect;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     if (vibrator.hasAmplitudeControl()) {
-                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, amplitudes, 0);
+                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, amplitudes, -1);
                         vibrator.vibrate(vibrationEffect);
                     } else {
-                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, 0);
+                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, -1);
                         vibrator.vibrate(vibrationEffect);
                     }
                 } else {
-                    vibrator.vibrate(vibratePattern, 0);
+                    vibrator.vibrate(vibratePattern, -1);
                 }
             }
 
