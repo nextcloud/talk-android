@@ -171,15 +171,15 @@ public interface AppPreferences {
     @RemoveMethod
     void removeNotificationChannelUpgradeToV2();
 
-    @KeyByString("messages_notification_channel_upgrade_to_v3")
-    boolean getIsMessagesNotificationChannelUpgradedToV3();
+    @KeyByString("notification_channels_upgrade_to_v3")
+    boolean getIsNotificationChannelUpgradedToV3();
 
-    @KeyByString("messages_notification_channel_upgrade_to_v3")
-    void setMessagesNotificationChannelIsUpgradedToV3(boolean value);
+    @KeyByString("notification_channels_upgrade_to_v3")
+    void setNotificationChannelIsUpgradedToV3(boolean value);
 
-    @KeyByString("messages_notification_channel_upgrade_to_v3")
+    @KeyByString("notification_channels_upgrade_to_v3")
     @RemoveMethod
-    void removeMessagesNotificationChannelUpgradeToV3();
+    void removeNotificationChannelUpgradeToV3();
 
     @KeyByString("notifications_vibrate")
     @DefaultValue(R.bool.value_true)

@@ -40,7 +40,8 @@ public class NotificationUtils {
     public static final String NOTIFICATION_CHANNEL_MESSAGES = "NOTIFICATION_CHANNEL_MESSAGES";
     public static final String NOTIFICATION_CHANNEL_CALLS_V2 = "NOTIFICATION_CHANNEL_CALLS_V2";
     public static final String NOTIFICATION_CHANNEL_MESSAGES_V2 = "NOTIFICATION_CHANNEL_MESSAGES_V2";
-    public static final String NOTIFICATION_CHANNEL_MESSAGES_V3 = "NOTIFICATION_CHANNEL_MESSAGES_V2";
+    public static final String NOTIFICATION_CHANNEL_MESSAGES_V3 = "NOTIFICATION_CHANNEL_MESSAGES_V3";
+    public static final String NOTIFICATION_CHANNEL_CALLS_V3 = "NOTIFICATION_CHANNEL_CALLS_V3";
 
     @TargetApi(Build.VERSION_CODES.O)
     public static void createNotificationChannel(NotificationManager notificationManager,
@@ -57,6 +58,7 @@ public class NotificationUtils {
             channel.setDescription(channelDescription);
             channel.enableLights(enableLights);
             channel.setLightColor(Color.RED);
+            channel.setSound(null, null);
 
             notificationManager.createNotificationChannel(channel);
         }

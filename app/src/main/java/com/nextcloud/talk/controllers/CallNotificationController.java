@@ -325,13 +325,22 @@ public class CallNotificationController extends BaseController {
                 }
             }
 
-            if (ringtoneUri != null) {
-                mediaPlayer = MediaPlayer.create(getApplicationContext(), ringtoneUri);
-                mediaPlayer.setLooping(true);
-                AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes
-                        .CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
-                mediaPlayer.setAudioAttributes(audioAttributes);
-                mediaPlayer.start();
+            if (ringtoneUri != null && getActivity() != null) {
+                mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(getActivity(), ringtoneUri);
+
+                    mediaPlayer.setLooping(true);
+                    AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes
+                            .CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
+                    mediaPlayer.setAudioAttributes(audioAttributes);
+
+                    mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
+
+                    mediaPlayer.prepareAsync();
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to set data source");
+                }
             }
         }
 

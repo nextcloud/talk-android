@@ -28,7 +28,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -285,12 +284,12 @@ public class NotificationWorker extends Worker {
                 notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V3);
             } else {
                 NotificationUtils.createNotificationChannel(notificationManager,
-                        NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2, context.getResources()
+                        NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V3, context.getResources()
                                 .getString(R.string.nc_notification_channel_calls), context.getResources()
                                 .getString(R.string.nc_notification_channel_calls_description), true,
                         NotificationManager.IMPORTANCE_HIGH);
 
-                notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2);
+                notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V3);
             }
 
             notificationBuilder.setGroup(Long.toString(crc32.getValue()));
@@ -327,8 +326,6 @@ public class NotificationWorker extends Worker {
 
             if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
                     DoNotDisturbUtils.shouldPlaySound()) {
-                MediaPlayer mediaPlayer = MediaPlayer.create(context, soundUri);
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION);
                 AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
                         (AudioAttributes.CONTENT_TYPE_SONIFICATION);
 
@@ -338,9 +335,19 @@ public class NotificationWorker extends Worker {
                     audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST);
                 }
 
-                mediaPlayer.setAudioAttributes(audioAttributesBuilder.build());
-                mediaPlayer.start();
-                mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(context, soundUri);
+                    mediaPlayer.setAudioAttributes(audioAttributesBuilder.build());
+
+                    mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
+                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+
+                    mediaPlayer.prepareAsync();
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to set data source");
+                }
+
             }
 
 

@@ -75,9 +75,10 @@ public class PackageReplacedReceiver extends BroadcastReceiver {
                             appPreferences.setNotificationChannelIsUpgradedToV2(true);
                         }
 
-                        if (!appPreferences.getIsMessagesNotificationChannelUpgradedToV3() && packageInfo.versionCode > 51) {
+                        if ((!appPreferences.getIsNotificationChannelUpgradedToV3()) && packageInfo.versionCode > 51) {
                             notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2);
-                            appPreferences.setNotificationChannelIsUpgradedToV2(true);
+                            notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2);
+                            appPreferences.setNotificationChannelIsUpgradedToV3(true);
                         }
                     }
 
