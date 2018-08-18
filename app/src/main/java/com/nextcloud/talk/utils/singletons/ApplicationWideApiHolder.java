@@ -66,7 +66,7 @@ public class ApplicationWideApiHolder {
 
         if (!ncApiHashMap.containsKey(accountId)) {
             UserEntity userAccount = userUtils.getUserWithId(accountId);
-            if (userAccount == null || !TextUtils.isEmpty(baseUrl)) {
+            if (userAccount == null || (userAccount.getId() == -1 && !TextUtils.isEmpty(baseUrl))) {
                 retrofit = retrofit.newBuilder().baseUrl(baseUrl).build();
                 return retrofit.create(NcApi.class);
             } else {

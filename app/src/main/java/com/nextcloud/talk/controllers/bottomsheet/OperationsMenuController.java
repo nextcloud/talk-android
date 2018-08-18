@@ -56,6 +56,7 @@ import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -95,7 +96,6 @@ public class OperationsMenuController extends BaseController {
     @BindView(R.id.web_button)
     Button webButton;
 
-    @Inject
     NcApi ncApi;
 
     @Inject
@@ -156,6 +156,8 @@ public class OperationsMenuController extends BaseController {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
+        ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(userUtils.getCurrentUser().getId
+                (), null);
         processOperation();
     }
 

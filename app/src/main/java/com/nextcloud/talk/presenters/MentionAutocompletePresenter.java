@@ -69,6 +69,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         super(context);
         this.context = context;
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        setupNcApi();
     }
 
     public MentionAutocompletePresenter(Context context, String roomToken) {
@@ -76,6 +77,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         this.roomToken = roomToken;
         this.context = context;
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        setupNcApi();
     }
 
     private void setupNcApi() {

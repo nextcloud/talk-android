@@ -83,6 +83,7 @@ import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
+import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.otaliastudios.autocomplete.Autocomplete;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
@@ -99,7 +100,6 @@ import com.webianks.library.PopupBubble;
 
 import org.parceler.Parcels;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,7 +117,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Cache;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
@@ -125,12 +124,9 @@ import retrofit2.Response;
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
         MessagesListAdapter.Formatter<Date>, MessagesListAdapter.OnMessageLongClickListener, MessageHolders.ContentChecker {
     private static final String TAG = "ChatController";
-    @Inject
     NcApi ncApi;
     @Inject
     UserUtils userUtils;
-    @Inject
-    Cache cache;
     @BindView(R.id.messagesListView)
     MessagesList messagesListView;
     @BindView(R.id.messageInputView)
@@ -300,15 +296,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
         sendHiTextView.setText(String.format(getResources().getString(R.string.nc_chat_empty), getResources()
                 .getString(R.string.nc_hello)));
 
+        ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(conversationUser.getId(), baseUrl);
+
         if (adapter == null) {
 
             loadingProgressBar.setVisibility(View.VISIBLE);
-
-            try {
-                cache.evictAll();
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to evict cache");
-            }
 
             adapterWasNull = true;
 

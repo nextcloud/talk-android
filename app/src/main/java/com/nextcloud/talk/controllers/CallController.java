@@ -80,6 +80,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
@@ -182,7 +183,6 @@ public class CallController extends BaseController {
     @BindView(R.id.conversationRelativeLayoutView)
     RelativeLayout conversationView;
 
-    @Inject
     NcApi ncApi;
     @Inject
     EventBus eventBus;
@@ -301,6 +301,8 @@ public class CallController extends BaseController {
                 .setRepeatCount(PulseAnimation.INFINITE)
                 .setRepeatMode(PulseAnimation.REVERSE);
 
+
+        ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(conversationUser.getId(), baseUrl);
 
         try {
             cache.evictAll();
