@@ -135,7 +135,6 @@ import io.reactivex.schedulers.Schedulers;
 import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied;
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
 import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
-import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -190,8 +189,6 @@ public class CallController extends BaseController {
     UserUtils userUtils;
     @Inject
     AppPreferences appPreferences;
-    @Inject
-    Cache cache;
 
     private PeerConnectionFactory peerConnectionFactory;
     private MediaConstraints audioConstraints;
@@ -303,12 +300,6 @@ public class CallController extends BaseController {
 
 
         ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(conversationUser.getId(), baseUrl);
-
-        try {
-            cache.evictAll();
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to evict cache");
-        }
 
         if (isVoiceOnlyCall) {
             callControlEnableSpeaker.setVisibility(View.VISIBLE);
