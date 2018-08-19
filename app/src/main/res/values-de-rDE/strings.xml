@@ -61,7 +61,7 @@
     <string name="nc_settings_vibrate">Vibrieren</string>
     <string name="nc_settings_vibrate_desc">Wenn aktiviert, wird das Telefon vibrieren sofern es nicht stillgestellt ist</string>
     <string name="nc_no_proxy">Kein Proxy</string>
-    <string name="nc_username">Nutzername</string>
+    <string name="nc_username">Benutzername</string>
     <string name="nc_password">Passwort</string>
     <string name="nc_conversation_link">Unterhaltungslink</string>
     <string name="nc_new_password">Neues Passwort</string>
@@ -91,7 +91,7 @@
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
     <string name="nc_add_to_favorites">Zu den Favoriten hinzufügen</string>
-    <string name="nc_remove_from_favorites">Aus den Favoriten entfernen</string>
+    <string name="nc_remove_from_favorites">Von den Favoriten entfernen</string>
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Kontakte auswählen</string>
@@ -113,7 +113,8 @@
     <string name="nc_incoming_call">Eingehender Anruf von</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
-    <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über einen speziellen Link eingeladen werden.</string>
+    <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über 
+ einen speziellen Link eingeladen werden.</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s auf %2$s Benachrichtigungskanal</string>
@@ -175,11 +176,11 @@ Finden Sie Nextcloud auf https://nextcloud.com</string>
     <string name="nc_conversation_menu_voice_call">Sprachanruf</string>
     <string name="nc_conversation_menu_video_call">Videoanruf</string>
     <string name="nc_new_messages">Neue Nachrichten</string>
-    <string name="nc_no_messages_yet">Bislang keine Nachrichten</string>
+    <string name="nc_no_messages_yet">Noch keine Nachrichten</string>
     <string name="nc_chat_you">Sie</string>
 
     <!-- Contacts endless loading -->
-    <string name="nc_no_more_load_retry">Keine weiteren Kontakte zum Laden. Neuanstoßen zum Ladne.</string>
+    <string name="nc_no_more_load_retry">Keine weiteren Kontakte zum Laden. Neuanstoßen zum Laden.</string>
     <string name="nc_endless_disabled">Keine weiteren Kontakte zum Laden (Grenze erreicht).</string>
     <string name="nc_endless_cancel">Abbruch durch den Benutzer.</string>
     <string name="nc_endless_error">Es ist ein Fehler beim Laden weiterer Kontakte aufgetreten.</string>
