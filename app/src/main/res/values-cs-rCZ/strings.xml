@@ -48,7 +48,9 @@
     <string name="nc_settings_add_account">Přidat nový účet</string>
     <string name="nc_settings_wrong_account">Reautorizován může být pouze aktuální účet</string>
     <string name="nc_settings_notification_sounds">Zvuky oznamování</string>
+    <string name="nc_settings_other_notifications_ringtone">Ostatní</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
+    <string name="nc_settings_vibrate">Vibrovat</string>
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Uživatelské jméno</string>
     <string name="nc_password">Heslo</string>
@@ -73,10 +75,14 @@
     <string name="nc_clear_password">Vyčistit heslo</string>
     <string name="nc_share_link">Sdílet odkaz</string>
     <string name="nc_share_link_via">Sdílet odkaz prostřednictvím</string>
+    <string name="nc_make_call_public">Zveřejnit konverzaci</string>
     <string name="nc_delete_call">Smazat konverzaci</string>
     <string name="nc_new_conversation">Nová konverzace</string>
     <string name="nc_join_via_link">Připojit prostřednictvím odkazu</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
+    <string name="nc_add_to_favorites">Přidat do oblíbených</string>
+    <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Vybrat kontakty</string>
     <string name="nc_one_contact_selected">kontakt vybrán</string>
