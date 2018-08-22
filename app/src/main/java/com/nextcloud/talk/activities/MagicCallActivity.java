@@ -99,7 +99,6 @@ public class MagicCallActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
         eventBus.post(new ConfigurationChangeEvent());
     }
 }

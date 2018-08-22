@@ -49,9 +49,8 @@ public class UserUtils {
     }
 
     public List getUsers() {
-        Result findUsersQueryResult = dataStore.select(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.notEqual
-                (true))
-                .get();
+        Result findUsersQueryResult = dataStore.select(User.class).where
+                (UserEntity.SCHEDULED_FOR_DELETION.notEqual(true)).get();
 
         return findUsersQueryResult.toList();
     }
@@ -109,8 +108,7 @@ public class UserUtils {
     }
 
     public UserEntity getUserWithId(long id) {
-        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id)
-                .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true)))
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id))
                 .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();

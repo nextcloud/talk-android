@@ -215,8 +215,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
 
-            currentUser = userUtils.getCurrentUser();
-
             if (currentUser != null) {
                 fetchData(true);
             }

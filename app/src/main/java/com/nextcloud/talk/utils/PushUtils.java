@@ -267,8 +267,7 @@ public class PushUtils {
                             ncApi.registerDeviceForNotificationsWithNextcloud(
                                     credentials,
                                     ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()), queryMap)
-                                    .subscribeOn(Schedulers.newThread())
-                                    .subscribe(new Observer<PushRegistrationOverall>() {
+                                    .blockingSubscribe(new Observer<PushRegistrationOverall>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
 
@@ -289,7 +288,7 @@ public class PushUtils {
                                             ncApi.registerDeviceForNotificationsWithProxy(finalCredentials,
                                                     ApiUtils.getUrlPushProxy(), proxyMap)
                                                     .subscribeOn(Schedulers.newThread())
-                                                    .subscribe(new Observer<Void>() {
+                                                    .blockingSubscribe(new Observer<Void>() {
                                                         @Override
                                                         public void onSubscribe(Disposable d) {
 
@@ -317,7 +316,7 @@ public class PushUtils {
                                                                         userEntity.getDisplayName(),
                                                                         LoganSquare.serialize(pushConfigurationState), null,
                                                                         null, userEntity.getId(), null, null)
-                                                                        .subscribe(new Observer<UserEntity>() {
+                                                                        .blockingSubscribe(new Observer<UserEntity>() {
                                                                             @Override
                                                                             public void onSubscribe(Disposable d) {
 
