@@ -266,7 +266,7 @@ public class PushUtils {
                             ncApi.registerDeviceForNotificationsWithNextcloud(
                                     credentials,
                                     ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()), queryMap)
-                                    .blockingSubscribe(new Observer<PushRegistrationOverall>() {
+                                    .subscribe(new Observer<PushRegistrationOverall>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
 

@@ -23,6 +23,7 @@ package com.nextcloud.talk.controllers;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
@@ -441,8 +442,16 @@ public class CallNotificationController extends BaseController {
                                         constraintLayout.setBackground(new BitmapDrawable(resource));
                                     } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
                                         Palette palette = Palette.from(resource).generate();
-                                        constraintLayout.setBackgroundColor(palette.getDominantColor(
-                                                getResources().getColor(R.color.grey950)));
+                                        int color = palette.getDominantColor(getResources().getColor(R.color.grey950));
+
+                                        if (color != getResources().getColor(R.color.grey950)) {
+                                            float[] hsv = new float[3];
+                                            Color.colorToHSV(color, hsv);
+                                            hsv[2] *= 0.75f;
+                                            color = Color.HSVToColor(hsv);
+                                        }
+                                        
+                                        constraintLayout.setBackgroundColor(color);
                                     }
                                 }
                         });
