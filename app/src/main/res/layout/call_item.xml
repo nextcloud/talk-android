@@ -44,7 +44,7 @@
         android:layout_height="16dp"
         android:layout_below="@id/peer_nick_text_view"
         android:layout_marginStart="8dp"
-        android:layout_toStartOf="@id/remote_audio_off"
+        android:layout_toEndOf="@id/remote_audio_off"
         android:src="@drawable/ic_videocam_off_white_24px"
         android:visibility="invisible"/>
 
@@ -52,7 +52,7 @@
         android:id="@+id/remote_audio_off"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@id/peer_nick_text_view"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -63,7 +63,7 @@
         android:id="@+id/peer_nick_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
