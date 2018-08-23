@@ -50,6 +50,8 @@ public class EnumSystemMessageTypeConverter extends StringBasedTypeConverter<Cha
                 return CONVERSATION_CREATED;
             case "conversation_renamed":
                 return CONVERSATION_RENAMED;
+            case "call_started":
+                return CALL_STARTED;
             case "call_joined":
                 return CALL_JOINED;
             case "call_left":
@@ -89,8 +91,10 @@ public class EnumSystemMessageTypeConverter extends StringBasedTypeConverter<Cha
                 return "conversation_created";
             case CONVERSATION_RENAMED:
                 return "conversation_renamed";
+            case CALL_STARTED:
+                return "call_started";
             case CALL_JOINED:
-                return "conversation_renamed";
+                return "call_joined";
             case CALL_LEFT:
                 return "call_left";
             case CALL_ENDED:

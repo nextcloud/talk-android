@@ -45,6 +45,7 @@ public class ChatMessage implements IMessage, MessageContentType {
         DUMMY,
         CONVERSATION_CREATED,
         CONVERSATION_RENAMED,
+        CALL_STARTED,
         CALL_JOINED,
         CALL_LEFT,
         CALL_ENDED,
@@ -55,7 +56,8 @@ public class ChatMessage implements IMessage, MessageContentType {
         USER_ADDED,
         USER_REMOVED,
         MODERATOR_PROMOTED,
-        MODERATOR_DEMOTED
+        MODERATOR_DEMOTED,
+
     }
 
     String baseUrl;
