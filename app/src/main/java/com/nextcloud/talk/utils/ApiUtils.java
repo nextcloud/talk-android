@@ -189,7 +189,7 @@ public class ApiUtils {
     }
 
     public static String getUrlForConversationFavorites(String baseUrl, String roomToken) {
-        return baseUrl + ocsApiVersion + "/room/" + roomToken + "/favorite";
+        return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + roomToken + "/favorite";
     }
 
     public static String getUrlForNotificationWithId(String baseUrl, String notificationId) {
