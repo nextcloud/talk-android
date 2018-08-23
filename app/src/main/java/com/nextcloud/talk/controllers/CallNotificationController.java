@@ -450,7 +450,7 @@ public class CallNotificationController extends BaseController {
                                             hsv[2] *= 0.75f;
                                             color = Color.HSVToColor(hsv);
                                         }
-                                        
+
                                         constraintLayout.setBackgroundColor(color);
                                     }
                                 }

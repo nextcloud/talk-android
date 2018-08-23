@@ -206,18 +206,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
         switch (conversation.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
-                holder.onlineIndicator.setVisibility(View.VISIBLE);
-
-                if (conversation.getCount() > 0) {
-                    if (conversation.getCount() == 2 || (conversation.getCount() == 1 &&
-                            conversation.getSessionId().equals("0"))) {
-                        holder.onlineIndicator.setBackground(context.getDrawable(R.drawable.shape_bubble_online));
-                    } else {
-                        holder.onlineIndicator.setBackground(context.getDrawable(R.drawable.shape_bubble_offline));
-                    }
-                } else {
-                    holder.onlineIndicator.setBackground(context.getDrawable(R.drawable.shape_bubble_offline));
-                }
 
                 if (!TextUtils.isEmpty(conversation.getName())) {
                     GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
@@ -240,7 +228,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 }
                 break;
             case ROOM_GROUP_CALL:
-                holder.onlineIndicator.setVisibility(View.GONE);
 
                 GlideApp.with(context)
                         .asBitmap()
@@ -252,7 +239,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         .into(holder.dialogAvatar);
                 break;
             case ROOM_PUBLIC_CALL:
-                holder.onlineIndicator.setVisibility(View.GONE);
                 GlideApp.with(context)
                         .asBitmap()
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -264,7 +250,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
                 break;
             default:
-                holder.onlineIndicator.setVisibility(View.GONE);
                 holder.dialogAvatar.setVisibility(View.GONE);
         }
 
@@ -290,8 +275,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         TextView dialogLastMessage;
         @BindView(R.id.dialogUnreadBubble)
         TextView dialogUnreadBubble;
-        @BindView(R.id.onlineIndicator)
-        ImageView onlineIndicator;
         @BindView(R.id.passwordProtectedRoomImageView)
         ImageView passwordProtectedRoomImageView;
         @BindView(R.id.favoriteConversationImageView)

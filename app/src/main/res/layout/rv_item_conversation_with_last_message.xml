@@ -34,10 +34,10 @@
         android:layout_margin="16dp">
 
         <FrameLayout
+            android:id="@+id/dialogAvatarFrameLayout"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
-            android:layout_centerVertical="true"
-            android:id="@+id/dialogAvatarFrameLayout">
+            android:layout_centerVertical="true">
 
             <ImageView
                 android:id="@id/dialogAvatar"
@@ -45,28 +45,33 @@
                 android:layout_height="@dimen/avatar_size"/>
 
             <ImageView
-                android:id="@+id/onlineIndicator"
+                android:id="@+id/passwordProtectedRoomImageView"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/shape_lock_bubble"/>
+
+            <ImageView
+                android:id="@+id/favoriteConversationImageView"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_gravity="top|end"
-                android:background="@drawable/shape_bubble_online"
-                />
-
+                android:background="@drawable/shape_favorite_bubble"/>
         </FrameLayout>
 
         <TextView
             android:id="@id/dialogName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/nc_incoming_text_default"
-            android:textSize="16sp"
             android:layout_alignTop="@id/dialogAvatarFrameLayout"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@id/dialogAvatarFrameLayout"
             android:layout_toStartOf="@id/dialogDate"
             android:ellipsize="end"
             android:includeFontPadding="false"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:textColor="@color/nc_incoming_text_default"
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@id/dialogDate"
@@ -74,8 +79,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:ellipsize="end"
-            android:textColor="@color/warm_grey_two"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:textColor="@color/warm_grey_two"/>
 
         <RelativeLayout
             android:id="@+id/dialogLastMessageLayout"
@@ -90,8 +95,8 @@
                 android:id="@id/dialogLastMessageUserAvatar"
                 android:layout_width="@dimen/small_item_height"
                 android:layout_height="@dimen/small_item_height"
-                android:layout_marginEnd="8dp"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="8dp"/>
 
             <TextView
                 android:id="@id/dialogLastMessage"
@@ -100,54 +105,26 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/dialogLastMessageUserAvatar"
                 android:layout_toStartOf="@id/dialogUnreadBubble"
-                android:textColor="@color/warm_grey_four"
                 android:ellipsize="end"
                 android:gravity="top"
+                android:maxLines="2"
                 android:singleLine="false"
-                android:maxLines="2"/>
+                android:textColor="@color/warm_grey_four"/>
 
             <TextView
                 android:id="@id/dialogUnreadBubble"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/bubble_circle_unread"
                 android:gravity="center"
-                android:textAlignment="center"
                 android:lines="1"
+                android:textAlignment="center"
                 android:textColor="@color/white"/>
 
         </RelativeLayout>
 
     </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="8dp">
-
-        <ImageView
-            android:id="@+id/passwordProtectedRoomImageView"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_marginBottom="4dp"
-            android:layout_toStartOf="@id/favoriteConversationImageView"
-            android:src="@drawable/ic_lock_grey600_24px"
-            android:visibility="visible"/>
-
-        <ImageView
-            android:id="@+id/favoriteConversationImageView"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_marginBottom="4dp"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_star_grey600_24dp"
-            android:visibility="visible"/>
-
-    </RelativeLayout>
-
 </RelativeLayout>
