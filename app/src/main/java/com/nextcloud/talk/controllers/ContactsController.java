@@ -68,7 +68,6 @@ import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -129,7 +128,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
 
-    private NcApi ncApi;
+    @Inject
+    NcApi ncApi;
     private String credentials;
     private UserEntity currentUser;
     private Disposable contactsQueryDisposable;
@@ -208,7 +208,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
-            ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(currentUser.getId(), null);
             credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
         }
 

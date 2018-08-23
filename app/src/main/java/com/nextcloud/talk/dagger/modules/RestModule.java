@@ -37,7 +37,6 @@ import com.nextcloud.talk.utils.ssl.MagicKeyManager;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.InetSocketAddress;
@@ -47,7 +46,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -77,6 +75,7 @@ public class RestModule {
 
     private static final String TAG = "RestModule";
 
+    @Singleton
     @Provides
     NcApi provideNcApi(Retrofit retrofit) {
         return retrofit.create(NcApi.class);
@@ -102,6 +101,7 @@ public class RestModule {
         }
     }
 
+    @Singleton
     @Provides
     Retrofit provideRetrofit(OkHttpClient httpClient) {
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
@@ -152,25 +152,18 @@ public class RestModule {
         return new SSLSocketFactoryCompat(keyManager, magicTrustManager);
     }
 
+    @Singleton
     @Provides
     CookieManager provideCookieManager() {
         return new CookieManager();
     }
 
+    @Singleton
     @Provides
-    Cache provideCache(UserUtils userUtils) {
+    Cache provideCache() {
         int cacheSize = 128 * 1024 * 1024; // 128 MB
-        String userId = "";
 
-        if (userUtils.getCurrentUser() != null) {
-            userId = Long.toString(userUtils.getCurrentUser().getId());
-        } else {
-            Random r = new Random( System.currentTimeMillis() );
-            userId = "nc-temp-" + (10000 + r.nextInt(20000));
-        }
-
-        return new Cache(new File(NextcloudTalkApplication.getSharedApplication().getCacheDir() + "/" +
-                userId), cacheSize);
+        return new Cache(NextcloudTalkApplication.getSharedApplication().getCacheDir(), cacheSize);
     }
 
     @Singleton
@@ -182,6 +175,7 @@ public class RestModule {
         return dispatcher;
     }
 
+    @Singleton
     @Provides
     OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
                                    MagicTrustManager magicTrustManager,

@@ -32,7 +32,6 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -66,6 +65,7 @@ public class CapabilitiesWorker extends Worker {
     @Inject
     OkHttpClient okHttpClient;
 
+    @Inject
     NcApi ncApi;
 
     private void updateUser(CapabilitiesOverall capabilitiesOverall, UserEntity internalUserEntity) {
@@ -123,8 +123,6 @@ public class CapabilitiesWorker extends Worker {
 
         for (Object userEntityObject : userEntityObjectList) {
             UserEntity internalUserEntity = (UserEntity) userEntityObject;
-
-            ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(internalUserEntity.getId(), null);
 
             ncApi.getCapabilities(ApiUtils.getCredentials(internalUserEntity.getUsername(),
                     internalUserEntity.getToken()), ApiUtils.getUrlForCapabilities(internalUserEntity.getBaseUrl()))

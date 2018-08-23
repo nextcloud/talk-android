@@ -36,7 +36,6 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
-import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -82,6 +81,7 @@ public class PushUtils {
     @Inject
     EventBus eventBus;
 
+    @Inject
     NcApi ncApi;
 
     private File keysFile;
@@ -260,7 +260,6 @@ public class PushUtils {
                             queryMap.put("devicePublicKey", publicKey);
                             queryMap.put("proxyServer", proxyServer);
 
-                            ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(userEntity.getId(), null);
                             credentials = ApiUtils.getCredentials(userEntity.getUserId(), userEntity.getToken());
 
                             String finalCredentials = credentials;

@@ -83,7 +83,6 @@ import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
-import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.otaliastudios.autocomplete.Autocomplete;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
@@ -124,6 +123,7 @@ import retrofit2.Response;
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
         MessagesListAdapter.Formatter<Date>, MessagesListAdapter.OnMessageLongClickListener, MessageHolders.ContentChecker {
     private static final String TAG = "ChatController";
+    @Inject
     NcApi ncApi;
     @Inject
     UserUtils userUtils;
@@ -295,8 +295,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         sendHiTextView.setText(String.format(getResources().getString(R.string.nc_chat_empty), getResources()
                 .getString(R.string.nc_hello)));
-
-        ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(conversationUser.getId(), baseUrl);
 
         if (adapter == null) {
 

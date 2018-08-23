@@ -76,7 +76,6 @@ import com.nextcloud.talk.utils.MagicFlipView;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
-import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
 
 import org.greenrobot.eventbus.EventBus;
@@ -103,7 +102,8 @@ public class CallNotificationController extends BaseController {
 
     private static final String TAG = "CallNotificationController";
 
-    private NcApi ncApi;
+    @Inject
+    NcApi ncApi;
 
     @Inject
     AppPreferences appPreferences;
@@ -297,7 +297,6 @@ public class CallNotificationController extends BaseController {
 
         if (handler == null) {
             handler = new Handler();
-            ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(userBeingCalled.getId(), null);
         }
 
         if (currentConversation == null) {
