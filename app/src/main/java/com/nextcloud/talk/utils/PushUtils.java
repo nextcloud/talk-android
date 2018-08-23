@@ -288,7 +288,7 @@ public class PushUtils {
                                             ncApi.registerDeviceForNotificationsWithProxy(finalCredentials,
                                                     ApiUtils.getUrlPushProxy(), proxyMap)
                                                     .subscribeOn(Schedulers.newThread())
-                                                    .blockingSubscribe(new Observer<Void>() {
+                                                    .subscribe(new Observer<Void>() {
                                                         @Override
                                                         public void onSubscribe(Disposable d) {
 
@@ -316,7 +316,7 @@ public class PushUtils {
                                                                         userEntity.getDisplayName(),
                                                                         LoganSquare.serialize(pushConfigurationState), null,
                                                                         null, userEntity.getId(), null, null)
-                                                                        .blockingSubscribe(new Observer<UserEntity>() {
+                                                                        .subscribe(new Observer<UserEntity>() {
                                                                             @Override
                                                                             public void onSubscribe(Disposable d) {
 
