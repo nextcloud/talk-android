@@ -37,6 +37,7 @@ import com.nextcloud.talk.utils.ssl.MagicKeyManager;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.InetSocketAddress;
@@ -46,8 +47,10 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Singleton;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509KeyManager;
 
@@ -79,6 +82,7 @@ public class RestModule {
         return retrofit.create(NcApi.class);
     }
 
+    @Singleton
     @Provides
     Proxy provideProxy(AppPreferences appPreferences) {
         if (!TextUtils.isEmpty(appPreferences.getProxyType()) && !"No proxy".equals(appPreferences.getProxyType())
@@ -109,11 +113,13 @@ public class RestModule {
         return retrofitBuilder.build();
     }
 
+    @Singleton
     @Provides
     MagicTrustManager provideMagicTrustManager() {
         return new MagicTrustManager();
     }
 
+    @Singleton
     @Provides
     MagicKeyManager provideKeyManager(AppPreferences appPreferences, UserUtils userUtils) {
         KeyStore keyStore = null;
@@ -139,6 +145,7 @@ public class RestModule {
         return null;
     }
 
+    @Singleton
     @Provides
     SSLSocketFactoryCompat provideSslSocketFactoryCompat(MagicKeyManager keyManager, MagicTrustManager
             magicTrustManager) {
@@ -151,11 +158,22 @@ public class RestModule {
     }
 
     @Provides
-    Cache provideCache() {
+    Cache provideCache(UserUtils userUtils) {
         int cacheSize = 128 * 1024 * 1024; // 128 MB
-        return new Cache(NextcloudTalkApplication.getSharedApplication().getCacheDir(), cacheSize);
+        String userId = "";
+
+        if (userUtils.getCurrentUser() != null) {
+            userId = Long.toString(userUtils.getCurrentUser().getId());
+        } else {
+            Random r = new Random( System.currentTimeMillis() );
+            userId = "nc-temp-" + (10000 + r.nextInt(20000));
+        }
+
+        return new Cache(new File(NextcloudTalkApplication.getSharedApplication().getCacheDir() + "/" +
+                userId), cacheSize);
     }
 
+    @Singleton
     @Provides
     Dispatcher provideDispatcher() {
         Dispatcher dispatcher = new Dispatcher();
@@ -265,7 +283,7 @@ public class RestModule {
         private volatile Proxy proxy;
         private AppPreferences appPreferences;
 
-        public GetProxyRunnable(AppPreferences appPreferences) {
+        GetProxyRunnable(AppPreferences appPreferences) {
             this.appPreferences = appPreferences;
         }
 
@@ -282,7 +300,7 @@ public class RestModule {
             }
         }
 
-        public Proxy getProxyValue() {
+        Proxy getProxyValue() {
             return proxy;
         }
     }
