@@ -814,7 +814,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     chatMessage.setBaseUrl(conversationUser.getBaseUrl());
                     chatMessageList.get(i).setActiveUserId(conversationUser.getUserId());
-                    if (conversationUser.getUserId().equals("?") && !TextUtils.isEmpty(myFirstMessage.toString())) {
+                    if (conversationUser.getUserId().equals("?") && myFirstMessage != null &&
+                            !TextUtils.isEmpty(myFirstMessage.toString())) {
                         if (chatMessage.getActorType().equals("guests") &&
                                 chatMessage.getActorDisplayName().equals(conversationUser.getDisplayName())) {
                             conversationUser.setUserId(chatMessage.getActorId());
