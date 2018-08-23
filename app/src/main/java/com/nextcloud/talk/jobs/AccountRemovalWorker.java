@@ -37,7 +37,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -66,6 +65,7 @@ public class AccountRemovalWorker extends Worker {
     @Inject
     OkHttpClient okHttpClient;
 
+    @Inject
     NcApi ncApi;
 
     @NonNull
@@ -83,7 +83,6 @@ public class AccountRemovalWorker extends Worker {
                             PushConfigurationState.class);
                     PushConfigurationState finalPushConfigurationState = pushConfigurationState;
 
-                    ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(userEntity.getId(), null);
                     credentials = ApiUtils.getCredentials(userEntity.getUserId(), userEntity.getToken());
 
                     String finalCredentials = credentials;
@@ -107,7 +106,7 @@ public class AccountRemovalWorker extends Worker {
 
                                         ncApi.unregisterDeviceForNotificationsWithProxy
                                                 (finalCredentials, ApiUtils.getUrlPushProxy(), queryMap)
-                                                .blockingSubscribe(new Observer<Void>() {
+                                                .subscribe(new Observer<Void>() {
                                                     @Override
                                                     public void onSubscribe(Disposable d) {
 
@@ -115,8 +114,6 @@ public class AccountRemovalWorker extends Worker {
 
                                                     @Override
                                                     public void onNext(Void aVoid) {
-
-                                                        ApplicationWideApiHolder.getInstance().removeNcApiInstanceForAccountId(userEntity.getId());
 
                                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                                             String groupName = String.format(getApplicationContext().getResources()

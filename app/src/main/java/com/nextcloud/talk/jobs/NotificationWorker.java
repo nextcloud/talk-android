@@ -60,7 +60,6 @@ import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
-import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideStateHolder;
 
@@ -94,6 +93,7 @@ public class NotificationWorker extends Worker {
     @Inject
     AppPreferences appPreferences;
 
+    @Inject
     NcApi ncApi;
 
     private DecryptedPushMessage decryptedPushMessage;
@@ -392,7 +392,6 @@ public class NotificationWorker extends Worker {
                     decryptedPushMessage = LoganSquare.parse(new String(decryptedSubject),
                             DecryptedPushMessage.class);
 
-                    ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(signatureVerification.getUserEntity().getId(), null);
                     credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUserId(),
                             signatureVerification.getUserEntity().getToken());
 

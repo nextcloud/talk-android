@@ -67,7 +67,6 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.greenrobot.eventbus.EventBus;
@@ -107,6 +106,7 @@ public class ConversationsListController extends BaseController implements Searc
     @Inject
     EventBus eventBus;
 
+    @Inject
     NcApi ncApi;
 
     @BindView(R.id.recycler_view)
@@ -155,7 +155,6 @@ public class ConversationsListController extends BaseController implements Searc
         currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
-            ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(currentUser.getId(), null);
             credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
         }
 

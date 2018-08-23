@@ -59,7 +59,6 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule;
-import com.nextcloud.talk.utils.singletons.ApplicationWideApiHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.yarolegovich.mp.MaterialChoicePreference;
 import com.yarolegovich.mp.MaterialEditTextPreference;
@@ -161,7 +160,8 @@ public class SettingsController extends BaseController {
     @Inject
     AppPreferences appPreferences;
 
-    private NcApi ncApi;
+    @Inject
+    NcApi ncApi;
 
     @Inject
     UserUtils userUtils;
@@ -183,7 +183,6 @@ public class SettingsController extends BaseController {
     private void getCurrentUser() {
         currentUser = userUtils.getCurrentUser();
         credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
-        ncApi = ApplicationWideApiHolder.getInstance().getNcApiInstanceForAccountId(currentUser.getId(), null);
     }
 
     @Override
