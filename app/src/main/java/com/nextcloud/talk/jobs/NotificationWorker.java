@@ -293,6 +293,9 @@ public class NotificationWorker extends Worker {
             }
 
             notificationBuilder.setGroup(Long.toString(crc32.getValue()));
+        } else {
+            // red color for the lights
+            notificationBuilder.setLights(0xFFFF0000, 200, 200);
         }
 
         notificationBuilder.setContentIntent(pendingIntent);
