@@ -43,6 +43,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -112,8 +114,14 @@ public class ConversationsListController extends BaseController implements Searc
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
-    @BindView(R.id.swipe_refresh_layout)
+    @BindView(R.id.swipeRefreshLayoutView)
     SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindView(R.id.progressBar)
+    ProgressBar progressBarView;
+
+    @BindView(R.id.emptyLayout)
+    RelativeLayout emptyLayoutView;
 
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
@@ -133,6 +141,8 @@ public class ConversationsListController extends BaseController implements Searc
 
     private String credentials;
 
+    private boolean adapterWasNull = true;
+
     public ConversationsListController() {
         super();
         setHasOptionsMenu(true);
@@ -140,7 +150,7 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        return inflater.inflate(R.layout.controller_generic_rv, container, false);
+        return inflater.inflate(R.layout.controller_conversations_rv, container, false);
     }
 
     @Override
@@ -152,9 +162,10 @@ public class ConversationsListController extends BaseController implements Searc
             getActionBar().show();
         }
 
-
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
+        } else {
+            progressBarView.setVisibility(View.GONE);
         }
 
         adapter.addListener(this);
@@ -279,37 +290,58 @@ public class ConversationsListController extends BaseController implements Searc
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(roomsOverall -> {
 
-                    if (roomsOverall != null) {
-                        for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
-                            if (shouldUseLastMessageLayout) {
-                                callItems.add(new ConversationItem(roomsOverall.getOcs().getData().get(i),
-                                        currentUser));
-                            } else {
-                                callItems.add(new CallItem(roomsOverall.getOcs().getData().get(i), currentUser));
-                            }
+                    if (adapterWasNull) {
+                        adapterWasNull = false;
+                        progressBarView.setVisibility(View.GONE);
+                    }
+
+                    if (roomsOverall.getOcs().getData().size() > 0) {
+                        if (emptyLayoutView.getVisibility() != View.GONE) {
+                            emptyLayoutView.setVisibility(View.GONE);
                         }
 
+                        if (swipeRefreshLayout.getVisibility() != View.VISIBLE) {
+                            swipeRefreshLayout.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        if (emptyLayoutView.getVisibility() != View.VISIBLE) {
+                            emptyLayoutView.setVisibility(View.VISIBLE);
+                        }
 
-                        if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
-                            Collections.sort(callItems, (o1, o2) -> {
-                                Conversation conversation1 = ((ConversationItem) o1).getModel();
-                                Conversation conversation2 = ((ConversationItem) o2).getModel();
-                                return new CompareToBuilder()
-                                        .append(conversation2.isFavorite(), conversation1.isFavorite())
-                                        .append(conversation2.getLastActivity(), conversation1.getLastActivity())
-                                        .toComparison();
-                            });
+                        if (swipeRefreshLayout.getVisibility() != View.GONE) {
+                            swipeRefreshLayout.setVisibility(View.GONE);
+                        }
+                    }
+
+                    for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
+                        if (shouldUseLastMessageLayout) {
+                            callItems.add(new ConversationItem(roomsOverall.getOcs().getData().get(i),
+                                    currentUser));
                         } else {
-                            Collections.sort(callItems, (callItem, t1) ->
-                                    Long.compare(((CallItem) t1).getModel().getLastPing(),
-                                            ((CallItem) callItem).getModel().getLastPing()));
+                            callItems.add(new CallItem(roomsOverall.getOcs().getData().get(i), currentUser));
                         }
+                    }
 
-                        adapter.updateDataSet(callItems, true);
 
-                        if (searchItem != null) {
-                            searchItem.setVisible(callItems.size() > 0);
-                        }
+                    if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
+                        Collections.sort(callItems, (o1, o2) -> {
+                            Conversation conversation1 = ((ConversationItem) o1).getModel();
+                            Conversation conversation2 = ((ConversationItem) o2).getModel();
+                            return new CompareToBuilder()
+                                    .append(conversation2.isFavorite(), conversation1.isFavorite())
+                                    .append(conversation2.getLastActivity(), conversation1.getLastActivity())
+                                    .toComparison();
+                        });
+                    } else {
+                        Collections.sort(callItems, (callItem, t1) ->
+                                Long.compare(((CallItem) t1).getModel().getLastPing(),
+                                        ((CallItem) callItem).getModel().getLastPing()));
+                    }
+
+                    adapter.updateDataSet(callItems, true);
+
+                    if (searchItem != null) {
+                        searchItem.setVisible(callItems.size() > 0);
                     }
 
                     if (swipeRefreshLayout != null) {
@@ -376,6 +408,16 @@ public class ConversationsListController extends BaseController implements Searc
 
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+
+        emptyLayoutView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getParentController() != null && getParentController().getView() != null) {
+                    ((BottomNavigationView) getParentController().getView().findViewById(R.id.navigation))
+                            .setSelectedItemId(R.id.navigation_contacts);
+                }
+            }
+        });
 
         fastScroller.addOnScrollStateChangeListener(this);
         adapter.setFastScroller(fastScroller);
