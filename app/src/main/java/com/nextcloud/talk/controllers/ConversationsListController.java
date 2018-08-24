@@ -152,20 +152,9 @@ public class ConversationsListController extends BaseController implements Searc
             getActionBar().show();
         }
 
-        currentUser = userUtils.getCurrentUser();
-
-        if (currentUser != null) {
-            credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
-        }
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
-
-            if (currentUser != null) {
-                shouldUseLastMessageLayout = currentUser.hasSpreedCapabilityWithName("last-room-activity");
-
-                fetchData(false);
-            }
         }
 
         adapter.addListener(this);
@@ -178,6 +167,18 @@ public class ConversationsListController extends BaseController implements Searc
         eventBus.register(this);
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+
+        currentUser = userUtils.getCurrentUser();
+
+        if (currentUser != null) {
+            credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
+        }
+
+        if (currentUser != null) {
+            shouldUseLastMessageLayout = currentUser.hasSpreedCapabilityWithName("last-room-activity");
+
+            fetchData(false);
         }
     }
 
