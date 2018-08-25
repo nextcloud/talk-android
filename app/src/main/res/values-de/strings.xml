@@ -165,7 +165,7 @@
     <string name="nc_description_more_menu_group">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
     <string name="nc_description_send_message_button">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
 
-    <!-- Chat empty state -->
+    <!-- Empty states -->
     <string name="nc_chat_empty">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
     <string name="nc_hello">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
 

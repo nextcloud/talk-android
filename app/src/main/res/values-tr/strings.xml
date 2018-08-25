@@ -193,7 +193,7 @@ Nextcloud web sitesi https://nextcloud.com</string>
     <string name="nc_description_more_menu_group">%1$s herkese açık görüşme menüsü</string>
     <string name="nc_description_send_message_button">İleti gönder</string>
 
-    <!-- Chat empty state -->
+    <!-- Empty states -->
     <string name="nc_chat_empty">%1$s demek için dokunun!</string>
     <string name="nc_hello">Merhaba</string>
 

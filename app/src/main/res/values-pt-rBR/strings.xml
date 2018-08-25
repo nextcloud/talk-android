@@ -191,7 +191,7 @@ Encontre o Nextcloud em https://nextcloud.com</string>
     <string name="nc_description_more_menu_group">Menu para conversa pública %1$s</string>
     <string name="nc_description_send_message_button">Enviar mensagem</string>
 
-    <!-- Chat empty state -->
+    <!-- Empty states -->
     <string name="nc_chat_empty">Toque para ser o primeiro a dizer %1$s!</string>
     <string name="nc_hello">Olá</string>
 

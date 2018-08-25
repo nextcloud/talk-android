@@ -192,7 +192,7 @@ Nextcloud Talk апликација захтева да имате Некстк�
     <string name="nc_description_more_menu_group">Мени јавног разговора %1$s</string>
     <string name="nc_description_send_message_button">Пошаљи поруку</string>
 
-    <!-- Chat empty state -->
+    <!-- Empty states -->
     <string name="nc_chat_empty">Тапните да будете први који ће рећи %1$s!</string>
     <string name="nc_hello">Здраво</string>
 

@@ -189,7 +189,7 @@ Nextcloud Talk поддерживает:
     <string name="nc_description_more_menu_group">Меню для общей беседы %1$s</string>
     <string name="nc_description_send_message_button">Отправить сообщение</string>
 
-    <!-- Chat empty state -->
+    <!-- Empty states -->
     <string name="nc_chat_empty">Нажмите чтобы первым сказать «%1$s»!</string>
     <string name="nc_hello">Привет</string>
 

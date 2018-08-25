@@ -191,7 +191,7 @@ Nextcloud nájdete na https://nextcloud.com</string>
     <string name="nc_description_more_menu_group">Menu pre verejný rozhovor %1$s</string>
     <string name="nc_description_send_message_button">Odoslať správu</string>
 
-    <!-- Chat empty state -->
+    <!-- Empty states -->
     <string name="nc_chat_empty">Ťuknite a budťe prvý kto povie %1$s!</string>
     <string name="nc_hello">Ahoj</string>
 
