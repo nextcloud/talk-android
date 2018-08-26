@@ -167,6 +167,7 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
+    <string name="nc_conversations_empty">Du hast bislang keine Unterhaltung geführt\n Klicke auf Start um eine Unterhaltung zu beginnen.</string>
     <string name="nc_hello">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
 
 </resources>

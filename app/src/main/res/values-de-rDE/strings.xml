@@ -193,6 +193,7 @@ Finden Sie Nextcloud auf https://nextcloud.com</string>
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Klicken um der Erste zu sein, der %1$s sagt!</string>
+    <string name="nc_conversations_empty">Sie haben bislang keine Unterhaltung geführt\n Kliacken Sie auf Start um eine Unterhaltung zu beginnen.</string>
     <string name="nc_hello">Hallo</string>
 
 </resources>
