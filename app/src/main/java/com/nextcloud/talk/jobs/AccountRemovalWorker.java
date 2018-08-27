@@ -39,6 +39,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import java.io.IOException;
+import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.zip.CRC32;
 
@@ -49,6 +50,7 @@ import autodagger.AutoInjector;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
@@ -65,7 +67,6 @@ public class AccountRemovalWorker extends Worker {
     @Inject
     OkHttpClient okHttpClient;
 
-    @Inject
     NcApi ncApi;
 
     @NonNull
@@ -84,6 +85,9 @@ public class AccountRemovalWorker extends Worker {
                     PushConfigurationState finalPushConfigurationState = pushConfigurationState;
 
                     credentials = ApiUtils.getCredentials(userEntity.getUserId(), userEntity.getToken());
+
+                    ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
+                            JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
                     String finalCredentials = credentials;
                     ncApi.unregisterDeviceForNotificationsWithNextcloud(credentials, ApiUtils.getUrlNextcloudPush(userEntity

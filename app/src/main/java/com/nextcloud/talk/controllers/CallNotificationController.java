@@ -97,6 +97,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Cache;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallNotificationController extends BaseController {
@@ -108,6 +109,9 @@ public class CallNotificationController extends BaseController {
 
     @Inject
     AppPreferences appPreferences;
+
+    @Inject
+    Cache cache;
 
     @Inject
     EventBus eventBus;
@@ -298,6 +302,12 @@ public class CallNotificationController extends BaseController {
 
         if (handler == null) {
             handler = new Handler();
+
+            try {
+                cache.evictAll();
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to evict cache");
+            }
         }
 
         if (currentConversation == null) {

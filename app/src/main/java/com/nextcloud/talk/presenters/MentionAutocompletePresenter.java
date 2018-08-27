@@ -53,6 +53,7 @@ import io.reactivex.schedulers.Schedulers;
 public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention> implements FlexibleAdapter.OnItemClickListener {
     @Inject
     NcApi ncApi;
+
     private UserEntity currentUser;
 
     @Inject

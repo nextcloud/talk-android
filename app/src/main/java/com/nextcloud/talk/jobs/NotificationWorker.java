@@ -58,7 +58,6 @@ import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.singletons.ApplicationWideStateHolder;
@@ -66,6 +65,7 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideStateHolder;
 import org.parceler.Parcels;
 
 import java.io.IOException;
+import java.net.CookieManager;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -82,18 +82,23 @@ import androidx.work.Worker;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class NotificationWorker extends Worker {
     public static final String TAG = "NotificationWorker";
 
     @Inject
-    UserUtils userUtils;
-
-    @Inject
     AppPreferences appPreferences;
 
     @Inject
+    Retrofit retrofit;
+
+    @Inject
+    OkHttpClient okHttpClient;
+
     NcApi ncApi;
 
     private DecryptedPushMessage decryptedPushMessage;
@@ -397,6 +402,9 @@ public class NotificationWorker extends Worker {
 
                     credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUserId(),
                             signatureVerification.getUserEntity().getToken());
+
+                    ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
+                            JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
                     boolean hasChatSupport = signatureVerification.getUserEntity().
                             hasSpreedCapabilityWithName("chat-v2");

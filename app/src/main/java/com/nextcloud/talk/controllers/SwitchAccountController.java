@@ -48,6 +48,7 @@ import com.nextcloud.talk.utils.AccountUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +70,9 @@ public class SwitchAccountController extends BaseController {
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+
+    @Inject
+    CookieManager cookieManager;
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -105,6 +109,8 @@ public class SwitchAccountController extends BaseController {
 
                             @Override
                             public void onNext(UserEntity userEntity) {
+                                cookieManager.getCookieStore().removeAll();
+
                                 userUtils.disableAllUsersWithoutId(userEntity.getId());
                                 if (getActivity() != null) {
                                     getActivity().runOnUiThread(() -> getRouter().popCurrentController());

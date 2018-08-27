@@ -36,6 +36,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,7 @@ import androidx.work.Worker;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
@@ -65,7 +67,6 @@ public class CapabilitiesWorker extends Worker {
     @Inject
     OkHttpClient okHttpClient;
 
-    @Inject
     NcApi ncApi;
 
     private void updateUser(CapabilitiesOverall capabilitiesOverall, UserEntity internalUserEntity) {
@@ -123,6 +124,9 @@ public class CapabilitiesWorker extends Worker {
 
         for (Object userEntityObject : userEntityObjectList) {
             UserEntity internalUserEntity = (UserEntity) userEntityObject;
+
+            ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
+                    JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
             ncApi.getCapabilities(ApiUtils.getCredentials(internalUserEntity.getUsername(),
                     internalUserEntity.getToken()), ApiUtils.getUrlForCapabilities(internalUserEntity.getBaseUrl()))
