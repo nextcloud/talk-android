@@ -74,6 +74,8 @@ public class Conversation {
     public boolean unreadMention;
     @JsonField(name =  "lastMessage")
     public ChatMessage lastMessage;
+    @JsonField(name = "objectType")
+    String objectType;
 
     public boolean isPublic() {
         return (RoomType.ROOM_PUBLIC_CALL.equals(type));
