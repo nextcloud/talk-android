@@ -20,8 +20,11 @@
 
 package com.nextcloud.talk.adapters.messages;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -54,25 +57,32 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
         Spannable messageString = new SpannableString(message.getText());
 
+        Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
         if (message.getMessageParameters() != null && message.getMessageParameters().size() > 0) {
             for (String key : message.getMessageParameters().keySet()) {
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
+                int color;
                 if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest")) {
-                    int color;
 
                     if (individualHashMap.get("id").equals(message.getActiveUserId())) {
-                        color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
-                                .nc_incoming_text_mention_you);
+                        color = context.getResources().getColor(R.color.nc_incoming_text_mention_you);
                     } else {
-                        color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
-                                .nc_incoming_text_mention_others);
+                        color = context.getResources().getColor(R.color.nc_incoming_text_mention_others);
                     }
 
                     messageString = DisplayUtils.searchAndColor(message.getText(),
                             messageString, "@" + individualHashMap.get("name"), color);
+                } else if (individualHashMap.get("type").equals("file")) {
+                    color = context.getResources().getColor(R.color
+                            .colorPrimary);
+                    messageString = DisplayUtils.searchAndColor(message.getText(), messageString, individualHashMap
+                            .get("name"), color);
+                    itemView.setOnClickListener(v -> {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));
+                        context.startActivity(browserIntent);
+                    });
                 }
             }
-
         }
 
         text.setText(messageString);

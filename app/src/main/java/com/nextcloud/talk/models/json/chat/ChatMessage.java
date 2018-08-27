@@ -57,7 +57,7 @@ public class ChatMessage implements IMessage, MessageContentType {
         USER_REMOVED,
         MODERATOR_PROMOTED,
         MODERATOR_DEMOTED,
-
+        FILE_SHARED,
     }
 
     String baseUrl;

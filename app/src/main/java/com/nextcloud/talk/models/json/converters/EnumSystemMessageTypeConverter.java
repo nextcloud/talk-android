@@ -74,6 +74,8 @@ public class EnumSystemMessageTypeConverter extends StringBasedTypeConverter<Cha
                 return MODERATOR_PROMOTED;
             case "moderator_demoted":
                 return MODERATOR_DEMOTED;
+            case "file_shared":
+                return FILE_SHARED;
             default:
                 return DUMMY;
         }
@@ -115,6 +117,8 @@ public class EnumSystemMessageTypeConverter extends StringBasedTypeConverter<Cha
                 return "moderator_promoted";
             case MODERATOR_DEMOTED:
                 return "moderator_demoted";
+            case FILE_SHARED:
+                return "file_shared";
             default:
                 return "";
         }
