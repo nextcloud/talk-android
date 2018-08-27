@@ -1,173 +1,199 @@
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_bottom_navigation_title_contacts">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_bottom_navigation_title_settings">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_bottom_navigation_title_conversations">Unterhaltungen</string>
+    <string name="nc_bottom_navigation_title_contacts">Kontakte</string>
+    <string name="nc_bottom_navigation_title_settings">Einstellungen</string>
 
     <!-- Server selection -->
-    <string name="nc_server_url">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_server_not_installed">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_server_db_upgrade_needed">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_server_maintenance">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_server_version">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s%2$s</string>
-    <string name="nc_server_import_account_plain">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_server_import_accounts_plain">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_server_import_account">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_server_import_accounts">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_server_failed_to_import_account">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_Server_account_imported">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_get_from_provider">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_server_url">Serveradresse</string>
+    <string name="nc_server_not_installed">Bitte beenden Sie Ihre %1$s Installation</string>
+    <string name="nc_server_db_upgrade_needed">Bitte aktualisieren Sie Ihre %1$s Datenbank</string>
+    <string name="nc_server_maintenance">Bitte bringen Sie %1$s aus der Wartung</string>
+    <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
+    <string name="nc_server_import_account_plain">Konto importieren</string>
+    <string name="nc_server_import_accounts_plain">Konten importieren</string>
+    <string name="nc_server_import_account">Importieren Sie ein Konto aus der App %1$s</string>
+    <string name="nc_server_import_accounts">Importieren Sie Konten aus der App %1$s</string>
+    <string name="nc_server_failed_to_import_account">Das Importieren des ausgewählten Kontos ist fehlgeschlagen</string>
+    <string name="nc_Server_account_imported">Das ausgewählte Konto ist nun importiert und verfügbar</string>
+    <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier um Server-Anbieter zu finden</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_push_disabled">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_capabilities_failed">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_display_name_not_fetched">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_nextcloud_talk_app_installed">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_display_name_stored">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_display_name_not_stored">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_display_name_fetched">Anzeigename abgerufen</string>
+    <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
+    <string name="nc_capabilities_failed">Fehler beim Abfragen der Fähigkeiten. Abbruch</string>
+    <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden, Abbruch</string>
+    <string name="nc_nextcloud_talk_app_installed">%1$s App gefunden</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s App nicht auf dem Server installiert, Abbruch</string>
+    <string name="nc_display_name_stored">Anzeigename gespeichert</string>
+    <string name="nc_display_name_not_stored">Der Anzeigename konnte nicht gespeichert werden, Abbruch</string>
 
-    <string name="nc_never">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_search">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_never">Nie beigetreten</string>
+    <string name="nc_search">Suche</string>
 
-    <string name="nc_certificate_dialog_title">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_certificate_dialog_text">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s%2$s%3$s%4$s</string>
-    <string name="nc_yes">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_no">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_details">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_certificate_error">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
+    <string name="nc_certificate_dialog_text">Vertrauen Sie dem bisher unbekannten SSL Zertifikat, ausgestellt von %1$s für %2$s, gültig von %3$s bis %4$s?</string>
+    <string name="nc_yes">Ja</string>
+    <string name="nc_no">Nein</string>
+    <string name="nc_details">Details</string>
+    <string name="nc_certificate_error">Ihre SSL Konfiguration hat die Verbindung verhindert</string>
 
     <!-- Settings -->
-    <string name="nc_settings_proxy_title">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_proxy_type_title">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_proxy_host_title">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_proxy_port_title">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_use_credentials_title">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_switch_account">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_reauthorize">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_client_cert_setup">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_client_cert_change">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_remove_account">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_add_account">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_wrong_account">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_no_talk_installed">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_account_updated">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_account_scheduled_for_deletion">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_notification_sounds">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_call_ringtone">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_other_notifications_ringtone">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_no_ringtone">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_vibrate">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_settings_vibrate_desc">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_no_proxy">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_username">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_password">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_conversation_link">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_new_password">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_wrong_password">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_about">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_privacy">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_get_source_code">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_license_title">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_license_summary">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_title">Proxy-Typ</string>
+    <string name="nc_settings_proxy_host_title">Proxy-Host</string>
+    <string name="nc_settings_proxy_port_title">Proxy-Port</string>
+    <string name="nc_settings_use_credentials_title">Anmeldeinformationen verwenden</string>
+    <string name="nc_settings_switch_account">Zwischen Konten wechseln</string>
+    <string name="nc_settings_reauthorize">Erneut autorisieren</string>
+    <string name="nc_client_cert_setup">Client-Zertifikat einrichten</string>
+    <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
+    <string name="nc_settings_remove_account">Konto entfernen</string>
+    <string name="nc_settings_add_account">Konto hinzufügen</string>
+    <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
+    <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem Sie versucht haben sich zu autorisieren</string>
+    <string name="nc_settings_account_updated">Ihr bereits existierendes Konto wurde aktualisiert, anstelle ein Neues hinzuzufügen</string>
+    <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann nicht verändert werden</string>
+    <string name="nc_settings_notification_sounds">Benachrichtigungstöne</string>
+    <string name="nc_settings_call_ringtone">Eins-Zu-Eins-Anrufe</string>
+    <string name="nc_settings_other_notifications_ringtone">Andere</string>
+    <string name="nc_settings_no_ringtone">Kein Ton</string>
+    <string name="nc_settings_vibrate">Vibrieren</string>
+    <string name="nc_settings_vibrate_desc">Wenn aktiviert, wird das Telefon vibrieren sofern es nicht stillgestellt ist</string>
+    <string name="nc_no_proxy">Kein Proxy</string>
+    <string name="nc_username">Benutzername</string>
+    <string name="nc_password">Passwort</string>
+    <string name="nc_conversation_link">Unterhaltungslink</string>
+    <string name="nc_new_password">Neues Passwort</string>
+    <string name="nc_wrong_password">Falsches Passwort</string>
+    <string name="nc_about">Über</string>
+    <string name="nc_privacy">Datenschutz</string>
+    <string name="nc_get_source_code">Zum Programmcode</string>
+    <string name="nc_license_title">Lizenz</string>
+    <string name="nc_license_summary">GNU General Public Lizenz, Version 3</string>
 
-    <string name="nc_select_an_account">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_select_an_account">Konto auswählen</string>
 
     <!-- Conversation menu -->
-    <string name="nc_start_conversation">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_configure_room">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_leave">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_rename">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_set_password">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_change_password">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_clear_password">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_share_link">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_share_link_via">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_make_call_public">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_make_call_private">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_delete_call">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_new_conversation">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_join_via_link">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_join_via_web">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_add_to_favorites">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_remove_from_favorites">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_start_conversation">Starte eine Unterhaltung</string>
+    <string name="nc_configure_room">Unterhaltung einrichten</string>
+    <string name="nc_leave">Unterhaltung verlassen</string>
+    <string name="nc_rename">Unterhaltung umbenennen</string>
+    <string name="nc_set_password">Passwort setzen</string>
+    <string name="nc_change_password">Passwort ändern</string>
+    <string name="nc_clear_password">Passwort leeren</string>
+    <string name="nc_share_link">Link teilen</string>
+    <string name="nc_share_link_via">Link teilen via</string>
+    <string name="nc_make_call_public">Unterhaltung öffentlich machen</string>
+    <string name="nc_make_call_private">Unterhaltung privat machen</string>
+    <string name="nc_delete_call">Unterhaltung löschen</string>
+    <string name="nc_new_conversation">Neue Unterhaltung</string>
+    <string name="nc_join_via_link">Über einen Link beitreten</string>
+    <string name="nc_join_via_web">Über das Internet beitreten</string>
+    <string name="nc_add_to_favorites">Zu den Favoriten hinzufügen</string>
+    <string name="nc_remove_from_favorites">Von den Favoriten entfernen</string>
 
     <!-- Contacts -->
-    <string name="nc_select_contacts">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_one_contact_selected">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_more_contacts_selected">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_contacts_clear">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_contacts_done">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_select_contacts">Kontakte auswählen</string>
+    <string name="nc_one_contact_selected">Kontakt ausgewählt</string>
+    <string name="nc_more_contacts_selected">Kontakte ausgewählt</string>
+    <string name="nc_contacts_clear">Alle abwählen</string>
+    <string name="nc_contacts_done">Fertig</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_permissions_audio">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_permissions_video">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_camera_permission_permanently_denied">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_microphone_permission_permanently_denied">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_permissions_settings">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_permissions">Für Video- und Audioanrufe müssen Berechtigungen erteilt werden. Bitte klicken Sie im folgenden Systemdialog auf \\"ZULASSEN\\".</string>
+    <string name="nc_permissions_audio">Für die Nutzung des Mikrophons für Audioanrufe muss eine Berechtigungen erteilt werden. Bitte klicken Sie im folgenden Systemdialog auf \"ZULASSEN\".</string>
+    <string name="nc_permissions_video">Für die Nutzung der Kamera für Videoanrufe muss eine Berechtigungen erteilt werden. Bitte klicken Sie im folgenden Systemdialog auf \"ZULASSEN\".</string>
+    <string name="nc_camera_permission_permanently_denied">Um Videoanrufe zu ermöglichen, gewähren Sie die Berechtigung für die \"Kamera\" in den Systemeinstellungen</string>
+    <string name="nc_microphone_permission_permanently_denied">Um Audioanrufe zu ermöglichen, gewähren Sie die Berechtigung für das \"Mikrofon\" in den Systemeinstellungen</string>
+    <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
     <!-- Call -->
-    <string name="nc_connecting_call">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_incoming_call">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_nick_guest">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_public_call">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_public_call_explanation">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_connecting_call">Verbinde…</string>
+    <string name="nc_incoming_call">Eingehender Anruf von</string>
+    <string name="nc_nick_guest">Gast</string>
+    <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
+    <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über 
+ einen speziellen Link eingeladen werden.</string>
 
     <!-- Notification channels -->
-    <string name="nc_notification_channel">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s%2$s</string>
-    <string name="nc_notification_channel_calls">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_notification_channel_messages">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_notification_channel_calls_description">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_notification_channel_messages_description">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_notification_channel">%1$s auf %2$s Benachrichtigungskanal</string>
+    <string name="nc_notification_channel_calls">Benachrichtigungskanal für Anrufe</string>
+    <string name="nc_notification_channel_messages">Benachrichtigungskanal für Nachrichten</string>
+    <string name="nc_notification_channel_calls_description">Eingehende Anrufe anzeigen</string>
+    <string name="nc_notification_channel_messages_description">Eingehende Nachrichten anzeigen</string>
 
     <!-- Bottom sheet menu -->
-    <string name="nc_failed_to_perform_operation">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_failed_signaling_settings">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_all_ok_operation">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_ok">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_call_name">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_proceed">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_call_name_is_same">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_wrong_link">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_share_text">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s%2$s</string>
-    <string name="nc_share_subject">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_share_text_pass">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
+    <string name="nc_failed_to_perform_operation">Schade, etwas ist schiefgelaufen!</string>
+    <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Unterhaltungen durch Mobiltelefone.
+        Probieren Sie mit einem Internetbrowser der Unterhaltung beizutreten.</string>
+    <string name="nc_all_ok_operation">OK, alles erledigt!</string>
+    <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Name der Unterhaltung</string>
+    <string name="nc_proceed">Fortsetzen</string>
+    <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>
+    <string name="nc_wrong_link">Unterhaltungslink ist ungültig</string>
+    <string name="nc_share_text">Treten Sie der Unterhaltung %1$s/index.php/call/%2$s bei</string>
+    <string name="nc_share_subject">%1$sEinladung </string>
+    <string name="nc_share_text_pass">\nPasswort: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_push_to_talk">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_push_to_talk_desc">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).&amp;</string>
-    <string name="nc_store_short_desc">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_configure_cert_auth">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_change_cert_auth">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_store_full_desc">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_push_to_talk">Funkgerät-Modus</string>
+    <string name="nc_push_to_talk_desc">Bei stummgeschaltetem Mikrofon drücken&amp;halten Sie die Sprechtaste um zu senden (Funkgerät-Modus)</string>
+    <string name="nc_store_short_desc">Nutzen Sie private Videoanrufe und den Chat durch die Verwendung eines eigenen Servers.</string>
+    <string name="nc_configure_cert_auth">Authentifizierungs-Zertifikat auswählen</string>
+    <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
+    <string name="nc_store_full_desc">Verwenden Sie Nextcloud Talk, um Einzel- oder Gruppen-Audio- oder Videoanrufe zu führen, Webkonferenzen zu erstellen oder daran teilzunehmen und Chatnachrichten zu senden. Die gesamte Kommunikation wird vollständig verschlüsselt und von Ihrem eigenen Server vermittelt, um ein höchstmögliches Maß an Privatsphäre zu gewährleisten.
+
+Nextcloud Talk ist einfach zu bedienen und wird immer kostenlos sein!
+
+Nextcloud Talk unterstützt:
+* HD (H.265) Audio- / Videoanrufe
+* Gruppen- und Einzelanrufe
+* Webinare&amp; öffentliche Web-Meetings
+* Einzel- und Gruppenchat
+* Einfache Bildschirmfreigabe
+* Mobile Apps für Android und iOS
+* Mobile Anrufe&amp; Chat-Push-Benachrichtigungen (nur bei Installation von Google Play)
+* Integration in Nextcloud-Dateien und Nextcloud Groupware
+* Vollständig on-premise, 100% Open Source
+* Ende-zu-Ende verschlüsselte Anrufe
+* Skalierung für Millionen von Benutzern
+* SIP-Gate: per Telefon einwählen
+
+Die App Nextcloud Talk benötigt einen Nextcloud Talk-Server, um zu funktionieren. Nextcloud ist eine private, selbst gehostete Dateisynchronisations- und Kommunikationsplattform, die Ihnen die Kontrolle über Ihre Daten zurückgibt. Es läuft auf einem Server Ihrer Wahl, sei es zu Hause, bei einem Dienstanbieter oder in Ihrem Unternehmen, und gibt Ihnen Zugriff auf Ihre Dokumente, Kalender, Kontakte, E-Mails und andere Daten. Sie können mit anderen sogar über verschiedene Nextcloud-Server teilen und gemeinsam an Dokumenten arbeiten. Nextcloud ist eine Open-Source-Lösung, die Ihnen die Möglichkeit bietet, sie für Ihre eigenen Zwecke zu erweitern, an deren Entwicklung teilzunehmen oder einfach zu überprüfen, ob sie das tun, was wir versprechen.
+
+Millionen von Benutzern nutzen Nextcloud täglich in Unternehmen und zu Hause auf der ganzen Welt. Geschäftsanwender verlassen sich auf die professionelle Unterstützung der Nextcloud GmbH und stellen sicher, dass sie über eine vollständig unterstützte, unternehmensbereite Plattform für Produktivität und Zusammenarbeit verfügen, die vollständig von ihrer IT-Abteilung gesteuert wird.
+
+Weitere Informationen erhalten Sie unter https://nextcloud.com/talk
+
+Finden Sie Nextcloud auf https://nextcloud.com</string>
 
     <!-- Chat -->
-    <string name="nc_hint_enter_a_message">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_date_header_yesterday">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_date_header_today">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_conversation_menu_voice_call">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_conversation_menu_video_call">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_new_messages">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_no_messages_yet">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_chat_you">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_hint_enter_a_message">Eine Nachricht eingeben…</string>
+    <string name="nc_date_header_yesterday">Gestern</string>
+    <string name="nc_date_header_today">Heute</string>
+    <string name="nc_conversation_menu_voice_call">Sprachanruf</string>
+    <string name="nc_conversation_menu_video_call">Videoanruf</string>
+    <string name="nc_new_messages">Neue Nachrichten</string>
+    <string name="nc_no_messages_yet">Noch keine Nachrichten</string>
+    <string name="nc_chat_you">Sie</string>
 
     <!-- Contacts endless loading -->
-    <string name="nc_no_more_load_retry">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_endless_disabled">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_endless_cancel">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
-    <string name="nc_endless_error">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_no_more_load_retry">Keine weiteren Kontakte zum Laden. Neuanstoßen zum Laden.</string>
+    <string name="nc_endless_disabled">Keine weiteren Kontakte zum Laden (Grenze erreicht).</string>
+    <string name="nc_endless_cancel">Abbruch durch den Benutzer.</string>
+    <string name="nc_endless_error">Es ist ein Fehler beim Laden weiterer Kontakte aufgetreten.</string>
 
     <!-- Content descriptions -->
-    <string name="nc_description_more_menu_one_to_one">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_description_more_menu_public">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_description_more_menu_group">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_description_send_message_button">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_description_more_menu_one_to_one">Menü für die Unterhaltung mit %1$s</string>
+    <string name="nc_description_more_menu_public">Menü für die Gruppenunterhaltung %1$s</string>
+    <string name="nc_description_more_menu_group">Menü für die öffentliche Unterhaltung %1$s</string>
+    <string name="nc_description_send_message_button">Nachricht senden</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).%1$s</string>
-    <string name="nc_conversations_empty">Du hast bislang keine Unterhaltung geführt\n Klicke auf Start um eine Unterhaltung zu beginnen.</string>
-    <string name="nc_hello">Benötigt keine Übersetzung. Für Android wird nur die formelle Übersetzung verwendet (de_DE).</string>
+    <string name="nc_chat_empty">Klicken um der Erste zu sein, der %1$s sagt!</string>
+    <string name="nc_conversations_empty">Sie haben bislang keine Unterhaltung geführt\n Kliacken Sie auf Start um eine Unterhaltung zu beginnen.</string>
+    <string name="nc_hello">Hallo</string>
 
 </resources>

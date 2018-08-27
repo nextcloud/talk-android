@@ -195,6 +195,7 @@ Nextcloud web sitesi https://nextcloud.com</string>
 
     <!-- Empty states -->
     <string name="nc_chat_empty">%1$s demek için dokunun!</string>
+    <string name="nc_conversations_empty">Henüz hiç kimse ile bir görüşme yapmamışsınız!\nBir görüşme başlatmak için dokunun.</string>
     <string name="nc_hello">Merhaba</string>
 
 </resources>
