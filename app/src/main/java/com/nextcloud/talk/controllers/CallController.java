@@ -1172,7 +1172,7 @@ public class CallController extends BaseController {
         }
 
         if ("usersInRoom".equals(messageType)) {
-            processUsersInRoom((List<HashMap<String, String>>) signaling.getMessageWrapper());
+            processUsersInRoom((List<HashMap<String, Object>>) signaling.getMessageWrapper());
         } else if ("message".equals(messageType)) {
             NCSignalingMessage ncSignalingMessage = LoganSquare.parse(signaling.getMessageWrapper().toString(),
                     NCSignalingMessage.class);
@@ -1350,17 +1350,24 @@ public class CallController extends BaseController {
         }
     }
 
-    private void processUsersInRoom(List<HashMap<String, String>> users) {
+    private void processUsersInRoom(List<HashMap<String, Object>> users) {
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSesssions = new HashSet<>();
 
-        for (HashMap<String, String> participant : users) {
+        for (HashMap<String, Object> participant : users) {
             if (!participant.get("sessionId").equals(callSession)) {
                 Object inCallObject = participant.get("inCall");
-                if ((boolean) inCallObject) {
-                    newSessions.add(participant.get("sessionId"));
+                boolean isNewSession;
+                if (inCallObject instanceof Boolean) {
+                    isNewSession = (boolean) inCallObject;
                 } else {
-                    oldSesssions.add(participant.get("sessionId"));
+                    isNewSession = ((long) inCallObject) != 0;
+                }
+
+                if (isNewSession) {
+                    newSessions.add(participant.get("sessionId").toString());
+                } else {
+                    oldSesssions.add(participant.get("sessionId").toString());
                 }
             }
         }
