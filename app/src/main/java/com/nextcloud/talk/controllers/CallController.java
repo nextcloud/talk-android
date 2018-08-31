@@ -1554,16 +1554,15 @@ public class CallController extends BaseController {
 
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("{");
-        stringBuilder.append("\"fn\":\"");
-        stringBuilder.append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper
-                .getSignalingMessage()))).append("\"");
-        stringBuilder.append(",");
-        stringBuilder.append("\"sessionId\":");
-        stringBuilder.append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"");
-        stringBuilder.append(",");
-        stringBuilder.append("\"ev\":\"message\"");
-        stringBuilder.append("}");
+        stringBuilder.append("{")
+                     .append("\"fn\":\"")
+                     .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper.getSignalingMessage()))).append("\"")
+                     .append(",")
+                     .append("\"sessionId\":")
+                     .append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"")
+                     .append(",")
+                     .append("\"ev\":\"message\"")
+                     .append("}");
 
         List<String> strings = new ArrayList<>();
         String stringToSend = stringBuilder.toString();
