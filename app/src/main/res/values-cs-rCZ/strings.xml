@@ -47,10 +47,12 @@
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
     <string name="nc_settings_wrong_account">Reautorizován může být pouze aktuální účet</string>
+    <string name="nc_account_scheduled_for_deletion">Účet je naplánován ke smazání a není možné ho změnit</string>
     <string name="nc_settings_notification_sounds">Zvuky oznamování</string>
     <string name="nc_settings_other_notifications_ringtone">Ostatní</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
     <string name="nc_settings_vibrate">Vibrovat</string>
+    <string name="nc_settings_vibrate_desc">Když je zapnuto, pak pokud není ztišený, bude vibrovat</string>
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Uživatelské jméno</string>
     <string name="nc_password">Heslo</string>
@@ -119,6 +121,9 @@
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
     <string name="nc_conversation_menu_video_call">Videohovor</string>
     <string name="nc_new_messages">Nové zprávy</string>
+    <string name="nc_no_messages_yet">Zatím žádné zprávy</string>
+    <string name="nc_chat_you">Vy</string>
+
     <string name="nc_endless_cancel">Zrušeno uživatelem.</string>
     <string name="nc_endless_error">Při načítání dalších položek došlo k chybě.</string>
 
