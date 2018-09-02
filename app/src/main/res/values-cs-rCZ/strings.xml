@@ -8,6 +8,7 @@
     <string name="nc_server_url">Adresa serveru</string>
     <string name="nc_server_not_installed">Dokončete instalaci %1$s</string>
     <string name="nc_server_db_upgrade_needed">Přejděte na novější verzi databáze %1$s</string>
+    <string name="nc_server_maintenance">Přepněte svůj %1$s zpět z režimu údržby</string>
     <string name="nc_server_version">%1$s funguje pouze s %2$s 13 a novější</string>
     <string name="nc_server_import_account_plain">Importovat účet</string>
     <string name="nc_server_import_accounts_plain">Importovat účty</string>
