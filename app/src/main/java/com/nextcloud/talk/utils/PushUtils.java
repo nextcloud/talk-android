@@ -260,7 +260,7 @@ public class PushUtils {
                             queryMap.put("devicePublicKey", publicKey);
                             queryMap.put("proxyServer", proxyServer);
 
-                            credentials = ApiUtils.getCredentials(userEntity.getUserId(), userEntity.getToken());
+                            credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
 
                             String finalCredentials = credentials;
                             ncApi.registerDeviceForNotificationsWithNextcloud(

@@ -93,7 +93,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         if (!TextUtils.isEmpty(query)) {
 
             adapter.setFilter(query.toString());
-            ncApi.getMentionAutocompleteSuggestions(ApiUtils.getCredentials(currentUser.getUserId(), currentUser
+            ncApi.getMentionAutocompleteSuggestions(ApiUtils.getCredentials(currentUser.getUsername(), currentUser
                             .getToken()), ApiUtils.getUrlForMentionSuggestions(currentUser.getBaseUrl(), roomToken),
                     query.toString(), null)
                     .subscribeOn(Schedulers.newThread())

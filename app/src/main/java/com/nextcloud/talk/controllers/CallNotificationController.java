@@ -156,7 +156,7 @@ public class CallNotificationController extends BaseController {
 
         this.originalBundle = args;
 
-        credentials = ApiUtils.getCredentials(userBeingCalled.getUserId(), userBeingCalled.getToken());
+        credentials = ApiUtils.getCredentials(userBeingCalled.getUsername(), userBeingCalled.getToken());
     }
 
     @Override

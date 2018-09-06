@@ -200,7 +200,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (conversationUser.getUserId().equals("?")) {
             credentials = null;
         } else {
-            credentials = ApiUtils.getCredentials(conversationUser.getUserId(), conversationUser.getToken());
+            credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
         }
 
         if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {

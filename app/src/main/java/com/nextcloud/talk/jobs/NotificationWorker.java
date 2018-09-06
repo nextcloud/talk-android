@@ -402,7 +402,7 @@ public class NotificationWorker extends Worker {
                     decryptedPushMessage = LoganSquare.parse(new String(decryptedSubject),
                             DecryptedPushMessage.class);
 
-                    credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUserId(),
+                    credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUsername(),
                             signatureVerification.getUserEntity().getToken());
 
                     ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new

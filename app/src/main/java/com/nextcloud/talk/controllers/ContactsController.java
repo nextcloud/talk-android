@@ -208,7 +208,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
-            credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
+            credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
         }
 
         if (adapter == null) {

@@ -183,7 +183,7 @@ public class ConversationsListController extends BaseController implements Searc
         currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
-            credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
+            credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
         }
 
         if (currentUser != null) {

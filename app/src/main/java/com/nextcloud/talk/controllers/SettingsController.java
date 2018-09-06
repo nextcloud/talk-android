@@ -182,7 +182,7 @@ public class SettingsController extends BaseController {
 
     private void getCurrentUser() {
         currentUser = userUtils.getCurrentUser();
-        credentials = ApiUtils.getCredentials(currentUser.getUserId(), currentUser.getToken());
+        credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
     }
 
     @Override

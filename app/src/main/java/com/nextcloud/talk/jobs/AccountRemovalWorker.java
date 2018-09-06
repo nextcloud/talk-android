@@ -84,7 +84,7 @@ public class AccountRemovalWorker extends Worker {
                             PushConfigurationState.class);
                     PushConfigurationState finalPushConfigurationState = pushConfigurationState;
 
-                    credentials = ApiUtils.getCredentials(userEntity.getUserId(), userEntity.getToken());
+                    credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
 
                     ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
                             JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
