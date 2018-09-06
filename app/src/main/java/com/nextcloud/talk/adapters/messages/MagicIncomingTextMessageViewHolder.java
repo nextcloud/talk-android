@@ -21,8 +21,11 @@
 package com.nextcloud.talk.adapters.messages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v4.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -145,6 +148,12 @@ public class MagicIncomingTextMessageViewHolder
 
                     messageString = DisplayUtils.searchAndColor(messageText.getText().toString(),
                             messageString, "@" + individualHashMap.get("name"), color);
+                } else if (individualHashMap.get("type").equals("file")) {
+                    itemView.setOnClickListener(v -> {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));
+                        context.startActivity(browserIntent);
+                    });
+
                 }
             }
 
