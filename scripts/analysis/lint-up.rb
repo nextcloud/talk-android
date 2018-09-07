@@ -56,7 +56,7 @@ end
 
 # run Lint
 puts "running Lint..."
-system './gradlew clean assemble lint'
+system './gradlew clean assembleGplay lint'
 
 # confirm that Lint ran w/out error
 result = $?.to_i

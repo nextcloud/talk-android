@@ -11,7 +11,7 @@
 ruby scripts/analysis/lint-up.rb $1 $2 $3
 lintValue=$?
 
-./gradlew assemble app:findbugs
+./gradlew assembleGplay app:findbugs
 
 # exit codes:
 # 0: count was reduced
@@ -22,14 +22,14 @@ echo "Branch: $3"
 
 if [ $3 = "master" ]; then
     echo "New findbugs result for master at: https://www.kaminsky.me/nc-dev/talk-findbugs/master.html"
-    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-findbugs/master.html --upload-file build/reports/findbugs/findbugs.html
+    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-findbugs/master.html --upload-file app/build/reports/findbugs/findbugs.html
     
-    summary=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" build/reports/findbugs/findbugs.html | head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s'/Summary/FindBugs (master)/' | tr "\"" "\'" | tr -d "\r\n")
+    summary=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" app/build/reports/findbugs/findbugs.html | head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s'/Summary/FindBugs (master)/' | tr "\"" "\'" | tr -d "\r\n")
     curl -u $4:$5 -X PUT -d "$summary" https://nextcloud.kaminsky.me/remote.php/webdav/talk-findbugs/findbugs.html
     
     if [ $lintValue -ne 1 ]; then
         echo "New lint result for master at: https://www.kaminsky.me/nc-dev/talk-lint/master.html"
-        curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-droneLogs/master.html --upload-file build/reports/lint/lint.html
+        curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-droneLogs/master.html --upload-file app/build/reports/lint/lint.html
         exit 0
     fi
 else
@@ -37,10 +37,10 @@ else
         6="master-"$(date +%F)
     fi
     echo "New lint results at https://www.kaminsky.me/nc-dev/talk-lint/$6.html"
-    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-droneLogs/$6.html --upload-file build/reports/lint/lint.html
+    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-droneLogs/$6.html --upload-file app/build/reports/lint/lint.html
     
     echo "New findbugs results at https://www.kaminsky.me/nc-dev/talk-findbugs/$6.html"
-    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-findbugs/$6.html --upload-file build/reports/findbugs/findbugs.html
+    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-findbugs/$6.html --upload-file app/build/reports/findbugs/findbugs.html
     
     # delete all old comments
     oldComments=$(curl 2>/dev/null -u $1:$2 -X GET https://api.github.com/repos/nextcloud/talk-android/issues/$7/comments | jq '.[] | (.id |tostring)  + "|" + (.user.login | test("nextcloud-android-bot") | tostring) ' | grep true | tr -d "\"" | cut -f1 -d"|")
