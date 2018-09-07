@@ -8,20 +8,8 @@
 #6: DRONE_BUILD_NUMBER
 #7: PULL_REQUEST_NUMBER
 
-echo "1: " $1
-echo "2: " $2
-echo "3: " $3
-echo "4: " $4
-echo "5: " $5
-echo "6: " $6
-echo "7: " $7
-
-exit 1
-
 ruby scripts/analysis/lint-up.rb $1 $2 $3
 lintValue=$?
-
-
 
 ./gradlew assemble app:findbugs
 
