@@ -1,7 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'findbugs'
 
-if (getGradle().getStartParameter().getTaskRequests().toString().contains("Gplay")){
+def taskRequest = getGradle().getStartParameter().getTaskRequests().toString()
+if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") || taskRequest.contains("lint")) {
     apply from: 'gplay.gradle'
 }
 
@@ -61,6 +63,27 @@ android {
         htmlReport true
         htmlOutput file("$project.buildDir/reports/lint/lint.html")
         disable 'MissingTranslation'
+    }
+
+    task findbugs(type: FindBugs) {
+        ignoreFailures = false
+        effort = "max"
+        reportLevel = "medium"
+        classes = fileTree("$project.buildDir/intermediates/classes/gplay/debug/com/nextcloud")
+        excludeFilter = file("${project.rootDir}/findbugs-filter.xml")
+        source = fileTree('src/main/java')
+        pluginClasspath = project.configurations.findbugsPlugins
+        classpath = files()
+        include '**/*.java'
+        exclude '**/gen/**'
+
+        reports {
+            xml.enabled = false
+            html.enabled = true
+            html {
+                destination = file("$project.buildDir/reports/findbugs/findbugs.html")
+            }
+        }
     }
 }
 
@@ -174,4 +197,7 @@ dependencies {
     androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.4.4'
+    findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.2'
 }
