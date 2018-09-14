@@ -73,13 +73,25 @@ Kies er eentje van een provider.</string>
 
     <string name="nc_select_an_account">Selecteer een account</string>
 
+    <!-- Conversation menu -->
+    <string name="nc_start_conversation">Begin een gesprek</string>
+    <string name="nc_configure_room">Configureren gesprek</string>
+    <string name="nc_leave">Verlaat gesprek</string>
+    <string name="nc_rename">Hernoem gesprek</string>
     <string name="nc_set_password">Instellen wachtwoord</string>
     <string name="nc_change_password">Wachtwoord wijzigen</string>
     <string name="nc_clear_password">Wachtwoord legen</string>
     <string name="nc_share_link">Deel link</string>
     <string name="nc_share_link_via">Deel link via</string>
+    <string name="nc_make_call_public">Maak gesprek openbaar</string>
+    <string name="nc_make_call_private">Maak gesprek besloten</string>
+    <string name="nc_delete_call">Verwijder gesprek</string>
+    <string name="nc_new_conversation">Nieuw gesprek</string>
     <string name="nc_join_via_link">Deelnemen via link</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
+    <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
+    <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecteer contacten</string>
     <string name="nc_one_contact_selected">contact geselecteerd</string>
@@ -98,7 +110,11 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
     <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" permissies in de systeeminstellingen.</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
 
+    <!-- Call -->
+    <string name="nc_connecting_call">Verbinden...</string>
+    <string name="nc_incoming_call">Inkomend gesprek van</string>
     <string name="nc_nick_guest">Gast</string>
+    <string name="nc_public_call">Nieuw openbaar gesprek</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
@@ -126,4 +142,28 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_store_short_desc">Heb vertrouwelijke videogesprekken en chats via je eigen server.</string>
     <string name="nc_configure_cert_auth">Selecteer authenticatiecertificaat</string>
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
-    </resources>
+    <string name="nc_date_header_yesterday">Gisteren</string>
+    <string name="nc_date_header_today">Vandaag</string>
+    <string name="nc_conversation_menu_voice_call">Gesprek</string>
+    <string name="nc_conversation_menu_video_call">Videogesprek</string>
+    <string name="nc_new_messages">Nieuwe berichten</string>
+    <string name="nc_no_messages_yet">Nog geen berichten</string>
+    <string name="nc_chat_you">Je</string>
+
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Niets meer te laden. Verversen om nog eens te proberen</string>
+    <string name="nc_endless_disabled">Niets meer te laden (max bereikt).</string>
+    <string name="nc_endless_cancel">Geannuleerd door de gebruiker.</string>
+    <string name="nc_endless_error">Er is een fout opgetreden bij het laden van meer objecten.</string>
+
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">Menu voor gesprek met %1$s</string>
+    <string name="nc_description_more_menu_public">Menu voor groepsgesprek %1$s</string>
+    <string name="nc_description_more_menu_group">Menu voor openbaar gesprek %1$s</string>
+    <string name="nc_description_send_message_button">Verstuur bericht</string>
+
+    <!-- Empty states -->
+    <string name="nc_chat_empty">Tik om als eerste %1$s te zeggen!</string>
+    <string name="nc_hello">Hallo</string>
+
+</resources>

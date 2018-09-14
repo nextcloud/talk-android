@@ -30,6 +30,7 @@
     <string name="nc_search">Hledat</string>
 
     <string name="nc_certificate_dialog_title">Zkontrolovat certifikát</string>
+    <string name="nc_certificate_dialog_text">Věříte doposud neznámému SSL certifikátu, vydaném %1$s pro %2$s, platnému od %3$s do %4$s?</string>
     <string name="nc_yes">Ano</string>
     <string name="nc_no">Ne</string>
     <string name="nc_details">Detaily</string>
@@ -48,6 +49,7 @@
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
     <string name="nc_settings_wrong_account">Reautorizován může být pouze aktuální účet</string>
+    <string name="nc_settings_account_updated">Váš už existující účet byl aktualizován, namísto přidání nového</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánován ke smazání a není možné ho změnit</string>
     <string name="nc_settings_notification_sounds">Zvuky oznamování</string>
     <string name="nc_settings_other_notifications_ringtone">Ostatní</string>
@@ -62,7 +64,7 @@
     <string name="nc_wrong_password">Chybné heslo</string>
     <string name="nc_about">O aplikaci</string>
     <string name="nc_privacy">Soukromí</string>
-    <string name="nc_get_source_code">Získat zdrojový kód</string>
+    <string name="nc_get_source_code">Získat zdrojové kódy</string>
     <string name="nc_license_title">Licence</string>
     <string name="nc_license_summary">GNU General Public License, verze 3</string>
 
@@ -79,6 +81,7 @@
     <string name="nc_share_link">Sdílet odkaz</string>
     <string name="nc_share_link_via">Sdílet odkaz prostřednictvím</string>
     <string name="nc_make_call_public">Zveřejnit konverzaci</string>
+    <string name="nc_make_call_private">Udělat konverzaci neveřejnou</string>
     <string name="nc_delete_call">Smazat konverzaci</string>
     <string name="nc_new_conversation">Nová konverzace</string>
     <string name="nc_join_via_link">Připojit prostřednictvím odkazu</string>
@@ -93,27 +96,39 @@
     <string name="nc_contacts_clear">Vyčistit</string>
     <string name="nc_contacts_done">Hotovo</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Je třeba udělit oprávnění pro navázání video a/nebo audio volání. V nadcházejícím systémovém dialogu klikněte na „Umožnit“.</string>
+    <string name="nc_microphone_permission_permanently_denied">Pro zapnutí hlasové komunikace udělte v nastavení systému oprávnění „Mikrofon“ .</string>
     <string name="nc_permissions_settings">Otevřít nastavení</string>
 
     <!-- Call -->
-    <string name="nc_connecting_call">Připojování...</string>
+    <string name="nc_connecting_call">Připojování…</string>
     <string name="nc_incoming_call">Příchozí hovor od</string>
     <string name="nc_nick_guest">Host</string>
     <string name="nc_public_call">Nová veřejná konverzace</string>
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s na %2$s kanálu upozornění</string>
+    <string name="nc_notification_channel_calls">Kanál oznamování volání</string>
+    <string name="nc_notification_channel_messages">Kanál oznamování zpráv</string>
     <string name="nc_notification_channel_calls_description">Zobrazit příchozí hovory</string>
     <string name="nc_notification_channel_messages_description">Zobrazit přicházející správy</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
+    <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování veřejných konverzací prostřednictvím mobilních
+       telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
     <string name="nc_all_ok_operation">OK, vše hotovo!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Název konverzace</string>
     <string name="nc_proceed">Pokračovat</string>
     <string name="nc_call_name_is_same">Zadané jméno je stejné jako stávající</string>
     <string name="nc_wrong_link">Odkaz na konverzaci není platný</string>
+    <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s pozvání</string>
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
 
+    <string name="nc_store_short_desc">Mějte soukromé videohovory a chat pomocí vlastního serveru.</string>
+    <string name="nc_configure_cert_auth">Vyberte ověřovací certifikát</string>
     <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování totožnosti</string>
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Zadejte zprávu…</string>
@@ -125,6 +140,9 @@
     <string name="nc_no_messages_yet">Zatím žádné zprávy</string>
     <string name="nc_chat_you">Vy</string>
 
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Žádné další položky k načtení. Pro opětovný pokus načtěte znovu.</string>
+    <string name="nc_endless_disabled">Žádné další položky k načtení (dosaženo maxima).</string>
     <string name="nc_endless_cancel">Zrušeno uživatelem.</string>
     <string name="nc_endless_error">Při načítání dalších položek došlo k chybě.</string>
 
@@ -134,6 +152,9 @@
     <string name="nc_description_more_menu_group">Nabídka pro veřejnou konverzaci %1$s</string>
     <string name="nc_description_send_message_button">Poslat zprávu</string>
 
+    <!-- Empty states -->
+    <string name="nc_chat_empty">Klepněte a buďte první kdo řekne %1$s!</string>
+    <string name="nc_conversations_empty">Zatím jste ještě s nikým nemluvili!\n Začněte konverzaci klepnutím.</string>
     <string name="nc_hello">Ahoj</string>
 
 </resources>

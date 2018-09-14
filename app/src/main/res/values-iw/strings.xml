@@ -53,6 +53,7 @@
     <string name="nc_settings_account_updated">החשבון הקיים שלך עודכן, במקום הוספת חדש</string>
     <string name="nc_account_scheduled_for_deletion">החשבון מועמד למחיקה ולא ניתן לשנות אותו</string>
     <string name="nc_settings_notification_sounds">צלילי הודעות</string>
+    <string name="nc_settings_call_ringtone">שיחות אחד על אחד</string>
     <string name="nc_settings_other_notifications_ringtone">אחר</string>
     <string name="nc_settings_no_ringtone">אין צליל</string>
     <string name="nc_settings_vibrate">רטט</string>
