@@ -22,6 +22,7 @@ Kies er eentje van een provider.</string>
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Weergavenaam opgehaald</string>
     <string name="nc_push_disabled">Push meldingen uitgeschakeld</string>
+    <string name="nc_capabilities_failed">Kon mogelijkheden niet ophalen, afbreken</string>
     <string name="nc_display_name_not_fetched">Weergave kon niet worden opgehaald, afgebroken</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s app gevonden</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app is niet geïnstalleerd op de server, afbreken</string>
@@ -59,6 +60,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_other_notifications_ringtone">Overig</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
     <string name="nc_settings_vibrate">Trillen</string>
+    <string name="nc_settings_vibrate_desc">Wanneer ingeschakeld, zal de telefoon trillen, tenzij die op stil staat</string>
     <string name="nc_no_proxy">geen proxy</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
@@ -115,6 +117,9 @@ op \"TOESTAAN\" in de volgende systeemdialoog.</string>
     <string name="nc_incoming_call">Inkomend gesprek van</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_public_call">Nieuw openbaar gesprek</string>
+    <string name="nc_public_call_explanation">Met openbare gesprekken kun je mensen zonder account uitnodigen
+via een persoonlijke link.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
@@ -142,6 +147,34 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_store_short_desc">Heb vertrouwelijke videogesprekken en chats via je eigen server.</string>
     <string name="nc_configure_cert_auth">Selecteer authenticatiecertificaat</string>
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
+    <string name="nc_store_full_desc">Gebruik Nextcloud Talk om een één-op-één of groeps- audio- of videogesprek te houden, voor het starten of deelnemen aan web conferenties en voor het versturen van berichten. Alle communicatie is volledig versleuteld en verwerkt via je eigen server, waardoor je de hoogst mogelijke graad van privacy bereikt.
+
+Nextcloud Talk is gemakkelijk te gebruiken en is altijd helemaal gratis!
+
+Nextcloud Talk ondersteunt:
+* HD (H.265) audio/video gesprekken
+* Groeps en één-op-één gesprekken
+* Webinars &amp; openbare web bijeenkomsten
+* Individuele en groepschat
+* Eenvoudig delen van je scherm
+* Mobiele apps voor Android en iOS
+* Mobiele gespreks- &amp; chat push meldingen
+* Integratie in Nextcloud Bestanden en Nextcloud Groupware
+* Volledig on-premise, 100% open source
+* Begin-tot-eind versleutelde gesprekken
+* Schaalbaar tot miljoenen gebruikers
+* SIP gate: inbellen per telefoon
+
+De Nextcloud Talk app vereist een Nextcloud Talk server. Nextcloud is een besloten, self-hosted bestandssynchronisatie- en communicatieplatform, ontwikkeld om jou weer in control over jouw gegevens te laten zijn. Het draait op een server van jouw keuze, thuis, bij een service provider of in je bedrijf en geeft je toegang tot je documenten, agenda\'s, contactpersonen, e-mail en andere gegevens. Je kunt delen met anderen, ook over verschillende Nextcloud servers en samenwerken aan documenten. Nextcloud is volledig open source, waardoor je de mogelijkheid hebt om het uit te breiden voor je eigen gebruik, om mee te doen aan de ontwikkeling ervan, of om simpelweg te controleren of het doet wat we beloven.
+
+Miljoenen mensen gebruiken Nextcloud dagelijks voor hun werk of thuis. Professionele gebruikers vertrouwen op de professionele ondersteuning van Nextcloud GmbH, waarbij ze een volledig ondersteunde, enterprise-ready platform voor productiviteit en samenwerking hebben, geheel onder controle van hun IT afdeling.
+
+Meer informatie op https://nextcloud.com/talk
+
+Bezoek Nextcloud op https://nextcloud.com</string>
+
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Voer een bericht in...</string>
     <string name="nc_date_header_yesterday">Gisteren</string>
     <string name="nc_date_header_today">Vandaag</string>
     <string name="nc_conversation_menu_voice_call">Gesprek</string>
@@ -164,6 +197,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Tik om als eerste %1$s te zeggen!</string>
+    <string name="nc_conversations_empty">Je hebt nog met niemand gesproken. Tik om een gesprek te starten.</string>
     <string name="nc_hello">Hallo</string>
 
 </resources>
