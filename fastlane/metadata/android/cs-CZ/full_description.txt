@@ -1,0 +1,25 @@
+Použijte Nextcloud Talk pro zvukové či videohovory dvou osob či skupin, vytvářejte nebo se připojujte k webovým konferencím a posílejte zprávy na chatu. Veškerá komunikace je zcela šifrována a prostředníkem je váš vlastní server, díky čemuž poskytuje nejvyšší možnou úroveň soukromí.
+
+Nextcloud Talk je snadno pužitelný a vždy bude zcela zdarma!
+
+Nextcloud Talk podporuje:
+* HD (H.265) audio/video hovory
+* Skupinové a dvoustranné hovory
+* Webináře & veřejné webové porady
+* Individuální a skupinový chat
+* Snadné sdílení obrazovky
+* Mobilní aplikace pro Android a iOS
+* Mobilní volání & chat push oznamování (pouze pokud je instalováno z Google Play)
+* Napojení na Nextcloud Soubory a Nextcloud Groupware
+* Zcela ve vlastní režii, zcela open source
+* Volání šifrovaná mezi volajícími
+* Škálování na miliony uživatelů
+* SIP brána: volejte telefonem
+
+Aplikace Nextcloud Talk vyžaduje k fungování Nextcloud Talk server. Nextcloud je soukromá, samohostovaná platforma pro synchronizaci souborů a komunikaci, navržená tak, abyste získali zpět vládu nad svými daty. Funguje na serveru, který si zvolíte, ať už doma, u poskytovatele služeb nebo u vás ve firmě, a zpřístupňuje vám dokumenty, kalendáře, kontakty, e-mail a ostatní data. Sdílet je možné dokonce napříč různými instancemi Nextcloud serveru a pracovat společně na dokumentech. Nextcloud je zcela open source, díky čemuž je možné ho rozšířit pro vaše potřeby, podílet se na jeho vývoji nebo „jen“ prověřit to, co slibujeme.
+
+Nextcloud každý den používá miliony uživatelů na celém světě, v práci i doma. Firemní uživatelé se mohou spolehnout na profesionální podporu Nextcloud GmbH, což jim zajišťuje že mají zcela podporovanou, pro produkční nasazení připravenou platformu pro produktivitu a spolupráci, která je zcela pod kontrolou jejich IT oddělení.
+
+Více se dozvíte na https://nextcloud.com/talk
+
+Nextcloud naleznete na https://nextcloud.com
