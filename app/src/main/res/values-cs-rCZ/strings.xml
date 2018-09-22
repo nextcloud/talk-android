@@ -101,8 +101,8 @@
     <string name="nc_contacts_done">Hotovo</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Je třeba udělit oprávnění pro navázání video a/nebo audio volání. V nadcházejícím systémovém dialogu klikněte na „Umožnit“.</string>
-    <string name="nc_permissions_audio">Je třeba udělit oprávnění pro navázání video a/nebo audio volání. V nadcházejícím systémovém dialogu klikněte na „Umožnit“.</string>
+    <string name="nc_permissions">Pro navazování video a/nebo audio volání je třeba udělit oprávnění. V nadcházejícím systémovém dialogu klikněte na „Umožnit“.</string>
+    <string name="nc_permissions_audio">Pro navazování audio hovorů je třeba udělit oprávnění k přístupu k mikrofonu. V nadcházejícím systémovém dialogu klikněte na „Umožnit“.</string>
     <string name="nc_permissions_video">Aby bylo možné uskutečňovat videohovory, je třeba udělit oprávnění pro přístup ke kameře. V nadcházejícím systémovém dialogu klikněte na „Umožnit“.</string>
     <string name="nc_camera_permission_permanently_denied">Pro zapnutí videokomunikace udělte v nastavení systému oprávnění „Kamera“ .</string>
     <string name="nc_microphone_permission_permanently_denied">Pro zapnutí hlasové komunikace udělte v nastavení systému oprávnění „Mikrofon“ .</string>
