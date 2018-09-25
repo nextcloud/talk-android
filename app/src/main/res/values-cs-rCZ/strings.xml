@@ -21,12 +21,12 @@
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Zobrazované jméno získáno</string>
     <string name="nc_push_disabled">Vyskakovací upozornění zakázána</string>
-    <string name="nc_capabilities_failed">Nepodařilo se získat schopnosti, končím</string>
-    <string name="nc_display_name_not_fetched">Nepodařilo se získat zobrazované jméno, končím</string>
+    <string name="nc_capabilities_failed">Nepodařilo se získat schopnosti, ukončuje se</string>
+    <string name="nc_display_name_not_fetched">Nepodařilo se získat zobrazované jméno, přerušuje se</string>
     <string name="nc_nextcloud_talk_app_installed">nalezena aplikace %1$s</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikace %1$s není na serveru nainstalována, ruší se</string>
     <string name="nc_display_name_stored">Zobrazované jméno uloženo</string>
-    <string name="nc_display_name_not_stored">Nepodařilo se uložit zobrazované jméno, končím</string>
+    <string name="nc_display_name_not_stored">Nepodařilo se uložit zobrazované jméno, ukončuje se</string>
 
     <string name="nc_never">Nikdy nepřipojeno</string>
     <string name="nc_search">Hledat</string>
