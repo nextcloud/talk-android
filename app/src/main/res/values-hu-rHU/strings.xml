@@ -1,4 +1,6 @@
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_bottom_navigation_title_conversations">Beszélgetések</string>
     <string name="nc_bottom_navigation_title_contacts">Kapcsolatok</string>
     <string name="nc_bottom_navigation_title_settings">Beállítások</string>
 
@@ -18,6 +20,7 @@
 
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Megjelenítendő név beszerezve</string>
+    <string name="nc_push_disabled">Azonnali üzenetek letilva</string>
     <string name="nc_display_name_not_fetched">Megjelenítendő név nem beszerezhető, megszakítás</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s app megtalálva</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app nincs telepítve a szerveren, megszakítás</string>
@@ -53,6 +56,7 @@
     <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
     <string name="nc_settings_notification_sounds">Értesítés hanja</string>
     <string name="nc_settings_no_ringtone">Nincs hang</string>
+    <string name="nc_settings_vibrate">Rezeg</string>
     <string name="nc_no_proxy">Nincs proxy</string>
     <string name="nc_username">Felhasználónév</string>
     <string name="nc_password">Jelszó</string>
@@ -83,6 +87,9 @@
     <string name="nc_new_conversation">Új beszélgetés</string>
     <string name="nc_join_via_link">Csatlakozás linken kersztül</string>
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
+    <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
+    <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Kapcsolat kiválasztása</string>
     <string name="nc_one_contact_selected">kapcsolat kiválasztva</string>
@@ -138,6 +145,9 @@
     <string name="nc_conversation_menu_voice_call">Hanghívás</string>
     <string name="nc_conversation_menu_video_call">Videohívás</string>
     <string name="nc_new_messages">Új üzenetek</string>
+    <string name="nc_no_messages_yet">Nincs még üzenet</string>
+    <string name="nc_chat_you">Te</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Nincs több betöltésre váró elem. Újra próbálkozáshoz frissíts.</string>
     <string name="nc_endless_disabled">Nincs több betöltésre váró elem (maximum elérve)</string>
@@ -150,4 +160,6 @@
     <string name="nc_description_more_menu_group">Menü a nyilvános beszélgetéshez: %1$s</string>
     <string name="nc_description_send_message_button">Üzenet küldése</string>
 
-    </resources>
+    <string name="nc_hello">Szia</string>
+
+</resources>
