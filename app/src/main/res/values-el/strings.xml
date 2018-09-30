@@ -88,9 +88,17 @@
     <string name="nc_hint_enter_a_message">Εισάγετε ένα μήνυμα…</string>
     <string name="nc_date_header_yesterday">Χθές</string>
     <string name="nc_date_header_today">Σήμερα</string>
+    <string name="nc_conversation_menu_voice_call">Κλήση ήχου</string>
+    <string name="nc_conversation_menu_video_call">Κλήση βίντεο</string>
     <string name="nc_new_messages">Νέα μηνύματα</string>
     <string name="nc_no_messages_yet">Κανένα μήνυμα ακόμα</string>
     <string name="nc_chat_you">Εσύ</string>
+
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Δεν υπάρχουν αντικείμενα για φόρτωση. Ανανεώστε και προσπαθήστε ξανά.</string>
+    <string name="nc_endless_disabled">Δεν υπάρχουν περισσότερα αντικείμενα για φόρτωση (φτάσατε στο μέγιστο).</string>
+    <string name="nc_endless_cancel">Ακυρώθηκε από τον χρήστη.</string>
+    <string name="nc_endless_error">Παρουσιάστηκε σφάλμα κατά την φόρτωση περισσότερων αντικειμένων.</string>
 
     <string name="nc_description_send_message_button">Αποστολή μηνύματος</string>
 
