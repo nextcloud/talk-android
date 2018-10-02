@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.jobs;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nextcloud.talk.utils.PushUtils;
 

@@ -20,7 +20,7 @@
  */
 package com.nextcloud.talk.api;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;

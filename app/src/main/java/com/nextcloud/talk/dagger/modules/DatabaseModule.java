@@ -21,7 +21,7 @@
 package com.nextcloud.talk.dagger.modules;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.Models;

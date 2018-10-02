@@ -18,7 +18,7 @@
  */
 package com.nextcloud.talk.controllers.base.providers;
 
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 
 public interface ActionBarProvider {
     ActionBar getSupportActionBar();

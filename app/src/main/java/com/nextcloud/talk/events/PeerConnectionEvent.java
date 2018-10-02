@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.events;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import lombok.Data;
 

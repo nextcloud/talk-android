@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.utils.singletons;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class ApplicationWideMessageHolder {
     private static final ApplicationWideMessageHolder holder = new ApplicationWideMessageHolder();

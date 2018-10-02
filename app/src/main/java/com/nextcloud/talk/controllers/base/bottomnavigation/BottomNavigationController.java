@@ -25,10 +25,10 @@
 package com.nextcloud.talk.controllers.base.bottomnavigation;
 
 import android.os.Bundle;
-import android.support.annotation.MenuRes;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.CoordinatorLayout;
+import androidx.annotation.MenuRes;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;

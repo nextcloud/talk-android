@@ -25,13 +25,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.core.view.MenuItemCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -229,7 +229,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         adapter.setEndlessScrollListener(this, new ProgressItem());
 
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        adapter.registerAdapterDataObserver(new androidx.recyclerview.widget.RecyclerView.AdapterDataObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
@@ -332,7 +332,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
 
         final View mSearchEditFrame = searchView
-                .findViewById(android.support.v7.appcompat.R.id.search_edit_frame);
+                .findViewById(androidx.appcompat.R.id.search_edit_frame);
 
         BottomNavigationView bottomNavigationView = null;
         if (getParentController() != null && getParentController().getView() != null) {
@@ -601,7 +601,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private void prepareViews() {
         layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 

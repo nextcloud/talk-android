@@ -20,7 +20,7 @@
  */
 package com.nextcloud.talk.utils.database.user;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.nextcloud.talk.models.database.User;

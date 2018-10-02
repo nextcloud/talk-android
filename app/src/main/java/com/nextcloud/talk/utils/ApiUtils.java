@@ -20,8 +20,8 @@
 package com.nextcloud.talk.utils;
 
 import android.net.Uri;
-import android.support.annotation.DimenRes;
-import android.support.annotation.Nullable;
+import androidx.annotation.DimenRes;
+import androidx.annotation.Nullable;
 
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;

@@ -21,7 +21,7 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.accounts.Account;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;

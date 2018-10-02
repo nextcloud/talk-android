@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.events;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.webkit.SslErrorHandler;
 
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;

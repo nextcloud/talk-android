@@ -28,7 +28,7 @@
 	      android:icon="@drawable/ic_search_white_24dp"
 	      app:showAsAction="collapseActionView|always"
 	      android:animateLayoutChanges="true"
-	      app:actionViewClass="android.support.v7.widget.SearchView"
+	      app:actionViewClass="androidx.appcompat.widget.SearchView"
         />
 
     <item android:id="@+id/action_new_conversation"

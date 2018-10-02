@@ -24,7 +24,7 @@
 
 package com.nextcloud.talk.controllers;
 
-import android.support.annotation.IdRes;
+import androidx.annotation.IdRes;
 
 import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.R;
