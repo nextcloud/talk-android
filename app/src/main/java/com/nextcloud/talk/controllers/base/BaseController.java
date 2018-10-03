@@ -42,7 +42,7 @@ import javax.inject.Inject;
 import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public abstract class BaseController extends RefWatchingController {
+public abstract class BaseController extends ButterKnifeController {
 
     private static final String TAG = "BaseController";
     @Inject
