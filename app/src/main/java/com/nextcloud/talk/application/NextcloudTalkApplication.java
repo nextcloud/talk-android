@@ -43,8 +43,6 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserModule;
 import com.nextcloud.talk.utils.singletons.ApplicationWideStateHolder;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.voiceengine.WebRtcAudioManager;
@@ -76,10 +74,6 @@ import autodagger.AutoInjector;
 @AutoInjector(NextcloudTalkApplication.class)
 public class NextcloudTalkApplication extends MultiDexApplication implements LifecycleObserver {
     private static final String TAG = NextcloudTalkApplication.class.getSimpleName();
-
-    //region Public variables
-    public static RefWatcher refWatcher;
-    //endregion
 
     //region Singleton
     protected static NextcloudTalkApplication sharedApplication;
@@ -126,7 +120,6 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         buildComponent();
 
         componentApplication.inject(this);
-        refWatcher = LeakCanary.install(this);
 
         new ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync();
         DeviceUtils.ignoreSpecialBatteryFeatures();
