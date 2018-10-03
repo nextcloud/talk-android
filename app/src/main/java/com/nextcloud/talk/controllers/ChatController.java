@@ -855,9 +855,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
 
                 isFirstMessagesProcessing = false;
-                loadingProgressBar.setVisibility(View.GONE);
+                if (loadingProgressBar != null) {
+                    loadingProgressBar.setVisibility(View.GONE);
+                }
 
-                if (emptyLayout.getVisibility() != View.VISIBLE) {
+                if (emptyLayout != null && emptyLayout.getVisibility() != View.VISIBLE) {
                     emptyLayout.setVisibility(View.VISIBLE);
                 }
             }
