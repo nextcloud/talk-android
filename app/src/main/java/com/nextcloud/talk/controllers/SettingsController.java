@@ -526,8 +526,10 @@ public class SettingsController extends BaseController {
 
     @Override
     public void onDestroy() {
-        appPreferences.unregisterProxyTypeListener(proxyTypeChangeListener);
-        appPreferences.unregisterProxyCredentialsListener(proxyCredentialsChangeListener);
+        if (appPreferences != null) {
+            appPreferences.unregisterProxyTypeListener(proxyTypeChangeListener);
+            appPreferences.unregisterProxyCredentialsListener(proxyCredentialsChangeListener);
+        }
         super.onDestroy();
     }
 
