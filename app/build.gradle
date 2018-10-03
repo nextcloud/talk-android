@@ -188,7 +188,7 @@ dependencies {
 
     implementation 'com.github.Kennyc1012:BottomSheet:2.4.1'
     implementation 'eu.davidea:flipview:1.2.0'
-    implementation 'com.webianks.library:popup-bubble:1.0.5'
+    implementation 'com.github.mario:PopupBubble:a365177d96'
 
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.kevalpatel2106:emoticongifkeyboard:1.1'
