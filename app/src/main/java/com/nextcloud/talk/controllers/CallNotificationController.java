@@ -447,21 +447,25 @@ public class CallNotificationController extends BaseController {
                                         script.forEach(output);
                                         output.copyTo(resource);
 
-                                        incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
-                                                .incoming_gradient));
-                                        constraintLayout.setBackground(new BitmapDrawable(resource));
+                                        if (getResources() != null) {
+                                            incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
+                                                    .incoming_gradient));
+                                            constraintLayout.setBackground(new BitmapDrawable(resource));
+                                        }
                                     } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
                                         Palette palette = Palette.from(resource).generate();
-                                        int color = palette.getDominantColor(getResources().getColor(R.color.grey950));
+                                        if (getResources() != null) {
+                                            int color = palette.getDominantColor(getResources().getColor(R.color.grey950));
 
-                                        if (color != getResources().getColor(R.color.grey950)) {
-                                            float[] hsv = new float[3];
-                                            Color.colorToHSV(color, hsv);
-                                            hsv[2] *= 0.75f;
-                                            color = Color.HSVToColor(hsv);
+                                            if (color != getResources().getColor(R.color.grey950)) {
+                                                float[] hsv = new float[3];
+                                                Color.colorToHSV(color, hsv);
+                                                hsv[2] *= 0.75f;
+                                                color = Color.HSVToColor(hsv);
+                                            }
+
+                                            constraintLayout.setBackgroundColor(color);
                                         }
-
-                                        constraintLayout.setBackgroundColor(color);
                                     }
                                 }
                         });
