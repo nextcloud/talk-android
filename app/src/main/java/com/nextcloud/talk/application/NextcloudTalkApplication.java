@@ -22,6 +22,7 @@ package com.nextcloud.talk.application;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import android.content.Context;
@@ -48,6 +49,7 @@ import org.webrtc.PeerConnectionFactory;
 import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
@@ -57,6 +59,7 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+import androidx.work.WorkStatus;
 import autodagger.AutoComponent;
 import autodagger.AutoInjector;
 
@@ -132,9 +135,11 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         WorkManager.initialize(getApplicationContext(), new Configuration.Builder().build());
         WorkManager.getInstance().enqueue(pushRegistrationWork);
         WorkManager.getInstance().enqueue(accountRemovalWork);
-        WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork",
-                ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork);
+        // There is a bug with periodic work so we ignore this for now
+        //WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork",
+        //        ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork);
 
+        WorkManager.getInstance().cancelUniqueWork("DailyCapabilitiesUpdateWork");
     }
 
     @Override
