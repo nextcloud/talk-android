@@ -542,7 +542,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 adapter.onLoadMoreComplete(null);
                             }
 
-                            searchItem.setVisible(newUserItemList.size() > 0);
+                            if (searchItem != null) {
+                                searchItem.setVisible(newUserItemList.size() > 0);
+                            }
+
                             if (swipeRefreshLayout != null) {
                                 swipeRefreshLayout.setRefreshing(false);
                             }
