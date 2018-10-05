@@ -131,10 +131,13 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
         PeriodicWorkRequest periodicCapabilitiesUpdateWork = new PeriodicWorkRequest.Builder(CapabilitiesWorker.class,
                 1, TimeUnit.DAYS).build();
+        OneTimeWorkRequest capabilitiesUpdateWork = new OneTimeWorkRequest.Builder(CapabilitiesWorker.class).build();
 
         WorkManager.initialize(getApplicationContext(), new Configuration.Builder().build());
         WorkManager.getInstance().enqueue(pushRegistrationWork);
         WorkManager.getInstance().enqueue(accountRemovalWork);
+        WorkManager.getInstance().enqueue(capabilitiesUpdateWork);
+        
         // There is a bug with periodic work so we ignore this for now
         //WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork",
         //        ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork);
