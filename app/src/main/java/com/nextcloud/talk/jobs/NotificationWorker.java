@@ -60,7 +60,6 @@ import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import com.nextcloud.talk.utils.singletons.ApplicationWideStateHolder;
 
 import org.parceler.Parcels;
 
@@ -421,7 +420,6 @@ public class NotificationWorker extends Worker {
                     boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed") &&
                             !decryptedPushMessage.getType().equals("room") &&
                             (!isInTheSameRoomAsNotification ||
-                                    !ApplicationWideStateHolder.getInstance().isInForeground() ||
                                     decryptedPushMessage.getType().equals("call"));
 
                     if (shouldShowNotification) {

@@ -20,11 +20,8 @@
  */
 package com.nextcloud.talk.application;
 
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.OnLifecycleEvent;
-import androidx.lifecycle.ProcessLifecycleOwner;
+
 import android.content.Context;
 import android.os.Build;
 import androidx.multidex.MultiDex;
@@ -42,24 +39,20 @@ import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.DeviceUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserModule;
-import com.nextcloud.talk.utils.singletons.ApplicationWideStateHolder;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
 import androidx.work.Configuration;
-import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.WorkStatus;
 import autodagger.AutoComponent;
 import autodagger.AutoInjector;
 
@@ -114,7 +107,6 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
     @Override
     public void onCreate() {
         super.onCreate();
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         sharedApplication = this;
 
@@ -137,7 +129,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         WorkManager.getInstance().enqueue(pushRegistrationWork);
         WorkManager.getInstance().enqueue(accountRemovalWork);
         WorkManager.getInstance().enqueue(capabilitiesUpdateWork);
-        
+
         // There is a bug with periodic work so we ignore this for now
         //WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork",
         //        ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork);
@@ -176,14 +168,4 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         MultiDex.install(this);
     }
     //endregion
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    private void onAppBackgrounded() {
-        ApplicationWideStateHolder.getInstance().setInForeground(false);
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    private void onAppForegrounded() {
-        ApplicationWideStateHolder.getInstance().setInForeground(true);
-    }
 }

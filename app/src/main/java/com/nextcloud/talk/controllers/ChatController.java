@@ -165,6 +165,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private static final byte CONTENT_TYPE_SYSTEM_MESSAGE = 1;
 
+    private boolean wasDetached;
+
     public ChatController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
@@ -448,6 +450,19 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         if (inChat) {
             NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+
+            if (wasDetached & conversationUser.hasSpreedCapabilityWithName("no-ping")) {
+                joinRoomWithPassword();
+            }
+        }
+    }
+
+    @Override
+    protected void onDetach(@NonNull View view) {
+        super.onDetach(view);
+        if (conversationUser.hasSpreedCapabilityWithName("no-ping")) {
+            dispose();
+            wasDetached = true;
         }
     }
 
@@ -530,7 +545,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             inChat = true;
                             currentCall = callOverall.getOcs().getData();
                             startPing();
-                            pullChatMessages(0);
+                            if (isFirstMessagesProcessing) {
+                                pullChatMessages(0);
+                            } else {
+                                pullChatMessages(1);
+                            }
                             if (startCallFromNotification != null && startCallFromNotification) {
                                 startCallFromNotification = false;
                                 startACall(voiceOnly);
@@ -550,7 +569,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
         } else {
             inChat = true;
             startPing();
-            pullChatMessages(0);
+            if (isFirstMessagesProcessing) {
+                pullChatMessages(0);
+            } else {
+                pullChatMessages(1);
+            }
         }
     }
 
