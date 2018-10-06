@@ -330,6 +330,9 @@ public class CallController extends BaseController {
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
         peerConnectionFactory = PeerConnectionFactory.builder().createPeerConnectionFactory();
 
+        peerConnectionFactory.setVideoHwAccelerationOptions(rootEglBase.getEglBaseContext(),
+                rootEglBase.getEglBaseContext());
+
         //Create MediaConstraints - Will be useful for specifying video and audio constraints.
         audioConstraints = new MediaConstraints();
         videoConstraints = new MediaConstraints();
@@ -530,7 +533,7 @@ public class CallController extends BaseController {
 
         //Create a VideoSource instance
         if (videoCapturer != null) {
-            videoSource = peerConnectionFactory.createVideoSource(false);
+            videoSource = peerConnectionFactory.createVideoSource(videoCapturer);
             localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
             localMediaStream.addTrack(localVideoTrack);
             localVideoTrack.setEnabled(false);

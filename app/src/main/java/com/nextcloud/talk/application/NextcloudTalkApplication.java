@@ -95,6 +95,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
 
 
             PeerConnectionFactory.initialize(PeerConnectionFactory.InitializationOptions.builder(this)
+                    .setEnableVideoHwAcceleration(MagicWebRTCUtils.shouldEnableVideoHardwareAcceleration())
                     .createInitializationOptions());
         } catch (UnsatisfiedLinkError e) {
             Log.w(TAG, e);
