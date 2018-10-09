@@ -94,8 +94,6 @@
         app:outcomingTimeTextSize="12sp"
         app:outcomingImageTimeTextSize="12sp"
         app:incomingImageTimeTextSize="12sp"
-        app:outcomingImageTimeTextColor="@color/white60"
-        app:incomingImageTimeTextColor="@color/warm_grey_four"
         app:textAutoLink="all"/>
 
     <com.webianks.library.PopupBubble

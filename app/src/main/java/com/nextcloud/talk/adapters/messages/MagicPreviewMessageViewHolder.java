@@ -51,23 +51,30 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         if (userAvatar != null) {
             if (message.isGrouped) {
                 userAvatar.setVisibility(View.INVISIBLE);
+                ((RoundedImageView) image).setCorners(R.dimen.message_bubble_corners_radius, R.dimen.message_bubble_corners_radius, 0, 0);
             } else {
                 userAvatar.setVisibility(View.VISIBLE);
             }
         }
 
-        if (message.isGrouped) {
-            ((RoundedImageView) image).setCorners(R.dimen.message_bubble_corners_radius, R.dimen.message_bubble_corners_radius, 0, 0);
-        } else if (message.getUser().getId().equals(message.activeUserId)) {
-            ((RoundedImageView) image).setCorners(R.dimen.message_bubble_corners_radius, 0, 0, 0);
+
+        if (message.getUser().getId().equals(message.activeUserId)) {
+            time.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.white60));
+            if (!message.isGrouped) {
+                ((RoundedImageView) image).setCorners(R.dimen.message_bubble_corners_radius, 0, 0, 0);
+            }
         } else {
-            ((RoundedImageView) image).setCorners(0, R.dimen.message_bubble_corners_radius, 0, 0);
+            time.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.warm_grey_four));
+            if (!message.isGrouped) {
+                ((RoundedImageView) image).setCorners(0, R.dimen.message_bubble_corners_radius, 0, 0);
+            }
         }
+
 
         messageText.setText(message.getSelectedIndividualHashMap().get("name"));
         image.setOnClickListener(v -> {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
-                NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
+            NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
         });
     }
 }
