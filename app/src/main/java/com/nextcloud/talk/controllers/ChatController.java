@@ -61,6 +61,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder;
+import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder;
 import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -95,6 +96,7 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
+import com.stfalcon.chatkit.utils.RoundedImageView;
 import com.webianks.library.PopupBubble;
 
 import org.parceler.Parcels;
@@ -308,6 +310,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
             messageHolders.setIncomingTextConfig(MagicIncomingTextMessageViewHolder.class, R.layout.item_custom_incoming_text_message);
             messageHolders.setOutcomingTextConfig(MagicOutcomingTextMessageViewHolder.class, R.layout.item_custom_outcoming_text_message);
 
+            messageHolders.setIncomingImageConfig(MagicPreviewMessageViewHolder.class, R.layout.item_custom_incoming_preview_message);
+            messageHolders.setOutcomingImageConfig(MagicPreviewMessageViewHolder.class, R.layout.item_custom_outcoming_preview_message);
+
             messageHolders.registerContentType(CONTENT_TYPE_SYSTEM_MESSAGE, MagicSystemMessageViewHolder.class,
                     R.layout.item_system_message, MagicSystemMessageViewHolder.class, R.layout.item_system_message,
                     this);
@@ -315,28 +320,37 @@ public class ChatController extends BaseController implements MessagesListAdapte
             adapter = new MessagesListAdapter<>(conversationUser.getUserId(), messageHolders, new ImageLoader() {
                 @Override
                 public void loadImage(ImageView imageView, String url) {
-                    GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(url)
-                            .centerInside()
-                            .override(imageView.getMeasuredWidth(), imageView.getMeasuredHeight())
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .listener(new RequestListener<Bitmap>() {
-                                @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                                    TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
-                                            .endConfig().buildRound("?", getResources().getColor(R.color.nc_grey));
-                                    imageView.setImageDrawable(drawable);
-                                    return true;
-                                }
+                    if (!(imageView instanceof RoundedImageView)) {
+                        GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                                .asBitmap()
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .load(url)
+                                .centerInside()
+                                .override(imageView.getMeasuredWidth(), imageView.getMeasuredHeight())
+                                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                                .listener(new RequestListener<Bitmap>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                                        TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
+                                                .endConfig().buildRound("?", getResources().getColor(R.color.nc_grey));
+                                        imageView.setImageDrawable(drawable);
+                                        return true;
+                                    }
 
-                                @Override
-                                public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                                    return false;
-                                }
-                            })
-                            .into(imageView);
+                                    @Override
+                                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                                        return false;
+                                    }
+                                })
+                                .into(imageView);
+                    } else {
+                        GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                                .asBitmap()
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .override(480, 480)
+                                .load(url)
+                                .into(imageView);
+                    }
                 }
             });
         } else {

@@ -72,15 +72,6 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
                     messageString = DisplayUtils.searchAndColor(message.getText(),
                             messageString, "@" + individualHashMap.get("name"), color);
-                } else if (individualHashMap.get("type").equals("file")) {
-                    color = context.getResources().getColor(R.color
-                            .colorPrimary);
-                    messageString = DisplayUtils.searchAndColor(message.getText(), messageString, individualHashMap
-                            .get("name"), color);
-                    itemView.setOnClickListener(v -> {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));
-                        context.startActivity(browserIntent);
-                    });
                 }
             }
         }

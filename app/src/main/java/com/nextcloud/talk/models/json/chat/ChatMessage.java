@@ -19,10 +19,13 @@
  */
 package com.nextcloud.talk.models.json.chat;
 
+import android.util.Log;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.stfalcon.chatkit.commons.models.IMessage;
@@ -33,13 +36,34 @@ import org.parceler.Parcel;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
+import androidx.annotation.Nullable;
 import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
-public class ChatMessage implements IMessage, MessageContentType {
+public class ChatMessage implements IMessage, MessageContentType, MessageContentType.Image {
+
+    @Nullable
+    @Override
+    public String getImageUrl() {
+        if (messageParameters != null && messageParameters.size() > 0) {
+            for (String key : messageParameters.keySet()) {
+                Map<String, String> individualHashMap = messageParameters.get(key);
+                if (individualHashMap.get("type").equals("file")) {
+                    selectedIndividualHashMap = individualHashMap;
+                    return String.format(Locale.getDefault(),
+                            "%s/index.php/core/preview?fileId=%s&x=%d&y=%d&forceIcon=1",
+                            baseUrl, individualHashMap.get("id"), 480, 480);
+                }
+            }
+        }
+
+        return null;
+    }
 
     public enum SystemMessageType {
         DUMMY,
@@ -85,10 +109,20 @@ public class ChatMessage implements IMessage, MessageContentType {
     SystemMessageType systemMessageType;
 
     @JsonIgnore
-    boolean isGrouped;
+    public boolean isGrouped;
     @JsonIgnore
-    String activeUserId;
+    public String activeUserId;
+    @JsonIgnore
+    public Map<String, String> selectedIndividualHashMap;
 
+
+    public Map<String, String> getSelectedIndividualHashMap() {
+        return selectedIndividualHashMap;
+    }
+
+    public void setSelectedIndividualHashMap(Map<String, String> selectedIndividualHashMap) {
+        this.selectedIndividualHashMap = selectedIndividualHashMap;
+    }
 
     public String getBaseUrl() {
         return baseUrl;
