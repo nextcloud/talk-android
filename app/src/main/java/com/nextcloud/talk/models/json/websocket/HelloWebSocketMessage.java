@@ -18,21 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.api;
+package com.nextcloud.talk.models.json.websocket;
 
-import com.tinder.scarlet.WebSocket;
-import com.tinder.scarlet.ws.Receive;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.squareup.moshi.Json;
 
-import io.reactivex.Flowable;
+import lombok.Data;
 
-public interface ExternalSignaling {
-    @Receive
-    Flowable<WebSocket.Event.OnConnectionOpened> observeOnConnectionOpenedEvent();
+@Data
+@JsonObject
+public class HelloWebSocketMessage {
+    @JsonField(name = "version")
+    String version;
 
-    @Receive
-    Flowable<WebSocket.Event.OnConnectionFailed> observeOnConnectionFailedEvent();
+    @JsonField(name = "resumeid")
+    String resumeid;
 
-    @Receive
-    Flowable<WebSocket.Event.OnConnectionClosed> observeOnConnectionClosedEvent();
-
+    @JsonField(name = "auth")
+    AuthWebSocketMessage authWebSocketMessage;
 }

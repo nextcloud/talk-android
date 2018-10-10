@@ -138,6 +138,10 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token;
     }
 
+    public static String getUrlForExternalServerAuthBackend(String baseUrl) {
+        return baseUrl + ocsApiVersion + spreedApiVersion + "/signaling/backend";
+    }
+
     public static String getUrlForMentionSuggestions(String baseUrl, String token) {
         return getUrlForChat(baseUrl, token) + "/mentions";
     }

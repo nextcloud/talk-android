@@ -18,21 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.api;
+package com.nextcloud.talk.models;
 
-import com.tinder.scarlet.WebSocket;
-import com.tinder.scarlet.ws.Receive;
+import lombok.Data;
 
-import io.reactivex.Flowable;
-
-public interface ExternalSignaling {
-    @Receive
-    Flowable<WebSocket.Event.OnConnectionOpened> observeOnConnectionOpenedEvent();
-
-    @Receive
-    Flowable<WebSocket.Event.OnConnectionFailed> observeOnConnectionFailedEvent();
-
-    @Receive
-    Flowable<WebSocket.Event.OnConnectionClosed> observeOnConnectionClosedEvent();
-
+@Data
+public class ExternalSignalingServer {
+    String externalSignalingServer;
+    String externalSignalingTicket;
 }

@@ -47,18 +47,32 @@ public class ScarletHelper {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
 
-    public ExternalSignaling getExternalSignalingInstanceForServer(String url) {
-        if (externalSignalingMap.containsKey(url)) {
-            return externalSignalingMap.get(url);
+    private String getExternalSignalingServerUrlFromSettingsUrl(String url) {
+        String generatedURL = url.replace("https://", "wss://").replace("http://", "ws://");
+
+        if (generatedURL.endsWith("/")) {
+            generatedURL += "spreed";
+        } else {
+            generatedURL += "/spreed";
+        }
+
+        return generatedURL;
+    }
+
+    public ExternalSignaling getExternalSignalingInstanceForServer(String url, boolean forceReconnect) {
+        String connectionUrl = getExternalSignalingServerUrlFromSettingsUrl(url);
+
+        if (externalSignalingMap.containsKey(connectionUrl) && !forceReconnect) {
+            return externalSignalingMap.get(connectionUrl);
         } else {
             Scarlet scarlet = new Scarlet.Builder()
                     .backoffStrategy(new LinearBackoffStrategy(500))
-                    .webSocketFactory(OkHttpClientUtils.newWebSocketFactory(okHttpClient, url))
+                    .webSocketFactory(OkHttpClientUtils.newWebSocketFactory(okHttpClient, connectionUrl))
                     .addMessageAdapterFactory(new MoshiMessageAdapter.Factory())
                     .addStreamAdapterFactory(new RxJava2StreamAdapterFactory())
                     .build();
             ExternalSignaling externalSignaling = scarlet.create(ExternalSignaling.class);
-            externalSignalingMap.put(url, externalSignaling);
+            externalSignalingMap.put(connectionUrl, externalSignaling);
             return externalSignaling;
         }
     }

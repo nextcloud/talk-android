@@ -29,9 +29,11 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,6 +50,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.api.ExternalSignaling;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -55,6 +58,7 @@ import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
+import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
@@ -197,6 +201,7 @@ public class CallController extends BaseController {
     private MediaConstraints audioConstraints;
     private MediaConstraints videoConstraints;
     private MediaConstraints sdpConstraints;
+    private MediaConstraints sdpConstraintsForMCU;
     private MagicAudioManager audioManager;
     private VideoSource videoSource;
     private VideoTrack localVideoTrack;
@@ -237,6 +242,8 @@ public class CallController extends BaseController {
     private String roomId;
 
     private SpotlightView spotlightView;
+
+    private ExternalSignalingServer externalSignalingServer;
 
     public CallController(Bundle args) {
         super(args);
@@ -351,6 +358,7 @@ public class CallController extends BaseController {
 
         //create sdpConstraints
         sdpConstraints = new MediaConstraints();
+        sdpConstraintsForMCU = new MediaConstraints();
         sdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"));
         String offerToReceiveVideoString = "true";
 
@@ -358,14 +366,21 @@ public class CallController extends BaseController {
             offerToReceiveVideoString = "false";
         }
 
-        sdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo",
-                offerToReceiveVideoString));
+        sdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", offerToReceiveVideoString));
+
+        sdpConstraintsForMCU.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"));
+        sdpConstraintsForMCU.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"));
+
+        sdpConstraintsForMCU.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
+        sdpConstraintsForMCU.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
+
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"));
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
         if (!isVoiceOnlyCall) {
             cameraInitialization();
         }
+
         microphoneInitialization();
     }
 
@@ -893,6 +908,13 @@ public class CallController extends BaseController {
                         IceServer iceServer;
                         if (signalingSettingsOverall != null && signalingSettingsOverall.getOcs() != null &&
                                 signalingSettingsOverall.getOcs().getSettings() != null) {
+
+                            if (!TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer()) &&
+                                    !TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket())) {
+                                externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
+                                externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
+                            }
+
                             if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
                                 for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
                                      i++) {
@@ -1088,44 +1110,48 @@ public class CallController extends BaseController {
 
                         NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
 
-                        ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))
-                                .subscribeOn(Schedulers.newThread())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .repeatWhen(observable -> observable)
-                                .takeWhile(observable -> inCall)
-                                .retry(3, observable -> inCall)
-                                .subscribe(new Observer<SignalingOverall>() {
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
-                                        signalingDisposable = d;
-                                    }
+                        if (externalSignalingServer == null) {
+                            ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))
+                                    .subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .repeatWhen(observable -> observable)
+                                    .takeWhile(observable -> inCall)
+                                    .retry(3, observable -> inCall)
+                                    .subscribe(new Observer<SignalingOverall>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+                                            signalingDisposable = d;
+                                        }
 
-                                    @Override
-                                    public void onNext(SignalingOverall signalingOverall) {
-                                        if (signalingOverall.getOcs().getSignalings() != null) {
-                                            for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
-                                                try {
-                                                    receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
-                                                } catch (IOException e) {
-                                                    Log.e(TAG, "Failed to process received signaling" +
-                                                            " message");
+                                        @Override
+                                        public void onNext(SignalingOverall signalingOverall) {
+                                            if (signalingOverall.getOcs().getSignalings() != null) {
+                                                for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
+                                                    try {
+                                                        receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
+                                                    } catch (IOException e) {
+                                                        Log.e(TAG, "Failed to process received signaling" +
+                                                                " message");
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        dispose(signalingDisposable);
-                                    }
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            dispose(signalingDisposable);
+                                        }
 
-                                    @Override
-                                    public void onComplete() {
-                                        dispose(signalingDisposable);
-                                    }
-                                });
+                                        @Override
+                                        public void onComplete() {
+                                            dispose(signalingDisposable);
+                                        }
+                                    });
 
 
+                        } else {
+
+                        }
                     }
 
                     @Override
@@ -1497,7 +1523,7 @@ public class CallController extends BaseController {
                 .PeerConnectionEventType.SENSOR_FAR) ||
                 peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                         .PeerConnectionEventType.SENSOR_NEAR)) {
-            
+
             if (!isVoiceOnlyCall) {
                 boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                         .PeerConnectionEventType.SENSOR_FAR) && videoOn;
@@ -1559,14 +1585,14 @@ public class CallController extends BaseController {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{")
-                     .append("\"fn\":\"")
-                     .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper.getSignalingMessage()))).append("\"")
-                     .append(",")
-                     .append("\"sessionId\":")
-                     .append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"")
-                     .append(",")
-                     .append("\"ev\":\"message\"")
-                     .append("}");
+                .append("\"fn\":\"")
+                .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper.getSignalingMessage()))).append("\"")
+                .append(",")
+                .append("\"sessionId\":")
+                .append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"")
+                .append(",")
+                .append("\"ev\":\"message\"")
+                .append("}");
 
         List<String> strings = new ArrayList<>();
         String stringToSend = stringBuilder.toString();
