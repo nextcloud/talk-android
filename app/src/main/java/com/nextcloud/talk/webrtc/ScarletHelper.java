@@ -24,15 +24,11 @@ import com.nextcloud.talk.api.ExternalSignaling;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.tinder.scarlet.Scarlet;
 import com.tinder.scarlet.messageadapter.moshi.MoshiMessageAdapter;
-import com.tinder.scarlet.retry.ExponentialBackoffStrategy;
 import com.tinder.scarlet.retry.LinearBackoffStrategy;
 import com.tinder.scarlet.streamadapter.rxjava2.RxJava2StreamAdapterFactory;
 import com.tinder.scarlet.websocket.okhttp.OkHttpClientUtils;
-import com.tinder.scarlet.websocket.okhttp.OkHttpWebSocket;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;

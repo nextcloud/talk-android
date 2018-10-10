@@ -35,4 +35,10 @@ public class Settings {
 
     @JsonField(name = "turnservers")
     List<IceServer> turnServers;
+
+    @JsonField(name = "server")
+    String externalSignalingServer;
+
+    @JsonField(name = "ticket")
+    String externalSignalingTicket;
 }

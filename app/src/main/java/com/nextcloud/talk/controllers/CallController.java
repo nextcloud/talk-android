@@ -461,7 +461,7 @@ public class CallController extends BaseController {
             }
 
             if (!inCall) {
-                startCall();
+                fetchSignalingSettings();
             }
         } else if (getActivity() != null && EffortlessPermissions.somePermissionPermanentlyDenied(getActivity(),
                 PERMISSIONS_CALL)) {
@@ -500,7 +500,7 @@ public class CallController extends BaseController {
         }
 
         if (!inCall) {
-            startCall();
+            fetchSignalingSettings();
         }
     }
 
@@ -518,7 +518,7 @@ public class CallController extends BaseController {
                 EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_MICROPHONE))) {
             checkIfSomeAreApproved();
         } else if (!inCall) {
-            startCall();
+            fetchSignalingSettings();
         }
     }
 
@@ -652,7 +652,7 @@ public class CallController extends BaseController {
             }
 
             if (isVoiceOnlyCall && !inCall) {
-                startCall();
+                fetchSignalingSettings();
             }
 
         } else if (getActivity() != null && EffortlessPermissions.somePermissionPermanentlyDenied(getActivity(),
@@ -780,9 +780,6 @@ public class CallController extends BaseController {
         }
     }
 
-    private void startCall() {
-        startPullingSignalingMessages();
-    }
 
     private void animateCallControls(boolean show, long startDelay) {
         if (isVoiceOnlyCall) {
@@ -878,7 +875,7 @@ public class CallController extends BaseController {
         super.onDestroy();
     }
 
-    private void startPullingSignalingMessages() {
+    private void fetchSignalingSettings() {
         leavingCall = false;
 
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
