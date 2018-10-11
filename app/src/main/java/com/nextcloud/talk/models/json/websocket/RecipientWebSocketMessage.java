@@ -30,7 +30,10 @@ import lombok.Data;
 @Data
 @JsonObject
 @Parcel
-public class BaseWebSocketMessage{
+public class RecipientWebSocketMessage {
     @JsonField(name = "type")
     String type;
+
+    @JsonField(name = "sessionid")
+    String sessionId;
 }

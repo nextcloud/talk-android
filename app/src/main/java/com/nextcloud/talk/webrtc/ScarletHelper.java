@@ -20,8 +20,23 @@
 
 package com.nextcloud.talk.webrtc;
 
+import com.google.android.gms.common.api.Api;
 import com.nextcloud.talk.api.ExternalSignaling;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.websocket.AuthParametersWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.AuthWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.HelloOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.HelloWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.RecipientWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.RequestOfferOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.RequestOfferSignalingMessage;
+import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.SignalingDataWebSocketMessageForOffer;
+import com.nextcloud.talk.utils.ApiUtils;
 import com.tinder.scarlet.Scarlet;
 import com.tinder.scarlet.messageadapter.moshi.MoshiMessageAdapter;
 import com.tinder.scarlet.retry.LinearBackoffStrategy;
@@ -76,4 +91,76 @@ public class ScarletHelper {
             return externalSignaling;
         }
     }
+
+    public HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity userEntity, String ticket) {
+        HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
+        helloOverallWebSocketMessage.setType("hello");
+        HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();
+        helloWebSocketMessage.setVersion("1.0");
+        AuthWebSocketMessage authWebSocketMessage = new AuthWebSocketMessage();
+        authWebSocketMessage.setUrl(ApiUtils.getUrlForExternalServerAuthBackend(userEntity.getBaseUrl()));
+        AuthParametersWebSocketMessage authParametersWebSocketMessage = new AuthParametersWebSocketMessage();
+        authParametersWebSocketMessage.setTicket(ticket);
+        authParametersWebSocketMessage.setUserid(userEntity.getUserId());
+        authWebSocketMessage.setAuthParametersWebSocketMessage(authParametersWebSocketMessage);
+        helloWebSocketMessage.setAuthWebSocketMessage(authWebSocketMessage);
+        return helloOverallWebSocketMessage;
+    }
+
+    public HelloOverallWebSocketMessage getAssembledHelloModelForResume(String resumeId) {
+        HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
+        helloOverallWebSocketMessage.setType("hello");
+        HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();
+        helloWebSocketMessage.setVersion("1.0");
+        helloWebSocketMessage.setResumeid(resumeId);
+        return helloOverallWebSocketMessage;
+    }
+
+    public RoomOverallWebSocketMessage getAssembledJoinOrLeaveRoomModel(String roomId, String sessionId) {
+        RoomOverallWebSocketMessage roomOverallWebSocketMessage = new RoomOverallWebSocketMessage();
+        roomOverallWebSocketMessage.setType("room");
+        RoomWebSocketMessage roomWebSocketMessage = new RoomWebSocketMessage();
+        roomWebSocketMessage.setRoomId(roomId);
+        roomWebSocketMessage.setSessiondId(sessionId);
+        return roomOverallWebSocketMessage;
+    }
+
+    public RequestOfferOverallWebSocketMessage getAssembledRequestOfferModel(String sessionId, String roomType) {
+        RequestOfferOverallWebSocketMessage requestOfferOverallWebSocketMessage = new RequestOfferOverallWebSocketMessage();
+        requestOfferOverallWebSocketMessage.setType("message");
+
+        RequestOfferSignalingMessage requestOfferSignalingMessage = new RequestOfferSignalingMessage();
+
+        RecipientWebSocketMessage recipientWebSocketMessage = new RecipientWebSocketMessage();
+        recipientWebSocketMessage.setType("session");
+        recipientWebSocketMessage.setSessionId(sessionId);
+        requestOfferSignalingMessage.setRecipientWebSocketMessage(recipientWebSocketMessage);
+
+        SignalingDataWebSocketMessageForOffer signalingDataWebSocketMessageForOffer = new SignalingDataWebSocketMessageForOffer();
+        signalingDataWebSocketMessageForOffer.setRoomType(roomType);
+        signalingDataWebSocketMessageForOffer.setType("requestoffer");
+        requestOfferSignalingMessage.setSignalingDataWebSocketMessageForOffer(signalingDataWebSocketMessageForOffer);
+
+        requestOfferOverallWebSocketMessage.setRequestOfferOverallWebSocketMessage(requestOfferSignalingMessage);
+        return requestOfferOverallWebSocketMessage;
+    }
+
+    /*
+    - (void)sendCallMessage:(NCSignalingMessage *)message
+    {
+    NSDictionary *messageDict = @{
+                                  @"type": @"message",
+                                  @"message": @{
+                                          @"recipient": @{
+                                                  @"type": @"session",
+                                                  @"sessionid": message.to
+                                                  },
+                                          @"data": [message functionDict]
+                                          }
+                                  };
+
+    [self sendMessage:messageDict];
+    }
+
+     */
 }

@@ -22,6 +22,7 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.models.json.rooms.RoomOverall;
 
 import org.parceler.Parcel;
 
@@ -30,7 +31,7 @@ import lombok.Data;
 @Data
 @JsonObject
 @Parcel
-public class BaseWebSocketMessage{
-    @JsonField(name = "type")
-    String type;
+public class RoomOverallWebSocketMessage extends BaseWebSocketMessage {
+    @JsonField(name = "room")
+    RoomOverallWebSocketMessage roomOverallWebSocketMessage;
 }
