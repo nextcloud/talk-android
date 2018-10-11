@@ -23,10 +23,13 @@ package com.nextcloud.talk.models.json.signaling;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import org.parceler.Parcel;
+
 import lombok.Data;
 
 @Data
 @JsonObject
+@Parcel
 public class NCMessagePayload {
     @JsonField(name = "type")
     String type;

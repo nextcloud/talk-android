@@ -61,6 +61,7 @@ public class ScarletHelper {
     @Inject
     OkHttpClient okHttpClient;
 
+
     public ScarletHelper() {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
