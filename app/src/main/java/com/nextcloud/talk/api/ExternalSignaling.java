@@ -20,12 +20,25 @@
 
 package com.nextcloud.talk.api;
 
+import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.HelloOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.HelloResponseWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.RequestOfferOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.tinder.scarlet.WebSocket;
 import com.tinder.scarlet.ws.Receive;
+import com.tinder.scarlet.ws.Send;
+
+import org.intellij.lang.annotations.Flow;
+
+import java.util.HashMap;
 
 import io.reactivex.Flowable;
 
 public interface ExternalSignaling {
+    @Receive
+    Flowable<WebSocket.Event.OnMessageReceived> observeOnMessageReceived();
+
     @Receive
     Flowable<WebSocket.Event.OnConnectionOpened> observeOnConnectionOpenedEvent();
 
@@ -35,4 +48,18 @@ public interface ExternalSignaling {
     @Receive
     Flowable<WebSocket.Event.OnConnectionClosed> observeOnConnectionClosedEvent();
 
+    @Send
+    void sendHello(HelloOverallWebSocketMessage helloOverallWebSocketMessage);
+
+    @Send
+    void sendResumeHello(RoomOverallWebSocketMessage roomOverallWebSocketMessage);
+
+    @Send
+    void sendOfferRequest(RequestOfferOverallWebSocketMessage requestOfferOverallWebSocketMessage);
+
+    @Send
+    void sendCallMessage(CallOverallWebSocketMessage callOverallWebSocketMessage);
+
+    @Receive
+    Flowable<HelloResponseWebSocketMessage> observeOnHelloBackEvent();
 }
