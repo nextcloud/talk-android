@@ -25,9 +25,12 @@ import com.nextcloud.talk.api.ExternalSignaling;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.AuthParametersWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.AuthWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.CallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RecipientWebSocketMessage;
@@ -145,22 +148,19 @@ public class ScarletHelper {
         return requestOfferOverallWebSocketMessage;
     }
 
-    /*
-    - (void)sendCallMessage:(NCSignalingMessage *)message
-    {
-    NSDictionary *messageDict = @{
-                                  @"type": @"message",
-                                  @"message": @{
-                                          @"recipient": @{
-                                                  @"type": @"session",
-                                                  @"sessionid": message.to
-                                                  },
-                                          @"data": [message functionDict]
-                                          }
-                                  };
+    public CallOverallWebSocketMessage getAssembledCallMessageModel(NCMessageWrapper ncMessageWrapper) {
+        CallOverallWebSocketMessage callOverallWebSocketMessage = new CallOverallWebSocketMessage();
+        callOverallWebSocketMessage.setType("message");
 
-    [self sendMessage:messageDict];
+        CallWebSocketMessage callWebSocketMessage = new CallWebSocketMessage();
+
+        RecipientWebSocketMessage recipientWebSocketMessage = new RecipientWebSocketMessage();
+        recipientWebSocketMessage.setType("session");
+        recipientWebSocketMessage.setSessionId(ncMessageWrapper.getSignalingMessage().getTo());
+        callWebSocketMessage.setRecipientWebSocketMessage(recipientWebSocketMessage);
+        callWebSocketMessage.setNcMessageWrapper(ncMessageWrapper);
+
+        callOverallWebSocketMessage.setCallWebSocketMessage(callWebSocketMessage);
+        return callOverallWebSocketMessage;
     }
-
-     */
 }
