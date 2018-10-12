@@ -29,10 +29,6 @@ import com.tinder.scarlet.WebSocket;
 import com.tinder.scarlet.ws.Receive;
 import com.tinder.scarlet.ws.Send;
 
-import org.intellij.lang.annotations.Flow;
-
-import java.util.HashMap;
-
 import io.reactivex.Flowable;
 
 public interface ExternalSignaling {
