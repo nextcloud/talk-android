@@ -20,9 +20,12 @@
 
 package com.nextcloud.talk.models;
 
+import org.parceler.Parcel;
+
 import lombok.Data;
 
 @Data
+@Parcel
 public class ExternalSignalingServer {
     String externalSignalingServer;
     String externalSignalingTicket;

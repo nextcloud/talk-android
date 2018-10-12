@@ -50,7 +50,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.api.ExternalSignaling;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -76,7 +75,6 @@ import com.nextcloud.talk.models.json.signaling.Signaling;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
-import com.nextcloud.talk.models.json.websocket.HelloResponseWebSocketMessage;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.MagicFlipView;
 import com.nextcloud.talk.utils.NotificationUtils;
@@ -89,8 +87,7 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
-import com.nextcloud.talk.webrtc.ScarletHelper;
-import com.tinder.scarlet.WebSocket;
+import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 import com.wooplr.spotlight.SpotlightView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -98,7 +95,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcels;
-import org.reactivestreams.Subscription;
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.Camera1Enumerator;
@@ -135,7 +131,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import eu.davidea.flipview.FlipView;
-import io.reactivex.FlowableSubscriber;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -249,8 +244,8 @@ public class CallController extends BaseController {
     private SpotlightView spotlightView;
 
     private ExternalSignalingServer externalSignalingServer;
-    private ExternalSignaling externalSignaling;
-    private ScarletHelper scarletHelper;
+    private okhttp3.WebSocket webSocketClient;
+    private WebSocketConnectionHelper webSocketConnectionHelper;
 
     public CallController(Bundle args) {
         super(args);
@@ -1158,7 +1153,7 @@ public class CallController extends BaseController {
 
 
                         } else {
-                            setUpAndInitiateScarletConnection();
+                            setupAndInitiateWebSocketsConnection();
                         }
                     }
 
@@ -1173,55 +1168,11 @@ public class CallController extends BaseController {
                 });
     }
 
-    private void setUpAndInitiateScarletConnection() {
-        scarletHelper = new ScarletHelper();
-        externalSignaling = scarletHelper.getExternalSignalingInstanceForServer(
-                externalSignalingServer.getExternalSignalingServer(), false);
-
-        externalSignaling.observeOnHelloBackEvent().subscribe(new FlowableSubscriber<HelloResponseWebSocketMessage>() {
-            @Override
-            public void onSubscribe(Subscription s) {
-
-            }
-
-            @Override
-            public void onNext(HelloResponseWebSocketMessage helloResponseWebSocketMessage) {
-
-            }
-
-            @Override
-            public void onError(Throwable t) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-
-        externalSignaling.observeOnConnectionOpenedEvent().subscribe(new FlowableSubscriber<WebSocket.Event.OnConnectionOpened>() {
-            @Override
-            public void onSubscribe(Subscription s) {
-
-            }
-
-            @Override
-            public void onNext(WebSocket.Event.OnConnectionOpened onConnectionOpened) {
-                externalSignaling.sendHello(scarletHelper.getAssembledHelloModel(conversationUser,
-                        externalSignalingServer.getExternalSignalingTicket()));
-            }
-
-            @Override
-            public void onError(Throwable t) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+    private void setupAndInitiateWebSocketsConnection() {
+        webSocketConnectionHelper = new WebSocketConnectionHelper();
+        webSocketClient = webSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                externalSignalingServer.getExternalSignalingServer(), false,
+                conversationUser, externalSignalingServer.getExternalSignalingTicket());
     }
 
     @OnClick({R.id.pip_video_view, R.id.remote_renderers_layout})

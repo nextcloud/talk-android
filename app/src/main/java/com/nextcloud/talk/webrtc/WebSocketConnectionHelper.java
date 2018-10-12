@@ -20,13 +20,9 @@
 
 package com.nextcloud.talk.webrtc;
 
-import com.google.android.gms.common.api.Api;
-import com.nextcloud.talk.api.ExternalSignaling;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
-import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.AuthParametersWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.AuthWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
@@ -40,11 +36,6 @@ import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.SignalingDataWebSocketMessageForOffer;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.tinder.scarlet.Scarlet;
-import com.tinder.scarlet.messageadapter.moshi.MoshiMessageAdapter;
-import com.tinder.scarlet.retry.LinearBackoffStrategy;
-import com.tinder.scarlet.streamadapter.rxjava2.RxJava2StreamAdapterFactory;
-import com.tinder.scarlet.websocket.okhttp.OkHttpClientUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,17 +43,20 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
+import io.requery.Nullable;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class ScarletHelper {
-    private Map<String, ExternalSignaling> externalSignalingMap = new HashMap<>();
+public class WebSocketConnectionHelper {
+    private Map<String, WebSocket> webSocketMap = new HashMap<>();
 
     @Inject
     OkHttpClient okHttpClient;
 
 
-    public ScarletHelper() {
+    public WebSocketConnectionHelper() {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
 
@@ -78,21 +72,19 @@ public class ScarletHelper {
         return generatedURL;
     }
 
-    public ExternalSignaling getExternalSignalingInstanceForServer(String url, boolean forceReconnect) {
+    public WebSocket getExternalSignalingInstanceForServer(String url, boolean forceReconnect, UserEntity userEntity, String webSocketTicket) {
+
         String connectionUrl = getExternalSignalingServerUrlFromSettingsUrl(url);
 
-        if (externalSignalingMap.containsKey(connectionUrl) && !forceReconnect) {
-            return externalSignalingMap.get(connectionUrl);
+        if (webSocketMap.containsKey(connectionUrl) && !forceReconnect) {
+            return webSocketMap.get(connectionUrl);
         } else {
-            Scarlet scarlet = new Scarlet.Builder()
-                    .backoffStrategy(new LinearBackoffStrategy(500))
-                    .webSocketFactory(OkHttpClientUtils.newWebSocketFactory(okHttpClient, connectionUrl))
-                    .addMessageAdapterFactory(new MoshiMessageAdapter.Factory())
-                    .addStreamAdapterFactory(new RxJava2StreamAdapterFactory())
-                    .build();
-            ExternalSignaling externalSignaling = scarlet.create(ExternalSignaling.class);
-            externalSignalingMap.put(connectionUrl, externalSignaling);
-            return externalSignaling;
+            Request request = new Request.Builder().url(connectionUrl).build();
+            MagicWebSocketListener listener = new MagicWebSocketListener(userEntity, webSocketTicket);
+            WebSocket webSocket = okHttpClient.newWebSocket(request, listener);
+
+            webSocketMap.put(connectionUrl, webSocket);
+            return webSocket;
         }
     }
 
@@ -108,6 +100,7 @@ public class ScarletHelper {
         authParametersWebSocketMessage.setUserid(userEntity.getUserId());
         authWebSocketMessage.setAuthParametersWebSocketMessage(authParametersWebSocketMessage);
         helloWebSocketMessage.setAuthWebSocketMessage(authWebSocketMessage);
+        helloOverallWebSocketMessage.setHelloWebSocketMessage(helloWebSocketMessage);
         return helloOverallWebSocketMessage;
     }
 

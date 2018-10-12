@@ -20,17 +20,9 @@
  */
 package com.nextcloud.talk.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.emoji.text.EmojiCompat;
-import androidx.emoji.bundled.BundledEmojiCompatConfig;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
 import android.view.ViewGroup;
-import android.webkit.SslErrorHandler;
 
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
@@ -43,23 +35,14 @@ import com.nextcloud.talk.controllers.ChatController;
 import com.nextcloud.talk.controllers.MagicBottomNavigationController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
-import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.utils.ssl.MagicTrustManager;
-import com.yarolegovich.lovelydialog.LovelyStandardDialog;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.security.cert.CertificateParsingException;
-import java.security.cert.X509Certificate;
-import java.text.DateFormat;
-import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.emoji.bundled.BundledEmojiCompatConfig;
+import androidx.emoji.text.EmojiCompat;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,7 +51,7 @@ import io.requery.android.sqlcipher.SqlCipherDatabaseSource;
 import io.requery.reactivex.ReactiveEntityStore;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public final class MainActivity extends AppCompatActivity implements ActionBarProvider {
+public final class MainActivity extends BaseActivity implements ActionBarProvider {
 
     private static final String TAG = "MainActivity";
 
@@ -83,9 +66,6 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
     ReactiveEntityStore<Persistable> dataStore;
     @Inject
     SqlCipherDatabaseSource sqlCipherDatabaseSource;
-
-    @Inject
-    EventBus eventBus;
 
     private Router router;
 
@@ -164,74 +144,4 @@ public final class MainActivity extends AppCompatActivity implements ActionBarPr
         }
     }
 
-    public void showCertificateDialog(X509Certificate cert, MagicTrustManager magicTrustManager,
-                                      @Nullable SslErrorHandler sslErrorHandler) {
-        DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG);
-        String validFrom = formatter.format(cert.getNotBefore());
-        String validUntil = formatter.format(cert.getNotAfter());
-
-        String issuedBy = cert.getIssuerDN().toString();
-        String issuedFor;
-
-        try {
-            if (cert.getSubjectAlternativeNames() != null) {
-                StringBuilder stringBuilder = new StringBuilder();
-                for (Object o : cert.getSubjectAlternativeNames()) {
-                    List list = (List) o;
-                    int type = (Integer) list.get(0);
-                    if (type == 2) {
-                        String name = (String) list.get(1);
-                        stringBuilder.append("[").append(type).append("]").append(name).append(" ");
-                    }
-                }
-                issuedFor = stringBuilder.toString();
-            } else {
-                issuedFor = cert.getSubjectDN().getName();
-            }
-
-            @SuppressLint("StringFormatMatches") String dialogText = String.format(getResources()
-                            .getString(R.string.nc_certificate_dialog_text),
-                    issuedBy, issuedFor, validFrom, validUntil);
-
-            new LovelyStandardDialog(this)
-                    .setTopColorRes(R.color.nc_darkRed)
-                    .setNegativeButtonColorRes(R.color.nc_darkRed)
-                    .setPositiveButtonColorRes(R.color.colorPrimaryDark)
-                    .setIcon(R.drawable.ic_security_white_24dp)
-                    .setTitle(R.string.nc_certificate_dialog_title)
-                    .setMessage(dialogText)
-                    .setPositiveButton(R.string.nc_yes, v -> {
-                        magicTrustManager.addCertInTrustStore(cert);
-                        if (sslErrorHandler != null) {
-                            sslErrorHandler.proceed();
-                        }
-                    })
-                    .setNegativeButton(R.string.nc_no, view1 -> {
-                        if (sslErrorHandler != null) {
-                            sslErrorHandler.cancel();
-                        }
-                    })
-                    .show();
-
-        } catch (CertificateParsingException e) {
-            Log.d(TAG, "Failed to parse the certificate");
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(CertificateEvent event) {
-        showCertificateDialog(event.getX509Certificate(), event.getMagicTrustManager(), event.getSslErrorHandler());
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        eventBus.register(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        eventBus.unregister(this);
-    }
 }

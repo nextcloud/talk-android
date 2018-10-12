@@ -22,7 +22,6 @@ package com.nextcloud.talk.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -48,7 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class MagicCallActivity extends AppCompatActivity {
+public class MagicCallActivity extends BaseActivity {
     private static final String TAG = "MagicCallActivity";
 
     @Inject

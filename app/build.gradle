@@ -190,11 +190,6 @@ dependencies {
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.kevalpatel2106:emoticongifkeyboard:1.1'
 
-    implementation 'com.github.tinder.scarlet:scarlet:0.1.5'
-    implementation 'com.github.tinder.scarlet:scarlet-stream-adapter-rxjava2:0.1.5'
-    implementation 'com.github.tinder.scarlet:scarlet-message-adapter-moshi:0.1.5'
-    implementation 'com.github.tinder.scarlet:scarlet-websocket-okhttp:0.1.5'
-
     testImplementation 'junit:junit:4.12'
     androidTestImplementation ('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
