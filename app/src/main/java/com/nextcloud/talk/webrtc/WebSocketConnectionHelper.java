@@ -43,14 +43,13 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
-import io.requery.Nullable;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebSocketConnectionHelper {
-    private Map<String, WebSocket> webSocketMap = new HashMap<>();
+    private Map<String, MagicWebSocketInstance> magicWebSocketInstanceMap = new HashMap<>();
 
     @Inject
     OkHttpClient okHttpClient;
@@ -72,23 +71,20 @@ public class WebSocketConnectionHelper {
         return generatedURL;
     }
 
-    public WebSocket getExternalSignalingInstanceForServer(String url, boolean forceReconnect, UserEntity userEntity, String webSocketTicket) {
+    public MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, boolean forceReconnect, UserEntity userEntity, String webSocketTicket) {
 
         String connectionUrl = getExternalSignalingServerUrlFromSettingsUrl(url);
 
-        if (webSocketMap.containsKey(connectionUrl) && !forceReconnect) {
-            return webSocketMap.get(connectionUrl);
+        if (magicWebSocketInstanceMap.containsKey(userEntity.getUserId()) && !forceReconnect) {
+            return magicWebSocketInstanceMap.get(userEntity.getUserId());
         } else {
-            Request request = new Request.Builder().url(connectionUrl).build();
-            MagicWebSocketListener listener = new MagicWebSocketListener(userEntity, webSocketTicket);
-            WebSocket webSocket = okHttpClient.newWebSocket(request, listener);
-
-            webSocketMap.put(connectionUrl, webSocket);
-            return webSocket;
+            MagicWebSocketInstance magicWebSocketInstance = new MagicWebSocketInstance(userEntity, connectionUrl, webSocketTicket);
+            magicWebSocketInstanceMap.put(userEntity.getUserId(), magicWebSocketInstance);
+            return magicWebSocketInstance;
         }
     }
 
-    public HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity userEntity, String ticket) {
+    HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity userEntity, String ticket) {
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");
         HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();
@@ -104,7 +100,7 @@ public class WebSocketConnectionHelper {
         return helloOverallWebSocketMessage;
     }
 
-    public HelloOverallWebSocketMessage getAssembledHelloModelForResume(String resumeId) {
+    HelloOverallWebSocketMessage getAssembledHelloModelForResume(String resumeId) {
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");
         HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();

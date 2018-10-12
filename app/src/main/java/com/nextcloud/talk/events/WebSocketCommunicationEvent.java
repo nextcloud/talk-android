@@ -18,30 +18,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.models.json.websocket;
+package com.nextcloud.talk.events;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+import java.util.HashMap;
 
-import org.parceler.Parcel;
-
+import androidx.annotation.Nullable;
 import lombok.Data;
 
 @Data
-@JsonObject
-@Parcel
-public class HelloResponseWebSocketMessage {
-    @JsonField(name = "resumeid")
-    String resumeId;
-
-    @JsonField(name = "sessionid")
-    String sessionId;
-
-    @JsonField(name = "server")
-    ServerHelloResponseFeaturesWebSocketMessage serverHelloResponseFeaturesWebSocketMessage;
-
-    public boolean serverHasMCUSupport() {
-        return serverHelloResponseFeaturesWebSocketMessage != null && serverHelloResponseFeaturesWebSocketMessage.getFeatures() != null
-                && serverHelloResponseFeaturesWebSocketMessage.getFeatures().contains("mcu");
-    }
+public class WebSocketCommunicationEvent {
+    public final String type;
+    @Nullable
+    public final HashMap<String, String> hashMap;
 }

@@ -24,26 +24,54 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.HelloResponseWebSocketMessage;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.util.HashMap;
 
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
 
-public class MagicWebSocketListener extends WebSocketListener {
+@AutoInjector(NextcloudTalkApplication.class)
+public class MagicWebSocketInstance extends WebSocketListener {
     private static final String TAG = "MagicWebSocketListener";
-    private static final int NORMAL_CLOSURE_STATUS = 1000;
+
+    @Inject
+    OkHttpClient okHttpClient;
+
+    @Inject
+    EventBus eventBus;
 
     private UserEntity conversationUser;
     private String webSocketTicket;
     private String resumeId;
+    private String sessionId;
+    private boolean hasMCU;
+    private boolean connected;
     private WebSocketConnectionHelper webSocketConnectionHelper;
+    private WebSocket webSocket;
 
-    MagicWebSocketListener(UserEntity conversationUser, String webSocketTicket) {
+    MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        Request request = new Request.Builder().url(connectionUrl).build();
+
+        this.webSocket = okHttpClient.newWebSocket(request, this);
+
         this.conversationUser = conversationUser;
         this.webSocketTicket = webSocketTicket;
         this.webSocketConnectionHelper = new WebSocketConnectionHelper();
@@ -60,7 +88,6 @@ public class MagicWebSocketListener extends WebSocketListener {
         } catch (IOException e) {
             Log.e(TAG, "Failed to serialize hello model");
         }
-        //webSocket.close(NORMAL_CLOSURE_STATUS, "Goodbye !");
     }
 
     @Override
@@ -69,8 +96,33 @@ public class MagicWebSocketListener extends WebSocketListener {
 
         try {
             BaseWebSocketMessage baseWebSocketMessage = LoganSquare.parse(text, BaseWebSocketMessage.class);
+            String messageType = baseWebSocketMessage.getType();
+            switch (messageType) {
+                case "hello":
+                    connected = true;
+                    HelloResponseOverallWebSocketMessage helloResponseWebSocketMessage = LoganSquare.parse(text, HelloResponseOverallWebSocketMessage.class);
+                    resumeId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getResumeId();
+                    sessionId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getSessionId();
+                    hasMCU = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().serverHasMCUSupport();
+                    eventBus.post(new WebSocketCommunicationEvent("hello", null));
+                    break;
+                case "error":
+                    // Nothing for now
+                    break;
+                case "room":
+                    // Nothing for now
+                    break;
+                case "event":
+                    // Nothing for now
+                    break;
+                case "message":
+                    CallOverallWebSocketMessage callOverallWebSocketMessage = LoganSquare.parse(text, CallOverallWebSocketMessage.class);
+                    break;
+                default:
+                    break;
+            }
         } catch (IOException e) {
-            Log.e(TAG, "Failed to parse base WebSocket message");
+            Log.e(TAG, "Failed to WebSocket message");
         }
     }
 
@@ -81,13 +133,25 @@ public class MagicWebSocketListener extends WebSocketListener {
 
     @Override
     public void onClosing(WebSocket webSocket, int code, String reason) {
-        webSocket.close(NORMAL_CLOSURE_STATUS, null);
         Log.d(TAG, "Closing : " + code + " / " + reason);
+        connected = false;
     }
 
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
         Log.d(TAG, "Error : " + t.getMessage());
+        connected = false;
     }
 
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public boolean hasMCU() {
+        return hasMCU;
+    }
+
+    public WebSocket getWebSocket() {
+        return webSocket;
+    }
 }

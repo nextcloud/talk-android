@@ -57,6 +57,7 @@ import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
+import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.CallOverall;
@@ -87,6 +88,7 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
 import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
+import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 import com.wooplr.spotlight.SpotlightView;
 
@@ -244,7 +246,7 @@ public class CallController extends BaseController {
     private SpotlightView spotlightView;
 
     private ExternalSignalingServer externalSignalingServer;
-    private okhttp3.WebSocket webSocketClient;
+    private MagicWebSocketInstance webSocketClient;
     private WebSocketConnectionHelper webSocketConnectionHelper;
 
     public CallController(Bundle args) {
@@ -1175,6 +1177,15 @@ public class CallController extends BaseController {
                 conversationUser, externalSignalingServer.getExternalSignalingTicket());
     }
 
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
+        if (webSocketCommunicationEvent.getType().equals("hello")) {
+            callSession = webSocketClient.getSessionId();
+            MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(callSession);
+        } else if (webSocketCommunicationEvent.equals("MCUPeerReady")) {
+        }
+    }
+
     @OnClick({R.id.pip_video_view, R.id.remote_renderers_layout})
     public void showCallControls() {
         animateCallControls(true, 0);
@@ -1474,8 +1485,18 @@ public class CallController extends BaseController {
         if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
             return magicPeerConnectionWrapper;
         } else {
+            boolean hasMCU = webSocketClient != null && webSocketClient.hasMCU();
+
+            if (hasMCU) {
+                magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
+                        iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, hasMCU);
+            } else {
+                magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
+                        iceServers, sdpConstraints, sessionId, callSession, localMediaStream, hasMCU);
+            }
+
             magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                    iceServers, sdpConstraints, sessionId, callSession, localMediaStream);
+                    iceServers, sdpConstraints, sessionId, callSession, localMediaStream, hasMCU);
             magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
             return magicPeerConnectionWrapper;
         }
@@ -1593,58 +1614,62 @@ public class CallController extends BaseController {
         ncMessageWrapper.setSignalingMessage(ncSignalingMessage);
 
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("{")
-                .append("\"fn\":\"")
-                .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper.getSignalingMessage()))).append("\"")
-                .append(",")
-                .append("\"sessionId\":")
-                .append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"")
-                .append(",")
-                .append("\"ev\":\"message\"")
-                .append("}");
+        if (externalSignalingServer == null) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("{")
+                    .append("\"fn\":\"")
+                    .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper.getSignalingMessage()))).append("\"")
+                    .append(",")
+                    .append("\"sessionId\":")
+                    .append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"")
+                    .append(",")
+                    .append("\"ev\":\"message\"")
+                    .append("}");
 
-        List<String> strings = new ArrayList<>();
-        String stringToSend = stringBuilder.toString();
-        strings.add(stringToSend);
+            List<String> strings = new ArrayList<>();
+            String stringToSend = stringBuilder.toString();
+            strings.add(stringToSend);
 
-        String urlToken = null;
-        if (isMultiSession) {
-            urlToken = roomToken;
-        }
+            String urlToken = null;
+            if (isMultiSession) {
+                urlToken = roomToken;
+            }
 
-        ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken),
-                strings.toString())
-                .retry(3)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Observer<SignalingOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken),
+                    strings.toString())
+                    .retry(3)
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Observer<SignalingOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onNext(SignalingOverall signalingOverall) {
-                        if (signalingOverall.getOcs().getSignalings() != null) {
-                            for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
-                                try {
-                                    receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                        @Override
+                        public void onNext(SignalingOverall signalingOverall) {
+                            if (signalingOverall.getOcs().getSignalings() != null) {
+                                for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
+                                    try {
+                                        receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                        }
 
-                    @Override
-                    public void onComplete() {
+                        @Override
+                        public void onComplete() {
 
-                    }
-                });
+                        }
+                    });
+        } else {
+            webSocketClient.getWebSocket().send(LoganSquare.serialize(ncMessageWrapper));
+        }
     }
 
     @Override

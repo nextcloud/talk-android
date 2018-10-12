@@ -30,6 +30,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
+import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 
@@ -71,7 +72,8 @@ public class MagicPeerConnectionWrapper {
     public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                       List<PeerConnection.IceServer> iceServerList,
                                       MediaConstraints mediaConstraints,
-                                      String sessionId, String localSession, MediaStream mediaStream) {
+                                      String sessionId, String localSession, MediaStream mediaStream,
+                                      boolean hasMCU) {
 
         this.localMediaStream = mediaStream;
 
@@ -87,7 +89,11 @@ public class MagicPeerConnectionWrapper {
         if (peerConnection != null) {
             peerConnection.addStream(localMediaStream);
 
-            if (hasInitiated) {
+            if (hasMCU) {
+                EventBus.getDefault().post(new WebSocketCommunicationEvent("MCUPeerReady", null));
+            }
+
+            if (hasInitiated || hasMCU) {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;
                 magicDataChannel = peerConnection.createDataChannel("status", init);
