@@ -53,7 +53,6 @@ public class MagicWebSocketListener extends WebSocketListener {
     public void onOpen(WebSocket webSocket, Response response) {
         try {
             if (TextUtils.isEmpty(resumeId)) {
-                Log.d("MARIO", LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModel(conversationUser, webSocketTicket)));
                 webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModel(conversationUser, webSocketTicket)));
             } else {
                 webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModelForResume(resumeId)));
