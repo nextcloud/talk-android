@@ -89,10 +89,6 @@ public class MagicPeerConnectionWrapper {
         if (peerConnection != null) {
             peerConnection.addStream(localMediaStream);
 
-            if (hasMCU) {
-                EventBus.getDefault().post(new WebSocketCommunicationEvent("MCUPeerReady", null));
-            }
-
             if (hasInitiated || hasMCU) {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;

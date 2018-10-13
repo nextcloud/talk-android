@@ -33,5 +33,5 @@ import lombok.Data;
 @Parcel
 public class RoomOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "room")
-    RoomOverallWebSocketMessage roomOverallWebSocketMessage;
+    RoomWebSocketMessage roomWebSocketMessage;
 }

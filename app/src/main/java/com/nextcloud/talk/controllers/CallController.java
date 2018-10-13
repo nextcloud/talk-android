@@ -76,6 +76,7 @@ import com.nextcloud.talk.models.json.signaling.Signaling;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.MagicFlipView;
 import com.nextcloud.talk.utils.NotificationUtils;
@@ -1181,7 +1182,8 @@ public class CallController extends BaseController {
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
         if (webSocketCommunicationEvent.getType().equals("hello")) {
             callSession = webSocketClient.getSessionId();
-            MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(callSession);
+            webSocketClient.joinRoomWithRoomId(roomToken);
+            //MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(callSession);
         } else if (webSocketCommunicationEvent.equals("MCUPeerReady")) {
         }
     }
@@ -1339,6 +1341,9 @@ public class CallController extends BaseController {
                     @Override
                     public void onNext(GenericOverall genericOverall) {
                         if (isMultiSession) {
+                            if (externalSignalingServer != null) {
+                                webSocketClient.joinRoomWithRoomId("");
+                            }
                             if (getActivity() != null) {
                                 getActivity().finish();
                             }
@@ -1371,6 +1376,10 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
+                        if (externalSignalingServer != null) {
+                            webSocketClient.joinRoomWithRoomId("");
+                        }
+
                         if (getActivity() != null) {
                             getActivity().finish();
                         }

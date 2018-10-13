@@ -27,10 +27,13 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessage;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -153,5 +156,19 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     public WebSocket getWebSocket() {
         return webSocket;
+    }
+
+    public void joinRoomWithRoomId(String roomId) {
+        RoomOverallWebSocketMessage roomOverallWebSocketMessage = new RoomOverallWebSocketMessage();
+        roomOverallWebSocketMessage.setType("room");
+        RoomWebSocketMessage roomWebSocketMessage = new RoomWebSocketMessage();
+        roomWebSocketMessage.setRoomId(roomId);
+        roomWebSocketMessage.setSessiondId(sessionId);
+        roomOverallWebSocketMessage.setRoomWebSocketMessage(roomWebSocketMessage);
+        try {
+            webSocket.send(LoganSquare.serialize(roomOverallWebSocketMessage));
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to serialize room overall websocket message");
+        }
     }
 }
