@@ -156,8 +156,8 @@
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Letiltott mikorfonnal kattintson a &amp; tartásra, hogy használni tudja az adóvevőt</string>
     <string name="nc_store_short_desc">Intézz videóhívásokat és magánbeszélgetéseket saját szervered segítségével.</string>
-    <string name="nc_configure_cert_auth">Autentikációs tanúsítvány kiválasztása</string>
-    <string name="nc_change_cert_auth">Autentikációs tanúsítvány módosítása</string>
+    <string name="nc_configure_cert_auth">Hitelesítési tanúsítvány kiválasztása</string>
+    <string name="nc_change_cert_auth">Hitelesítési tanúsítvány módosítása</string>
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Írj üzenetet...</string>
     <string name="nc_date_header_yesterday">Tegnap</string>
