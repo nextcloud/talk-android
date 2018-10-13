@@ -144,7 +144,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.dialogDate.setText(DateUtils.getRelativeTimeSpanString(conversation.getLastActivity() * 1000L,
                     System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
 
-            if (conversation.getType() == Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+            if (conversation.getType() == Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL || !(TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage()))) {
                 holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
                 holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
