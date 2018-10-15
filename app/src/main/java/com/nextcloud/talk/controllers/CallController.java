@@ -1458,7 +1458,11 @@ public class CallController extends BaseController {
         }
 
         for (String sessionId : newSessions) {
-            alwaysGetPeerConnectionWrapperForSessionId(sessionId);
+            if (!hasMCU) {
+                alwaysGetPeerConnectionWrapperForSessionId(sessionId);
+            } else {
+                webSocketClient.requestOfferForSessionIdWithType(sessionId, "video");
+            }
         }
 
         for (String sessionId : oldSesssions) {

@@ -224,4 +224,12 @@ public class MagicWebSocketInstance extends WebSocketListener {
         concurrentHashMapQueue.remove(id);
         return copyJob;
     }
+
+    public void requestOfferForSessionIdWithType(String sessionId, String roomType) {
+        try {
+            webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledRequestOfferModel(sessionId, roomType)));
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to offer request");
+        }
+    }
 }
