@@ -27,18 +27,15 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
-import com.nextcloud.talk.models.json.websocket.HelloResponseWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessage;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import javax.inject.Inject;
 

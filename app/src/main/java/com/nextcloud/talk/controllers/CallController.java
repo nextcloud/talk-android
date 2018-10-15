@@ -76,7 +76,6 @@ import com.nextcloud.talk.models.json.signaling.Signaling;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
-import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.MagicFlipView;
 import com.nextcloud.talk.utils.NotificationUtils;
@@ -1183,7 +1182,7 @@ public class CallController extends BaseController {
         if (webSocketCommunicationEvent.getType().equals("hello")) {
             callSession = webSocketClient.getSessionId();
             webSocketClient.joinRoomWithRoomId(roomToken);
-            //MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(callSession);
+            MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(callSession);
         } else if (webSocketCommunicationEvent.equals("MCUPeerReady")) {
         }
     }
