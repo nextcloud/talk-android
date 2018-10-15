@@ -50,6 +50,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 public class MagicPeerConnectionWrapper {
     private static String TAG = "MagicPeerConnectionWrapper";
     List<IceCandidate> iceCandidates = new ArrayList<>();
@@ -72,7 +74,7 @@ public class MagicPeerConnectionWrapper {
     public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                       List<PeerConnection.IceServer> iceServerList,
                                       MediaConstraints mediaConstraints,
-                                      String sessionId, String localSession, MediaStream mediaStream,
+                                      String sessionId, String localSession, @Nullable MediaStream mediaStream,
                                       boolean hasMCU) {
 
         this.localMediaStream = mediaStream;
@@ -346,6 +348,7 @@ public class MagicPeerConnectionWrapper {
 
             EventBus.getDefault().post(new SessionDescriptionSendEvent(sessionDescriptionWithPreferredCodec, sessionId,
                     sessionDescription.type.canonicalForm().toLowerCase(), null));
+
             if (peerConnection != null) {
                 peerConnection.setLocalDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
             }

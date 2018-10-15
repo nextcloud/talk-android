@@ -1390,10 +1390,6 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        if (externalSignalingServer != null) {
-                            webSocketClient.joinRoomWithRoomToken("");
-                        }
-
                         if (getActivity() != null) {
                             getActivity().finish();
                         }
@@ -1514,12 +1510,21 @@ public class CallController extends BaseController {
         } else {
             hasMCU = webSocketClient != null && webSocketClient.hasMCU();
 
+            MediaConstraints mediaConstraintsToUse;
+
+            if (hasMCU) {
+                mediaConstraintsToUse = sdpConstraintsForMCU;
+            } else {
+                mediaConstraintsToUse = sdpConstraints;
+
+            }
+
             if (sessionId.equals(callSession)) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, hasMCU);
+                        iceServers, mediaConstraintsToUse, sessionId, callSession, localMediaStream, hasMCU);
             } else {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraintsForMCU, sessionId, callSession, null, hasMCU);
+                        iceServers, mediaConstraintsToUse, sessionId, callSession, null, hasMCU);
             }
 
             magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
