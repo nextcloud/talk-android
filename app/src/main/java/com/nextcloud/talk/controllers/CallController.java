@@ -1353,10 +1353,11 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
+                        if (externalSignalingServer != null) {
+                            webSocketClient.joinRoomWithRoomToken("");
+                        }
+
                         if (isMultiSession) {
-                            if (externalSignalingServer != null) {
-                                webSocketClient.joinRoomWithRoomToken("");
-                            }
                             if (getActivity() != null) {
                                 getActivity().finish();
                             }
