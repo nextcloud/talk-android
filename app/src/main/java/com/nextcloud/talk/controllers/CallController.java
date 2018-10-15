@@ -1192,9 +1192,12 @@ public class CallController extends BaseController {
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
         if (webSocketCommunicationEvent.getType().equals("hello")) {
             callSession = webSocketClient.getSessionId();
-            webSocketClient.joinRoomWithRoomId(roomToken);
-            MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(callSession);
-        } else if (webSocketCommunicationEvent.equals("MCUPeerReady")) {
+            webSocketClient.joinRoomWithRoomToken(roomToken);
+            alwaysGetPeerConnectionWrapperForSessionId(callSession);
+        } else if (webSocketCommunicationEvent.equals("participantsUpdate")) {
+            if (webSocketCommunicationEvent.getHashMap().get("roomId").equals(roomToken)) {
+                processUsersInRoom((List<HashMap<String, Object>>) webSocketClient.getJobWithId(Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
+            }
         }
     }
 
@@ -1352,7 +1355,7 @@ public class CallController extends BaseController {
                     public void onNext(GenericOverall genericOverall) {
                         if (isMultiSession) {
                             if (externalSignalingServer != null) {
-                                webSocketClient.joinRoomWithRoomId("");
+                                webSocketClient.joinRoomWithRoomToken("");
                             }
                             if (getActivity() != null) {
                                 getActivity().finish();
@@ -1387,7 +1390,7 @@ public class CallController extends BaseController {
                     @Override
                     public void onNext(GenericOverall genericOverall) {
                         if (externalSignalingServer != null) {
-                            webSocketClient.joinRoomWithRoomId("");
+                            webSocketClient.joinRoomWithRoomToken("");
                         }
 
                         if (getActivity() != null) {
@@ -1506,12 +1509,12 @@ public class CallController extends BaseController {
         } else {
             hasMCU = webSocketClient != null && webSocketClient.hasMCU();
 
-            if (hasMCU) {
+            if (sessionId.equals(callSession)) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraintsForMCU, sessionId, callSession, null, hasMCU);
+                        iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, hasMCU);
             } else {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraints, sessionId, callSession, localMediaStream, hasMCU);
+                        iceServers, sdpConstraintsForMCU, sessionId, callSession, null, hasMCU);
             }
 
             magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
@@ -1685,7 +1688,7 @@ public class CallController extends BaseController {
                         }
                     });
         } else {
-            webSocketClient.getWebSocket().send(LoganSquare.serialize(ncMessageWrapper));
+            webSocketClient.sendCallMessage(ncMessageWrapper);
         }
     }
 

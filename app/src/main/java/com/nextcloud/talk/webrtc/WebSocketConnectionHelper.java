@@ -115,6 +115,7 @@ public class WebSocketConnectionHelper {
         RoomWebSocketMessage roomWebSocketMessage = new RoomWebSocketMessage();
         roomWebSocketMessage.setRoomId(roomId);
         roomWebSocketMessage.setSessiondId(sessionId);
+        roomOverallWebSocketMessage.setRoomWebSocketMessage(roomWebSocketMessage);
         return roomOverallWebSocketMessage;
     }
 

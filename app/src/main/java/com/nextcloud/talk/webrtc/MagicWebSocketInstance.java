@@ -27,15 +27,20 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
-import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
-import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessage;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
@@ -49,7 +54,7 @@ import okio.ByteString;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicWebSocketInstance extends WebSocketListener {
-    private static final String TAG = "MagicWebSocketListener";
+    private static final String TAG = "MagicWebSocketInstance";
 
     @Inject
     OkHttpClient okHttpClient;
@@ -65,6 +70,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private boolean connected;
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private WebSocket webSocket;
+    private ConcurrentHashMap<Integer, Object> concurrentHashMapQueue;
 
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -75,6 +81,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
         this.conversationUser = conversationUser;
         this.webSocketTicket = webSocketTicket;
         this.webSocketConnectionHelper = new WebSocketConnectionHelper();
+
+        concurrentHashMapQueue = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -107,13 +115,57 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     eventBus.post(new WebSocketCommunicationEvent("hello", null));
                     break;
                 case "error":
-                    // Nothing for now
+                    ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
                     break;
                 case "room":
                     // Nothing for now
                     break;
                 case "event":
                     // Nothing for now
+                    EventOverallWebSocketMessage eventOverallWebSocketMessage = LoganSquare.parse(text, EventOverallWebSocketMessage.class);
+                    if (eventOverallWebSocketMessage.getEventMap() != null) {
+                        String target = (String) eventOverallWebSocketMessage.getEventMap().get("target");
+                        switch (target) {
+                            case "room":
+                                if (eventOverallWebSocketMessage.getType().equals("message") && eventOverallWebSocketMessage.getEventMap() != null) {
+                                    if (eventOverallWebSocketMessage.getEventMap().containsKey("data")) {
+                                        Map<String, Object> dataHashMap = (Map<String, Object>) eventOverallWebSocketMessage.getEventMap().get("data");
+                                        if (dataHashMap.containsKey("chat")) {
+                                            boolean shouldRefreshChat;
+                                            Map<String, Object> chatMap = (Map<String, Object>) dataHashMap.get("chat");
+                                            if (chatMap.containsKey("refresh")) {
+                                                shouldRefreshChat = (boolean) chatMap.get("refresh");
+                                                if (shouldRefreshChat) {
+                                                    HashMap<String, String> refreshChatHashMap = new HashMap<>();
+                                                    refreshChatHashMap.put("roomToken", (String) eventOverallWebSocketMessage.getEventMap().get("roomid"));
+                                                    eventBus.post(new WebSocketCommunicationEvent("refreshChat", refreshChatHashMap));
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            case "participants":
+                                if (eventOverallWebSocketMessage.getType().equals("update") && eventOverallWebSocketMessage.getEventMap() != null) {
+                                    Map<String, Object> participantsUpdateMap = eventOverallWebSocketMessage.getEventMap();
+                                    HashMap<String, String> refreshChatHashMap = new HashMap<>();
+                                    refreshChatHashMap.put("roomToken", (String) eventOverallWebSocketMessage.getEventMap().get("roomid"));
+                                    int newId;
+                                    do {
+                                        Random rand = new Random();
+                                        newId = rand.nextInt(1000);
+                                        if (!concurrentHashMapQueue.contains(newId)) {
+                                            concurrentHashMapQueue.put(newId, participantsUpdateMap.get("users"));
+                                            refreshChatHashMap.put("roomToken", (String) eventOverallWebSocketMessage.getEventMap().get("roomid"));
+                                            refreshChatHashMap.put("jobId", Integer.toString(newId));
+                                            eventBus.post(new WebSocketCommunicationEvent("participantsUpdate", refreshChatHashMap));
+                                        }
+                                    } while (!concurrentHashMapQueue.contains(newId));
+
+                                }
+                                break;
+                        }
+                    }
                     break;
                 case "message":
                     CallOverallWebSocketMessage callOverallWebSocketMessage = LoganSquare.parse(text, CallOverallWebSocketMessage.class);
@@ -151,21 +203,25 @@ public class MagicWebSocketInstance extends WebSocketListener {
         return hasMCU;
     }
 
-    public WebSocket getWebSocket() {
-        return webSocket;
-    }
-
-    public void joinRoomWithRoomId(String roomId) {
-        RoomOverallWebSocketMessage roomOverallWebSocketMessage = new RoomOverallWebSocketMessage();
-        roomOverallWebSocketMessage.setType("room");
-        RoomWebSocketMessage roomWebSocketMessage = new RoomWebSocketMessage();
-        roomWebSocketMessage.setRoomId(roomId);
-        roomWebSocketMessage.setSessiondId(sessionId);
-        roomOverallWebSocketMessage.setRoomWebSocketMessage(roomWebSocketMessage);
+    public void joinRoomWithRoomToken(String roomToken) {
         try {
-            webSocket.send(LoganSquare.serialize(roomOverallWebSocketMessage));
+            webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, sessionId)));
         } catch (IOException e) {
             Log.e(TAG, "Failed to serialize room overall websocket message");
         }
+    }
+
+    public void sendCallMessage(NCMessageWrapper ncMessageWrapper) {
+        try {
+            webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledCallMessageModel(ncMessageWrapper)));
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to serialize signaling message");
+        }
+    }
+
+    public Object getJobWithId(Integer id) {
+        Object copyJob = concurrentHashMapQueue.get(id);
+        concurrentHashMapQueue.remove(id);
+        return copyJob;
     }
 }
