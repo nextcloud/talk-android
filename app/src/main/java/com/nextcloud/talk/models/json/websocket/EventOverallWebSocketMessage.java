@@ -35,6 +35,6 @@ import lombok.Data;
 public class EventOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "type")
     String type;
-    @JsonField(name = {"message", "update"})
+    @JsonField(name = "event")
     HashMap<String, Object> eventMap;
 }
