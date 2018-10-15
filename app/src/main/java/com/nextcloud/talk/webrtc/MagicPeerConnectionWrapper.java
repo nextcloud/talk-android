@@ -87,7 +87,9 @@ public class MagicPeerConnectionWrapper {
                 new MagicPeerConnectionObserver());
 
         if (peerConnection != null) {
-            peerConnection.addStream(localMediaStream);
+            if (localSession != null) {
+                peerConnection.addStream(localMediaStream);
+            }
 
             if (hasInitiated || hasMCU) {
                 DataChannel.Init init = new DataChannel.Init();

@@ -248,6 +248,7 @@ public class CallController extends BaseController {
     private ExternalSignalingServer externalSignalingServer;
     private MagicWebSocketInstance webSocketClient;
     private WebSocketConnectionHelper webSocketConnectionHelper;
+    private boolean hasMCU;
 
     public CallController(Bundle args) {
         super(args);
@@ -793,8 +794,18 @@ public class CallController extends BaseController {
         }
 
         if (inCall) {
-            for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
-                magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
+            if (!hasMCU) {
+                for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
+                    magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
+                }
+            } else {
+                for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
+                    if (magicPeerConnectionWrapperList.get(i).getSessionId().equals(callSession)) {
+                        magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
+                        break;
+
+                    }
+                }
             }
         }
     }
@@ -1493,18 +1504,16 @@ public class CallController extends BaseController {
         if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
             return magicPeerConnectionWrapper;
         } else {
-            boolean hasMCU = webSocketClient != null && webSocketClient.hasMCU();
+            hasMCU = webSocketClient != null && webSocketClient.hasMCU();
 
             if (hasMCU) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, hasMCU);
+                        iceServers, sdpConstraintsForMCU, sessionId, callSession, null, hasMCU);
             } else {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
                         iceServers, sdpConstraints, sessionId, callSession, localMediaStream, hasMCU);
             }
 
-            magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                    iceServers, sdpConstraints, sessionId, callSession, localMediaStream, hasMCU);
             magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
             return magicPeerConnectionWrapper;
         }
