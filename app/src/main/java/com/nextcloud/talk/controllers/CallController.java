@@ -1193,11 +1193,13 @@ public class CallController extends BaseController {
         if (webSocketCommunicationEvent.getType().equals("hello")) {
             callSession = webSocketClient.getSessionId();
             webSocketClient.joinRoomWithRoomToken(roomToken);
-            alwaysGetPeerConnectionWrapperForSessionId(callSession);
-        } else if (webSocketCommunicationEvent.equals("participantsUpdate")) {
+            alwaysGetPeerConnectionWrapperForSessionId(callSession, true);
+        } else if ("participantsUpdate".equals(webSocketCommunicationEvent.getType())) {
             if (webSocketCommunicationEvent.getHashMap().get("roomId").equals(roomToken)) {
                 processUsersInRoom((List<HashMap<String, Object>>) webSocketClient.getJobWithId(Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
             }
+        } else if ("signalingMessage".equals(webSocketCommunicationEvent.getType())) {
+            processMessage((NCSignalingMessage) webSocketClient.getJobWithId(Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
         }
     }
 
@@ -1235,51 +1237,55 @@ public class CallController extends BaseController {
         } else if ("message".equals(messageType)) {
             NCSignalingMessage ncSignalingMessage = LoganSquare.parse(signaling.getMessageWrapper().toString(),
                     NCSignalingMessage.class);
-            if (ncSignalingMessage.getRoomType().equals("video")) {
-                MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId
-                        (ncSignalingMessage.getFrom());
+            processMessage(ncSignalingMessage);
+        } else {
+            Log.d(TAG, "Something went very very wrong");
+        }
+    }
 
-                String type = null;
-                if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() !=
-                        null) {
-                    type = ncSignalingMessage.getPayload().getType();
-                } else if (ncSignalingMessage.getType() != null) {
-                    type = ncSignalingMessage.getType();
+    private void processMessage(NCSignalingMessage ncSignalingMessage) {
+        if (ncSignalingMessage.getRoomType().equals("video")) {
+            MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId
+                    (ncSignalingMessage.getFrom(), false);
+
+            String type = null;
+            if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() !=
+                    null) {
+                type = ncSignalingMessage.getPayload().getType();
+            } else if (ncSignalingMessage.getType() != null) {
+                type = ncSignalingMessage.getType();
+            }
+
+            if (type != null) {
+                switch (type) {
+                    case "offer":
+                    case "answer":
+                        magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
+                        String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
+                                (ncSignalingMessage.getPayload().getSdp(),
+                                        "VP8", false);
+
+                        SessionDescription sessionDescriptionWithPreferredCodec = new SessionDescription(
+                                SessionDescription.Type.fromCanonicalForm(type),
+                                sessionDescriptionStringWithPreferredCodec);
+
+                        if (magicPeerConnectionWrapper.getPeerConnection() != null) {
+                            magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
+                                    .getMagicSdpObserver(), sessionDescriptionWithPreferredCodec);
+                        }
+                        break;
+                    case "candidate":
+                        NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
+                        IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
+                                ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
+                        magicPeerConnectionWrapper.addCandidate(iceCandidate);
+                        break;
+                    case "endOfCandidates":
+                        magicPeerConnectionWrapper.drainIceCandidates();
+                        break;
+                    default:
+                        break;
                 }
-
-                if (type != null) {
-                    switch (type) {
-                        case "offer":
-                        case "answer":
-                            magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
-                            String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
-                                    (ncSignalingMessage.getPayload().getSdp(),
-                                            "VP8", false);
-
-                            SessionDescription sessionDescriptionWithPreferredCodec = new SessionDescription(
-                                    SessionDescription.Type.fromCanonicalForm(type),
-                                    sessionDescriptionStringWithPreferredCodec);
-
-                            if (magicPeerConnectionWrapper.getPeerConnection() != null) {
-                                magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
-                                        .getMagicSdpObserver(), sessionDescriptionWithPreferredCodec);
-                            }
-                            break;
-                        case "candidate":
-                            NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
-                            IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
-                                    ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
-                            magicPeerConnectionWrapper.addCandidate(iceCandidate);
-                            break;
-                        case "endOfCandidates":
-                            magicPeerConnectionWrapper.drainIceCandidates();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            } else {
-                Log.d(TAG, "Something went very very wrong");
             }
         } else {
             Log.d(TAG, "Something went very very wrong");
@@ -1455,7 +1461,7 @@ public class CallController extends BaseController {
 
         for (String sessionId : newSessions) {
             if (!hasMCU) {
-                alwaysGetPeerConnectionWrapperForSessionId(sessionId);
+                alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
             } else {
                 webSocketClient.requestOfferForSessionIdWithType(sessionId, "video");
             }
@@ -1503,28 +1509,22 @@ public class CallController extends BaseController {
         magicPeerConnectionWrapperList.remove(magicPeerConnectionWrapper);
     }
 
-    private MagicPeerConnectionWrapper alwaysGetPeerConnectionWrapperForSessionId(String sessionId) {
+    private MagicPeerConnectionWrapper alwaysGetPeerConnectionWrapperForSessionId(String sessionId, boolean publisher) {
         MagicPeerConnectionWrapper magicPeerConnectionWrapper;
         if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
             return magicPeerConnectionWrapper;
         } else {
             hasMCU = webSocketClient != null && webSocketClient.hasMCU();
 
-            MediaConstraints mediaConstraintsToUse;
-
-            if (hasMCU) {
-                mediaConstraintsToUse = sdpConstraintsForMCU;
-            } else {
-                mediaConstraintsToUse = sdpConstraints;
-
-            }
-
-            if (sessionId.equals(callSession)) {
+            if (hasMCU && publisher) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, mediaConstraintsToUse, sessionId, callSession, localMediaStream, hasMCU);
+                        iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, true);
+            } else if (hasMCU) {
+                magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
+                        iceServers, sdpConstraints, sessionId, callSession, null, false);
             } else {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, mediaConstraintsToUse, sessionId, callSession, null, hasMCU);
+                        iceServers, sdpConstraints, sessionId, callSession, localMediaStream, false);
             }
 
             magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
@@ -1626,6 +1626,7 @@ public class CallController extends BaseController {
         ncMessageWrapper.setSessionId(callSession);
         NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
         ncSignalingMessage.setTo(sessionDescriptionSend.getPeerId());
+        ncSignalingMessage.setFrom(callSession);
         ncSignalingMessage.setRoomType("video");
         ncSignalingMessage.setType(sessionDescriptionSend.getType());
         NCMessagePayload ncMessagePayload = new NCMessagePayload();

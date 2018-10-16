@@ -169,6 +169,18 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     break;
                 case "message":
                     CallOverallWebSocketMessage callOverallWebSocketMessage = LoganSquare.parse(text, CallOverallWebSocketMessage.class);
+                    int newId;
+                    do {
+                        HashMap<String, String> messageHashMap = new HashMap<>();
+                        Random rand = new Random();
+                        newId = rand.nextInt(1000);
+                        if (!concurrentHashMapQueue.contains(newId)) {
+                            concurrentHashMapQueue.put(newId, callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage());
+                            messageHashMap.put("jobId", Integer.toString(newId));
+                            eventBus.post(new WebSocketCommunicationEvent("signalingMessage", messageHashMap));
+                        }
+                    } while (!concurrentHashMapQueue.contains(newId));
+
                     break;
                 default:
                     break;
