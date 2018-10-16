@@ -33,6 +33,7 @@ import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
+import com.nextcloud.talk.utils.MagicMap;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -41,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.inject.Inject;
 
@@ -70,7 +72,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private boolean connected;
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private WebSocket webSocket;
-    private ConcurrentHashMap<Integer, Object> concurrentHashMapQueue;
+    private MagicMap<Integer, Object> magicMap;
 
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -82,7 +84,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
         this.webSocketTicket = webSocketTicket;
         this.webSocketConnectionHelper = new WebSocketConnectionHelper();
 
-        concurrentHashMapQueue = new ConcurrentHashMap<>();
+        magicMap = new MagicMap();
     }
 
     @Override
@@ -150,18 +152,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                     Map<String, Object> participantsUpdateMap = eventOverallWebSocketMessage.getEventMap();
                                     HashMap<String, String> refreshChatHashMap = new HashMap<>();
                                     refreshChatHashMap.put("roomToken", (String) eventOverallWebSocketMessage.getEventMap().get("roomid"));
-                                    int newId;
-                                    do {
-                                        Random rand = new Random();
-                                        newId = rand.nextInt(1000);
-                                        if (!concurrentHashMapQueue.contains(newId)) {
-                                            concurrentHashMapQueue.put(newId, participantsUpdateMap.get("users"));
-                                            refreshChatHashMap.put("roomToken", (String) eventOverallWebSocketMessage.getEventMap().get("roomid"));
-                                            refreshChatHashMap.put("jobId", Integer.toString(newId));
-                                            eventBus.post(new WebSocketCommunicationEvent("participantsUpdate", refreshChatHashMap));
-                                        }
-                                    } while (!concurrentHashMapQueue.contains(newId));
-
+                                    refreshChatHashMap.put("jobId", Integer.toString(magicMap.add(participantsUpdateMap.get("users"))));
+                                    eventBus.post(new WebSocketCommunicationEvent("participantsUpdate", refreshChatHashMap));
                                 }
                                 break;
                         }
@@ -169,18 +161,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     break;
                 case "message":
                     CallOverallWebSocketMessage callOverallWebSocketMessage = LoganSquare.parse(text, CallOverallWebSocketMessage.class);
-                    int newId;
-                    do {
-                        HashMap<String, String> messageHashMap = new HashMap<>();
-                        Random rand = new Random();
-                        newId = rand.nextInt(1000);
-                        if (!concurrentHashMapQueue.contains(newId)) {
-                            concurrentHashMapQueue.put(newId, callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage());
-                            messageHashMap.put("jobId", Integer.toString(newId));
-                            eventBus.post(new WebSocketCommunicationEvent("signalingMessage", messageHashMap));
-                        }
-                    } while (!concurrentHashMapQueue.contains(newId));
-
+                    HashMap<String, String> messageHashMap = new HashMap<>();
+                    messageHashMap.put("jobId", Integer.toString(magicMap.add(callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage())));
+                    eventBus.post(new WebSocketCommunicationEvent("signalingMessage", messageHashMap));
                     break;
                 default:
                     break;

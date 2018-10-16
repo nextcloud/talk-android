@@ -340,7 +340,7 @@ public class MagicPeerConnectionWrapper {
         public void onCreateSuccess(SessionDescription sessionDescription) {
             String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
                     (sessionDescription.description,
-                            "H264", false);
+                            "VP8", false);
 
             SessionDescription sessionDescriptionWithPreferredCodec = new SessionDescription(
                     sessionDescription.type,
