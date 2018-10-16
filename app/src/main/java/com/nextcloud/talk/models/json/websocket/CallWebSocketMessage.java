@@ -23,6 +23,7 @@ package com.nextcloud.talk.models.json.websocket;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 
 import org.parceler.Parcel;
 
@@ -36,5 +37,5 @@ public class CallWebSocketMessage {
     RecipientWebSocketMessage recipientWebSocketMessage;
 
     @JsonField(name = "data")
-    NCMessageWrapper ncMessageWrapper;
+    NCSignalingMessage ncSignalingMessage;
 }

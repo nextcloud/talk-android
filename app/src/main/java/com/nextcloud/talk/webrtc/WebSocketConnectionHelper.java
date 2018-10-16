@@ -109,7 +109,7 @@ public class WebSocketConnectionHelper {
         return helloOverallWebSocketMessage;
     }
 
-    public RoomOverallWebSocketMessage getAssembledJoinOrLeaveRoomModel(String roomId, String sessionId) {
+    RoomOverallWebSocketMessage getAssembledJoinOrLeaveRoomModel(String roomId, String sessionId) {
         RoomOverallWebSocketMessage roomOverallWebSocketMessage = new RoomOverallWebSocketMessage();
         roomOverallWebSocketMessage.setType("room");
         RoomWebSocketMessage roomWebSocketMessage = new RoomWebSocketMessage();
@@ -119,7 +119,7 @@ public class WebSocketConnectionHelper {
         return roomOverallWebSocketMessage;
     }
 
-    public RequestOfferOverallWebSocketMessage getAssembledRequestOfferModel(String sessionId, String roomType) {
+    RequestOfferOverallWebSocketMessage getAssembledRequestOfferModel(String sessionId, String roomType) {
         RequestOfferOverallWebSocketMessage requestOfferOverallWebSocketMessage = new RequestOfferOverallWebSocketMessage();
         requestOfferOverallWebSocketMessage.setType("message");
 
@@ -139,7 +139,7 @@ public class WebSocketConnectionHelper {
         return requestOfferOverallWebSocketMessage;
     }
 
-    public CallOverallWebSocketMessage getAssembledCallMessageModel(NCMessageWrapper ncMessageWrapper) {
+    CallOverallWebSocketMessage getAssembledCallMessageModel(NCMessageWrapper ncMessageWrapper) {
         CallOverallWebSocketMessage callOverallWebSocketMessage = new CallOverallWebSocketMessage();
         callOverallWebSocketMessage.setType("message");
 
@@ -149,7 +149,7 @@ public class WebSocketConnectionHelper {
         recipientWebSocketMessage.setType("session");
         recipientWebSocketMessage.setSessionId(ncMessageWrapper.getSignalingMessage().getTo());
         callWebSocketMessage.setRecipientWebSocketMessage(recipientWebSocketMessage);
-        callWebSocketMessage.setNcMessageWrapper(ncMessageWrapper);
+        callWebSocketMessage.setNcSignalingMessage(ncMessageWrapper.getSignalingMessage());
 
         callOverallWebSocketMessage.setCallWebSocketMessage(callWebSocketMessage);
         return callOverallWebSocketMessage;
