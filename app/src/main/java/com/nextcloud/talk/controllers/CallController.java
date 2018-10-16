@@ -1263,7 +1263,7 @@ public class CallController extends BaseController {
                         magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
                         String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
                                 (ncSignalingMessage.getPayload().getSdp(),
-                                        "VP8", false);
+                                        "H264", false);
 
                         SessionDescription sessionDescriptionWithPreferredCodec = new SessionDescription(
                                 SessionDescription.Type.fromCanonicalForm(type),
