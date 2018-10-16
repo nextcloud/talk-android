@@ -40,9 +40,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.inject.Inject;
 
@@ -72,7 +69,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private boolean connected;
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private WebSocket webSocket;
-    private MagicMap<Integer, Object> magicMap;
+    private MagicMap magicMap;
 
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -215,8 +212,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     public Object getJobWithId(Integer id) {
-        Object copyJob = concurrentHashMapQueue.get(id);
-        concurrentHashMapQueue.remove(id);
+        Object copyJob = magicMap.get(id);
+        magicMap.remove(id);
         return copyJob;
     }
 
