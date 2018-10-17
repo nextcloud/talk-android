@@ -1024,7 +1024,7 @@ public class CallController extends BaseController {
     }
 
     private void joinRoomAndCall() {
-        if ("0".equals(callSession) || externalSignalingServer != null) {
+        if ("0".equals(callSession)) {
             ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken), null)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -1037,12 +1037,8 @@ public class CallController extends BaseController {
 
                         @Override
                         public void onNext(CallOverall callOverall) {
-                            if (externalSignalingServer == null) {
-                                callSession = callOverall.getOcs().getData().getSessionId();
-                                performCall();
-                            } else {
-                                webSocketClient.joinRoomWithRoomToken(roomToken);
-                            }
+                            callSession = callOverall.getOcs().getData().getSessionId();
+                            callOrJoinRoomViaWebSocket();
                         }
 
                         @Override
@@ -1056,7 +1052,15 @@ public class CallController extends BaseController {
                         }
                     });
         } else {
+            callOrJoinRoomViaWebSocket();
+        }
+    }
+
+    private void callOrJoinRoomViaWebSocket() {
+        if (externalSignalingServer == null) {
             performCall();
+        } else {
+            webSocketClient.joinRoomWithRoomTokenAndSession(roomToken, callSession);
         }
     }
 
@@ -1171,7 +1175,7 @@ public class CallController extends BaseController {
 
 
                         } else {
-                            alwaysGetPeerConnectionWrapperForSessionId(callSession, true);
+                            alwaysGetPeerConnectionWrapperForSessionId(webSocketClient.getSessionId(), true);
                         }
                     }
 
@@ -1197,7 +1201,6 @@ public class CallController extends BaseController {
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
-                callSession = webSocketClient.getSessionId();
                 joinRoomAndCall();
                 break;
             case "roomJoined":
@@ -1373,7 +1376,7 @@ public class CallController extends BaseController {
                     @Override
                     public void onNext(GenericOverall genericOverall) {
                         if (externalSignalingServer != null) {
-                            webSocketClient.joinRoomWithRoomToken("");
+                            webSocketClient.joinRoomWithRoomTokenAndSession("", "");
                         }
 
                         if (isMultiSession) {
@@ -1455,11 +1458,7 @@ public class CallController extends BaseController {
         }
 
         for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
-            if (externalSignalingServer != null && callSession.equals(magicPeerConnectionWrapper.getSessionId())) {
-                oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
-            } else {
-                oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
-            }
+            oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
         }
 
         // Calculate sessions that left the call
@@ -1716,6 +1715,7 @@ public class CallController extends BaseController {
                         }
                     });
         } else {
+            Log.d("MARIO", "SENDING CALL MESSAGE " + ncMessageWrapper.getSignalingMessage().getType());
             webSocketClient.sendCallMessage(ncMessageWrapper);
         }
     }

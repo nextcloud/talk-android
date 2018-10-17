@@ -202,9 +202,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
         return hasMCU;
     }
 
-    public void joinRoomWithRoomToken(String roomToken) {
+    public void joinRoomWithRoomTokenAndSession(String roomToken, String normalBackendSession) {
         try {
-            webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, sessionId)));
+            webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession)));
         } catch (IOException e) {
             Log.e(TAG, "Failed to serialize room overall websocket message");
         }
