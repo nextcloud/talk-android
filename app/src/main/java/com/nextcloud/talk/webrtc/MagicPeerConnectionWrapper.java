@@ -48,7 +48,9 @@ import org.webrtc.SessionDescription;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.Nullable;
 
@@ -75,7 +77,7 @@ public class MagicPeerConnectionWrapper {
                                       List<PeerConnection.IceServer> iceServerList,
                                       MediaConstraints mediaConstraints,
                                       String sessionId, String localSession, @Nullable MediaStream mediaStream,
-                                      boolean isMCUPublisher) {
+                                      boolean isMCUPublisher, boolean hasMCU) {
 
         this.localMediaStream = mediaStream;
 
@@ -93,12 +95,19 @@ public class MagicPeerConnectionWrapper {
                 peerConnection.addStream(localMediaStream);
             }
 
-            if (isMCUPublisher || hasInitiated) {
+            if (hasMCU || hasInitiated) {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;
                 magicDataChannel = peerConnection.createDataChannel("status", init);
                 magicDataChannel.registerObserver(new MagicDataChannelObserver());
-                peerConnection.createOffer(magicSdpObserver, mediaConstraints);
+                if (isMCUPublisher) {
+                    peerConnection.createOffer(magicSdpObserver, mediaConstraints);
+                } else if (hasMCU) {
+                    HashMap<String, String> peerConnectionReadyMap = new HashMap<>();
+                    peerConnectionReadyMap.put("sessionId", sessionId);
+                    EventBus.getDefault().post(new WebSocketCommunicationEvent("peerConnectionReady", peerConnectionReadyMap));
+
+                }
             }
         }
     }
@@ -341,13 +350,18 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onCreateSuccess(SessionDescription sessionDescription) {
-            String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
-                    (sessionDescription.description,
-                            "VP8", false);
+            SessionDescription sessionDescriptionWithPreferredCodec;
+            if (localMediaStream != null) {
+                String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
+                        (sessionDescription.description,
+                                "VP8", false);
+                sessionDescriptionWithPreferredCodec = new SessionDescription(
+                        sessionDescription.type,
+                        sessionDescriptionStringWithPreferredCodec);
+            } else {
+                sessionDescriptionWithPreferredCodec = sessionDescription;
+            }
 
-            SessionDescription sessionDescriptionWithPreferredCodec = new SessionDescription(
-                    sessionDescription.type,
-                    sessionDescriptionStringWithPreferredCodec);
 
             EventBus.getDefault().post(new SessionDescriptionSendEvent(sessionDescriptionWithPreferredCodec, sessionId,
                     sessionDescription.type.canonicalForm().toLowerCase(), null));
@@ -369,5 +383,9 @@ public class MagicPeerConnectionWrapper {
                 }
             }
         }
+    }
+
+    public boolean hasMediaStream() {
+        return localMediaStream != null;
     }
 }

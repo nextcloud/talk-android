@@ -36,4 +36,7 @@ public class ActorWebSocketMessage {
 
     @JsonField(name = "sessionid")
     String sessionId;
+
+    @JsonField(name = "userid")
+    String userid;
 }
