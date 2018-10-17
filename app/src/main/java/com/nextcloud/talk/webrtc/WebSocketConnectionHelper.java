@@ -23,13 +23,13 @@ package com.nextcloud.talk.webrtc;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
+import com.nextcloud.talk.models.json.websocket.ActorWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.AuthParametersWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.AuthWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloWebSocketMessage;
-import com.nextcloud.talk.models.json.websocket.RecipientWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RequestOfferOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RequestOfferSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
@@ -44,8 +44,6 @@ import javax.inject.Inject;
 
 import autodagger.AutoInjector;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.WebSocket;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebSocketConnectionHelper {
@@ -125,10 +123,10 @@ public class WebSocketConnectionHelper {
 
         RequestOfferSignalingMessage requestOfferSignalingMessage = new RequestOfferSignalingMessage();
 
-        RecipientWebSocketMessage recipientWebSocketMessage = new RecipientWebSocketMessage();
-        recipientWebSocketMessage.setType("session");
-        recipientWebSocketMessage.setSessionId(sessionId);
-        requestOfferSignalingMessage.setRecipientWebSocketMessage(recipientWebSocketMessage);
+        ActorWebSocketMessage actorWebSocketMessage = new ActorWebSocketMessage();
+        actorWebSocketMessage.setType("session");
+        actorWebSocketMessage.setSessionId(sessionId);
+        requestOfferSignalingMessage.setActorWebSocketMessage(actorWebSocketMessage);
 
         SignalingDataWebSocketMessageForOffer signalingDataWebSocketMessageForOffer = new SignalingDataWebSocketMessageForOffer();
         signalingDataWebSocketMessageForOffer.setRoomType(roomType);
@@ -145,10 +143,10 @@ public class WebSocketConnectionHelper {
 
         CallWebSocketMessage callWebSocketMessage = new CallWebSocketMessage();
 
-        RecipientWebSocketMessage recipientWebSocketMessage = new RecipientWebSocketMessage();
-        recipientWebSocketMessage.setType("session");
-        recipientWebSocketMessage.setSessionId(ncMessageWrapper.getSignalingMessage().getTo());
-        callWebSocketMessage.setRecipientWebSocketMessage(recipientWebSocketMessage);
+        ActorWebSocketMessage actorWebSocketMessage = new ActorWebSocketMessage();
+        actorWebSocketMessage.setType("session");
+        actorWebSocketMessage.setSessionId(ncMessageWrapper.getSignalingMessage().getTo());
+        callWebSocketMessage.setActorWebSocketMessage(actorWebSocketMessage);
         callWebSocketMessage.setNcSignalingMessage(ncMessageWrapper.getSignalingMessage());
 
         callOverallWebSocketMessage.setCallWebSocketMessage(callWebSocketMessage);

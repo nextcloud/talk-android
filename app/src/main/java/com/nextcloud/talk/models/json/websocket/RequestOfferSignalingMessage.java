@@ -32,7 +32,7 @@ import lombok.Data;
 @Parcel
 public class RequestOfferSignalingMessage {
     @JsonField(name = "recipient")
-    RecipientWebSocketMessage recipientWebSocketMessage;
+    ActorWebSocketMessage actorWebSocketMessage;
 
     @JsonField(name = "data")
     SignalingDataWebSocketMessageForOffer signalingDataWebSocketMessageForOffer;

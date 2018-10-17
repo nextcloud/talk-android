@@ -1642,7 +1642,6 @@ public class CallController extends BaseController {
         ncMessageWrapper.setSessionId(callSession);
         NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
         ncSignalingMessage.setTo(sessionDescriptionSend.getPeerId());
-        ncSignalingMessage.setFrom(callSession);
         ncSignalingMessage.setRoomType("video");
         ncSignalingMessage.setType(sessionDescriptionSend.getType());
         NCMessagePayload ncMessagePayload = new NCMessagePayload();
