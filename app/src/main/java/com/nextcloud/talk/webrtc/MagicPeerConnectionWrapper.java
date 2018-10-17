@@ -72,6 +72,7 @@ public class MagicPeerConnectionWrapper {
     private boolean hasInitiated;
 
     private MediaStream localMediaStream;
+    private boolean isMCUPublisher;
 
     public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                       List<PeerConnection.IceServer> iceServerList,
@@ -86,6 +87,7 @@ public class MagicPeerConnectionWrapper {
 
         magicSdpObserver = new MagicSdpObserver();
         hasInitiated = sessionId.compareTo(localSession) < 0;
+        this.isMCUPublisher = isMCUPublisher;
 
         peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
                 new MagicPeerConnectionObserver());
@@ -266,7 +268,9 @@ public class MagicPeerConnectionWrapper {
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
                 /*EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CONNECTED, sessionId, null, null));*/
-                EventBus.getDefault().post(new MediaStreamEvent(remoteMediaStream, sessionId));
+                if (!isMCUPublisher) {
+                    EventBus.getDefault().post(new MediaStreamEvent(remoteMediaStream, sessionId));
+                }
 
                 if (hasInitiated) {
                     sendInitialMediaStatus();
@@ -309,7 +313,9 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onRemoveStream(MediaStream mediaStream) {
-            EventBus.getDefault().post(new MediaStreamEvent(null, sessionId));
+            if (!isMCUPublisher) {
+                EventBus.getDefault().post(new MediaStreamEvent(null, sessionId));
+            }
         }
 
         @Override

@@ -800,7 +800,7 @@ public class CallController extends BaseController {
                 }
             } else {
                 for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
-                    if (magicPeerConnectionWrapperList.get(i).getSessionId().equals(callSession)) {
+                    if (magicPeerConnectionWrapperList.get(i).getSessionId().equals(webSocketClient.getSessionId())) {
                         magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
                         break;
 
@@ -1280,7 +1280,7 @@ public class CallController extends BaseController {
                         magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
                         SessionDescription sessionDescriptionWithPreferredCodec;
 
-                        if (magicPeerConnectionWrapper.hasMediaStream() ) {
+                        if (magicPeerConnectionWrapper.hasMediaStream()) {
                             String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
                                     (ncSignalingMessage.getPayload().getSdp(),
                                             "VP8", false);
@@ -1480,7 +1480,7 @@ public class CallController extends BaseController {
             return;
         }
 
-        if (newSessions.size() > 0) {
+        if (newSessions.size() > 0 && !hasMCU) {
             getPeersForCall();
         }
 
