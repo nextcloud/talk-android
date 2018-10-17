@@ -127,7 +127,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     }
                 break;
                 case "event":
-                    // Nothing for now
                     EventOverallWebSocketMessage eventOverallWebSocketMessage = LoganSquare.parse(text, EventOverallWebSocketMessage.class);
                     if (eventOverallWebSocketMessage.getEventMap() != null) {
                         String target = (String) eventOverallWebSocketMessage.getEventMap().get("target");

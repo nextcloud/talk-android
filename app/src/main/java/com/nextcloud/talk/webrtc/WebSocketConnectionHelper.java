@@ -146,7 +146,7 @@ public class WebSocketConnectionHelper {
         ActorWebSocketMessage actorWebSocketMessage = new ActorWebSocketMessage();
         actorWebSocketMessage.setType("session");
         actorWebSocketMessage.setSessionId(ncMessageWrapper.getSignalingMessage().getTo());
-        callWebSocketMessage.setActorWebSocketMessage(actorWebSocketMessage);
+        callWebSocketMessage.setRecipientWebSocketMessage(actorWebSocketMessage);
         callWebSocketMessage.setNcSignalingMessage(ncMessageWrapper.getSignalingMessage());
 
         callOverallWebSocketMessage.setCallWebSocketMessage(callWebSocketMessage);

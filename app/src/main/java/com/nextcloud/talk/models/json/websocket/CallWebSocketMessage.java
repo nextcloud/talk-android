@@ -33,7 +33,7 @@ import lombok.Data;
 @Parcel
 public class CallWebSocketMessage {
     @JsonField(name = "recipient")
-    ActorWebSocketMessage actorWebSocketMessage;
+    ActorWebSocketMessage recipientWebSocketMessage;
 
     @JsonField(name = "sender")
     ActorWebSocketMessage senderWebSocketMessage;
