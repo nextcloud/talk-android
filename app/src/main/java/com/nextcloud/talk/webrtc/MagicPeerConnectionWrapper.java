@@ -77,7 +77,7 @@ public class MagicPeerConnectionWrapper {
                                       List<PeerConnection.IceServer> iceServerList,
                                       MediaConstraints mediaConstraints,
                                       String sessionId, String localSession, @Nullable MediaStream mediaStream,
-                                      boolean isMCUPublisher, boolean hasMCU) {
+                                      boolean isMCUPublisher) {
 
         this.localMediaStream = mediaStream;
 
@@ -95,18 +95,13 @@ public class MagicPeerConnectionWrapper {
                 peerConnection.addStream(localMediaStream);
             }
 
-            if (hasMCU || hasInitiated) {
+            if (isMCUPublisher || hasInitiated) {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;
                 magicDataChannel = peerConnection.createDataChannel("status", init);
                 magicDataChannel.registerObserver(new MagicDataChannelObserver());
                 if (isMCUPublisher) {
                     peerConnection.createOffer(magicSdpObserver, mediaConstraints);
-                } else if (hasMCU) {
-                    HashMap<String, String> peerConnectionReadyMap = new HashMap<>();
-                    peerConnectionReadyMap.put("sessionId", sessionId);
-                    EventBus.getDefault().post(new WebSocketCommunicationEvent("peerConnectionReady", peerConnectionReadyMap));
-
                 }
             }
         }

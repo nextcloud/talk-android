@@ -42,4 +42,7 @@ public class NCMessagePayload {
 
     @JsonField(name = "candidate")
     NCIceCandidate iceCandidate;
+
+    @JsonField(name = "name")
+    String name;
 }

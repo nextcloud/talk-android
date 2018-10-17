@@ -1219,9 +1219,6 @@ public class CallController extends BaseController {
             case "signalingMessage":
                 processMessage((NCSignalingMessage) webSocketClient.getJobWithId(Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
                 break;
-            case "peerConnectionReady":
-                webSocketClient.requestOfferForSessionIdWithType(webSocketCommunicationEvent.getHashMap().get("sessionId"), "video");
-                break;
         }
     }
 
@@ -1267,12 +1264,10 @@ public class CallController extends BaseController {
 
     private void processMessage(NCSignalingMessage ncSignalingMessage) {
         if (ncSignalingMessage.getRoomType().equals("video")) {
-            MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId
-                    (ncSignalingMessage.getFrom(), false);
+            MagicPeerConnectionWrapper magicPeerConnectionWrapper = alwaysGetPeerConnectionWrapperForSessionId(ncSignalingMessage.getFrom(), false);
 
             String type = null;
-            if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() !=
-                    null) {
+            if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() != null) {
                 type = ncSignalingMessage.getPayload().getType();
             } else if (ncSignalingMessage.getType() != null) {
                 type = ncSignalingMessage.getType();
@@ -1490,7 +1485,11 @@ public class CallController extends BaseController {
         }
 
         for (String sessionId : newSessions) {
-            alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
+            if (!hasMCU) {
+                alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
+            } else {
+                webSocketClient.requestOfferForSessionIdWithType(sessionId, "video");
+            }
         }
 
         for (String sessionId : oldSesssions) {
@@ -1542,19 +1541,15 @@ public class CallController extends BaseController {
         } else {
             hasMCU = webSocketClient != null && webSocketClient.hasMCU();
 
-            if (sessionId == null) {
-                Log.d("MARIO", "ISNULL");
-            }
-
             if (hasMCU && publisher) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, true, true);
+                        iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, true);
             } else if (hasMCU) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraints, sessionId, callSession, null, false, true);
+                        iceServers, sdpConstraints, sessionId, callSession, null, false);
             } else {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraints, sessionId, callSession, localMediaStream, false, false);
+                        iceServers, sdpConstraints, sessionId, callSession, localMediaStream, false);
             }
 
             magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);

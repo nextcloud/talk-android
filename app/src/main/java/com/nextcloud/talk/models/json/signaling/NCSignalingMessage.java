@@ -43,5 +43,6 @@ public class NCSignalingMessage {
     String roomType;
     @JsonField(name = "sid")
     String sid;
-
+    @JsonField(name = "prefix")
+    String prefix;
 }
