@@ -1455,7 +1455,11 @@ public class CallController extends BaseController {
         }
 
         for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
-            oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
+            if (externalSignalingServer != null && callSession.equals(magicPeerConnectionWrapper.getSessionId())) {
+                oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
+            } else {
+                oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
+            }
         }
 
         // Calculate sessions that left the call

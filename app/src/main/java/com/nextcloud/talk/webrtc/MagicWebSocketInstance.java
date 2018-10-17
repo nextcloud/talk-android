@@ -133,7 +133,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         String target = (String) eventOverallWebSocketMessage.getEventMap().get("target");
                         switch (target) {
                             case "room":
-                                if (eventOverallWebSocketMessage.getType().equals("message") && eventOverallWebSocketMessage.getEventMap() != null) {
+                                if (eventOverallWebSocketMessage.getType().equals("message")) {
                                     if (eventOverallWebSocketMessage.getEventMap().containsKey("data")) {
                                         Map<String, Object> dataHashMap = (Map<String, Object>) eventOverallWebSocketMessage.getEventMap().get("data");
                                         if (dataHashMap.containsKey("chat")) {
@@ -152,11 +152,11 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                 }
                                 break;
                             case "participants":
-                                if (eventOverallWebSocketMessage.getType().equals("update") && eventOverallWebSocketMessage.getEventMap() != null) {
-                                    Map<String, Object> participantsUpdateMap = eventOverallWebSocketMessage.getEventMap();
+                                if (eventOverallWebSocketMessage.getEventMap().get("type").equals("update")) {
                                     HashMap<String, String> refreshChatHashMap = new HashMap<>();
-                                    refreshChatHashMap.put("roomToken", (String) eventOverallWebSocketMessage.getEventMap().get("roomid"));
-                                    refreshChatHashMap.put("jobId", Integer.toString(magicMap.add(participantsUpdateMap.get("users"))));
+                                    HashMap<String, Object> updateEventMap = (HashMap<String, Object>) eventOverallWebSocketMessage.getEventMap().get("update");
+                                    refreshChatHashMap.put("roomToken", (String) updateEventMap.get("roomid"));
+                                    refreshChatHashMap.put("jobId", Integer.toString(magicMap.add(updateEventMap.get("users"))));
                                     eventBus.post(new WebSocketCommunicationEvent("participantsUpdate", refreshChatHashMap));
                                 }
                                 break;
