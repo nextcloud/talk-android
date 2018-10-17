@@ -41,5 +41,7 @@ public class NCSignalingMessage {
     NCMessagePayload payload;
     @JsonField(name = "roomType")
     String roomType;
+    @JsonField(name = "sid")
+    String sid;
 
 }
