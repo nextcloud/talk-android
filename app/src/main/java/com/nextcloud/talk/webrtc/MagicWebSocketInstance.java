@@ -164,7 +164,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     break;
                 case "message":
                     CallOverallWebSocketMessage callOverallWebSocketMessage = LoganSquare.parse(text, CallOverallWebSocketMessage.class);
-                    if (callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage().getPrefix() == null) {
+                    if (callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage().getFrom() != null) {
                         HashMap<String, String> messageHashMap = new HashMap<>();
                         messageHashMap.put("jobId", Integer.toString(magicMap.add(callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage())));
                         eventBus.post(new WebSocketCommunicationEvent("signalingMessage", messageHashMap));
