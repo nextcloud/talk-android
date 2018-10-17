@@ -1190,16 +1190,20 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
-        if (webSocketCommunicationEvent.getType().equals("hello")) {
-            callSession = webSocketClient.getSessionId();
-            webSocketClient.joinRoomWithRoomToken(roomToken);
-            alwaysGetPeerConnectionWrapperForSessionId(callSession, true);
-        } else if ("participantsUpdate".equals(webSocketCommunicationEvent.getType())) {
-            if (webSocketCommunicationEvent.getHashMap().get("roomId").equals(roomToken)) {
-                processUsersInRoom((List<HashMap<String, Object>>) webSocketClient.getJobWithId(Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
-            }
-        } else if ("signalingMessage".equals(webSocketCommunicationEvent.getType())) {
-            processMessage((NCSignalingMessage) webSocketClient.getJobWithId(Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
+        switch (webSocketCommunicationEvent.getType()) {
+            case "hello":
+                callSession = webSocketClient.getSessionId();
+                webSocketClient.joinRoomWithRoomToken(roomToken);
+                alwaysGetPeerConnectionWrapperForSessionId(callSession, true);
+                break;
+            case "participantsUpdate":
+                if (webSocketCommunicationEvent.getHashMap().get("roomId").equals(roomToken)) {
+                    processUsersInRoom((List<HashMap<String, Object>>) webSocketClient.getJobWithId(Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
+                }
+                break;
+            case "signalingMessage":
+                processMessage((NCSignalingMessage) webSocketClient.getJobWithId(Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
+                break;
         }
     }
 
