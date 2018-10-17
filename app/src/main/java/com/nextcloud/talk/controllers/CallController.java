@@ -1715,7 +1715,6 @@ public class CallController extends BaseController {
                         }
                     });
         } else {
-            Log.d("MARIO", "SENDING CALL MESSAGE " + ncMessageWrapper.getSignalingMessage().getType());
             webSocketClient.sendCallMessage(ncMessageWrapper);
         }
     }
