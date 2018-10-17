@@ -30,13 +30,7 @@ import lombok.Data;
 @Data
 @JsonObject
 @Parcel
-public class RoomWebSocketMessage {
-    @JsonField(name = "roomid")
-    String roomId;
-
-    @JsonField(name = "sessionid")
-    String sessiondId;
-
-    @JsonField(name = "properties")
-    RoomPropertiesWebSocketMessage roomPropertiesWebSocketMessage;
+public class JoinedRoomOverallWebSocketMessage extends BaseWebSocketMessage {
+    @JsonField(name = "room")
+    RoomWebSocketMessage roomWebSocketMessage;
 }

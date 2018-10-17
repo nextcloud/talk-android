@@ -929,6 +929,7 @@ public class CallController extends BaseController {
                                 externalSignalingServer = new ExternalSignalingServer();
                                 externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
                                 externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
+                                setupAndInitiateWebSocketsConnection();
                             }
 
                             if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
@@ -1023,7 +1024,7 @@ public class CallController extends BaseController {
     }
 
     private void joinRoomAndCall() {
-        if ("0".equals(callSession)) {
+        if ("0".equals(callSession) || externalSignalingServer != null) {
             ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken), null)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -1036,8 +1037,12 @@ public class CallController extends BaseController {
 
                         @Override
                         public void onNext(CallOverall callOverall) {
-                            callSession = callOverall.getOcs().getData().getSessionId();
-                            performCall();
+                            if (externalSignalingServer == null) {
+                                callSession = callOverall.getOcs().getData().getSessionId();
+                                performCall();
+                            } else {
+                                webSocketClient.joinRoomWithRoomToken(roomToken);
+                            }
                         }
 
                         @Override
@@ -1166,7 +1171,7 @@ public class CallController extends BaseController {
 
 
                         } else {
-                            setupAndInitiateWebSocketsConnection();
+                            alwaysGetPeerConnectionWrapperForSessionId(callSession, true);
                         }
                     }
 
@@ -1193,11 +1198,15 @@ public class CallController extends BaseController {
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
                 callSession = webSocketClient.getSessionId();
-                webSocketClient.joinRoomWithRoomToken(roomToken);
-                alwaysGetPeerConnectionWrapperForSessionId(callSession, true);
+                joinRoomAndCall();
+                break;
+            case "roomJoined":
+                if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
+                    performCall();
+                }
                 break;
             case "participantsUpdate":
-                if (webSocketCommunicationEvent.getHashMap().get("roomId").equals(roomToken)) {
+                if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
                     processUsersInRoom((List<HashMap<String, Object>>) webSocketClient.getJobWithId(Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
                 }
                 break;

@@ -22,21 +22,20 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
+import com.nextcloud.talk.models.json.rooms.Conversation;
 
 import org.parceler.Parcel;
 
 import lombok.Data;
 
 @Data
-@JsonObject
 @Parcel
-public class RoomWebSocketMessage {
-    @JsonField(name = "roomid")
-    String roomId;
+@JsonObject
+public class RoomPropertiesWebSocketMessage {
+    @JsonField(name = "name")
+    String name;
 
-    @JsonField(name = "sessionid")
-    String sessiondId;
-
-    @JsonField(name = "properties")
-    RoomPropertiesWebSocketMessage roomPropertiesWebSocketMessage;
+    @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
+    Conversation.RoomType roomType;
 }

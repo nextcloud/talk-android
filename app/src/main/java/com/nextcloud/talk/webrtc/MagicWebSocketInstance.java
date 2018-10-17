@@ -33,6 +33,8 @@ import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.utils.MagicMap;
 
 import org.greenrobot.eventbus.EventBus;
@@ -117,8 +119,13 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
                     break;
                 case "room":
-                    // Nothing for now
-                    break;
+                    JoinedRoomOverallWebSocketMessage joinedRoomOverallWebSocketMessage = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage.class);
+                    if (joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomPropertiesWebSocketMessage() != null) {
+                        HashMap<String, String> joinRoomHashMap = new HashMap<>();
+                        joinRoomHashMap.put("roomToken", joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId());
+                        eventBus.post(new WebSocketCommunicationEvent("roomJoined", joinRoomHashMap));
+                    }
+                break;
                 case "event":
                     // Nothing for now
                     EventOverallWebSocketMessage eventOverallWebSocketMessage = LoganSquare.parse(text, EventOverallWebSocketMessage.class);
