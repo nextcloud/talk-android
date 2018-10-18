@@ -1482,7 +1482,14 @@ public class CallController extends BaseController {
         }
 
         for (String sessionId : newSessions) {
-            alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
+            if (externalSignalingServer != null && webSocketClient.hasMCU()) {
+                if (!sessionId.equals(webSocketClient.getSessionId())) {
+                    alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
+
+                }
+            } else {
+                alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
+            }
         }
 
         for (String sessionId : oldSesssions) {
