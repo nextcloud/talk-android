@@ -273,7 +273,10 @@ public class MagicPeerConnectionWrapper {
                 /*EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CONNECTED, sessionId, null, null));*/
 
-                //EventBus.getDefault().post(new MediaStreamEvent(remoteMediaStream, sessionId));
+                if (!isMCUPublisher) {
+                    EventBus.getDefault().post(new MediaStreamEvent(remoteMediaStream, sessionId));
+                }
+
                 if (hasInitiated) {
                     sendInitialMediaStatus();
                 }
