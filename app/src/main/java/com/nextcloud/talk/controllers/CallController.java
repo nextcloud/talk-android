@@ -1219,6 +1219,9 @@ public class CallController extends BaseController {
             case "signalingMessage":
                 processMessage((NCSignalingMessage) webSocketClient.getJobWithId(Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
                 break;
+            case "peerReadyForRequestingOffer":
+                webSocketClient.requestOfferForSessionIdWithType(webSocketCommunicationEvent.getHashMap().get("sessionId"), "video");
+                break;
         }
     }
 
@@ -1280,19 +1283,13 @@ public class CallController extends BaseController {
                         magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
                         SessionDescription sessionDescriptionWithPreferredCodec;
 
-                        if (magicPeerConnectionWrapper.hasMediaStream()) {
-                            String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
-                                    (ncSignalingMessage.getPayload().getSdp(),
-                                            "VP8", false);
+                        String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
+                                (ncSignalingMessage.getPayload().getSdp(),
+                                        "VP8", false);
 
-                            sessionDescriptionWithPreferredCodec = new SessionDescription(
-                                    SessionDescription.Type.fromCanonicalForm(type),
-                                    sessionDescriptionStringWithPreferredCodec);
-                        } else {
-                            sessionDescriptionWithPreferredCodec = new SessionDescription(
-                                    SessionDescription.Type.fromCanonicalForm(type),
-                                    ncSignalingMessage.getPayload().getSdp());
-                        }
+                        sessionDescriptionWithPreferredCodec = new SessionDescription(
+                                SessionDescription.Type.fromCanonicalForm(type),
+                                sessionDescriptionStringWithPreferredCodec);
 
                         if (magicPeerConnectionWrapper.getPeerConnection() != null) {
                             magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
@@ -1485,11 +1482,7 @@ public class CallController extends BaseController {
         }
 
         for (String sessionId : newSessions) {
-            if (!hasMCU) {
-                alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
-            } else {
-                webSocketClient.requestOfferForSessionIdWithType(sessionId, "video");
-            }
+            alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
         }
 
         for (String sessionId : oldSesssions) {
@@ -1543,13 +1536,13 @@ public class CallController extends BaseController {
 
             if (hasMCU && publisher) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, true);
+                        iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, true, true);
             } else if (hasMCU) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraints, sessionId, callSession, null, false);
+                        iceServers, sdpConstraints, sessionId, callSession, null, false, true);
             } else {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                        iceServers, sdpConstraints, sessionId, callSession, localMediaStream, false);
+                        iceServers, sdpConstraints, sessionId, callSession, localMediaStream, false, false);
             }
 
             magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
