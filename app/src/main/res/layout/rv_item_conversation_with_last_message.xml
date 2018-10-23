@@ -24,6 +24,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -41,8 +42,10 @@
 
             <ImageView
                 android:id="@id/dialogAvatar"
+                android:contentDescription="@null"
                 android:layout_width="@dimen/avatar_size"
-                android:layout_height="@dimen/avatar_size"/>
+                android:layout_height="@dimen/avatar_size"
+                tools:src="@drawable/ic_call_black_24dp"/>
 
             <ImageView
                 android:id="@+id/passwordProtectedRoomImageView"
@@ -71,7 +74,8 @@
             android:includeFontPadding="false"
             android:maxLines="1"
             android:textColor="@color/nc_incoming_text_default"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            tools:text="Best conversation"/>
 
         <TextView
             android:id="@id/dialogDate"
@@ -93,10 +97,11 @@
 
             <ImageView
                 android:id="@id/dialogLastMessageUserAvatar"
+                android:contentDescription="@null"
                 android:layout_width="@dimen/small_item_height"
                 android:layout_height="@dimen/small_item_height"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp"
+                tools:src="@drawable/ic_call_black_24dp"/>
 
             <TextView
                 android:id="@id/dialogLastMessage"
@@ -107,22 +112,23 @@
                 android:layout_toStartOf="@id/dialogUnreadBubble"
                 android:ellipsize="end"
                 android:gravity="top"
-                android:maxLines="2"
+                android:lines="2"
                 android:singleLine="false"
-                android:textColor="@color/warm_grey_four"/>
+                android:textColor="@color/warm_grey_four"
+                tools:text="This is the last message\nof an incredibly long two line  conversation text"/>
 
             <TextView
                 android:id="@id/dialogUnreadBubble"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/bubble_circle_unread"
                 android:gravity="center"
                 android:lines="1"
                 android:textAlignment="center"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                tools:text="1"/>
 
         </RelativeLayout>
 
