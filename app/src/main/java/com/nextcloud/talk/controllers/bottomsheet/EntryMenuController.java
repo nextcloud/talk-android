@@ -23,7 +23,6 @@ package com.nextcloud.talk.controllers.bottomsheet;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -41,16 +40,17 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.json.rooms.Conversation;
-import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;

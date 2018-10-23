@@ -21,7 +21,6 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.graphics.drawable.Drawable;
-import androidx.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -34,6 +33,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;

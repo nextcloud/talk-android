@@ -26,8 +26,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.security.KeyChain;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,6 +79,8 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoInjector;

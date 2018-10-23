@@ -26,8 +26,9 @@ package com.nextcloud.talk.utils.animations;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import androidx.annotation.NonNull;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 public class PulseAnimation {
 

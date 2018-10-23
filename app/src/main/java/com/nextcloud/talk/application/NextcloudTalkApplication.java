@@ -20,12 +20,8 @@
  */
 package com.nextcloud.talk.application;
 
-import androidx.lifecycle.LifecycleObserver;
-
 import android.content.Context;
 import android.os.Build;
-import androidx.multidex.MultiDex;
-import androidx.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.nextcloud.talk.dagger.modules.BusModule;
@@ -49,6 +45,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import androidx.lifecycle.LifecycleObserver;
+import androidx.multidex.MultiDex;
+import androidx.multidex.MultiDexApplication;
 import androidx.work.Configuration;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;

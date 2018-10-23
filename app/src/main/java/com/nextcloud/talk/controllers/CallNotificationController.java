@@ -37,9 +37,6 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.palette.graphics.Palette;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -90,6 +87,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.palette.graphics.Palette;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;

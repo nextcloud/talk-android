@@ -21,7 +21,6 @@
 package com.nextcloud.talk.models;
 
 import androidx.annotation.Nullable;
-
 import lombok.Data;
 
 @Data

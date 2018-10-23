@@ -26,7 +26,6 @@ import android.util.Log;
 import android.webkit.SslErrorHandler;
 
 import com.nextcloud.talk.R;
-
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;

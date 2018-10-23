@@ -20,7 +20,6 @@
  */
 package com.nextcloud.talk.utils.database.user;
 
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.nextcloud.talk.models.database.User;
@@ -28,6 +27,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

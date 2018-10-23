@@ -19,13 +19,10 @@
  */
 package com.nextcloud.talk.models.json.chat;
 
-import android.util.Log;
-
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.stfalcon.chatkit.commons.models.IMessage;

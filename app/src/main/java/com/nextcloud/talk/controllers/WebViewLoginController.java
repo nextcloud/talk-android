@@ -28,7 +28,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.security.KeyChain;
 import android.security.KeyChainException;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,10 +48,10 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -69,6 +68,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import io.reactivex.disposables.Disposable;

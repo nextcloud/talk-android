@@ -21,7 +21,6 @@
 package com.nextcloud.talk.dagger.modules;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.Models;
@@ -31,6 +30,7 @@ import net.orange_box.storebox.StoreBox;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
 import dagger.Module;
 import dagger.Provides;
 import io.requery.Persistable;

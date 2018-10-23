@@ -20,8 +20,6 @@
  */
 package com.nextcloud.talk.api;
 
-import androidx.annotation.Nullable;
-
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
@@ -34,7 +32,6 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
-import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
@@ -42,6 +39,7 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.Response;

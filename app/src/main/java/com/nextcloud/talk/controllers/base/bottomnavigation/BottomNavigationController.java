@@ -25,10 +25,6 @@
 package com.nextcloud.talk.controllers.base.bottomnavigation;
 
 import android.os.Bundle;
-import androidx.annotation.MenuRes;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -42,11 +38,15 @@ import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.utils.animations.ViewHidingBehaviourAnimation;
 import com.nextcloud.talk.utils.bundle.BundleBuilder;
 
+import androidx.annotation.MenuRes;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import butterknife.BindView;
 
 /**

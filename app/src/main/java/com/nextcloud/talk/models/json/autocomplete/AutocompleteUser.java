@@ -22,7 +22,6 @@ package com.nextcloud.talk.models.json.autocomplete;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.models.json.sharees.Value;
 
 import org.parceler.Parcel;
 

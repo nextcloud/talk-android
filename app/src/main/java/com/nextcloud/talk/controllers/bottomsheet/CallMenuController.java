@@ -23,9 +23,6 @@ package com.nextcloud.talk.controllers.bottomsheet;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +54,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;

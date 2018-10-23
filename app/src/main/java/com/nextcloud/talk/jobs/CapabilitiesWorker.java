@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.jobs;
 
-import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -42,6 +41,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
 import autodagger.AutoInjector;

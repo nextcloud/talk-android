@@ -20,10 +20,9 @@
 
 package com.nextcloud.talk.events;
 
-import androidx.annotation.Nullable;
-
 import org.webrtc.MediaStream;
 
+import androidx.annotation.Nullable;
 import lombok.Data;
 
 @Data

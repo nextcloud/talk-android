@@ -20,8 +20,6 @@
  */
 package com.nextcloud.talk.dagger.modules;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -52,6 +50,8 @@ import javax.inject.Singleton;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509KeyManager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.schedulers.Schedulers;

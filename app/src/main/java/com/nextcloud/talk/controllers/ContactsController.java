@@ -25,15 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.bluelinelabs.logansquare.LoganSquare;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.core.view.MenuItemCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -50,6 +41,8 @@ import android.widget.RelativeLayout;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
+import com.bluelinelabs.logansquare.LoganSquare;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
@@ -89,6 +82,12 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -106,7 +105,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
-import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ContactsController extends BaseController implements SearchView.OnQueryTextListener,
@@ -569,10 +567,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 canFetchFurther = !shareeHashSet.isEmpty() || (finalServerIs14OrUp && !autocompleteUsersHashSet.isEmpty());
                                 currentPage = (int) modifiedQueryMap.get("page");
                             } else {
-                                canFetchSearchFurther = !shareeHashSet.isEmpty() || (finalServerIs14OrUp && !autocompleteUsersHashSet.isEmpty()) ;
+                                canFetchSearchFurther = !shareeHashSet.isEmpty() || (finalServerIs14OrUp && !autocompleteUsersHashSet.isEmpty());
                                 currentSearchPage = (int) modifiedQueryMap.get("page");
                             }
-
 
 
                             boolean shouldFilterManually = false;
@@ -851,8 +848,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (adapter.getItem(position) instanceof UserItem) {
             if (!isNewConversationView) {
                 UserItem userItem = (UserItem) adapter.getItem(position);
-                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), "1",
-                        userItem.getModel().getUserId(), null);
+                String roomType = "1";
+
+                if ("groups".equals(userItem.getModel().getSource())) {
+                    roomType = "2";
+                }
+
+                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType, userItem.getModel().getUserId(), null);
+
                 ncApi.createRoom(credentials,
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.newThread())

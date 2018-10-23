@@ -26,7 +26,6 @@ package com.nextcloud.talk.adapters.items;
 
 import android.animation.Animator;
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,6 +34,7 @@ import com.nextcloud.talk.R;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;

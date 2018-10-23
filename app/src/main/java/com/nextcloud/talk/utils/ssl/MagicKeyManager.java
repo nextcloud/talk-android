@@ -23,7 +23,6 @@ package com.nextcloud.talk.utils.ssl;
 import android.content.Context;
 import android.security.KeyChain;
 import android.security.KeyChainException;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -43,6 +42,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.net.ssl.X509KeyManager;
+
+import androidx.annotation.Nullable;
 
 public class MagicKeyManager implements X509KeyManager {
     private static final String TAG = "MagicKeyManager";

@@ -20,10 +20,9 @@
 
 package com.nextcloud.talk.jobs;
 
-import androidx.annotation.NonNull;
-
 import com.nextcloud.talk.utils.PushUtils;
 
+import androidx.annotation.NonNull;
 import androidx.work.Worker;
 
 public class PushRegistrationWorker extends Worker {

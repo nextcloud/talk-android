@@ -24,14 +24,14 @@
 
 package com.nextcloud.talk.controllers;
 
-import androidx.annotation.IdRes;
-
 import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.controllers.base.bottomnavigation.BottomNavigationController;
 import com.nextcloud.talk.controllers.base.bottomnavigation.BottomNavigationMenuItem;
 
 import java.lang.reflect.Constructor;
+
+import androidx.annotation.IdRes;
 
 public class MagicBottomNavigationController extends BottomNavigationController {
 

@@ -24,14 +24,14 @@
 
 package com.nextcloud.talk.controllers.base.bottomnavigation;
 
-import androidx.annotation.IdRes;
-
 import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.controllers.ConversationsListController;
 import com.nextcloud.talk.controllers.ContactsController;
+import com.nextcloud.talk.controllers.ConversationsListController;
 import com.nextcloud.talk.controllers.SettingsController;
 import com.nextcloud.talk.utils.BottomNavigationUtils;
+
+import androidx.annotation.IdRes;
 
 /**
  * Enum representation of valid Bottom Navigation Menu Items

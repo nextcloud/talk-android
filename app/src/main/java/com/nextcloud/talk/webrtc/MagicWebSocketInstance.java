@@ -34,7 +34,6 @@ import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
-import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.utils.MagicMap;
 
 import org.greenrobot.eventbus.EventBus;

@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import androidx.core.view.ViewCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -50,6 +49,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import androidx.core.view.ViewCompat;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;

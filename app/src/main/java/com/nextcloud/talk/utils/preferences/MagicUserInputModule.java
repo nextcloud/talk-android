@@ -22,7 +22,6 @@ package com.nextcloud.talk.utils.preferences;
 
 import android.app.Dialog;
 import android.content.Context;
-import androidx.appcompat.app.AlertDialog;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +32,8 @@ import com.yarolegovich.mp.io.StandardUserInputModule;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.appcompat.app.AlertDialog;
 
 public class MagicUserInputModule extends StandardUserInputModule {
 

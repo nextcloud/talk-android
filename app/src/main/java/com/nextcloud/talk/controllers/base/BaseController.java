@@ -19,8 +19,6 @@
 package com.nextcloud.talk.controllers.base;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 
@@ -39,6 +37,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)

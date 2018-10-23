@@ -21,7 +21,6 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.accounts.Account;
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,6 +44,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
