@@ -52,6 +52,8 @@ public class Participant {
     @JsonField(name = "inCall")
     boolean inCall;
 
+    String source;
+
     public enum ParticipantType {
         DUMMY,
         OWNER,

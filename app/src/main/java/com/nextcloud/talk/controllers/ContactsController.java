@@ -27,6 +27,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.core.view.MenuItemCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -34,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,6 +63,8 @@ import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall;
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
@@ -99,6 +104,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
@@ -413,6 +419,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         alreadyFetching = true;
         Set<Sharee> shareeHashSet = new HashSet<>();
+        Set<AutocompleteUser> autocompleteUsersHashSet = new HashSet<>();
 
         userHeaderItems = new HashMap<>();
 
@@ -424,8 +431,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             contactItems = new ArrayList<>();
         }
 
-        RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearch(currentUser.getBaseUrl(),
-                query);
+        RetrofitBucket retrofitBucket;
+        boolean serverIs14OrUp = false;
+        if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
+            // a hack to see if we're on 14 or not
+            retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser.getBaseUrl(), query);
+            serverIs14OrUp = true;
+        } else {
+            retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearch(currentUser.getBaseUrl(), query);
+        }
 
         int page = 1;
         if (!startFromScratch) {
@@ -439,72 +453,126 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         Map<String, Object> modifiedQueryMap = new HashMap<>(retrofitBucket.getQueryMap());
         modifiedQueryMap.put("page", page);
         modifiedQueryMap.put("perPage", 100);
+
+        List<String> shareTypesList = null;
+
+        if (serverIs14OrUp) {
+            shareTypesList = new ArrayList<>();
+            // users
+            shareTypesList.add("0");
+            // groups
+            shareTypesList.add("1");
+
+            modifiedQueryMap.put("shareTypes[]", shareTypesList);
+        }
+
+        boolean finalServerIs14OrUp = serverIs14OrUp;
         ncApi.getContactsWithSearchParam(
                 credentials,
-                retrofitBucket.getUrl(), modifiedQueryMap)
+                retrofitBucket.getUrl(), shareTypesList, modifiedQueryMap)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
-                .subscribe(new Observer<Response>() {
+                .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         contactsQueryDisposable = d;
                     }
 
                     @Override
-                    public void onNext(Response response) {
-                        if (response.body() != null) {
-                            ShareesOverall shareesOverall = (ShareesOverall) response.body();
-
-                            if (shareesOverall.getOcs().getData().getUsers() != null) {
-                                shareeHashSet.addAll(shareesOverall.getOcs().getData().getUsers());
-                            }
-
-                            if (shareesOverall.getOcs().getData().getExactUsers() != null &&
-                                    shareesOverall.getOcs().getData().getExactUsers().getExactSharees() != null) {
-                                shareeHashSet.addAll(shareesOverall.getOcs().getData().
-                                        getExactUsers().getExactSharees());
-                            }
-
-                            if (TextUtils.isEmpty((CharSequence) modifiedQueryMap.get("search"))) {
-                                canFetchFurther = !shareeHashSet.isEmpty();
-                                currentPage = (int) modifiedQueryMap.get("page");
-                            } else {
-                                canFetchSearchFurther = !shareeHashSet.isEmpty();
-                                currentSearchPage = (int) modifiedQueryMap.get("page");
-                            }
-
-
+                    public void onNext(ResponseBody responseBody) {
+                        if (responseBody != null) {
                             Participant participant;
 
                             List<AbstractFlexibleItem> newUserItemList = new ArrayList<>();
                             newUserItemList.addAll(contactItems);
-                            for (Sharee sharee : shareeHashSet) {
-                                if (!sharee.getValue().getShareWith().equals(currentUser.getUsername())) {
-                                    participant = new Participant();
-                                    participant.setName(sharee.getLabel());
-                                    String headerTitle;
 
-                                    headerTitle = sharee.getLabel().substring(0, 1).toUpperCase();
+                            try {
+                                if (!finalServerIs14OrUp) {
+                                    ShareesOverall shareesOverall = LoganSquare.parse(responseBody.string(), ShareesOverall.class);
 
-                                    UserHeaderItem userHeaderItem;
-                                    if (!userHeaderItems.containsKey(headerTitle)) {
-                                        userHeaderItem = new UserHeaderItem(headerTitle);
-                                        userHeaderItems.put(headerTitle, userHeaderItem);
+                                    if (shareesOverall.getOcs().getData().getUsers() != null) {
+                                        shareeHashSet.addAll(shareesOverall.getOcs().getData().getUsers());
                                     }
 
-                                    participant.setUserId(sharee.getValue().getShareWith());
-
-                                    UserItem newContactItem = new UserItem(participant, currentUser,
-                                            userHeaderItems.get(headerTitle));
-
-                                    if (!contactItems.contains(newContactItem)) {
-                                        newUserItemList.add(newContactItem);
+                                    if (shareesOverall.getOcs().getData().getExactUsers() != null &&
+                                            shareesOverall.getOcs().getData().getExactUsers().getExactSharees() != null) {
+                                        shareeHashSet.addAll(shareesOverall.getOcs().getData().
+                                                getExactUsers().getExactSharees());
                                     }
 
+                                    for (Sharee sharee : shareeHashSet) {
+                                        if (!sharee.getValue().getShareWith().equals(currentUser.getUserId())) {
+                                            participant = new Participant();
+                                            participant.setName(sharee.getLabel());
+                                            String headerTitle;
+
+                                            headerTitle = sharee.getLabel().substring(0, 1).toUpperCase();
+
+                                            UserHeaderItem userHeaderItem;
+                                            if (!userHeaderItems.containsKey(headerTitle)) {
+                                                userHeaderItem = new UserHeaderItem(headerTitle);
+                                                userHeaderItems.put(headerTitle, userHeaderItem);
+                                            }
+
+                                            participant.setUserId(sharee.getValue().getShareWith());
+
+                                            UserItem newContactItem = new UserItem(participant, currentUser,
+                                                    userHeaderItems.get(headerTitle));
+
+                                            if (!contactItems.contains(newContactItem)) {
+                                                newUserItemList.add(newContactItem);
+                                            }
+
+                                        }
+
+                                    }
+
+                                } else {
+                                    AutocompleteOverall autocompleteOverall = LoganSquare.parse(responseBody.string(), AutocompleteOverall.class);
+                                    autocompleteUsersHashSet.addAll(autocompleteOverall.getOcs().getData());
+
+                                    for (AutocompleteUser autocompleteUser : autocompleteUsersHashSet) {
+                                        if (!autocompleteUser.getId().equals(currentUser.getUserId())) {
+                                            participant = new Participant();
+                                            participant.setName(autocompleteUser.getLabel());
+                                            participant.setUserId(autocompleteUser.getId());
+                                            participant.setSource(autocompleteUser.getSource());
+
+                                            String headerTitle;
+
+                                            headerTitle = participant.getName().substring(0, 1).toUpperCase();
+
+                                            UserHeaderItem userHeaderItem;
+                                            if (!userHeaderItems.containsKey(headerTitle)) {
+                                                userHeaderItem = new UserHeaderItem(headerTitle);
+                                                userHeaderItems.put(headerTitle, userHeaderItem);
+                                            }
+
+                                            participant.setUserId(participant.getUserId());
+
+                                            UserItem newContactItem = new UserItem(participant, currentUser,
+                                                    userHeaderItems.get(headerTitle));
+
+                                            if (!contactItems.contains(newContactItem)) {
+                                                newUserItemList.add(newContactItem);
+                                            }
+
+                                        }
+                                    }
                                 }
-
+                            } catch (Exception exception) {
+                                Log.e(TAG, "Parsing response body failed while getting contacts");
                             }
+
+                            if (TextUtils.isEmpty((CharSequence) modifiedQueryMap.get("search"))) {
+                                canFetchFurther = !shareeHashSet.isEmpty() || (finalServerIs14OrUp && !autocompleteUsersHashSet.isEmpty());
+                                currentPage = (int) modifiedQueryMap.get("page");
+                            } else {
+                                canFetchSearchFurther = !shareeHashSet.isEmpty() || (finalServerIs14OrUp && !autocompleteUsersHashSet.isEmpty()) ;
+                                currentSearchPage = (int) modifiedQueryMap.get("page");
+                            }
+
 
 
                             boolean shouldFilterManually = false;
@@ -554,7 +622,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 checkAndHandleDoneMenuItem();
                             }
                         }
-                        ;
+
                     }
 
                     @Override

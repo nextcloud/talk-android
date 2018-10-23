@@ -39,9 +39,11 @@ import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
@@ -65,10 +67,15 @@ public interface NcApi {
             - "itemType" : "call"
 
         Server URL is: baseUrl + ocsApiVersion + /apps/files_sharing/api/v1/sharees
+
+        or if we're on 14 and up:
+
+        baseUrl + ocsApiVersion + "/core/autocomplete/get");
+
      */
     @GET
-    Observable<Response<ShareesOverall>> getContactsWithSearchParam(@Header("Authorization") String authorization, @Url String url,
-                                                          @QueryMap Map<String, Object> options);
+    Observable<ResponseBody> getContactsWithSearchParam(@Header("Authorization") String authorization, @Url String url,
+                                                        @Nullable @Query("shareTypes[]") List<String> listOfShareTypes, @QueryMap Map<String, Object> options);
 
 
     /*

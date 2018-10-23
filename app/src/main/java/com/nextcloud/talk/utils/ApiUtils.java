@@ -28,7 +28,9 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RetrofitBucket;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Credentials;
@@ -60,6 +62,16 @@ public class ApiUtils {
 
         return retrofitBucket;
     }
+
+    public static RetrofitBucket getRetrofitBucketForContactsSearchFor14(String baseUrl, @Nullable String searchQuery) {
+        RetrofitBucket retrofitBucket = getRetrofitBucketForContactsSearch(baseUrl, searchQuery);
+        retrofitBucket.setUrl(baseUrl + ocsApiVersion + "/core/autocomplete/get");
+
+        retrofitBucket.getQueryMap().put("itemId", "new");
+
+        return retrofitBucket;
+    }
+
 
     public static String getUrlForSettingMyselfAsActiveParticipant(String baseUrl, String token) {
         return getRoom(baseUrl, token) + "/participants/active";

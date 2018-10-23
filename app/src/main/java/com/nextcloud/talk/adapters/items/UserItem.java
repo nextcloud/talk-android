@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -122,23 +123,36 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             holder.contactDisplayName.setText(participant.getName());
         }
 
-        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                participant.getUserId(), R.dimen.avatar_size), new LazyHeaders.Builder()
-                .setHeader("Accept", "image/*")
-                .setHeader("User-Agent", ApiUtils.getUserAgent())
-                .build());
+        if (TextUtils.isEmpty(participant.getSource()) || participant.getSource().equals("users")) {
+            GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                    participant.getUserId(), R.dimen.avatar_size), new LazyHeaders.Builder()
+                    .setHeader("Accept", "image/*")
+                    .setHeader("User-Agent", ApiUtils.getUserAgent())
+                    .build());
 
-        int avatarSize = Math.round(NextcloudTalkApplication
-                .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
+            int avatarSize = Math.round(NextcloudTalkApplication
+                    .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
 
-        GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .load(glideUrl)
-                .centerInside()
-                .override(avatarSize, avatarSize)
-                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                .into(holder.avatarFlipView.getFrontImageView());
+            GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .load(glideUrl)
+                    .centerInside()
+                    .override(avatarSize, avatarSize)
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                    .into(holder.avatarFlipView.getFrontImageView());
+        } else if (participant.getSource().equals("groups")) {
+            int avatarSize = Math.round(NextcloudTalkApplication.getSharedApplication().getApplicationContext().getResources().getDimension(R.dimen.avatar_size));
+
+            GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .load(R.drawable.ic_people_group_white_24px)
+                    .centerInside()
+                    .override(avatarSize, avatarSize)
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                    .into(holder.avatarFlipView.getFrontImageView());
+        }
     }
 
     @Override
