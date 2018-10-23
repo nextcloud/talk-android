@@ -228,4 +228,7 @@ Find Nextcloud on https://nextcloud.com</string>
     <string name="nc_conversations_empty">You haven\'t talked to anyone yet!\n Tap to start a conversation.</string>
     <string name="nc_hello">Hello</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">1000 characters limit has been hit</string>
+
 </resources>

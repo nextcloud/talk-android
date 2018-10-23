@@ -31,7 +31,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -402,6 +405,31 @@ public class ChatController extends BaseController implements MessagesListAdapte
             }
         });
 
+
+        InputFilter[] filters = new InputFilter[1];
+        filters[0] = new InputFilter.LengthFilter(1000);
+        messageInputView.getInputEditText() .setFilters(filters);
+
+        messageInputView.getInputEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 1000) {
+                    messageInputView.getInputEditText().setError(getResources().getString(R.string.nc_limit_hit));
+                } else {
+                    messageInputView.getInputEditText().setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         messageInputView.setInputListener(input -> {
             sendMessage(input, 1);
