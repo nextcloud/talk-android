@@ -42,6 +42,7 @@
 
             <ImageView
                 android:id="@id/dialogAvatar"
+                android:contentDescription="@null"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
                 tools:src="@drawable/ic_call_black_24dp"/>
@@ -96,6 +97,7 @@
 
             <ImageView
                 android:id="@id/dialogLastMessageUserAvatar"
+                android:contentDescription="@null"
                 android:layout_width="@dimen/small_item_height"
                 android:layout_height="@dimen/small_item_height"
                 android:layout_marginEnd="8dp"
