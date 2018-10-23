@@ -940,6 +940,31 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     void toggleCallHeader() {
         toggleNewCallHeaderVisibility(isPublicCall);
         isPublicCall = !isPublicCall;
+
+        if (isPublicCall) {
+            List<Integer> selectedPositions = adapter.getSelectedPositions();
+            for (int selectedPosition : selectedPositions) {
+                if (adapter.getItem(selectedPosition) instanceof UserItem) {
+                    UserItem userItem = (UserItem) adapter.getItem(selectedPosition);
+                    if ("groups".equals(userItem.getModel().getSource())) {
+                        ((UserItem) adapter.getItem(selectedPosition)).flipItemSelection();
+                        adapter.toggleSelection(selectedPosition);
+                    }
+                }
+            }
+
+
+        }
+
+        for (int i = 0; i < adapter.getItemCount(); i++) {
+            if (adapter.getItem(i) instanceof UserItem) {
+                UserItem userItem = (UserItem) adapter.getItem(i);
+                if ("groups".equals(userItem.getModel().getSource())) {
+                    userItem.setEnabled(!isPublicCall);
+                }
+            }
+        }
+
         checkAndHandleDoneMenuItem();
     }
 

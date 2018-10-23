@@ -153,6 +153,12 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                     .into(holder.avatarFlipView.getFrontImageView());
         }
+
+        if (!isEnabled()) {
+            holder.itemView.setAlpha(0.38f);
+        } else {
+            holder.itemView.setAlpha(1.0f);
+        }
     }
 
     @Override
