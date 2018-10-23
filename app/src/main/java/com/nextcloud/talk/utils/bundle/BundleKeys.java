@@ -44,6 +44,7 @@ public class BundleKeys {
     public static final String KEY_INTERNAL_USER_ID = "KEY_INTERNAL_USER_ID";
     public static final String KEY_CONVERSATION_TYPE = "KEY_CONVERSATION_TYPE";
     public static final String KEY_INVITED_PARTICIPANTS = "KEY_INVITED_PARTICIPANTS";
+    public static final String KEY_INVITED_GROUP = "KEY_INVITED_GROUP";
     public static final String KEY_CONVERSATION_NAME = "KEY_CONVERSATION_NAME";
     public static final String KEY_CALL_VOICE_ONLY = "KEY_CALL_VOICE_ONLY";
     public static final String KEY_ACTIVE_CONVERSATION = "KEY_ACTIVE_CONVERSATION";

@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,6 +120,7 @@ public class OperationsMenuController extends BaseController {
 
     private Conversation.RoomType conversationType;
     private ArrayList<String> invitedUsers = new ArrayList<>();
+    private ArrayList<String> invitedGroup = new ArrayList<>();
 
     private List<String> spreedCapabilities;
     private String credentials;
@@ -137,6 +139,10 @@ public class OperationsMenuController extends BaseController {
             this.invitedUsers = args.getStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS);
         }
 
+        if (args.containsKey(BundleKeys.KEY_INVITED_GROUP)) {
+            this.invitedGroup = args.getStringArrayList(BundleKeys.KEY_INVITED_GROUP);
+        }
+        
         if (args.containsKey(BundleKeys.KEY_CONVERSATION_TYPE)) {
             this.conversationType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_CONVERSATION_TYPE));
         }
@@ -268,18 +274,25 @@ public class OperationsMenuController extends BaseController {
                 case 11:
                     RetrofitBucket retrofitBucket;
                     boolean isGroupCallWorkaround = false;
+                    String invite = null;
+                    
+                    if (invitedGroup.size() > 0) {
+                        invite = invitedGroup.get(0);
+                    }
+
                     if (conversationType.equals(Conversation.RoomType.ROOM_PUBLIC_CALL) ||
-                            !currentUser.hasSpreedCapabilityWithName("empty-group-conversation")) {
+                            !currentUser.hasSpreedCapabilityWithName("empty-group-room")) {
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
-                                "3", null, null);
+                                "3", invite, null);
                     } else {
                         String roomType = "2";
-                        if (!currentUser.hasSpreedCapabilityWithName("empty-group-conversation")) {
+                        if (!currentUser.hasSpreedCapabilityWithName("empty-group-room")) {
                             isGroupCallWorkaround = true;
                             roomType = "3";
                         }
+                        
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
-                                roomType, null, null);
+                                roomType, invite, null);
                     }
 
                     final boolean isGroupCallWorkaroundFinal = isGroupCallWorkaround;

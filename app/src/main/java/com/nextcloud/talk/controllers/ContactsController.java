@@ -313,18 +313,20 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));
             ArrayList<String> userIds = new ArrayList<>();
             Set<Integer> selectedPositions = adapter.getSelectedPositionsAsSet();
-            String groupUserId;
+            ArrayList<String> groupIds = new ArrayList<>();
             for (int selectedPosition : selectedPositions) {
                 if (adapter.getItem(selectedPosition) instanceof UserItem) {
                     UserItem userItem = (UserItem) adapter.getItem(selectedPosition);
                     if (!"groups".equals(userItem.getModel().getSource())) {
                         userIds.add(userItem.getModel().getUserId());
                     } else {
-                        groupUserId = userItem.getModel().getUserId();
+                        groupIds.add(userItem.getModel().getUserId());
                     }
                 }
             }
+
             bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIds);
+            bundle.putStringArrayList(BundleKeys.KEY_INVITED_GROUP, groupIds);
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 11);
             prepareAndShowBottomSheetWithBundle(bundle);
         }
