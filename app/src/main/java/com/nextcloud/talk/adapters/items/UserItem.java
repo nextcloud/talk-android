@@ -123,6 +123,9 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             holder.contactDisplayName.setText(participant.getName());
         }
 
+        int avatarSize = Math.round(NextcloudTalkApplication
+                .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
+
         if (TextUtils.isEmpty(participant.getSource()) || participant.getSource().equals("users")) {
             GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                     participant.getUserId(), R.dimen.avatar_size), new LazyHeaders.Builder()
@@ -130,8 +133,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     .setHeader("User-Agent", ApiUtils.getUserAgent())
                     .build());
 
-            int avatarSize = Math.round(NextcloudTalkApplication
-                    .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
 
             GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                     .asBitmap()
@@ -142,7 +143,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                     .into(holder.avatarFlipView.getFrontImageView());
         } else if (participant.getSource().equals("groups")) {
-            int avatarSize = Math.round(NextcloudTalkApplication.getSharedApplication().getApplicationContext().getResources().getDimension(R.dimen.avatar_size));
 
             GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                     .asBitmap()
