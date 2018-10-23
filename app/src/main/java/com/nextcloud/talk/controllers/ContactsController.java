@@ -252,7 +252,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private void selectionDone() {
         if (!isPublicCall && adapter.getSelectedPositions().size() == 1) {
-            RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), "1",
+            String roomType = "1";
+
+            if ("groups".equals(((UserItem) adapter.getItem(adapter.getSelectedPositions().get(0))).getModel().getSource())) {
+                roomType = "2";
+            }
+
+            RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType,
                     ((UserItem) adapter.getItem(adapter.getSelectedPositions().get(0))).getModel().getUserId(), null);
             ncApi.createRoom(credentials,
                     retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
@@ -307,10 +313,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));
             ArrayList<String> userIds = new ArrayList<>();
             Set<Integer> selectedPositions = adapter.getSelectedPositionsAsSet();
+            String groupUserId;
             for (int selectedPosition : selectedPositions) {
                 if (adapter.getItem(selectedPosition) instanceof UserItem) {
                     UserItem userItem = (UserItem) adapter.getItem(selectedPosition);
-                    userIds.add(userItem.getModel().getUserId());
+                    if (!"groups".equals(userItem.getModel().getSource())) {
+                        userIds.add(userItem.getModel().getUserId());
+                    } else {
+                        groupUserId = userItem.getModel().getUserId();
+                    }
                 }
             }
             bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIds);
@@ -902,6 +913,19 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             } else {
                 ((UserItem) adapter.getItem(position)).flipItemSelection();
                 adapter.toggleSelection(position);
+
+                if (currentUser.hasSpreedCapabilityWithName("last-room-activity") &&
+                        "groups".equals(((UserItem) adapter.getItem(position)).getModel().getSource()) &&
+                        adapter.getSelectedItemCount() > 1) {
+                    List<Integer> selectedPositions = adapter.getSelectedPositions();
+                    for (int i = 0; i < selectedPositions.size(); i++) {
+                        if (!selectedPositions.get(i).equals(position) && "groups".equals(((UserItem) adapter.getItem(selectedPositions.get(i))).getModel().getSource())) {
+                            ((UserItem) adapter.getItem(selectedPositions.get(i))).flipItemSelection();
+                            adapter.toggleSelection(selectedPositions.get(i));
+                        }
+                    }
+
+                }
 
                 checkAndHandleDoneMenuItem();
             }
