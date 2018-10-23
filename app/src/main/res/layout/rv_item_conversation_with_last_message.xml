@@ -99,6 +99,7 @@
                 android:layout_width="@dimen/small_item_height"
                 android:layout_height="@dimen/small_item_height"
                 android:layout_marginEnd="8dp"
+                android:layout_centerVertical="true"
                 tools:src="@drawable/ic_call_black_24dp"/>
 
             <TextView
@@ -120,6 +121,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/bubble_circle_unread"
                 android:gravity="center"
