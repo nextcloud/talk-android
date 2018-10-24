@@ -67,7 +67,7 @@ public class WebsocketConnectionsWorker extends Worker {
                             !TextUtils.isEmpty(externalSignalingServer.getExternalSignalingTicket())) {
                         webSocketConnectionHelper.getExternalSignalingInstanceForServer(
                                 externalSignalingServer.getExternalSignalingServer(),
-                                userEntity, externalSignalingServer.getExternalSignalingTicket());
+                                userEntity, externalSignalingServer.getExternalSignalingTicket(), false);
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "Failed to parse external signaling server");

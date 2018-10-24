@@ -71,19 +71,20 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private WebSocket webSocket;
     private MagicMap magicMap;
+    private String connectionUrl;
 
     private String currentRoomToken;
 
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-        Request request = new Request.Builder().url(connectionUrl).build();
 
-        this.webSocket = okHttpClient.newWebSocket(request, this);
+        this.connectionUrl = connectionUrl;
         this.conversationUser = conversationUser;
         this.webSocketTicket = webSocketTicket;
         this.webSocketConnectionHelper = new WebSocketConnectionHelper();
-
         magicMap = new MagicMap();
+
+        restartWebSocket();
     }
 
     @Override
@@ -97,6 +98,11 @@ public class MagicWebSocketInstance extends WebSocketListener {
         } catch (IOException e) {
             Log.e(TAG, "Failed to serialize hello model");
         }
+    }
+
+    private void restartWebSocket() {
+        Request request = new Request.Builder().url(connectionUrl).build();
+        this.webSocket = okHttpClient.newWebSocket(request, this);
     }
 
     @Override
@@ -121,6 +127,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         resumeId = "";
 
                     }
+                    restartWebSocket();
                     break;
                 case "room":
                     JoinedRoomOverallWebSocketMessage joinedRoomOverallWebSocketMessage = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage.class);
@@ -198,6 +205,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
         Log.d(TAG, "Error : " + t.getMessage());
         connected = false;
+        restartWebSocket();
     }
 
     public String getSessionId() {

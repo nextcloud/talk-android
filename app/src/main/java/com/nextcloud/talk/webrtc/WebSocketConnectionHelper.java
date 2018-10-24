@@ -57,7 +57,7 @@ public class WebSocketConnectionHelper {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
 
-    private static String getExternalSignalingServerUrlFromSettingsUrl(String url) {
+    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket, boolean forceReconnect) {
         String generatedURL = url.replace("https://", "wss://").replace("http://", "ws://");
 
         if (generatedURL.endsWith("/")) {
@@ -66,17 +66,10 @@ public class WebSocketConnectionHelper {
             generatedURL += "/spreed";
         }
 
-        return generatedURL;
-    }
-
-    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket) {
-
-        String connectionUrl = getExternalSignalingServerUrlFromSettingsUrl(url);
-
-        if (magicWebSocketInstanceMap.containsKey(userEntity.getUserId())) {
+        if (magicWebSocketInstanceMap.containsKey(userEntity.getUserId()) && !forceReconnect) {
             return magicWebSocketInstanceMap.get(userEntity.getUserId());
         } else {
-            MagicWebSocketInstance magicWebSocketInstance = new MagicWebSocketInstance(userEntity, connectionUrl, webSocketTicket);
+            MagicWebSocketInstance magicWebSocketInstance = new MagicWebSocketInstance(userEntity, generatedURL, webSocketTicket);
             magicWebSocketInstanceMap.put(userEntity.getUserId(), magicWebSocketInstance);
             return magicWebSocketInstance;
         }
@@ -104,6 +97,7 @@ public class WebSocketConnectionHelper {
         HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();
         helloWebSocketMessage.setVersion("1.0");
         helloWebSocketMessage.setResumeid(resumeId);
+        helloOverallWebSocketMessage.setHelloWebSocketMessage(helloWebSocketMessage);
         return helloOverallWebSocketMessage;
     }
 
