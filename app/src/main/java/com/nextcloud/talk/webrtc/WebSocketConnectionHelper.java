@@ -69,11 +69,11 @@ public class WebSocketConnectionHelper {
         return generatedURL;
     }
 
-    public MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, boolean forceReconnect, UserEntity userEntity, String webSocketTicket) {
+    public synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket) {
 
         String connectionUrl = getExternalSignalingServerUrlFromSettingsUrl(url);
 
-        if (magicWebSocketInstanceMap.containsKey(userEntity.getUserId()) && !forceReconnect) {
+        if (magicWebSocketInstanceMap.containsKey(userEntity.getUserId())) {
             return magicWebSocketInstanceMap.get(userEntity.getUserId());
         } else {
             MagicWebSocketInstance magicWebSocketInstance = new MagicWebSocketInstance(userEntity, connectionUrl, webSocketTicket);

@@ -77,7 +77,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         Request request = new Request.Builder().url(connectionUrl).build();
 
         this.webSocket = okHttpClient.newWebSocket(request, this);
-
         this.conversationUser = conversationUser;
         this.webSocketTicket = webSocketTicket;
         this.webSocketConnectionHelper = new WebSocketConnectionHelper();
@@ -230,5 +229,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
         } catch (IOException e) {
             Log.e(TAG, "Failed to offer request");
         }
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 }

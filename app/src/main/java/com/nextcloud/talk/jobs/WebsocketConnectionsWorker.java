@@ -66,7 +66,7 @@ public class WebsocketConnectionsWorker extends Worker {
                     if (!TextUtils.isEmpty(externalSignalingServer.getExternalSignalingServer()) &&
                             !TextUtils.isEmpty(externalSignalingServer.getExternalSignalingTicket())) {
                         webSocketConnectionHelper.getExternalSignalingInstanceForServer(
-                                externalSignalingServer.getExternalSignalingServer(), false,
+                                externalSignalingServer.getExternalSignalingServer(),
                                 userEntity, externalSignalingServer.getExternalSignalingTicket());
                     }
                 } catch (IOException e) {

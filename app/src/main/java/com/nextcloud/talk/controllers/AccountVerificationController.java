@@ -365,9 +365,11 @@ public class AccountVerificationController extends BaseController {
                 fetchAndStoreExternalSignalingSettings();
             }
         } else if (eventStatus.getEventType().equals(EventStatus.EventType.SIGNALING_SETTINGS)) {
-            if (getActivity() != null) {
-                getActivity().runOnUiThread(() -> progressText.setText(progressText.getText().toString() + "\n" +
-                        getResources().getString(R.string.nc_external_server_failed)));
+            if (eventStatus.isAllGood()) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> progressText.setText(progressText.getText().toString() + "\n" +
+                            getResources().getString(R.string.nc_external_server_failed)));
+                }
             }
 
             proceedWithLogin();
