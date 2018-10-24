@@ -47,7 +47,7 @@ import okhttp3.OkHttpClient;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebSocketConnectionHelper {
-    private Map<String, MagicWebSocketInstance> magicWebSocketInstanceMap = new HashMap<>();
+    private static Map<String, MagicWebSocketInstance> magicWebSocketInstanceMap = new HashMap<>();
 
     @Inject
     OkHttpClient okHttpClient;
@@ -57,7 +57,7 @@ public class WebSocketConnectionHelper {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
 
-    private String getExternalSignalingServerUrlFromSettingsUrl(String url) {
+    private static String getExternalSignalingServerUrlFromSettingsUrl(String url) {
         String generatedURL = url.replace("https://", "wss://").replace("http://", "ws://");
 
         if (generatedURL.endsWith("/")) {
@@ -69,7 +69,7 @@ public class WebSocketConnectionHelper {
         return generatedURL;
     }
 
-    public synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket) {
+    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket) {
 
         String connectionUrl = getExternalSignalingServerUrlFromSettingsUrl(url);
 

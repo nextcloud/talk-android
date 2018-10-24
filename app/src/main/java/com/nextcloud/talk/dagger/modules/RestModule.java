@@ -183,6 +183,7 @@ public class RestModule {
                                    CookieManager cookieManager, Dispatcher dispatcher) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
+        httpClient.retryOnConnectionFailure(true);
         httpClient.connectTimeout(45, TimeUnit.SECONDS);
         httpClient.readTimeout(45, TimeUnit.SECONDS);
         httpClient.writeTimeout(45, TimeUnit.SECONDS);

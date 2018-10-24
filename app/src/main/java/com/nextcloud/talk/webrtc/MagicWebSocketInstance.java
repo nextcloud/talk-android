@@ -72,6 +72,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private WebSocket webSocket;
     private MagicMap magicMap;
 
+    private String currentRoomToken;
+
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         Request request = new Request.Builder().url(connectionUrl).build();
@@ -115,12 +117,17 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     break;
                 case "error":
                     ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
+                    if (("no_such_session").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode().equals("no_such_session"))) {
+                        resumeId = "";
+
+                    }
                     break;
                 case "room":
                     JoinedRoomOverallWebSocketMessage joinedRoomOverallWebSocketMessage = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage.class);
                     if (joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomPropertiesWebSocketMessage() != null) {
                         HashMap<String, String> joinRoomHashMap = new HashMap<>();
                         joinRoomHashMap.put("roomToken", joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId());
+                        currentRoomToken = joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId();
                         eventBus.post(new WebSocketCommunicationEvent("roomJoined", joinRoomHashMap));
                     }
                 break;
@@ -202,10 +209,16 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     public void joinRoomWithRoomTokenAndSession(String roomToken, String normalBackendSession) {
-        try {
-            webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession)));
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to serialize room overall websocket message");
+        if (!roomToken.equals(currentRoomToken)) {
+            try {
+                webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession)));
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to serialize room overall websocket message");
+            }
+        } else {
+            HashMap<String, String> joinRoomHashMap = new HashMap<>();
+            joinRoomHashMap.put("roomToken", currentRoomToken);
+            eventBus.post(new WebSocketCommunicationEvent("roomJoined", joinRoomHashMap));
         }
     }
 
