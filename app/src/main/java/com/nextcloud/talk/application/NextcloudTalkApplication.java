@@ -31,6 +31,7 @@ import com.nextcloud.talk.dagger.modules.RestModule;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.jobs.CapabilitiesWorker;
 import com.nextcloud.talk.jobs.PushRegistrationWorker;
+import com.nextcloud.talk.jobs.SignalingSettingsJob;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.DeviceUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -124,11 +125,13 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         PeriodicWorkRequest periodicCapabilitiesUpdateWork = new PeriodicWorkRequest.Builder(CapabilitiesWorker.class,
                 1, TimeUnit.DAYS).build();
         OneTimeWorkRequest capabilitiesUpdateWork = new OneTimeWorkRequest.Builder(CapabilitiesWorker.class).build();
+        OneTimeWorkRequest signalingSettingsWork = new OneTimeWorkRequest.Builder(SignalingSettingsJob.class).build();
 
         WorkManager.initialize(getApplicationContext(), new Configuration.Builder().build());
         WorkManager.getInstance().enqueue(pushRegistrationWork);
         WorkManager.getInstance().enqueue(accountRemovalWork);
         WorkManager.getInstance().enqueue(capabilitiesUpdateWork);
+        WorkManager.getInstance().enqueue(signalingSettingsWork);
 
         // There is a bug with periodic work so we ignore this for now
         //WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork",

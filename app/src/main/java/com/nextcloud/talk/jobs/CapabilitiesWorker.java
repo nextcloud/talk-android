@@ -74,7 +74,7 @@ public class CapabilitiesWorker extends Worker {
             userUtils.createOrUpdateUser(null, null,
                     null, null,
                     null, null, null, internalUserEntity.getId(),
-                    LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()), null)
+                    LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()), null, null)
                     .blockingSubscribe(new Observer<UserEntity>() {
                         @Override
                         public void onSubscribe(Disposable d) {

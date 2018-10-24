@@ -367,7 +367,7 @@ public class WebViewLoginController extends BaseController {
                         if (currentUser != null) {
                             userQueryDisposable = userUtils.createOrUpdateUser(null, null,
                                     null, null, null, true,
-                                    null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias()).
+                                    null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias(), null).
                                     subscribe(userEntity -> {
                                                 if (finalMessageType != null) {
                                                     ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);

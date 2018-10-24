@@ -300,7 +300,7 @@ public class SettingsController extends BaseController {
 
 
             userUtils.createOrUpdateUser(null, null, null, null, null, null, null, currentUser.getId(),
-                    null, alias);
+                    null, alias, null);
         }, new String[]{"RSA", "EC"}, null, finalHost, finalPort, currentUser.getClientCertificate
                 ()));
     }
@@ -402,7 +402,7 @@ public class SettingsController extends BaseController {
                             dbQueryDisposable = userUtils.createOrUpdateUser(null,
                                     null,
                                     null, displayName, null, null,
-                                    null, currentUser.getId(), null, null)
+                                    null, currentUser.getId(), null, null, null)
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(userEntityResult -> {

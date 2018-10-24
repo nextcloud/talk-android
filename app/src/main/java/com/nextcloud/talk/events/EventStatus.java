@@ -35,7 +35,7 @@ public class EventStatus {
     }
 
     public enum EventType {
-        PUSH_REGISTRATION, CAPABILITIES_FETCH
+        PUSH_REGISTRATION, CAPABILITIES_FETCH, SIGNALING_SETTINGS
     }
 
 }

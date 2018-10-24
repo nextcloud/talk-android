@@ -20,13 +20,19 @@
 
 package com.nextcloud.talk.models;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import org.parceler.Parcel;
 
 import lombok.Data;
 
 @Data
 @Parcel
+@JsonObject
 public class ExternalSignalingServer {
+    @JsonField(name = "externalSignalingServer")
     String externalSignalingServer;
+    @JsonField(name = "externalSignalingTicket")
     String externalSignalingTicket;
 }

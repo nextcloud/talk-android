@@ -178,7 +178,8 @@ public class UserUtils {
                                                      @Nullable String userId,
                                                      @Nullable Long internalId,
                                                      @Nullable String capabilities,
-                                                     @Nullable String certificateAlias) {
+                                                     @Nullable String certificateAlias,
+                                                     @Nullable String externalSignalingServer) {
         Result findUserQueryResult;
         if (internalId == null) {
             findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).
@@ -215,6 +216,10 @@ public class UserUtils {
                 user.setClientCertificate(certificateAlias);
             }
 
+            if (!TextUtils.isEmpty(externalSignalingServer)) {
+                user.setExternalSignalingServer(externalSignalingServer);
+            }
+
             user.setCurrent(true);
 
         } else {
@@ -243,6 +248,9 @@ public class UserUtils {
                 user.setClientCertificate(certificateAlias);
             }
 
+            if (externalSignalingServer != null && !externalSignalingServer.equals(user.getExternalSignalingServer())) {
+                user.setExternalSignalingServer(externalSignalingServer);
+            }
 
             if (currentUser != null) {
                 user.setCurrent(currentUser);

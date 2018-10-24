@@ -38,6 +38,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.jobs.CapabilitiesWorker;
 import com.nextcloud.talk.jobs.PushRegistrationWorker;
+import com.nextcloud.talk.jobs.SignalingSettingsJob;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
@@ -251,7 +252,7 @@ public class AccountVerificationController extends BaseController {
         userUtils.createOrUpdateUser(username, token,
                 baseUrl, displayName, null, true,
                 userId, null, null,
-                appPreferences.getTemporaryClientCertAlias())
+                appPreferences.getTemporaryClientCertAlias(), null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Observer<UserEntity>() {
                     @Override
@@ -361,8 +362,15 @@ public class AccountVerificationController extends BaseController {
                 }
                 abortVerification();
             } else if (internalAccountId == eventStatus.getUserId() && eventStatus.isAllGood()) {
-                proceedWithLogin();
+                fetchAndStoreExternalSignalingSettings();
             }
+        } else if (eventStatus.getEventType().equals(EventStatus.EventType.SIGNALING_SETTINGS)) {
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> progressText.setText(progressText.getText().toString() + "\n" +
+                        getResources().getString(R.string.nc_external_server_failed)));
+            }
+
+            proceedWithLogin();
         }
 
     }
@@ -376,6 +384,17 @@ public class AccountVerificationController extends BaseController {
                 .setInputData(userData)
                 .build();
         WorkManager.getInstance().enqueue(pushNotificationWork);
+    }
+
+    private void fetchAndStoreExternalSignalingSettings() {
+        Data userData = new Data.Builder()
+                .putLong(BundleKeys.KEY_INTERNAL_USER_ID, internalAccountId)
+                .build();
+
+        OneTimeWorkRequest signalingSettings = new OneTimeWorkRequest.Builder(SignalingSettingsJob.class)
+                .setInputData(userData)
+                .build();
+        WorkManager.getInstance().enqueue(signalingSettings);
     }
 
     private void proceedWithLogin() {
