@@ -124,6 +124,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:maxLength="1000"
+        android:inputType="textLongMessage|textAutoComplete"
         app:inputButtonDefaultBgColor="@color/colorPrimary"
         app:inputButtonDefaultBgPressedColor="@color/colorPrimaryDark"
         app:inputButtonHeight="30dp"
