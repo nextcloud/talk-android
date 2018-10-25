@@ -577,10 +577,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             }
 
                             if (TextUtils.isEmpty((CharSequence) modifiedQueryMap.get("search"))) {
-                                canFetchFurther = !shareeHashSet.isEmpty() || (finalServerIs14OrUp && !autocompleteUsersHashSet.isEmpty());
+                                canFetchFurther = !shareeHashSet.isEmpty() || (finalServerIs14OrUp && autocompleteUsersHashSet.size() == 100);
                                 currentPage = (int) modifiedQueryMap.get("page");
                             } else {
-                                canFetchSearchFurther = !shareeHashSet.isEmpty() || (finalServerIs14OrUp && !autocompleteUsersHashSet.isEmpty());
+                                canFetchSearchFurther = !shareeHashSet.isEmpty() || (finalServerIs14OrUp && autocompleteUsersHashSet.size() == 100);
                                 currentSearchPage = (int) modifiedQueryMap.get("page");
                             }
 
