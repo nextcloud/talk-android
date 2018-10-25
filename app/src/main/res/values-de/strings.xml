@@ -216,4 +216,7 @@ Finden Sie Nextcloud auf https://nextcloud.com</string>
     <string name="nc_conversations_empty">Sie haben bislang keine Unterhaltung geführt\n Kliacken Sie auf Start um eine Unterhaltung zu beginnen.</string>
     <string name="nc_hello">Hallo</string>
 
-    </resources>
+    <!-- Other -->
+    <string name="nc_limit_hit">1000-Zeichen-Limit wurde erreicht</string>
+
+</resources>

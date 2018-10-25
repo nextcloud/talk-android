@@ -216,4 +216,7 @@ Retrouvez Nextcloud sur https://nextcloud.com</string>
     <string name="nc_conversations_empty">Vous n\'avez encore parlé avec personne !\n Appuyez pour démarrer une conversation.</string>
     <string name="nc_hello">Bonjour</string>
 
-    </resources>
+    <!-- Other -->
+    <string name="nc_limit_hit">Limite de 1000 caractères atteinte</string>
+
+</resources>

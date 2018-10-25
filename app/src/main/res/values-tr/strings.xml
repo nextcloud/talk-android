@@ -218,4 +218,7 @@ Nextcloud web sitesi https://nextcloud.com</string>
     <string name="nc_conversations_empty">Henüz hiç kimse ile bir görüşme yapmamışsınız!\nBir görüşme başlatmak için dokunun.</string>
     <string name="nc_hello">Merhaba</string>
 
-    </resources>
+    <!-- Other -->
+    <string name="nc_limit_hit">1000 karakter sınırına ulaşıldı</string>
+
+</resources>

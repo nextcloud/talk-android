@@ -216,4 +216,7 @@ Nextcloud naleznete na https://nextcloud.com</string>
     <string name="nc_conversations_empty">Zatím jste ještě s nikým nemluvili!\n Začněte konverzaci klepnutím.</string>
     <string name="nc_hello">Ahoj</string>
 
-    </resources>
+    <!-- Other -->
+    <string name="nc_limit_hit">bylo dosaženo limitu 1000 znaků</string>
+
+</resources>
