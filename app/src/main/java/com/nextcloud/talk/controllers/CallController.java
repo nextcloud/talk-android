@@ -1038,6 +1038,9 @@ public class CallController extends BaseController {
                     public void onNext(CallOverall callOverall) {
                         callSession = callOverall.getOcs().getData().getSessionId();
                         ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
+                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
+                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
                         callOrJoinRoomViaWebSocket();
                     }
 
@@ -1089,10 +1092,7 @@ public class CallController extends BaseController {
                             animateCallControls(false, 5000);
                         }
 
-                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
-                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
                         ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
-                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
 
                         if (needsPing) {
                             ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
