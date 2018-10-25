@@ -1002,7 +1002,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
             bundle.putString(BundleKeys.KEY_ROOM_ID, roomId);
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword);
-            bundle.putString(BundleKeys.KEY_CALL_SESSION, currentCall.getSessionId());
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
 
             if (isVoiceOnlyCall) {

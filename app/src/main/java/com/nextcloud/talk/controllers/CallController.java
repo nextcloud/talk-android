@@ -260,7 +260,6 @@ public class CallController extends BaseController {
             conversationUser = userUtils.getCurrentUser();
         }
 
-        callSession = args.getString(BundleKeys.KEY_CALL_SESSION, "0");
         credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
         isVoiceOnlyCall = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
 
@@ -1025,36 +1024,32 @@ public class CallController extends BaseController {
     }
 
     private void joinRoomAndCall() {
-        if ("0".equals(callSession)) {
-            ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken), null)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .retry(3)
-                    .subscribe(new Observer<CallOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+        ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken), null)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(3)
+                .subscribe(new Observer<CallOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onNext(CallOverall callOverall) {
-                            callSession = callOverall.getOcs().getData().getSessionId();
-                            callOrJoinRoomViaWebSocket();
-                        }
+                    @Override
+                    public void onNext(CallOverall callOverall) {
+                        callSession = callOverall.getOcs().getData().getSessionId();
+                        callOrJoinRoomViaWebSocket();
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-                        }
-                    });
-        } else {
-            callOrJoinRoomViaWebSocket();
-        }
+                    }
+                });
     }
 
     private void callOrJoinRoomViaWebSocket() {
