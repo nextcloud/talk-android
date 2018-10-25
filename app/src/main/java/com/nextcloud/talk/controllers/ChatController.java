@@ -482,6 +482,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
         ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
 
+
         if (mentionAutocomplete != null && mentionAutocomplete.isPopupShowing()) {
             mentionAutocomplete.dismissPopup();
         }
@@ -586,6 +587,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         public void onNext(CallOverall callOverall) {
                             inChat = true;
                             currentCall = callOverall.getOcs().getData();
+                            ApplicationWideCurrentRoomHolder.getInstance().setSession(currentCall.getSessionId());
                             startPing();
                             if (isFirstMessagesProcessing) {
                                 pullChatMessages(0);
@@ -610,6 +612,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     });
         } else {
             inChat = true;
+            ApplicationWideCurrentRoomHolder.getInstance().setSession(currentCall.getSessionId());
             startPing();
             if (isFirstMessagesProcessing) {
                 pullChatMessages(0);
@@ -996,7 +999,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private Intent getIntentForCall(boolean isVoiceOnlyCall) {
-        if (currentCall != null && !TextUtils.isEmpty(currentCall.getSessionId())) {
+        if (currentCall != null) {
             Bundle bundle = new Bundle();
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
             bundle.putString(BundleKeys.KEY_ROOM_ID, roomId);

@@ -1037,6 +1037,7 @@ public class CallController extends BaseController {
                     @Override
                     public void onNext(CallOverall callOverall) {
                         callSession = callOverall.getOcs().getData().getSessionId();
+                        ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
                         callOrJoinRoomViaWebSocket();
                     }
 

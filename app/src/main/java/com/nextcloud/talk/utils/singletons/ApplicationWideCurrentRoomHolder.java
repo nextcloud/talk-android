@@ -27,6 +27,7 @@ public class ApplicationWideCurrentRoomHolder {
     private String currentRoomToken = "";
     private UserEntity userInRoom = new UserEntity();
     private boolean inCall = false;
+    private String session = "";
 
     private static final ApplicationWideCurrentRoomHolder holder = new ApplicationWideCurrentRoomHolder();
 
@@ -39,6 +40,7 @@ public class ApplicationWideCurrentRoomHolder {
         userInRoom = new UserEntity();
         inCall = false;
         currentRoomToken = "";
+        session = "";
     }
 
     public String getCurrentRoomToken() {
@@ -71,5 +73,13 @@ public class ApplicationWideCurrentRoomHolder {
 
     public void setInCall(boolean inCall) {
         this.inCall = inCall;
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
     }
 }

@@ -35,6 +35,7 @@ import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
 import com.nextcloud.talk.utils.MagicMap;
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -74,6 +75,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private String connectionUrl;
 
     private String currentRoomToken;
+
+    int restartCount = 0;
 
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -115,6 +118,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
             switch (messageType) {
                 case "hello":
                     connected = true;
+                    restartCount = 0;
                     HelloResponseOverallWebSocketMessage helloResponseWebSocketMessage = LoganSquare.parse(text, HelloResponseOverallWebSocketMessage.class);
                     resumeId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getResumeId();
                     sessionId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getSessionId();
@@ -205,7 +209,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
         Log.d(TAG, "Error : " + t.getMessage());
         connected = false;
-        restartWebSocket();
+        if (restartCount < 4) {
+            restartWebSocket();
+        }
     }
 
     public String getSessionId() {
