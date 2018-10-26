@@ -42,6 +42,7 @@
     <string name="nc_display_name_fetched">Nome visualizzato recuperato</string>
     <string name="nc_push_disabled">Notifiche push disabilitate</string>
     <string name="nc_capabilities_failed">Recupero delle capacità non riuscito, interruzione in corso</string>
+    <string name="nc_external_server_failed">Recupero delle impostazioni di segnalazione non riuscito</string>
     <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
     <string name="nc_nextcloud_talk_app_installed"> Applicazione %1$s trovate</string>
     <string name="nc_nextcloud_talk_app_not_installed">Applicazione %1$s non installata, interruzione in corso</string>

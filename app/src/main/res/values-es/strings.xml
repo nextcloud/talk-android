@@ -42,6 +42,7 @@
     <string name="nc_display_name_fetched">Nombre para mostrar obtenido</string>
     <string name="nc_push_disabled">Notificaciones push desactivadas</string>
     <string name="nc_capabilities_failed">Fallo al recuperar capacidades. Abortando.</string>
+    <string name="nc_external_server_failed">Fallo al recuperar la configuración de señalización</string>
     <string name="nc_display_name_not_fetched">Nombre para mostrar no pudo ser obtenido, abortando</string>
     <string name="nc_nextcloud_talk_app_installed">aplicación %1$s encontrada</string>
     <string name="nc_nextcloud_talk_app_not_installed">La app %1$s no está instalada en el servidor. Abortando</string>
@@ -216,4 +217,7 @@ Encuentra Nextcloud en https://nextcloud.com</string>
     <string name="nc_conversations_empty">Todavía no has hablado con nadie. \n Pulsa para empezar una conversación.</string>
     <string name="nc_hello">Hola</string>
 
-    </resources>
+    <!-- Other -->
+    <string name="nc_limit_hit">Se ha alcanzado el límite de 1000 caracteres</string>
+
+</resources>

@@ -42,6 +42,7 @@
     <string name="nc_display_name_fetched">Anzeigename abgerufen</string>
     <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
     <string name="nc_capabilities_failed">Fehler beim Abfragen der Fähigkeiten. Abbruch</string>
+    <string name="nc_external_server_failed">Konnte die Benachrichtigungseinstellungen nicht abrufen</string>
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden, Abbruch</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s App gefunden</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s App nicht auf dem Server installiert, Abbruch</string>
