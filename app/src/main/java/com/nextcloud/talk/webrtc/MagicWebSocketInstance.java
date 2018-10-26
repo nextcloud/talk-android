@@ -37,10 +37,13 @@ import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMes
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
 import com.nextcloud.talk.utils.MagicMap;
 
+import com.nextcloud.talk.R;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -78,6 +81,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private boolean isPermanentlyClosed = false;
     private int restartCount = 0;
 
+    private HashMap<String, String> displayNameHashMap;
+    private HashMap<String, String> userIdSesssionHashMap;
+
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
@@ -85,6 +91,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
         this.conversationUser = conversationUser;
         this.webSocketTicket = webSocketTicket;
         this.webSocketConnectionHelper = new WebSocketConnectionHelper();
+        this.displayNameHashMap = new HashMap<>();
         magicMap = new MagicMap();
 
         restartWebSocket();
@@ -165,6 +172,15 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                                 }
                                             }
                                         }
+                                    }
+                                } else if (eventOverallWebSocketMessage.getEventMap().get("type").equals("join")) {
+                                    List<HashMap<String, Object>> joinEventMap = (List<HashMap<String, Object>>) eventOverallWebSocketMessage.getEventMap().get("join");
+                                    HashMap<String, Object> internalHashMap;
+                                    for (int i = 0; i < joinEventMap.size(); i++) {
+                                        internalHashMap = joinEventMap.get(i);
+                                        HashMap<String, Object> userMap = (HashMap<String, Object>) internalHashMap.get("user");
+                                        displayNameHashMap.put((String) internalHashMap.get("sessionid"), (String) userMap.get("displayname"));
+                                        userIdSesssionHashMap.put((String) internalHashMap.get("userid"), (String) internalHashMap.get("sessionid"));
                                     }
                                 }
                                 break;
@@ -290,5 +306,17 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     boolean isPermanentlyClosed() {
         return isPermanentlyClosed;
+    }
+
+    public String getDisplayNameForSession(String session) {
+        if (displayNameHashMap.containsKey(session)) {
+            return displayNameHashMap.get(session);
+        }
+
+        return NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_nick_guest);
+    }
+
+    public String getSessionForUserId(String userId) {
+        return userIdSesssionHashMap.get(userId);
     }
 }

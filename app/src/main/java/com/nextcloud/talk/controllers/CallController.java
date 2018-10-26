@@ -132,6 +132,7 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 import eu.davidea.flipview.FlipView;
 import io.reactivex.Observer;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -247,6 +248,7 @@ public class CallController extends BaseController {
     private MagicWebSocketInstance webSocketClient;
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private boolean hasMCU;
+    private boolean hasExternalSignalingServer;
 
     public CallController(Bundle args) {
         super(args);
@@ -921,11 +923,27 @@ public class CallController extends BaseController {
                         if (signalingSettingsOverall != null && signalingSettingsOverall.getOcs() != null &&
                                 signalingSettingsOverall.getOcs().getSettings() != null) {
 
+                            externalSignalingServer = new ExternalSignalingServer();
+
                             if (!TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer()) &&
                                     !TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket())) {
                                 externalSignalingServer = new ExternalSignalingServer();
                                 externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
                                 externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
+                                hasExternalSignalingServer = true;
+                            } else {
+                                hasExternalSignalingServer = false;
+                            }
+
+                            if (!conversationUser.getUserId().equals("?")) {
+                                try {
+                                    userUtils.createOrUpdateUser(null, null, null, null, null, null, null,
+                                            conversationUser.getId(), null, null, LoganSquare.serialize(externalSignalingServer))
+                                            .subscribeOn(Schedulers.newThread())
+                                            .subscribe();
+                                } catch (IOException exception) {
+                                    Log.e(TAG, "Failed to serialize external signaling server");
+                                }
                             }
 
                             if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
@@ -1004,7 +1022,7 @@ public class CallController extends BaseController {
                                 .getCapabilities().getSpreedCapability()
                                 .getFeatures().contains("no-ping"));
 
-                        if (externalSignalingServer == null) {
+                        if (!hasExternalSignalingServer) {
                             joinRoomAndCall();
                         } else {
                             setupAndInitiateWebSocketsConnection();
@@ -1057,7 +1075,7 @@ public class CallController extends BaseController {
     }
 
     private void callOrJoinRoomViaWebSocket() {
-        if (externalSignalingServer == null) {
+        if (!hasExternalSignalingServer) {
             performCall();
         } else {
             webSocketClient.joinRoomWithRoomTokenAndSession(roomToken, callSession);
@@ -1132,7 +1150,7 @@ public class CallController extends BaseController {
 
                         NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
 
-                        if (externalSignalingServer == null) {
+                        if (!hasExternalSignalingServer) {
                             ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -1379,7 +1397,7 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        if (externalSignalingServer != null) {
+                        if (hasExternalSignalingServer) {
                             webSocketClient.joinRoomWithRoomTokenAndSession("", "");
                         }
 
@@ -1480,7 +1498,7 @@ public class CallController extends BaseController {
         }
 
         for (String sessionId : newSessions) {
-            if (externalSignalingServer != null && webSocketClient.hasMCU()) {
+            if (hasExternalSignalingServer && webSocketClient.hasMCU()) {
                 if (!sessionId.equals(webSocketClient.getSessionId())) {
                     alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
 
@@ -1619,7 +1637,7 @@ public class CallController extends BaseController {
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.NICK_CHANGE)) {
-            gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick());
+            gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick(), true);
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.VIDEO_CHANGE) && !isVoiceOnlyCall) {
             gotAudioOrVideoChange(true, peerConnectionEvent.getSessionId(),
@@ -1667,7 +1685,7 @@ public class CallController extends BaseController {
         ncMessageWrapper.setSignalingMessage(ncSignalingMessage);
 
 
-        if (externalSignalingServer == null) {
+        if (!hasExternalSignalingServer) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("{")
                     .append("\"fn\":\"")
@@ -1836,7 +1854,12 @@ public class CallController extends BaseController {
                 surfaceViewRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
                 surfaceViewRenderer.setOnClickListener(videoOnClickListener);
                 remoteRenderersLayout.addView(relativeLayout);
-                gotNick(session, getPeerConnectionWrapperForSessionId(session).getNick());
+                if (hasExternalSignalingServer) {
+                    gotNick(session, webSocketClient.getDisplayNameForSession(session), false);
+                } else {
+                    gotNick(session, getPeerConnectionWrapperForSessionId(session).getNick(), false);
+                }
+
                 setupAvatarForSession(session);
 
                 callControls.setZ(100.0f);
@@ -1844,11 +1867,18 @@ public class CallController extends BaseController {
         }
     }
 
-    private void gotNick(String sessionId, String nick) {
-        RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionId);
+    private void gotNick(String sessionOrUserId, String nick, boolean isFromAnEvent) {
+        if (isFromAnEvent && hasExternalSignalingServer) {
+            // get session based on userId
+            sessionOrUserId =  webSocketClient.getSessionForUserId(sessionOrUserId);
+        }
+
         if (relativeLayout != null) {
+            RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionOrUserId);
             TextView textView = relativeLayout.findViewById(R.id.peer_nick_text_view);
-            textView.setText(nick);
+            if (!textView.getText().equals(nick)) {
+                textView.setText(nick);
+            }
         }
     }
 

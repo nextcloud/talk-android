@@ -233,10 +233,21 @@ public class MagicPeerConnectionWrapper {
             try {
                 DataChannelMessage dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
 
+                String internalNick;
                 if ("nickChanged".equals(dataChannelMessage.getType())) {
-                    nick = dataChannelMessage.getPayload();
-                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .NICK_CHANGE, sessionId, nick, null));
+                    if (dataChannelMessage.getPayload() instanceof String) {
+                        internalNick = (String) dataChannelMessage.getPayload();
+                        if (!internalNick.equals(nick)) {
+                            setNick(nick);
+                            EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                                    .NICK_CHANGE, sessionId, getNick(), null));
+                        }
+                    } else {
+                        HashMap<String, String> payloadHashMap = (HashMap<String, String>) dataChannelMessage.getPayload();
+                        EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                                .NICK_CHANGE, payloadHashMap.get("userid"), payloadHashMap.get("name"), null));
+                    }
+
                 } else if ("audioOn".equals(dataChannelMessage.getType())) {
                     remoteAudioOn = true;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType

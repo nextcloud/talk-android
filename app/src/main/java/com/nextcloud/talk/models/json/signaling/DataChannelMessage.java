@@ -32,7 +32,7 @@ public class DataChannelMessage {
     String type;
 
     @JsonField(name = "payload")
-    String payload;
+    Object payload;
 
     public DataChannelMessage(String type) {
         this.type = type;
