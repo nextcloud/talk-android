@@ -271,7 +271,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
         }
     }
 
-    public void sendBye() {
+    void sendBye() {
         if (isConnected()) {
             try {
                 ByeWebSocketMessage byeWebSocketMessage = new ByeWebSocketMessage();
@@ -288,7 +288,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
         return connected;
     }
 
-    public boolean isPermanentlyClosed() {
+    boolean isPermanentlyClosed() {
         return isPermanentlyClosed;
     }
 }
