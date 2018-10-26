@@ -55,6 +55,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoComponent;
 import autodagger.AutoInjector;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 @AutoComponent(
         modules = {
@@ -108,6 +109,11 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
     @Override
     public void onCreate() {
         super.onCreate();
+
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/Nunito-Regular.ttf")
+                .build()
+        );
 
         sharedApplication = this;
 

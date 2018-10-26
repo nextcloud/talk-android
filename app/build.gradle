@@ -190,6 +190,8 @@ dependencies {
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.kevalpatel2106:emoticongifkeyboard:1.1'
 
+    compile 'uk.co.chrisjenx:calligraphy:2.3.0'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation ('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'

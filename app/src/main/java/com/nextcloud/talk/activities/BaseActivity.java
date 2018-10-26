@@ -21,6 +21,7 @@
 package com.nextcloud.talk.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.SslErrorHandler;
@@ -45,6 +46,7 @@ import javax.inject.Inject;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import autodagger.AutoInjector;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class BaseActivity extends AppCompatActivity {
@@ -57,6 +59,11 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     public void showCertificateDialog(X509Certificate cert, MagicTrustManager magicTrustManager,

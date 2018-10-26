@@ -36,7 +36,6 @@ import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
 import com.nextcloud.talk.utils.MagicMap;
-import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -93,16 +92,14 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
-        if (isConnected()) {
-            try {
-                if (TextUtils.isEmpty(resumeId)) {
-                    webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModel(conversationUser, webSocketTicket)));
-                } else {
-                    webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModelForResume(resumeId)));
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to serialize hello model");
+        try {
+            if (TextUtils.isEmpty(resumeId)) {
+                webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModel(conversationUser, webSocketTicket)));
+            } else {
+                webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModelForResume(resumeId)));
             }
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to serialize hello model");
         }
     }
 
@@ -280,7 +277,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                 ByeWebSocketMessage byeWebSocketMessage = new ByeWebSocketMessage();
                 byeWebSocketMessage.setType("bye");
                 byeWebSocketMessage.setBye(new HashMap<>());
-                webSocket.send(LoganSquare.serialize(byeWebSocketMessage);
+                webSocket.send(LoganSquare.serialize(byeWebSocketMessage));
             } catch (IOException e) {
                 Log.e(TAG, "Failed to serialize bye message");
             }
