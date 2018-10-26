@@ -1191,7 +1191,7 @@ public class CallController extends BaseController {
         webSocketConnectionHelper = new WebSocketConnectionHelper();
         webSocketClient = webSocketConnectionHelper.getExternalSignalingInstanceForServer(
                 externalSignalingServer.getExternalSignalingServer(),
-                conversationUser, externalSignalingServer.getExternalSignalingTicket(), false);
+                conversationUser, externalSignalingServer.getExternalSignalingTicket());
 
         if (webSocketClient.isConnected()) {
             joinRoomAndCall();

@@ -47,7 +47,7 @@ import okhttp3.OkHttpClient;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebSocketConnectionHelper {
-    private static Map<String, MagicWebSocketInstance> magicWebSocketInstanceMap = new HashMap<>();
+    private static Map<Long, MagicWebSocketInstance> magicWebSocketInstanceMap = new HashMap<>();
 
     @Inject
     OkHttpClient okHttpClient;
@@ -57,7 +57,7 @@ public class WebSocketConnectionHelper {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
 
-    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket, boolean forceReconnect) {
+    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket) {
         String generatedURL = url.replace("https://", "wss://").replace("http://", "ws://");
 
         if (generatedURL.endsWith("/")) {
@@ -66,15 +66,25 @@ public class WebSocketConnectionHelper {
             generatedURL += "/spreed";
         }
 
-        if (magicWebSocketInstanceMap.containsKey(userEntity.getUserId()) && !forceReconnect) {
-            return magicWebSocketInstanceMap.get(userEntity.getUserId());
+        MagicWebSocketInstance magicWebSocketInstance;
+        if ((magicWebSocketInstance = magicWebSocketInstanceMap.get(userEntity.getId())) != null && !magicWebSocketInstance.isPermanentlyClosed()) {
+            return magicWebSocketInstance;
         } else {
-            MagicWebSocketInstance magicWebSocketInstance = new MagicWebSocketInstance(userEntity, generatedURL, webSocketTicket);
-            magicWebSocketInstanceMap.put(userEntity.getUserId(), magicWebSocketInstance);
+            magicWebSocketInstance = new MagicWebSocketInstance(userEntity, generatedURL, webSocketTicket);
+            magicWebSocketInstanceMap.put(userEntity.getId(), magicWebSocketInstance);
             return magicWebSocketInstance;
         }
     }
 
+    public static synchronized void deleteExternalSignalingInstanceForUserEntity(long id) {
+        MagicWebSocketInstance magicWebSocketInstance;
+        if ((magicWebSocketInstance = magicWebSocketInstanceMap.get(id)) != null) {
+            if (magicWebSocketInstance.isConnected()) {
+                magicWebSocketInstance.sendBye();
+                magicWebSocketInstanceMap.remove(id);
+            }
+        }
+    }
     HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity userEntity, String ticket) {
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");

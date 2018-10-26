@@ -36,6 +36,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 
 import java.io.IOException;
 import java.net.CookieManager;
@@ -134,6 +135,8 @@ public class AccountRemovalWorker extends Worker {
                                                                         .toString(crc32.getValue()));
                                                             }
                                                         }
+
+                                                        WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(userEntity.getId());
 
                                                         userUtils.deleteUser(userEntity.getId()).subscribe(new CompletableObserver() {
                                                                                                                        @Override
