@@ -74,6 +74,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         messageText.setText(message.getSelectedIndividualHashMap().get("name"));
         image.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
+            browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
         });
     }
