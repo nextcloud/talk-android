@@ -43,6 +43,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_display_name_fetched">Weergavenaam opgehaald</string>
     <string name="nc_push_disabled">Push meldingen uitgeschakeld</string>
     <string name="nc_capabilities_failed">Kon mogelijkheden niet ophalen, afbreken</string>
+    <string name="nc_external_server_failed">Kon signaleringsinstellingen niet ophalen</string>
     <string name="nc_display_name_not_fetched">Weergave kon niet worden opgehaald, afgebroken</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s app gevonden</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app is niet geïnstalleerd op de server, afbreken</string>
@@ -220,4 +221,7 @@ Bezoek Nextcloud op https://nextcloud.com</string>
     <string name="nc_conversations_empty">Je hebt nog met niemand gesproken. Tik om een gesprek te starten.</string>
     <string name="nc_hello">Hallo</string>
 
-    </resources>
+    <!-- Other -->
+    <string name="nc_limit_hit">Limiet van 1000 tekens bereikt</string>
+
+</resources>
