@@ -131,6 +131,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import eu.davidea.flipview.FlipView;
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -1223,6 +1224,10 @@ public class CallController extends BaseController {
                 joinRoomAndCall();
                 break;
             case "roomJoined":
+                if (hasMCU) {
+                    startSendingNick();
+                }
+
                 if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
                     performCall();
                 }
@@ -1555,7 +1560,7 @@ public class CallController extends BaseController {
         if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
             return magicPeerConnectionWrapper;
         } else {
-            hasMCU = webSocketClient != null && webSocketClient.hasMCU();
+            hasMCU = externalSignalingServer != null && webSocketClient != null && webSocketClient.hasMCU();
 
             if (hasMCU && publisher) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
@@ -1646,6 +1651,27 @@ public class CallController extends BaseController {
                 .PeerConnectionEventType.AUDIO_CHANGE)) {
             gotAudioOrVideoChange(false, peerConnectionEvent.getSessionId(),
                     peerConnectionEvent.getChangeValue());
+        }
+    }
+
+    private void startSendingNick() {
+        DataChannelMessage dataChannelMessage = new DataChannelMessage();
+        dataChannelMessage.setType("nickChanged");
+        HashMap<String, String> nickChangedPayload = new HashMap<>();
+        nickChangedPayload.put("userid", conversationUser.getUserId());
+        nickChangedPayload.put("name", conversationUser.getDisplayName());
+        dataChannelMessage.setPayload(nickChangedPayload);
+        for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
+            if (magicPeerConnectionWrapperList.get(i).isMCUPublisher()) {
+                int finalI = i;
+                Observable
+                        .interval(1, TimeUnit.SECONDS)
+                        .takeWhile(observer -> inCall)
+                        .observeOn(Schedulers.newThread())
+                        .doOnNext(n -> magicPeerConnectionWrapperList.get(finalI).sendChannelData(dataChannelMessage));
+                break;
+            }
+
         }
     }
 
