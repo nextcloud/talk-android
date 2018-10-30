@@ -91,7 +91,7 @@ public class MagicPeerConnectionWrapper {
                 new MagicPeerConnectionObserver());
 
         if (peerConnection != null) {
-            if (localSession != null && localMediaStream != null) {
+            if (localMediaStream != null) {
                 peerConnection.addStream(localMediaStream);
             }
 
