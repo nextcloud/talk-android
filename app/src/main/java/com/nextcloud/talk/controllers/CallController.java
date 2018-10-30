@@ -1224,7 +1224,7 @@ public class CallController extends BaseController {
                 joinRoomAndCall();
                 break;
             case "roomJoined":
-                if (hasMCU) {
+                if (hasExternalSignalingServer) {
                     startSendingNick();
                 }
 
