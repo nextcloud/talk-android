@@ -42,6 +42,7 @@
     <string name="nc_display_name_fetched">Zobrazované meno načítané</string>
     <string name="nc_push_disabled">Push notifikácie vypnuté</string>
     <string name="nc_capabilities_failed">Nepodarilo sa načítať funkcie, prerušujem</string>
+    <string name="nc_external_server_failed">Nepodarilo sa načítať nastavenia signalizácie</string>
     <string name="nc_display_name_not_fetched">Zobrazované meno sa nedalo načítať, ruším</string>
     <string name="nc_nextcloud_talk_app_installed">Aplikácia %1$s nájdená</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikácia %1$snie je nainštalovaná na servri, ruším</string>
@@ -216,4 +217,7 @@ Nextcloud nájdete na https://nextcloud.com</string>
     <string name="nc_conversations_empty">Ešte ste sa s nikým nerozprávali!\n Rozhovor začnete kliknutím.</string>
     <string name="nc_hello">Ahoj</string>
 
-    </resources>
+    <!-- Other -->
+    <string name="nc_limit_hit">bolo dosiahnutý limit 1000 znakov</string>
+
+</resources>
