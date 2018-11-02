@@ -78,6 +78,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -106,6 +107,10 @@ public class NotificationWorker extends Worker {
     private String conversationType = "";
 
     private String credentials;
+
+    public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
 
     private void showNotificationForCallWithNoPing(Intent intent) {
         UserEntity userEntity = signatureVerification.getUserEntity();

@@ -316,6 +316,10 @@ public class SettingsController extends BaseController {
         dispose(null);
         getCurrentUser();
 
+        if (shouldVibrateSwitchPreference.getVisibility() == View.VISIBLE) {
+            shouldVibrateSwitchPreference.setActivated(appPreferences.getShouldVibrateSetting());
+        }
+
         if (!TextUtils.isEmpty(currentUser.getClientCertificate())) {
             certificateSetup.setTitle(R.string.nc_client_cert_change);
         } else {

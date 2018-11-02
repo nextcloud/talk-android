@@ -21,6 +21,7 @@
 package com.nextcloud.talk.jobs;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -38,6 +39,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -47,6 +49,10 @@ public class WebsocketConnectionsWorker extends Worker {
 
     @Inject
     UserUtils userUtils;
+
+    public WebsocketConnectionsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
 
     @SuppressLint("LongLogTag")
     @NonNull

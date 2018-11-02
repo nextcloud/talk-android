@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.jobs;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -44,6 +45,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -68,6 +70,11 @@ public class CapabilitiesWorker extends Worker {
     OkHttpClient okHttpClient;
 
     NcApi ncApi;
+
+    public CapabilitiesWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+
+    }
 
     private void updateUser(CapabilitiesOverall capabilitiesOverall, UserEntity internalUserEntity) {
         try {

@@ -47,6 +47,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
@@ -69,6 +70,10 @@ public class AccountRemovalWorker extends Worker {
     OkHttpClient okHttpClient;
 
     NcApi ncApi;
+
+    public AccountRemovalWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
 
     @NonNull
     @Override

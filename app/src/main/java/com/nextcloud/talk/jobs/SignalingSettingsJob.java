@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.jobs;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -47,6 +48,7 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -63,6 +65,10 @@ public class SignalingSettingsJob extends Worker {
 
     @Inject
     EventBus eventBus;
+
+    public SignalingSettingsJob(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
 
     @NonNull
     @Override
