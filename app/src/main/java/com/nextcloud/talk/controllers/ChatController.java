@@ -504,7 +504,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     protected void onDetach(@NonNull View view) {
         super.onDetach(view);
         if (conversationUser.hasSpreedCapabilityWithName("no-ping")) {
-            dispose();
             wasDetached = true;
         }
     }
@@ -571,6 +570,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void joinRoomWithPassword() {
+
+        wasDetached = false;
 
         if (currentCall == null) {
             ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken), roomPassword)
@@ -738,62 +739,64 @@ public class ChatController extends BaseController implements MessagesListAdapte
             fieldMap.put("lastKnownMessageId", lastKnown);
         }
 
-        if (lookIntoFuture == 1) {
-            ncApi.pullChatMessages(credentials, ApiUtils.getUrlForChat(baseUrl, roomToken), fieldMap)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .takeWhile(observable -> inChat)
-                    .retry(3, observable -> inChat)
-                    .subscribe(new Observer<Response>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            disposableList.add(d);
-                        }
+        if (!wasDetached) {
+            if (lookIntoFuture == 1) {
+                ncApi.pullChatMessages(credentials, ApiUtils.getUrlForChat(baseUrl, roomToken), fieldMap)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .takeWhile(observable -> inChat && !wasDetached)
+                        .retry(3, observable -> inChat && !wasDetached)
+                        .subscribe(new Observer<Response>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                disposableList.add(d);
+                            }
 
-                        @Override
-                        public void onNext(Response response) {
-                            processMessages(response, true);
-                        }
+                            @Override
+                            public void onNext(Response response) {
+                                processMessages(response, true);
+                            }
 
-                        @Override
-                        public void onError(Throwable e) {
+                            @Override
+                            public void onError(Throwable e) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onComplete() {
-                            pullChatMessages(1);
-                        }
-                    });
+                            @Override
+                            public void onComplete() {
+                                pullChatMessages(1);
+                            }
+                        });
 
-        } else {
-            ncApi.pullChatMessages(credentials,
-                    ApiUtils.getUrlForChat(baseUrl, roomToken), fieldMap)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .retry(3, observable -> inChat)
-                    .takeWhile(observable -> inChat)
-                    .subscribe(new Observer<Response>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            disposableList.add(d);
-                        }
+            } else {
+                ncApi.pullChatMessages(credentials,
+                        ApiUtils.getUrlForChat(baseUrl, roomToken), fieldMap)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(3, observable -> inChat && !wasDetached)
+                        .takeWhile(observable -> inChat && !wasDetached)
+                        .subscribe(new Observer<Response>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                disposableList.add(d);
+                            }
 
-                        @Override
-                        public void onNext(Response response) {
-                            processMessages(response, false);
-                        }
+                            @Override
+                            public void onNext(Response response) {
+                                processMessages(response, false);
+                            }
 
-                        @Override
-                        public void onError(Throwable e) {
+                            @Override
+                            public void onError(Throwable e) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onComplete() {
+                            @Override
+                            public void onComplete() {
 
-                        }
-                    });
+                            }
+                        });
+            }
         }
     }
 
