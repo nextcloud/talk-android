@@ -53,19 +53,19 @@ import eu.davidea.flipview.FlipView;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements
-        ISectionable<UserItem.UserItemViewHolder, UserHeaderItem>, IFilterable<String> {
+        ISectionable<UserItem.UserItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
 
     private Participant participant;
     private UserEntity userEntity;
-    private UserHeaderItem header;
+    private GenericTextHeaderItem header;
 
     private FlipView flipView;
 
 
-    public UserItem(Participant participant, UserEntity userEntity, UserHeaderItem userHeaderItem) {
+    public UserItem(Participant participant, UserEntity userEntity, GenericTextHeaderItem genericTextHeaderItem) {
         this.participant = participant;
         this.userEntity = userEntity;
-        this.header = userHeaderItem;
+        this.header = genericTextHeaderItem;
     }
 
     @Override
@@ -168,12 +168,12 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     }
 
     @Override
-    public UserHeaderItem getHeader() {
+    public GenericTextHeaderItem getHeader() {
         return header;
     }
 
     @Override
-    public void setHeader(UserHeaderItem header) {
+    public void setHeader(GenericTextHeaderItem header) {
         this.header = header;
     }
 

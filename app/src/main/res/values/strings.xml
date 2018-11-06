@@ -155,6 +155,12 @@
     <string name="nc_notification_channel_messages">Messages notification channel</string>
     <string name="nc_notification_channel_calls_description">Shows incoming calls</string>
     <string name="nc_notification_channel_messages_description">Shows incoming messages</string>
+    <string name="nc_notification_settings">Notification settings</string>
+    <string name="nc_plain_old_messages">Messages</string>
+    <string name="nc_notify_me_always">Always</string>
+    <string name="nc_notify_me_mention">When mentioned</string>
+    <string name="nc_notify_me_never">Never</string>
+    <string name="nc_mute_calls">Mute calls</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
@@ -208,6 +214,7 @@ Find Nextcloud on https://nextcloud.com</string>
     <string name="nc_date_header_today">Today</string>
     <string name="nc_conversation_menu_voice_call">Voice call</string>
     <string name="nc_conversation_menu_video_call">Video call</string>
+    <string name="nc_conversation_menu_conversation_info">Conversation info</string>
     <string name="nc_new_messages">New messages</string>
     <string name="nc_no_messages_yet">No messages yet</string>
     <string name="nc_chat_you">You</string>

@@ -23,6 +23,7 @@ package com.nextcloud.talk.models.json.rooms;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
@@ -76,6 +77,15 @@ public class Conversation {
     public ChatMessage lastMessage;
     @JsonField(name = "objectType")
     String objectType;
+    @JsonField(name = "notificationLevel", typeConverter = EnumNotificationLevelConverter.class)
+    NotificationLevel notificationLevel;
+
+    public enum NotificationLevel {
+        DEFAULT,
+        ALWAYS,
+        MENTION,
+        NEVER
+    }
 
     public boolean isPublic() {
         return (RoomType.ROOM_PUBLIC_CALL.equals(type));

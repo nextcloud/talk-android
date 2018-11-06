@@ -38,12 +38,12 @@ import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class UserHeaderItem extends AbstractHeaderItem<UserHeaderItem.HeaderViewHolder> implements IFilterable<String> {
-    private static final String TAG = "UserHeaderItem";
+public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderItem.HeaderViewHolder> implements IFilterable<String> {
+    private static final String TAG = "GenericTextHeaderItem";
 
     private String title;
 
-    public UserHeaderItem(String title) {
+    public GenericTextHeaderItem(String title) {
         super();
         setHidden(false);
         setSelectable(false);
@@ -61,8 +61,8 @@ public class UserHeaderItem extends AbstractHeaderItem<UserHeaderItem.HeaderView
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof UserHeaderItem) {
-            UserHeaderItem inItem = (UserHeaderItem) o;
+        if (o instanceof GenericTextHeaderItem) {
+            GenericTextHeaderItem inItem = (GenericTextHeaderItem) o;
             return title.equals(inItem.getModel());
         }
         return false;

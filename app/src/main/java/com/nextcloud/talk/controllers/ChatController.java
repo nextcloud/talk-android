@@ -49,6 +49,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
@@ -229,6 +231,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(RoomOverall roomOverall) {
+
                         conversationName = roomOverall.getOcs().getData().getDisplayName();
                         setTitle();
 
@@ -966,6 +969,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_conversation, menu);
+
+        if (!conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
+            menu.findItem(R.id.nc_conversation_info).setVisible(true);
+        } else {
+            menu.findItem(R.id.nc_conversation_info).setVisible(false);
+        }
     }
 
 
@@ -981,7 +990,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
             case R.id.conversation_voice_call:
                 startACall(true);
                 return true;
-
+            case R.id.nc_conversation_info:
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
+                bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
+                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+                /*getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
+                        .pushChangeHandler(new VerticalChangeHandler())
+                        .popChangeHandler(new VerticalChangeHandler())));*/
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -32,5 +32,12 @@
         android:id="@+id/conversation_video_call"
         android:icon="@drawable/ic_videocam_white_24px"
         android:title="@string/nc_conversation_menu_video_call"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/nc_conversation_info"
+        android:icon="@drawable/ic_info_black_24dp"
+        android:title="@string/nc_conversation_menu_conversation_info"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
 </menu>

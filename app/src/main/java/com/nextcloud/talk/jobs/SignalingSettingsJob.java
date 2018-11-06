@@ -134,6 +134,8 @@ public class SignalingSettingsJob extends Worker {
                                 } catch (IOException e) {
                                     Log.e(TAG, "Failed to serialize external signaling server");
                                 }
+                            } else {
+                                eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, true));
                             }
 
                         }

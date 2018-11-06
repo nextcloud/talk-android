@@ -46,8 +46,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
+import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
 import com.nextcloud.talk.adapters.items.ProgressItem;
-import com.nextcloud.talk.adapters.items.UserHeaderItem;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -154,7 +154,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private boolean isNewConversationView;
     private boolean isPublicCall;
 
-    private HashMap<String, UserHeaderItem> userHeaderItems = new HashMap<>();
+    private HashMap<String, GenericTextHeaderItem> userHeaderItems = new HashMap<>();
 
     private boolean alreadyFetching = false;
     private boolean canFetchFurther = true;
@@ -473,6 +473,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             shareTypesList.add("0");
             // groups
             shareTypesList.add("1");
+            // mails
+            //shareTypesList.add("4");
+
 
             modifiedQueryMap.put("shareTypes[]", shareTypesList);
         }
@@ -520,10 +523,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                                             headerTitle = sharee.getLabel().substring(0, 1).toUpperCase();
 
-                                            UserHeaderItem userHeaderItem;
+                                            GenericTextHeaderItem genericTextHeaderItem;
                                             if (!userHeaderItems.containsKey(headerTitle)) {
-                                                userHeaderItem = new UserHeaderItem(headerTitle);
-                                                userHeaderItems.put(headerTitle, userHeaderItem);
+                                                genericTextHeaderItem = new GenericTextHeaderItem(headerTitle);
+                                                userHeaderItems.put(headerTitle, genericTextHeaderItem);
                                             }
 
                                             participant.setUserId(sharee.getValue().getShareWith());
@@ -554,10 +557,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                                             headerTitle = participant.getName().substring(0, 1).toUpperCase();
 
-                                            UserHeaderItem userHeaderItem;
+                                            GenericTextHeaderItem genericTextHeaderItem;
                                             if (!userHeaderItems.containsKey(headerTitle)) {
-                                                userHeaderItem = new UserHeaderItem(headerTitle);
-                                                userHeaderItems.put(headerTitle, userHeaderItem);
+                                                genericTextHeaderItem = new GenericTextHeaderItem(headerTitle);
+                                                userHeaderItems.put(headerTitle, genericTextHeaderItem);
                                             }
 
                                             participant.setUserId(participant.getUserId());
@@ -600,13 +603,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 if (o1 instanceof UserItem) {
                                     firstName = ((UserItem) o1).getModel().getName();
                                 } else {
-                                    firstName = ((UserHeaderItem) o1).getModel();
+                                    firstName = ((GenericTextHeaderItem) o1).getModel();
                                 }
 
                                 if (o2 instanceof UserItem) {
                                     secondName = ((UserItem) o2).getModel().getName();
                                 } else {
-                                    secondName = ((UserHeaderItem) o2).getModel();
+                                    secondName = ((GenericTextHeaderItem) o2).getModel();
                                 }
 
                                 return firstName.compareToIgnoreCase(secondName);
@@ -695,8 +698,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             IFlexible abstractFlexibleItem = adapter.getItem(position);
             if (abstractFlexibleItem instanceof UserItem) {
                 return ((UserItem) adapter.getItem(position)).getHeader().getModel();
-            } else if (abstractFlexibleItem instanceof UserHeaderItem) {
-                return ((UserHeaderItem) adapter.getItem(position)).getModel();
+            } else if (abstractFlexibleItem instanceof GenericTextHeaderItem) {
+                return ((GenericTextHeaderItem) adapter.getItem(position)).getModel();
             } else {
                 return "";
             }

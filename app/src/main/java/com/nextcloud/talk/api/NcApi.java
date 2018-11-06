@@ -308,4 +308,8 @@ public interface NcApi {
     @GET
     Observable<NotificationOverall> getNotification(@Header("Authorization") String authorization,
                                                     @Url String url);
+
+    @FormUrlEncoded
+    @POST
+    Observable<GenericOverall> setNotificationLevel(@Header("Authorization") String authorization, @Url String url, @Field("level") int level);
 }

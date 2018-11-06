@@ -66,10 +66,15 @@ public class ApiUtils {
         retrofitBucket.setUrl(baseUrl + ocsApiVersion + "/core/autocomplete/get");
 
         retrofitBucket.getQueryMap().put("itemId", "new");
+        retrofitBucket.getQueryMap().put("limit", "10000");
 
         return retrofitBucket;
     }
 
+
+    public static String getUrlForSettingNotificationlevel(String baseUrl, String token) {
+        return getRoom(baseUrl, token) + "/notify";
+    }
 
     public static String getUrlForSettingMyselfAsActiveParticipant(String baseUrl, String token) {
         return getRoom(baseUrl, token) + "/participants/active";
