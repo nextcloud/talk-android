@@ -89,7 +89,7 @@
     <string name="nc_settings_default_ringtone" translatable="false">Librem by feandesign</string>
     <string name="nc_settings_no_ringtone">No sound</string>
     <string name="nc_settings_vibrate">Vibrate</string>
-    <string name="nc_settings_vibrate_desc">When enabled, phone will vibrate unless it\'s silenced</string>
+    <string name="nc_settings_vibrate_desc">Your phone will vibrate unless it\'s silenced</string>
     <string name="nc_settings_vibrate_key" translatable="false">notifications_vibrate</string>
 
 
@@ -161,7 +161,7 @@
     <string name="nc_notify_me_mention">Notify when mentioned</string>
     <string name="nc_notify_me_never">Never notify</string>
     <string name="nc_mute_calls">Mute calls</string>
-    <string name="nc_mute_calls_description">When muted, there will be no notification for incoming calls</string>
+    <string name="nc_mute_calls_description">You will not receive any notification for calls</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
