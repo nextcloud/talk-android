@@ -946,7 +946,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 ((UserItem) adapter.getItem(position)).flipItemSelection();
                 adapter.toggleSelection(position);
 
-                if (currentUser.hasSpreedCapabilityWithName("last-room-activity") &&
+                if (currentUser.hasSpreedCapabilityWithName("last-room-activity")
+                        && !currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails") &&
                         "groups".equals(((UserItem) adapter.getItem(position)).getModel().getSource()) &&
                         adapter.getSelectedItemCount() > 1) {
                     List<Integer> selectedPositions = adapter.getSelectedPositions();

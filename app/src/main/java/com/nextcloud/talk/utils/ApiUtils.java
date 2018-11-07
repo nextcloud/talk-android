@@ -132,6 +132,18 @@ public class ApiUtils {
 
     }
 
+    public static RetrofitBucket getRetrofitBucketForAddGroupParticipant(String baseUrl, String token, String group) {
+        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(baseUrl, token, group);
+        retrofitBucket.getQueryMap().put("source", "groups");
+        return retrofitBucket;
+    }
+
+    public static RetrofitBucket getRetrofitBucketForAddMailParticipant(String baseUrl, String token, String mail) {
+        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(baseUrl, token, mail);
+        retrofitBucket.getQueryMap().put("source", "emails");
+        return retrofitBucket;
+    }
+
     public static String getUrlForRemoveSelfFromRoom(String baseUrl, String token) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/participants/self";
     }

@@ -119,7 +119,7 @@ public class OperationsMenuController extends BaseController {
 
     private Conversation.RoomType conversationType;
     private ArrayList<String> invitedUsers = new ArrayList<>();
-    private ArrayList<String> invitedGroup = new ArrayList<>();
+    private ArrayList<String> invitedGroups = new ArrayList<>();
 
     private List<String> spreedCapabilities;
     private String credentials;
@@ -139,7 +139,7 @@ public class OperationsMenuController extends BaseController {
         }
 
         if (args.containsKey(BundleKeys.KEY_INVITED_GROUP)) {
-            this.invitedGroup = args.getStringArrayList(BundleKeys.KEY_INVITED_GROUP);
+            this.invitedGroups = args.getStringArrayList(BundleKeys.KEY_INVITED_GROUP);
         }
         
         if (args.containsKey(BundleKeys.KEY_CONVERSATION_TYPE)) {
@@ -275,8 +275,8 @@ public class OperationsMenuController extends BaseController {
                     boolean isGroupCallWorkaround = false;
                     String invite = null;
                     
-                    if (invitedGroup.size() > 0) {
-                        invite = invitedGroup.get(0);
+                    if (invitedGroups.size() > 0) {
+                        invite = invitedGroups.get(0);
                     }
 
                     if (conversationType.equals(Conversation.RoomType.ROOM_PUBLIC_CALL) ||
@@ -513,43 +513,86 @@ public class OperationsMenuController extends BaseController {
     private void inviteUsersToAConversation() {
         RetrofitBucket retrofitBucket;
         final ArrayList<String> localInvitedUsers = invitedUsers;
-        if (localInvitedUsers.size() > 0) {
-            for (int i = 0; i < invitedUsers.size(); i++) {
-                final String userId = invitedUsers.get(i);
-                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(currentUser.getBaseUrl(), conversation.getToken(),
-                        userId);
+        final ArrayList<String> localInvitedGroups = invitedGroups;
+        localInvitedGroups.remove(0);
+        if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 && currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails"))) {
+            if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails"))) {
+                for (int i = 0; i < localInvitedGroups.size(); i++) {
+                    final String groupId = localInvitedGroups.get(i);
+                    retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(currentUser.getBaseUrl(), conversation.getToken(),
+                            groupId);
 
-                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .retry(1)
-                        .subscribe(new Observer<AddParticipantOverall>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                    ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .retry(1)
+                            .subscribe(new Observer<AddParticipantOverall>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
 
-                            }
-
-                            @Override
-                            public void onNext(AddParticipantOverall addParticipantOverall) {
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                dispose();
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                synchronized (localInvitedUsers) {
-                                    localInvitedUsers.remove(userId);
                                 }
 
-                                if (localInvitedUsers.size() == 0) {
-                                    initiateConversation(true, null);
+                                @Override
+                                public void onNext(AddParticipantOverall addParticipantOverall) {
                                 }
-                                dispose();
-                            }
-                        });
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    dispose();
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    synchronized (localInvitedGroups) {
+                                        localInvitedGroups.remove(localInvitedGroups);
+                                    }
+
+                                    if (localInvitedGroups.size() == 0 && localInvitedUsers.size() == 0) {
+                                        initiateConversation(true, null);
+                                    }
+                                    dispose();
+                                }
+                            });
+
+                }
+
+                for (int i = 0; i < localInvitedGroups.size(); i++) {
+                    final String userId = invitedUsers.get(i);
+                    retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(currentUser.getBaseUrl(), conversation.getToken(),
+                            userId);
+
+                    ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .retry(1)
+                            .subscribe(new Observer<AddParticipantOverall>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(AddParticipantOverall addParticipantOverall) {
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    dispose();
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    synchronized (localInvitedUsers) {
+                                        localInvitedUsers.remove(userId);
+                                    }
+
+                                    if (localInvitedUsers.size() == 0) {
+                                        initiateConversation(true, null);
+                                    }
+                                    dispose();
+                                }
+                            });
+                }
             }
         } else {
             if (!currentUser.hasSpreedCapabilityWithName("chat-v2")) {
