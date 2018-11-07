@@ -142,8 +142,6 @@
     <string name="nc_notification_channel_calls">Oznamovací kanál hovorov</string>
     <string name="nc_notification_channel_messages">Oznamovací kanál správ</string>
     <string name="nc_notification_channel_calls_description">Ukazuje prichádzajúce hovory</string>
-    <string name="nc_notification_channel_messages_description">Ukazuje prichádzajúce správy</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa pokazilo!</string>
     <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil 

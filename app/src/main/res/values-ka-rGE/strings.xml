@@ -109,8 +109,6 @@
     <string name="nc_notification_channel_calls">ზარების შეტყობინებების არხი</string>
     <string name="nc_notification_channel_messages">წერილების შეტყობინებების არხი</string>
     <string name="nc_notification_channel_calls_description">აჩვენებს შემომავალ ზარებს</string>
-    <string name="nc_notification_channel_messages_description">აჩვენებს შემომავალ წერილებს</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">ბოდიში, რაღაც აირია!</string>
     <string name="nc_all_ok_operation">კარგი, ყველაფერი დასრულდა!</string>

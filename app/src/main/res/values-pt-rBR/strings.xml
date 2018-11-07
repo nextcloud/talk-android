@@ -142,8 +142,6 @@
     <string name="nc_notification_channel_calls">Chamadas do canal de notificação</string>
     <string name="nc_notification_channel_messages">Mensagens do canal de notificação</string>
     <string name="nc_notification_channel_calls_description">Mostrar chamadas recebidas</string>
-    <string name="nc_notification_channel_messages_description">Mostrar mensagens recebidas</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
     <string name="nc_failed_signaling_settings">O servidor de destino não suporta a participação em conversas públicas

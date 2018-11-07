@@ -133,8 +133,6 @@
     <string name="nc_notification_channel_calls">Kanal obvestil klicev</string>
     <string name="nc_notification_channel_messages">Kanal obvestil sporočil</string>
     <string name="nc_notification_channel_calls_description">Pokaži dohodne klice</string>
-    <string name="nc_notification_channel_messages_description">Pokaži dohodna sporočila</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom prek mobilnih

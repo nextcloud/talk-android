@@ -128,8 +128,6 @@
     <string name="nc_notification_channel_calls">Kanali i njoftimeve të thirrjeve</string>
     <string name="nc_notification_channel_messages">Kanali i njoftimeve të mesazheve</string>
     <string name="nc_notification_channel_calls_description">Tregon thirrjet hyrëse</string>
-    <string name="nc_notification_channel_messages_description">Tregon mesazhet hyrëse</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Na falni, diçka nuk shkoi mirë!</string>
     <string name="nc_ok">OK</string>

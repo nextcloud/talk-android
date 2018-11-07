@@ -90,8 +90,6 @@
     <string name="nc_nick_guest">Επισκέπτης</string>
     <string name="nc_public_call">Νέα δημόσια συνομιλία</string>
     <string name="nc_notification_channel_calls_description">Εμφανίζει εισερχόμενες κλήσεις</string>
-    <string name="nc_notification_channel_messages_description">Εμφανίζει εισερχόμενα μηνύματα</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>
     <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>

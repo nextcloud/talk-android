@@ -137,8 +137,6 @@
     <string name="nc_notification_channel_calls">Hívások értesítési csatornája</string>
     <string name="nc_notification_channel_messages">Üzenetek értesítési csatornája</string>
     <string name="nc_notification_channel_calls_description">Bejövõ hívások megjelenítése</string>
-    <string name="nc_notification_channel_messages_description">Beérkező üzenetek megjelenítése</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba adódott!</string>
     <string name="nc_failed_signaling_settings">A célszerver nem támogatja a nyilvános beszélgetéseket mobiltelefonon keresztül. Próbálkozzon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>

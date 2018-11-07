@@ -128,8 +128,6 @@
     <string name="nc_notification_channel_calls">ערוץ התראות על שיחות</string>
     <string name="nc_notification_channel_messages">ערוץ התראות על הודעות</string>
     <string name="nc_notification_channel_calls_description">מציג שיחות נכנסות</string>
-    <string name="nc_notification_channel_messages_description">מציג הודעות נכנסות</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">משהו השתבש, עמך הסליחה!</string>
     <string name="nc_all_ok_operation">סבבה, הכול בוצע!</string>

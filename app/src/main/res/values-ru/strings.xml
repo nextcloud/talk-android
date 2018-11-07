@@ -42,6 +42,7 @@
     <string name="nc_display_name_fetched">Отображаемое имя получено</string>
     <string name="nc_push_disabled">Всплывающие уведомления отключены</string>
     <string name="nc_capabilities_failed">Не удалось получить список поддерживаемых протоколов</string>
+    <string name="nc_external_server_failed">Не удалось получить параметры сигнализации</string>
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
     <string name="nc_nextcloud_talk_app_installed">Найдено приложение %1$s</string>
     <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s не установлено на сервере. Действие отменено.</string>
@@ -140,8 +141,6 @@
     <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>
     <string name="nc_notification_channel_messages">Способ уведомления о сообщении</string>
     <string name="nc_notification_channel_calls_description">Показывает входящие вызовы</string>
-    <string name="nc_notification_channel_messages_description">Показывает входящие сообщения</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
     <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте войти присоединиться к беседе используя браузер на ПК.</string>
@@ -214,4 +213,7 @@ Nextcloud ежедневно используется как для работы
     <string name="nc_conversations_empty">Список пуст!\n Нажмите чтобы начать беседу.</string>
     <string name="nc_hello">Привет</string>
 
-    </resources>
+    <!-- Other -->
+    <string name="nc_limit_hit">Достигнуто ограничение в 1000 знаков</string>
+
+</resources>

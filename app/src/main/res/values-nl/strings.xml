@@ -146,8 +146,6 @@ via een persoonlijke link.</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
     <string name="nc_notification_channel_messages">Berichtennotificatiekanaal</string>
     <string name="nc_notification_channel_calls_description">Toont inkomende gesprekken</string>
-    <string name="nc_notification_channel_messages_description">Toont inkomende berichten</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons.

@@ -141,8 +141,6 @@ grâce à un lien spécialement créé.</string>
     <string name="nc_notification_channel_calls">Canal de notification des appels</string>
     <string name="nc_notification_channel_messages">Canal de notification des messages</string>
     <string name="nc_notification_channel_calls_description">Afficher les appels entrants</string>
-    <string name="nc_notification_channel_messages_description">Afficher les messages entrants</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile.

@@ -103,8 +103,6 @@
     <string name="nc_notification_channel_calls">통화 알림 채널</string>
     <string name="nc_notification_channel_messages">메시지 알림 채널</string>
     <string name="nc_notification_channel_calls_description">수신 통화 표시</string>
-    <string name="nc_notification_channel_messages_description">수신 메시지 표시</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">죄송합니다, 무언가 잘못되었습니다!</string>
     <string name="nc_all_ok_operation">모두 완료되었습니다!</string>

@@ -142,8 +142,6 @@
     <string name="nc_notification_channel_calls">Benachrichtigungskanal für Anrufe</string>
     <string name="nc_notification_channel_messages">Benachrichtigungskanal für Nachrichten</string>
     <string name="nc_notification_channel_calls_description">Eingehende Anrufe anzeigen</string>
-    <string name="nc_notification_channel_messages_description">Eingehende Nachrichten anzeigen</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Schade, etwas ist schiefgelaufen!</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Unterhaltungen durch Mobiltelefone.

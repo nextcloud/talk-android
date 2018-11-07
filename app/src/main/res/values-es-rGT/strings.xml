@@ -124,8 +124,6 @@ una liga específicamente generada.</string>
     <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
     <string name="nc_notification_channel_messages">Canal de notificación de mensajes </string>
     <string name="nc_notification_channel_calls_description">Muestra las llamadas entrantes</string>
-    <string name="nc_notification_channel_messages_description">Muestra los mensajes entrantes</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">¡Lo sentimos, algo salió mal!</string>
     <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas via

@@ -142,8 +142,6 @@
     <string name="nc_notification_channel_calls">Görüşme bildirimi kanalı</string>
     <string name="nc_notification_channel_messages">Bildirim kanalındaki ileti</string>
     <string name="nc_notification_channel_calls_description">Gelen görüşme çağrılarını görüntüler</string>
-    <string name="nc_notification_channel_messages_description">Gelen iletileri görüntüler</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
     <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı

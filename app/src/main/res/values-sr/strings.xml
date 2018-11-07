@@ -142,8 +142,6 @@
     <string name="nc_notification_channel_calls">Канал обавештења о позивима</string>
     <string name="nc_notification_channel_messages">Канал обавештења о порукама</string>
     <string name="nc_notification_channel_calls_description">Прикажи долазне позиве</string>
-    <string name="nc_notification_channel_messages_description">Прикажи долазне поруке</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
     <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним собама преко мобилног телефона.

@@ -117,8 +117,6 @@
     <string name="nc_notification_channel_calls">Canal de notificação de chamadas</string>
     <string name="nc_notification_channel_messages">Canal de notificação de mensagens</string>
     <string name="nc_notification_channel_calls_description">Mostra as chamadas a receber</string>
-    <string name="nc_notification_channel_messages_description">Mostra as mensagens a receber</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, ocorreu algo de errado!</string>
     <string name="nc_all_ok_operation">Ok, tudo concluído!</string>
