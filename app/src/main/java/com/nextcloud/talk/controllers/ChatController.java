@@ -970,7 +970,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_conversation, menu);
 
-        if (!conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
+        if (conversationUser.hasSpreedCapabilityWithName("mention-flag")) {
             menu.findItem(R.id.nc_conversation_info).setVisible(true);
         } else {
             menu.findItem(R.id.nc_conversation_info).setVisible(false);

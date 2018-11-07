@@ -21,14 +21,22 @@
 package com.nextcloud.talk.controllers;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
 
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -38,9 +46,11 @@ import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferencestorage.DatabaseStorageModule;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.yarolegovich.mp.MaterialChoicePreference;
+import com.yarolegovich.mp.MaterialPreferenceCategory;
 import com.yarolegovich.mp.MaterialPreferenceScreen;
 
 
@@ -74,6 +84,15 @@ public class ConversationInfoController extends BaseController {
     @BindView(R.id.conversation_info_message_notifications)
     MaterialChoicePreference messageNotificationLevel;
 
+    @BindView(R.id.conversation_info_name)
+    MaterialPreferenceCategory nameCategoryView;
+
+    @BindView(R.id.avatar_image)
+    ImageView conversationAvatarImageView;
+
+    @BindView(R.id.display_name_text)
+    TextView conversationDisplayName;
+
     @Inject
     NcApi ncApi;
 
@@ -102,7 +121,7 @@ public class ConversationInfoController extends BaseController {
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        return inflater.inflate(R.layout.conversation_info, container, false);
+        return inflater.inflate(R.layout.controller_conversation_info, container, false);
     }
 
     @Override
@@ -143,6 +162,9 @@ public class ConversationInfoController extends BaseController {
 
                         progressBar.setVisibility(View.GONE);
                         materialPreferenceScreen.setVisibility(View.VISIBLE);
+                        nameCategoryView.setVisibility(View.VISIBLE);
+                        conversationDisplayName.setText(conversation.getDisplayName());
+                        loadConversationAvatar();
 
                         if (conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
                             messageNotificationLevel.setEnabled(true);
@@ -197,6 +219,55 @@ public class ConversationInfoController extends BaseController {
             }
         } else {
             messageNotificationLevel.setValue("mention");
+        }
+    }
+
+    private void loadConversationAvatar() {
+        int avatarSize = getResources().getDimensionPixelSize(R.dimen.avatar_size_big);
+
+        switch (conversation.getType()) {
+            case ROOM_TYPE_ONE_TO_ONE_CALL:
+                if (!TextUtils.isEmpty(conversation.getName())) {
+                    GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(),
+                            conversation.getName(), R.dimen.avatar_size), new LazyHeaders.Builder()
+                            .setHeader("Accept", "image/*")
+                            .setHeader("User-Agent", ApiUtils.getUserAgent())
+                            .build());
+
+                    GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                            .asBitmap()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .load(glideUrl)
+                            .centerInside()
+                            .override(avatarSize, avatarSize)
+                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                            .into(conversationAvatarImageView);
+
+                }
+                break;
+            case ROOM_GROUP_CALL:
+
+                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .load(R.drawable.ic_people_group_white_24px)
+                        .centerInside()
+                        .override(avatarSize, avatarSize)
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                        .into(conversationAvatarImageView);
+                break;
+            case ROOM_PUBLIC_CALL:
+                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .load(R.drawable.ic_link_white_24px)
+                        .centerInside()
+                        .override(avatarSize, avatarSize)
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                        .into(conversationAvatarImageView);
+                break;
+            default:
+
         }
     }
 }
