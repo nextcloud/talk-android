@@ -544,7 +544,7 @@ public class OperationsMenuController extends BaseController {
                                 @Override
                                 public void onComplete() {
                                     synchronized (localInvitedGroups) {
-                                        localInvitedGroups.remove(localInvitedGroups);
+                                        localInvitedGroups.remove(groupId);
                                     }
 
                                     if (localInvitedGroups.size() == 0 && localInvitedUsers.size() == 0) {
