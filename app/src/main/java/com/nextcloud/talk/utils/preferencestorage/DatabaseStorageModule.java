@@ -70,45 +70,47 @@ public class DatabaseStorageModule implements StorageModule {
         if (!key.equals("message_notification_level")) {
             arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, value, conversationToken);
         } else {
-            int intValue;
-            switch (value) {
-                case "never":
-                    intValue = 3;
-                    break;
-                case "mention":
-                    intValue = 2;
-                    break;
-                case "always":
-                    intValue = 1;
-                    break;
-                 default:
-                     intValue = 0;
+            if (conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
+                int intValue;
+                switch (value) {
+                    case "never":
+                        intValue = 3;
+                        break;
+                    case "mention":
+                        intValue = 2;
+                        break;
+                    case "always":
+                        intValue = 1;
+                        break;
+                    default:
+                        intValue = 0;
+                }
+
+                ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
+                        ApiUtils.getUrlForSettingNotificationlevel(conversationUser.getBaseUrl(), conversationToken),
+                        intValue)
+                        .subscribeOn(Schedulers.newThread())
+                        .subscribe(new Observer<GenericOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(GenericOverall genericOverall) {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+                            }
+                        });
             }
-
-            ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
-                    ApiUtils.getUrlForSettingNotificationlevel(conversationUser.getBaseUrl(), conversationToken),
-                    intValue)
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribe(new Observer<GenericOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(GenericOverall genericOverall) {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                        }
-                    });
         }
     }
 
