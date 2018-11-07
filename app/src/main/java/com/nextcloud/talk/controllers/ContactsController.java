@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -85,6 +86,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -115,14 +117,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
     @Nullable
     @BindView(R.id.initial_relative_layout)
-    public RelativeLayout initialRelativeLayout;
+    RelativeLayout initialRelativeLayout;
     @Nullable
     @BindView(R.id.secondary_relative_layout)
-    public RelativeLayout secondaryRelativeLayout;
+    RelativeLayout secondaryRelativeLayout;
     @Inject
     UserUtils userUtils;
     @Inject
     EventBus eventBus;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -131,6 +135,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
+
+    @BindView(R.id.call_header_layout)
+    RelativeLayout callHeaderLayout;
+    @BindView(R.id.generic_rv_layout)
+    CoordinatorLayout genericRvLayout;
 
     @Inject
     NcApi ncApi;
@@ -177,11 +186,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        if (isNewConversationView) {
-            return inflater.inflate(R.layout.controller_contacts_rv, container, false);
-        } else {
-            return inflater.inflate(R.layout.controller_generic_rv, container, false);
-        }
+        return inflater.inflate(R.layout.controller_contacts_rv, container, false);
     }
 
     @Override
@@ -631,9 +636,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 swipeRefreshLayout.setRefreshing(false);
                             }
 
+                            progressBar.setVisibility(View.GONE);
+                            genericRvLayout.setVisibility(View.VISIBLE);
+                            if (isNewConversationView) {
+                                callHeaderLayout.setVisibility(View.VISIBLE);
+                            }
+
                             if (isNewConversationView) {
                                 checkAndHandleDoneMenuItem();
                             }
+
                         }
 
                     }
