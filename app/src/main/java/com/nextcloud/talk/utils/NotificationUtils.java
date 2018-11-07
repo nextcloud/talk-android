@@ -44,10 +44,13 @@ public class NotificationUtils {
     public static final String NOTIFICATION_CHANNEL_CALLS_V3 = "NOTIFICATION_CHANNEL_CALLS_V3";
 
     @TargetApi(Build.VERSION_CODES.O)
-    public static void createNotificationChannel(NotificationManager notificationManager,
+    public static void createNotificationChannel(Context context,
                                                  String channelId, String channelName,
                                                  String channelDescription, boolean enableLights,
                                                  int importance) {
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O
                 && notificationManager.getNotificationChannel(channelId) == null) {

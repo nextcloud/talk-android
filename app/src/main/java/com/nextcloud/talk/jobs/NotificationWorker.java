@@ -304,7 +304,7 @@ public class NotificationWorker extends Worker {
                     groupName);
 
             if (decryptedPushMessage.getType().equals("chat")) {
-                NotificationUtils.createNotificationChannel(notificationManager,
+                NotificationUtils.createNotificationChannel(context,
                         NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V3, context.getResources()
                                 .getString(R.string.nc_notification_channel_messages), context.getResources()
                                 .getString(R.string.nc_notification_channel_messages), true,
@@ -312,7 +312,7 @@ public class NotificationWorker extends Worker {
 
                 notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V3);
             } else {
-                NotificationUtils.createNotificationChannel(notificationManager,
+                NotificationUtils.createNotificationChannel(context,
                         NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V3, context.getResources()
                                 .getString(R.string.nc_notification_channel_calls), context.getResources()
                                 .getString(R.string.nc_notification_channel_calls_description), true,
