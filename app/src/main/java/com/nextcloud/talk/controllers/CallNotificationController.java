@@ -216,7 +216,7 @@ public class CallNotificationController extends BaseController {
                         boolean inCallOnDifferentDevice = false;
                         List<Participant> participantList = participantsOverall.getOcs().getData();
                         for (Participant participant : participantList) {
-                            if (participant.isInCall()) {
+                            if (participant.isInCall() || (userBeingCalled.hasSpreedCapabilityWithName("in-call-flags") && participant.getParticipantFlags() != 0)) {
                                 hasParticipantsInCall = true;
 
                                 if (participant.getUserId().equals(userBeingCalled.getUserId())) {
