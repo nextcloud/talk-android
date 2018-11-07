@@ -560,7 +560,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                                             String headerTitle;
 
-                                            headerTitle = participant.getName().substring(0, 1).toUpperCase();
+                                            if (!autocompleteUser.getSource().equals("groups")) {
+                                                headerTitle = participant.getName().substring(0, 1).toUpperCase();
+                                            } else {
+                                                headerTitle = getResources().getString(R.string.nc_groups);
+                                            }
 
                                             GenericTextHeaderItem genericTextHeaderItem;
                                             if (!userHeaderItems.containsKey(headerTitle)) {
@@ -605,6 +609,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 String firstName;
                                 String secondName;
 
+
                                 if (o1 instanceof UserItem) {
                                     firstName = ((UserItem) o1).getModel().getName();
                                 } else {
@@ -615,6 +620,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     secondName = ((UserItem) o2).getModel().getName();
                                 } else {
                                     secondName = ((GenericTextHeaderItem) o2).getModel();
+                                }
+
+                                if (o1 instanceof  UserItem && o2 instanceof UserItem) {
+                                    if ("groups".equals(((UserItem) o1).getModel().getSource()) && "groups".equals(((UserItem) o2).getModel().getSource())) {
+                                        return firstName.compareToIgnoreCase(secondName);
+                                    } else if ("groups".equals(((UserItem) o1).getModel().getSource())) {
+                                        return -1;
+                                    } else if ("groups".equals(((UserItem) o2).getModel().getSource())) {
+                                        return 1;
+                                    }
                                 }
 
                                 return firstName.compareToIgnoreCase(secondName);

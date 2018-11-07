@@ -239,5 +239,6 @@ Find Nextcloud on https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">1000 characters limit has been hit</string>
+    <string name="nc_groups">Groups</string>
 
 </resources>
