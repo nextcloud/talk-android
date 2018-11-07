@@ -65,9 +65,12 @@ public class NotificationUtils {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    public static void createNotificationChannelGroup(NotificationManager notificationManager,
+    public static void createNotificationChannelGroup(Context context,
                                                       String groupId, CharSequence groupName) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
             NotificationChannelGroup notificationChannelGroup = new NotificationChannelGroup(groupId, groupName);
             if (!notificationManager.getNotificationChannelGroups().contains(notificationChannelGroup)) {
                 notificationManager.createNotificationChannelGroup(notificationChannelGroup);

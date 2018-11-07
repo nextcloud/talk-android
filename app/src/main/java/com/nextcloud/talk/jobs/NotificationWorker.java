@@ -78,6 +78,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -263,12 +265,12 @@ public class NotificationWorker extends Worker {
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
                 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat notificationManager =  NotificationManagerCompat.from(context);
+
 
         CRC32 crc32 = new CRC32();
 
-        Notification.Builder notificationBuilder = new Notification.Builder(context)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "1")
                 .setLargeIcon(largeIcon)
                 .setSmallIcon(smallIcon)
                 .setCategory(category)
@@ -297,7 +299,7 @@ public class NotificationWorker extends Worker {
                     .getUserId(), signatureVerification.getUserEntity().getBaseUrl());
             crc32.update(groupName.getBytes());
 
-            NotificationUtils.createNotificationChannelGroup(notificationManager,
+            NotificationUtils.createNotificationChannelGroup(context,
                     Long.toString(crc32.getValue()),
                     groupName);
 
