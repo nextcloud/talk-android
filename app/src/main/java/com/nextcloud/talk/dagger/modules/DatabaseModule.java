@@ -49,7 +49,7 @@ public class DatabaseModule {
         return new SqlCipherDatabaseSource(context, Models.DEFAULT,
                 context.getResources().getString(R.string.nc_app_name).toLowerCase()
                         .replace(" ", "_").trim() + ".sqlite",
-                context.getString(R.string.nc_talk_database_encryption_key), 5);
+                context.getString(R.string.nc_talk_database_encryption_key), 6);
     }
 
     @Provides

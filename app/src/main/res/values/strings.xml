@@ -154,13 +154,14 @@
     <string name="nc_notification_channel_calls">Calls notification channel</string>
     <string name="nc_notification_channel_messages">Messages notification channel</string>
     <string name="nc_notification_channel_calls_description">Shows incoming calls</string>
-    <string name="nc_notification_channel_messages_description">Shows incoming messages</string>
+    <string name="nc_notification_channel_Cmessages_description">Shows incoming messages</string>
     <string name="nc_notification_settings">Notification settings</string>
     <string name="nc_plain_old_messages">Messages</string>
-    <string name="nc_notify_me_always">Always</string>
-    <string name="nc_notify_me_mention">When mentioned</string>
-    <string name="nc_notify_me_never">Never</string>
+    <string name="nc_notify_me_always">Always notify</string>
+    <string name="nc_notify_me_mention">Notify when mentioned</string>
+    <string name="nc_notify_me_never">Never notify</string>
     <string name="nc_mute_calls">Mute calls</string>
+    <string name="nc_mute_calls_description">When muted, there will be no notification for incoming calls</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -20,10 +19,10 @@
   -->
 
 <com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                                              xmlns:apc="http://schemas.android.com/apk/res-auto"
-                                              android:id="@+id/settings_screen"
-                                              android:layout_width="match_parent"
-                                              android:layout_height="match_parent">
+    xmlns:apc="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/notification_settings"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
@@ -38,6 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_entry_descriptions="@array/message_notification_levels"
+            apc:mp_entry_values="@array/message_notification_levels_entry_values"
+            apc:mp_key="message_notification_level"
             apc:mp_show_value="onBottom"
             apc:mp_title="@string/nc_plain_old_messages">
         </com.yarolegovich.mp.MaterialChoicePreference>
@@ -46,8 +47,10 @@
             android:id="@+id/conversation_info_mute_calls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            apc:mp_title="@string/nc_mute_calls"
-            apc:mp_default_value="true"/>
+            apc:mp_key="mute_calls"
+            apc:mp_default_value="false"
+            apc:mp_summary="@string/nc_mute_calls_description"
+            apc:mp_title="@string/nc_mute_calls" />
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 

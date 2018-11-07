@@ -995,9 +995,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
                 bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
                 bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
-                /*getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
+                getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
                         .pushChangeHandler(new VerticalChangeHandler())
-                        .popChangeHandler(new VerticalChangeHandler())));*/
+                        .popChangeHandler(new VerticalChangeHandler())));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

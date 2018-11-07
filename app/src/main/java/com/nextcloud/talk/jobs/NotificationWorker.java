@@ -46,6 +46,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.SignatureVerification;
+import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatUtils;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
@@ -57,6 +58,7 @@ import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
+import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 
@@ -94,6 +96,9 @@ public class NotificationWorker extends Worker {
     AppPreferences appPreferences;
 
     @Inject
+    ArbitraryStorageUtils arbitraryStorageUtils;
+
+    @Inject
     Retrofit retrofit;
 
     @Inject
@@ -114,42 +119,53 @@ public class NotificationWorker extends Worker {
 
     private void showNotificationForCallWithNoPing(Intent intent) {
         UserEntity userEntity = signatureVerification.getUserEntity();
-        ncApi.getRoom(credentials, ApiUtils.getRoom(userEntity.getBaseUrl(),
-                intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN)))
-                .blockingSubscribe(new Observer<RoomOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
 
-                    }
+        ArbitraryStorageEntity arbitraryStorageEntity;
+        boolean muteCalls = false;
 
-                    @Override
-                    public void onNext(RoomOverall roomOverall) {
-                        Conversation conversation = roomOverall.getOcs().getData();
+        if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(userEntity.getId(),
+                "mute_calls", intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN))) != null) {
+            muteCalls = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
+        }
 
-                        intent.putExtra(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
-                        if (conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL) ||
-                                (!TextUtils.isEmpty(conversation.getObjectType()) && "share:password".equals
-                                        (conversation.getObjectType()))) {
-                            context.startActivity(intent);
-                        } else {
-                            if (conversation.getType().equals(Conversation.RoomType.ROOM_GROUP_CALL)) {
-                                conversationType = "group";
-                            } else {
-                                conversationType = "public";
-                            }
-                            showNotification(intent);
+        if (!muteCalls) {
+            ncApi.getRoom(credentials, ApiUtils.getRoom(userEntity.getBaseUrl(),
+                    intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN)))
+                    .blockingSubscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
                         }
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                    }
+                        @Override
+                        public void onNext(RoomOverall roomOverall) {
+                            Conversation conversation = roomOverall.getOcs().getData();
 
-                    @Override
-                    public void onComplete() {
+                            intent.putExtra(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
+                            if (conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL) ||
+                                    (!TextUtils.isEmpty(conversation.getObjectType()) && "share:password".equals
+                                            (conversation.getObjectType()))) {
+                                context.startActivity(intent);
+                            } else {
+                                if (conversation.getType().equals(Conversation.RoomType.ROOM_GROUP_CALL)) {
+                                    conversationType = "group";
+                                } else {
+                                    conversationType = "public";
+                                }
+                                showNotification(intent);
+                            }
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onError(Throwable e) {
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
     }
 
     private void showMessageNotificationWithObjectData(Intent intent) {

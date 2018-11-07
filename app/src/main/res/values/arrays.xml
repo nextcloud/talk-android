@@ -32,4 +32,11 @@
         <item>@string/nc_notify_me_mention</item>
         <item>@string/nc_notify_me_always</item>
     </array>
+
+    <array name="message_notification_levels_entry_values">
+        <item>never</item>
+        <item>mention</item>
+        <item>always</item>
+    </array>
+
 </resources>

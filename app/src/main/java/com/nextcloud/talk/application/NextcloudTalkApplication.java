@@ -35,6 +35,7 @@ import com.nextcloud.talk.jobs.SignalingSettingsJob;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.DeviceUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule;
 import com.nextcloud.talk.utils.database.user.UserModule;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 
@@ -64,6 +65,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
                 DatabaseModule.class,
                 RestModule.class,
                 UserModule.class,
+                ArbitraryStorageModule.class,
         }
 )
 
@@ -168,6 +170,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
                 .databaseModule(new DatabaseModule())
                 .restModule(new RestModule())
                 .userModule(new UserModule())
+                .arbitraryStorageModule(new ArbitraryStorageModule())
                 .build();
     }
 
