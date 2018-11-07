@@ -98,7 +98,8 @@ public class ConversationInfoController extends BaseController {
 
     private Disposable roomDisposable;
     private Conversation conversation;
-    ConversationInfoController(Bundle args) {
+
+    public ConversationInfoController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
