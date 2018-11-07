@@ -35,6 +35,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 
@@ -62,6 +63,9 @@ public class AccountRemovalWorker extends Worker {
 
     @Inject
     UserUtils userUtils;
+
+    @Inject
+    ArbitraryStorageUtils arbitraryStorageUtils;
 
     @Inject
     Retrofit retrofit;
@@ -143,22 +147,42 @@ public class AccountRemovalWorker extends Worker {
 
                                                         WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(userEntity.getId());
 
-                                                        userUtils.deleteUser(userEntity.getId()).subscribe(new CompletableObserver() {
-                                                                                                                       @Override
-                                                                                                                       public void onSubscribe(Disposable d) {
+                                                        arbitraryStorageUtils.deleteAllEntriesForAccountIdentifier(userEntity.getId()).subscribe(new Observer() {
+                                                            @Override
+                                                            public void onSubscribe(Disposable d) {
 
-                                                                                                                       }
+                                                            }
 
-                                                                                                                       @Override
-                                                                                                                       public void onComplete() {
+                                                            @Override
+                                                            public void onNext(Object o) {
+                                                                userUtils.deleteUser(userEntity.getId()).subscribe(new CompletableObserver() {
+                                                                    @Override
+                                                                    public void onSubscribe(Disposable d) {
 
-                                                                                                                       }
+                                                                    }
 
-                                                                                                                       @Override
-                                                                                                                       public void onError(Throwable e) {
+                                                                    @Override
+                                                                    public void onComplete() {
 
-                                                                                                                       }
-                                                                                                                   });
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onError(Throwable e) {
+
+                                                                    }
+                                                                });
+                                                            }
+
+                                                            @Override
+                                                            public void onError(Throwable e) {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onComplete() {
+
+                                                            }
+                                                        });
                                                     }
 
                                                     @Override

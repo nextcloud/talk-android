@@ -31,11 +31,14 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.requery.Persistable;
 import io.requery.query.Result;
 import io.requery.reactivex.ReactiveEntityStore;
+import io.requery.reactivex.ReactiveScalar;
 
 public class ArbitraryStorageUtils {
     private ReactiveEntityStore<Persistable> dataStore;
@@ -65,5 +68,12 @@ public class ArbitraryStorageUtils {
                 .limit(1).get();
 
         return (ArbitraryStorageEntity) findStorageQueryResult.firstOrNull();
+    }
+
+    public Observable deleteAllEntriesForAccountIdentifier(long accountIdentifier) {
+        ReactiveScalar<Integer> deleteResult = dataStore.delete(ArbitraryStorage.class).where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier)).get();
+
+        return deleteResult.single().toObservable()
+                .subscribeOn(Schedulers.newThread());
     }
 }
