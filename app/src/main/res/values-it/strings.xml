@@ -80,7 +80,6 @@
     <string name="nc_settings_other_notifications_ringtone">Altro</string>
     <string name="nc_settings_no_ringtone">Nessun suono</string>
     <string name="nc_settings_vibrate">Vibrazione</string>
-    <string name="nc_settings_vibrate_desc">Se abilitata, il telefono vibrerà a meno che sia silenziato</string>
     <string name="nc_no_proxy">Nessun proxy</string>
     <string name="nc_username">Nome utente</string>
     <string name="nc_password">Password</string>
@@ -142,6 +141,13 @@
     <string name="nc_notification_channel_calls">Canale di notifica delle chiamate</string>
     <string name="nc_notification_channel_messages">Canale di notifica dei messaggi</string>
     <string name="nc_notification_channel_calls_description">Mostra le chiamate in ingresso</string>
+    <string name="nc_notification_channel_Cmessages_description">Mostra i messaggi in ingresso</string>
+    <string name="nc_notification_settings">Impostazioni di notifica</string>
+    <string name="nc_plain_old_messages">Messaggi</string>
+    <string name="nc_notify_me_always">Notifica sempre</string>
+    <string name="nc_notify_me_mention">Notifica su menzione</string>
+    <string name="nc_notify_me_never">Non notificare mai</string>
+    <string name="nc_mute_calls">Silenzia le chiamate</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Spiacenti, qualcosa non ha funzionato!</string>
     <string name="nc_failed_signaling_settings">Il server di destinazione non supporta la partecipazione a stanze pubbliche tramite cellulare
@@ -194,6 +200,7 @@ Trovi Nextcloud su https://nextcloud.com</string>
     <string name="nc_date_header_today">Oggi</string>
     <string name="nc_conversation_menu_voice_call">Chiamata vocale</string>
     <string name="nc_conversation_menu_video_call">Chiamata video</string>
+    <string name="nc_conversation_menu_conversation_info">Informazioni di conversazione</string>
     <string name="nc_new_messages">Nuovi messaggi</string>
     <string name="nc_no_messages_yet">Ancora nessun messaggio</string>
     <string name="nc_chat_you">Tu</string>
@@ -217,5 +224,4 @@ Trovi Nextcloud su https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Il limite di 1000 caratteri è stato raggiunto</string>
-
-</resources>
+    </resources>

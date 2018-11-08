@@ -79,7 +79,6 @@
     <string name="nc_settings_other_notifications_ringtone">Inne</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
     <string name="nc_settings_vibrate">Wibracje</string>
-    <string name="nc_settings_vibrate_desc">Po włączeniu, telefon będzie wibrował, chyba że zostanie wyciszony</string>
     <string name="nc_no_proxy">Brak proxy</string>
     <string name="nc_username">Nazwa użytkownika</string>
     <string name="nc_password">Hasło</string>
@@ -187,5 +186,4 @@ komórkowe. Możesz próbować dołączyć do rozmowy przez przeglądarkę inter
 
     <!-- Other -->
     <string name="nc_limit_hit">Osiągnięto limit 1000 znaków</string>
-
-</resources>
+    </resources>

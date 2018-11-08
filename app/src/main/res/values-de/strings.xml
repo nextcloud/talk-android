@@ -80,7 +80,6 @@
     <string name="nc_settings_other_notifications_ringtone">Andere</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
     <string name="nc_settings_vibrate">Vibrieren</string>
-    <string name="nc_settings_vibrate_desc">Wenn aktiviert, wird das Telefon vibrieren sofern es nicht stillgestellt ist</string>
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Benutzername</string>
     <string name="nc_password">Passwort</string>
@@ -142,6 +141,13 @@
     <string name="nc_notification_channel_calls">Benachrichtigungskanal für Anrufe</string>
     <string name="nc_notification_channel_messages">Benachrichtigungskanal für Nachrichten</string>
     <string name="nc_notification_channel_calls_description">Eingehende Anrufe anzeigen</string>
+    <string name="nc_notification_channel_Cmessages_description">Zeigt eingehende Nachrichten</string>
+    <string name="nc_notification_settings">Benachrichtigungseinstellungen</string>
+    <string name="nc_plain_old_messages">Nachrichten</string>
+    <string name="nc_notify_me_always">Immer benachrichtigen</string>
+    <string name="nc_notify_me_mention">Benachrichtigung bei Erwähnung</string>
+    <string name="nc_notify_me_never">Nie benachrichtigen</string>
+    <string name="nc_mute_calls">Anrufe stummschalten</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Schade, etwas ist schiefgelaufen!</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Unterhaltungen durch Mobiltelefone.
@@ -194,6 +200,7 @@ Finden Sie Nextcloud auf https://nextcloud.com</string>
     <string name="nc_date_header_today">Heute</string>
     <string name="nc_conversation_menu_voice_call">Sprachanruf</string>
     <string name="nc_conversation_menu_video_call">Videoanruf</string>
+    <string name="nc_conversation_menu_conversation_info">Unterhaltungs-Informartion</string>
     <string name="nc_new_messages">Neue Nachrichten</string>
     <string name="nc_no_messages_yet">Noch keine Nachrichten</string>
     <string name="nc_chat_you">Sie</string>
@@ -217,5 +224,4 @@ Finden Sie Nextcloud auf https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">1000-Zeichen-Limit wurde erreicht</string>
-
-</resources>
+    </resources>

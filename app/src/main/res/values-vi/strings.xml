@@ -79,7 +79,6 @@
     <string name="nc_settings_other_notifications_ringtone">Khác</string>
     <string name="nc_settings_no_ringtone">Tắt âm thanh</string>
     <string name="nc_settings_vibrate">Rung</string>
-    <string name="nc_settings_vibrate_desc">Khi bật, điện thoại sẽ rung ở chế độ im lặng</string>
     <string name="nc_no_proxy">Không proxy</string>
     <string name="nc_username">Tài khoản</string>
     <string name="nc_password">Mật khẩu</string>

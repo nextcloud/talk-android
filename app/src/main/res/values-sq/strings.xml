@@ -76,7 +76,6 @@
     <string name="nc_settings_other_notifications_ringtone">Tjetër</string>
     <string name="nc_settings_no_ringtone">Ska tingull</string>
     <string name="nc_settings_vibrate">Dridhje</string>
-    <string name="nc_settings_vibrate_desc">Kur është e aktivizuar, celulari do dridhet përveç rasteve kur është i heshtur</string>
     <string name="nc_no_proxy">Jo proxy</string>
     <string name="nc_username">Emri i përdoruesit</string>
     <string name="nc_password">Fjalëkalimi</string>

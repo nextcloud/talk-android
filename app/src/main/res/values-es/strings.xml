@@ -80,7 +80,6 @@
     <string name="nc_settings_other_notifications_ringtone">Otro</string>
     <string name="nc_settings_no_ringtone">Sonido NO</string>
     <string name="nc_settings_vibrate">Vibrar</string>
-    <string name="nc_settings_vibrate_desc">Cuando esté habilitado, el teléfono vibrará a menos que esté silenciado</string>
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Nombre de usuario</string>
     <string name="nc_password">Contraseña</string>
@@ -217,5 +216,4 @@ Encuentra Nextcloud en https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Se ha alcanzado el límite de 1000 caracteres</string>
-
-</resources>
+    </resources>

@@ -79,7 +79,6 @@
     <string name="nc_settings_other_notifications_ringtone">Autre</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
     <string name="nc_settings_vibrate">Vibrer</string>
-    <string name="nc_settings_vibrate_desc">Si activé, votre téléphone va vibrer</string>
     <string name="nc_no_proxy">Aucun proxy</string>
     <string name="nc_username">Nom d\'utilisateur</string>
     <string name="nc_password">Mot de passe</string>
@@ -141,6 +140,12 @@ grâce à un lien spécialement créé.</string>
     <string name="nc_notification_channel_calls">Canal de notification des appels</string>
     <string name="nc_notification_channel_messages">Canal de notification des messages</string>
     <string name="nc_notification_channel_calls_description">Afficher les appels entrants</string>
+    <string name="nc_notification_channel_Cmessages_description">Afficher les messages entrants</string>
+    <string name="nc_notification_settings">Paramètres de notification</string>
+    <string name="nc_plain_old_messages">Messages</string>
+    <string name="nc_notify_me_always">Toujours notifier</string>
+    <string name="nc_notify_me_mention">Notifier quand mentionné</string>
+    <string name="nc_notify_me_never">Ne jamais notifier</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile.
@@ -216,5 +221,4 @@ Retrouvez Nextcloud sur https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Limite de 1000 caractères atteinte</string>
-
-</resources>
+    </resources>

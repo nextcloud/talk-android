@@ -80,7 +80,6 @@
     <string name="nc_settings_other_notifications_ringtone">Остали</string>
     <string name="nc_settings_no_ringtone">Нема звука</string>
     <string name="nc_settings_vibrate">Вибрирај</string>
-    <string name="nc_settings_vibrate_desc">Када је укључено, телефон ће вибрирати осим ако је утишан</string>
     <string name="nc_no_proxy">Без посредника</string>
     <string name="nc_username">Корисничко име</string>
     <string name="nc_password">Лозинка</string>
@@ -218,5 +217,4 @@ Nextcloud Talk апликација захтева да имате Некстк�
 
     <!-- Other -->
     <string name="nc_limit_hit">Достигнут је лимит од 1000 карактера</string>
-
-</resources>
+    </resources>

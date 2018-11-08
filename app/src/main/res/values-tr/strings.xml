@@ -80,7 +80,6 @@
     <string name="nc_settings_other_notifications_ringtone">Diğer</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
     <string name="nc_settings_vibrate">Titreşim</string>
-    <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer.</string>
     <string name="nc_no_proxy">Vekil sunucu yok</string>
     <string name="nc_username">Kullanıcı adı</string>
     <string name="nc_password">Parola</string>
@@ -142,6 +141,13 @@
     <string name="nc_notification_channel_calls">Görüşme bildirimi kanalı</string>
     <string name="nc_notification_channel_messages">Bildirim kanalındaki ileti</string>
     <string name="nc_notification_channel_calls_description">Gelen görüşme çağrılarını görüntüler</string>
+    <string name="nc_notification_channel_Cmessages_description">Gelen iletileri görüntüler</string>
+    <string name="nc_notification_settings">Bildirim ayarları</string>
+    <string name="nc_plain_old_messages">İletiler</string>
+    <string name="nc_notify_me_always">Her zaman bildirilsin</string>
+    <string name="nc_notify_me_mention">Anmalar bildirilsin</string>
+    <string name="nc_notify_me_never">Asla bildirilmesin</string>
+    <string name="nc_mute_calls">Bildirimleri kapat</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
     <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı
@@ -196,6 +202,7 @@ Nextcloud web sitesi https://nextcloud.com</string>
     <string name="nc_date_header_today">Bugün</string>
     <string name="nc_conversation_menu_voice_call">Sesli görüşme</string>
     <string name="nc_conversation_menu_video_call">Görüntülü görüşme</string>
+    <string name="nc_conversation_menu_conversation_info">Görüşme bilgileri</string>
     <string name="nc_new_messages">Yeni iletiler</string>
     <string name="nc_no_messages_yet">Henüz bir ileti yok</string>
     <string name="nc_chat_you">Siz</string>
@@ -219,5 +226,4 @@ Nextcloud web sitesi https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">1000 karakter sınırına ulaşıldı</string>
-
-</resources>
+    </resources>

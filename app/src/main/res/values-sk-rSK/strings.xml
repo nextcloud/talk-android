@@ -80,7 +80,6 @@
     <string name="nc_settings_other_notifications_ringtone">Iné</string>
     <string name="nc_settings_no_ringtone">Žiadny zvuk</string>
     <string name="nc_settings_vibrate">Vibrovať</string>
-    <string name="nc_settings_vibrate_desc">Ak je zapnuté, telefón bude vibrovať pokiaľ nieje stíšený. </string>
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Používateľské meno</string>
     <string name="nc_password">Heslo</string>
@@ -217,5 +216,4 @@ Nextcloud nájdete na https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">bolo dosiahnutý limit 1000 znakov</string>
-
-</resources>
+    </resources>

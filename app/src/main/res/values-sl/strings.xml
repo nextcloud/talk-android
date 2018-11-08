@@ -79,7 +79,6 @@
     <string name="nc_settings_other_notifications_ringtone">Drugo</string>
     <string name="nc_settings_no_ringtone">Brez zvoka</string>
     <string name="nc_settings_vibrate">Tresenje</string>
-    <string name="nc_settings_vibrate_desc">Izbrana možnost določa, da se bo telefon zatresel, če funkcija ni onemogočena.</string>
     <string name="nc_no_proxy">Brez posredniškega strežnika</string>
     <string name="nc_username">Uporabniško ime</string>
     <string name="nc_password">Geslo</string>

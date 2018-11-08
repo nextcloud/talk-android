@@ -73,6 +73,7 @@
     <string name="nc_settings_no_talk_installed">你尝试授权的服务器上未安装 Talk 应用</string>
     <string name="nc_account_scheduled_for_deletion">此账户已计划删除，且无法更改</string>
     <string name="nc_settings_notification_sounds">通知音效</string>
+    <string name="nc_settings_other_notifications_ringtone">其他</string>
     <string name="nc_no_proxy">无代理</string>
     <string name="nc_username">用户名</string>
     <string name="nc_password">密码</string>
@@ -103,6 +104,9 @@
     <string name="nc_new_conversation">新的会话</string>
     <string name="nc_join_via_link">通过链接加入</string>
     <string name="nc_join_via_web">通过网页加入</string>
+    <string name="nc_add_to_favorites">添加收藏</string>
+    <string name="nc_remove_from_favorites">取消收藏</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">选择联系人</string>
     <string name="nc_one_contact_selected">已选联系人</string>
@@ -117,10 +121,17 @@
     <string name="nc_camera_permission_permanently_denied">在系统设置中赋予“相机”权限来启用视频通话。</string>
     <string name="nc_permissions_settings">打开设置</string>
 
+    <!-- Call -->
+    <string name="nc_connecting_call">正在连接...</string>
     <string name="nc_nick_guest">来宾</string>
     <string name="nc_notification_channel_calls">通话提醒频道</string>
     <string name="nc_notification_channel_messages">信息提醒频道</string>
     <string name="nc_notification_channel_calls_description">显示来电</string>
+    <string name="nc_notification_settings">通知设置</string>
+    <string name="nc_plain_old_messages">消息</string>
+    <string name="nc_notify_me_always">始终提醒</string>
+    <string name="nc_notify_me_mention">当被提及时提醒</string>
+    <string name="nc_notify_me_never">从不提醒</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
     <string name="nc_failed_signaling_settings">目标服务器不支持通过手机加入到公开会话中。您可以尝试通过浏览器加入会话。</string>

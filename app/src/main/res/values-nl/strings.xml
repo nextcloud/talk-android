@@ -81,7 +81,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_other_notifications_ringtone">Overig</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
     <string name="nc_settings_vibrate">Trillen</string>
-    <string name="nc_settings_vibrate_desc">Wanneer ingeschakeld, zal de telefoon trillen, tenzij die op stil staat</string>
     <string name="nc_no_proxy">geen proxy</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
@@ -221,5 +220,4 @@ Bezoek Nextcloud op https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Limiet van 1000 tekens bereikt</string>
-
-</resources>
+    </resources>
