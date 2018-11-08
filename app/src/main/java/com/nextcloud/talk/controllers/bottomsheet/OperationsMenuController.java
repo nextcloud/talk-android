@@ -514,7 +514,9 @@ public class OperationsMenuController extends BaseController {
         RetrofitBucket retrofitBucket;
         final ArrayList<String> localInvitedUsers = invitedUsers;
         final ArrayList<String> localInvitedGroups = invitedGroups;
-        localInvitedGroups.remove(0);
+        if (localInvitedGroups.size() > 0) {
+            localInvitedGroups.remove(0);
+        }
         if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 && currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails"))) {
             if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails"))) {
                 for (int i = 0; i < localInvitedGroups.size(); i++) {
