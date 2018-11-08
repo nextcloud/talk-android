@@ -70,8 +70,8 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof UserItem) {
-            UserItem inItem = (UserItem) o;
+        if (o instanceof AdvancedUserItem) {
+            AdvancedUserItem inItem = (AdvancedUserItem) o;
             return participant.equals(inItem.getModel());
         }
         return false;

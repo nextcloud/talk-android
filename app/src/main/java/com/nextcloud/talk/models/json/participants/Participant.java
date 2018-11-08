@@ -53,7 +53,7 @@ public class Participant {
     boolean inCall;
 
     @JsonField(name = "participantFlags")
-    int participantFlags;
+    long participantFlags;
 
     String source;
 
