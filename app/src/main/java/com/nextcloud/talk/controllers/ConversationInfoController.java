@@ -161,7 +161,9 @@ public class ConversationInfoController extends BaseController {
                     public void onNext(RoomOverall roomOverall) {
                         conversation = roomOverall.getOcs().getData();
 
-                        progressBar.setVisibility(View.GONE);
+                        if (progressBar != null) {
+                            progressBar.setVisibility(View.GONE);
+                        }
                         materialPreferenceScreen.setVisibility(View.VISIBLE);
                         nameCategoryView.setVisibility(View.VISIBLE);
                         conversationDisplayName.setText(conversation.getDisplayName());
