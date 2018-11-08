@@ -1305,7 +1305,7 @@ public class CallController extends BaseController {
 
                         String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
                                 (ncSignalingMessage.getPayload().getSdp(),
-                                        "VP8", false);
+                                        "H264", false);
 
                         sessionDescriptionWithPreferredCodec = new SessionDescription(
                                 SessionDescription.Type.fromCanonicalForm(type),
