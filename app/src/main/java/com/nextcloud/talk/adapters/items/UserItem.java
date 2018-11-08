@@ -100,7 +100,11 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
     @Override
     public int getLayoutRes() {
-        return R.layout.rv_item_contact;
+        if (header != null) {
+            return R.layout.rv_item_contact;
+        } else {
+            return R.layout.rv_item_participant;
+        }
     }
 
     @Override

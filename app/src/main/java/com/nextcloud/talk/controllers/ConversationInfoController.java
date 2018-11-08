@@ -25,6 +25,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
@@ -32,14 +36,6 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
-
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.nextcloud.talk.adapters.items.AdvancedUserItem;
-import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -48,29 +44,26 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferencestorage.DatabaseStorageModule;
-import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.yarolegovich.mp.MaterialChoicePreference;
 import com.yarolegovich.mp.MaterialPreferenceCategory;
 import com.yarolegovich.mp.MaterialPreferenceScreen;
-
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import autodagger.AutoInjector;
 import butterknife.BindView;
@@ -119,6 +112,8 @@ public class ConversationInfoController extends BaseController {
     NcApi ncApi;
 
     private Disposable roomDisposable;
+    private Disposable participantsDisposable;
+
     private Conversation conversation;
 
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
@@ -163,6 +158,9 @@ public class ConversationInfoController extends BaseController {
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(recyclerViewItems, getActivity(), true);
         }
+
+
+
         SmoothScrollLinearLayoutManager layoutManager =
                 new SmoothScrollLinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -171,34 +169,42 @@ public class ConversationInfoController extends BaseController {
         recyclerView.setAdapter(adapter);
     }
 
-    private void handleParticipants() {
+    private void handleParticipants(List<Participant> participants) {
         UserItem userItem;
         Participant participant;
+        EnumParticipantTypeConverter enumParticipantTypeConverter = new EnumParticipantTypeConverter();
 
         recyclerViewItems = new ArrayList<>();
-
-        GenericTextHeaderItem genericTextHeaderItem = new GenericTextHeaderItem("bla");
-        EnumParticipantTypeConverter enumParticipantTypeConverter = new EnumParticipantTypeConverter();
-        Iterator it = conversation.getParticipants().entrySet().iterator();
+        HashMap<String, HashMap<String, Object>> conversationParticipants = conversation.getParticipants();
         HashMap<String, Object> internalHashMap;
-        while (it.hasNext()) {
-            participant = new Participant();
-            Map.Entry pair = (Map.Entry)it.next();
-            participant.setUserId((String) pair.getKey());
-            internalHashMap = (HashMap<String, Object>) pair.getValue();
-            participant.setName((String) internalHashMap.get("name"));
-            participant.setParticipantFlags((long) internalHashMap.get("call"));
+        UserItem ownUserItem = null;
+        for (int i = 0; i < participants.size(); i++) {
+            participant = participants.get(i);
+            internalHashMap = conversationParticipants.get(participant.getUserId());
+            participant.setInCall((long)internalHashMap.get("call") != 0);
+            if (!participant.getUserId().equals(conversationUser.getUserId())) {
+                participant.setName((String) internalHashMap.get("name"));
+            } else {
+                participant.setName(getResources().getString(R.string.nc_chat_you) + " (" + internalHashMap.get("name") + ")");
+            }
             participant.setType(enumParticipantTypeConverter.getFromInt((int)(long) internalHashMap.get("type")));
-            
-            userItem = new UserItem(participant, conversationUser, genericTextHeaderItem);
 
-            userItem.setEnabled(participant.getParticipantFlags() != 0);
+            userItem = new UserItem(participant, conversationUser, null);
+            userItem.setEnabled(!participant.getSessionId().equals("0"));
+            if (!participant.getUserId().equals(conversationUser.getUserId())) {
+                ownUserItem = userItem;
+            } else {
+                recyclerViewItems.add(userItem);
+            }
+        }
 
-            recyclerViewItems.add(userItem);
-            it.remove();
+        if (ownUserItem != null) {
+            recyclerViewItems.add(ownUserItem);
         }
 
         setupAdapter();
+
+        participantsListCategory.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
     }
 
@@ -215,6 +221,33 @@ public class ConversationInfoController extends BaseController {
         return getResources().getString(R.string.nc_conversation_menu_conversation_info);
     }
 
+    private void getListOfParticipants() {
+        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(conversationUser.getBaseUrl(), conversationToken))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ParticipantsOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        participantsDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(ParticipantsOverall participantsOverall) {
+                        handleParticipants(participantsOverall.getOcs().getData());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        participantsDisposable.dispose();
+                    }
+                });
+
+    }
     private void fetchRoomInfo() {
         ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser.getBaseUrl(), conversationToken))
                 .subscribeOn(Schedulers.newThread())
@@ -228,14 +261,13 @@ public class ConversationInfoController extends BaseController {
                     @Override
                     public void onNext(RoomOverall roomOverall) {
                         conversation = roomOverall.getOcs().getData();
+                        getListOfParticipants();
 
                         if (progressBar != null) {
                             progressBar.setVisibility(View.GONE);
                         }
 
                         loadConversationAvatar();
-                        handleParticipants();
-
 
                         if (conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
                             messageNotificationLevel.setEnabled(true);
@@ -269,7 +301,6 @@ public class ConversationInfoController extends BaseController {
 
                         materialPreferenceScreen.setVisibility(View.VISIBLE);
                         nameCategoryView.setVisibility(View.VISIBLE);
-                        participantsListCategory.setVisibility(View.VISIBLE);
                         conversationDisplayName.setText(conversation.getDisplayName());
                     }
 
