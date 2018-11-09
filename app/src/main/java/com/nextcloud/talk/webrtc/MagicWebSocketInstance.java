@@ -110,7 +110,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
         }
     }
 
-    private void restartWebSocket() {
+    public void restartWebSocket() {
         Request request = new Request.Builder().url(connectionUrl).build();
         this.webSocket = okHttpClient.newWebSocket(request, this);
     }
@@ -144,11 +144,14 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     break;
                 case "room":
                     JoinedRoomOverallWebSocketMessage joinedRoomOverallWebSocketMessage = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage.class);
-                    if (joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomPropertiesWebSocketMessage() != null) {
+                    currentRoomToken = joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId();
+                    if (joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomPropertiesWebSocketMessage() != null && !TextUtils.isEmpty(currentRoomToken)) {
                         HashMap<String, String> joinRoomHashMap = new HashMap<>();
-                        joinRoomHashMap.put("roomToken", joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId());
-                        currentRoomToken = joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId();
+                        joinRoomHashMap.put("roomToken", currentRoomToken);
                         eventBus.post(new WebSocketCommunicationEvent("roomJoined", joinRoomHashMap));
+                    } else {
+                        userIdSesssionHashMap = new HashMap<>();
+                        displayNameHashMap = new HashMap<>();
                     }
                     break;
                 case "event":

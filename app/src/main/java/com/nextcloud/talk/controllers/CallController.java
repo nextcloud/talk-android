@@ -1211,6 +1211,8 @@ public class CallController extends BaseController {
 
         if (webSocketClient.isConnected()) {
             joinRoomAndCall();
+        } else {
+            webSocketClient.restartWebSocket();
         }
     }
 
