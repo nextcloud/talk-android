@@ -1189,8 +1189,6 @@ public class CallController extends BaseController {
                                     });
 
 
-                        } else {
-                            alwaysGetPeerConnectionWrapperForSessionId(webSocketClient.getSessionId(), true);
                         }
                     }
 
@@ -1484,7 +1482,9 @@ public class CallController extends BaseController {
         }
 
         for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
-            oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
+            if (!magicPeerConnectionWrapper.isMCUPublisher()) {
+                oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
+            }
         }
 
         // Calculate sessions that left the call
@@ -1501,15 +1501,10 @@ public class CallController extends BaseController {
             getPeersForCall();
         }
 
-        for (String sessionId : newSessions) {
-            if (hasExternalSignalingServer && webSocketClient.hasMCU()) {
-                if (!sessionId.equals(webSocketClient.getSessionId())) {
-                    alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
+        hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
 
-                }
-            } else {
-                alwaysGetPeerConnectionWrapperForSessionId(sessionId, false);
-            }
+        for (String sessionId : newSessions) {
+            alwaysGetPeerConnectionWrapperForSessionId(sessionId, hasMCU && sessionId.equals(webSocketClient.getSessionId()));
         }
 
         for (String sessionId : oldSesssions) {
@@ -1559,8 +1554,6 @@ public class CallController extends BaseController {
         if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId)) != null) {
             return magicPeerConnectionWrapper;
         } else {
-            hasMCU = externalSignalingServer != null && webSocketClient != null && webSocketClient.hasMCU();
-
             if (hasMCU && publisher) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
                         iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, true, true);
