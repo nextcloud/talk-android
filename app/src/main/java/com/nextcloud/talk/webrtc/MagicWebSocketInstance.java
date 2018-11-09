@@ -91,6 +91,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
         this.webSocketTicket = webSocketTicket;
         this.webSocketConnectionHelper = new WebSocketConnectionHelper();
         this.displayNameHashMap = new HashMap<>();
+        this.userIdSesssionHashMap = new HashMap<>();
         magicMap = new MagicMap();
 
         restartWebSocket();
@@ -123,12 +124,12 @@ public class MagicWebSocketInstance extends WebSocketListener {
             String messageType = baseWebSocketMessage.getType();
             switch (messageType) {
                 case "hello":
-                    connected = true;
                     restartCount = 0;
                     HelloResponseOverallWebSocketMessage helloResponseWebSocketMessage = LoganSquare.parse(text, HelloResponseOverallWebSocketMessage.class);
                     resumeId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getResumeId();
                     sessionId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getSessionId();
                     hasMCU = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().serverHasMCUSupport();
+                    connected = true;
                     eventBus.post(new WebSocketCommunicationEvent("hello", null));
                     break;
                 case "error":
@@ -156,7 +157,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         String target = (String) eventOverallWebSocketMessage.getEventMap().get("target");
                         switch (target) {
                             case "room":
-                                if (eventOverallWebSocketMessage.getType().equals("message")) {
+                                if (eventOverallWebSocketMessage.getEventMap().get("type").equals("message")) {
                                     if (eventOverallWebSocketMessage.getEventMap().containsKey("data")) {
                                         Map<String, Object> dataHashMap = (Map<String, Object>) eventOverallWebSocketMessage.getEventMap().get("data");
                                         if (dataHashMap.containsKey("chat")) {
