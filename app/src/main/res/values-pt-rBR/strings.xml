@@ -80,6 +80,7 @@
     <string name="nc_settings_other_notifications_ringtone">Outro</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_vibrate">Vibrar</string>
+    <string name="nc_settings_vibrate_desc">Seu telefone vibrará, a menos que esteja no silencioso</string>
     <string name="nc_no_proxy">Sem proxy</string>
     <string name="nc_username">Usuário</string>
     <string name="nc_password">Senha</string>
@@ -148,6 +149,8 @@
     <string name="nc_notify_me_mention">Notificar quando mencionado</string>
     <string name="nc_notify_me_never">Nunca notificar</string>
     <string name="nc_mute_calls">Silenciar chamadas</string>
+    <string name="nc_mute_calls_description">Você não receberá nenhuma notificação de chamada</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
     <string name="nc_failed_signaling_settings">O servidor de destino não suporta a participação em conversas públicas
@@ -224,4 +227,5 @@ Encontre o Nextcloud em https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">O limite de 1000 caracteres foi atingido</string>
+    <string name="nc_groups">Grupos</string>
     </resources>

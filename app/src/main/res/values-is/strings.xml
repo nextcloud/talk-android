@@ -69,6 +69,7 @@
     <string name="nc_client_cert_change">Skipta um skilríki biðlara</string>
     <string name="nc_settings_remove_account">Fjarlægja notandaaðgang</string>
     <string name="nc_settings_add_account">Bæta við nýjum notandaaðgangi</string>
+    <string name="nc_settings_no_talk_installed">Talk-forritið er ekki uppsett á þjóninum sem þú reyndir að auðkenna hjá</string>
     <string name="nc_settings_notification_sounds">Hljóð með tilkynningum</string>
     <string name="nc_settings_other_notifications_ringtone">Annað</string>
     <string name="nc_settings_no_ringtone">Ekkert hljóð</string>
@@ -123,6 +124,8 @@
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s á %2$s tilkynningarásinni</string>
     <string name="nc_notification_channel_calls_description">Sýnir innhringd símtöl</string>
+    <string name="nc_notification_settings">Stillingar á tilkynningum</string>
+    <string name="nc_plain_old_messages">Skilaboð</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
     <string name="nc_all_ok_operation">Í lagi, allt klárt!</string>
@@ -141,6 +144,7 @@
     <string name="nc_date_header_today">Í dag</string>
     <string name="nc_conversation_menu_voice_call">Raddsímtal</string>
     <string name="nc_conversation_menu_video_call">Myndsímtal</string>
+    <string name="nc_conversation_menu_conversation_info">Upplýsingar um samtal</string>
     <string name="nc_new_messages">Ný skilaboð</string>
     <string name="nc_no_messages_yet">Engin skilaboð ennþá</string>
     <string name="nc_chat_you">Þú</string>
@@ -155,4 +159,5 @@
 
     <string name="nc_hello">Halló</string>
 
+    <string name="nc_groups">Hópar</string>
     </resources>

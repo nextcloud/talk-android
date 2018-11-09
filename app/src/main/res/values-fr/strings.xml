@@ -221,4 +221,5 @@ Retrouvez Nextcloud sur https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Limite de 1000 caractères atteinte</string>
+    <string name="nc_groups">Groupes</string>
     </resources>
