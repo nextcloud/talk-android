@@ -228,4 +228,12 @@ Trovi Nextcloud su https://nextcloud.com</string>
     <!-- Other -->
     <string name="nc_limit_hit">Il limite di 1000 caratteri è stato raggiunto</string>
     <string name="nc_groups">Gruppi</string>
-    </resources>
+    <string name="nc_participants">Partecipanti</string>
+
+    <string name="nc_owner">Proprietario</string>
+    <string name="nc_moderator">Moderatore</string>
+    <string name="nc_user">Utente</string>
+    <string name="nc_guest">Ospite</string>
+    <string name="nc_following_link">Utente che segue un collegamento pubblico</string>
+
+</resources>

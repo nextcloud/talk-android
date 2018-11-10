@@ -80,6 +80,7 @@
     <string name="nc_settings_other_notifications_ringtone">Diğer</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
     <string name="nc_settings_vibrate">Titreşim</string>
+    <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
     <string name="nc_no_proxy">Vekil sunucu yok</string>
     <string name="nc_username">Kullanıcı adı</string>
     <string name="nc_password">Parola</string>
@@ -148,6 +149,8 @@
     <string name="nc_notify_me_mention">Anmalar bildirilsin</string>
     <string name="nc_notify_me_never">Asla bildirilmesin</string>
     <string name="nc_mute_calls">Bildirimleri kapat</string>
+    <string name="nc_mute_calls_description">Bu seçenek etkinleştirildiğinde, hiç bir çağrı bildirimi alınmaz</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
     <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı
@@ -226,4 +229,13 @@ Nextcloud web sitesi https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">1000 karakter sınırına ulaşıldı</string>
-    </resources>
+    <string name="nc_groups">Gruplar</string>
+    <string name="nc_participants">Katılımcılar</string>
+
+    <string name="nc_owner">Sahip</string>
+    <string name="nc_moderator">Sorumlu</string>
+    <string name="nc_user">Kullanıcı</string>
+    <string name="nc_guest">Konuk</string>
+    <string name="nc_following_link">Herkese açık bir bağlantıyı izleyen kullanıcı</string>
+
+</resources>
