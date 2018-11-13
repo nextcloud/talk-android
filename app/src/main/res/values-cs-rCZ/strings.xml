@@ -42,6 +42,7 @@
     <string name="nc_display_name_fetched">Zobrazované jméno získáno</string>
     <string name="nc_push_disabled">Vyskakovací upozornění zakázána</string>
     <string name="nc_capabilities_failed">Nepodařilo se získat schopnosti, ukončuje se</string>
+    <string name="nc_external_server_failed">Nepodařilo se získat nastavení signalizace</string>
     <string name="nc_display_name_not_fetched">Nepodařilo se získat zobrazované jméno, přerušuje se</string>
     <string name="nc_nextcloud_talk_app_installed">nalezena aplikace %1$s</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikace %1$s není na serveru nainstalována, ruší se</string>
@@ -79,6 +80,7 @@
     <string name="nc_settings_other_notifications_ringtone">Ostatní</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
     <string name="nc_settings_vibrate">Vibrovat</string>
+    <string name="nc_settings_vibrate_desc">Pokud není ztišený, telefon bude vibrovat</string>
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Uživatelské jméno</string>
     <string name="nc_password">Heslo</string>
@@ -140,6 +142,15 @@
     <string name="nc_notification_channel_calls">Kanál oznamování volání</string>
     <string name="nc_notification_channel_messages">Kanál oznamování zpráv</string>
     <string name="nc_notification_channel_calls_description">Zobrazit příchozí hovory</string>
+    <string name="nc_notification_channel_Cmessages_description">Zobrazit přicházející zprávy</string>
+    <string name="nc_notification_settings">Nastavení oznamování</string>
+    <string name="nc_plain_old_messages">Zprávy</string>
+    <string name="nc_notify_me_always">Vždy oznamovat</string>
+    <string name="nc_notify_me_mention">Upozornit při zmínění</string>
+    <string name="nc_notify_me_never">Nikdy neoznamovat</string>
+    <string name="nc_mute_calls">Ztišit hovory</string>
+    <string name="nc_mute_calls_description">Neobdržíte žádná oznámení o hovorech</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
     <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování veřejných konverzací prostřednictvím mobilních
@@ -192,6 +203,7 @@ Nextcloud naleznete na https://nextcloud.com</string>
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
     <string name="nc_conversation_menu_video_call">Videohovor</string>
+    <string name="nc_conversation_menu_conversation_info">Informace o konverzaci</string>
     <string name="nc_new_messages">Nové zprávy</string>
     <string name="nc_no_messages_yet">Zatím žádné zprávy</string>
     <string name="nc_chat_you">Vy</string>
@@ -215,4 +227,13 @@ Nextcloud naleznete na https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">bylo dosaženo limitu 1000 znaků</string>
-    </resources>
+    <string name="nc_groups">Skupiny</string>
+    <string name="nc_participants">Účastníci</string>
+
+    <string name="nc_owner">Vlastník</string>
+    <string name="nc_moderator">Moderátor</string>
+    <string name="nc_user">Uživatel</string>
+    <string name="nc_guest">Host</string>
+    <string name="nc_following_link">Uživatel následující veřejný odkaz</string>
+
+</resources>
