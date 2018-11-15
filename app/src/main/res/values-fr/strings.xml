@@ -42,6 +42,7 @@
     <string name="nc_display_name_fetched">Nom affiché récupéré</string>
     <string name="nc_push_disabled">Notifications push désactivées</string>
     <string name="nc_capabilities_failed">Échec d\'extraction des capacités, abandon</string>
+    <string name="nc_external_server_failed">Échec de l\'extraction des paramètres de signalisation</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_nextcloud_talk_app_installed">Application %1$s trouvée</string>
     <string name="nc_nextcloud_talk_app_not_installed">Application %1$s non installée sur le serveur, abandon</string>
@@ -79,6 +80,7 @@
     <string name="nc_settings_other_notifications_ringtone">Autre</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
     <string name="nc_settings_vibrate">Vibrer</string>
+    <string name="nc_settings_vibrate_desc">Votre téléphone va vibrer à moins qu\'il ne soit en mode silencieux</string>
     <string name="nc_no_proxy">Aucun proxy</string>
     <string name="nc_username">Nom d\'utilisateur</string>
     <string name="nc_password">Mot de passe</string>
@@ -146,6 +148,9 @@ grâce à un lien spécialement créé.</string>
     <string name="nc_notify_me_always">Toujours notifier</string>
     <string name="nc_notify_me_mention">Notifier quand mentionné</string>
     <string name="nc_notify_me_never">Ne jamais notifier</string>
+    <string name="nc_mute_calls">Rendre les appels silencieux</string>
+    <string name="nc_mute_calls_description">Vous ne recevrez aucune notification pour les appels</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile.
@@ -198,6 +203,7 @@ Retrouvez Nextcloud sur https://nextcloud.com</string>
     <string name="nc_date_header_today">Aujourd\'hui</string>
     <string name="nc_conversation_menu_voice_call">Appel vocal</string>
     <string name="nc_conversation_menu_video_call">Appel vidéo</string>
+    <string name="nc_conversation_menu_conversation_info">Infos sur la conversation</string>
     <string name="nc_new_messages">Nouveaux messages</string>
     <string name="nc_no_messages_yet">Pas de messages</string>
     <string name="nc_chat_you">Vous</string>
@@ -222,4 +228,12 @@ Retrouvez Nextcloud sur https://nextcloud.com</string>
     <!-- Other -->
     <string name="nc_limit_hit">Limite de 1000 caractères atteinte</string>
     <string name="nc_groups">Groupes</string>
-    </resources>
+    <string name="nc_participants">Participants</string>
+
+    <string name="nc_owner">Propriétaire</string>
+    <string name="nc_moderator">Modérateur</string>
+    <string name="nc_user">Utilisateur</string>
+    <string name="nc_guest">Invité</string>
+    <string name="nc_following_link">Utilisateur suivant un lien public</string>
+
+</resources>

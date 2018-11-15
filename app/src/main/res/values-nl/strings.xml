@@ -81,6 +81,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_other_notifications_ringtone">Overig</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
     <string name="nc_settings_vibrate">Trillen</string>
+    <string name="nc_settings_vibrate_desc">Wanneer ingeschakeld, zal de telefoon trillen, tenzij die op stil staat</string>
     <string name="nc_no_proxy">geen proxy</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
@@ -145,6 +146,11 @@ via een persoonlijke link.</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
     <string name="nc_notification_channel_messages">Berichtennotificatiekanaal</string>
     <string name="nc_notification_channel_calls_description">Toont inkomende gesprekken</string>
+    <string name="nc_notification_channel_Cmessages_description">Toont inkomende berichten</string>
+    <string name="nc_notification_settings">Meldingsinstellingen</string>
+    <string name="nc_plain_old_messages">Berichten</string>
+    <string name="nc_notify_me_never">Nooit waarschuwen</string>
+    <string name="nc_mute_calls">Gesprekken dempen</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons.
@@ -220,4 +226,11 @@ Bezoek Nextcloud op https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Limiet van 1000 tekens bereikt</string>
+    <string name="nc_groups">Groepen</string>
+    <string name="nc_participants">Deelnemers</string>
+
+    <string name="nc_owner">Eigenaar</string>
+    <string name="nc_moderator">Moderator</string>
+    <string name="nc_user">Gebruiker</string>
+    <string name="nc_guest">Gast</string>
     </resources>

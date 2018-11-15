@@ -70,10 +70,13 @@
     <string name="nc_settings_remove_account">Fjarlægja notandaaðgang</string>
     <string name="nc_settings_add_account">Bæta við nýjum notandaaðgangi</string>
     <string name="nc_settings_no_talk_installed">Talk-forritið er ekki uppsett á þjóninum sem þú reyndir að auðkenna hjá</string>
+    <string name="nc_account_scheduled_for_deletion">Þessi aðgangur er merktur til eyðingar og er því ekki hægt að breyta honum</string>
     <string name="nc_settings_notification_sounds">Hljóð með tilkynningum</string>
+    <string name="nc_settings_call_ringtone">Maður-á-mann samtöl</string>
     <string name="nc_settings_other_notifications_ringtone">Annað</string>
     <string name="nc_settings_no_ringtone">Ekkert hljóð</string>
     <string name="nc_settings_vibrate">Titringur</string>
+    <string name="nc_settings_vibrate_desc">Síminn þinn mun titra nema hann sé á hljóðlausi stillingu</string>
     <string name="nc_no_proxy">Enginn milliþjónn</string>
     <string name="nc_username">Notandanafn</string>
     <string name="nc_password">Lykilorð</string>
@@ -114,6 +117,12 @@
     <string name="nc_contacts_clear">Hreinsa</string>
     <string name="nc_contacts_done">Lokið</string>
 
+    <!-- Permissions -->
+    <string name="nc_permissions">Veita þarf heimildir til að hægt sé að koma á mynd- og/eða hljóðsamtali. Smelltu á \"LEYFA\" í kerfisglugganum sem birtist.</string>
+    <string name="nc_permissions_audio">Veita þarf heimild til að nota hljóðnema til að hægt sé að koma á hljóðsamtölum. Smelltu á \"LEYFA\" í kerfisglugganum sem birtist.</string>
+    <string name="nc_permissions_video">Veita þarf heimild til að nota myndavél til að hægt sé að koma á myndsamtölum. Smelltu á \"LEYFA\" í kerfisglugganum sem birtist.</string>
+    <string name="nc_camera_permission_permanently_denied">Til að koma á myndsamtölum þarftu að veita heimildir fyrir \"Myndavél\" í kerfisstillingunum.</string>
+    <string name="nc_microphone_permission_permanently_denied">Til að koma á hljóðsamtölum þarftu að veita heimildir fyrir \"Hljóðnemi\" í kerfisstillingunum.</string>
     <string name="nc_permissions_settings">Opna stillingar</string>
 
     <!-- Call -->
@@ -123,9 +132,16 @@
     <string name="nc_public_call">Nýtt opinbert samtal</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s á %2$s tilkynningarásinni</string>
+    <string name="nc_notification_channel_calls">Rás fyrir tilkynningar um samtöl</string>
+    <string name="nc_notification_channel_messages">Rás fyrir tilkynningar um skilaboð</string>
     <string name="nc_notification_channel_calls_description">Sýnir innhringd símtöl</string>
+    <string name="nc_notification_channel_Cmessages_description">Birtir skilaboð sem berast</string>
     <string name="nc_notification_settings">Stillingar á tilkynningum</string>
     <string name="nc_plain_old_messages">Skilaboð</string>
+    <string name="nc_notify_me_always">Alltaf tilkynna</string>
+    <string name="nc_notify_me_mention">Tilkynna þegar minnst er á</string>
+    <string name="nc_notify_me_never">Aldrei tilkynna</string>
+    <string name="nc_mute_calls">Þagga samtöl</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
     <string name="nc_all_ok_operation">Í lagi, allt klárt!</string>
@@ -136,6 +152,7 @@
     <string name="nc_share_text">Taktu þátt í samtalinu á %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nLykilorð: %1$s</string>
 
+    <string name="nc_store_short_desc">Haltu úti eigin myndsamtölum og spjalli á þínum eigin þjóni.</string>
     <string name="nc_configure_cert_auth">Veldu skilríki fyrir auðkenningu</string>
     <string name="nc_change_cert_auth">Skipta um skilríki fyrir auðkenningu</string>
     <!-- Chat -->
@@ -155,9 +172,26 @@
     <string name="nc_endless_cancel">Notandinn hætti við.</string>
     <string name="nc_endless_error">Villa kom upp við að hlaða inn fleiri aðgerðum.</string>
 
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">Valmynd fyrir samtal við %1$s</string>
+    <string name="nc_description_more_menu_public">Valmynd fyrir hópsamtal %1$s</string>
+    <string name="nc_description_more_menu_group">Valmynd fyrir opinbert samtal %1$s</string>
     <string name="nc_description_send_message_button">Senda skilaboð</string>
 
+    <!-- Empty states -->
+    <string name="nc_chat_empty">Ýttu til að verða fyrstur til að segja %1$s!</string>
+    <string name="nc_conversations_empty">Þú hefur ekki sjallað við neinn ennþá!\n Ýttu til að hefja samtal.</string>
     <string name="nc_hello">Halló</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">1000 stafa mörkum hefur verið náð</string>
     <string name="nc_groups">Hópar</string>
-    </resources>
+    <string name="nc_participants">Þátttakendur</string>
+
+    <string name="nc_owner">Eigandi</string>
+    <string name="nc_moderator">Umsjónarmaður</string>
+    <string name="nc_user">Notandi</string>
+    <string name="nc_guest">Gestur</string>
+    <string name="nc_following_link">Notandi sem fylgdi almenningstengli</string>
+
+</resources>
