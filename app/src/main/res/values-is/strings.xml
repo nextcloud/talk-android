@@ -150,6 +150,7 @@
     <string name="nc_proceed">Halda áfram</string>
     <string name="nc_wrong_link">Samskiptatengill er ekki gildur</string>
     <string name="nc_share_text">Taktu þátt í samtalinu á %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s boðskort</string>
     <string name="nc_share_text_pass">\nLykilorð: %1$s</string>
 
     <string name="nc_store_short_desc">Haltu úti eigin myndsamtölum og spjalli á þínum eigin þjóni.</string>
