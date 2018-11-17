@@ -80,6 +80,7 @@
     <string name="nc_settings_other_notifications_ringtone">Остали</string>
     <string name="nc_settings_no_ringtone">Нема звука</string>
     <string name="nc_settings_vibrate">Вибрирај</string>
+    <string name="nc_settings_vibrate_desc">Телефон ће вибрирати осим ако није утишан</string>
     <string name="nc_no_proxy">Без посредника</string>
     <string name="nc_username">Корисничко име</string>
     <string name="nc_password">Лозинка</string>
@@ -141,6 +142,15 @@
     <string name="nc_notification_channel_calls">Канал обавештења о позивима</string>
     <string name="nc_notification_channel_messages">Канал обавештења о порукама</string>
     <string name="nc_notification_channel_calls_description">Прикажи долазне позиве</string>
+    <string name="nc_notification_channel_Cmessages_description">Прикажи долазне поруке</string>
+    <string name="nc_notification_settings">Поставке обавештења</string>
+    <string name="nc_plain_old_messages">Поруке</string>
+    <string name="nc_notify_me_always">Увек обавести</string>
+    <string name="nc_notify_me_mention">Обавести на помињањe</string>
+    <string name="nc_notify_me_never">Никад не обавештавај</string>
+    <string name="nc_mute_calls">Искључи тон позива</string>
+    <string name="nc_mute_calls_description">Нећете примате обавештења за позиве</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
     <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним собама преко мобилног телефона.
@@ -194,6 +204,7 @@ Nextcloud Talk апликација захтева да имате Некстк�
     <string name="nc_date_header_today">Данас</string>
     <string name="nc_conversation_menu_voice_call">Аудио позив</string>
     <string name="nc_conversation_menu_video_call">Видео позив</string>
+    <string name="nc_conversation_menu_conversation_info">Информације о разговору</string>
     <string name="nc_new_messages">Нове поруке</string>
     <string name="nc_no_messages_yet">Још нема порука</string>
     <string name="nc_chat_you">Ви</string>
@@ -217,4 +228,13 @@ Nextcloud Talk апликација захтева да имате Некстк�
 
     <!-- Other -->
     <string name="nc_limit_hit">Достигнут је лимит од 1000 карактера</string>
-    </resources>
+    <string name="nc_groups">Групе</string>
+    <string name="nc_participants">Учесници</string>
+
+    <string name="nc_owner">Власник</string>
+    <string name="nc_moderator">Модератор</string>
+    <string name="nc_user">Корисник</string>
+    <string name="nc_guest">Гост</string>
+    <string name="nc_following_link">Корисник који је пратио јавну везу</string>
+
+</resources>
