@@ -159,7 +159,7 @@
     <string name="nc_wrong_link">会話リンクが無効です</string>
     <string name="nc_share_text">%1$s / index.php / %2$s の会話に参加する</string>
     <string name="nc_share_subject">%1$s を招待</string>
-    <string name="nc_share_text_pass">\ nパスワード：%1$s</string>
+    <string name="nc_share_text_pass">\nパスワード：%1$s</string>
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">プッシュトゥートーク</string>

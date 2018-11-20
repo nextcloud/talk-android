@@ -80,6 +80,7 @@
     <string name="nc_settings_other_notifications_ringtone">Iné</string>
     <string name="nc_settings_no_ringtone">Žiadny zvuk</string>
     <string name="nc_settings_vibrate">Vibrovať</string>
+    <string name="nc_settings_vibrate_desc">Telefón bude vibrovať pokiaľ nie je stíšený</string>
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Používateľské meno</string>
     <string name="nc_password">Heslo</string>
@@ -141,6 +142,15 @@
     <string name="nc_notification_channel_calls">Oznamovací kanál hovorov</string>
     <string name="nc_notification_channel_messages">Oznamovací kanál správ</string>
     <string name="nc_notification_channel_calls_description">Ukazuje prichádzajúce hovory</string>
+    <string name="nc_notification_channel_Cmessages_description">Ukazuje prichádzajúce správy</string>
+    <string name="nc_notification_settings">Nastavenie notifikácií</string>
+    <string name="nc_plain_old_messages">Správy</string>
+    <string name="nc_notify_me_always">Notifikuj vždy</string>
+    <string name="nc_notify_me_mention">Notifikuj pri spomenutí</string>
+    <string name="nc_notify_me_never">Nikdy nenotifikuj</string>
+    <string name="nc_mute_calls">Stíš hovory</string>
+    <string name="nc_mute_calls_description">Nebudete dostávať notifikáciu pre hovory</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa nepodarilo!</string>
     <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil 
@@ -193,6 +203,7 @@ Nextcloud nájdete na https://nextcloud.com</string>
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
     <string name="nc_conversation_menu_video_call">Video hovor</string>
+    <string name="nc_conversation_menu_conversation_info">Informácia o rozhovore</string>
     <string name="nc_new_messages">Nové správy</string>
     <string name="nc_no_messages_yet">Ešte žiadne správy</string>
     <string name="nc_chat_you">Vy</string>
@@ -216,4 +227,13 @@ Nextcloud nájdete na https://nextcloud.com</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">bolo dosiahnutý limit 1000 znakov</string>
-    </resources>
+    <string name="nc_groups">Skupiny</string>
+    <string name="nc_participants">Účastníci</string>
+
+    <string name="nc_owner">Vlastník</string>
+    <string name="nc_moderator">Moderátor</string>
+    <string name="nc_user">Používateľ</string>
+    <string name="nc_guest">Hosť</string>
+    <string name="nc_following_link">Používateľ z verejného odkazu</string>
+
+</resources>
