@@ -22,6 +22,7 @@ package com.nextcloud.talk.models.json.participants;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 
 import org.parceler.Parcel;
 
@@ -34,11 +35,14 @@ public class Participant {
     @JsonField(name = "userId")
     String userId;
 
-    @JsonField(name = "type")
+    @JsonField(name = {"type", "participantType"}, typeConverter = EnumParticipantTypeConverter.class)
     ParticipantType type;
 
     @JsonField(name = "name")
     String name;
+
+    @JsonField(name = "displayName")
+    String displayName;
 
     @JsonField(name = "lastPing")
     long lastPing;

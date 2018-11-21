@@ -58,6 +58,8 @@ import com.yarolegovich.mp.MaterialPreferenceScreen;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -172,31 +174,21 @@ public class ConversationInfoController extends BaseController {
     private void handleParticipants(List<Participant> participants) {
         UserItem userItem;
         Participant participant;
-        EnumParticipantTypeConverter enumParticipantTypeConverter = new EnumParticipantTypeConverter();
 
         recyclerViewItems = new ArrayList<>();
-        HashMap<String, HashMap<String, Object>> conversationParticipants = conversation.getParticipants();
-        HashMap<String, Object> internalHashMap;
         UserItem ownUserItem = null;
+
         for (int i = 0; i < participants.size(); i++) {
             participant = participants.get(i);
-            internalHashMap = conversationParticipants.get(participant.getUserId());
-            participant.setInCall((long)internalHashMap.get("call") != 0);
-            if (!participant.getUserId().equals(conversationUser.getUserId())) {
-                participant.setName((String) internalHashMap.get("name"));
-            } else {
-                participant.setName(getResources().getString(R.string.nc_chat_you) + " (" + internalHashMap.get("name") + ")");
-            }
-            participant.setType(enumParticipantTypeConverter.getFromInt((int)(long) internalHashMap.get("type")));
-
             userItem = new UserItem(participant, conversationUser, null);
             userItem.setEnabled(!participant.getSessionId().equals("0"));
-            if (!participant.getUserId().equals(conversationUser.getUserId())) {
+            if (!TextUtils.isEmpty(participant.getUserId()) && !participant.getUserId().equals(conversationUser.getUserId())) {
                 ownUserItem = userItem;
             } else {
                 recyclerViewItems.add(userItem);
             }
         }
+
 
         if (ownUserItem != null) {
             recyclerViewItems.add(ownUserItem);

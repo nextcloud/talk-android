@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
@@ -32,6 +33,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
@@ -103,7 +105,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         if (header != null) {
             return R.layout.rv_item_contact;
         } else {
-            return R.layout.rv_item_participant;
+            return R.layout.rv_item_mention;
         }
     }
 
@@ -120,32 +122,41 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         flipView.flipSilently(adapter.isSelected(position));
 
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(),
+            FlexibleUtils.highlightText(holder.contactDisplayName, participant.getDisplayName(),
                     String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
         } else {
-            holder.contactDisplayName.setText(participant.getName());
+            holder.contactDisplayName.setText(participant.getDisplayName());
+
+            if (TextUtils.isEmpty(participant.getDisplayName()) &&
+                    (participant.getType().equals(Participant.ParticipantType.GUEST) || participant.getType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
+                holder.contactDisplayName.setText(NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest));
+            }
         }
 
         int avatarSize = Math.round(NextcloudTalkApplication
                 .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
 
         if (TextUtils.isEmpty(participant.getSource()) || participant.getSource().equals("users")) {
-            GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                    participant.getUserId(), R.dimen.avatar_size), new LazyHeaders.Builder()
-                    .setHeader("Accept", "image/*")
-                    .setHeader("User-Agent", ApiUtils.getUserAgent())
-                    .build());
 
+            if (participant.getType().equals(Participant.ParticipantType.GUEST) || participant.getType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK)) {
+                // TODO: Show generated avatar for guests
+            } else {
+                GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                        participant.getUserId(), R.dimen.avatar_size), new LazyHeaders.Builder()
+                        .setHeader("Accept", "image/*")
+                        .setHeader("User-Agent", ApiUtils.getUserAgent())
+                        .build());
 
-            GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .load(glideUrl)
-                    .centerInside()
-                    .override(avatarSize, avatarSize)
-                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                    .into(holder.avatarFlipView.getFrontImageView());
+                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .load(glideUrl)
+                        .centerInside()
+                        .override(avatarSize, avatarSize)
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                        .into(flipView.getFrontImageView());
+            }
         } else if (participant.getSource().equals("groups")) {
 
             GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
@@ -155,7 +166,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     .centerInside()
                     .override(avatarSize, avatarSize)
                     .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                    .into(holder.avatarFlipView.getFrontImageView());
+                    .into(flipView.getFrontImageView());
         }
 
         if (!isEnabled()) {
@@ -163,12 +174,52 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         } else {
             holder.itemView.setAlpha(1.0f);
         }
+
+        // TODO: show what the user is doing currently
+        long participantFlags = participant.getParticipantFlags();
+        if (participantFlags == 0) {
+        } else if (participantFlags == 1) {
+            // do nothing, just in call
+        } else if (participantFlags == 2) {
+            // with audio
+        } else if (participantFlags == 4) {
+            // with video
+        } else if (participantFlags == 7) {
+            // video and audio
+        }
+
+        String userType = "";
+
+        if (header == null) {
+            switch (new EnumParticipantTypeConverter().convertToInt(participant.getType())) {
+                case 1:
+                    userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_owner);
+                    break;
+                case 2:
+                    userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_moderator);
+                    break;
+                case 3:
+                    userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_user);
+                    break;
+                case 4:
+                    userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest);
+                    break;
+                case 5:
+                    userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_following_link);
+                    break;
+                default:
+                    // do nothing
+            }
+
+            holder.contactMentionId.setText(userType);
+            holder.contactMentionId.setTextColor(NextcloudTalkApplication.getSharedApplication().getColor(R.color.colorPrimary));
+        }
     }
 
     @Override
     public boolean filter(String constraint) {
-        return participant.getName() != null &&
-                StringUtils.containsIgnoreCase(participant.getName().trim(), constraint);
+        return participant.getDisplayName() != null &&
+                StringUtils.containsIgnoreCase(participant.getDisplayName().trim(), constraint);
     }
 
     @Override

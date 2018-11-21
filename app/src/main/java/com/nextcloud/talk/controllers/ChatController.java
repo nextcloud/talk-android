@@ -411,7 +411,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         InputFilter[] filters = new InputFilter[1];
         filters[0] = new InputFilter.LengthFilter(1000);
-        messageInputView.getInputEditText() .setFilters(filters);
+        messageInputView.getInputEditText().setFilters(filters);
 
         messageInputView.getInputEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -695,16 +695,22 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                         @Override
                         public void onError(Throwable e) {
-                            if (e instanceof HttpException && ((HttpException) e).code() == 201) {
-                                if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage.toString())) {
-                                    myFirstMessage = message;
-                                }
+                            if (e instanceof HttpException) {
+                                int code = ((HttpException) e).code();
+                                if (Integer.toString(code).startsWith("2")) {
+                                    if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage.toString())) {
+                                        myFirstMessage = message;
+                                    }
 
-                                if (popupBubble != null && popupBubble.isShown()) {
-                                    popupBubble.hide();
-                                }
+                                    if (popupBubble != null && popupBubble.isShown()) {
+                                        popupBubble.hide();
+                                    }
 
-                                messagesListView.smoothScrollToPosition(0);
+                                    messagesListView.smoothScrollToPosition(0);
+                                } else {
+                                    sendMessage(message, attempt + 1);
+
+                                }
                             } else {
                                 sendMessage(message, attempt + 1);
                             }
