@@ -523,7 +523,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     for (Sharee sharee : shareeHashSet) {
                                         if (!sharee.getValue().getShareWith().equals(currentUser.getUserId())) {
                                             participant = new Participant();
-                                            participant.setName(sharee.getLabel());
+                                            participant.setDisplayName(sharee.getLabel());
                                             String headerTitle;
 
                                             headerTitle = sharee.getLabel().substring(0, 1).toUpperCase();
@@ -554,14 +554,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     for (AutocompleteUser autocompleteUser : autocompleteUsersHashSet) {
                                         if (!autocompleteUser.getId().equals(currentUser.getUserId())) {
                                             participant = new Participant();
-                                            participant.setName(autocompleteUser.getLabel());
                                             participant.setUserId(autocompleteUser.getId());
+                                            participant.setDisplayName(autocompleteUser.getLabel());
                                             participant.setSource(autocompleteUser.getSource());
 
                                             String headerTitle;
 
                                             if (!autocompleteUser.getSource().equals("groups")) {
-                                                headerTitle = participant.getName().substring(0, 1).toUpperCase();
+                                                headerTitle = participant.getDisplayName().substring(0, 1).toUpperCase();
                                             } else {
                                                 headerTitle = getResources().getString(R.string.nc_groups);
                                             }
@@ -572,7 +572,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                                 userHeaderItems.put(headerTitle, genericTextHeaderItem);
                                             }
 
-                                            participant.setUserId(participant.getUserId());
 
                                             UserItem newContactItem = new UserItem(participant, currentUser,
                                                     userHeaderItems.get(headerTitle));
@@ -611,13 +610,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
 
                                 if (o1 instanceof UserItem) {
-                                    firstName = ((UserItem) o1).getModel().getName();
+                                    firstName = ((UserItem) o1).getModel().getDisplayName();
                                 } else {
                                     firstName = ((GenericTextHeaderItem) o1).getModel();
                                 }
 
                                 if (o2 instanceof UserItem) {
-                                    secondName = ((UserItem) o2).getModel().getName();
+                                    secondName = ((UserItem) o2).getModel().getDisplayName();
                                 } else {
                                     secondName = ((GenericTextHeaderItem) o2).getModel();
                                 }

@@ -21,6 +21,7 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -139,7 +140,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         if (TextUtils.isEmpty(participant.getSource()) || participant.getSource().equals("users")) {
 
-            if (participant.getType().equals(Participant.ParticipantType.GUEST) || participant.getType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK)) {
+            if (Participant.ParticipantType.GUEST.equals(participant.getType()) ||
+                    Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participant.getType())) {
                 // TODO: Show generated avatar for guests
             } else {
                 GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
@@ -157,7 +159,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                         .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                         .into(flipView.getFrontImageView());
             }
-        } else if (participant.getSource().equals("groups")) {
+        } else if ("groups".equals(participant.getSource())) {
 
             GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
                     .asBitmap()
