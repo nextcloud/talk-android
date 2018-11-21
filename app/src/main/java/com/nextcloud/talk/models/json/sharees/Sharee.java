@@ -31,6 +31,9 @@ import lombok.Data;
 @Data
 @JsonObject
 public class Sharee {
+    @JsonField(name = "id")
+    String id;
+
     @JsonField(name = "value")
     Value value;
 
