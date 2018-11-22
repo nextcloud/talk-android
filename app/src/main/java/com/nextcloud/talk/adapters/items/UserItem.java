@@ -20,9 +20,13 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.media.Image;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -106,7 +110,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         if (header != null) {
             return R.layout.rv_item_contact;
         } else {
-            return R.layout.rv_item_mention;
+            return R.layout.rv_item_conversation_info_participant;
         }
     }
 
@@ -177,17 +181,38 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             holder.itemView.setAlpha(1.0f);
         }
 
-        // TODO: show what the user is doing currently
-        long participantFlags = participant.getParticipantFlags();
-        if (participantFlags == 0) {
-        } else if (participantFlags == 1) {
-            // do nothing, just in call
-        } else if (participantFlags == 2) {
-            // with audio
-        } else if (participantFlags == 4) {
-            // with video
-        } else if (participantFlags == 7) {
-            // video and audio
+        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+
+        if (header == null) {
+            long participantFlags = participant.getParticipantFlags();
+            if (participantFlags == 0) {
+                holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
+                holder.videoCallImageView.setVisibility(View.GONE);
+            } else if (participantFlags == 1) {
+                holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
+                holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                holder.videoCallImageView.setVisibility(View.GONE);
+            } else if (participantFlags == 3) {
+                // with audio
+                holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_voice_bubble));
+                holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                holder.videoCallImageView.setVisibility(View.GONE);
+            } else if (participantFlags == 5) {
+                // with video
+                holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
+                holder.videoCallImageView.setBackground(resources.getDrawable(R.drawable.shape_video_bubble));
+                holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                holder.videoCallImageView.setVisibility(View.VISIBLE);
+            } else if (participantFlags == 7) {
+                // video and audio
+                holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_voice_bubble));
+                holder.videoCallImageView.setBackground(resources.getDrawable(R.drawable.shape_video_bubble));
+                holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                holder.videoCallImageView.setVisibility(View.VISIBLE);
+            } else {
+                holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
+                holder.videoCallImageView.setVisibility(View.GONE);
+            }
         }
 
         String userType = "";
@@ -244,6 +269,12 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         @Nullable
         @BindView(R.id.secondary_text)
         public TextView contactMentionId;
+        @Nullable
+        @BindView(R.id.voiceOrSimpleCallImageView)
+        ImageView voiceOrSimpleCallImageView;
+        @Nullable
+        @BindView(R.id.videoCallImageView)
+        ImageView videoCallImageView;
 
         /**
          * Default constructor.
