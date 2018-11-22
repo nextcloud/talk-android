@@ -135,7 +135,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         OneTimeWorkRequest capabilitiesUpdateWork = new OneTimeWorkRequest.Builder(CapabilitiesWorker.class).build();
         OneTimeWorkRequest signalingSettingsWork = new OneTimeWorkRequest.Builder(SignalingSettingsJob.class).build();
 
-        WorkManager.initialize(getApplicationContext(), new Configuration.Builder().build());
+        //WorkManager.initialize(getApplicationContext(), new Configuration.Builder().build());
         WorkManager.getInstance().enqueue(pushRegistrationWork);
         WorkManager.getInstance().enqueue(accountRemovalWork);
         WorkManager.getInstance().enqueue(capabilitiesUpdateWork);
