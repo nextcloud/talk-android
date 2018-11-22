@@ -20,16 +20,12 @@
 
 package com.nextcloud.talk.adapters.items;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.media.Image;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
@@ -239,7 +235,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
 
             holder.contactMentionId.setText(userType);
-            holder.contactMentionId.setTextColor(NextcloudTalkApplication.getSharedApplication().getColor(R.color.colorPrimary));
+            holder.contactMentionId.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.colorPrimary));
         }
     }
 
