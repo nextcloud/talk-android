@@ -29,7 +29,6 @@
                 android:orientation="vertical">
 
     <com.nextcloud.talk.utils.MagicFlipView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/avatar_flip_view"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
