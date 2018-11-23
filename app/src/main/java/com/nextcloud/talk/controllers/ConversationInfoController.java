@@ -151,8 +151,16 @@ public class ConversationInfoController extends BaseController {
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         materialPreferenceScreen.setStorageModule(new DatabaseStorageModule(conversationUser, conversationToken));
-        if (conversation == null) {
+        if (adapter == null) {
             fetchRoomInfo();
+        } else {
+            loadConversationAvatar();
+            materialPreferenceScreen.setVisibility(View.VISIBLE);
+            nameCategoryView.setVisibility(View.VISIBLE);
+            participantsListCategory.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            conversationDisplayName.setText(conversation.getDisplayName());
+            setupAdapter();
         }
     }
 
@@ -161,13 +169,10 @@ public class ConversationInfoController extends BaseController {
             adapter = new FlexibleAdapter<>(recyclerViewItems, getActivity(), true);
         }
 
-
-
         SmoothScrollLinearLayoutManager layoutManager =
                 new SmoothScrollLinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setAdapter(adapter);
     }
 
