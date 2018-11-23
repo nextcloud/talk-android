@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -20,24 +19,27 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/conversation_voice_call"
         android:icon="@drawable/ic_call_white_24dp"
+        android:orderInCategory="0"
         android:title="@string/nc_conversation_menu_voice_call"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom|withText" />
 
     <item
         android:id="@+id/conversation_video_call"
         android:icon="@drawable/ic_videocam_white_24px"
+        android:orderInCategory="1"
         android:title="@string/nc_conversation_menu_video_call"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom|withText" />
 
     <item
         android:id="@+id/nc_conversation_info"
         android:icon="@drawable/ic_info_black_24dp"
+        android:orderInCategory="2"
         android:title="@string/nc_conversation_menu_conversation_info"
-        app:showAsAction="ifRoom"
-        android:visible="false"/>
+        android:visible="false"
+        app:showAsAction="ifRoom|withText" />
 </menu>
