@@ -23,6 +23,7 @@ package com.nextcloud.talk.models.json.participants;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
+import com.nextcloud.talk.models.json.converters.ParticipantFlagsConverter;
 
 import org.parceler.Parcel;
 
@@ -56,8 +57,8 @@ public class Participant {
     @JsonField(name = "inCall")
     boolean inCall;
 
-    @JsonField(name = "participantFlags")
-    long participantFlags;
+    @JsonField(name = "participantFlags", typeConverter = ParticipantFlagsConverter.class)
+    ParticipantFlags participantFlags;
 
     String source;
 
@@ -68,5 +69,41 @@ public class Participant {
         USER,
         GUEST,
         USER_FOLLOWING_LINK
+    }
+
+    public enum ParticipantFlags {
+        NOT_IN_CALL (0),
+        IN_CALL (1),
+        IN_CALL_WITH_AUDIO (3),
+        IN_CALL_WITH_VIDEO (5),
+        IN_CALL_WITH_AUDIO_AND_VIDEO (7);
+
+        private int value;
+
+        ParticipantFlags(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public static ParticipantFlags fromValue(int value) {
+            switch (value) {
+                case 0:
+                    return NOT_IN_CALL;
+                case 1:
+                    return IN_CALL;
+                case 3:
+                    return IN_CALL_WITH_AUDIO;
+                case 5:
+                    return IN_CALL_WITH_VIDEO;
+                case 7:
+                    return IN_CALL_WITH_AUDIO_AND_VIDEO;
+                default:
+                    return NOT_IN_CALL;
+            }
+        }
+
     }
 }

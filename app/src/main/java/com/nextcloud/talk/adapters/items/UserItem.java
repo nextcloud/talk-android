@@ -180,34 +180,37 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
 
         if (header == null) {
-            long participantFlags = participant.getParticipantFlags();
-            if (participantFlags == 0) {
-                holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
-                holder.videoCallImageView.setVisibility(View.GONE);
-            } else if (participantFlags == 1) {
-                holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
-                holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
-                holder.videoCallImageView.setVisibility(View.GONE);
-            } else if (participantFlags == 3) {
-                // with audio
-                holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_voice_bubble));
-                holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
-                holder.videoCallImageView.setVisibility(View.GONE);
-            } else if (participantFlags == 5) {
-                // with video
-                holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
-                holder.videoCallImageView.setBackground(resources.getDrawable(R.drawable.shape_video_bubble));
-                holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
-                holder.videoCallImageView.setVisibility(View.VISIBLE);
-            } else if (participantFlags == 7) {
-                // video and audio
-                holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_voice_bubble));
-                holder.videoCallImageView.setBackground(resources.getDrawable(R.drawable.shape_video_bubble));
-                holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
-                holder.videoCallImageView.setVisibility(View.VISIBLE);
-            } else {
-                holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
-                holder.videoCallImageView.setVisibility(View.GONE);
+            Participant.ParticipantFlags participantFlags = participant.getParticipantFlags();
+            switch (participantFlags) {
+                case NOT_IN_CALL:
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
+                    holder.videoCallImageView.setVisibility(View.GONE);
+                    break;
+                case IN_CALL:
+                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                    holder.videoCallImageView.setVisibility(View.GONE);
+                    break;
+                case IN_CALL_WITH_AUDIO:
+                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_voice_bubble));
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                    holder.videoCallImageView.setVisibility(View.GONE);
+                    break;
+                case IN_CALL_WITH_VIDEO:
+                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
+                    holder.videoCallImageView.setBackground(resources.getDrawable(R.drawable.shape_video_bubble));
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                    holder.videoCallImageView.setVisibility(View.VISIBLE);
+                    break;
+                case IN_CALL_WITH_AUDIO_AND_VIDEO:
+                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_voice_bubble));
+                    holder.videoCallImageView.setBackground(resources.getDrawable(R.drawable.shape_video_bubble));
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                    holder.videoCallImageView.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
+                    holder.videoCallImageView.setVisibility(View.GONE);
             }
         }
 
