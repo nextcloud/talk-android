@@ -264,6 +264,8 @@ public class ConversationInfoController extends BaseController {
                             progressBar.setVisibility(View.GONE);
                         }
 
+                        nameCategoryView.setVisibility(View.VISIBLE);
+                        conversationDisplayName.setText(conversation.getDisplayName());
                         loadConversationAvatar();
 
                         if (conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
@@ -297,8 +299,6 @@ public class ConversationInfoController extends BaseController {
                         }
 
                         materialPreferenceScreen.setVisibility(View.VISIBLE);
-                        nameCategoryView.setVisibility(View.VISIBLE);
-                        conversationDisplayName.setText(conversation.getDisplayName());
                     }
 
                     @Override
