@@ -50,7 +50,6 @@ import javax.inject.Singleton;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
-import androidx.work.Configuration;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;

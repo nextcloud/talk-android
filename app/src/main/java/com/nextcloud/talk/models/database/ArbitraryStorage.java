@@ -26,7 +26,6 @@ import java.io.Serializable;
 
 import io.requery.Entity;
 import io.requery.Key;
-import io.requery.Nullable;
 import io.requery.Persistable;
 
 @Entity
