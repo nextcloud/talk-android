@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -22,11 +21,11 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/item_height"
-                android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_height"
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/frame_layout"
@@ -42,7 +41,7 @@
             app:animationDuration="170"
             app:checked="false"
             app:enableInitialAnimation="false"
-            app:rearBackgroundColor="@color/colorPrimary"/>
+            app:rearBackgroundColor="@color/colorPrimary" />
 
     </FrameLayout>
 
@@ -51,8 +50,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginEnd="@dimen/margin_between_elements"
         android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginEnd="@dimen/margin_between_elements"
         android:layout_toEndOf="@id/frame_layout"
         android:orientation="vertical">
 
@@ -63,7 +62,7 @@
             android:ellipsize="middle"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceListItem"
-            tools:text="Call item text"/>
+            tools:text="Call item text" />
 
         <TextView
             android:id="@+id/secondary_text"
@@ -72,7 +71,7 @@
             android:ellipsize="middle"
             android:singleLine="true"
             android:textColor="?android:attr/textColorSecondary"
-            tools:text="A week ago"/>
+            tools:text="A week ago" />
 
     </LinearLayout>
 

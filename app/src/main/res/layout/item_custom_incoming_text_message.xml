@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -19,22 +18,21 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
     android:layout_marginLeft="16dp"
+    android:layout_marginTop="2dp"
     android:layout_marginRight="16dp"
-    android:layout_marginTop="2dp">
+    android:layout_marginBottom="2dp">
 
     <com.stfalcon.chatkit.utils.ShapeImageView
         android:id="@id/messageUserAvatar"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginEnd="8dp" />
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@id/bubble"
@@ -53,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
         <com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView
             android:id="@id/messageText"
@@ -62,7 +60,7 @@
             android:textIsSelectable="true"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
-            app:layout_wrapBefore="true"/>
+            app:layout_wrapBefore="true" />
 
 
         <TextView
@@ -71,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
-            app:layout_alignSelf="center"/>
+            app:layout_alignSelf="center" />
 
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>

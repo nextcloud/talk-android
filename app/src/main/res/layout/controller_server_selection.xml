@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -20,29 +19,29 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
-                android:fitsSystemWindows="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true">
 
     <ImageView
         android:id="@+id/image_logo"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="36dp"
         android:layout_marginTop="92dp"
+        android:layout_marginBottom="36dp"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/ic_logo"/>
+        app:srcCompat="@drawable/ic_logo" />
 
     <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
         android:id="@+id/text_field_boxes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/image_logo"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         app:errorColor="@android:color/white"
         app:helperText=" "
         app:labelText="@string/nc_server_url"
@@ -56,7 +55,7 @@
             android:imeOptions="actionDone"
             android:inputType="textUri"
             android:singleLine="true"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white" />
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
@@ -66,14 +65,14 @@
         android:layout_height="@dimen/small_item_height"
         android:layout_below="@id/text_field_boxes"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:indeterminate="true"
         android:indeterminateTint="@android:color/white"
         android:indeterminateTintMode="src_in"
         android:keepScreenOn="true"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/helper_text_view"
@@ -81,14 +80,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/progress_bar"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="56dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:lines="2"
         android:text="@string/nc_get_from_provider"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="@color/nc_light_blue_color"/>
+        android:textColor="@color/nc_light_blue_color" />
 
     <TextView
         android:id="@+id/cert_text_view"
@@ -96,13 +95,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/helper_text_view"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:lines="2"
         android:text="@string/nc_configure_cert_auth"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="@color/nc_light_blue_color"/>
+        android:textColor="@color/nc_light_blue_color" />
 
 </RelativeLayout>

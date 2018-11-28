@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -20,23 +19,23 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/relative_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
+    android:id="@+id/relative_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:orientation="vertical">
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/avatarImageView"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
 
     <TextView
         android:id="@+id/peer_nick_text_view"
@@ -44,21 +43,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:textColor="@android:color/white"/>
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@android:color/white" />
 
     <ImageView
         android:id="@+id/remote_audio_off"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_alignParentStart="true"
         android:layout_below="@id/peer_nick_text_view"
-        android:layout_marginEnd="8dp"
+        android:layout_alignParentStart="true"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/ic_mic_off_white_24px"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/remote_video_off"
@@ -68,6 +67,6 @@
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@id/remote_audio_off"
         android:src="@drawable/ic_videocam_off_white_24px"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
 </RelativeLayout>

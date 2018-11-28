@@ -40,15 +40,14 @@
             apc:mp_entry_values="@array/message_notification_levels_entry_values"
             apc:mp_key="message_notification_level"
             apc:mp_show_value="onBottom"
-            apc:mp_title="@string/nc_plain_old_messages">
-        </com.yarolegovich.mp.MaterialChoicePreference>
+            apc:mp_title="@string/nc_plain_old_messages"></com.yarolegovich.mp.MaterialChoicePreference>
 
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/conversation_info_mute_calls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            apc:mp_key="mute_calls"
             apc:mp_default_value="false"
+            apc:mp_key="mute_calls"
             apc:mp_summary="@string/nc_mute_calls_description"
             apc:mp_title="@string/nc_mute_calls" />
 

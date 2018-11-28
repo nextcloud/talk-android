@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -20,8 +19,8 @@
   -->
 
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/generic_rv_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,13 +31,13 @@
         android:layout_width="@dimen/item_height"
         android:layout_height="@dimen/item_height"
         android:layout_gravity="center"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:indeterminate="true"
         android:indeterminateTint="@color/colorPrimary"
-        android:indeterminateTintMode="src_in"/>
+        android:indeterminateTintMode="src_in" />
 
     <RelativeLayout
         android:id="@+id/emptyLayout"
@@ -51,7 +50,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/ic_logo_blue"/>
+            android:background="@drawable/ic_logo_blue" />
 
         <TextView
             android:id="@+id/sendHiTextView"
@@ -61,14 +60,15 @@
             android:layout_margin="8dp"
             android:text="@string/nc_conversations_empty"
             android:textAlignment="center"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
     </RelativeLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayoutView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:layout_behavior="com.nextcloud.talk.utils.FABAwareScrollingViewBehavior">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -78,13 +78,13 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:listitem="@layout/rv_item_conversation"/>
+                tools:listitem="@layout/rv_item_conversation" />
 
         </FrameLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/fast_scroller"/>
+    <include layout="@layout/fast_scroller" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
@@ -92,6 +92,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        app:srcCompat="@drawable/ic_add_white_24px"/>
+        app:srcCompat="@drawable/ic_add_white_24px" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

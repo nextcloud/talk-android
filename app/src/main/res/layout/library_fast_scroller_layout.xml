@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:tools="http://schemas.android.com/tools"
-       android:layout_width="wrap_content"
-       android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
 
     <View
         android:id="@+id/fast_scroller_bar"
         android:layout_width="7dp"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:background="@color/transparent"/>
+        android:background="@color/transparent" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
             android:textSize="38sp"
             android:visibility="gone"
             tools:text="A"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/fast_scroller_handle"
@@ -40,7 +40,7 @@
             android:alpha="0.5"
             android:contentDescription="@null"
             android:paddingStart="6dp"
-            android:src="@drawable/fast_scroller_handle"/>
+            android:src="@drawable/fast_scroller_handle" />
 
     </RelativeLayout>
 

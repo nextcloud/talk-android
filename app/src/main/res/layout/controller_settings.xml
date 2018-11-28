@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -20,10 +19,10 @@
   -->
 
 <com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                                              xmlns:apc="http://schemas.android.com/apk/res-auto"
-                                              android:id="@+id/settings_screen"
-                                              android:layout_width="match_parent"
-                                              android:layout_height="match_parent">
+    xmlns:apc="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settings_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
         android:id="@+id/message_view"
@@ -35,7 +34,7 @@
             android:id="@+id/message_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"/>
+            android:gravity="center" />
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
@@ -51,7 +50,7 @@
                 android:id="@+id/avatar_image"
                 android:layout_width="@dimen/avatar_size_big"
                 android:layout_height="@dimen/avatar_size_big"
-                android:layout_centerHorizontal="true"/>
+                android:layout_centerHorizontal="true" />
 
             <TextView
                 android:id="@+id/display_name_text"
@@ -59,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/avatar_image"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/margin_between_elements"/>
+                android:layout_marginTop="@dimen/margin_between_elements" />
 
             <TextView
                 android:id="@+id/base_url_text"
@@ -67,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/display_name_text"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="4dp"/>
+                android:layout_margin="4dp" />
 
 
             <com.yarolegovich.mp.MaterialStandardPreference
@@ -76,35 +75,35 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/base_url_text"
                 android:tag="switchAccountButton"
-                apc:mp_title="@string/nc_settings_switch_account"/>
+                apc:mp_title="@string/nc_settings_switch_account" />
 
             <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_reauthorize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/settings_switch"
-                apc:mp_title="@string/nc_settings_reauthorize"/>
+                apc:mp_title="@string/nc_settings_reauthorize" />
 
             <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_client_cert"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/settings_reauthorize"
-                apc:mp_title="@string/nc_client_cert_setup"/>
+                apc:mp_title="@string/nc_client_cert_setup" />
 
             <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_remove_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/settings_client_cert"
-                apc:mp_title="@string/nc_settings_remove_account"/>
+                apc:mp_title="@string/nc_settings_remove_account" />
 
             <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_add_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/settings_remove_account"
-                apc:mp_title="@string/nc_settings_add_account"/>
+                apc:mp_title="@string/nc_settings_add_account" />
 
         </RelativeLayout>
 
@@ -122,23 +121,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_call_ringtone_key"
-            apc:mp_title="@string/nc_settings_call_ringtone"/>
+            apc:mp_title="@string/nc_settings_call_ringtone" />
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_message_sound"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_message_ringtone_key"
-            apc:mp_title="@string/nc_settings_other_notifications_ringtone"/>
+            apc:mp_title="@string/nc_settings_other_notifications_ringtone" />
 
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/settings_always_vibrate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            apc:mp_default_value="true"
             apc:mp_key="@string/nc_settings_vibrate_key"
-            apc:mp_title="@string/nc_settings_vibrate"
             apc:mp_summary="@string/nc_settings_vibrate_desc"
-            apc:mp_default_value="true"/>
+            apc:mp_title="@string/nc_settings_vibrate" />
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
@@ -158,8 +157,7 @@
             apc:mp_entry_descriptions="@array/proxy_type_descriptions"
             apc:mp_key="@string/nc_settings_proxy_type_key"
             apc:mp_show_value="onRight"
-            apc:mp_title="@string/nc_settings_proxy_type_title">
-        </com.yarolegovich.mp.MaterialChoicePreference>
+            apc:mp_title="@string/nc_settings_proxy_type_title"></com.yarolegovich.mp.MaterialChoicePreference>
 
         <com.yarolegovich.mp.MaterialEditTextPreference
             android:id="@+id/settings_proxy_host_edit"
@@ -167,7 +165,7 @@
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_proxy_host_key"
             apc:mp_show_value="onRight"
-            apc:mp_title="@string/nc_settings_proxy_host_title"/>
+            apc:mp_title="@string/nc_settings_proxy_host_title" />
 
         <com.yarolegovich.mp.MaterialEditTextPreference
             android:id="@+id/settings_proxy_port_edit"
@@ -175,7 +173,7 @@
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_proxy_port_key"
             apc:mp_show_value="onRight"
-            apc:mp_title="@string/nc_settings_proxy_port_title"/>
+            apc:mp_title="@string/nc_settings_proxy_port_title" />
 
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/settings_proxy_use_credentials"
@@ -194,7 +192,7 @@
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_proxy_username_key"
             apc:mp_show_value="onRight"
-            apc:mp_title="@string/nc_username"/>
+            apc:mp_title="@string/nc_username" />
 
         <com.yarolegovich.mp.MaterialEditTextPreference
             android:id="@+id/settings_proxy_password_edit"
@@ -202,7 +200,7 @@
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_proxy_password_key"
             apc:mp_show_value="onRight"
-            apc:mp_title="@string/nc_password"/>
+            apc:mp_title="@string/nc_password" />
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
@@ -217,30 +215,27 @@
             android:id="@+id/settings_privacy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            apc:mp_title="@string/nc_privacy"/>
+            apc:mp_title="@string/nc_privacy" />
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_source_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            apc:mp_title="@string/nc_get_source_code">
-        </com.yarolegovich.mp.MaterialStandardPreference>
+            apc:mp_title="@string/nc_get_source_code"></com.yarolegovich.mp.MaterialStandardPreference>
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_licence"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_summary="@string/nc_license_summary"
-            apc:mp_title="@string/nc_license_title">
-        </com.yarolegovich.mp.MaterialStandardPreference>
+            apc:mp_title="@string/nc_license_title"></com.yarolegovich.mp.MaterialStandardPreference>
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_version"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_summary="v0.1"
-            apc:mp_title="@string/nc_app_name">
-        </com.yarolegovich.mp.MaterialStandardPreference>
+            apc:mp_title="@string/nc_app_name"></com.yarolegovich.mp.MaterialStandardPreference>
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
