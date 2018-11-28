@@ -43,6 +43,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
@@ -125,6 +126,9 @@ public class ConversationsListController extends BaseController implements Searc
 
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
+
+    @BindView(R.id.floatingActionButton)
+    FloatingActionButton floatingActionButton;
 
     private UserEntity currentUser;
     private Disposable roomsQueryDisposable;
@@ -379,11 +383,9 @@ public class ConversationsListController extends BaseController implements Searc
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
-        emptyLayoutView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: show new conversation screen
-            }
+        emptyLayoutView.setOnClickListener(v -> showNewConversationsScreen());
+        floatingActionButton.setOnClickListener(v -> {
+            showNewConversationsScreen();
         });
 
         fastScroller.addOnScrollStateChangeListener(this);
@@ -401,6 +403,14 @@ public class ConversationsListController extends BaseController implements Searc
             }
             return displayName;
         });
+    }
+
+    private void showNewConversationsScreen() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
+        getRouter().pushController((RouterTransaction.with(new ContactsController(bundle))
+                .pushChangeHandler(new HorizontalChangeHandler())
+                .popChangeHandler(new HorizontalChangeHandler())));
     }
 
     private void dispose(@Nullable Disposable disposable) {
