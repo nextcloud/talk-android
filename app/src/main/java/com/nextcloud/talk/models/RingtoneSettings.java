@@ -36,7 +36,8 @@ import lombok.Data;
 @Data
 public class RingtoneSettings {
     @JsonField(name = "ringtoneUri", typeConverter = UriTypeConverter.class)
-    @Nullable Uri ringtoneUri;
+    @Nullable
+    Uri ringtoneUri;
     @JsonField(name = "ringtoneName")
     String ringtoneName;
 }

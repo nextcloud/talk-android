@@ -176,9 +176,6 @@ public class ConversationsListController extends BaseController implements Searc
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
         eventBus.register(this);
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(false);
-        }
 
         currentUser = userUtils.getCurrentUser();
 
@@ -214,47 +211,20 @@ public class ConversationsListController extends BaseController implements Searc
                 searchView.setOnQueryTextListener(this);
             }
         }
-
-        final View mSearchEditFrame = searchView
-                .findViewById(androidx.appcompat.R.id.search_edit_frame);
-
-        BottomNavigationView bottomNavigationView = getParentController().getView().findViewById(R.id.navigation);
-
-        Handler handler = new Handler();
-        ViewTreeObserver vto = mSearchEditFrame.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            int oldVisibility = -1;
-
-            @Override
-            public void onGlobalLayout() {
-
-                int currentVisibility = mSearchEditFrame.getVisibility();
-
-                if (currentVisibility != oldVisibility) {
-                    if (currentVisibility == View.VISIBLE) {
-                        handler.postDelayed(() -> bottomNavigationView.setVisibility(View.GONE), 100);
-                    } else {
-                        handler.postDelayed(() -> {
-                            bottomNavigationView.setVisibility(View.VISIBLE);
-                            searchItem.setVisible(callItems.size() > 0);
-                        }, 500);
-                    }
-
-                    oldVisibility = currentVisibility;
-                }
-
-            }
-        });
-
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_new_conversation:
+            /*case R.id.action_new_conversation:
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(CallMenuController.MenuType.NEW_CONVERSATION));
                 prepareAndShowBottomSheetWithBundle(bundle, true);
+                return true;*/
+            case R.id.action_settings:
+                getRouter().pushController((RouterTransaction.with(new SettingsController())
+                        .pushChangeHandler(new VerticalChangeHandler())
+                        .popChangeHandler(new VerticalChangeHandler())));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -412,10 +382,7 @@ public class ConversationsListController extends BaseController implements Searc
         emptyLayoutView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getParentController() != null && getParentController().getView() != null) {
-                    ((BottomNavigationView) getParentController().getView().findViewById(R.id.navigation))
-                            .setSelectedItemId(R.id.navigation_contacts);
-                }
+                // TODO: show new conversation screen
             }
         });
 
@@ -583,7 +550,7 @@ public class ConversationsListController extends BaseController implements Searc
 
                 if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
                     bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversation.getDisplayName());
-                    getParentController().getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
+                    getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler())));
                 } else {

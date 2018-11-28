@@ -73,7 +73,7 @@ public class Conversation {
     public int unreadMessages;
     @JsonField(name = "unreadMention")
     public boolean unreadMention;
-    @JsonField(name =  "lastMessage")
+    @JsonField(name = "lastMessage")
     public ChatMessage lastMessage;
     @JsonField(name = "objectType")
     String objectType;

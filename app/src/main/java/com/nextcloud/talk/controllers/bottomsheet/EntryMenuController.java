@@ -131,7 +131,7 @@ public class EntryMenuController extends BaseController {
             bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, editText.getText().toString());
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
-            if(originalBundle.containsKey(BundleKeys.KEY_SPREED_CAPABILITIES)) {
+            if (originalBundle.containsKey(BundleKeys.KEY_SPREED_CAPABILITIES)) {
                 bundle.putParcelable(BundleKeys.KEY_SPREED_CAPABILITIES, originalBundle.getParcelable(BundleKeys.KEY_SPREED_CAPABILITIES));
             }
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))

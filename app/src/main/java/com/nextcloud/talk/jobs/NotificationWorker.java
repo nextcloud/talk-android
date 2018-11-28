@@ -265,7 +265,7 @@ public class NotificationWorker extends Worker {
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
                 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
-        NotificationManagerCompat notificationManager =  NotificationManagerCompat.from(context);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
 
         CRC32 crc32 = new CRC32();

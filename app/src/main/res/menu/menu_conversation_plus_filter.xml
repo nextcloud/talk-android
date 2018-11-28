@@ -31,10 +31,10 @@
 	      app:actionViewClass="androidx.appcompat.widget.SearchView"
         />
 
-    <item android:id="@+id/action_new_conversation"
-          android:title="@string/nc_new_conversation"
-          android:icon="@drawable/ic_add_white_24px"
-          app:showAsAction="ifRoom"/>
+	<item android:id="@+id/action_settings"
+		android:title="@string/nc_bottom_navigation_title_settings"
+		android:icon="@drawable/ic_settings_white_24dp"
+		app:showAsAction="ifRoom"/>
 
 	<item
 		android:id="@+id/contacts_selection_done"

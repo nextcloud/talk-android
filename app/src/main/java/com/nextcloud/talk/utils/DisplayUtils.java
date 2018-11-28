@@ -110,17 +110,17 @@ public class DisplayUtils {
             int end = text.indexOf(m.group()) + m.group().length();
             spannable.setSpan(new ForegroundColorSpan(color), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.setSpan(new AbsoluteSizeSpan(textSize) , start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new AbsoluteSizeSpan(textSize), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         return spannable;
     }
 
     public static Drawable getMessageSelector(@ColorInt int normalColor, @ColorInt int selectedColor,
-                                        @ColorInt int pressedColor, @DrawableRes int shape) {
+                                              @ColorInt int pressedColor, @DrawableRes int shape) {
 
         Drawable vectorDrawable = ContextCompat.getDrawable(NextcloudTalkApplication.getSharedApplication()
-                .getApplicationContext(),
+                        .getApplicationContext(),
                 shape);
         Drawable drawable = DrawableCompat.wrap(vectorDrawable).mutate();
         DrawableCompat.setTintList(

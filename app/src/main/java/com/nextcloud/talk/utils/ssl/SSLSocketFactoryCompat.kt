@@ -109,8 +109,11 @@ class SSLSocketFactoryCompat(keyManager: KeyManager?,
         }
     }
 
-    override fun getDefaultCipherSuites(): Array<String>? = cipherSuites ?: delegate.defaultCipherSuites
-    override fun getSupportedCipherSuites(): Array<String>? = cipherSuites ?: delegate.supportedCipherSuites
+    override fun getDefaultCipherSuites(): Array<String>? = cipherSuites
+            ?: delegate.defaultCipherSuites
+
+    override fun getSupportedCipherSuites(): Array<String>? = cipherSuites
+            ?: delegate.supportedCipherSuites
 
     override fun createSocket(s: Socket, host: String, port: Int, autoClose: Boolean): Socket {
         val ssl = delegate.createSocket(s, host, port, autoClose)

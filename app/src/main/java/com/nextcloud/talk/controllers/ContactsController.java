@@ -198,10 +198,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             toggleNewCallHeaderVisibility(!isPublicCall);
 
             checkAndHandleDoneMenuItem();
-
-            if (getActionBar() != null) {
-                getActionBar().setDisplayHomeAsUpEnabled(true);
-            }
         }
 
     }
@@ -352,46 +348,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 searchView.setOnQueryTextListener(this);
             }
         }
-
-        final View mSearchEditFrame = searchView
-                .findViewById(androidx.appcompat.R.id.search_edit_frame);
-
-        BottomNavigationView bottomNavigationView = null;
-        if (getParentController() != null && getParentController().getView() != null) {
-            bottomNavigationView = getParentController().getView().findViewById(R.id.navigation);
-        }
-
-        Handler handler = new Handler();
-        ViewTreeObserver vto = mSearchEditFrame.getViewTreeObserver();
-        BottomNavigationView finalBottomNavigationView = bottomNavigationView;
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            int oldVisibility = -1;
-
-            @Override
-            public void onGlobalLayout() {
-
-                int currentVisibility = mSearchEditFrame.getVisibility();
-
-                if (currentVisibility != oldVisibility) {
-                    if (currentVisibility == View.VISIBLE) {
-                        if (finalBottomNavigationView != null) {
-                            handler.postDelayed(() -> finalBottomNavigationView.setVisibility(View.GONE), 100);
-                        }
-                    } else {
-                        handler.postDelayed(() -> {
-                            if (finalBottomNavigationView != null) {
-                                finalBottomNavigationView.setVisibility(View.VISIBLE);
-                            }
-                            searchItem.setVisible(contactItems.size() > 0);
-                        }, 500);
-                    }
-
-                    oldVisibility = currentVisibility;
-                }
-
-            }
-        });
-
     }
 
     @Override
@@ -414,7 +370,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
         searchItem = menu.findItem(R.id.action_search);
         doneMenuItem = menu.findItem(R.id.contacts_selection_done);
-        menu.findItem(R.id.action_new_conversation).setVisible(false);
+        menu.findItem(R.id.action_settings).setVisible(false);
 
         initSearchView();
     }
@@ -621,7 +577,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     secondName = ((GenericTextHeaderItem) o2).getModel();
                                 }
 
-                                if (o1 instanceof  UserItem && o2 instanceof UserItem) {
+                                if (o1 instanceof UserItem && o2 instanceof UserItem) {
                                     if ("groups".equals(((UserItem) o1).getModel().getSource()) && "groups".equals(((UserItem) o2).getModel().getSource())) {
                                         return firstName.compareToIgnoreCase(secondName);
                                     } else if ("groups".equals(((UserItem) o1).getModel().getSource())) {
@@ -847,12 +803,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (bottomSheet == null) {
             bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
         }
-
-        bottomSheet.setOnCancelListener(dialog -> {
-            if (getActionBar() != null) {
-                getActionBar().setDisplayHomeAsUpEnabled(true);
-            }
-        });
 
         bottomSheet.setOnShowListener(dialog -> eventBus.post(new BottomSheetLockEvent(false, 0,
                 false, false)));

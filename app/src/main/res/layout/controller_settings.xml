@@ -23,8 +23,7 @@
                                               xmlns:apc="http://schemas.android.com/apk/res-auto"
                                               android:id="@+id/settings_screen"
                                               android:layout_width="match_parent"
-                                              android:layout_height="match_parent"
-                                              android:layout_marginBottom="48dp">
+                                              android:layout_height="match_parent">
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
         android:id="@+id/message_view"

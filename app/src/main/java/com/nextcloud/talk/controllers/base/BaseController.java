@@ -3,13 +3,13 @@
  *
  * @author BlueLine Labs, Inc.
  * Copyright (C) 2016 BlueLine Labs, Inc.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,12 +20,13 @@ package com.nextcloud.talk.controllers.base;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.AccountVerificationController;
-import com.nextcloud.talk.controllers.MagicBottomNavigationController;
+import com.nextcloud.talk.controllers.ConversationsListController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
 import com.nextcloud.talk.controllers.SwitchAccountController;
 import com.nextcloud.talk.controllers.WebViewLoginController;
@@ -55,6 +56,17 @@ public abstract class BaseController extends ButterKnifeController {
     protected BaseController(Bundle args) {
         super(args);
         cleanTempCertPreference();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getRouter().popCurrentController();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void cleanTempCertPreference() {
@@ -92,10 +104,9 @@ public abstract class BaseController extends ButterKnifeController {
     @Override
     protected void onAttach(@NonNull View view) {
         setTitle();
-        if (!MagicBottomNavigationController.class.getName().equals(getClass().getName()) && getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(false);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(getRouter().getBackstackSize() > 1);
         }
-
         super.onAttach(view);
     }
 

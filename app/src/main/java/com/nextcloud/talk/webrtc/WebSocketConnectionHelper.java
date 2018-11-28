@@ -67,7 +67,7 @@ public class WebSocketConnectionHelper {
         }
 
         MagicWebSocketInstance magicWebSocketInstance;
-        if (magicWebSocketInstanceMap.containsKey(userEntity.getId())  && (magicWebSocketInstance = magicWebSocketInstanceMap.get(userEntity.getId())) != null && !magicWebSocketInstance.isPermanentlyClosed()) {
+        if (magicWebSocketInstanceMap.containsKey(userEntity.getId()) && (magicWebSocketInstance = magicWebSocketInstanceMap.get(userEntity.getId())) != null && !magicWebSocketInstance.isPermanentlyClosed()) {
             return magicWebSocketInstance;
         } else {
             magicWebSocketInstance = new MagicWebSocketInstance(userEntity, generatedURL, webSocketTicket);
@@ -85,6 +85,7 @@ public class WebSocketConnectionHelper {
             }
         }
     }
+
     HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity userEntity, String ticket) {
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");

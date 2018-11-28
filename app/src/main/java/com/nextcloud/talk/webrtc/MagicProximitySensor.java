@@ -166,11 +166,11 @@ public class MagicProximitySensor implements SensorEventListener {
         }
         StringBuilder info = new StringBuilder("Proximity sensor: ");
         info.append("name=").append(proximitySensor.getName())
-            .append(", vendor: ").append(proximitySensor.getVendor())
-            .append(", power: ").append(proximitySensor.getPower())
-            .append(", resolution: ").append(proximitySensor.getResolution())
-            .append(", max range: ").append(proximitySensor.getMaximumRange())
-            .append(", min delay: ").append(proximitySensor.getMinDelay());
+                .append(", vendor: ").append(proximitySensor.getVendor())
+                .append(", power: ").append(proximitySensor.getPower())
+                .append(", resolution: ").append(proximitySensor.getResolution())
+                .append(", max range: ").append(proximitySensor.getMaximumRange())
+                .append(", min delay: ").append(proximitySensor.getMinDelay());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             // Added in API level 20.
             info.append(", type: ").append(proximitySensor.getStringType());
@@ -178,8 +178,8 @@ public class MagicProximitySensor implements SensorEventListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Added in API level 21.
             info.append(", max delay: ").append(proximitySensor.getMaxDelay())
-                .append(", reporting mode: ").append(proximitySensor.getReportingMode())
-                .append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor());
+                    .append(", reporting mode: ").append(proximitySensor.getReportingMode())
+                    .append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor());
         }
         Log.d(TAG, info.toString());
     }

@@ -209,14 +209,6 @@ public class ConversationInfoController extends BaseController {
     }
 
     @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    @Override
     protected String getTitle() {
         return getResources().getString(R.string.nc_conversation_menu_conversation_info);
     }
@@ -248,6 +240,7 @@ public class ConversationInfoController extends BaseController {
                 });
 
     }
+
     private void fetchRoomInfo() {
         ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser.getBaseUrl(), conversationToken))
                 .subscribeOn(Schedulers.newThread())

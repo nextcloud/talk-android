@@ -476,9 +476,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomId);

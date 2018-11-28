@@ -141,7 +141,7 @@ public class OperationsMenuController extends BaseController {
         if (args.containsKey(BundleKeys.KEY_INVITED_GROUP)) {
             this.invitedGroups = args.getStringArrayList(BundleKeys.KEY_INVITED_GROUP);
         }
-        
+
         if (args.containsKey(BundleKeys.KEY_CONVERSATION_TYPE)) {
             this.conversationType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_CONVERSATION_TYPE));
         }
@@ -168,7 +168,7 @@ public class OperationsMenuController extends BaseController {
         currentUser = userUtils.getCurrentUser();
         OperationsObserver operationsObserver = new OperationsObserver();
 
-        if (!TextUtils.isEmpty(callUrl) ) {
+        if (!TextUtils.isEmpty(callUrl)) {
             conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1, callUrl.length());
             if (callUrl.contains("/index.php")) {
                 baseUrl = callUrl.substring(0, callUrl.indexOf("/index.php"));
@@ -274,7 +274,7 @@ public class OperationsMenuController extends BaseController {
                     RetrofitBucket retrofitBucket;
                     boolean isGroupCallWorkaround = false;
                     String invite = null;
-                    
+
                     if (invitedGroups.size() > 0) {
                         invite = invitedGroups.get(0);
                     }
@@ -289,7 +289,7 @@ public class OperationsMenuController extends BaseController {
                             isGroupCallWorkaround = true;
                             roomType = "3";
                         }
-                        
+
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
                                 roomType, invite, null);
                     }
