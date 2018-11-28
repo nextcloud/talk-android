@@ -23,9 +23,10 @@ package com.nextcloud.talk.models.json.participants;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
-import com.nextcloud.talk.models.json.converters.ParticipantFlagsConverter;
+import com.nextcloud.talk.models.json.converters.ObjectParcelConverter;
 
 import org.parceler.Parcel;
+import org.parceler.ParcelPropertyConverter;
 
 import lombok.Data;
 
@@ -54,12 +55,26 @@ public class Participant {
     @JsonField(name = "roomId")
     long roomId;
 
+    @ParcelPropertyConverter(ObjectParcelConverter.class)
     @JsonField(name = "inCall")
-    boolean inCall;
+    Object inCall;
 
-    @JsonField(name = "participantFlags", typeConverter = ParticipantFlagsConverter.class)
-    ParticipantFlags participantFlags;
+    public ParticipantFlags getParticipantFlags() {
+        ParticipantFlags participantFlags = ParticipantFlags.NOT_IN_CALL;
+        if (inCall != null) {
+            if (inCall instanceof Long) {
+                participantFlags = ParticipantFlags.fromValue((Long) inCall);
+            } else if (inCall instanceof Boolean) {
+                if ((boolean) inCall) {
+                    participantFlags = ParticipantFlags.IN_CALL;
+                } else {
+                    participantFlags = ParticipantFlags.NOT_IN_CALL;
+                }
+            }
+        }
 
+        return participantFlags;
+    }
     String source;
 
     public enum ParticipantType {
@@ -78,30 +93,29 @@ public class Participant {
         IN_CALL_WITH_VIDEO (5),
         IN_CALL_WITH_AUDIO_AND_VIDEO (7);
 
-        private int value;
+        private long value;
 
-        ParticipantFlags(int value) {
+        ParticipantFlags(long value) {
             this.value = value;
         }
 
-        public int getValue() {
+        public long getValue() {
             return value;
         }
 
-        public static ParticipantFlags fromValue(int value) {
-            switch (value) {
-                case 0:
-                    return NOT_IN_CALL;
-                case 1:
-                    return IN_CALL;
-                case 3:
-                    return IN_CALL_WITH_AUDIO;
-                case 5:
-                    return IN_CALL_WITH_VIDEO;
-                case 7:
-                    return IN_CALL_WITH_AUDIO_AND_VIDEO;
-                default:
-                    return NOT_IN_CALL;
+        public static ParticipantFlags fromValue(long value) {
+            if (value == 0) {
+                return NOT_IN_CALL;
+            } else if (value == 1) {
+                return IN_CALL;
+            } else if (value == 3) {
+                return IN_CALL_WITH_AUDIO;
+            } else if (value == 5) {
+                return IN_CALL_WITH_VIDEO;
+            } else if (value == 7) {
+                return IN_CALL_WITH_AUDIO_AND_VIDEO;
+            } else {
+                return NOT_IN_CALL;
             }
         }
 

@@ -20,17 +20,19 @@
 
 package com.nextcloud.talk.models.json.converters;
 
-import com.bluelinelabs.logansquare.typeconverters.LongBasedTypeConverter;
-import com.nextcloud.talk.models.json.participants.Participant.ParticipantFlags;
+import android.os.Parcel;
 
-public class ParticipantFlagsConverter extends LongBasedTypeConverter<ParticipantFlags> {
+import org.parceler.ParcelConverter;
+import org.parceler.Parcels;
+
+public class ObjectParcelConverter implements ParcelConverter<Object> {
     @Override
-    public ParticipantFlags getFromLong(long l) {
-        return ParticipantFlags.fromValue(l);
-    };
+    public void toParcel(Object input, Parcel parcel) {
+        parcel.writeParcelable(Parcels.wrap(input), 0);
+    }
 
     @Override
-    public long convertToLong(ParticipantFlags object) {
-        return object.getValue();
+    public Object fromParcel(Parcel parcel) {
+        return parcel.readParcelable(Object.class.getClassLoader());
     }
 }

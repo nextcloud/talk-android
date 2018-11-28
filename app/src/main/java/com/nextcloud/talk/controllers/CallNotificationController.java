@@ -216,7 +216,7 @@ public class CallNotificationController extends BaseController {
                         boolean inCallOnDifferentDevice = false;
                         List<Participant> participantList = participantsOverall.getOcs().getData();
                         for (Participant participant : participantList) {
-                            if (participant.isInCall() || (userBeingCalled.hasSpreedCapabilityWithName("in-call-flags") && !participant.getParticipantFlags().equals(Participant.ParticipantFlags.NOT_IN_CALL))) {
+                            if (participant.getParticipantFlags() != Participant.ParticipantFlags.NOT_IN_CALL) {
                                 hasParticipantsInCall = true;
 
                                 if (participant.getUserId().equals(userBeingCalled.getUserId())) {
@@ -436,38 +436,38 @@ public class CallNotificationController extends BaseController {
                                             (getActivity()).getBitmapPool(), resource, avatarSize, avatarSize));
                                 }
 
-                                    if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 &&
-                                            userBeingCalled.hasSpreedCapabilityWithName("no-ping")) {
-                                        final Allocation input = Allocation.createFromBitmap(renderScript, resource);
-                                        final Allocation output = Allocation.createTyped(renderScript, input.getType());
-                                        final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(renderScript, Element
-                                                .U8_4(renderScript));
-                                        script.setRadius(15f);
-                                        script.setInput(input);
-                                        script.forEach(output);
-                                        output.copyTo(resource);
+                                if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 &&
+                                        userBeingCalled.hasSpreedCapabilityWithName("no-ping")) {
+                                    final Allocation input = Allocation.createFromBitmap(renderScript, resource);
+                                    final Allocation output = Allocation.createTyped(renderScript, input.getType());
+                                    final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(renderScript, Element
+                                            .U8_4(renderScript));
+                                    script.setRadius(15f);
+                                    script.setInput(input);
+                                    script.forEach(output);
+                                    output.copyTo(resource);
 
-                                        if (getResources() != null) {
-                                            incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
-                                                    .incoming_gradient));
-                                            constraintLayout.setBackground(new BitmapDrawable(resource));
+                                    if (getResources() != null) {
+                                        incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
+                                                .incoming_gradient));
+                                        constraintLayout.setBackground(new BitmapDrawable(resource));
+                                    }
+                                } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
+                                    Palette palette = Palette.from(resource).generate();
+                                    if (getResources() != null) {
+                                        int color = palette.getDominantColor(getResources().getColor(R.color.grey950));
+
+                                        if (color != getResources().getColor(R.color.grey950)) {
+                                            float[] hsv = new float[3];
+                                            Color.colorToHSV(color, hsv);
+                                            hsv[2] *= 0.75f;
+                                            color = Color.HSVToColor(hsv);
                                         }
-                                    } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
-                                        Palette palette = Palette.from(resource).generate();
-                                        if (getResources() != null) {
-                                            int color = palette.getDominantColor(getResources().getColor(R.color.grey950));
 
-                                            if (color != getResources().getColor(R.color.grey950)) {
-                                                float[] hsv = new float[3];
-                                                Color.colorToHSV(color, hsv);
-                                                hsv[2] *= 0.75f;
-                                                color = Color.HSVToColor(hsv);
-                                            }
-
-                                            constraintLayout.setBackgroundColor(color);
-                                        }
+                                        constraintLayout.setBackgroundColor(color);
                                     }
                                 }
+                            }
                         });
 
 
