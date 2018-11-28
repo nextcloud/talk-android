@@ -28,6 +28,7 @@
     <string name="nc_server_url">Vistfang þjóns</string>
     <string name="nc_server_not_installed">Kláraðu uppsetninguna þína á %1$s</string>
     <string name="nc_server_db_upgrade_needed">Uppfærðu %1$s gagnagrunninn þinn</string>
+    <string name="nc_server_maintenance">Endilega taktu %1$s úr viðhaldsham</string>
     <string name="nc_server_version">%1$s virkar bara með %2$s 13 og upp</string>
     <string name="nc_server_import_account_plain">Flytja inn aðgang</string>
     <string name="nc_server_import_accounts_plain">Flytja inn aðganga</string>
@@ -41,6 +42,7 @@
     <string name="nc_display_name_fetched">Náð í birtingarnafn</string>
     <string name="nc_push_disabled">Ýtitilkynningar óvirkar</string>
     <string name="nc_capabilities_failed">Mistókst að sækja getuupplýsingar, hætti</string>
+    <string name="nc_external_server_failed">Mistókst að sækja stillingar merkjasendinga</string>
     <string name="nc_display_name_not_fetched">Gat ekki náð í birtingarnafn, hætti</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s forrit fannst</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s forritið ekki uppsett á þjóninu, hætti við</string>
@@ -69,7 +71,9 @@
     <string name="nc_client_cert_change">Skipta um skilríki biðlara</string>
     <string name="nc_settings_remove_account">Fjarlægja notandaaðgang</string>
     <string name="nc_settings_add_account">Bæta við nýjum notandaaðgangi</string>
+    <string name="nc_settings_wrong_account">Aðeins er hægt að endurauðkenna núverandi notandaaðgang</string>
     <string name="nc_settings_no_talk_installed">Talk-forritið er ekki uppsett á þjóninum sem þú reyndir að auðkenna hjá</string>
+    <string name="nc_settings_account_updated">Fyrirliggjandi notandaaðgangur þinn var uppfærður í stað þess að bæta við nýjum</string>
     <string name="nc_account_scheduled_for_deletion">Þessi aðgangur er merktur til eyðingar og er því ekki hægt að breyta honum</string>
     <string name="nc_settings_notification_sounds">Hljóð með tilkynningum</string>
     <string name="nc_settings_call_ringtone">Maður-á-mann samtöl</string>
@@ -130,6 +134,9 @@
     <string name="nc_incoming_call">Innhringing símtals frá</string>
     <string name="nc_nick_guest">Gestur</string>
     <string name="nc_public_call">Nýtt opinbert samtal</string>
+    <string name="nc_public_call_explanation">Opinber samtöl gera þér kleift að bjóða fólki utan kerfisins með
+        sérstaklega útbúnum tenglum.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s á %2$s tilkynningarásinni</string>
     <string name="nc_notification_channel_calls">Rás fyrir tilkynningar um samtöl</string>
@@ -142,17 +149,25 @@
     <string name="nc_notify_me_mention">Tilkynna þegar minnst er á</string>
     <string name="nc_notify_me_never">Aldrei tilkynna</string>
     <string name="nc_mute_calls">Þagga samtöl</string>
+    <string name="nc_mute_calls_description">Þér munu ekki berast neinar tilkynningar um samtöl</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
+    <string name="nc_failed_signaling_settings">Valinn þjónn styður ekki þáttöku í opinberum samtölum í gegnum farsíma.
+Þú gætir reynt að taka þátt í samtalinu í gegnum vefviðmótið í vafra.</string>
     <string name="nc_all_ok_operation">Í lagi, allt klárt!</string>
     <string name="nc_ok">Í lagi</string>
     <string name="nc_call_name">Heiti samtals</string>
     <string name="nc_proceed">Halda áfram</string>
+    <string name="nc_call_name_is_same">Nafnið sem þú settir inn er það sama og það sem fyrir er</string>
     <string name="nc_wrong_link">Samskiptatengill er ekki gildur</string>
     <string name="nc_share_text">Taktu þátt í samtalinu á %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s boðskort</string>
     <string name="nc_share_text_pass">\nLykilorð: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_push_to_talk">Ýta-til-að-tala</string>
+    <string name="nc_push_to_talk_desc">Með hljóðnemann óvirkan, smelltu og haltu niðri til að nota Ýta-til-að-tala</string>
     <string name="nc_store_short_desc">Haltu úti eigin myndsamtölum og spjalli á þínum eigin þjóni.</string>
     <string name="nc_configure_cert_auth">Veldu skilríki fyrir auðkenningu</string>
     <string name="nc_change_cert_auth">Skipta um skilríki fyrir auðkenningu</string>
