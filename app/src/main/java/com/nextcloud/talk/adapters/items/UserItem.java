@@ -211,12 +211,11 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 default:
                     holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
                     holder.videoCallImageView.setVisibility(View.GONE);
+                    break;
             }
-        }
 
-        String userType = "";
+            String userType = "";
 
-        if (header == null) {
             switch (new EnumParticipantTypeConverter().convertToInt(participant.getType())) {
                 case 1:
                     userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_owner);
@@ -234,7 +233,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_following_link);
                     break;
                 default:
-                    // do nothing
+                    break;
             }
 
             holder.contactMentionId.setText(userType);
