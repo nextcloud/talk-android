@@ -637,7 +637,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     public void onNext(GenericOverall genericOverall) {
                         dispose();
                         if (!isDestroyed()) {
-                            getRouter().popToRoot();
+                            getRouter().popCurrentController();
                         }
                     }
 

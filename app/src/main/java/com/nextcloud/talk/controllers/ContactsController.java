@@ -282,13 +282,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
                                         roomOverall.getOcs().getData().getDisplayName());
                                 conversationIntent.putExtras(bundle);
-                                getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
+                                getRouter().replaceTopController((RouterTransaction.with(new ChatController(bundle))
                                         .pushChangeHandler(new HorizontalChangeHandler())
                                         .popChangeHandler(new HorizontalChangeHandler())));
                             } else {
                                 conversationIntent.putExtras(bundle);
                                 startActivity(conversationIntent);
-                                new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
+                                getRouter().getBackstack().remove(getRouter().getBackstackSize() - 1);
                             }
                         }
 
@@ -630,14 +630,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             HttpException exception = (HttpException) e;
                             switch (exception.code()) {
                                 case 401:
-                                    if (getParentController() != null &&
-                                            getParentController().getRouter() != null) {
-                                        getParentController().getRouter().pushController((RouterTransaction.with
-                                                (new WebViewLoginController(currentUser.getBaseUrl(),
-                                                        true))
-                                                .pushChangeHandler(new VerticalChangeHandler())
-                                                .popChangeHandler(new VerticalChangeHandler())));
-                                    }
+                                    getRouter().pushController((RouterTransaction.with(new WebViewLoginController(currentUser.getBaseUrl(),
+                                            true))
+                                            .pushChangeHandler(new VerticalChangeHandler())
+                                            .popChangeHandler(new VerticalChangeHandler())));
                                     break;
                                 default:
                                     break;
@@ -870,13 +866,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
                                         bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
                                                 roomOverall.getOcs().getData().getDisplayName());
-                                        if (getParentController() != null) {
-                                            getParentController().getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
-                                                    .pushChangeHandler(new HorizontalChangeHandler())
-                                                    .popChangeHandler(new HorizontalChangeHandler())));
-                                        }
+                                        getRouter().replaceTopController((RouterTransaction.with(new ChatController(bundle))
+                                                .pushChangeHandler(new HorizontalChangeHandler())
+                                                .popChangeHandler(new HorizontalChangeHandler())));
                                     } else {
                                         startActivity(conversationIntent);
+                                        new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
                                     }
                                 }
                             }
