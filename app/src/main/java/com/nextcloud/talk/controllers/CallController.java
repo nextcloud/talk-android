@@ -170,8 +170,8 @@ public class CallController extends BaseController {
     @BindView(R.id.remote_renderers_layout)
     LinearLayout remoteRenderersLayout;
 
-    @BindView(R.id.callControlsLinearLayoutView)
-    LinearLayout callControls;
+    @BindView(R.id.callControlsRelativeLayout)
+    RelativeLayout callControls;
     @BindView(R.id.call_control_microphone)
     FlipView microphoneControlButton;
     @BindView(R.id.call_control_camera)
