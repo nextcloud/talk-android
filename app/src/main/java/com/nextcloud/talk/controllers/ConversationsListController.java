@@ -23,6 +23,8 @@ package com.nextcloud.talk.controllers;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -42,6 +44,17 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
@@ -63,6 +76,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.glide.GlideApp;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.greenrobot.eventbus.EventBus;
@@ -176,20 +190,43 @@ public class ConversationsListController extends BaseController implements Searc
         prepareViews();
     }
 
+    private void loadUserAvatar(MenuItem menuItem) {
+        int avatarSize = menuItem.getIcon().getIntrinsicHeight();
+
+        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
+                currentUser.getUserId(), R.dimen.avatar_size), new LazyHeaders.Builder()
+                .setHeader("Accept", "image/*")
+                .setHeader("User-Agent", ApiUtils.getUserAgent())
+                .build());
+
+        menuItem.getActionView().getima
+        GlideApp.with(getActivity())
+                .asBitmap()
+                .centerInside()
+                .override(avatarSize, avatarSize)
+                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                .load(glideUrl)
+                .into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                menuItem.setIcon(new BitmapDrawable(resource));
+            }
+        });
+    }
+
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
         eventBus.register(this);
 
-        currentUser = userUtils.getCurrentUser();
-
-        if (currentUser != null) {
-            credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
+        UserEntity tempUser;
+        if (currentUser != (tempUser = userUtils.getCurrentUser())) {
+            currentUser = tempUser;
         }
 
         if (currentUser != null) {
+            credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
             shouldUseLastMessageLayout = currentUser.hasSpreedCapabilityWithName("last-room-activity");
-
             fetchData(false);
         }
     }
@@ -252,6 +289,9 @@ public class ConversationsListController extends BaseController implements Searc
             searchItem.expandActionView();
             searchView.setQuery(adapter.getFilter(String.class), false);
         }
+
+        MenuItem menuItem = menu.findItem(R.id.action_settings);
+        loadUserAvatar(menuItem);
     }
 
     private void fetchData(boolean fromBottomSheet) {

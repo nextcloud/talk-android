@@ -15,8 +15,10 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+            app:titleMarginStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:contentInsetStart="24dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
