@@ -630,17 +630,10 @@ public class OperationsMenuController extends BaseController {
             conversationIntent.putExtras(bundle);
 
             if (getParentController() != null) {
-                if (getParentController().getParentController() != null) {
-                    getParentController().getParentController().getRouter().pushController(RouterTransaction.with(new
-                            ChatController(bundle))
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler()));
-                } else {
-                    getParentController().getRouter().pushController(RouterTransaction.with(new
-                            ChatController(bundle))
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler()));
-                }
+                getParentController().getRouter().pushController(RouterTransaction.with(new
+                        ChatController(bundle))
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler()));
             }
 
         } else {

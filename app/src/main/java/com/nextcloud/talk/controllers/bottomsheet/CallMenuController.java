@@ -261,9 +261,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     bundle = new Bundle();
                     bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
-                    getParentController().getParentController().getRouter().pushController((RouterTransaction.with
-                            (new ContactsController
-                                    (bundle))
+                    getParentController().getRouter().pushController((RouterTransaction.with(new ContactsController(bundle))
                             .pushChangeHandler(new VerticalChangeHandler())
                             .popChangeHandler(new VerticalChangeHandler())));
                 } else {

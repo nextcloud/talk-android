@@ -134,6 +134,7 @@ public class EntryMenuController extends BaseController {
             if (originalBundle.containsKey(BundleKeys.KEY_SPREED_CAPABILITIES)) {
                 bundle.putParcelable(BundleKeys.KEY_SPREED_CAPABILITIES, originalBundle.getParcelable(BundleKeys.KEY_SPREED_CAPABILITIES));
             }
+
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
