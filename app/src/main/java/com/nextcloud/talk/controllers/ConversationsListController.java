@@ -73,6 +73,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -191,27 +192,28 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     private void loadUserAvatar(MenuItem menuItem) {
-        int avatarSize = menuItem.getIcon().getIntrinsicHeight();
+        if (getActivity() != null) {
+            int avatarSize = (int) DisplayUtils.convertDpToPixel(menuItem.getIcon().getIntrinsicHeight(), getActivity());
 
-        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
-                currentUser.getUserId(), R.dimen.avatar_size), new LazyHeaders.Builder()
-                .setHeader("Accept", "image/*")
-                .setHeader("User-Agent", ApiUtils.getUserAgent())
-                .build());
+            GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(currentUser.getBaseUrl(),
+                    currentUser.getUserId(), avatarSize), new LazyHeaders.Builder()
+                    .setHeader("Accept", "image/*")
+                    .setHeader("User-Agent", ApiUtils.getUserAgent())
+                    .build());
 
-        menuItem.getActionView().getima
-        GlideApp.with(getActivity())
-                .asBitmap()
-                .centerInside()
-                .override(avatarSize, avatarSize)
-                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                .load(glideUrl)
-                .into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                menuItem.setIcon(new BitmapDrawable(resource));
-            }
-        });
+            GlideApp.with(getActivity())
+                    .asBitmap()
+                    .centerInside()
+                    .override(avatarSize, avatarSize)
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                    .load(glideUrl)
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            menuItem.setIcon(new BitmapDrawable(resource));
+                        }
+                    });
+        }
     }
 
     @Override
@@ -219,10 +221,7 @@ public class ConversationsListController extends BaseController implements Searc
         super.onAttach(view);
         eventBus.register(this);
 
-        UserEntity tempUser;
-        if (currentUser != (tempUser = userUtils.getCurrentUser())) {
-            currentUser = tempUser;
-        }
+        currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
