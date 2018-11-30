@@ -18,24 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.models.database;
+package com.nextcloud.talk.models.json.converters;
 
-import android.os.Parcelable;
+import android.os.Parcel;
 
-import java.io.Serializable;
+import org.parceler.ParcelConverter;
+import org.parceler.Parcels;
 
-import io.requery.Entity;
-import io.requery.Key;
-import io.requery.Persistable;
+public class ObjectParcelConverter implements ParcelConverter<Object> {
+    @Override
+    public void toParcel(Object input, Parcel parcel) {
+        parcel.writeParcelable(Parcels.wrap(input), 0);
+    }
 
-@Entity
-public interface ArbitraryStorage extends Parcelable, Persistable, Serializable {
-    @Key
-    long getAccountIdentifier();
-
-    String getKey();
-
-    String getObject();
-
-    String getValue();
+    @Override
+    public Object fromParcel(Parcel parcel) {
+        return parcel.readParcelable(Object.class.getClassLoader());
+    }
 }

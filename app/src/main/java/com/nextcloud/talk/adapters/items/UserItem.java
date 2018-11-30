@@ -20,12 +20,12 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.content.res.Resources;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
@@ -106,7 +106,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         if (header != null) {
             return R.layout.rv_item_contact;
         } else {
-            return R.layout.rv_item_mention;
+            return R.layout.rv_item_conversation_info_participant;
         }
     }
 
@@ -177,22 +177,45 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             holder.itemView.setAlpha(1.0f);
         }
 
-        // TODO: show what the user is doing currently
-        long participantFlags = participant.getParticipantFlags();
-        if (participantFlags == 0) {
-        } else if (participantFlags == 1) {
-            // do nothing, just in call
-        } else if (participantFlags == 2) {
-            // with audio
-        } else if (participantFlags == 4) {
-            // with video
-        } else if (participantFlags == 7) {
-            // video and audio
-        }
-
-        String userType = "";
+        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
 
         if (header == null) {
+            Participant.ParticipantFlags participantFlags = participant.getParticipantFlags();
+            switch (participantFlags) {
+                case NOT_IN_CALL:
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
+                    holder.videoCallImageView.setVisibility(View.GONE);
+                    break;
+                case IN_CALL:
+                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                    holder.videoCallImageView.setVisibility(View.GONE);
+                    break;
+                case IN_CALL_WITH_AUDIO:
+                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_voice_bubble));
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                    holder.videoCallImageView.setVisibility(View.GONE);
+                    break;
+                case IN_CALL_WITH_VIDEO:
+                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
+                    holder.videoCallImageView.setBackground(resources.getDrawable(R.drawable.shape_video_bubble));
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                    holder.videoCallImageView.setVisibility(View.VISIBLE);
+                    break;
+                case IN_CALL_WITH_AUDIO_AND_VIDEO:
+                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_voice_bubble));
+                    holder.videoCallImageView.setBackground(resources.getDrawable(R.drawable.shape_video_bubble));
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                    holder.videoCallImageView.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
+                    holder.videoCallImageView.setVisibility(View.GONE);
+                    break;
+            }
+
+            String userType = "";
+
             switch (new EnumParticipantTypeConverter().convertToInt(participant.getType())) {
                 case 1:
                     userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_owner);
@@ -210,11 +233,11 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_following_link);
                     break;
                 default:
-                    // do nothing
+                    break;
             }
 
             holder.contactMentionId.setText(userType);
-            holder.contactMentionId.setTextColor(NextcloudTalkApplication.getSharedApplication().getColor(R.color.colorPrimary));
+            holder.contactMentionId.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.colorPrimary));
         }
     }
 
@@ -244,6 +267,12 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         @Nullable
         @BindView(R.id.secondary_text)
         public TextView contactMentionId;
+        @Nullable
+        @BindView(R.id.voiceOrSimpleCallImageView)
+        ImageView voiceOrSimpleCallImageView;
+        @Nullable
+        @BindView(R.id.videoCallImageView)
+        ImageView videoCallImageView;
 
         /**
          * Default constructor.

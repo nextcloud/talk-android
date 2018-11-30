@@ -11,11 +11,12 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="label, icon, theme, name, allowBackup">
+        tools:replace="label, icon, theme, name, allowBackup"
+        tools:ignore="UnusedAttribute, ExportedService">
 
         <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
         <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
-        
+
         <service
             android:name=".services.firebase.MagicFirebaseMessagingService">
             <intent-filter>

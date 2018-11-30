@@ -3,9 +3,7 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
-  ~ @author Andy Scherzinger
-  ~ Copyright (C) 2017-2018 Mario Danic
-  ~ Copyright (C) 2017 Andy Scherzinger
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -43,6 +41,22 @@
             app:checked="false"
             app:enableInitialAnimation="false"
             app:rearBackgroundColor="@color/colorPrimary"/>
+
+        <ImageView
+            android:id="@+id/voiceOrSimpleCallImageView"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="bottom|end"
+            android:background="@drawable/shape_lock_bubble"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/videoCallImageView"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="top|end"
+            android:background="@drawable/shape_favorite_bubble"
+            android:visibility="gone"/>
 
     </FrameLayout>
 
