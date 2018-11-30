@@ -44,7 +44,7 @@
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/attachmentButtonSpace"
         android:layout_toStartOf="@id/sendButtonSpace"
-        android:inputType="textAutoCorrect|textAutoComplete|textMultiLine|textCapSentences"/>
+        android:inputType="textAutoCorrect|textMultiLine|textCapSentences"/>
 
     <androidx.legacy.widget.Space
         android:id="@id/sendButtonSpace"
