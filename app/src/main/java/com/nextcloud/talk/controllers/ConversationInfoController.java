@@ -187,7 +187,7 @@ public class ConversationInfoController extends BaseController {
             participant = participants.get(i);
             userItem = new UserItem(participant, conversationUser, null);
             userItem.setEnabled(!participant.getSessionId().equals("0"));
-            if (!TextUtils.isEmpty(participant.getUserId()) && !participant.getUserId().equals(conversationUser.getUserId())) {
+            if (!TextUtils.isEmpty(participant.getUserId()) && participant.getUserId().equals(conversationUser.getUserId())) {
                 ownUserItem = userItem;
             } else {
                 recyclerViewItems.add(userItem);
@@ -196,7 +196,7 @@ public class ConversationInfoController extends BaseController {
 
 
         if (ownUserItem != null) {
-            recyclerViewItems.add(ownUserItem);
+            recyclerViewItems.add(0, ownUserItem);
         }
 
         setupAdapter();
