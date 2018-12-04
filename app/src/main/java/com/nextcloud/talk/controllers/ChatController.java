@@ -442,6 +442,18 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
+        if (conversationUser.hasSpreedCapabilityWithName("mention-flag") && getActivity() != null) {
+            getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
+                bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
+                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+                getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
+                        .pushChangeHandler(new VerticalChangeHandler())
+                        .popChangeHandler(new VerticalChangeHandler())));
+            });
+        }
+
         if (adapterWasNull) {
             // we're starting
             if (TextUtils.isEmpty(roomToken)) {
@@ -516,6 +528,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (getActivity() != null) {
+            getActivity().findViewById(R.id.toolbar).setOnClickListener(null);
+        }
+
         adapter = null;
         inChat = false;
         ApplicationWideCurrentRoomHolder.getInstance().clear();
@@ -974,12 +991,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_conversation, menu);
-
-        if (conversationUser.hasSpreedCapabilityWithName("mention-flag")) {
-            menu.findItem(R.id.nc_conversation_info).setVisible(true);
-        } else {
-            menu.findItem(R.id.nc_conversation_info).setVisible(false);
-        }
     }
 
 
@@ -994,15 +1005,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 return true;
             case R.id.conversation_voice_call:
                 startACall(true);
-                return true;
-            case R.id.nc_conversation_info:
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
-                bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
-                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
-                getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
-                        .pushChangeHandler(new VerticalChangeHandler())
-                        .popChangeHandler(new VerticalChangeHandler())));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -34,12 +34,4 @@
         android:orderInCategory="1"
         android:title="@string/nc_conversation_menu_video_call"
         app:showAsAction="ifRoom|withText" />
-
-    <item
-        android:id="@+id/nc_conversation_info"
-        android:icon="@drawable/ic_info_black_24dp"
-        android:orderInCategory="2"
-        android:title="@string/nc_conversation_menu_conversation_info"
-        android:visible="false"
-        app:showAsAction="ifRoom|withText" />
 </menu>
