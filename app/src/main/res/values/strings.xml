@@ -215,6 +215,7 @@ Find Nextcloud on https://nextcloud.com</string>
     <string name="nc_date_header_today">Today</string>
     <string name="nc_conversation_menu_voice_call">Voice call</string>
     <string name="nc_conversation_menu_video_call">Video call</string>
+    <string name="nc_conversation_menu_conversation_info">Conversation info</string>
     <string name="nc_new_messages">New messages</string>
     <string name="nc_no_messages_yet">No messages yet</string>
     <string name="nc_chat_you">You</string>
@@ -246,5 +247,4 @@ Find Nextcloud on https://nextcloud.com</string>
     <string name="nc_user">User</string>
     <string name="nc_guest">Guest</string>
     <string name="nc_following_link">User following a public link</string>
-
 </resources>

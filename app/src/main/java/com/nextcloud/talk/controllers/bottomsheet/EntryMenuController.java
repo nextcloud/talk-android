@@ -220,7 +220,7 @@ public class EntryMenuController extends BaseController {
                         } else {
                             if (proceedButton.isEnabled()) {
                                 proceedButton.setEnabled(false);
-                                proceedButton.setAlpha(0.7f);
+                                proceedButton.setAlpha(0.38f);
                             }
                             textFieldBoxes.setError(getResources().getString(R.string.nc_call_name_is_same),
                                     true);
@@ -242,7 +242,7 @@ public class EntryMenuController extends BaseController {
                     } else {
                         if (proceedButton.isEnabled()) {
                             proceedButton.setEnabled(false);
-                            proceedButton.setAlpha(0.7f);
+                            proceedButton.setAlpha(0.38f);
                         }
                         textFieldBoxes.setError(getResources().getString(R.string.nc_wrong_link),
                                 true);
@@ -250,7 +250,7 @@ public class EntryMenuController extends BaseController {
                 } else {
                     if (proceedButton.isEnabled()) {
                         proceedButton.setEnabled(false);
-                        proceedButton.setAlpha(0.7f);
+                        proceedButton.setAlpha(0.38f);
                     }
                 }
             }
