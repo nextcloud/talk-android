@@ -22,6 +22,7 @@ package com.nextcloud.talk.controllers;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -807,14 +808,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     RouterTransaction.with(new OperationsMenuController(bundle))
                             .popChangeHandler(new VerticalChangeHandler())
                             .pushChangeHandler(new VerticalChangeHandler()));
+
+            bottomSheet.setOnShowListener(dialog -> eventBus.post(new BottomSheetLockEvent(false, 0,
+                    false, false)));
         }
 
         if (bottomSheet == null) {
             bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
         }
 
-        bottomSheet.setOnShowListener(dialog -> eventBus.post(new BottomSheetLockEvent(false, 0,
-                false, false)));
+        bottomSheet.setOnDismissListener(dialog -> getActionBar().setDisplayHomeAsUpEnabled(getRouter().getBackstackSize() > 1));
 
         bottomSheet.show();
     }

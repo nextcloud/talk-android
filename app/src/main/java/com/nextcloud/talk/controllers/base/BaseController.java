@@ -104,7 +104,7 @@ public abstract class BaseController extends ButterKnifeController {
     protected void onAttach(@NonNull View view) {
         setTitle();
         if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(getRouter().getBackstackSize() > 1);
+            getActionBar().setDisplayHomeAsUpEnabled(getParentController() != null || getRouter().getBackstackSize() > 1);
         }
         super.onAttach(view);
     }
