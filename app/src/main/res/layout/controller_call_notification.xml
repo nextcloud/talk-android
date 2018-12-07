@@ -22,8 +22,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey950">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/backgroundImageView"
+        android:src="@color/grey950"
+        android:scaleType="centerCrop"/>
 
     <RelativeLayout
         android:id="@+id/incomingTextRelativeLayout"

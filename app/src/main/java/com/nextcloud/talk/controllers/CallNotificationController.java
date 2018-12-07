@@ -128,8 +128,8 @@ public class CallNotificationController extends BaseController {
     @BindView(R.id.callAnswerCameraView)
     MagicFlipView callAnswerCameraView;
 
-    @BindView(R.id.constraintLayout)
-    ConstraintLayout constraintLayout;
+    @BindView(R.id.backgroundImageView)
+    ImageView backgroundImageView;
 
     @BindView(R.id.incomingTextRelativeLayout)
     RelativeLayout incomingTextRelativeLayout;
@@ -450,7 +450,7 @@ public class CallNotificationController extends BaseController {
                                     if (getResources() != null) {
                                         incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
                                                 .incoming_gradient));
-                                        constraintLayout.setBackground(new BitmapDrawable(resource));
+                                        backgroundImageView.setImageDrawable(new BitmapDrawable(resource));
                                     }
                                 } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
                                     Palette palette = Palette.from(resource).generate();
@@ -464,7 +464,7 @@ public class CallNotificationController extends BaseController {
                                             color = Color.HSVToColor(hsv);
                                         }
 
-                                        constraintLayout.setBackgroundColor(color);
+                                        backgroundImageView.setBackgroundColor(color);
                                     }
                                 }
                             }
