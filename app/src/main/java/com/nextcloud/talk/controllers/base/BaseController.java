@@ -26,7 +26,6 @@ import android.view.View;
 import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.AccountVerificationController;
-import com.nextcloud.talk.controllers.ConversationsListController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
 import com.nextcloud.talk.controllers.SwitchAccountController;
 import com.nextcloud.talk.controllers.WebViewLoginController;
