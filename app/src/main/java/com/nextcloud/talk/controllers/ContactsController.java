@@ -22,7 +22,6 @@ package com.nextcloud.talk.controllers;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,7 +51,6 @@ import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.controllers.bottomsheet.CallMenuController;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
@@ -66,7 +64,6 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
