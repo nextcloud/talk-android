@@ -50,6 +50,7 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -449,8 +450,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
                 bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
                 getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
-                        .pushChangeHandler(new VerticalChangeHandler())
-                        .popChangeHandler(new VerticalChangeHandler())));
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler())));
             });
         }
 
