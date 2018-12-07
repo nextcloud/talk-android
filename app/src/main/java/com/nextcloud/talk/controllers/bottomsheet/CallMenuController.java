@@ -254,24 +254,6 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                             .popChangeHandler(new HorizontalChangeHandler()));
                 }
             }
-        } else if (menuType.equals(MenuType.NEW_CONVERSATION) && position != 0) {
-            MenuItem menuItem = (MenuItem) adapter.getItem(position);
-            if (menuItem != null) {
-                if (menuItem.getTag() == 1) {
-                    eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
-                    bundle = new Bundle();
-                    bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
-                    getParentController().getRouter().pushController((RouterTransaction.with(new ContactsController(bundle))
-                            .pushChangeHandler(new VerticalChangeHandler())
-                            .popChangeHandler(new VerticalChangeHandler())));
-                } else {
-                    bundle = new Bundle();
-                    bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 10);
-                    getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler()));
-                }
-            }
         }
 
         return true;
@@ -279,6 +261,6 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
     @Parcel
     public enum MenuType {
-        REGULAR, SHARE, NEW_CONVERSATION
+        REGULAR, SHARE
     }
 }

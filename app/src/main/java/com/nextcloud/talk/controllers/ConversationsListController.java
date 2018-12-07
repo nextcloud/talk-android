@@ -247,24 +247,6 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            /*case R.id.action_new_conversation:
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(CallMenuController.MenuType.NEW_CONVERSATION));
-                prepareAndShowBottomSheetWithBundle(bundle, true);
-                return true;*/
-            case R.id.action_settings:
-                getRouter().pushController((RouterTransaction.with(new SettingsController())
-                        .pushChangeHandler(new VerticalChangeHandler())
-                        .popChangeHandler(new VerticalChangeHandler())));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 

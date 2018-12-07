@@ -37,7 +37,11 @@
         android:indeterminateTintMode="src_in" />
 
     <include
-        layout="@layout/rv_item_call_header"
+        layout="@layout/join_conversation_via_link"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/conversation_privacy_toggle"
         android:visibility="gone" />
 
     <include

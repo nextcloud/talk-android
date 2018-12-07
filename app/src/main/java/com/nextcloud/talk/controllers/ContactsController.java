@@ -51,6 +51,8 @@ import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.controllers.bottomsheet.CallMenuController;
+import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
@@ -63,6 +65,7 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
@@ -135,7 +138,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     FastScroller fastScroller;
 
     @BindView(R.id.call_header_layout)
-    RelativeLayout callHeaderLayout;
+    RelativeLayout conversationPrivacyToogleLayout;
+
+    @BindView(R.id.joinConversationViaLinkRelativeLayout)
+    RelativeLayout joinConversationViaLinkLayout;
+
     @BindView(R.id.generic_rv_layout)
     CoordinatorLayout genericRvLayout;
 
@@ -327,7 +334,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIds);
             bundle.putStringArrayList(BundleKeys.KEY_INVITED_GROUP, groupIds);
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 11);
-            prepareAndShowBottomSheetWithBundle(bundle);
+            prepareAndShowBottomSheetWithBundle(bundle, false);
         }
     }
 
@@ -607,7 +614,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             progressBar.setVisibility(View.GONE);
                             genericRvLayout.setVisibility(View.VISIBLE);
                             if (isNewConversationView) {
-                                callHeaderLayout.setVisibility(View.VISIBLE);
+                                conversationPrivacyToogleLayout.setVisibility(View.VISIBLE);
+                                joinConversationViaLinkLayout.setVisibility(View.VISIBLE);
                             }
 
                             if (isNewConversationView) {
@@ -784,15 +792,22 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
 
-    private void prepareAndShowBottomSheetWithBundle(Bundle bundle) {
+    private void prepareAndShowBottomSheetWithBundle(Bundle bundle, boolean showEntrySheet) {
         if (view == null) {
             view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
         }
 
-        getChildRouter((ViewGroup) view).setRoot(
-                RouterTransaction.with(new OperationsMenuController(bundle))
-                        .popChangeHandler(new VerticalChangeHandler())
-                        .pushChangeHandler(new VerticalChangeHandler()));
+        if (showEntrySheet) {
+            getChildRouter((ViewGroup) view).setRoot(
+                    RouterTransaction.with(new EntryMenuController(bundle))
+                            .popChangeHandler(new VerticalChangeHandler())
+                            .pushChangeHandler(new VerticalChangeHandler()));
+        } else {
+            getChildRouter((ViewGroup) view).setRoot(
+                    RouterTransaction.with(new OperationsMenuController(bundle))
+                            .popChangeHandler(new VerticalChangeHandler())
+                            .pushChangeHandler(new VerticalChangeHandler()));
+        }
 
         if (bottomSheet == null) {
             bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
@@ -906,6 +921,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         }
         return true;
+    }
+
+    @Optional
+    @OnClick(R.id.joinConversationViaLinkRelativeLayout)
+    void joinConversationViaLink() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 10);
+
+        prepareAndShowBottomSheetWithBundle(bundle, true);
     }
 
     @Optional

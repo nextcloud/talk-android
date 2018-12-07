@@ -630,8 +630,7 @@ public class OperationsMenuController extends BaseController {
             conversationIntent.putExtras(bundle);
 
             if (getParentController() != null) {
-                getParentController().getRouter().pushController(RouterTransaction.with(new
-                        ChatController(bundle))
+                getParentController().getRouter().replaceTopController(RouterTransaction.with(new ChatController(bundle))
                         .pushChangeHandler(new HorizontalChangeHandler())
                         .popChangeHandler(new HorizontalChangeHandler()));
             }
