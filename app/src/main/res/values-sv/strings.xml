@@ -20,7 +20,7 @@
 
 <resources>
     <string name="nc_bottom_navigation_title_contacts">Kontakter</string>
-    <string name="nc_bottom_navigation_title_settings">Inställningar</string>
+    <string name="nc_settings">Inställningar</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Serveradress</string>

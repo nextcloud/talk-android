@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Samtöl</string>
     <string name="nc_bottom_navigation_title_contacts">Tengiliðir</string>
-    <string name="nc_bottom_navigation_title_settings">Stillingar</string>
+    <string name="nc_settings">Stillingar</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Vistfang þjóns</string>

@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Đàm thoại</string>
     <string name="nc_bottom_navigation_title_contacts">Liên hệ</string>
-    <string name="nc_bottom_navigation_title_settings">Thiết lập</string>
+    <string name="nc_settings">Thiết lập</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Địa chỉ máy chủ</string>

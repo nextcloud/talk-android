@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Samtaler</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakter</string>
-    <string name="nc_bottom_navigation_title_settings">Innstillinger</string>
+    <string name="nc_settings">Innstillinger</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Tjeneradresse</string>

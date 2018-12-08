@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Разговори</string>
     <string name="nc_bottom_navigation_title_contacts">Контакти</string>
-    <string name="nc_bottom_navigation_title_settings">Поставке</string>
+    <string name="nc_settings">Поставке</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Адреса сервера</string>

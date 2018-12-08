@@ -3,6 +3,5 @@
 
     <!-- Custom transition dimensions -->
     <dimen name="padding_normal">24dp</dimen>
-    <dimen name="touch_raise">9dp</dimen>
 
 </resources>

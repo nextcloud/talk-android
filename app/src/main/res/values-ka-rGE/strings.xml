@@ -20,7 +20,7 @@
 
 <resources>
     <string name="nc_bottom_navigation_title_contacts">კონტაქტები</string>
-    <string name="nc_bottom_navigation_title_settings">პარამეტრები</string>
+    <string name="nc_settings">პარამეტრები</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">სერვერის მისამართი</string>

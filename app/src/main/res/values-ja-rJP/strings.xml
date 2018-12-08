@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">会話</string>
     <string name="nc_bottom_navigation_title_contacts">連絡先</string>
-    <string name="nc_bottom_navigation_title_settings">設定</string>
+    <string name="nc_settings">設定</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">サーバーアドレス</string>

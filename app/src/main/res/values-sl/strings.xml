@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Pogovori</string>
     <string name="nc_bottom_navigation_title_contacts">Stiki</string>
-    <string name="nc_bottom_navigation_title_settings">Nastavitve</string>
+    <string name="nc_settings">Nastavitve</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Naslov strežnika</string>

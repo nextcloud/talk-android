@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">דיונים</string>
     <string name="nc_bottom_navigation_title_contacts">אנשי קשר</string>
-    <string name="nc_bottom_navigation_title_settings">הגדרות</string>
+    <string name="nc_settings">הגדרות</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">כתובת השרת</string>

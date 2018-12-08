@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Conversações</string>
     <string name="nc_bottom_navigation_title_contacts">Contactos</string>
-    <string name="nc_bottom_navigation_title_settings">Definições</string>
+    <string name="nc_settings">Definições</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Endereço do servidor</string>

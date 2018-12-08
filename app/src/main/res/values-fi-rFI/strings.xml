@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Keskustelut</string>
     <string name="nc_bottom_navigation_title_contacts">Yhteystiedot</string>
-    <string name="nc_bottom_navigation_title_settings">Asetukset</string>
+    <string name="nc_settings">Asetukset</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Palvelimen osoite</string>

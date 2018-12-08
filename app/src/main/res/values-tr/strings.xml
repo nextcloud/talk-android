@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Görüşmeler</string>
     <string name="nc_bottom_navigation_title_contacts">Kişiler</string>
-    <string name="nc_bottom_navigation_title_settings">Ayarlar</string>
+    <string name="nc_settings">Ayarlar</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Sunucu adresi</string>

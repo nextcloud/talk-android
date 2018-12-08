@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">对话</string>
     <string name="nc_bottom_navigation_title_contacts">联系人</string>
-    <string name="nc_bottom_navigation_title_settings">设置</string>
+    <string name="nc_settings">设置</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">服务器地址</string>

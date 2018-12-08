@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Συζητήσεις</string>
     <string name="nc_bottom_navigation_title_contacts">Επαφές</string>
-    <string name="nc_bottom_navigation_title_settings">Ρυθμίσεις</string>
+    <string name="nc_settings">Ρυθμίσεις</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Διεύθυνση διακομιστή</string>

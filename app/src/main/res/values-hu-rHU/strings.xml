@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Beszélgetések</string>
     <string name="nc_bottom_navigation_title_contacts">Kapcsolatok</string>
-    <string name="nc_bottom_navigation_title_settings">Beállítások</string>
+    <string name="nc_settings">Beállítások</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">szervercím</string>

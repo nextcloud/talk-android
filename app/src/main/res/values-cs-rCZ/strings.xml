@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Konverzace</string>
     <string name="nc_bottom_navigation_title_contacts">Kontakty</string>
-    <string name="nc_bottom_navigation_title_settings">Nastavení</string>
+    <string name="nc_settings">Nastavení</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Adresa serveru</string>

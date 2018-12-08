@@ -371,10 +371,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
+        inflater.inflate(R.menu.menu_contacts, menu);
         searchItem = menu.findItem(R.id.action_search);
         doneMenuItem = menu.findItem(R.id.contacts_selection_done);
-        menu.findItem(R.id.action_settings).setVisible(false);
 
         initSearchView();
     }

@@ -22,7 +22,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_bottom_navigation_title_conversations">Bisedat</string>
     <string name="nc_bottom_navigation_title_contacts">Kontaktet</string>
-    <string name="nc_bottom_navigation_title_settings">Rregullimet</string>
+    <string name="nc_settings">Rregullimet</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Adresa e serverit</string>
