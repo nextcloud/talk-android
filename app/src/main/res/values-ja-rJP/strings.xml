@@ -53,6 +53,7 @@
     <string name="nc_search">検索</string>
 
     <string name="nc_certificate_dialog_title">証明書をチェックアウトする</string>
+    <string name="nc_certificate_dialog_text">未確認のSSL証明書を信頼しますか？（ issued by %1$s for %2$s, valid from %3$s to %4$s）</string>
     <string name="nc_yes">はい</string>
     <string name="nc_no">いいえ</string>
     <string name="nc_details">詳細</string>
@@ -151,6 +152,8 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
+    <string name="nc_failed_signaling_settings">ターゲットのサーバは、モバイル経由での公開の会話への参加をサポートしていません
+ あなたはWebブラウザ経由での参加はできるかもしれません。</string>
     <string name="nc_all_ok_operation">OK、すべて完了！</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">会話名</string>
@@ -167,6 +170,31 @@
     <string name="nc_store_short_desc">自分のサーバーを使って私的ビデオ通話とチャットをしてください。</string>
     <string name="nc_configure_cert_auth">認証証明書を選択</string>
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
+    <string name="nc_store_full_desc">ネクストクラウドトークを使用すると、1対1の音声通話やビデオ通話のグループ化、Web会議の作成や参加、チャットメッセージの送信ができます。すべての通信は完全に暗号化され、あなた自身のサーバーによって仲介され、最高のプライバシーを可能にします.Nextcloudトークは使いやすく、常に完全に無料です！
+Nextcloud Talkは以下をサポートします：
+* HD（H.265）音声/ビデオ通話
+*グループと1対1の通話
+*Webinars＆amp; amp;公開Web会議
+*個人とグループのチャット
+*簡単な画面共有
+*AndroidおよびiOS向けモバイルアプリ
+*モバイルコールとチャットプッシュ通知（Google Playからインストールされている場合のみ）
+*NextcloudファイルとNextcloudグループウェアへの統合
+*完全なオープンソース
+*エンドツーエンドの暗号化された呼び出し
+*何百万人ものユーザーに拡大
+*SIPゲート：電話でダイヤルイン
+
+Nextcloud Talkアプリには、Nextcloud Talkサーバーが必要です。 Nextcloudは、あなたのデータをコントロールできるように設計された、プライベートのセルフホストのファイル同期および通信プラットフォームです。自宅、サービスプロバイダー、または企業内の任意のサーバー上で実行され、文書、カレンダー、連絡先、電子メールなどのデータにアクセスできます。異なるNextcloudサーバー間でも他のユーザーと共有したり、ドキュメント上で一緒に仕事をすることができます。
+
+ネクストクラウドは完全オープンソースであり、お客様の用途に合わせて拡張したり、開発に参加したり、私たちが約束していることを単に検証したりすることができます。
+
+何百万人ものユーザーが世界中の企業や家庭で毎日Nextcloudを使用しています。ビジネスユーザーは、Nextcloud GmbHのプロフェッショナルサポートに頼っており、完全にサポートされたエンタープライズ対応の生産性とコラボレーションのためのプラットフォームをIT部門の管理下に置いています。
+
+https://nextcloud.com/talkで詳細を確認してください
+
+https://nextcloud.comでNextCloudを検索</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">メッセージを入力…</string>
     <string name="nc_date_header_yesterday">昨日</string>
