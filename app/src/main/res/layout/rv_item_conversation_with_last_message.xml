@@ -86,7 +86,6 @@
             android:textColor="@color/warm_grey_two" />
 
         <RelativeLayout
-            android:id="@+id/dialogLastMessageLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/dialogName"

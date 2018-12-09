@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Rozmowy</string>
-    <string name="nc_bottom_navigation_title_contacts">Kontakty</string>
     <string name="nc_settings">Ustawienia</string>
 
     <!-- Server selection -->
@@ -38,14 +36,11 @@
     <string name="nc_get_from_provider">Nie masz jeszcze serwera?\nKliknij tu i zdobądź go od dostawcy</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Pobrano nazwę wyświetlaną</string>
     <string name="nc_push_disabled">Powiadomienie push wyłączone</string>
     <string name="nc_capabilities_failed">Błąd pobierania, przerywam żądanie</string>
     <string name="nc_external_server_failed">Nie udało się pobrać ustawień sygnałowych</string>
     <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerywam żądanie</string>
-    <string name="nc_nextcloud_talk_app_installed">Znaleziono aplikację %1$s</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikacja %1$s nie została zainstalowana na serwerze, przerywam żądanie</string>
-    <string name="nc_display_name_stored">Nazwa wyświetlana została zapisana</string>
     <string name="nc_display_name_not_stored">Nie można zapisać nazwy wyświetlanej, przerywam żądanie</string>
 
     <string name="nc_never">Nigdy nie dołączył</string>
@@ -55,7 +50,6 @@
     <string name="nc_certificate_dialog_text">Czy ufasz dotychczas nieznanemu certyfikatowi, wydanemu przez %1$s dla %2$s, ważnemu od %3$s do %4$s?</string>
     <string name="nc_yes">Tak</string>
     <string name="nc_no">Nie</string>
-    <string name="nc_details">Szczegóły</string>
     <string name="nc_certificate_error">Twoje ustawienia SSL uniemożliwiają połaczenie</string>
 
     <!-- Settings -->
@@ -114,15 +108,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Wybierz kontakty</string>
-    <string name="nc_one_contact_selected">wybrany kontakt</string>
-    <string name="nc_more_contacts_selected">wybrane kontakty</string>
-    <string name="nc_contacts_clear">Wyczyść</string>
     <string name="nc_contacts_done">Zrobione</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Potrzebne uprawnienia by ustanowić połączenie video lub/i audio. Proszę nacisnąć \"ZEZWÓL\" w następnym oknie.</string>
-    <string name="nc_permissions_audio">Potrzebne uprawnienia mikrofonu, by zagwarantować połączenia audio. Proszę nacisnąć \"ZEZWÓL\" w następnym oknie.</string>
-    <string name="nc_permissions_video">Potrzebne uprawnienia aparatu, by zagwarantować połączenia video. Proszę nacisnąć \"ZEZWÓL\" w następnym oknie.</string>
     <string name="nc_camera_permission_permanently_denied">Aby używać połączeń video, zezwól aplikacji na używanie aparatu w ustawieniach.</string>
     <string name="nc_microphone_permission_permanently_denied">Aby używać połączeń audio, zezwól aplikacji na używanie mikrofonu w ustawieniach.</string>
     <string name="nc_permissions_settings">Ustawienia</string>
@@ -154,7 +142,6 @@ komórkowe. Możesz próbować dołączyć do rozmowy przez przeglądarkę inter
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Gdy mikrofon jest wyłączony, kliknij &amp; i przytrzymaj aby użyć funkcji Push-to-talk</string>
-    <string name="nc_store_short_desc">Prowadź prywatne rozmowy wideo i czat za pomocą własnego serwera.</string>
     <string name="nc_configure_cert_auth">Wybierz certyfikat uwierzytelnienia</string>
     <string name="nc_change_cert_auth">Zmień certyfikat uwierzytelnienia</string>
     <!-- Chat -->

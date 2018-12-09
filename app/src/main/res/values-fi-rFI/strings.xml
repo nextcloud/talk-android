@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Keskustelut</string>
-    <string name="nc_bottom_navigation_title_contacts">Yhteystiedot</string>
     <string name="nc_settings">Asetukset</string>
 
     <!-- Server selection -->
@@ -33,14 +31,12 @@
     <string name="nc_server_import_accounts_plain">Tuo tilejä</string>
     <string name="nc_server_failed_to_import_account">Valitun tilin tuominen epäonnistui</string>
     <string name="nc_Server_account_imported">Valittu tili on nyt tuotu ja käytettävissä</string>
-    <string name="nc_nextcloud_talk_app_installed">Sovellus %1$s löytyi</string>
     <string name="nc_nextcloud_talk_app_not_installed">Sovellusta %1$s ei ole asennettu, keskeytetään</string>
     <string name="nc_search">Etsi</string>
 
     <string name="nc_certificate_dialog_title">Tarkista varmenne</string>
     <string name="nc_yes">Kyllä</string>
     <string name="nc_no">Ei</string>
-    <string name="nc_details">Tiedot</string>
     <string name="nc_certificate_error">SSL-asetukset esti yhteyden</string>
 
     <!-- Settings -->
@@ -91,9 +87,6 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Valitse yhteystiedot</string>
-    <string name="nc_one_contact_selected">yhteystieto valittu</string>
-    <string name="nc_more_contacts_selected">yhteystietoa valittu</string>
-    <string name="nc_contacts_clear">Tyhjennä</string>
     <string name="nc_contacts_done">Valmis</string>
 
     <string name="nc_permissions_settings">Avaa asetukset</string>

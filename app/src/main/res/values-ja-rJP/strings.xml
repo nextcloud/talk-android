@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">会話</string>
-    <string name="nc_bottom_navigation_title_contacts">連絡先</string>
     <string name="nc_settings">設定</string>
 
     <!-- Server selection -->
@@ -39,14 +37,11 @@
     <string name="nc_get_from_provider">まだサーバーがありませんか？\ nプロバイダーから取得するにはここをクリックしてください</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">取得した表示名</string>
     <string name="nc_push_disabled">プッシュ通知が無効になっています</string>
     <string name="nc_capabilities_failed">機能を取得できませんでした。</string>
     <string name="nc_external_server_failed">シグナリング設定を取得できませんでした</string>
     <string name="nc_display_name_not_fetched">表示名を取得できませんでした。</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s 個のアプリが見つかりました</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s アプリがサーバーにインストールされていません。中断します。</string>
-    <string name="nc_display_name_stored">保存されている表示名</string>
     <string name="nc_display_name_not_stored">表示名を保存できませんでした。</string>
 
     <string name="nc_never">決して参加しなかった</string>
@@ -56,7 +51,6 @@
     <string name="nc_certificate_dialog_text">未確認のSSL証明書を信頼しますか？（ issued by %1$s for %2$s, valid from %3$s to %4$s）</string>
     <string name="nc_yes">はい</string>
     <string name="nc_no">いいえ</string>
-    <string name="nc_details">詳細</string>
     <string name="nc_certificate_error">SSL設定で接続が妨げられました</string>
 
     <!-- Settings -->
@@ -116,15 +110,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">連絡先を選択</string>
-    <string name="nc_one_contact_selected">選択された連絡先</string>
-    <string name="nc_more_contacts_selected">選択された連絡先</string>
-    <string name="nc_contacts_clear">クリア</string>
     <string name="nc_contacts_done">完了</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">ビデオおよび/またはオーディオコールを確立するには、許可を与える必要があります。 次のシステムダイアログで \"ALLOW\"をクリックしてください。</string>
-    <string name="nc_permissions_audio">音声通話を有効にするには、マイクロフォンのアクセス許可を与える必要があります。 次のシステムダイアログで \"ALLOW\"をクリックしてください。</string>
-    <string name="nc_permissions_video">ビデオ通話を有効にするには、カメラのアクセス許可を与える必要があります。 次のシステムダイアログで \"ALLOW\"をクリックしてください。</string>
     <string name="nc_camera_permission_permanently_denied">ビデオ通信を有効にするには、システム設定で「カメラ」権限を与えてください。</string>
     <string name="nc_microphone_permission_permanently_denied">音声通信を有効にするには、システム設定で「マイク」権限を与えてください。</string>
     <string name="nc_permissions_settings">設定を開く</string>
@@ -141,7 +129,6 @@
     <string name="nc_notification_channel_calls">通知チャネルを呼び出す</string>
     <string name="nc_notification_channel_messages">メッセージ通知チャネル</string>
     <string name="nc_notification_channel_calls_description">着信を表示する</string>
-    <string name="nc_notification_channel_Cmessages_description">受信メッセージを表示します。</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_plain_old_messages">メッセージ</string>
     <string name="nc_notify_me_always">常に通知する</string>
@@ -167,7 +154,6 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">プッシュトゥートーク</string>
     <string name="nc_push_to_talk_desc">マイクを無効にして、プッシュツートークを使用する場合は &amp; ホールド</string>
-    <string name="nc_store_short_desc">自分のサーバーを使って私的ビデオ通話とチャットをしてください。</string>
     <string name="nc_configure_cert_auth">認証証明書を選択</string>
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
     <string name="nc_store_full_desc">ネクストクラウドトークを使用すると、1対1の音声通話やビデオ通話のグループ化、Web会議の作成や参加、チャットメッセージの送信ができます。すべての通信は完全に暗号化され、あなた自身のサーバーによって仲介され、最高のプライバシーを可能にします.Nextcloudトークは使いやすく、常に完全に無料です！

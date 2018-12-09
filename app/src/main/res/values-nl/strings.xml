@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Gesprekken</string>
-    <string name="nc_bottom_navigation_title_contacts">Contactpersonen</string>
     <string name="nc_settings">Instellingen</string>
 
     <!-- Server selection -->
@@ -40,14 +38,11 @@
 Kies er eentje van een provider.</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Weergavenaam opgehaald</string>
     <string name="nc_push_disabled">Push meldingen uitgeschakeld</string>
     <string name="nc_capabilities_failed">Kon mogelijkheden niet ophalen, afbreken</string>
     <string name="nc_external_server_failed">Kon signaleringsinstellingen niet ophalen</string>
     <string name="nc_display_name_not_fetched">Weergave kon niet worden opgehaald, afgebroken</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s app gevonden</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app is niet geïnstalleerd op de server, afbreken</string>
-    <string name="nc_display_name_stored">Weergavenaam opgeslagen</string>
     <string name="nc_display_name_not_stored">Kon weergavenaam niet opslaan, afbreken</string>
 
     <string name="nc_never">Nooit deelgenomen</string>
@@ -57,7 +52,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nee</string>
-    <string name="nc_details">Details</string>
     <string name="nc_certificate_error">Je SSL-instellingen voorkomen verbinding</string>
 
     <!-- Settings -->
@@ -117,18 +111,9 @@ Kies er eentje van een provider.</string>
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecteer contacten</string>
-    <string name="nc_one_contact_selected">contact geselecteerd</string>
-    <string name="nc_more_contacts_selected">contacten geselecteerd</string>
-    <string name="nc_contacts_clear">Schoonmaken</string>
     <string name="nc_contacts_done">Gereed</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Permissies zijn nodig om een video- en/of audiogesprek te starten. Druk 
-op \"TOESTAAN\" in de volgende systeemdialoog.</string>
-    <string name="nc_permissions_audio">Er zijn microfoonpermissies nodig zijn om een audiogesprek te starten. Druk 
-op \"TOESTAAN\" in de volgende systeemdialoog.</string>
-    <string name="nc_permissions_video">Er zijn camerapermissies nodig zijn om een videogesprek te starten. Druk 
-op \"TOESTAAN\" in de volgende systeemdialoog.</string>
     <string name="nc_camera_permission_permanently_denied">Om videogesprekken te houden, verleen \"Camera\" permissies in de systeeminstellingen.</string>
     <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" permissies in de systeeminstellingen.</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
@@ -146,7 +131,6 @@ via een persoonlijke link.</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
     <string name="nc_notification_channel_messages">Berichtennotificatiekanaal</string>
     <string name="nc_notification_channel_calls_description">Toont inkomende gesprekken</string>
-    <string name="nc_notification_channel_Cmessages_description">Toont inkomende berichten</string>
     <string name="nc_notification_settings">Meldingsinstellingen</string>
     <string name="nc_plain_old_messages">Berichten</string>
     <string name="nc_notify_me_always">Altijd waarschuwen</string>
@@ -172,34 +156,8 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Druk-om-te-praten</string>
     <string name="nc_push_to_talk_desc">Met uitgeschakelde microfoon, klik&amp;indrukken om Druk-om-te-praten te gebruiken</string>
-    <string name="nc_store_short_desc">Heb vertrouwelijke videogesprekken en chats via je eigen server.</string>
     <string name="nc_configure_cert_auth">Selecteer authenticatiecertificaat</string>
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
-    <string name="nc_store_full_desc">Gebruik Nextcloud Talk om een één-op-één of groeps- audio- of videogesprek te houden, voor het starten of deelnemen aan web conferenties en voor het versturen van berichten. Alle communicatie is volledig versleuteld en verwerkt via je eigen server, waardoor je de hoogst mogelijke graad van privacy bereikt.
-
-Nextcloud Talk is gemakkelijk te gebruiken en is altijd helemaal gratis!
-
-Nextcloud Talk ondersteunt:
-* HD (H.265) audio/video gesprekken
-* Groeps en één-op-één gesprekken
-* Webinars &amp; openbare web bijeenkomsten
-* Individuele en groepschat
-* Eenvoudig delen van je scherm
-* Mobiele apps voor Android en iOS
-* Mobiele gespreks- &amp; chat push meldingen
-* Integratie in Nextcloud Bestanden en Nextcloud Groupware
-* Volledig on-premise, 100% open source
-* Begin-tot-eind versleutelde gesprekken
-* Schaalbaar tot miljoenen gebruikers
-* SIP gate: inbellen per telefoon
-
-De Nextcloud Talk app vereist een Nextcloud Talk server. Nextcloud is een besloten, self-hosted bestandssynchronisatie- en communicatieplatform, ontwikkeld om jou weer in control over jouw gegevens te laten zijn. Het draait op een server van jouw keuze, thuis, bij een service provider of in je bedrijf en geeft je toegang tot je documenten, agenda\'s, contactpersonen, e-mail en andere gegevens. Je kunt delen met anderen, ook over verschillende Nextcloud servers en samenwerken aan documenten. Nextcloud is volledig open source, waardoor je de mogelijkheid hebt om het uit te breiden voor je eigen gebruik, om mee te doen aan de ontwikkeling ervan, of om simpelweg te controleren of het doet wat we beloven.
-
-Miljoenen mensen gebruiken Nextcloud dagelijks voor hun werk of thuis. Professionele gebruikers vertrouwen op de professionele ondersteuning van Nextcloud GmbH, waarbij ze een volledig ondersteunde, enterprise-ready platform voor productiviteit en samenwerking hebben, geheel onder controle van hun IT afdeling.
-
-Meer informatie op https://nextcloud.com/talk
-
-Bezoek Nextcloud op https://nextcloud.com</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Voer een bericht in...</string>

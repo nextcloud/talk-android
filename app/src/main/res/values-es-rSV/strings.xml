@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Conversaciones</string>
-    <string name="nc_bottom_navigation_title_contacts">Contactos</string>
     <string name="nc_settings">Configuraciones</string>
 
     <!-- Server selection -->
@@ -39,13 +37,10 @@
     <string name="nc_get_from_provider">¿Aún no cuentas con un servidor?\nHaz click aquí para obtener uno de un proveedor</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Se obtuvo el nombre a desplegar</string>
     <string name="nc_push_disabled">Notificaciones push deshabilitadas</string>
     <string name="nc_capabilities_failed">Se presentó una falla al recuperar las capacidades, abortando</string>
     <string name="nc_display_name_not_fetched">No se pudo obtener el nombre a desplegar, abortando</string>
-    <string name="nc_nextcloud_talk_app_installed">Aplicación %1$s encontrada</string>
     <string name="nc_nextcloud_talk_app_not_installed">La aplicación %1$s no está instalada en el servidor, abortando</string>
-    <string name="nc_display_name_stored">Nombre a mostrar almacenado</string>
     <string name="nc_display_name_not_stored">No se pudo almacenar el nombre a desplegar, abortando</string>
 
     <string name="nc_never">Nunca se unió</string>
@@ -55,7 +50,6 @@
     <string name="nc_certificate_dialog_text">¿Confias en el certificado SSL, hasta ahora desconocido, emitido por %1$s para %2$s, con validez del %3$s al %4$s?</string>
     <string name="nc_yes">Sí</string>
     <string name="nc_no">No</string>
-    <string name="nc_details">Detalles</string>
     <string name="nc_certificate_error">Tu configuración de SSL impidió la conexión</string>
 
     <!-- Settings -->
@@ -101,15 +95,9 @@
     <string name="nc_join_via_web">Únete vía web</string>
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecciona los contactos</string>
-    <string name="nc_one_contact_selected">contacto seleccionado</string>
-    <string name="nc_more_contacts_selected">contactos seleccionados</string>
-    <string name="nc_contacts_clear">Limpiar</string>
     <string name="nc_contacts_done">Terminado</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Hay permisos que necesitan ser otorgados para establecer una video y/o audio llamada. Por favor haz click en \"PERMITIR\" en la sigueinte ventana de diálogo del sistema. </string>
-    <string name="nc_permissions_audio">El permiso de micrófono necesita ser otorgado para habilitar llamadas de audio. Por favor haz click en \"PERMITIR\" en la siguiente ventana de diálogo del sistema. </string>
-    <string name="nc_permissions_video">El permiso de la cámara necesita ser otorgado para habilitar video llamadas. Por favor haz click en \"PERMITIR\" en la siguiente ventana de diálogo del sistema. </string>
     <string name="nc_camera_permission_permanently_denied">Para habilitar la comunicación con video por favor otorga el permiso de \"Cámara\" en la configuración del sistema. </string>
     <string name="nc_microphone_permission_permanently_denied">Para habilitar la comunicacion con voz por favor otorga el privilegio de \"Microfono\" en las configuraciones del sistema. </string>
     <string name="nc_permissions_settings">Abrir configuraciones</string>
@@ -141,7 +129,6 @@ teléfonos móviles. Puedes intentar unirte a la conversación a través de un n
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Presiona-para-hablar</string>
     <string name="nc_push_to_talk_desc">Con el microfono deshabilitado, haz click &amp; presiona para usar Presiona-para-hablar</string>
-    <string name="nc_store_short_desc">Haz video llamadas y chats privados usnaod tu propio servidor.</string>
     <string name="nc_configure_cert_auth">Seleccionar el certificado de autenticación</string>
     <string name="nc_change_cert_auth">Cambiar el certificado de atuenticación</string>
     <!-- Chat -->

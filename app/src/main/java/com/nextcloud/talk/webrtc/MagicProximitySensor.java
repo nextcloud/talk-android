@@ -92,7 +92,7 @@ public class MagicProximitySensor implements SensorEventListener {
     /**
      * Deactivate the proximity sensor.
      */
-    public void stop() {
+    void stop() {
         threadChecker.checkIsOnValidThread();
         if (proximitySensor == null) {
             return;
@@ -103,7 +103,7 @@ public class MagicProximitySensor implements SensorEventListener {
     /**
      * Getter for last reported state. Set to true if "near" is reported.
      */
-    public boolean sensorReportsNearState() {
+    boolean sensorReportsNearState() {
         threadChecker.checkIsOnValidThread();
         return lastStateReportIsNear;
     }
@@ -171,10 +171,8 @@ public class MagicProximitySensor implements SensorEventListener {
                 .append(", resolution: ").append(proximitySensor.getResolution())
                 .append(", max range: ").append(proximitySensor.getMaximumRange())
                 .append(", min delay: ").append(proximitySensor.getMinDelay());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            // Added in API level 20.
-            info.append(", type: ").append(proximitySensor.getStringType());
-        }
+        // Added in API level 20.
+        info.append(", type: ").append(proximitySensor.getStringType());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Added in API level 21.
             info.append(", max delay: ").append(proximitySensor.getMaxDelay())

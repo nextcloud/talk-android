@@ -125,9 +125,6 @@
     <string name="nc_contacts_done">Done</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Permissions need to be granted to establish a video and/or audio call. Please click \"ALLOW\" in the upcoming system dialog.</string>
-    <string name="nc_permissions_audio">Microphone permission needs to be granted to enable audio calls. Please click \"ALLOW\" in the upcoming system dialog.</string>
-    <string name="nc_permissions_video">Camera permission needs to be granted to enable video calls. Please click \"ALLOW\" in the upcoming system dialog.</string>
     <string name="nc_camera_permission_permanently_denied">To enable video communication please grant \"Camera\" permission in the system settings.</string>
     <string name="nc_microphone_permission_permanently_denied">To enable voice communication please grant \"Microphone\" permission in the system settings.</string>
     <string name="nc_permissions_settings">Open settings</string>
@@ -145,7 +142,6 @@
     <string name="nc_notification_channel_calls">Calls notification channel</string>
     <string name="nc_notification_channel_messages">Messages notification channel</string>
     <string name="nc_notification_channel_calls_description">Shows incoming calls</string>
-    <string name="nc_notification_channel_Cmessages_description">Shows incoming messages</string>
     <string name="nc_notification_settings">Notification settings</string>
     <string name="nc_plain_old_messages">Messages</string>
     <string name="nc_notify_me_always">Always notify</string>
@@ -171,34 +167,8 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">With microphone disabled, click&amp;hold to use Push-to-talk</string>
-    <string name="nc_store_short_desc">Have private video calls and chat using your own server.</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
-    <string name="nc_store_full_desc">Use Nextcloud Talk to have one-on-one or group audio or video calls, create or join web conferences and send chat messages. All communication is fully encrypted and mediated by your own server, providing the highest degree of privacy possible.
-
-Nextcloud Talk is easy to use and will always be completely free!
-
-Nextcloud Talk supports:
-* HD (H.265) audio/video calls
-* Group and one-on-one calls
-* Webinars &amp; public web meetings
-* Individual and group chat
-* Easy screen sharing
-* Mobile apps for Android and iOS
-* Mobile call &amp; chat push notifications (only if installed from Google Play)
-* Integration in Nextcloud Files and Nextcloud Groupware
-* Fully on-premise, completely open source
-* End-to-end Encrypted calls
-* Scaling to millions of users
-* SIP gate: dial in by phone
-
-The Nextcloud Talk app requires a Nextcloud Talk server to function. Nextcloud is a private, self-hosted file sync and communication platform, designed to put you back in control over your data. It runs on a server of your choice, be it at home, at a service provider or in your enterprise, and gives you access to your documents, calendars, contacts, email and other data. You can share with others even across different Nextcloud servers and work together on documents. Nextcloud is fully open source, giving you the option to extend them for your own use, participate in their development or simply verify they do what we promise.
-
-Millions of users use Nextcloud daily at businesses and homes around the world. Business users rely on the professional support of Nextcloud GmbH, making sure they have a fully supported, enterprise-ready platform for productivity and collaboration, fully under control of their IT department.
-
-Learn more on https://nextcloud.com/talk
-
-Find Nextcloud on https://nextcloud.com</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message…</string>

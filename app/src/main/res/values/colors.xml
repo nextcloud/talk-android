@@ -3,7 +3,6 @@
     <color name="colorPrimary">#0082C9</color>
     <color name="colorPrimaryDark">#006AA3</color>
     <color name="colorAccent">#007CC2</color>
-    <color name="secondaryColorAccent">#7CC4E6</color>
     <color name="nc_outcoming_text_default">@color/white</color>
     <color name="nc_incoming_text_default">#37505D</color>
     <color name="nc_incoming_text_mention_you">#C98879</color>

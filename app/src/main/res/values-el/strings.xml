@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Συζητήσεις</string>
-    <string name="nc_bottom_navigation_title_contacts">Επαφές</string>
     <string name="nc_settings">Ρυθμίσεις</string>
 
     <!-- Server selection -->
@@ -39,7 +37,6 @@
     <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
     <string name="nc_yes">Ναι</string>
     <string name="nc_no">Όχι</string>
-    <string name="nc_details">Λεπτομέρειες</string>
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Διαμεσολαβητής</string>
     <string name="nc_settings_proxy_type_title">Τύπος διαμεσολαβητή</string>
@@ -79,9 +76,6 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Επιλογή επαφών</string>
-    <string name="nc_one_contact_selected">η επαφή επιλέχθηκε</string>
-    <string name="nc_more_contacts_selected">οι επαφές επιλέχθηκαν</string>
-    <string name="nc_contacts_clear">Εκκαθάριση</string>
     <string name="nc_contacts_done">Ολοκληρώθηκε</string>
 
     <string name="nc_permissions_settings">Άνοιγμα ρυθμίσεων</string>
@@ -101,7 +95,6 @@
     <string name="nc_share_subject">%1$s πρόσκληση</string>
     <string name="nc_share_text_pass">\nΣυνθηματικό: %1$s</string>
 
-    <string name="nc_store_short_desc">Ιδιωτικές κλήσεις βίντεο και συνομιλίας με την χρήση δικό σας διακομιστή.</string>
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Εισάγετε ένα μήνυμα…</string>
     <string name="nc_date_header_yesterday">Χθές</string>

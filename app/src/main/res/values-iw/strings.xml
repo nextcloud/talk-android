@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">דיונים</string>
-    <string name="nc_bottom_navigation_title_contacts">אנשי קשר</string>
     <string name="nc_settings">הגדרות</string>
 
     <!-- Server selection -->
@@ -39,13 +37,10 @@
     <string name="nc_get_from_provider">עדיין אין לך שרת?\nניתן ללחוץ כאן ולקבל אחת מספק</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">שם התצוגה אוחזר</string>
     <string name="nc_push_disabled">התראות בדחיפה הושבתו</string>
     <string name="nc_capabilities_failed">אחזור היכולות נכשל, התהליך נפסק</string>
     <string name="nc_display_name_not_fetched">לא ניתן לאחזר את שם התצוגה, התהליך נפסק</string>
-    <string name="nc_nextcloud_talk_app_installed">נמצא היישומון %1$s</string>
     <string name="nc_nextcloud_talk_app_not_installed">היישומון %1$s אינו מותקן על השרת, הפעולה מבוטלת</string>
-    <string name="nc_display_name_stored">שם התצוגה אוחסן</string>
     <string name="nc_display_name_not_stored">לא ניתן לאחסן את שם התצוגה, התהליך נפסק</string>
 
     <string name="nc_search">חיפוש</string>
@@ -53,7 +48,6 @@
     <string name="nc_certificate_dialog_title">חקירת האישור</string>
     <string name="nc_yes">כן</string>
     <string name="nc_no">לא</string>
-    <string name="nc_details">פרטים</string>
     <string name="nc_certificate_error">הגדרות ה־SSL שלך מנעו חיבור</string>
 
     <!-- Settings -->
@@ -112,9 +106,6 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">בחירת אנשי קשר</string>
-    <string name="nc_one_contact_selected">נבחר איש קשר</string>
-    <string name="nc_more_contacts_selected">נבחרו אנשי קשר</string>
-    <string name="nc_contacts_clear">מחיקה</string>
     <string name="nc_contacts_done">סיום</string>
 
     <string name="nc_permissions_settings">פתיחת הגדרות</string>
@@ -137,7 +128,6 @@
     <string name="nc_wrong_link">הקישור לדיון אינו תקף</string>
     <string name="nc_share_text_pass">\nססמה: %1$s</string>
 
-    <string name="nc_store_short_desc">שיחות וידאו והתכתבות דרך השרת שלך.</string>
     <string name="nc_configure_cert_auth">בחירת אישור לאימות</string>
     <string name="nc_change_cert_auth">החלפת אישור לאימות</string>
     <!-- Chat -->

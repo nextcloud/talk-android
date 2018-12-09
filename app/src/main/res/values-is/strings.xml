@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Samtöl</string>
-    <string name="nc_bottom_navigation_title_contacts">Tengiliðir</string>
     <string name="nc_settings">Stillingar</string>
 
     <!-- Server selection -->
@@ -39,14 +37,11 @@
     <string name="nc_get_from_provider">Ertu ekki enn með skýjaþjón?\nSmelltu hér til að fá þér einn frá þjónustuaðila.</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Náð í birtingarnafn</string>
     <string name="nc_push_disabled">Ýtitilkynningar óvirkar</string>
     <string name="nc_capabilities_failed">Mistókst að sækja getuupplýsingar, hætti</string>
     <string name="nc_external_server_failed">Mistókst að sækja stillingar merkjasendinga</string>
     <string name="nc_display_name_not_fetched">Gat ekki náð í birtingarnafn, hætti</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s forrit fannst</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s forritið ekki uppsett á þjóninu, hætti við</string>
-    <string name="nc_display_name_stored">Birtingarnafn geymt</string>
     <string name="nc_display_name_not_stored">Gat ekki geymt birtingarnafn, hætti</string>
 
     <string name="nc_never">Skráði sig aldrei</string>
@@ -56,7 +51,6 @@
     <string name="nc_certificate_dialog_text">Treystirðu hinu hingað til óþekkta SSL-skilríki, útgefnu af %1$s fyrir %2$s, með gildistíma frá %3$s til %4$s?</string>
     <string name="nc_yes">Já</string>
     <string name="nc_no">Nei</string>
-    <string name="nc_details">Nánar</string>
     <string name="nc_certificate_error">SSL-uppsetningin þín kom í veg fyrir tengingu</string>
 
     <!-- Settings -->
@@ -116,15 +110,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Veldu tengiliði</string>
-    <string name="nc_one_contact_selected">tengiliður valinn</string>
-    <string name="nc_more_contacts_selected">tengiliðir valdir</string>
-    <string name="nc_contacts_clear">Hreinsa</string>
     <string name="nc_contacts_done">Lokið</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Veita þarf heimildir til að hægt sé að koma á mynd- og/eða hljóðsamtali. Smelltu á \"LEYFA\" í kerfisglugganum sem birtist.</string>
-    <string name="nc_permissions_audio">Veita þarf heimild til að nota hljóðnema til að hægt sé að koma á hljóðsamtölum. Smelltu á \"LEYFA\" í kerfisglugganum sem birtist.</string>
-    <string name="nc_permissions_video">Veita þarf heimild til að nota myndavél til að hægt sé að koma á myndsamtölum. Smelltu á \"LEYFA\" í kerfisglugganum sem birtist.</string>
     <string name="nc_camera_permission_permanently_denied">Til að koma á myndsamtölum þarftu að veita heimildir fyrir \"Myndavél\" í kerfisstillingunum.</string>
     <string name="nc_microphone_permission_permanently_denied">Til að koma á hljóðsamtölum þarftu að veita heimildir fyrir \"Hljóðnemi\" í kerfisstillingunum.</string>
     <string name="nc_permissions_settings">Opna stillingar</string>
@@ -142,7 +130,6 @@
     <string name="nc_notification_channel_calls">Rás fyrir tilkynningar um samtöl</string>
     <string name="nc_notification_channel_messages">Rás fyrir tilkynningar um skilaboð</string>
     <string name="nc_notification_channel_calls_description">Sýnir innhringd símtöl</string>
-    <string name="nc_notification_channel_Cmessages_description">Birtir skilaboð sem berast</string>
     <string name="nc_notification_settings">Stillingar á tilkynningum</string>
     <string name="nc_plain_old_messages">Skilaboð</string>
     <string name="nc_notify_me_always">Alltaf tilkynna</string>
@@ -168,7 +155,6 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Ýta-til-að-tala</string>
     <string name="nc_push_to_talk_desc">Með hljóðnemann óvirkan, smelltu og haltu niðri til að nota Ýta-til-að-tala</string>
-    <string name="nc_store_short_desc">Haltu úti eigin myndsamtölum og spjalli á þínum eigin þjóni.</string>
     <string name="nc_configure_cert_auth">Veldu skilríki fyrir auðkenningu</string>
     <string name="nc_change_cert_auth">Skipta um skilríki fyrir auðkenningu</string>
     <!-- Chat -->

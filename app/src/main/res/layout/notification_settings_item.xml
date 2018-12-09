@@ -43,7 +43,6 @@
             apc:mp_title="@string/nc_plain_old_messages"></com.yarolegovich.mp.MaterialChoicePreference>
 
         <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/conversation_info_mute_calls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_default_value="false"

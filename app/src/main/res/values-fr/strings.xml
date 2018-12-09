@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Conversations</string>
-    <string name="nc_bottom_navigation_title_contacts">Contacts</string>
     <string name="nc_settings">Paramètres</string>
 
     <!-- Server selection -->
@@ -39,14 +37,11 @@
     <string name="nc_get_from_provider">Vous n\'avez pas encore de serveur?\nCliquez-ici pour en obtenir un chez un fournisseur d\'accès.</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Nom affiché récupéré</string>
     <string name="nc_push_disabled">Notifications push désactivées</string>
     <string name="nc_capabilities_failed">Échec d\'extraction des capacités, abandon</string>
     <string name="nc_external_server_failed">Échec de l\'extraction des paramètres de signalisation</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
-    <string name="nc_nextcloud_talk_app_installed">Application %1$s trouvée</string>
     <string name="nc_nextcloud_talk_app_not_installed">Application %1$s non installée sur le serveur, abandon</string>
-    <string name="nc_display_name_stored">Nom à afficher enregistré</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
 
     <string name="nc_never">Jamais contacté</string>
@@ -56,7 +51,6 @@
     <string name="nc_certificate_dialog_text">Faites-vous confiance au certificat SSL jusque là inconnu, émis par %1$s pour%2$s, et est valide du %3$s au %4$s ?</string>
     <string name="nc_yes">Oui</string>
     <string name="nc_no">Non</string>
-    <string name="nc_details">Détails</string>
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
 
     <!-- Settings -->
@@ -116,15 +110,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Choisissez un contact</string>
-    <string name="nc_one_contact_selected">contact sélectionné</string>
-    <string name="nc_more_contacts_selected">contacts sélectionnés</string>
-    <string name="nc_contacts_clear">Effacer</string>
     <string name="nc_contacts_done">Terminé</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Des autorisations sont requises pour établir un appel video et/ou audio. Merci de cliquer sur \"AUTORISER\" dans la prochaine boîte de dialogue système.</string>
-    <string name="nc_permissions_audio">L\'autorisation du microphone est requise pour établir un appel audio. Merci de cliquer sur \"AUTORISER\" dans la prochaine boîte de dialogue système.</string>
-    <string name="nc_permissions_video">L\'autorisation de la caméra est requise pour établir un appel vidéo. Merci de cliquer sur \"AUTORISER\" dans la prochaine boîte de dialogue système.</string>
     <string name="nc_camera_permission_permanently_denied">Pour établir une communication vidéo, veuillez autoriser l’utilisation de la caméra dans les paramètres du système.</string>
     <string name="nc_microphone_permission_permanently_denied">Pour établir une communication audio, veuillez autoriser l’utilisation du microphone dans les paramètres du système.</string>
     <string name="nc_permissions_settings">Ouvrir les paramètres</string>
@@ -142,7 +130,6 @@ grâce à un lien spécialement créé.</string>
     <string name="nc_notification_channel_calls">Canal de notification des appels</string>
     <string name="nc_notification_channel_messages">Canal de notification des messages</string>
     <string name="nc_notification_channel_calls_description">Afficher les appels entrants</string>
-    <string name="nc_notification_channel_Cmessages_description">Afficher les messages entrants</string>
     <string name="nc_notification_settings">Paramètres de notification</string>
     <string name="nc_plain_old_messages">Messages</string>
     <string name="nc_notify_me_always">Toujours notifier</string>
@@ -168,34 +155,8 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">fonction Talkie-Walkie</string>
     <string name="nc_push_to_talk_desc">Si le micro est désactivé, maintenez &amp; pour utiliser la fonction Talkie-Walkie</string>
-    <string name="nc_store_short_desc">Ayez des appels vidéos et des discussions privés en utilisant votre propre serveur.</string>
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
-    <string name="nc_store_full_desc">Utilisez Nextcloud Talk pour passer des appels audio ou vidéo en tête-à-tête ou en groupe, créer ou participer à des conférences Web et envoyer des messages instantanés. Toutes les communications sont entièrement chiffrées et transmises par votre propre serveur, offrant ainsi le plus haut degré de confidentialité possible.
-
-Nextcloud Talk est facile à utiliser et sera toujours entièrement gratuit !
-
-Nextcloud Talk prend en charge :
-* Appels audio/vidéo HD (H.265)
-* Appels de groupe et en tête-à-tête
-* Webinaires et réunions publiques sur le Web
-* Chat individuel et de groupe
-* Partage d\'écran facile
-* Applications mobiles pour Android et iOS
-* Notifications de chat mobile (seulement si installé à partir de Google Play)
-* Intégration dans Nextcloud Files et Nextcloud Groupware.
-* Entièrement sur votre serveur, complètement open source.
-* Appels chiffrés de bout en bout
-* Adapté pour des millions d\'utilisateurs
-* Support du protocole SIP : composer le numéro avec votre téléphone
-
-L\'application Nextcloud Talk nécessite un serveur Nextcloud Talk pour fonctionner. Nextcloud est une plateforme privée de synchronisation de fichiers et de communication, conçue pour vous permettre de reprendre le contrôle de vos données. Il fonctionne sur le serveur de votre choix, que ce soit à la maison, chez un fournisseur de services ou dans votre entreprise, et vous donne accès à vos documents, calendriers, contacts, courriels et autres données. Vous pouvez partager avec d\'autres personnes, même sur différents serveurs Nextcloud et travailler ensemble sur des documents. Nextcloud est entièrement open source, vous donnant la possibilité de les étendre pour votre propre usage, de participer à leur développement ou simplement de vérifier qu\'ils font ce que nous promettons.
-
-Des millions d\'utilisateurs utilisent Nextcloud quotidiennement dans les entreprises et les foyers du monde entier. Les utilisateurs professionnels s\'appuient sur le support professionnel de Nextcloud GmbH pour s\'assurer qu\'ils disposent d\'une plate-forme de productivité et de collaboration entièrement prise en charge et prête pour l\'entreprise, sous le contrôle total de leur département informatique.
-
-Pour en savoir plus, rendez-vous sur https://nextcloud.com/talk
-
-Retrouvez Nextcloud sur https://nextcloud.com</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Saisir un message…</string>

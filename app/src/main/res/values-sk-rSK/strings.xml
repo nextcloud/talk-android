@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Rozhovory</string>
-    <string name="nc_bottom_navigation_title_contacts">Kontakty</string>
     <string name="nc_settings">Nastavenia</string>
 
     <!-- Server selection -->
@@ -39,14 +37,11 @@
     <string name="nc_get_from_provider">Ešte nemáte server? \nKliknite sem a získajte jeden od poskytovateľa</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Zobrazované meno načítané</string>
     <string name="nc_push_disabled">Push notifikácie vypnuté</string>
     <string name="nc_capabilities_failed">Nepodarilo sa načítať funkcie, prerušujem</string>
     <string name="nc_external_server_failed">Nepodarilo sa načítať nastavenia signalizácie</string>
     <string name="nc_display_name_not_fetched">Zobrazované meno sa nedalo načítať, ruším</string>
-    <string name="nc_nextcloud_talk_app_installed">Aplikácia %1$s nájdená</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikácia %1$snie je nainštalovaná na servri, ruším</string>
-    <string name="nc_display_name_stored">Zobrazované meno uložené</string>
     <string name="nc_display_name_not_stored">Nedá sa uložiť zobrazované meno, ruším</string>
 
     <string name="nc_never">Nikdy nepridaný</string>
@@ -56,7 +51,6 @@
     <string name="nc_certificate_dialog_text">Dôverujete tomuto doteraz neznámemu SSL certifikátu, vydaného %1$s pre %2$s, platného od %3$s do %4$s ?</string>
     <string name="nc_yes">Áno</string>
     <string name="nc_no">Nie</string>
-    <string name="nc_details">Podrobnosti</string>
     <string name="nc_certificate_error">Vaša konfigurácia SSL zabránila pripojeniu</string>
 
     <!-- Settings -->
@@ -116,15 +110,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Vyberte si kontakty</string>
-    <string name="nc_one_contact_selected">kontakt označený</string>
-    <string name="nc_more_contacts_selected">kontakty označené</string>
-    <string name="nc_contacts_clear">Vyčistiť</string>
     <string name="nc_contacts_done">Hotovo</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Aby ste mohli uskutočniť video a/alebo audio hovor, musíte udeliť aplikácii povolenia. Prosím, kliknite \"POVOLIŤ\" na ďalšom systémovom dialógu.</string>
-    <string name="nc_permissions_audio">Ak chcete telefonovať, musíte povoliť aplikácii používanie mikrofónu. Prosím, kliknite \"POVOLIŤ\" v nasledujúcom systémovom dialógu.</string>
-    <string name="nc_permissions_video">Ak chcete videohovory, musíte aplikácii povoliť používanie kamery. Prosím, kliknite \"POVOLIŤ\" v nasledujúcom systémovom dialógu.</string>
     <string name="nc_camera_permission_permanently_denied">Na zapnutie video komunikácie, prosím povoľte \"Fotoaparát\" v nastaveniach systému.</string>
     <string name="nc_microphone_permission_permanently_denied">Na zapnutie hlasovej komunikácie, prosím povoľte \"Mikrofón\" v nastaveniach systému.</string>
     <string name="nc_permissions_settings">Otvoriť nastavenia</string>
@@ -142,7 +130,6 @@
     <string name="nc_notification_channel_calls">Oznamovací kanál hovorov</string>
     <string name="nc_notification_channel_messages">Oznamovací kanál správ</string>
     <string name="nc_notification_channel_calls_description">Ukazuje prichádzajúce hovory</string>
-    <string name="nc_notification_channel_Cmessages_description">Ukazuje prichádzajúce správy</string>
     <string name="nc_notification_settings">Nastavenie notifikácií</string>
     <string name="nc_plain_old_messages">Správy</string>
     <string name="nc_notify_me_always">Notifikuj vždy</string>
@@ -168,34 +155,8 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Stlač a hovor PTT</string>
     <string name="nc_push_to_talk_desc">S vypnutým mikrofónom, kliknite &amp;podržte pre použitie funkcie Stlač a hovor PTT</string>
-    <string name="nc_store_short_desc">Používajte súkromné video hovory a chat na vlastnom serveri.</string>
     <string name="nc_configure_cert_auth">Vybrať autentifikačný certifikát</string>
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
-    <string name="nc_store_full_desc">Používajte Nextcloud Talk a majte súkromné alebo skupinové audio alebo video hovory, vytvorte alebo sa pripojte na web konferencie a posielajte chat správy. Všetka komunikácia je plne šifrovaná a sprostredkovaná vašim vlastným serverom, čo umožňuje najvyššiu možnú mieru súkromia.
-
-Nextcloud Talk je ľahko použiteľný a vždy bude úplne zdarma!
-
-Nextcloud Talk podporuje:
-* HD (H.265) audio/video hovory
-* Skupinové a súkromné hovory
-* Webináre&amp; verejné web stretnutia
-* Individuálny a skupinový chat
-* Ľahké zdieľanie obrazovky
-* Mobilné aplikácie pre Android a iOS
-* Push oznámenia mobilných hovorov &amp; chatu (len pri inštalácii z Google Play)
-* Integrované v Nextcloud Files a Nextcloud Groupware
-* Plne na sľube, 100% open source
-* End-to-end Šifrované hovory
-* Prispôsobenie pre milióny používateľov
-* brána SIP: vytočte číslo telefónom
-
-Aplikácia Nextcloud Talk vyžaduje Nextcloud Talk server, aby fungovala. Nextcloud je privátna, sebou hosťovaná platforma na synchronizáciu súborov a komunikáciu, navrhnutá tak, aby ste získali späť kontrolu nad svojimi dátami. Beží na serveri podľa vlastného výberu, či už je to doma, u  poskytovateľa služieb alebo vo vašom podniku, a poskytuje vám prístup k vašim dokumentom, kalendárom, kontaktom, emailu a ostatným dátam. Môžete zdieľať s ostatnými aj cez iné Nextcloud servre a pracovať spolu na dokumentoch. Nextcloud je plne open source, čo vám dáva možnosť rozšíriť ich na vlastné použitie, podieľať sa na ich vývoji alebo si jednoducho overiť, že robia to, čo sľubujú.
-
-Milióny užívateľov používajú Nextcloud denne v podnikoch a domácnostiach po celom svete. Podnikoví používatelia sa spoliehajú na profesionálnu podporu spoločnosti Nextcloud GmbH, aby si boli istí, že majú plne podporovanú, podnikovo-pripravenú platformu pre produktivitu a spoluprácu, plne pod kontrolou ich IT oddelenia.
-
-Naučte sa viac na https://nextcloud.com/talk
-
-Nextcloud nájdete na https://nextcloud.com</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Napíšte správu</string>

@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Samtaler</string>
-    <string name="nc_bottom_navigation_title_contacts">Kontakter</string>
     <string name="nc_settings">Innstillinger</string>
 
     <!-- Server selection -->
@@ -39,11 +37,8 @@
     <string name="nc_get_from_provider">Har du ingen tjener enda?\nKlikk her for å opprette en hos en tilbyder</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Visningsnavn hentet</string>
     <string name="nc_display_name_not_fetched">Kunne ikke hente visningsnavn, avbryter</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s program funnet</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s-programmet er ikke installert på tjeneren, avbryter</string>
-    <string name="nc_display_name_stored">Visningsnavn lagret</string>
     <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
 
     <string name="nc_never">Har aldri deltatt</string>
@@ -53,14 +48,13 @@
     <string name="nc_certificate_dialog_text">Ønsker du å stole på det hittil ukjente SSL-sertifikatet, utstedt av %1$s for %2$s gyldig fra %3$s til %4$s?</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nei</string>
-    <string name="nc_details">Detaljer</string>
     <string name="nc_certificate_error">Ditt SSL-oppsett forhindret tilkobling</string>
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Mellomtjener</string>
-    <string name="nc_settings_proxy_type_title">Type mellomtjener</string>
-    <string name="nc_settings_proxy_host_title">Mellomtjener </string>
-    <string name="nc_settings_proxy_port_title">Mellomtjener port</string>
+    <string name="nc_settings_proxy_type_title">Proxy type</string>
+    <string name="nc_settings_proxy_host_title">Proxy vert</string>
+    <string name="nc_settings_proxy_port_title">Proxy port</string>
     <string name="nc_settings_use_credentials_title">Påloggingsdetaljer</string>
     <string name="nc_settings_switch_account">Bytt mellom kontoer</string>
     <string name="nc_settings_reauthorize">Reautoriser</string>
@@ -70,7 +64,7 @@
     <string name="nc_settings_no_talk_installed">Talk-programmet er ikke installert på tjeneren du prøvde autorisere deg mot</string>
     <string name="nc_settings_account_updated">Din allerede eksisterende konto ble oppdatert, istedenfor å legge til en ny</string>
     <string name="nc_account_scheduled_for_deletion">Kontoen er planlagt slettet, og kan ikke endres.</string>
-    <string name="nc_no_proxy">Ingen mellomtjener</string>
+    <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Brukernavn</string>
     <string name="nc_password">Passord</string>
     <string name="nc_conversation_link">Samtale lenke</string>
@@ -88,19 +82,13 @@
     <string name="nc_clear_password">Tøm passord</string>
     <string name="nc_share_link">Del lenke</string>
     <string name="nc_share_link_via">Del lenke via</string>
-    <string name="nc_join_via_link">Bli med via lenke</string>
-    <string name="nc_join_via_web">Bli med via nett</string>
+    <string name="nc_join_via_link">Ta del via lenke</string>
+    <string name="nc_join_via_web">Ta del via nett</string>
     <!-- Contacts -->
     <string name="nc_select_contacts">Velg kontakter</string>
-    <string name="nc_one_contact_selected">kontakt valgt</string>
-    <string name="nc_more_contacts_selected">kontakter valgt</string>
-    <string name="nc_contacts_clear">Tøm</string>
     <string name="nc_contacts_done">Ferdig</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Tilganger må innvilges for å etablere video og/eller lydsamtaler. Klikk \"TILLAT\" i neste vindu.</string>
-    <string name="nc_permissions_audio">Mikrofontilganger må innvilges for å etablere lydsamtaler. Klikk \"TILLAT\" i neste vindu.</string>
-    <string name="nc_permissions_video">Kameratilgang må innvilges for å etablere video og/eller lydsamtaler. Klikk \"TILLAT\" i neste vindu.</string>
     <string name="nc_camera_permission_permanently_denied">For å skru på videokommunikasjon, innvilg \"Kamera\"-tilgang i systeminnstillingene.</string>
     <string name="nc_microphone_permission_permanently_denied">For å skru på stemmekommunikasjon, innvilg \"Mikrofon\"-tilgang i systeminnstillingene.</string>
     <string name="nc_permissions_settings">Åpne innstillinger</string>
@@ -115,7 +103,8 @@
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
     <string name="nc_all_ok_operation">OK, ferdig!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Samtalenavn</string>
+    <string name="nc_call_name">Samtalenavn
+</string>
     <string name="nc_proceed">Fortsett</string>
     <string name="nc_call_name_is_same">Navnet du valgte eksisterer allerede</string>
     <string name="nc_wrong_link">Samtale lenke er ikke gyldig</string>
@@ -125,42 +114,7 @@
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Trykk-for-å-snakke</string>
-    <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk &amp; hold for å bruke klikk-for-å-snakke</string>
-    <string name="nc_store_short_desc">Få private videosamtaler og chat ved å bruke din egen tjener.</string>
-    <string name="nc_store_full_desc">Bruk Nextcloud Talk for lyd- eller video- samtaler for 2 eller flere personer, opprette eller delta i webkonferanser og send chat- meldinger. All kommunikasjon er kryptert og organisert av din egen server, og sørger derfor for den høyeste grad av personvern som mulig.
-
-Nextcloud Talk er lett å bruke og vil alltid være gratis!
-
-Nextcloud Talk støtter:
-* HD (H.265) lyd/video- samtaler
-* Gruppe og en-til-en- samtaler
-* Webinars &amp; webmøter åpne for alle
-* En-til-en chat og gruppechat
-* Enkel skjermdeling
-* Mobilapper for Android og iOS
-* Push- notifikasjoner for oppring &amp; og chat
-* Integrasjon med Nextcloud Files og Nextcloud Groupware
-* Kjøres helt og holdent lokalt, og 100% åpen kildekode
-* Ende-til-ende- kryptering
-* Skalerbart til millioner av brukere
-* SIP gate: ring inn via telefon
-
-Nextcloud Talk app krever en Nextcloud Talk- server for å fungere. Nextcloud er en privat plattform for filsynkronisering og kommunikasjon som du drifter helt selv, og er designet slik at du kan ta tilbake kontrollen over dataene dine. Den kjører på en tjener som du velger selv, enten det er hjemme, hos en annen driftsleverandør eller i bedriften din, og gir deg tilgang til dine dokumenter, kalendere, kontakter, e-mail, og andre data. Du kan til og med dele med andre på tvers av andre Nextcloud- tjenere og jobbe sammen med dokumenter. Nextcloud har helt åpen kildekode, og gir deg muligheten til å utvide koden for eget bruk, for å delta i utviklingen eller helt enkelt for å sikre at vi gjør som vi lover.
-
-Millioner av brukere benytter Nextcloud daglig i bedriften eller hjemme rundt omkring i hele verden. Bedriftsbrukere støtter seg på den profesjonelle hjelpen de får fra Nextcloud GmbH, og sørger for at de har en fullt ut støttet, bedriftsklar plattform for produktivitet og samarbeid, under full kontroll av deres IT- avdeling.
-
-Lær mer her: https://nextcloud.com/talk
-
-Finn Nextcloud her: https://nextcloud.com</string>
-
+    <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk og hold klikk-for-å-snakke</string>
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Skriv en melding …</string>
-    <string name="nc_date_header_yesterday">I går</string>
-    <string name="nc_date_header_today">I dag</string>
-    <string name="nc_conversation_menu_video_call">Videosamtale</string>
-    <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
-    <string name="nc_new_messages">Ny melding</string>
-    <string name="nc_no_messages_yet">Ingen meldiner enda</string>
-    <string name="nc_chat_you">Du</string>
-
     </resources>

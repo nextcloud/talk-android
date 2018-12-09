@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Разговори</string>
-    <string name="nc_bottom_navigation_title_contacts">Контакти</string>
     <string name="nc_settings">Поставке</string>
 
     <!-- Server selection -->
@@ -39,14 +37,11 @@
     <string name="nc_get_from_provider">Имате ли сервер?nКликните овде да направите један код провајдера</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Име за приказ добављено</string>
     <string name="nc_push_disabled">Брза обавештења су искључена</string>
     <string name="nc_capabilities_failed">Грешка приликом дохватања могућности, прекидам</string>
     <string name="nc_external_server_failed">Грешка приликом дохватања подешавања сигнализирања</string>
     <string name="nc_display_name_not_fetched">Име за приказ се не може добавити. Прекидам</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s апликација нађено</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s апликација није инсталирана на серверу, прекидам</string>
-    <string name="nc_display_name_stored">Име за приказ сачувано</string>
     <string name="nc_display_name_not_stored">Не могу да сачувам име за приказ. Прекидам</string>
 
     <string name="nc_never">Никад придружен</string>
@@ -56,7 +51,6 @@
     <string name="nc_certificate_dialog_text">Да ли верујете, до сада непознатом, SSL сертификату, који је издао %1$s на %2$s, валидним од %3$s до %4$s?</string>
     <string name="nc_yes">Да</string>
     <string name="nc_no">Не</string>
-    <string name="nc_details">Детаљи</string>
     <string name="nc_certificate_error">Ваша ССЛ постава је онемогућила повезивање</string>
 
     <!-- Settings -->
@@ -116,15 +110,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Одаберите контакт</string>
-    <string name="nc_one_contact_selected">контакт означен</string>
-    <string name="nc_more_contacts_selected">контакта означено</string>
-    <string name="nc_contacts_clear">Очисти</string>
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Да бисте успоставили видео или аудио позив, морате одобрити неке дозволе. Молимо кликните „Дозволи“ на следећем системском дијалогу.</string>
-    <string name="nc_permissions_audio">Да бисте успоставили аудио позив, морате одобрити дозволе за коришћење микрофона. Молимо кликните „Дозволи“ на следећем системском дијалогу.</string>
-    <string name="nc_permissions_video">Да бисте успоставили видео позив, морате одобрити дозволе за коришћење камере. Молимо кликните „Дозволи“ на следећем системском дијалогу.</string>
     <string name="nc_camera_permission_permanently_denied">Да бисте омогућили видео комуникацију, дозволите приступ камери у системским поставкама.</string>
     <string name="nc_microphone_permission_permanently_denied">Да бисте омогућили аудио комуникацију, дозволите приступ микрофону у системским поставкама.</string>
     <string name="nc_permissions_settings">Отвори поставке</string>
@@ -142,7 +130,6 @@
     <string name="nc_notification_channel_calls">Канал обавештења о позивима</string>
     <string name="nc_notification_channel_messages">Канал обавештења о порукама</string>
     <string name="nc_notification_channel_calls_description">Прикажи долазне позиве</string>
-    <string name="nc_notification_channel_Cmessages_description">Прикажи долазне поруке</string>
     <string name="nc_notification_settings">Поставке обавештења</string>
     <string name="nc_plain_old_messages">Поруке</string>
     <string name="nc_notify_me_always">Увек обавести</string>
@@ -168,35 +155,8 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Притисни за разговор</string>
     <string name="nc_push_to_talk_desc">Са онемогућеним микрофоном, кликните &amp; држите да користите притисак за разговор</string>
-    <string name="nc_store_short_desc">Обављајте приватне видео позиве и ћаскајте користећи Ваш сервер.</string>
     <string name="nc_configure_cert_auth">Одабери сертификат за пријаву</string>
     <string name="nc_change_cert_auth">Измени сертификат за пријаву</string>
-    <string name="nc_store_full_desc">Користите Nextcloud Talk да обављате приватне 
-или групне аудио и видео позиве, правите и придружујете се веб конференцијским позивима и ћаскањима. Целокупна комуникација је шифрована и спроводи се на Вашем серверу, дајући Вам тако највиши могући ниво приватности.
-
-Nextcloud Talk је једноставан за коришћење и увек ће бити потпуно слободан!
-
-Nextcloud Talk подржава:
-* HD (H.265) аудио/видео позиве
-* Групне и приватне позиве
-* Вебинаре &amp; јавне веб састанке
-* Приватно и групно ћаскање
-* Једноставно дељење екрана
-* Мобилне апликације за Андроид и iOS
-* Позиве са мобилног &amp; брза обавештења за разговоре на мобилном
-* Интеграција са Nextcloud фајловима и Nextcloud Groupware апликацијом
-* Комплетно смештен код Вас, комплетно отвореног кода
-* Шифровани разговори са краја на крај
-* Скалирање на милионе корисника
-* SIP гејт: звање телефоном
-
-Nextcloud Talk апликација захтева да имате Некстклауд сервер да би радила. Некстклауд је платформа за приватну синхронизацију фајлова и комуникацију коју можете да хостујете где желите, дизајнирана тако да само Ви будете у контроли Ваших података. Ради на серверу који Ви одаберете, било то код куће, неком провајдеру или Вашој фирми и даје Вам приступ документима, календару, контактима, е-пошти и осталим подацима. Све ове ствари можете делити са осталима, чак и на друге Некстклауд сервере и сарађивати заједно на документима. Некстклауд је комплетно отвореног кода, дајући Вам могућност да га проширите за употребу како Ви желите, да учествујете у његовом развоју или просто да проверите и да се уверите да све ради како је и обећано.
-
-Милиони корисника око света дневно користе Некстклауд на послу и у кући. Пословни корисници се ослањају на професионалну подршку фирме Nextcloud GmbH, која се стара да имају комплетно подржану платформу, спремну за предузетништво, продуктивност и сарадњу, под потпуном контролом њиховог IT одељења.
-
-Сазнајте више на https://nextcloud.com/talk
-
-Пронађите Некстклауд на https://nextcloud.com</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Унесите поруку…</string>

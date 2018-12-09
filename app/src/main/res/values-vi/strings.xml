@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Đàm thoại</string>
-    <string name="nc_bottom_navigation_title_contacts">Liên hệ</string>
     <string name="nc_settings">Thiết lập</string>
 
     <!-- Server selection -->
@@ -39,13 +37,10 @@
     <string name="nc_get_from_provider">Bạn đã có một máy chủ chưa?\nBấm vào đây để tìm từ một nhà cung cấp.</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Hiển thị tên đã có</string>
     <string name="nc_push_disabled">Gửi thông báo bị vô hiệu hóa</string>
     <string name="nc_capabilities_failed">Lỗi không thể tải dữ liệu, hủy bỏ</string>
     <string name="nc_display_name_not_fetched">Không thể lấy dữ liệu Tên hiển thị, hủy bỏ</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s ứng dụng tìm thấy</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ứng dụng chưa cài đặt trên hệ thống, hủy bỏ</string>
-    <string name="nc_display_name_stored">Hiển thị tên đã lưu</string>
     <string name="nc_display_name_not_stored">Không thể lưu Tên hiển thị, hủy bỏ</string>
 
     <string name="nc_never">Chưa bao giờ tham gia</string>
@@ -55,7 +50,6 @@
     <string name="nc_certificate_dialog_text">Bạn có tin tưởng vào chứng thực SSL chưa biết này không, phát sinh này bởi %1$s cho %2$s, hiệu lực từ %3$s đến %4$s?</string>
     <string name="nc_yes">Đồng ý</string>
     <string name="nc_no">Không</string>
-    <string name="nc_details">Thông tin</string>
     <string name="nc_certificate_error">Thiết lập SSL của bạn đã ngăn chặn kết nối</string>
 
     <!-- Settings -->
@@ -114,15 +108,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Chọn liên hệ</string>
-    <string name="nc_one_contact_selected">liên hệ đã chọn</string>
-    <string name="nc_more_contacts_selected">các liên hệ đã chọn</string>
-    <string name="nc_contacts_clear">Xóa</string>
     <string name="nc_contacts_done">Hoàn tất</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Quyền cần được cấp để thiết lập cuộc gọi điện video và / hoặc âm thanh. Vui lòng nhấp vào \"CHO PHÉP\" trong hộp thoại hệ thống sắp tới.</string>
-    <string name="nc_permissions_audio">Quyền micrô cần được cấp để bật cuộc gọi âm thanh. Vui lòng nhấp vào \"CHO PHÉP\" trong hộp thoại hệ thống sắp tới.</string>
-    <string name="nc_permissions_video">Quyền truy cập Camera cần được cho phép để thực hiện cuộc gọi Video. Vui lòng nhấp vào \"CHO PHÉP\" trong hộp thoại hệ thống sắp tới.</string>
     <string name="nc_camera_permission_permanently_denied">Để sử dụng cuộc gọi Video, vui lòng cấp quyền \"Camera\" trong cài đặt hệ thống.</string>
     <string name="nc_microphone_permission_permanently_denied">Để sử dụng cuộc gọi, hãy vui lòng cấp quyền \"Microphone\" trong cài đặt hệ thống</string>
     <string name="nc_permissions_settings">Mở thiết đặt</string>
@@ -157,7 +145,6 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Bấm để nói</string>
     <string name="nc_push_to_talk_desc">Mới Micro bị tắt, hãy bấm và giữ  &amp; để trò chuyện</string>
-    <string name="nc_store_short_desc">Có cuộc gọi và trò chuyện video riêng tư bằng máy chủ của riêng bạn.</string>
     <string name="nc_configure_cert_auth">Chọn chứng thực báo mật</string>
     <string name="nc_change_cert_auth">Thay đổi chứng thực bảo mật</string>
     <!-- Chat -->

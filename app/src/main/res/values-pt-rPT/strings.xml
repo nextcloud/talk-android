@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Conversações</string>
-    <string name="nc_bottom_navigation_title_contacts">Contactos</string>
     <string name="nc_settings">Definições</string>
 
     <!-- Server selection -->
@@ -35,13 +33,10 @@
     <string name="nc_get_from_provider">Ainda não tem um servidor?\nClique aqui para obter um de um fornecedor</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Nome a exibir obtido</string>
     <string name="nc_push_disabled">Notificações \"push\" desativadas</string>
     <string name="nc_capabilities_failed">Não foi possível obter as capacidades, a abortar</string>
     <string name="nc_display_name_not_fetched">Não foi possível obter o nome a exibir, a abortar</string>
-    <string name="nc_nextcloud_talk_app_installed">Aplicação %1$s encontrada</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplicação %1$s não instalada no servidor, a abortar</string>
-    <string name="nc_display_name_stored">Nome a exibir guardado</string>
     <string name="nc_display_name_not_stored">Não foi possível guardar o nome a exibir, a abortar</string>
 
     <string name="nc_never">Nunca aderiu</string>
@@ -50,7 +45,6 @@
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_yes">Sim</string>
     <string name="nc_no">Não</string>
-    <string name="nc_details">Detalhes</string>
     <string name="nc_certificate_error">A sua configuração de SSL impediu a ligação</string>
 
     <!-- Settings -->
@@ -102,9 +96,6 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecionar contactos</string>
-    <string name="nc_one_contact_selected">contacto selecionado</string>
-    <string name="nc_more_contacts_selected">contactos selecionados</string>
-    <string name="nc_contacts_clear">Limapr</string>
     <string name="nc_contacts_done">Concluir </string>
 
     <string name="nc_permissions_settings">Abrir definições</string>

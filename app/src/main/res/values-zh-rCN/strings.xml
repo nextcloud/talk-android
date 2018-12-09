@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">对话</string>
-    <string name="nc_bottom_navigation_title_contacts">联系人</string>
     <string name="nc_settings">设置</string>
 
     <!-- Server selection -->
@@ -39,13 +37,10 @@
     <string name="nc_get_from_provider">还没有服务器吗？\n 点此查看供应商</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">显示名称已获取</string>
     <string name="nc_push_disabled">通知推送已禁用</string>
     <string name="nc_capabilities_failed">获取容量已失败，正在中止</string>
     <string name="nc_display_name_not_fetched">无法获取显示名，中止</string>
-    <string name="nc_nextcloud_talk_app_installed">找到应用 %1$s</string>
     <string name="nc_nextcloud_talk_app_not_installed">服务器未安装 %1$s 应用，中止</string>
-    <string name="nc_display_name_stored">显示储存的名称</string>
     <string name="nc_display_name_not_stored">无法储存显示名称，终止中</string>
 
     <string name="nc_never">从未加入</string>
@@ -55,7 +50,6 @@
     <string name="nc_certificate_dialog_text">您是否信任由 %1$s 颁发给 %2$s，生效时间从 %3$s 至 %4$s的未知证书？</string>
     <string name="nc_yes">是的</string>
     <string name="nc_no">不</string>
-    <string name="nc_details">详情</string>
     <string name="nc_certificate_error">你的 SSL 设置阻止了连接</string>
 
     <!-- Settings -->
@@ -115,15 +109,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">选择联系人</string>
-    <string name="nc_one_contact_selected">已选联系人</string>
-    <string name="nc_more_contacts_selected">已选联系人</string>
-    <string name="nc_contacts_clear">清除</string>
     <string name="nc_contacts_done">完成</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">需要获得用于启用视频/音频通话的权限。请在接下来的系统对话框中点击“允许”。</string>
-    <string name="nc_permissions_audio">需要获得麦克风权限来启用音频通话。请在接下来的系统对话框中点击“允许”。</string>
-    <string name="nc_permissions_video">需要获得相机权限来启用视频通话。请在接下来的系统对话框中点击“允许”。</string>
     <string name="nc_camera_permission_permanently_denied">在系统设置中赋予“相机”权限来启用视频通话。</string>
     <string name="nc_microphone_permission_permanently_denied">为了启用语音通话请在系统设置中允许“麦克风使用权限”</string>
     <string name="nc_permissions_settings">打开设置</string>
@@ -154,31 +142,6 @@
 
     <string name="nc_configure_cert_auth">选择验证证书</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
-    <string name="nc_store_full_desc">使用 Nextcloud Talk 来进行一对一及小组内音频、视频通话，创建或加入讨论组以及进行文字聊天。通信由您的服务器建立并全程保密，保证了最大程度的隐私安全。
-
-Nextcloud Talk 使用简单，将会保持完全的免费！
-
-Nextcloud Talk 支持:
-* HD (H.265) 音频/视频通话
-* 小组通话及一对一通话
-* 在线研讨会 &amp; 公共网络会议
-* 个人及小组聊天
-* 简便的屏幕共享功能
-* 用于 Android 和 iOS 的移动端应用
-* 手机通话 &amp; 聊天推送服务 (仅在安装了 Google Play 时支持)
-* 集成了 Nextcloud Files 和 Nextcloud Groupware
-* 完全独立安装且完全开源
-* 端对端加密通讯
-* 可容纳达上百万的用户
-* SIP 门户: 支持通过手机拨号
-
-Nextcloud Talk 应用需要一台 Nextcloud Talk 服务器来发挥作用。 Nextcloud 是一个为了能够让您充分管理您的数据而设计的私人，自营的文件同步和交流平台。它可以运行在您选择的服务器上，无论是在家中，服务供应商，或者在您的企业中，并让您访问到您的文档、日历、联系人、电子邮件以及其他数据。您可以共享给其他用户、甚至是其他 Nextcloud 服务器上的用户来进行共同作业。Nextcloud 完全开源，这使得您能够根据自己的需求进行扩展、加入开发或者单纯的验证开发者们是否如我们承诺的那样工作。
-
-每天在全世界有上百万的用户在工作中或者家中使用 Nextcloud。商务用户凭借着 Nextcloud GmbH 的专业支持，确保他们能有一个完全在他们的IT部门掌控下的完全支持的可用于生产协作的企业平台。
-
-从 https://nextcloud.com/talk 可了解更多
-
-在 https://nextcloud.com 寻找 Nextcloud</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">输入消息...</string>

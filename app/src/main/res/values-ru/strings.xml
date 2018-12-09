@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Беседы</string>
-    <string name="nc_bottom_navigation_title_contacts">Контакты</string>
     <string name="nc_settings">Параметры</string>
 
     <!-- Server selection -->
@@ -39,14 +37,11 @@
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Отображаемое имя получено</string>
     <string name="nc_push_disabled">Всплывающие уведомления отключены</string>
     <string name="nc_capabilities_failed">Не удалось получить список поддерживаемых протоколов</string>
     <string name="nc_external_server_failed">Не удалось получить параметры сигнализации</string>
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
-    <string name="nc_nextcloud_talk_app_installed">Найдено приложение %1$s</string>
     <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s не установлено на сервере. Действие отменено.</string>
-    <string name="nc_display_name_stored">Отображаемое имя сохранено</string>
     <string name="nc_display_name_not_stored">Не удалось сохранить отображаемое имя, продолжение невозможно</string>
 
     <string name="nc_never">Никогда не использовался</string>
@@ -56,7 +51,6 @@
     <string name="nc_certificate_dialog_text">Доверять неизвестному сертификату SSL: выпущен %1$s для %2$s, действителен с %3$s по %4$s?</string>
     <string name="nc_yes">Да</string>
     <string name="nc_no">Нет</string>
-    <string name="nc_details">Подробности</string>
     <string name="nc_certificate_error">Заданные параметры SSL не позволяют подключиться</string>
 
     <!-- Settings -->
@@ -116,15 +110,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Выбрать контакты</string>
-    <string name="nc_one_contact_selected">контакт выбран</string>
-    <string name="nc_more_contacts_selected">контакта(ов) выбрано</string>
-    <string name="nc_contacts_clear">Отчистить</string>
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Для выполнения вызова или видеоконференции приложению необходимо предоставить дополнительные разрешения. Выберите «Разрешить» в открывшемся диалоге.</string>
-    <string name="nc_permissions_audio">Для выполнения вызова необходимо предоставить приложению доступ к микрофону. Выберите «Разрешить» в открывшемся диалоге.</string>
-    <string name="nc_permissions_video">Для выполнения видеовызова необходимо предоставить приложению доступ к камере. Выберите «Разрешить» в открывшемся диалоге.</string>
     <string name="nc_camera_permission_permanently_denied">Для выполнения видеовызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к камере в системных настройках.</string>
     <string name="nc_microphone_permission_permanently_denied">Для выполнения вызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к микрофону  в системных настройках.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
@@ -141,7 +129,6 @@
     <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>
     <string name="nc_notification_channel_messages">Способ уведомления о сообщении</string>
     <string name="nc_notification_channel_calls_description">Показывает входящие вызовы</string>
-    <string name="nc_notification_channel_Cmessages_description">Показывает входящие сообщения</string>
     <string name="nc_notification_settings">Параметры уведомлений</string>
     <string name="nc_plain_old_messages">Сообщения</string>
     <string name="nc_notify_me_always">Всегда уведомлять</string>
@@ -166,34 +153,8 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk"> PTT (нажми чтобы говорить)</string>
     <string name="nc_push_to_talk_desc">Нажмите и удерживайте для использования PTT при отключённом микрофоне</string>
-    <string name="nc_store_short_desc">Личные видеовызовы и переписка с использованием собственного сервера.</string>
     <string name="nc_configure_cert_auth">Выбрать сертификат для подтверждения подлинности</string>
     <string name="nc_change_cert_auth">Изменить сертификат для подтверждения подлинности</string>
-    <string name="nc_store_full_desc">Приложение Nexcloud Talk предназначено для осуществления вызовов между двумя или несколькими абонентами, в том числе с использованием видеосвязи. Соединения обслуживаются вашим собственным сервером, и все данные передаются в зашифрованном виде, что обеспечивает максимальную защиту.
-
-Навсегда бесплатное приложение Nexcloud Talk простое в использовании.
-
-Возможности приложения:
-* для вызовов и видео-вызовов используется кодек с высоким разрешением (H.265)
-* вызовы между двумя или несколькими абонентами
-* вебинары
-* личные чаты и чаты групп
-* простой показ экрана другому пользователю
-* приложения для мобильных платформ Android и iOS
-* вызовы с использованием мобильных устройств и push-уведомления (только при установке из Google Play)
-* поддержка приложения обмена файлами Nextcloud и приложений для рабочих групп
-* размещение сервера на вашем собственном оборудовании, полностью открытый исходный код
-* сквозное шифрование вызовов
-* возможность масштабирования до миллионов пользователей
-* SIP-шлюз: использование обычного телефона для совершения вызова
-
-Приложению Nextcloud Talk для работы требуется сервер Nextcloud. Nexcloud — личная, размещаемая на собственном оборудовании платформа для организации синхронизации данных и взаимодействия пользователей. Nexcloud возвращает вам контроль над своими данными. Место размещения оборудования, на котором работает Nextcloud, так же выбираете вы: у себя дома, у провайдера или на предприятии, Nextcloud обеспечивает доступ к вашим документам, календарям, контактам, электронной почте и другим данным. Обмен файлами и совместная работа с документами возможны даже между пользователями разных серверов Nextcloud. Исходный код Nextcloud открыт, что предоставляет возможность изменять его для своих нужд, участвовать в разработке или просто убедиться в  том, что он делает именно то, что обещано.
-
-Nextcloud ежедневно используется как для работы, так и для личных целей миллионами пользователей по всему миру.  Бизнес-пользователи уверенно полагаются на профессиональную поддержку Nextcloud GmbH выбранной полностью поддерживаемой корпоративной платформы для совместной работы, которая полностью контролируется собственным IT-департаментом.
-
-Узнайте больше на https://nextcloud.com/talk
-
-Познакомьтесь с Nextcloud на https://nextcloud.com</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Напишите сообщение…</string>

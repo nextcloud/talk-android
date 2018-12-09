@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Görüşmeler</string>
-    <string name="nc_bottom_navigation_title_contacts">Kişiler</string>
     <string name="nc_settings">Ayarlar</string>
 
     <!-- Server selection -->
@@ -39,14 +37,11 @@
     <string name="nc_get_from_provider">Henüz bir sunucunuz yok mu?\Listeden bir hizmet sağlayıcısı seçebilirsiniz</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Görüntülenecek ad alındı</string>
     <string name="nc_push_disabled">Anında bildirimler devre dışı</string>
     <string name="nc_capabilities_failed">Yeterlilikler alınamadı, vazgeçiliyor</string>
     <string name="nc_external_server_failed">İşaretleşme ayarları alınamadı</string>
     <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s uygulama bulundu</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s uygulaması sunucu üzerinde  kurulu değil, vazgeçiliyor</string>
-    <string name="nc_display_name_stored">Görüntülenecek ad kaydedildi</string>
     <string name="nc_display_name_not_stored">Görünüm adı kaydedilemedi, vazgeçiliyor</string>
 
     <string name="nc_never">Asls katılmadı</string>
@@ -56,7 +51,6 @@
     <string name="nc_certificate_dialog_text">Şimdiye kadar bilinmeyen, %1$s tarafından %2$s için yayınlanmış %3$s ile %4$s tarihleri arasında geçerli olan sertifikaya güvenilsin mi?</string>
     <string name="nc_yes">Evet</string>
     <string name="nc_no">Hayır</string>
-    <string name="nc_details">Ayrıntılar</string>
     <string name="nc_certificate_error">SSL kurulumunuz bağlantı kurulmasını engelliyor</string>
 
     <!-- Settings -->
@@ -116,15 +110,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Kişileri seçin</string>
-    <string name="nc_one_contact_selected">kişi seçilmiş</string>
-    <string name="nc_more_contacts_selected">kişi seçilmiş</string>
-    <string name="nc_contacts_clear">Temizle</string>
     <string name="nc_contacts_done">Tamam</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Bir görüntülü ya da sesli görüşmeyi başlatabilmek için bazı izinlerin verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
-    <string name="nc_permissions_audio">Sesli görüşmeleri başlatabilmek için mikrofona erişme izni verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
-    <string name="nc_permissions_video">Görüntülü görüşmeleri başlatabilmek için kameraya erişme izni verilmesi gereklidir. Lütfen açılan sistem penceresinde \"ONAYLA\" üzerine tıklayın.</string>
     <string name="nc_camera_permission_permanently_denied">Görüntülü iletişim kurabilmek için sistem ayarlarından \"Kamera\" erişme iznini verin.</string>
     <string name="nc_microphone_permission_permanently_denied">Sesli iletişim kurabilmek için sistem ayarlarından \"Mikrofon\" erişme iznini verin.</string>
     <string name="nc_permissions_settings">Ayarları aç</string>
@@ -142,7 +130,6 @@
     <string name="nc_notification_channel_calls">Görüşme bildirimi kanalı</string>
     <string name="nc_notification_channel_messages">Bildirim kanalındaki ileti</string>
     <string name="nc_notification_channel_calls_description">Gelen görüşme çağrılarını görüntüler</string>
-    <string name="nc_notification_channel_Cmessages_description">Gelen iletileri görüntüler</string>
     <string name="nc_notification_settings">Bildirim ayarları</string>
     <string name="nc_plain_old_messages">İletiler</string>
     <string name="nc_notify_me_always">Her zaman bildirilsin</string>
@@ -168,36 +155,8 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Bas-konuş</string>
     <string name="nc_push_to_talk_desc">Mikrofon devre dışı iken, Bas-konuş üzerine tıklayıp basılı tutun</string>
-    <string name="nc_store_short_desc">Kendi sunucunuz üzerinden görüntülü görüşme ve sohbet yapın.</string>
     <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
-    <string name="nc_store_full_desc">Birebir ya da grup ile sesli ya da görüntülü görüşmeler yapmak, web konferansları oluşturmak ve sohbet iletileri göndermek için Nextcloud Talk uygulamasını kullanabilirsiniz. Tüm bilgiler tamamen şifrelenmiş olarak sizin sunucunuz üzerinden iletilerek olabilecek en yüksek gizlilik düzeyi sağlanır.
-
-Nextcloud Talk uygulamasının kullanımı kolaydır ve herhangi bir ücret ödemeniz gerekmez!
-
-Nextcloud Talk şu özellikleri destekler:
-* HD (H.265) sesli ve görüntü görüşmeler
-* Grup ve birebir görüşmeler
-* Webinar &amp; ve herkese açık web toplantıları
-* Bireysel ve grup sohbetleri
-* Kolay ekran paylaşımı
-* Android ve iOS uygulamaları
-* Mobil görüşme &amp; ve anında sohbet bildirimleri
-* Nextcloud Files ve Nextcloud Groupware ile bütünleşme
-* Kendi veri merkezinizde, tamamen açık kaynaklı
-* Uçtan uca şifrelenmiş çağrılar
-* Milyonlarca kullanıcıya hazır
-* SIP geçidi üzerinden standart telefon ile görüşme
-
-Nextcloud Talk uygulamasının kullanılabilmesi için Nextcloud Talk sunucusu gereklidir. Nextcloud verilerinizin denetiminin yeniden size veren, size özel ve kendi sunucularınızda barındırabileceğiniz bir dosya eşitleme ve iletişim platformudur. Evinizde, hizmet sağlayıcınızda ya da kurumunuzda bulunan bir sunucu üzerine kurarak, belgelerinize, takvimlerinize, kişilerinize, e-postalarınıza ve diğer verilerinize erişmenizi sağlar. Verilerinizi farklı Nextcloud sunucuları kullanan kişiler ile paylaşarak dosyalar üzerinde birlikte çalışabilirsiniz. Nextcloud tamamen açık kaynaklı olduğundan özelliklerini gereksinimlerinize göre genişletebilir, geliştirilmesine katkıda bulunabilir ya da söylediklerimizin doğru olup olmadığını görebilirsiniz.
-
-
-Dünya üzerinde milyonlarca kullanıcı ev ya da iş yerlerinde günlük işlemleri için Nextcloud kullanıyor. Kurumsal kullanıcılar Nextcloud GmbH tarafından sunulan destek hizmetleri ile tamamen kendi BT bölümlerinin denetimindeki kurumsal üretim ve iş birliği platformu için eksiksiz destek alıyor. 
-
-
-Ayrıntılı bilgi almak için https://nextcloud.com/talk adresine bakabilirsiniz.
-
-Nextcloud web sitesi https://nextcloud.com</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>

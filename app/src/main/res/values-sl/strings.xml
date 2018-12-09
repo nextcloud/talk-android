@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Pogovori</string>
-    <string name="nc_bottom_navigation_title_contacts">Stiki</string>
     <string name="nc_settings">Nastavitve</string>
 
     <!-- Server selection -->
@@ -39,13 +37,10 @@
     <string name="nc_get_from_provider">Še nimate izbranega oziroma nameščenega strežnika? Kliknite in si pridobite dostop.</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Prikazno ime je pridobljeno</string>
     <string name="nc_push_disabled">Potisno obveščanje je onemogočeno</string>
     <string name="nc_capabilities_failed">Pridobivanje podatkov o zmožnosti je spodletelo. Opravilo bo preklicano.</string>
     <string name="nc_display_name_not_fetched">Prikaznega imena ni mogoče pridobiti; opravilo je prekinjeno.</string>
-    <string name="nc_nextcloud_talk_app_installed">Program %1$s je zagnan.</string>
     <string name="nc_nextcloud_talk_app_not_installed">Program %1$s na strežniku ni nameščen, zahteva bo preklicana.</string>
-    <string name="nc_display_name_stored">Prikazno ime je shranjeno</string>
     <string name="nc_display_name_not_stored">Prikaznega imena ni mogoče shraniti; opravilo je prekinjeno.</string>
 
     <string name="nc_never">Nikoli pridružen</string>
@@ -55,7 +50,6 @@
     <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
     <string name="nc_yes">Da</string>
     <string name="nc_no">Ne</string>
-    <string name="nc_details">Podrobnosti</string>
     <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
 
     <!-- Settings -->
@@ -114,9 +108,6 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Izbor stikov</string>
-    <string name="nc_one_contact_selected">izbran stik</string>
-    <string name="nc_more_contacts_selected">izbranih stikov</string>
-    <string name="nc_contacts_clear">Počisti</string>
     <string name="nc_contacts_done">Začni pogovor</string>
 
     <string name="nc_permissions_settings">Odpri nastavitve</string>

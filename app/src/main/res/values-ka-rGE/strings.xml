@@ -19,7 +19,6 @@
   -->
 
 <resources>
-    <string name="nc_bottom_navigation_title_contacts">კონტაქტები</string>
     <string name="nc_settings">პარამეტრები</string>
 
     <!-- Server selection -->
@@ -37,11 +36,8 @@
     <string name="nc_get_from_provider">უკვე გააქვთ სერვერი?\nმომწოდებლისგან მისი მიღებისთვის დააწკაპუნეთ აქ</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">დისპლეი სახელი ამოღებულია</string>
     <string name="nc_display_name_not_fetched">დისპლეი სახელის ამოღება ვერ მოხერხდა, ვჩერდებით</string>
-    <string name="nc_nextcloud_talk_app_installed">ნაპოვნია %1$s აპლიკაცია</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s აპლიკაცია სერვერზე არაა დაყენებული, ვჩერდებით</string>
-    <string name="nc_display_name_stored">დისპლეი სახელი შენახულია</string>
     <string name="nc_display_name_not_stored">დისპლეი სახელის დაყენება ვერ მოხერხდა, ვჩერდებით</string>
 
     <string name="nc_never">არასდროს შემოსულა</string>
@@ -51,7 +47,6 @@
     <string name="nc_certificate_dialog_text">ენდობით ჯერ კიდევ უცნობ SSL სერტიფიკატს, რომელიც გაიცა %1$s-ში %2$s-თვის, ვადით %3$s-დან %4$s-მდე?</string>
     <string name="nc_yes">კი</string>
     <string name="nc_no">არა</string>
-    <string name="nc_details">დეტალები</string>
     <string name="nc_certificate_error">თქვენმა SSL მოწყობამ შეაჩერა კავშირი</string>
 
     <!-- Settings -->
@@ -90,15 +85,9 @@
     <string name="nc_join_via_web">შეუერთდით ვებით</string>
     <!-- Contacts -->
     <string name="nc_select_contacts">აირჩიეთ კონტაქტები</string>
-    <string name="nc_one_contact_selected">კონტაქტი იქნა არჩეულ</string>
-    <string name="nc_more_contacts_selected">კონტაქტი იქნა არჩეულ</string>
-    <string name="nc_contacts_clear">გასუფთავება</string>
     <string name="nc_contacts_done">დასრულებულია</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">ვიდეო და/ან აუდიო ზარის გასახორციელებლად საჭიროა უფლებების მინიჭება. გთხოვთ ამომავალ სისტემურ დიალოგში დააწკაპუნოთ \"ნების დართვას\".</string>
-    <string name="nc_permissions_audio">აუდიო ზარების გასახორციელებლად საჭიროა მიკროფონის უფლებების მინიჭება. გთხოვთ ამომავალ სისტემურ დიალოგში დააწკაპუნოთ \"ნების დართვას\".</string>
-    <string name="nc_permissions_video">ვიდეო ზარების გასახორციელებლად საჭიროა კამერის უფლებების მინიჭება. გთხოვთ ამომავალ სისტემურ დიალოგში დააწკაპუნოთ \"ნების დართვას\".</string>
     <string name="nc_camera_permission_permanently_denied">ვიდეო კომუნიკაციის ამოქმედებისთვის, გთხოვთ სისტემურ პარამეტრებში უფლება მიანიჭოთ \"კამერას\".</string>
     <string name="nc_microphone_permission_permanently_denied">ხმოვანი კომუნიკაციის ამოქმედებისთვის, გთხოვთ სისტემურ პარამეტრებში უფლება მიანიჭოთ \"მიკროფონს\".</string>
     <string name="nc_permissions_settings">პარამეტრების გახსნა</string>
@@ -121,5 +110,4 @@
     <string name="nc_share_subject">%1$s მოწვევა</string>
     <string name="nc_share_text_pass">\nპაროლი: %1$s</string>
 
-    <string name="nc_store_short_desc">იქონიეთ პირადი ვიდეო ზარები და ჩეთი საკუთარი სერვერით.</string>
-    </resources>
+</resources>

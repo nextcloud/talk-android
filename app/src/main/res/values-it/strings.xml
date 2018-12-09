@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Conversazioni</string>
-    <string name="nc_bottom_navigation_title_contacts">Contatti</string>
     <string name="nc_settings">Impostazioni</string>
 
     <!-- Server selection -->
@@ -39,14 +37,11 @@
     <string name="nc_get_from_provider">Non hai ancora un server?\nFai clic qui per ottenerne uno da un fornitore</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Nome visualizzato recuperato</string>
     <string name="nc_push_disabled">Notifiche push disabilitate</string>
     <string name="nc_capabilities_failed">Recupero delle capacità non riuscito, interruzione in corso</string>
     <string name="nc_external_server_failed">Recupero delle impostazioni di segnalazione non riuscito</string>
     <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
-    <string name="nc_nextcloud_talk_app_installed"> Applicazione %1$s trovate</string>
     <string name="nc_nextcloud_talk_app_not_installed">Applicazione %1$s non installata, interruzione in corso</string>
-    <string name="nc_display_name_stored">Nome visualizzato memorizzato</string>
     <string name="nc_display_name_not_stored">Nome visualizzato non memorizzato, interruzione in corso</string>
 
     <string name="nc_never">Mai partecipato</string>
@@ -56,7 +51,6 @@
     <string name="nc_certificate_dialog_text">Ti fidi del certificato SSL fino ad ora sconosciuto, rilasciato da %1$s per %2$s, valido da %3$s a %4$s?</string>
     <string name="nc_yes">Sì</string>
     <string name="nc_no">No</string>
-    <string name="nc_details">Dettagli</string>
     <string name="nc_certificate_error">La tua configurazione SSL ha impedito la connessione</string>
 
     <!-- Settings -->
@@ -116,15 +110,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Seleziona contatti</string>
-    <string name="nc_one_contact_selected">contatto selezionato</string>
-    <string name="nc_more_contacts_selected">contatti selezionati</string>
-    <string name="nc_contacts_clear">Cancella</string>
     <string name="nc_contacts_done">Fine</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">È necessario accordare permessi per stabilire una chiamata audio/video. Fai clic su \"CONSENTI\" nella finestra di sistema che apparirà.</string>
-    <string name="nc_permissions_audio">Il permesso per il microfono deve essere accordato per abilitare le chiamate audio. Fai clic su \"CONSENTI\" nella finestra di sistema che apparirà.</string>
-    <string name="nc_permissions_video">Il permesso per la fotocamera deve essere accordato per abilitare le chiamate video. Fai clic su \\"CONSENTI\\" nella finestra di sistema che apparirà.</string>
     <string name="nc_camera_permission_permanently_denied">Per abilitare la comunicazione video devi accordare il permesso per la \"Fotocamera\" nelle impostazioni di sistema.</string>
     <string name="nc_microphone_permission_permanently_denied">Per abilitare la comunicazione vocale devi accordare il permesso per  \"Microfono\" nelle impostazioni di sistema.</string>
     <string name="nc_permissions_settings">Apri impostazioni</string>
@@ -142,7 +130,6 @@
     <string name="nc_notification_channel_calls">Canale di notifica delle chiamate</string>
     <string name="nc_notification_channel_messages">Canale di notifica dei messaggi</string>
     <string name="nc_notification_channel_calls_description">Mostra le chiamate in ingresso</string>
-    <string name="nc_notification_channel_Cmessages_description">Mostra i messaggi in ingresso</string>
     <string name="nc_notification_settings">Impostazioni di notifica</string>
     <string name="nc_plain_old_messages">Messaggi</string>
     <string name="nc_notify_me_always">Notifica sempre</string>
@@ -168,34 +155,8 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Premi per parlare</string>
     <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utillizzare Premi per parlare</string>
-    <string name="nc_store_short_desc">Videochiamate e chat utilizzando il tuo server.</string>
     <string name="nc_configure_cert_auth">Seleziona certificato di autenticazione</string>
     <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
-    <string name="nc_store_full_desc">Usa Nextcloud Talk per effettuare chiamate audio o video uno a uno o di gruppo, creare o partecipare a conferenze web e inviare messaggi di chat. Tutte le comunicazioni sono completamente cifrate e mediate dal tuo server, fornendo il più alto grado di riservatezza possibile.
-
-Nextcloud Talk è semplice da utilizzare e sarà sempre completamente gratuito e libero!
-
-Nextcloud Talk supporta:
-* Chiamate audio/video HD (H.265)
-* Chiamate di gruppo e uno a uno
-* Webinar e incontri pubblici sul web
-* Chat individuali e di gruppo
-* Facile condivisione dello schermo
-* Applicazione mobile per Android e iOS
-* Chiamate da mobile e notifiche push delle chat
-* Integrazione in Nextcloud File e Nextcloud Groupware
-* Completamente on-premise, completamente open source
-* Chiamate cifrate end-to-end
-* Capacità di scalare fino a milioni di utenti
-* Gateway SIP: chiamate tramite telefono
-
-L\'applicazione Nextcloud Talk richiede un server Nextcloud Talk per funzionare. Nextcloud è una piattaforma privata e gestita in autonomia di sincronizzazione file e comunicazione, progettata per restituirti il controllo dei tuoi dati. Può essere eseguito su un server di tua scelta, sia esso a casa, presso un fornitore di servizi o nella tua azienda, che ti fornisce l\'accesso ai tuoi documenti, calendari, contatti, messaggi di posta e altri dati. Puoi condividere con altri anche attraverso server Nextcloud differenti e lavorare insieme sui documenti. Nextcloud è completamente open source, offrendoti la possibilità di estenderlo per il tuo utilizzo, partecipare allo sviluppo o semplicemente verificare che faccia quanto previsto.
-
-Milioni di utenti utilizzano quotidianamente Nextcloud a lavoro o a casa in tutto il mondo. Gli utenti aziendali fanno affidamento sul supporto professionale di Nextcloud GmbH, assicurandosi di avere una piattaforma completamente supportata e pronta per l\'ambito aziendale per la produttività e la collaborazione, completamente sotto il controllo del reparto IT.
-
-Scopri altro su https://nextcloud.com/talk
-
-Trovi Nextcloud su https://nextcloud.com</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Digita un messaggio</string>

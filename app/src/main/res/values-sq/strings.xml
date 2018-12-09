@@ -20,8 +20,6 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Bisedat</string>
-    <string name="nc_bottom_navigation_title_contacts">Kontaktet</string>
     <string name="nc_settings">Rregullimet</string>
 
     <!-- Server selection -->
@@ -39,11 +37,8 @@
     <string name="nc_get_from_provider">Akoma nuk ke një server ?\nKliko këtu për të marrë një nga një ofrues </string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Emri i shfaqur u mor</string>
     <string name="nc_display_name_not_fetched">Emri i shfaqur nuk mund të merret, ndërpritet</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s app u gjet</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app nuk u instalua në server, ndërpritet</string>
-    <string name="nc_display_name_stored">Emri i shfaqur u ruajt</string>
     <string name="nc_display_name_not_stored">Emri i shfaqur nuk mund të ruhej, ndërpritet</string>
 
     <string name="nc_never">Nuk u bashkua kurrë</string>
@@ -53,7 +48,6 @@
     <string name="nc_certificate_dialog_text">A e beson deri tani çertifikatën e panjohur deri tani SSL, lëshuar nga %1$spër %2$s, e vlefshme nga %3$s në %4$s?</string>
     <string name="nc_yes">Po</string>
     <string name="nc_no">Jo</string>
-    <string name="nc_details">Detajet</string>
     <string name="nc_certificate_error">Struktura juaj SSL e ndaloi lidhjen</string>
 
     <!-- Settings -->
@@ -110,9 +104,6 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Përzgjidhni kontaktet</string>
-    <string name="nc_one_contact_selected">Kontakti u zgjodh</string>
-    <string name="nc_more_contacts_selected">Kontaktet e zgjedhura</string>
-    <string name="nc_contacts_clear">Pastro</string>
     <string name="nc_contacts_done">U bë</string>
 
     <string name="nc_permissions_settings">Hap rregullimet</string>
