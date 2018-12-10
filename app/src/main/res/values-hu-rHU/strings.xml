@@ -41,6 +41,7 @@
     <!-- Account verification -->
     <string name="nc_display_name_fetched">Megjelenítendő név beszerezve</string>
     <string name="nc_push_disabled">Azonnali üzenetek letilva</string>
+    <string name="nc_external_server_failed">Nem sikerült a jelzésváltás beállítása</string>
     <string name="nc_display_name_not_fetched">Megjelenítendő név nem beszerezhető, megszakítás</string>
     <string name="nc_nextcloud_talk_app_installed">%1$s app megtalálva</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app nincs telepítve a szerveren, megszakítás</string>
@@ -137,6 +138,7 @@
     <string name="nc_notification_channel_calls">Hívások értesítési csatornája</string>
     <string name="nc_notification_channel_messages">Üzenetek értesítési csatornája</string>
     <string name="nc_notification_channel_calls_description">Bejövõ hívások megjelenítése</string>
+    <string name="nc_notification_settings">Értesítések beállításai</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba adódott!</string>
     <string name="nc_failed_signaling_settings">A célszerver nem támogatja a nyilvános beszélgetéseket mobiltelefonon keresztül. Próbálkozzon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
