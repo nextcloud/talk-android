@@ -161,15 +161,17 @@ public class ConversationInfoController extends BaseController {
     }
 
     private void setupAdapter() {
-        if (adapter == null) {
+        if (adapter == null && getActivity() != null) {
             adapter = new FlexibleAdapter<>(recyclerViewItems, getActivity(), true);
         }
 
-        SmoothScrollLinearLayoutManager layoutManager =
-                new SmoothScrollLinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
+        if (recyclerView != null && getActivity() != null) {
+            SmoothScrollLinearLayoutManager layoutManager =
+                    new SmoothScrollLinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adapter);
+        }
     }
 
     private void handleParticipants(List<Participant> participants) {
@@ -260,13 +262,22 @@ public class ConversationInfoController extends BaseController {
                             progressBar.setVisibility(View.GONE);
                         }
 
-                        nameCategoryView.setVisibility(View.VISIBLE);
-                        conversationDisplayName.setText(conversation.getDisplayName());
+                        if (nameCategoryView != null) {
+                            nameCategoryView.setVisibility(View.VISIBLE);
+                        }
+
+                        if (conversationDisplayName != null) {
+                            conversationDisplayName.setText(conversation.getDisplayName());
+                        }
+
                         loadConversationAvatar();
 
                         if (conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
-                            messageNotificationLevel.setEnabled(true);
-                            messageNotificationLevel.setAlpha(1.0f);
+                            if (messageNotificationLevel != null) {
+                                messageNotificationLevel.setEnabled(true);
+                                messageNotificationLevel.setAlpha(1.0f);
+                            }
+
                             if (!conversation.getNotificationLevel().equals(Conversation.NotificationLevel.DEFAULT)) {
                                 String stringValue;
                                 switch (new EnumNotificationLevelConverter().convertToInt(conversation.getNotificationLevel())) {

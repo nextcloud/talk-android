@@ -431,7 +431,7 @@ public class CallNotificationController extends BaseController {
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
                             public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                                if (getActivity() != null) {
+                                if (getActivity() != null && avatarImageView != null) {
                                     avatarImageView.setImageBitmap(TransformationUtils.circleCrop(GlideApp.get
                                             (getActivity()).getBitmapPool(), resource, avatarSize, avatarSize));
                                 }

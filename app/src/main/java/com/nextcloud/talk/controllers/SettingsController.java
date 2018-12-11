@@ -616,13 +616,19 @@ public class SettingsController extends BaseController {
             } else {
                 switch (newValue) {
                     case "HTTP":
-                        proxyPortEditText.setValue("3128");
+                        if (proxyPortEditText != null) {
+                            proxyPortEditText.setValue("3128");
+                        }
                         break;
                     case "DIRECT":
-                        proxyPortEditText.setValue("8080");
+                        if (proxyPortEditText != null) {
+                            proxyPortEditText.setValue("8080");
+                        }
                         break;
                     case "SOCKS":
-                        proxyPortEditText.setValue("1080");
+                        if (proxyPortEditText != null) {
+                            proxyPortEditText.setValue("1080");
+                        }
                         break;
                     default:
                         break;
