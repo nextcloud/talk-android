@@ -498,6 +498,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
 
             if (wasDetached & conversationUser.hasSpreedCapabilityWithName("no-ping")) {
+                wasDetached = false;
                 joinRoomWithPassword();
             }
         }
@@ -508,6 +509,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         super.onDetach(view);
         if (conversationUser.hasSpreedCapabilityWithName("no-ping")) {
             wasDetached = true;
+            leaveRoom();
         }
     }
 
@@ -574,8 +576,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void joinRoomWithPassword() {
 
-        wasDetached = false;
-
         if (currentCall == null) {
             ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken), roomPassword)
                     .subscribeOn(Schedulers.newThread())
@@ -639,8 +639,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     @Override
                     public void onNext(GenericOverall genericOverall) {
                         dispose();
-                        if (!isDestroyed()) {
-                            getRouter().popToRoot();
+                        if (!isDestroyed() && !wasDetached) {
+                            getRouter().popCurrentController();
                         }
                     }
 
