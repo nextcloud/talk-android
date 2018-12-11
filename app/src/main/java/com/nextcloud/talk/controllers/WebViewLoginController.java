@@ -325,69 +325,67 @@ public class WebViewLoginController extends BaseController {
             UserEntity currentUser = userUtils.getCurrentUser();
 
             ApplicationWideMessageHolder.MessageType messageType = null;
-            if (currentUser != null && isPasswordUpdate &&
-                    !currentUser.getUsername().equals(loginData.getUsername())) {
+
+            if (!isPasswordUpdate && userUtils.getIfUserWithUsernameAndServer(loginData.getUsername(), baseUrl)) {
+                messageType = ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED;
+            }
+
+            if (userUtils.checkIfUserIsScheduledForDeletion(loginData.getUsername(), baseUrl)) {
                 ApplicationWideMessageHolder.getInstance().setMessageType(
-                        ApplicationWideMessageHolder.MessageType.WRONG_ACCOUNT);
-                getRouter().popToRoot();
-            } else {
+                        ApplicationWideMessageHolder.MessageType.ACCOUNT_SCHEDULED_FOR_DELETION);
 
-                if (!isPasswordUpdate && userUtils.getIfUserWithUsernameAndServer(loginData.getUsername(), baseUrl)) {
-                    messageType = ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED;
-                }
-
-                if (userUtils.checkIfUserIsScheduledForDeletion(loginData.getUsername(), baseUrl)) {
-                    ApplicationWideMessageHolder.getInstance().setMessageType(
-                            ApplicationWideMessageHolder.MessageType.ACCOUNT_SCHEDULED_FOR_DELETION);
+                if (!isPasswordUpdate) {
                     getRouter().popToRoot();
+                } else {
+                    getRouter().popCurrentController();
+                }
+            }
+
+            ApplicationWideMessageHolder.MessageType finalMessageType = messageType;
+            cookieManager.getCookieStore().removeAll();
+
+            if (!isPasswordUpdate && finalMessageType == null) {
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleKeys.KEY_USERNAME, loginData.getUsername());
+                bundle.putString(BundleKeys.KEY_TOKEN, loginData.getToken());
+                bundle.putString(BundleKeys.KEY_BASE_URL, loginData.getServerUrl());
+                String protocol = "";
+
+                if (baseUrl.startsWith("http://")) {
+                    protocol = "http://";
+                } else if (baseUrl.startsWith("https://")) {
+                    protocol = "https://";
                 }
 
-                ApplicationWideMessageHolder.MessageType finalMessageType = messageType;
-                cookieManager.getCookieStore().removeAll();
+                if (!TextUtils.isEmpty(protocol)) {
+                    bundle.putString(BundleKeys.KEY_ORIGINAL_PROTOCOL, protocol);
+                }
 
-                if (!isPasswordUpdate && finalMessageType == null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(BundleKeys.KEY_USERNAME, loginData.getUsername());
-                    bundle.putString(BundleKeys.KEY_TOKEN, loginData.getToken());
-                    bundle.putString(BundleKeys.KEY_BASE_URL, loginData.getServerUrl());
-                    String protocol = "";
-
-                    if (baseUrl.startsWith("http://")) {
-                        protocol = "http://";
-                    } else if (baseUrl.startsWith("https://")) {
-                        protocol = "https://";
+                getRouter().pushController(RouterTransaction.with(new AccountVerificationController
+                        (bundle)).pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler()));
+            } else {
+                if (isPasswordUpdate) {
+                    if (currentUser != null) {
+                        userQueryDisposable = userUtils.createOrUpdateUser(null, loginData.getToken(),
+                                null, null, null, true,
+                                null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias(), null)
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(userEntity -> {
+                                            if (finalMessageType != null) {
+                                                ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);
+                                            }
+                                            getRouter().popCurrentController();
+                                        }, throwable -> dispose(),
+                                        this::dispose);
                     }
-
-                    if (!TextUtils.isEmpty(protocol)) {
-                        bundle.putString(BundleKeys.KEY_ORIGINAL_PROTOCOL, protocol);
-                    }
-                    
-                    getRouter().pushController(RouterTransaction.with(new AccountVerificationController
-                            (bundle)).pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler()));
                 } else {
-                    if (isPasswordUpdate) {
-                        if (currentUser != null) {
-                            userQueryDisposable = userUtils.createOrUpdateUser(null, loginData.getToken(),
-                                    null, null, null, true,
-                                    null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias(), null)
-                                    .subscribeOn(Schedulers.newThread())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(userEntity -> {
-                                                if (finalMessageType != null) {
-                                                    ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);
-                                                }
-                                                getRouter().popCurrentController();
-                                            }, throwable -> dispose(),
-                                            this::dispose);
-                        }
-                    } else {
-                        if (finalMessageType != null) {
-                            ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);
-                        }
-                        getRouter().popToRoot();
-
+                    if (finalMessageType != null) {
+                        ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);
                     }
+                    getRouter().popToRoot();
+
                 }
             }
         }
