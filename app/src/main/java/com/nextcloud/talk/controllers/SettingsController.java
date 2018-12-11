@@ -460,11 +460,6 @@ public class SettingsController extends BaseController {
                     messageText.setText(getResources().getString(R.string.nc_settings_account_updated));
                     messageView.setVisibility(View.VISIBLE);
                     break;
-                case WRONG_ACCOUNT:
-                    messageText.setTextColor(getResources().getColor(R.color.nc_darkRed));
-                    messageText.setText(getResources().getString(R.string.nc_settings_wrong_account));
-                    messageView.setVisibility(View.VISIBLE);
-                    break;
                 case SERVER_WITHOUT_TALK:
                     messageText.setTextColor(getResources().getColor(R.color.nc_darkRed));
                     messageText.setText(getResources().getString(R.string.nc_settings_wrong_account));
