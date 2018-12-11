@@ -517,6 +517,7 @@ public class OperationsMenuController extends BaseController {
         if (localInvitedGroups.size() > 0) {
             localInvitedGroups.remove(0);
         }
+
         if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 && currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails"))) {
             if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails"))) {
                 for (int i = 0; i < localInvitedGroups.size(); i++) {
@@ -557,44 +558,44 @@ public class OperationsMenuController extends BaseController {
                             });
 
                 }
+            }
 
-                for (int i = 0; i < localInvitedGroups.size(); i++) {
-                    final String userId = invitedUsers.get(i);
-                    retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(currentUser.getBaseUrl(), conversation.getToken(),
-                            userId);
+            for (int i = 0; i < localInvitedUsers.size(); i++) {
+                final String userId = invitedUsers.get(i);
+                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(currentUser.getBaseUrl(), conversation.getToken(),
+                        userId);
 
-                    ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(new Observer<AddParticipantOverall>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
+                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(1)
+                        .subscribe(new Observer<AddParticipantOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
+                            }
+
+                            @Override
+                            public void onNext(AddParticipantOverall addParticipantOverall) {
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                dispose();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                synchronized (localInvitedUsers) {
+                                    localInvitedUsers.remove(userId);
                                 }
 
-                                @Override
-                                public void onNext(AddParticipantOverall addParticipantOverall) {
+                                if (localInvitedGroups.size() == 0 && localInvitedUsers.size() == 0) {
+                                    initiateConversation(true, null);
                                 }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    dispose();
-                                }
-
-                                @Override
-                                public void onComplete() {
-                                    synchronized (localInvitedUsers) {
-                                        localInvitedUsers.remove(userId);
-                                    }
-
-                                    if (localInvitedUsers.size() == 0) {
-                                        initiateConversation(true, null);
-                                    }
-                                    dispose();
-                                }
-                            });
-                }
+                                dispose();
+                            }
+                        });
             }
         } else {
             if (!currentUser.hasSpreedCapabilityWithName("chat-v2")) {

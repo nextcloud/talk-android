@@ -795,6 +795,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
         }
 
+        if (bottomSheet == null) {
+            bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
+        }
+
         if (showEntrySheet) {
             getChildRouter((ViewGroup) view).setRoot(
                     RouterTransaction.with(new EntryMenuController(bundle))
@@ -805,13 +809,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     RouterTransaction.with(new OperationsMenuController(bundle))
                             .popChangeHandler(new VerticalChangeHandler())
                             .pushChangeHandler(new VerticalChangeHandler()));
-
-            bottomSheet.setOnShowListener(dialog -> eventBus.post(new BottomSheetLockEvent(false, 0,
-                    false, false)));
-        }
-
-        if (bottomSheet == null) {
-            bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
         }
 
         bottomSheet.setOnShowListener(dialog -> {
@@ -822,6 +819,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         false, false));
             }
         });
+
         bottomSheet.setOnDismissListener(dialog -> getActionBar().setDisplayHomeAsUpEnabled(getRouter().getBackstackSize() > 1));
 
         bottomSheet.show();
@@ -970,6 +968,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         }
 
+        adapter.notifyDataSetChanged();
         checkAndHandleDoneMenuItem();
     }
 
