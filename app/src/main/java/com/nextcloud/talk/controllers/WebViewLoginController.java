@@ -71,7 +71,9 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import autodagger.AutoInjector;
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.requery.Persistable;
 import io.requery.reactivex.ReactiveEntityStore;
 
@@ -359,20 +361,23 @@ public class WebViewLoginController extends BaseController {
                     if (!TextUtils.isEmpty(protocol)) {
                         bundle.putString(BundleKeys.KEY_ORIGINAL_PROTOCOL, protocol);
                     }
+                    
                     getRouter().pushController(RouterTransaction.with(new AccountVerificationController
                             (bundle)).pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler()));
                 } else {
                     if (isPasswordUpdate) {
                         if (currentUser != null) {
-                            userQueryDisposable = userUtils.createOrUpdateUser(null, null,
+                            userQueryDisposable = userUtils.createOrUpdateUser(null, loginData.getToken(),
                                     null, null, null, true,
-                                    null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias(), null).
-                                    subscribe(userEntity -> {
+                                    null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias(), null)
+                                    .subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(userEntity -> {
                                                 if (finalMessageType != null) {
                                                     ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);
                                                 }
-                                                getRouter().popToRoot();
+                                                getRouter().popCurrentController();
                                             }, throwable -> dispose(),
                                             this::dispose);
                         }
