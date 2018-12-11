@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.controllers;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -161,16 +162,20 @@ public class ConversationInfoController extends BaseController {
     }
 
     private void setupAdapter() {
-        if (adapter == null && getActivity() != null) {
-            adapter = new FlexibleAdapter<>(recyclerViewItems, getActivity(), true);
-        }
+        Activity activity;
 
-        if (recyclerView != null && getActivity() != null) {
-            SmoothScrollLinearLayoutManager layoutManager =
-                    new SmoothScrollLinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(adapter);
+        if ((activity = getActivity()) != null) {
+            if (adapter == null) {
+                adapter = new FlexibleAdapter<>(recyclerViewItems, activity, true);
+            }
+
+            if (recyclerView != null) {
+                SmoothScrollLinearLayoutManager layoutManager =
+                        new SmoothScrollLinearLayoutManager(activity);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(adapter);
+            }
         }
     }
 
