@@ -200,7 +200,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         if (isNewConversationView) {
             toggleNewCallHeaderVisibility(!isPublicCall);
-
             checkAndHandleDoneMenuItem();
         }
 
@@ -608,18 +607,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             if (swipeRefreshLayout != null) {
                                 swipeRefreshLayout.setRefreshing(false);
                             }
-
-                            progressBar.setVisibility(View.GONE);
-                            genericRvLayout.setVisibility(View.VISIBLE);
-                            if (isNewConversationView) {
-                                conversationPrivacyToogleLayout.setVisibility(View.VISIBLE);
-                                joinConversationViaLinkLayout.setVisibility(View.VISIBLE);
-                            }
-
-                            if (isNewConversationView) {
-                                checkAndHandleDoneMenuItem();
-                            }
-
                         }
 
                     }
@@ -660,6 +647,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         dispose(contactsQueryDisposable);
                         alreadyFetching = false;
 
+                        disengageProgressBar();
                     }
                 });
 
@@ -686,6 +674,21 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 return "";
             }
         });
+
+        disengageProgressBar();
+    }
+
+    private void disengageProgressBar() {
+        if (!alreadyFetching) {
+            progressBar.setVisibility(View.GONE);
+            genericRvLayout.setVisibility(View.VISIBLE);
+
+            if (isNewConversationView) {
+                conversationPrivacyToogleLayout.setVisibility(View.VISIBLE);
+                joinConversationViaLinkLayout.setVisibility(View.VISIBLE);
+                checkAndHandleDoneMenuItem();
+            }
+        }
     }
 
     private void dispose(@Nullable Disposable disposable) {
@@ -766,7 +769,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 if (!doneMenuItem.isVisible()) {
                     doneMenuItem.setVisible(true);
                 }
-
             } else {
                 doneMenuItem.setVisible(false);
             }

@@ -503,9 +503,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
             new KeyboardUtils(getActivity(), getView(), false);
         }
 
-        if (inChat) {
-            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+        NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
 
+        if (inChat) {
             if (wasDetached & conversationUser.hasSpreedCapabilityWithName("no-ping")) {
                 wasDetached = false;
                 joinRoomWithPassword();
@@ -516,7 +516,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Override
     protected void onDetach(@NonNull View view) {
         super.onDetach(view);
-        if (conversationUser.hasSpreedCapabilityWithName("no-ping")) {
+        if (conversationUser.hasSpreedCapabilityWithName("no-ping")
+                && getActivity() != null && !getActivity().isChangingConfigurations()) {
             wasDetached = true;
             leaveRoom();
         }
@@ -538,7 +539,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         adapter = null;
         inChat = false;
         ApplicationWideCurrentRoomHolder.getInstance().clear();
-        leaveRoom();
     }
 
     private void dispose() {
