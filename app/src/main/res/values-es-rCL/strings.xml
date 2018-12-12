@@ -126,7 +126,7 @@ una liga específicamente generada.</string>
     <string name="nc_notification_channel_calls_description">Muestra las llamadas entrantes</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">¡Lo sentimos, algo salió mal!</string>
-    <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas via
+    <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas vía
 teléfonos móviles. Puedes intentar unirte a la conversación a través de un navegador web. </string>
     <string name="nc_all_ok_operation">¡OK, ya terminamos!</string>
     <string name="nc_ok">OK</string>
