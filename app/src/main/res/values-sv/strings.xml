@@ -62,6 +62,8 @@
     <string name="nc_settings_use_credentials_title">Använd uppgifter</string>
     <string name="nc_settings_switch_account">Växla mellan konton</string>
     <string name="nc_settings_reauthorize">Återautentisera</string>
+    <string name="nc_client_cert_setup">Konfigurera klientcertifikat</string>
+    <string name="nc_client_cert_change">Ändra klientcertifikat</string>
     <string name="nc_settings_remove_account">Ta bort konto</string>
     <string name="nc_settings_add_account">Lägg till ett nytt konto</string>
     <string name="nc_settings_wrong_account">Bara nuvarande konto kan återautentiseras</string>
@@ -92,6 +94,10 @@
     <string name="nc_make_call_public">Gör konversationen offentlig</string>
     <string name="nc_make_call_private">Gör samtalet privat</string>
     <string name="nc_delete_call">Ta bort konversation</string>
+    <string name="nc_join_via_link">Gå med via länk</string>
+    <string name="nc_join_via_web">Gå med via webb</string>
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Välj kontakter</string>
     <string name="nc_one_contact_selected">kontakt vald</string>
     <string name="nc_more_contacts_selected">kontakter valda</string>
     <string name="nc_contacts_clear">Rensa</string>
@@ -112,6 +118,8 @@
     <string name="nc_notification_channel_calls_description">Visar inkommande samtal</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>
+    <string name="nc_failed_signaling_settings">Målservern stöder inte att gå med i offentliga konversationer via mobil-
+        telefoner. Du kan försöka gå med i konversationen via webbläsaren.</string>
     <string name="nc_all_ok_operation">Ok, allt klart!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Samtalsnamn</string>
@@ -122,4 +130,10 @@
     <string name="nc_share_subject">%1$s inbjudan</string>
     <string name="nc_share_text_pass">\nLösenord: %1$s</string>
 
+    <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
+    <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Skriv ett meddelande…</string>
+    <string name="nc_date_header_yesterday">Igår</string>
+    <string name="nc_date_header_today">Idag</string>
     </resources>
