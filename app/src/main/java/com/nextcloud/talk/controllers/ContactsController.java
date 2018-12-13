@@ -200,7 +200,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         if (isNewConversationView) {
             toggleNewCallHeaderVisibility(!isPublicCall);
-            checkAndHandleDoneMenuItem();
+            //checkAndHandleDoneMenuItem();
         }
 
     }
@@ -241,6 +241,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             @Override
             public void onChanged() {
                 super.onChanged();
+                checkAndHandleDoneMenuItem();
                 adapter.filterItems();
                 adapter.onLoadMoreComplete(null);
             }
@@ -381,11 +382,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         searchItem.setVisible(contactItems.size() > 0);
+        checkAndHandleDoneMenuItem();
         if (adapter.hasFilter()) {
             searchItem.expandActionView();
             searchView.setQuery((CharSequence) adapter.getFilter(String.class), false);
         }
-
     }
 
     private void fetchData(boolean startFromScratch) {
@@ -686,7 +687,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             if (isNewConversationView) {
                 conversationPrivacyToogleLayout.setVisibility(View.VISIBLE);
                 joinConversationViaLinkLayout.setVisibility(View.VISIBLE);
-                checkAndHandleDoneMenuItem();
+                //checkAndHandleDoneMenuItem();
             }
         }
     }
@@ -766,9 +767,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private void checkAndHandleDoneMenuItem() {
         if (adapter != null && doneMenuItem != null) {
             if (adapter.getSelectedItemCount() > 0 || isPublicCall) {
-                if (!doneMenuItem.isVisible()) {
-                    doneMenuItem.setVisible(true);
-                }
+                doneMenuItem.setVisible(true);
             } else {
                 doneMenuItem.setVisible(false);
             }
@@ -971,7 +970,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
 
         adapter.notifyDataSetChanged();
-        checkAndHandleDoneMenuItem();
     }
 
     private void toggleNewCallHeaderVisibility(boolean showInitialLayout) {
