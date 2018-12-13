@@ -998,7 +998,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onDestroy();
+                getRouter().popCurrentController();
                 return true;
             case R.id.conversation_video_call:
                 startACall(false);
