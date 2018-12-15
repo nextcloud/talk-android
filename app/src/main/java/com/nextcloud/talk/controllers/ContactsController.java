@@ -200,7 +200,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         if (isNewConversationView) {
             toggleNewCallHeaderVisibility(!isPublicCall);
-            //checkAndHandleDoneMenuItem();
         }
 
     }
@@ -687,7 +686,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             if (isNewConversationView) {
                 conversationPrivacyToogleLayout.setVisibility(View.VISIBLE);
                 joinConversationViaLinkLayout.setVisibility(View.VISIBLE);
-                //checkAndHandleDoneMenuItem();
             }
         }
     }
