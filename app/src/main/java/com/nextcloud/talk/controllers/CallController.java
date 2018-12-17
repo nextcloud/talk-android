@@ -1890,7 +1890,7 @@ public class CallController extends BaseController {
     private void gotNick(String sessionOrUserId, String nick, boolean isFromAnEvent) {
         if (isFromAnEvent && hasExternalSignalingServer) {
             // get session based on userId
-            sessionOrUserId =  webSocketClient.getSessionForUserId(sessionOrUserId);
+            sessionOrUserId = webSocketClient.getSessionForUserId(sessionOrUserId);
         }
 
         if (relativeLayout != null) {

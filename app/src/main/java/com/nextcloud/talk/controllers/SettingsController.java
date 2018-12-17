@@ -188,6 +188,7 @@ public class SettingsController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
+        setHasOptionsMenu(true);
 
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
@@ -258,13 +259,13 @@ public class SettingsController extends BaseController {
         });
 
         addAccountButton.addPreferenceClickListener(view15 -> {
-            getParentController().getRouter().pushController(RouterTransaction.with(new
+            getRouter().pushController(RouterTransaction.with(new
                     ServerSelectionController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
         });
 
         switchAccountButton.addPreferenceClickListener(view16 -> {
-            getParentController().getRouter().pushController(RouterTransaction.with(new
+            getRouter().pushController(RouterTransaction.with(new
                     SwitchAccountController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
         });
@@ -371,7 +372,7 @@ public class SettingsController extends BaseController {
             baseUrlTextView.setText(currentUser.getBaseUrl());
 
             reauthorizeButton.addPreferenceClickListener(view14 -> {
-                getParentController().getRouter().pushController(RouterTransaction.with(
+                getRouter().pushController(RouterTransaction.with(
                         new WebViewLoginController(currentUser.getBaseUrl(), true))
                         .pushChangeHandler(new VerticalChangeHandler())
                         .popChangeHandler(new VerticalChangeHandler()));

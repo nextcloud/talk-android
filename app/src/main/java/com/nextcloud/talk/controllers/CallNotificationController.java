@@ -25,6 +25,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -79,6 +80,7 @@ import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.michaelevans.colorart.library.ColorArt;
 import org.parceler.Parcels;
 
 import java.io.IOException;
@@ -89,7 +91,6 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.palette.graphics.Palette;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -128,8 +129,8 @@ public class CallNotificationController extends BaseController {
     @BindView(R.id.callAnswerCameraView)
     MagicFlipView callAnswerCameraView;
 
-    @BindView(R.id.constraintLayout)
-    ConstraintLayout constraintLayout;
+    @BindView(R.id.backgroundImageView)
+    ImageView backgroundImageView;
 
     @BindView(R.id.incomingTextRelativeLayout)
     RelativeLayout incomingTextRelativeLayout;
@@ -436,6 +437,11 @@ public class CallNotificationController extends BaseController {
                                             (getActivity()).getBitmapPool(), resource, avatarSize, avatarSize));
                                 }
 
+                                if (getResources() != null) {
+                                    incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
+                                            .incoming_gradient));
+                                }
+
                                 if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 &&
                                         userBeingCalled.hasSpreedCapabilityWithName("no-ping")) {
                                     final Allocation input = Allocation.createFromBitmap(renderScript, resource);
@@ -447,25 +453,17 @@ public class CallNotificationController extends BaseController {
                                     script.forEach(output);
                                     output.copyTo(resource);
 
-                                    if (getResources() != null) {
-                                        incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
-                                                .incoming_gradient));
-                                        constraintLayout.setBackground(new BitmapDrawable(resource));
-                                    }
+                                    backgroundImageView.setImageDrawable(new BitmapDrawable(resource));
                                 } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
-                                    Palette palette = Palette.from(resource).generate();
-                                    if (getResources() != null) {
-                                        int color = palette.getDominantColor(getResources().getColor(R.color.grey950));
+                                    ColorArt colorArt = new ColorArt(resource);
+                                    int color = colorArt.getBackgroundColor();
 
-                                        if (color != getResources().getColor(R.color.grey950)) {
-                                            float[] hsv = new float[3];
-                                            Color.colorToHSV(color, hsv);
-                                            hsv[2] *= 0.75f;
-                                            color = Color.HSVToColor(hsv);
-                                        }
+                                    float[] hsv = new float[3];
+                                    Color.colorToHSV(color, hsv);
+                                    hsv[2] *= 0.75f;
+                                    color = Color.HSVToColor(hsv);
 
-                                        constraintLayout.setBackgroundColor(color);
-                                    }
+                                    backgroundImageView.setImageDrawable(new ColorDrawable(color));
                                 }
                             }
                         });

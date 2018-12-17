@@ -222,13 +222,6 @@ public class SwitchAccountController extends BaseController {
         prepareViews();
     }
 
-    @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
 
     private void prepareViews() {
         LinearLayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());

@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/messageText"
                 android:layout_alignParentEnd="true"
-                android:textColor="@color/white60"/>
+                android:textColor="@color/white60" />
 
         </RelativeLayout>
 

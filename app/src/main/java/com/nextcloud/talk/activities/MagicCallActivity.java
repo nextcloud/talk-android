@@ -74,7 +74,7 @@ public class MagicCallActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject (this);
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |

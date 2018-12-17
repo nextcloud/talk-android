@@ -50,11 +50,11 @@ public class KeyboardUtils {
             if (shouldSetBottomPadding) {
                 if (contentView.getPaddingBottom() != diff) {
                     //set the padding of the contentView for the keyboard
-                    contentView.setPadding(0, 0, 0,  diff);
+                    contentView.setPadding(0, 0, 0, diff);
                 }
             } else {
                 //check if the padding is != initialBottomPadding (if yes reset the padding)
-                if (contentView.getPaddingBottom() !=  0) {
+                if (contentView.getPaddingBottom() != 0) {
                     //reset the padding of the contentView
                     contentView.setPadding(0, 0, 0, 0);
                 }

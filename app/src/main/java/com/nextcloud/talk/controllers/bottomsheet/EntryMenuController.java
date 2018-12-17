@@ -131,9 +131,10 @@ public class EntryMenuController extends BaseController {
             bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, editText.getText().toString());
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
-            if(originalBundle.containsKey(BundleKeys.KEY_SPREED_CAPABILITIES)) {
+            if (originalBundle.containsKey(BundleKeys.KEY_SPREED_CAPABILITIES)) {
                 bundle.putParcelable(BundleKeys.KEY_SPREED_CAPABILITIES, originalBundle.getParcelable(BundleKeys.KEY_SPREED_CAPABILITIES));
             }
+
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
@@ -219,7 +220,7 @@ public class EntryMenuController extends BaseController {
                         } else {
                             if (proceedButton.isEnabled()) {
                                 proceedButton.setEnabled(false);
-                                proceedButton.setAlpha(0.7f);
+                                proceedButton.setAlpha(0.38f);
                             }
                             textFieldBoxes.setError(getResources().getString(R.string.nc_call_name_is_same),
                                     true);
@@ -241,7 +242,7 @@ public class EntryMenuController extends BaseController {
                     } else {
                         if (proceedButton.isEnabled()) {
                             proceedButton.setEnabled(false);
-                            proceedButton.setAlpha(0.7f);
+                            proceedButton.setAlpha(0.38f);
                         }
                         textFieldBoxes.setError(getResources().getString(R.string.nc_wrong_link),
                                 true);
@@ -249,7 +250,7 @@ public class EntryMenuController extends BaseController {
                 } else {
                     if (proceedButton.isEnabled()) {
                         proceedButton.setEnabled(false);
-                        proceedButton.setAlpha(0.7f);
+                        proceedButton.setAlpha(0.38f);
                     }
                 }
             }

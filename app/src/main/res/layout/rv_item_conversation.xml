@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -22,9 +21,9 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/item_height">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_height">
 
 
     <FrameLayout
@@ -34,25 +33,24 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin">
 
-        <com.nextcloud.talk.utils.MagicFlipView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.nextcloud.talk.utils.MagicFlipView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/avatar_image"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
             app:animationDuration="170"
             app:checked="false"
             app:enableInitialAnimation="true"
-            app:rearBackgroundColor="@color/colorPrimary"/>
+            app:rearBackgroundColor="@color/colorPrimary" />
 
         <ImageView
             android:id="@+id/password_protected_image_view"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_gravity="bottom|end"
-            android:layout_marginBottom="6dp"
             android:layout_marginEnd="6dp"
+            android:layout_marginBottom="6dp"
             android:src="@drawable/ic_lock_white_24px"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
     </FrameLayout>
 
@@ -62,8 +60,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginStart="@dimen/margin_between_elements"
-        android:layout_toEndOf="@id/frame_layout"
         android:layout_toStartOf="@+id/more_menu"
+        android:layout_toEndOf="@id/frame_layout"
         android:orientation="vertical">
 
         <com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView
@@ -73,7 +71,7 @@
             android:ellipsize="middle"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceListItem"
-            tools:text="Call item text"/>
+            tools:text="Call item text" />
 
         <TextView
             android:id="@+id/secondary_text"
@@ -81,7 +79,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="?android:attr/textColorSecondary"
-            tools:text="A week ago"/>
+            tools:text="A week ago" />
 
     </LinearLayout>
 
@@ -91,12 +89,12 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:background="?android:attr/selectableItemBackground"
-        android:paddingEnd="8dp"
         android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:scaleType="center"
-        android:src="@drawable/ic_more_horiz_black_24dp"/>
+        android:src="@drawable/ic_more_horiz_black_24dp" />
 
 </RelativeLayout>

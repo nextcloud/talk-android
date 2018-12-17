@@ -1,10 +1,6 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">24dp</dimen>
-    <dimen name="activity_vertical_margin">24dp</dimen>
-
-    <dimen name="display_target_image_size">120dp</dimen>
-    <dimen name="display_target_image_margin">16dp</dimen>
 
     <dimen name="avatar_size_very_big">120dp</dimen>
 </resources>

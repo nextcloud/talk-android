@@ -1,24 +1,17 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="item_height">72dp</dimen>
     <dimen name="small_item_height">24dp</dimen>
 
-    <dimen name="display_target_image_size">200dp</dimen>
-    <dimen name="display_target_image_margin">24dp</dimen>
-
     <!-- Custom transition dimensions -->
-    <dimen name="padding_normal">16dp</dimen>
-    <dimen name="margin_normal">16dp</dimen>
     <dimen name="padding_between_elements">8dp</dimen>
     <dimen name="margin_between_elements">8dp</dimen>
     <dimen name="avatar_size">40dp</dimen>
     <dimen name="avatar_size_big">80dp</dimen>
     <dimen name="avatar_size_very_big">@dimen/avatar_fetching_size_very_big</dimen>
     <dimen name="avatar_fetching_size_very_big">180dp</dimen>
-    <dimen name="avatar_corner_radius">20dp</dimen>
 
     <dimen name="chat_text_size">14sp</dimen>
     <dimen name="message_bubble_corners_radius">6dp</dimen>

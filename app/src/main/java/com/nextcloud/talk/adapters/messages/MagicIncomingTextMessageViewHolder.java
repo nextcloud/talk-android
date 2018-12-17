@@ -106,14 +106,14 @@ public class MagicIncomingTextMessageViewHolder
         Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
         if (message.isGrouped()) {
             messageUserAvatarView.setVisibility(View.INVISIBLE);
-            Drawable bubbleDrawable =  DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
+            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
                     resources.getColor(R.color.transparent),
                     resources.getColor(R.color.white_two), R.drawable.shape_grouped_incoming_message);
             ViewCompat.setBackground(bubble, bubbleDrawable);
             messageAuthor.setVisibility(View.GONE);
         } else {
             messageUserAvatarView.setVisibility(View.VISIBLE);
-            Drawable bubbleDrawable =  DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
+            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
                     resources.getColor(R.color.transparent),
                     resources.getColor(R.color.white_two), R.drawable.shape_incoming_message);
             ViewCompat.setBackground(bubble, bubbleDrawable);

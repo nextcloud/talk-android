@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -19,32 +20,34 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/item_height"
-    android:orientation="vertical">
+    android:layout_height="72dp"
+    android:id="@+id/joinConversationViaLinkRelativeLayout">
 
-    <com.nextcloud.talk.utils.MagicFlipView
-        android:id="@+id/avatar_flip_view"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
+    <ImageView
+        android:id="@+id/joinConversationViaLinkImageView"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        app:animationDuration="170"
-        app:enableInitialAnimation="true"
-        app:rearBackgroundColor="@color/colorPrimary" />
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_public_black_24px"
+        android:tint="@color/colorPrimary" />
 
     <TextView
-        android:id="@+id/name_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_toEndOf="@id/avatar_flip_view"
-        android:ellipsize="end"
+        android:layout_toEndOf="@id/joinConversationViaLinkImageView"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:text="@string/nc_join_via_link"
         android:textAppearance="?android:attr/textAppearanceListItem"
-        tools:text="Contact item text" />
+        tools:text="@string/nc_join_via_link" />
 
 </RelativeLayout>

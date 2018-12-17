@@ -50,7 +50,7 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
@@ -442,6 +442,18 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
+        if (conversationUser.hasSpreedCapabilityWithName("mention-flag") && getActivity() != null) {
+            getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
+                bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
+                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+                getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler())));
+            });
+        }
+
         if (adapterWasNull) {
             // we're starting
             if (TextUtils.isEmpty(roomToken)) {
@@ -476,9 +488,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomId);
@@ -494,10 +503,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
             new KeyboardUtils(getActivity(), getView(), false);
         }
 
-        if (inChat) {
-            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+        NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
 
+        if (inChat) {
             if (wasDetached & conversationUser.hasSpreedCapabilityWithName("no-ping")) {
+                wasDetached = false;
                 joinRoomWithPassword();
             }
         }
@@ -506,8 +516,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Override
     protected void onDetach(@NonNull View view) {
         super.onDetach(view);
-        if (conversationUser.hasSpreedCapabilityWithName("no-ping")) {
+        if (conversationUser.hasSpreedCapabilityWithName("no-ping")
+                && getActivity() != null && !getActivity().isChangingConfigurations()) {
             wasDetached = true;
+            leaveRoom();
         }
     }
 
@@ -519,10 +531,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if (getActivity() != null) {
+            getActivity().findViewById(R.id.toolbar).setOnClickListener(null);
+        }
+
         adapter = null;
         inChat = false;
         ApplicationWideCurrentRoomHolder.getInstance().clear();
-        leaveRoom();
     }
 
     private void dispose() {
@@ -573,8 +589,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void joinRoomWithPassword() {
-
-        wasDetached = false;
 
         if (currentCall == null) {
             ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken), roomPassword)
@@ -639,8 +653,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     @Override
                     public void onNext(GenericOverall genericOverall) {
                         dispose();
-                        if (!isDestroyed()) {
-                            getRouter().popToRoot();
+                        if (!isDestroyed() && !isBeingDestroyed() && !wasDetached) {
+                            getRouter().popCurrentController();
                         }
                     }
 
@@ -977,12 +991,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_conversation, menu);
-
-        if (conversationUser.hasSpreedCapabilityWithName("mention-flag")) {
-            menu.findItem(R.id.nc_conversation_info).setVisible(true);
-        } else {
-            menu.findItem(R.id.nc_conversation_info).setVisible(false);
-        }
     }
 
 
@@ -990,22 +998,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onDestroy();
+                getRouter().popCurrentController();
                 return true;
             case R.id.conversation_video_call:
                 startACall(false);
                 return true;
             case R.id.conversation_voice_call:
                 startACall(true);
-                return true;
-            case R.id.nc_conversation_info:
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
-                bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
-                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
-                getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
-                        .pushChangeHandler(new VerticalChangeHandler())
-                        .popChangeHandler(new VerticalChangeHandler())));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

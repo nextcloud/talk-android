@@ -116,12 +116,12 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
 
         Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
         if (message.isGrouped) {
-            Drawable bubbleDrawable =  DisplayUtils.getMessageSelector(resources.getColor(R.color.colorPrimary),
+            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.colorPrimary),
                     resources.getColor(R.color.transparent),
                     resources.getColor(R.color.colorPrimary), R.drawable.shape_grouped_outcoming_message);
             ViewCompat.setBackground(bubble, bubbleDrawable);
         } else {
-            Drawable bubbleDrawable =  DisplayUtils.getMessageSelector(resources.getColor(R.color.colorPrimary),
+            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.colorPrimary),
                     resources.getColor(R.color.transparent),
                     resources.getColor(R.color.colorPrimary), R.drawable.shape_outcoming_message);
             ViewCompat.setBackground(bubble, bubbleDrawable);

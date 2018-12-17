@@ -407,7 +407,7 @@ public class AccountVerificationController extends BaseController {
             getActivity().runOnUiThread(() -> {
                 if (userUtils.getUsers().size() == 1) {
                     getRouter().setRoot(RouterTransaction.with(new
-                            MagicBottomNavigationController())
+                            ConversationsListController())
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler()));
                 } else {
@@ -488,7 +488,7 @@ public class AccountVerificationController extends BaseController {
 
                     } else {
                         if (userUtils.anyUserExists()) {
-                            getRouter().setRoot(RouterTransaction.with(new MagicBottomNavigationController())
+                            getRouter().setRoot(RouterTransaction.with(new ConversationsListController())
                                     .pushChangeHandler(new HorizontalChangeHandler())
                                     .popChangeHandler(new HorizontalChangeHandler()));
                         } else {

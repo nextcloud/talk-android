@@ -20,9 +20,7 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Conversations</string>
-    <string name="nc_bottom_navigation_title_contacts">Contacts</string>
-    <string name="nc_bottom_navigation_title_settings">Settings</string>
+    <string name="nc_settings">Settings</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Server address</string>
@@ -39,14 +37,11 @@
     <string name="nc_get_from_provider">Do you not have a server yet?\nClick here to get one from a provider</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Display name fetched</string>
     <string name="nc_push_disabled">Push notifications disabled</string>
     <string name="nc_capabilities_failed">Failed to fetch capabilities, aborting</string>
     <string name="nc_external_server_failed">Failed to fetch signaling settings</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s app found</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app not installed on the server, aborting</string>
-    <string name="nc_display_name_stored">Display name stored</string>
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
 
     <string name="nc_never">Never joined</string>
@@ -56,7 +51,6 @@
     <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
     <string name="nc_yes">Yes</string>
     <string name="nc_no">No</string>
-    <string name="nc_details">Details</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
 
     <!-- Settings -->
@@ -128,15 +122,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Select contacts</string>
-    <string name="nc_one_contact_selected">contact selected</string>
-    <string name="nc_more_contacts_selected">contacts selected</string>
-    <string name="nc_contacts_clear">Clear</string>
     <string name="nc_contacts_done">Done</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Permissions need to be granted to establish a video and/or audio call. Please click \"ALLOW\" in the upcoming system dialog.</string>
-    <string name="nc_permissions_audio">Microphone permission needs to be granted to enable audio calls. Please click \"ALLOW\" in the upcoming system dialog.</string>
-    <string name="nc_permissions_video">Camera permission needs to be granted to enable video calls. Please click \"ALLOW\" in the upcoming system dialog.</string>
     <string name="nc_camera_permission_permanently_denied">To enable video communication please grant \"Camera\" permission in the system settings.</string>
     <string name="nc_microphone_permission_permanently_denied">To enable voice communication please grant \"Microphone\" permission in the system settings.</string>
     <string name="nc_permissions_settings">Open settings</string>
@@ -154,7 +142,6 @@
     <string name="nc_notification_channel_calls">Calls notification channel</string>
     <string name="nc_notification_channel_messages">Messages notification channel</string>
     <string name="nc_notification_channel_calls_description">Shows incoming calls</string>
-    <string name="nc_notification_channel_Cmessages_description">Shows incoming messages</string>
     <string name="nc_notification_settings">Notification settings</string>
     <string name="nc_plain_old_messages">Messages</string>
     <string name="nc_notify_me_always">Always notify</string>
@@ -180,34 +167,8 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">With microphone disabled, click&amp;hold to use Push-to-talk</string>
-    <string name="nc_store_short_desc">Have private video calls and chat using your own server.</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
-    <string name="nc_store_full_desc">Use Nextcloud Talk to have one-on-one or group audio or video calls, create or join web conferences and send chat messages. All communication is fully encrypted and mediated by your own server, providing the highest degree of privacy possible.
-
-Nextcloud Talk is easy to use and will always be completely free!
-
-Nextcloud Talk supports:
-* HD (H.265) audio/video calls
-* Group and one-on-one calls
-* Webinars &amp; public web meetings
-* Individual and group chat
-* Easy screen sharing
-* Mobile apps for Android and iOS
-* Mobile call &amp; chat push notifications (only if installed from Google Play)
-* Integration in Nextcloud Files and Nextcloud Groupware
-* Fully on-premise, completely open source
-* End-to-end Encrypted calls
-* Scaling to millions of users
-* SIP gate: dial in by phone
-
-The Nextcloud Talk app requires a Nextcloud Talk server to function. Nextcloud is a private, self-hosted file sync and communication platform, designed to put you back in control over your data. It runs on a server of your choice, be it at home, at a service provider or in your enterprise, and gives you access to your documents, calendars, contacts, email and other data. You can share with others even across different Nextcloud servers and work together on documents. Nextcloud is fully open source, giving you the option to extend them for your own use, participate in their development or simply verify they do what we promise.
-
-Millions of users use Nextcloud daily at businesses and homes around the world. Business users rely on the professional support of Nextcloud GmbH, making sure they have a fully supported, enterprise-ready platform for productivity and collaboration, fully under control of their IT department.
-
-Learn more on https://nextcloud.com/talk
-
-Find Nextcloud on https://nextcloud.com</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message…</string>
@@ -247,5 +208,4 @@ Find Nextcloud on https://nextcloud.com</string>
     <string name="nc_user">User</string>
     <string name="nc_guest">Guest</string>
     <string name="nc_following_link">User following a public link</string>
-
 </resources>

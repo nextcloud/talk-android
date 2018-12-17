@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -20,23 +19,23 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="@dimen/item_height"
         android:layout_height="@dimen/item_height"
         android:layout_centerInParent="true"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:indeterminate="true"
         android:indeterminateTint="@color/colorPrimary"
         android:indeterminateTintMode="src_in"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/emptyLayout"
@@ -51,7 +50,7 @@
             android:layout_centerInParent="true"
             android:text="👋"
             android:textAlignment="center"
-            android:textSize="72sp"/>
+            android:textSize="72sp" />
 
         <TextView
             android:id="@+id/sendHiTextView"
@@ -60,7 +59,7 @@
             android:layout_below="@+id/wawingTextView"
             android:layout_margin="8dp"
             android:textAlignment="center"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
     </RelativeLayout>
 
     <com.stfalcon.chatkit.messages.MessagesList
@@ -77,6 +76,7 @@
         app:incomingDefaultBubbleColor="@color/white_two"
         app:incomingDefaultBubblePressedColor="@color/white_two"
         app:incomingDefaultBubbleSelectedColor="@color/transparent"
+        app:incomingImageTimeTextSize="12sp"
         app:incomingTextColor="@color/nc_incoming_text_default"
         app:incomingTextLinkColor="@color/nc_incoming_text_default"
         app:incomingTextSize="@dimen/chat_text_size"
@@ -88,13 +88,12 @@
         app:outcomingDefaultBubbleColor="@color/colorPrimary"
         app:outcomingDefaultBubblePressedColor="@color/colorPrimary"
         app:outcomingDefaultBubbleSelectedColor="@color/transparent"
+        app:outcomingImageTimeTextSize="12sp"
         app:outcomingTextColor="@color/nc_outcoming_text_default"
         app:outcomingTextLinkColor="@color/nc_outcoming_text_default"
         app:outcomingTextSize="@dimen/chat_text_size"
         app:outcomingTimeTextSize="12sp"
-        app:outcomingImageTimeTextSize="12sp"
-        app:incomingImageTimeTextSize="12sp"
-        app:textAutoLink="all"/>
+        app:textAutoLink="all" />
 
     <com.webianks.library.PopupBubble
         android:id="@+id/popupBubbleView"
@@ -107,7 +106,7 @@
         app:pb_backgroundColor="@color/colorPrimary"
         app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
         app:pb_text="@string/nc_new_messages"
-        app:pb_textColor="@color/white"/>
+        app:pb_textColor="@color/white" />
 
     <View
         android:id="@+id/separator"
@@ -116,15 +115,15 @@
         android:layout_above="@+id/messageInputView"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@color/nc_light_grey"/>
+        android:background="@color/nc_light_grey" />
 
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/messageInputView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:maxLength="1000"
         android:inputType="textLongMessage|textAutoComplete"
+        android:maxLength="1000"
         app:inputButtonDefaultBgColor="@color/colorPrimary"
         app:inputButtonDefaultBgPressedColor="@color/colorPrimaryDark"
         app:inputButtonHeight="30dp"
@@ -132,6 +131,6 @@
         app:inputButtonWidth="30dp"
         app:inputHint="@string/nc_hint_enter_a_message"
         app:inputTextColor="@color/black"
-        app:inputTextSize="16sp"/>
+        app:inputTextSize="16sp" />
 
 </RelativeLayout>

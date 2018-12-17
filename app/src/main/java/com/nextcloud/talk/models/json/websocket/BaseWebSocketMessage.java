@@ -30,7 +30,7 @@ import lombok.Data;
 @Data
 @JsonObject
 @Parcel
-public class BaseWebSocketMessage{
+public class BaseWebSocketMessage {
     @JsonField(name = "type")
     String type;
 }

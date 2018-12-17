@@ -22,8 +22,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
     android:layout_marginTop="2dp"
+    android:layout_marginEnd="16dp"
     android:layout_marginBottom="2dp">
 
     <com.stfalcon.chatkit.utils.ShapeImageView
@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/messageText"
-                android:layout_alignParentEnd="true"/>
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 

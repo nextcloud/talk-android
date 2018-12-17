@@ -30,13 +30,11 @@ import android.view.ViewGroup;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.kennyc.bottomsheet.adapters.AppAdapter;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.AppItem;
 import com.nextcloud.talk.adapters.items.MenuItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.controllers.ContactsController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -139,7 +137,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, getResources()
                         .getDrawable(R.drawable.ic_star_border_grey600_24dp)));
             } else if ((currentUser = userUtils.getCurrentUser()) != null &&
-                    currentUser.hasSpreedCapabilityWithName("favorites")){
+                    currentUser.hasSpreedCapabilityWithName("favorites")) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites), 98, getResources()
                         .getDrawable(R.drawable.ic_star_grey600_24dp)));
             }
@@ -254,26 +252,6 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                             .popChangeHandler(new HorizontalChangeHandler()));
                 }
             }
-        } else if (menuType.equals(MenuType.NEW_CONVERSATION) && position != 0) {
-            MenuItem menuItem = (MenuItem) adapter.getItem(position);
-            if (menuItem != null) {
-                if (menuItem.getTag() == 1) {
-                    eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
-                    bundle = new Bundle();
-                    bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
-                    getParentController().getParentController().getRouter().pushController((RouterTransaction.with
-                            (new ContactsController
-                                    (bundle))
-                            .pushChangeHandler(new VerticalChangeHandler())
-                            .popChangeHandler(new VerticalChangeHandler())));
-                } else {
-                    bundle = new Bundle();
-                    bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 10);
-                    getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler()));
-                }
-            }
         }
 
         return true;
@@ -281,6 +259,6 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
     @Parcel
     public enum MenuType {
-        REGULAR, SHARE, NEW_CONVERSATION
+        REGULAR, SHARE
     }
 }

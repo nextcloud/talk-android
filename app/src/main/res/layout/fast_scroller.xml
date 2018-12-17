@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -20,19 +19,18 @@
   -->
 
 <eu.davidea.fastscroller.FastScroller xmlns:android="http://schemas.android.com/apk/res/android"
-                                      xmlns:app="http://schemas.android.com/apk/res-auto"
-                                      xmlns:tools="http://schemas.android.com/tools"
-                                      android:id="@+id/fast_scroller"
-                                      android:layout_width="wrap_content"
-                                      android:layout_height="match_parent"
-                                      android:layout_alignBottom="@+id/swipe_refresh_layout"
-                                      android:layout_alignParentEnd="true"
-                                      android:layout_alignTop="@+id/swipe_refresh_layout"
-                                      android:layout_centerHorizontal="true"
-                                      app:fastScrollerAutoHideDelayInMillis="1000"
-                                      app:fastScrollerAutoHideEnabled="true"
-                                      app:fastScrollerBubbleEnabled="true"
-                                      app:fastScrollerBubblePosition="adjacent"
-                                      app:fastScrollerIgnoreTouchesOutsideHandle="false"
-                                      tools:visibility="visible">
-</eu.davidea.fastscroller.FastScroller>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fast_scroller"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_alignTop="@+id/swipe_refresh_layout"
+    android:layout_alignBottom="@+id/swipe_refresh_layout"
+    android:layout_alignParentEnd="true"
+    android:layout_centerHorizontal="true"
+    app:fastScrollerAutoHideDelayInMillis="1000"
+    app:fastScrollerAutoHideEnabled="true"
+    app:fastScrollerBubbleEnabled="true"
+    app:fastScrollerBubblePosition="adjacent"
+    app:fastScrollerIgnoreTouchesOutsideHandle="false"
+    tools:visibility="visible"></eu.davidea.fastscroller.FastScroller>

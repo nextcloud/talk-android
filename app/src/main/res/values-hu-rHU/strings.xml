@@ -20,9 +20,7 @@
 
 <resources>
     <!-- Bottom Navigation -->
-    <string name="nc_bottom_navigation_title_conversations">Beszélgetések</string>
-    <string name="nc_bottom_navigation_title_contacts">Kapcsolatok</string>
-    <string name="nc_bottom_navigation_title_settings">Beállítások</string>
+    <string name="nc_settings">Beállítások</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">szervercím</string>
@@ -39,13 +37,10 @@
     <string name="nc_get_from_provider">Nincs még saját szervere?\nKattintson ide a beszerzéshez az egyik szolgáltatótól</string>
 
     <!-- Account verification -->
-    <string name="nc_display_name_fetched">Megjelenítendő név beszerezve</string>
     <string name="nc_push_disabled">Azonnali üzenetek letilva</string>
     <string name="nc_external_server_failed">Nem sikerült a jelzésváltás beállítása</string>
     <string name="nc_display_name_not_fetched">Megjelenítendő név nem beszerezhető, megszakítás</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s app megtalálva</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app nincs telepítve a szerveren, megszakítás</string>
-    <string name="nc_display_name_stored">Megjelenítendő név tárolva</string>
     <string name="nc_display_name_not_stored">Megjelenítendő név nincs tárolva, megszakítás</string>
 
     <string name="nc_never">Soha nem csatlakozott</string>
@@ -55,7 +50,6 @@
     <string name="nc_certificate_dialog_text">Korábban ismeretlen SSL tanúsítvány érkezett. %1$s bocsátotta ki %2$s részére, %3$s és %4$s között érvényes. Megbízható?</string>
     <string name="nc_yes">Igen</string>
     <string name="nc_no">Nem</string>
-    <string name="nc_details">Részletek</string>
     <string name="nc_certificate_error">Az SSL beállítás megakadályozta a kapcsolódást</string>
 
     <!-- Settings -->
@@ -113,15 +107,9 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Kapcsolat kiválasztása</string>
-    <string name="nc_one_contact_selected">kapcsolat kiválasztva</string>
-    <string name="nc_more_contacts_selected">kapcsolatok kiválasztva</string>
-    <string name="nc_contacts_clear">Törlés</string>
     <string name="nc_contacts_done">Kész</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Videohívás létrehozásához bizonyos engedélyek szükségesek. A következő párbeszédablakban az „ENGEDÉLYEZÉS”-re kell kattintani.</string>
-    <string name="nc_permissions_audio">Videohívás létrehozásához mikrofon használati engedély szükséges. A következő párbeszédablakban az „ENGEDÉLYEZÉS”-re kell kattintani.</string>
-    <string name="nc_permissions_video">Videohívás létrehozásához kamera használati engedély szükséges. A következő párbeszédablakban az „ENGEDÉLYEZÉS”-re kell kattintani.</string>
     <string name="nc_camera_permission_permanently_denied">Videohívás létrehozásához a rendszerbeállításokban meg kell adni a „Kamera”engedélyt.</string>
     <string name="nc_microphone_permission_permanently_denied">Hanghívás létrehozásához a rendszerbeállításokban meg kell adni a „Mikrofon”engedélyt.</string>
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
@@ -162,7 +150,6 @@
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Letiltott mikorfonnal kattintson a &amp; tartásra, hogy használni tudja az adóvevőt</string>
-    <string name="nc_store_short_desc">Intézz videóhívásokat és magánbeszélgetéseket saját szervered segítségével.</string>
     <string name="nc_configure_cert_auth">Hitelesítési tanúsítvány kiválasztása</string>
     <string name="nc_change_cert_auth">Hitelesítési tanúsítvány módosítása</string>
     <!-- Chat -->

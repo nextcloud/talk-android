@@ -23,6 +23,8 @@ package com.nextcloud.talk.controllers;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -33,7 +35,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -42,7 +43,13 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
@@ -59,9 +66,11 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.glide.GlideApp;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.greenrobot.eventbus.EventBus;
@@ -126,6 +135,9 @@ public class ConversationsListController extends BaseController implements Searc
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
 
+    @BindView(R.id.floatingActionButton)
+    FloatingActionButton floatingActionButton;
+
     private UserEntity currentUser;
     private Disposable roomsQueryDisposable;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
@@ -172,23 +184,41 @@ public class ConversationsListController extends BaseController implements Searc
         prepareViews();
     }
 
+    private void loadUserAvatar(MenuItem menuItem) {
+        if (getActivity() != null) {
+            int avatarSize = (int) DisplayUtils.convertDpToPixel(menuItem.getIcon().getIntrinsicHeight(), getActivity());
+
+            GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(currentUser.getBaseUrl(),
+                    currentUser.getUserId(), avatarSize), new LazyHeaders.Builder()
+                    .setHeader("Accept", "image/*")
+                    .setHeader("User-Agent", ApiUtils.getUserAgent())
+                    .build());
+
+            GlideApp.with(getActivity())
+                    .asBitmap()
+                    .centerInside()
+                    .override(avatarSize, avatarSize)
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                    .load(glideUrl)
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            menuItem.setIcon(new BitmapDrawable(resource));
+                        }
+                    });
+        }
+    }
+
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
         eventBus.register(this);
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(false);
-        }
 
         currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
-        }
-
-        if (currentUser != null) {
             shouldUseLastMessageLayout = currentUser.hasSpreedCapabilityWithName("last-room-activity");
-
             fetchData(false);
         }
     }
@@ -214,47 +244,15 @@ public class ConversationsListController extends BaseController implements Searc
                 searchView.setOnQueryTextListener(this);
             }
         }
-
-        final View mSearchEditFrame = searchView
-                .findViewById(androidx.appcompat.R.id.search_edit_frame);
-
-        BottomNavigationView bottomNavigationView = getParentController().getView().findViewById(R.id.navigation);
-
-        Handler handler = new Handler();
-        ViewTreeObserver vto = mSearchEditFrame.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            int oldVisibility = -1;
-
-            @Override
-            public void onGlobalLayout() {
-
-                int currentVisibility = mSearchEditFrame.getVisibility();
-
-                if (currentVisibility != oldVisibility) {
-                    if (currentVisibility == View.VISIBLE) {
-                        handler.postDelayed(() -> bottomNavigationView.setVisibility(View.GONE), 100);
-                    } else {
-                        handler.postDelayed(() -> {
-                            bottomNavigationView.setVisibility(View.VISIBLE);
-                            searchItem.setVisible(callItems.size() > 0);
-                        }, 500);
-                    }
-
-                    oldVisibility = currentVisibility;
-                }
-
-            }
-        });
-
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_new_conversation:
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(CallMenuController.MenuType.NEW_CONVERSATION));
-                prepareAndShowBottomSheetWithBundle(bundle, true);
+            case R.id.action_settings:
+                getRouter().pushController((RouterTransaction.with(new SettingsController())
+                        .pushChangeHandler(new VerticalChangeHandler())
+                        .popChangeHandler(new VerticalChangeHandler())));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -278,6 +276,9 @@ public class ConversationsListController extends BaseController implements Searc
             searchItem.expandActionView();
             searchView.setQuery(adapter.getFilter(String.class), false);
         }
+
+        MenuItem menuItem = menu.findItem(R.id.action_settings);
+        loadUserAvatar(menuItem);
     }
 
     private void fetchData(boolean fromBottomSheet) {
@@ -409,14 +410,9 @@ public class ConversationsListController extends BaseController implements Searc
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
-        emptyLayoutView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getParentController() != null && getParentController().getView() != null) {
-                    ((BottomNavigationView) getParentController().getView().findViewById(R.id.navigation))
-                            .setSelectedItemId(R.id.navigation_contacts);
-                }
-            }
+        emptyLayoutView.setOnClickListener(v -> showNewConversationsScreen());
+        floatingActionButton.setOnClickListener(v -> {
+            showNewConversationsScreen();
         });
 
         fastScroller.addOnScrollStateChangeListener(this);
@@ -434,6 +430,14 @@ public class ConversationsListController extends BaseController implements Searc
             }
             return displayName;
         });
+    }
+
+    private void showNewConversationsScreen() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
+        getRouter().pushController((RouterTransaction.with(new ContactsController(bundle))
+                .pushChangeHandler(new HorizontalChangeHandler())
+                .popChangeHandler(new HorizontalChangeHandler())));
     }
 
     private void dispose(@Nullable Disposable disposable) {
@@ -544,6 +548,7 @@ public class ConversationsListController extends BaseController implements Searc
         }
 
         bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true));
+        bottomSheet.setOnDismissListener(dialog -> getActionBar().setDisplayHomeAsUpEnabled(getRouter().getBackstackSize() > 1));
         bottomSheet.show();
     }
 
@@ -583,7 +588,7 @@ public class ConversationsListController extends BaseController implements Searc
 
                 if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
                     bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversation.getDisplayName());
-                    getParentController().getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
+                    getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler())));
                 } else {

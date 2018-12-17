@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -22,10 +21,10 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/menu_text"
@@ -39,5 +38,5 @@
         android:textSize="16sp"
         tools:drawableLeft="@drawable/ic_add_grey600_24px"
         tools:drawablePadding="16dp"
-        tools:text="Start a new conversation"/>
+        tools:text="Start a new conversation" />
 </RelativeLayout>
