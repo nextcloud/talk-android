@@ -173,7 +173,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private static final byte CONTENT_TYPE_SYSTEM_MESSAGE = 1;
 
     private boolean wasDetached;
-    private boolean isStartingACall;
 
     public ChatController(Bundle args) {
         super(args);
@@ -512,8 +511,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 joinRoomWithPassword();
             }
         }
-
-        isStartingACall = false;
     }
 
     @Override
@@ -522,9 +519,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (conversationUser.hasSpreedCapabilityWithName("no-ping")
                 && getActivity() != null && !getActivity().isChangingConfigurations()) {
             wasDetached = true;
-            if (!isStartingACall) {
-                leaveRoom();
-            }
+            leaveRoom();
         }
     }
 
@@ -658,6 +653,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     @Override
                     public void onNext(GenericOverall genericOverall) {
                         dispose();
+                        currentCall = null;
                         if (!isDestroyed() && !isBeingDestroyed() && !wasDetached) {
                             getRouter().popCurrentController();
                         }
@@ -1020,13 +1016,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (!isVoiceOnlyCall) {
             Intent videoCallIntent = getIntentForCall(false);
             if (videoCallIntent != null) {
-                isStartingACall = true;
                 startActivity(videoCallIntent);
             }
         } else {
             Intent voiceCallIntent = getIntentForCall(true);
             if (voiceCallIntent != null) {
-                isStartingACall = true;
                 startActivity(voiceCallIntent);
             }
         }
