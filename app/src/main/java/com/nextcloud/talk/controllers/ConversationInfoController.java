@@ -118,7 +118,7 @@ public class ConversationInfoController extends BaseController {
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
     private List<AbstractFlexibleItem> recyclerViewItems = new ArrayList<>();
 
-    public ConversationInfoController(Bundle args) {
+    ConversationInfoController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -192,6 +192,8 @@ public class ConversationInfoController extends BaseController {
             userItem.setEnabled(!participant.getSessionId().equals("0"));
             if (!TextUtils.isEmpty(participant.getUserId()) && participant.getUserId().equals(conversationUser.getUserId())) {
                 ownUserItem = userItem;
+                userItem.getModel().setSessionId("-1");
+                userItem.setEnabled(true);
             } else {
                 recyclerViewItems.add(userItem);
             }
