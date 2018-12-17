@@ -50,8 +50,8 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/ic_logo"
-            android:tint="@color/colorPrimary"/>
+            android:src="@drawable/ic_logo"
+            android:tint="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/sendHiTextView"
