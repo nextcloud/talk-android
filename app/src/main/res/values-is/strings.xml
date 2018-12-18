@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Stillingar</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Vistfang þjóns</string>
     <string name="nc_server_not_installed">Kláraðu uppsetninguna þína á %1$s</string>
@@ -157,6 +154,7 @@
     <string name="nc_push_to_talk_desc">Með hljóðnemann óvirkan, smelltu og haltu niðri til að nota Ýta-til-að-tala</string>
     <string name="nc_configure_cert_auth">Veldu skilríki fyrir auðkenningu</string>
     <string name="nc_change_cert_auth">Skipta um skilríki fyrir auðkenningu</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Settu inn skilaboð…</string>
     <string name="nc_date_header_yesterday">Í gær</string>
@@ -195,5 +193,4 @@
     <string name="nc_user">Notandi</string>
     <string name="nc_guest">Gestur</string>
     <string name="nc_following_link">Notandi sem fylgdi almenningstengli</string>
-
 </resources>

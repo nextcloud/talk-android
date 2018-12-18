@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">设置</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">服务器地址</string>
     <string name="nc_server_not_installed">请完成你的 %1$s 安装</string>

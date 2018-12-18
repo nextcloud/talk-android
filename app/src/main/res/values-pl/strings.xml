@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Ustawienia</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Adres serwera</string>
     <string name="nc_server_not_installed">Proszę zakończ instalację %1$s</string>
@@ -144,6 +141,7 @@ komórkowe. Możesz próbować dołączyć do rozmowy przez przeglądarkę inter
     <string name="nc_push_to_talk_desc">Gdy mikrofon jest wyłączony, kliknij &amp; i przytrzymaj aby użyć funkcji Push-to-talk</string>
     <string name="nc_configure_cert_auth">Wybierz certyfikat uwierzytelnienia</string>
     <string name="nc_change_cert_auth">Zmień certyfikat uwierzytelnienia</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Wpisz wiadomość...</string>
     <string name="nc_date_header_yesterday">Wczoraj</string>

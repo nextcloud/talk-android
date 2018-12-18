@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Settings</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Server address</string>
     <string name="nc_server_not_installed">Please finish your %1$s installation</string>
@@ -131,6 +128,7 @@
     <string name="nc_push_to_talk_desc">With the microphone disabled, click&amp;hold to use Press-to-transmit</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message…</string>
     <string name="nc_date_header_yesterday">Yesterday</string>

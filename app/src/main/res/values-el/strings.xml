@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Ρυθμίσεις</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Διεύθυνση διακομιστή</string>
     <string name="nc_server_not_installed">Παρακαλούμε ολοκληρώστε την %1$s εγκατάσταση</string>

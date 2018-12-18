@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Параметры</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Адрес сервера</string>
     <string name="nc_server_not_installed">Завершите установку %1$s</string>
@@ -194,5 +191,4 @@
     <string name="nc_user">Пользователь</string>
     <string name="nc_guest">Гость</string>
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
-
 </resources>

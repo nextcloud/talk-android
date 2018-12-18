@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Asetukset</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Palvelimen osoite</string>
     <string name="nc_server_not_installed">Viimeistele %1$s-asennuksesi</string>

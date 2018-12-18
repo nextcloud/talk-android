@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Nastavitve</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Naslov strežnika</string>
     <string name="nc_server_not_installed">Dokončajte namestitev %1$s</string>
@@ -141,6 +138,7 @@
     <string name="nc_push_to_talk">Možnost »push-to-talk«</string>
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Vpis sporočila ...</string>
     <string name="nc_date_header_yesterday">Včeraj</string>

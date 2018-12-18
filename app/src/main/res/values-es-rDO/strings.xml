@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Configuraciones</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Dirección del servidor</string>
     <string name="nc_server_not_installed">Por favor termina tu instalación de %1$s</string>
@@ -131,6 +128,7 @@ teléfonos móviles. Puedes intentar unirte a la conversación a través de un n
     <string name="nc_push_to_talk_desc">Con el microfono deshabilitado, haz click &amp; presiona para usar Presiona-para-hablar</string>
     <string name="nc_configure_cert_auth">Seleccionar el certificado de autenticación</string>
     <string name="nc_change_cert_auth">Cambiar el certificado de atuenticación</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Introduce un mensaje...</string>
     <string name="nc_date_header_yesterday">Ayer</string>

@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">הגדרות</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">כתובת השרת</string>
     <string name="nc_server_not_installed">נא לסיים את ההתקנה של %1$s אצלך</string>
@@ -130,6 +127,7 @@
 
     <string name="nc_configure_cert_auth">בחירת אישור לאימות</string>
     <string name="nc_change_cert_auth">החלפת אישור לאימות</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">נא להקליד הודעה…</string>
     <string name="nc_date_header_yesterday">אתמול</string>

@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Nastavenia</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Adresa servera</string>
     <string name="nc_server_not_installed">Prosím dokončite vašu %1$s inštaláciu</string>
@@ -196,5 +193,4 @@
     <string name="nc_user">Používateľ</string>
     <string name="nc_guest">Hosť</string>
     <string name="nc_following_link">Používateľ z verejného odkazu</string>
-
 </resources>

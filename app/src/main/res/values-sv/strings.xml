@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <string name="nc_bottom_navigation_title_contacts">Kontakter</string>
-    <string name="nc_settings">Inställningar</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Serveradress</string>
     <string name="nc_server_not_installed">Vänligen slutför din %1$s-installation</string>
@@ -36,12 +33,8 @@
     <string name="nc_Server_account_imported">Valt konto är nu importerat och tillgängligt</string>
     <string name="nc_get_from_provider">Har du inte en server än?\nKlicka här för att få en från en leverantör</string>
 
-    <!-- Account verification -->
-    <string name="nc_display_name_fetched">Visningsnamn hämtat</string>
     <string name="nc_display_name_not_fetched">Visningsnamn kunde inte hämtas, avbryter</string>
-    <string name="nc_nextcloud_talk_app_installed">%1$s app hittad</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app inte installerad på servern, avbryter</string>
-    <string name="nc_display_name_stored">Visningsnamn lagrat</string>
     <string name="nc_display_name_not_stored">Kunde inte lagra visningsnamnet, avbryter</string>
 
     <string name="nc_never">Gick aldrig med</string>
@@ -51,7 +44,6 @@
     <string name="nc_certificate_dialog_text">Litar du på det tills nu okända SSL-certifikatet, skapad av  %1$s för %2$s, giltig från%3$s till %4$s?</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nej</string>
-    <string name="nc_details">Detaljer</string>
     <string name="nc_certificate_error">Dina SSL-inställningar förhindrade anslutning</string>
 
     <!-- Settings -->
@@ -98,15 +90,9 @@
     <string name="nc_join_via_web">Gå med via webb</string>
     <!-- Contacts -->
     <string name="nc_select_contacts">Välj kontakter</string>
-    <string name="nc_one_contact_selected">kontakt vald</string>
-    <string name="nc_more_contacts_selected">kontakter valda</string>
-    <string name="nc_contacts_clear">Rensa</string>
     <string name="nc_contacts_done">Färdig</string>
 
     <!-- Permissions -->
-    <string name="nc_permissions">Behörigheter måste beviljas för att upprätta ett video och/eller ljudsamtal. Klicka på \"TILLÅT\" i den kommande systemdialogrutan.</string>
-    <string name="nc_permissions_audio">Mikrofonbehörighet måste beviljas för att aktivera ljudsamtal. Klicka på \"Tillåt\" i den kommande systemdialogrutan.</string>
-    <string name="nc_permissions_video">Kamerabehörighet måste beviljas för att aktivera videosamtal. Klicka på \"Tillåt\" i den kommande systemdialogrutan.</string>
     <string name="nc_camera_permission_permanently_denied">För att aktivera videokommunikation vänligen bevilja \"Kamera\"-tillstånd i systeminställningar.</string>
     <string name="nc_microphone_permission_permanently_denied">För att aktivera röstkommunikation vänligen bevilja \"Mikrofon\"-tillstånd i systeminställningar.</string>
     <string name="nc_permissions_settings">Öppna inställningar</string>
@@ -132,6 +118,7 @@
 
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
     <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Skriv ett meddelande…</string>
     <string name="nc_date_header_yesterday">Igår</string>

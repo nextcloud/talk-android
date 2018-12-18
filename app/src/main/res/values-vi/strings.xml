@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Thiết lập</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Địa chỉ máy chủ</string>
     <string name="nc_server_not_installed">Hãy hoàn tất cài đặt %1$s của bạn</string>
@@ -147,6 +144,7 @@
     <string name="nc_push_to_talk_desc">Mới Micro bị tắt, hãy bấm và giữ  &amp; để trò chuyện</string>
     <string name="nc_configure_cert_auth">Chọn chứng thực báo mật</string>
     <string name="nc_change_cert_auth">Thay đổi chứng thực bảo mật</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Nhập một thông điệp...</string>
     <string name="nc_date_header_yesterday">Ngày hôm qua</string>

@@ -19,8 +19,6 @@
   -->
 
 <resources>
-    <string name="nc_settings">პარამეტრები</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">სერვერის მისამართი</string>
     <string name="nc_server_not_installed">გთხოვთ დაასრულოთ თქვენი %1$s ინსტალაცია</string>
@@ -35,7 +33,6 @@
     <string name="nc_Server_account_imported">არჩეული ანგარიში ახლა იმპორტირებული და ხელმისაწვდომია</string>
     <string name="nc_get_from_provider">უკვე გააქვთ სერვერი?\nმომწოდებლისგან მისი მიღებისთვის დააწკაპუნეთ აქ</string>
 
-    <!-- Account verification -->
     <string name="nc_display_name_not_fetched">დისპლეი სახელის ამოღება ვერ მოხერხდა, ვჩერდებით</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s აპლიკაცია სერვერზე არაა დაყენებული, ვჩერდებით</string>
     <string name="nc_display_name_not_stored">დისპლეი სახელის დაყენება ვერ მოხერხდა, ვჩერდებით</string>
@@ -110,4 +107,4 @@
     <string name="nc_share_subject">%1$s მოწვევა</string>
     <string name="nc_share_text_pass">\nპაროლი: %1$s</string>
 
-</resources>
+    </resources>

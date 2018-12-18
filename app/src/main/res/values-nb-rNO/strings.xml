@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Innstillinger</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Tjeneradresse</string>
     <string name="nc_server_not_installed">Fullført din %1$s-installasjon</string>
@@ -36,7 +33,6 @@
     <string name="nc_Server_account_imported">Valgt konto er nå importert og tilgjengelig</string>
     <string name="nc_get_from_provider">Har du ingen tjener enda?\nKlikk her for å opprette en hos en tilbyder</string>
 
-    <!-- Account verification -->
     <string name="nc_display_name_not_fetched">Kunne ikke hente visningsnavn, avbryter</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s-programmet er ikke installert på tjeneren, avbryter</string>
     <string name="nc_display_name_not_stored">Kunne ikke lagre visningsnavn, avbryter</string>
@@ -52,9 +48,9 @@
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Mellomtjener</string>
-    <string name="nc_settings_proxy_type_title">Proxy type</string>
-    <string name="nc_settings_proxy_host_title">Proxy vert</string>
-    <string name="nc_settings_proxy_port_title">Proxy port</string>
+    <string name="nc_settings_proxy_type_title">Type mellomtjener</string>
+    <string name="nc_settings_proxy_host_title">Mellomtjener </string>
+    <string name="nc_settings_proxy_port_title">Mellomtjener port</string>
     <string name="nc_settings_use_credentials_title">Påloggingsdetaljer</string>
     <string name="nc_settings_switch_account">Bytt mellom kontoer</string>
     <string name="nc_settings_reauthorize">Reautoriser</string>
@@ -64,7 +60,7 @@
     <string name="nc_settings_no_talk_installed">Talk-programmet er ikke installert på tjeneren du prøvde autorisere deg mot</string>
     <string name="nc_settings_account_updated">Din allerede eksisterende konto ble oppdatert, istedenfor å legge til en ny</string>
     <string name="nc_account_scheduled_for_deletion">Kontoen er planlagt slettet, og kan ikke endres.</string>
-    <string name="nc_no_proxy">Ingen proxy</string>
+    <string name="nc_no_proxy">Ingen mellomtjener</string>
     <string name="nc_username">Brukernavn</string>
     <string name="nc_password">Passord</string>
     <string name="nc_conversation_link">Samtale lenke</string>
@@ -82,8 +78,8 @@
     <string name="nc_clear_password">Tøm passord</string>
     <string name="nc_share_link">Del lenke</string>
     <string name="nc_share_link_via">Del lenke via</string>
-    <string name="nc_join_via_link">Ta del via lenke</string>
-    <string name="nc_join_via_web">Ta del via nett</string>
+    <string name="nc_join_via_link">Bli med via lenke</string>
+    <string name="nc_join_via_web">Bli med via nett</string>
     <!-- Contacts -->
     <string name="nc_select_contacts">Velg kontakter</string>
     <string name="nc_contacts_done">Ferdig</string>
@@ -103,8 +99,7 @@
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
     <string name="nc_all_ok_operation">OK, ferdig!</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Samtalenavn
-</string>
+    <string name="nc_call_name">Samtalenavn</string>
     <string name="nc_proceed">Fortsett</string>
     <string name="nc_call_name_is_same">Navnet du valgte eksisterer allerede</string>
     <string name="nc_wrong_link">Samtale lenke er ikke gyldig</string>
@@ -114,7 +109,15 @@
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Trykk-for-å-snakke</string>
-    <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk og hold klikk-for-å-snakke</string>
+    <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk &amp; hold for å bruke klikk-for-å-snakke</string>
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Skriv en melding …</string>
+    <string name="nc_date_header_yesterday">I går</string>
+    <string name="nc_date_header_today">I dag</string>
+    <string name="nc_conversation_menu_video_call">Videosamtale</string>
+    <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
+    <string name="nc_new_messages">Ny melding</string>
+    <string name="nc_no_messages_yet">Ingen meldiner enda</string>
+    <string name="nc_chat_you">Du</string>
+
     </resources>

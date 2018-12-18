@@ -19,9 +19,6 @@
   -->
 
 <resources>
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Configurações</string>
-
     <!-- Server selection -->
     <string name="nc_server_url">Endereço do servidor</string>
     <string name="nc_server_not_installed">Termine sua instalação %1$s</string>
@@ -196,5 +193,4 @@
     <string name="nc_user">Usuário</string>
     <string name="nc_guest">Convidado</string>
     <string name="nc_following_link">Usuário seguindo um link público</string>
-
 </resources>
