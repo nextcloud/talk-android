@@ -19,6 +19,9 @@
   -->
 
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Paramètres</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Adresse du serveur</string>
     <string name="nc_server_not_installed">Veuillez terminer votre installation de %1$s</string>

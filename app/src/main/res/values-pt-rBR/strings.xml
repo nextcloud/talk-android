@@ -19,6 +19,9 @@
   -->
 
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Configurações</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Endereço do servidor</string>
     <string name="nc_server_not_installed">Termine sua instalação %1$s</string>
@@ -110,8 +113,8 @@
     <string name="nc_contacts_done">Concluído</string>
 
     <!-- Permissions -->
-    <string name="nc_camera_permission_permanently_denied">Para habilitar a comunicação por vídeo, conceda a permissão \"Câmera\" nas configurações do sistema.</string>
-    <string name="nc_microphone_permission_permanently_denied">Para habilitar a comunicação por voz, conceda a permissão \"Microfone\" nas configurações do sistema.</string>
+    <string name="nc_camera_permission_permanently_denied">Para ativar a comunicação por vídeo, conceda a permissão \"Câmera\" nas configurações do sistema.</string>
+    <string name="nc_microphone_permission_permanently_denied">Para ativar a comunicação por voz, conceda a permissão \"Microfone\" nas configurações do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
     <!-- Call -->
