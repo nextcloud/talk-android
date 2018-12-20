@@ -101,6 +101,10 @@
     <string name="nc_connecting_call">Ansluter...</string>
     <string name="nc_incoming_call">Inkommande samtal från</string>
     <string name="nc_nick_guest">Gäst</string>
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s på %2$s aviseringskanal</string>
+    <string name="nc_notification_channel_calls">Samtal aviseringskanal</string>
+    <string name="nc_notification_channel_messages">Meddelande aviseringskanal</string>
     <string name="nc_notification_channel_calls_description">Visar inkommande samtal</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>
