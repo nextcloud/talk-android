@@ -19,6 +19,9 @@
   -->
 
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Ayarlar</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Sunucu adresi</string>
     <string name="nc_server_not_installed">Lütfen %1$s kurulumunuzu tamamlayın</string>
