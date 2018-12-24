@@ -1,0 +1,201 @@
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Axustes</string>
+
+    <!-- Server selection -->
+    <string name="nc_server_url">Enderezo do servidor </string>
+    <string name="nc_server_not_installed">Ten que rematar a instalación de %1$s</string>
+    <string name="nc_server_db_upgrade_needed">Ten que actualizar a base de datos %1$s</string>
+    <string name="nc_server_maintenance">Retire a posición de matemento de %1$s</string>
+    <string name="nc_server_version">%1$s só funciona con %2$s 13 ou superior</string>
+    <string name="nc_server_import_account_plain">Importar unha conta</string>
+    <string name="nc_server_import_accounts_plain">Importar contas</string>
+    <string name="nc_server_import_account">Importar unha conta dende a aplicación %1$s</string>
+    <string name="nc_server_import_accounts">Importar contas dende a aplicación %1$s</string>
+    <string name="nc_server_failed_to_import_account">Produciuse un fallo ao importar a conta seleccionada</string>
+    <string name="nc_Server_account_imported">A conta seleccionada foi importada e xa está dispoñíbel</string>
+    <string name="nc_get_from_provider">Aínda non ten un servidor? \nPrema aquí para obter un dun provedo</string>
+
+    <!-- Account verification -->
+    <string name="nc_push_disabled">Notificacións «push» desactivadas
+</string>
+    <string name="nc_capabilities_failed">Produciuse un fallo ao recuperar capacidades. Interrompendo.</string>
+    <string name="nc_external_server_failed">
+Produciuse un fallo aorecuperar os axustes da señalización</string>
+    <string name="nc_display_name_not_fetched">Non foi posíbel obter o nome para amosar, interrompendo</string>
+    <string name="nc_nextcloud_talk_app_not_installed">A aplicación %1$s non está instalada no servidor, interrompendo</string>
+    <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
+
+    <string name="nc_never">Non conectou nunca</string>
+    <string name="nc_search">Buscar</string>
+
+    <string name="nc_certificate_dialog_title">Verificar o certificado</string>
+    <string name="nc_certificate_dialog_text">Quere confiar nun certificado SSL descoñecido, emitido por %1$s para %2$s, válido dende %3$s ata %4$s?</string>
+    <string name="nc_yes">Si</string>
+    <string name="nc_no">Non</string>
+    <string name="nc_certificate_error">A súa configuración SSL impediu a conexión</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_title">Tipo de proxy</string>
+    <string name="nc_settings_proxy_host_title">Enderezo/máquina proxy</string>
+    <string name="nc_settings_proxy_port_title">Porto do proxy</string>
+    <string name="nc_settings_use_credentials_title">Usar credenciais</string>
+    <string name="nc_settings_switch_account">Cambiar entre contas</string>
+    <string name="nc_settings_reauthorize">Volver autorizar</string>
+    <string name="nc_client_cert_setup">Estabelecer o certificado do cliente</string>
+    <string name="nc_client_cert_change">Cambiar o certificado do cliente</string>
+    <string name="nc_settings_remove_account">Retirar a conta</string>
+    <string name="nc_settings_add_account">Engadir unha conta nova</string>
+    <string name="nc_settings_wrong_account">Só pode volver a autorizarse a conta actual</string>
+    <string name="nc_settings_no_talk_installed">A aplicación Talk non está instalada no servidor contra o que tentou autorizarse</string>
+    <string name="nc_settings_account_updated">Actualizouse a súa conta xa existente no canto de crear unha nova</string>
+    <string name="nc_account_scheduled_for_deletion">A conta está programada para a súa eliminación e non pode ser cambiada</string>
+    <string name="nc_settings_notification_sounds">Sons de notificación</string>
+    <string name="nc_settings_call_ringtone">Chamadas persoais</string>
+    <string name="nc_settings_other_notifications_ringtone">Outro</string>
+    <string name="nc_settings_no_ringtone">Sen son</string>
+    <string name="nc_settings_vibrate">Vibrar</string>
+    <string name="nc_settings_vibrate_desc">O teléfono vibrará, a non ser que estea en silenciado</string>
+    <string name="nc_no_proxy">Sen proxy </string>
+    <string name="nc_username">Nome de usuario</string>
+    <string name="nc_password">Contrasinal</string>
+    <string name="nc_conversation_link">Ligazón da conversa</string>
+    <string name="nc_new_password">Novo contrasinal</string>
+    <string name="nc_wrong_password">Contrasinal incorrecto </string>
+    <string name="nc_about">Sobre</string>
+    <string name="nc_privacy">Privacidade</string>
+    <string name="nc_get_source_code">Obter o código fonte</string>
+    <string name="nc_license_title">licenza</string>
+    <string name="nc_license_summary">Licenza Pública Xeral GNU, versión 3</string>
+
+    <string name="nc_select_an_account">Seleccione unha conta</string>
+
+    <!-- Conversation menu -->
+    <string name="nc_start_conversation">Iniciar unha conversa</string>
+    <string name="nc_configure_room">Configurar a conversa</string>
+    <string name="nc_leave">Abandonar a conversa</string>
+    <string name="nc_rename">Renomear a conversa</string>
+    <string name="nc_set_password">Estabelecer un contrasinal</string>
+    <string name="nc_change_password">Cambiar o contrasinal</string>
+    <string name="nc_clear_password">Limpar o contrasinal</string>
+    <string name="nc_share_link">Compartir a ligazón</string>
+    <string name="nc_share_link_via">Compartir a ligazón mediante</string>
+    <string name="nc_make_call_public">Facer pública a conversa</string>
+    <string name="nc_make_call_private">Facer privada a conversa</string>
+    <string name="nc_delete_call">Eliminar a conversa</string>
+    <string name="nc_new_conversation">Nova conversa</string>
+    <string name="nc_join_via_link">Xuntarse mediante unha ligazón</string>
+    <string name="nc_join_via_web">Xuntarse medinte a web</string>
+    <string name="nc_add_to_favorites">Engadir a favoritos</string>
+    <string name="nc_remove_from_favorites">Retirar de favoritos</string>
+
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Seleccionar contactos</string>
+    <string name="nc_contacts_done">Feito</string>
+
+    <!-- Permissions -->
+    <string name="nc_camera_permission_permanently_denied">Para permitir a comunicación por vídeo, conceda o permiso de «Cámara» na configuración do sistema.</string>
+    <string name="nc_microphone_permission_permanently_denied">Para permitir a comunicación por voz, conceda o permiso de «Micrófono» na configuración do sistema.</string>
+    <string name="nc_permissions_settings">Abrir os axustes</string>
+
+    <!-- Call -->
+    <string name="nc_connecting_call">Conectando…</string>
+    <string name="nc_incoming_call">Chamada entrante de</string>
+    <string name="nc_nick_guest">Convidado</string>
+    <string name="nc_public_call">Nova conversa pública</string>
+    <string name="nc_public_call_explanation">As conversas públicas permítenlle convidar a outras persoas de fora
+mediante unha ligazón creada especialmente.</string>
+
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s na canle de notificación %2$s</string>
+    <string name="nc_notification_channel_calls">Canle de notificación de chamadas</string>
+    <string name="nc_notification_channel_messages">Canle de notificación de mensaxes</string>
+    <string name="nc_notification_channel_calls_description">Amosar as chamadas entrantes</string>
+    <string name="nc_notification_settings">Axustes de notificación</string>
+    <string name="nc_plain_old_messages">Mensaxes</string>
+    <string name="nc_notify_me_always">Notificar sempre</string>
+    <string name="nc_notify_me_mention">Notificar cando son mencionado</string>
+    <string name="nc_notify_me_never">Non notificar nunca</string>
+    <string name="nc_mute_calls">Silenciar as chamadas</string>
+    <string name="nc_mute_calls_description">Non recibirá ningunha notificación de chamada</string>
+
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Sentímolo, algo foi mal!</string>
+    <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos
+móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
+    <string name="nc_all_ok_operation">Conforme, todo feito!</string>
+    <string name="nc_ok">Aceptar</string>
+    <string name="nc_call_name">Nome da conversa</string>
+    <string name="nc_proceed">Continuar</string>
+    <string name="nc_call_name_is_same">O nome que introduciu é o mesmo que o existente</string>
+    <string name="nc_wrong_link">A ligazón da conversa non é válida</string>
+    <string name="nc_share_text">Únase á conversa en %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s convite</string>
+    <string name="nc_share_text_pass">\nContrasinal: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_push_to_talk">Prema para falar</string>
+    <string name="nc_push_to_talk_desc">Co microfono desactivado, prema e manteña para usar a función «Prema para falar»</string>
+    <string name="nc_configure_cert_auth">Seleccionar o certificado de autenticación</string>
+    <string name="nc_change_cert_auth">Cambiar o certificado de autenticación</string>
+
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Introduza unha mensaxe…</string>
+    <string name="nc_date_header_yesterday">Onte</string>
+    <string name="nc_date_header_today">Hoxe</string>
+    <string name="nc_conversation_menu_voice_call">Chamada de voz</string>
+    <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>
+    <string name="nc_conversation_menu_conversation_info">Información da conversa</string>
+    <string name="nc_new_messages">Novas mensaxes</string>
+    <string name="nc_no_messages_yet">Aínda non hai mensaxes</string>
+    <string name="nc_chat_you">Vostede</string>
+
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Non hai máis elementos que cargar. Actualice para volver tentar.</string>
+    <string name="nc_endless_disabled">Non hai máis elementos que cargar acadouse o máximo.</string>
+    <string name="nc_endless_cancel">Cancelada polo usuario.</string>
+    <string name="nc_endless_error">Produciuse un erro ao cargar máis elementos.</string>
+
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">Menú para a conversa con %1$s</string>
+    <string name="nc_description_more_menu_public">Menú para a conversa de grupo %1$s</string>
+    <string name="nc_description_more_menu_group">Menú para a conversa pública %1$s</string>
+    <string name="nc_description_send_message_button">Enviar a mensaxe</string>
+
+    <!-- Empty states -->
+    <string name="nc_chat_empty">Toque para ser o primeiro en dicir %1$s!</string>
+    <string name="nc_conversations_empty">Aínda non falou con ninguén!\n Toque para iniciar a conversa.</string>
+    <string name="nc_hello">Ola</string>
+
+    <!-- Other -->
+    <string name="nc_limit_hit">Acadouse o límite de 1 000 caracteres</string>
+    <string name="nc_groups">Grupos</string>
+    <string name="nc_participants">Participantes</string>
+
+    <string name="nc_owner">Propietario</string>
+    <string name="nc_moderator">Moderador</string>
+    <string name="nc_user">Usuario</string>
+    <string name="nc_guest">Convidado</string>
+    <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
+</resources>

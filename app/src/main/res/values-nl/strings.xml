@@ -19,6 +19,9 @@
   -->
 
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Instellingen</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Serveradres</string>
     <string name="nc_server_not_installed">Beëindig alsjeblieft je %1$s installatie</string>
