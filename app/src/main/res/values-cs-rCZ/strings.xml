@@ -19,6 +19,9 @@
   -->
 
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Nastavení</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Adresa serveru</string>
     <string name="nc_server_not_installed">Dokončete instalaci %1$s</string>
