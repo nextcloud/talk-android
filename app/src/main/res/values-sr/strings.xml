@@ -19,6 +19,9 @@
   -->
 
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Поставке</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Адреса сервера</string>
     <string name="nc_server_not_installed">Довршите своју %1$s инсталацију</string>
