@@ -204,56 +204,87 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
         holder.dialogAvatar.setVisibility(View.VISIBLE);
 
-        switch (conversation.getType()) {
-            case ROOM_TYPE_ONE_TO_ONE_CALL:
+        boolean shouldLoadAvatar = true;
+        String objectType;
+        if (TextUtils.isEmpty(objectType = conversation.getObjectType())) {
+            switch (objectType) {
+                case "share:password":
+                    shouldLoadAvatar = false;
+                    GlideApp.with(context)
+                            .asBitmap()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .load(R.drawable.ic_file_password_request)
+                            .centerInside()
+                            .override(avatarSize, avatarSize)
+                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                            .into(holder.dialogAvatar);
+                    break;
+                case "file":
+                    shouldLoadAvatar = false;
+                    GlideApp.with(context)
+                            .asBitmap()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .load(R.drawable.ic_file_icon)
+                            .centerInside()
+                            .override(avatarSize, avatarSize)
+                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                            .into(holder.dialogAvatar);
+                    break;
+                default:
+                    break;
+            }
+        }
 
-                if (!TextUtils.isEmpty(conversation.getName())) {
-                    GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                            conversation.getName(), R.dimen.avatar_size), new LazyHeaders.Builder()
-                            .setHeader("Accept", "image/*")
-                            .setHeader("User-Agent", ApiUtils.getUserAgent())
-                            .build());
+        if (shouldLoadAvatar) {
+            switch (conversation.getType()) {
+                case ROOM_TYPE_ONE_TO_ONE_CALL:
+
+                    if (!TextUtils.isEmpty(conversation.getName())) {
+                        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                                conversation.getName(), R.dimen.avatar_size), new LazyHeaders.Builder()
+                                .setHeader("Accept", "image/*")
+                                .setHeader("User-Agent", ApiUtils.getUserAgent())
+                                .build());
+
+                        GlideApp.with(context)
+                                .asBitmap()
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .load(glideUrl)
+                                .centerInside()
+                                .override(avatarSize, avatarSize)
+                                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                                .into(holder.dialogAvatar);
+
+                    } else {
+                        holder.dialogAvatar.setVisibility(View.GONE);
+                    }
+                    break;
+                case ROOM_GROUP_CALL:
 
                     GlideApp.with(context)
                             .asBitmap()
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(glideUrl)
+                            .load(R.drawable.ic_people_group_white_24px)
+                            .centerInside()
+                            .override(avatarSize, avatarSize)
+                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                            .into(holder.dialogAvatar);
+                    break;
+                case ROOM_PUBLIC_CALL:
+                    GlideApp.with(context)
+                            .asBitmap()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .load(R.drawable.ic_link_white_24px)
                             .centerInside()
                             .override(avatarSize, avatarSize)
                             .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                             .into(holder.dialogAvatar);
 
-                } else {
+                    break;
+                default:
                     holder.dialogAvatar.setVisibility(View.GONE);
-                }
-                break;
-            case ROOM_GROUP_CALL:
-
-                GlideApp.with(context)
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(R.drawable.ic_people_group_white_24px)
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(holder.dialogAvatar);
-                break;
-            case ROOM_PUBLIC_CALL:
-                GlideApp.with(context)
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(R.drawable.ic_link_white_24px)
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(holder.dialogAvatar);
-
-                break;
-            default:
-                holder.dialogAvatar.setVisibility(View.GONE);
+            }
         }
-
-
     }
 
     @Override
