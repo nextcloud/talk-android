@@ -249,7 +249,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         GlideApp.with(context)
                                 .asBitmap()
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .load(R.drawable.ic_file_password_request)
+                                .load(glideUrl)
                                 .centerInside()
                                 .override(avatarSize, avatarSize)
                                 .apply(RequestOptions.bitmapTransform(new CircleCrop()))
