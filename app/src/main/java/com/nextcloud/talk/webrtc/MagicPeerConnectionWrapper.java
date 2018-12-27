@@ -246,9 +246,11 @@ public class MagicPeerConnectionWrapper {
                                     .NICK_CHANGE, sessionId, getNick(), null));
                         }
                     } else {
-                        HashMap<String, String> payloadHashMap = (HashMap<String, String>) dataChannelMessage.getPayload();
-                        EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                .NICK_CHANGE, payloadHashMap.get("userid"), payloadHashMap.get("name"), null));
+                        if (dataChannelMessage.getPayload() != null) {
+                            HashMap<String, String> payloadHashMap = (HashMap<String, String>) dataChannelMessage.getPayload();
+                            EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
+                                    .NICK_CHANGE, payloadHashMap.get("userid"), payloadHashMap.get("name"), null));
+                        }
                     }
 
                 } else if ("audioOn".equals(dataChannelMessage.getType())) {
