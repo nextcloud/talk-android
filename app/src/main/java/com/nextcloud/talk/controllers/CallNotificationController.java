@@ -193,7 +193,7 @@ public class CallNotificationController extends BaseController {
     private void proceedToCall() {
         originalBundle.putString(BundleKeys.KEY_ROOM_TOKEN, currentConversation.getToken());
 
-        getRouter().setRoot(RouterTransaction.with(new CallController(originalBundle))
+        getRouter().replaceTopController(RouterTransaction.with(new CallController(originalBundle))
                 .popChangeHandler(new HorizontalChangeHandler())
                 .pushChangeHandler(new HorizontalChangeHandler()));
     }
