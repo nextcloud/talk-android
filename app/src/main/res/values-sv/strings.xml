@@ -33,6 +33,8 @@
     <string name="nc_Server_account_imported">Valt konto är nu importerat och tillgängligt</string>
     <string name="nc_get_from_provider">Har du inte en server än?\nKlicka här för att få en från en leverantör</string>
 
+    <!-- Account verification -->
+    <string name="nc_push_disabled">Push-meddelanden inaktiverade</string>
     <string name="nc_display_name_not_fetched">Visningsnamn kunde inte hämtas, avbryter</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app inte installerad på servern, avbryter</string>
     <string name="nc_display_name_not_stored">Kunde inte lagra visningsnamnet, avbryter</string>
@@ -62,6 +64,7 @@
     <string name="nc_settings_no_talk_installed">Talk-appen är inte installerad på den server du försökte auktorisera mot</string>
     <string name="nc_settings_account_updated">Ditt redan befintliga konto uppdaterades, istället för att lägga till ett nytt</string>
     <string name="nc_account_scheduled_for_deletion">Kontot är schemalagt för radering och kan inte ändras</string>
+    <string name="nc_settings_no_ringtone">Inget ljud</string>
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Användarnamn</string>
     <string name="nc_password">Lösenord</string>
@@ -120,6 +123,9 @@
     <string name="nc_share_subject">%1$s inbjudan</string>
     <string name="nc_share_text_pass">\nLösenord: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_push_to_talk">Push-to-talk</string>
+    <string name="nc_push_to_talk_desc">Med mikrofon inaktiverad klickar du på &amp;vänta för att använda Push-to-talk</string>
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
     <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
 
@@ -127,4 +133,14 @@
     <string name="nc_hint_enter_a_message">Skriv ett meddelande…</string>
     <string name="nc_date_header_yesterday">Igår</string>
     <string name="nc_date_header_today">Idag</string>
+    <string name="nc_conversation_menu_voice_call">Röstsamtal</string>
+    <string name="nc_conversation_menu_video_call">Videosamtal</string>
+    <string name="nc_new_messages">Nya meddelanden</string>
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Inga fler objekt att ladda. Uppdatera för att försöka igen.</string>
+    <string name="nc_endless_disabled">Inga fler objekt att ladda (max nått).</string>
+    <string name="nc_endless_error">Ett fel uppstod när fler objekt laddades in.</string>
+
+    <string name="nc_description_send_message_button">Skicka meddelande</string>
+
     </resources>

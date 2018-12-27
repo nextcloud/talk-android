@@ -144,7 +144,7 @@
     <string name="nc_proceed">続行する</string>
     <string name="nc_call_name_is_same">入力した名前は既存の名前と同じです</string>
     <string name="nc_wrong_link">会話リンクが無効です</string>
-    <string name="nc_share_text">%1$s / index.php / %2$s の会話に参加する</string>
+    <string name="nc_share_text">%1$s/index.php/%2$s の会話に参加する</string>
     <string name="nc_share_subject">%1$s を招待</string>
     <string name="nc_share_text_pass">\nパスワード：%1$s</string>
 
@@ -179,7 +179,7 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">タップして %1$s と言いましょう！</string>
-    <string name="nc_conversations_empty">あなたは誰ともまだ話していません！\ n会話を開始するにはタップしてください。</string>
+    <string name="nc_conversations_empty">あなたは誰ともまだ話していません！\n会話を開始するにはタップしてください。</string>
     <string name="nc_hello">こんにちは</string>
 
     <!-- Other -->
