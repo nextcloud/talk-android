@@ -691,12 +691,8 @@ public class CallController extends BaseController {
     }
 
     @OnClick(R.id.callControlHangupView)
-    public void onHangupClick() {
-        if (inCall) {
-            hangup(false);
-        } else {
-            hangup(true);
-        }
+    void onHangupClick() {
+        hangup(false);
     }
 
     @OnClick(R.id.call_control_camera)

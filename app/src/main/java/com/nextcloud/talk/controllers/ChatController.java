@@ -169,6 +169,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private boolean voiceOnly;
     private boolean isFirstMessagesProcessing = true;
     private boolean isHelloClicked;
+    private boolean isLeavingForConversation;
 
     private static final byte CONTENT_TYPE_SYSTEM_MESSAGE = 1;
 
@@ -489,6 +490,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
 
+        isLeavingForConversation = false;
         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomId);
         ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
@@ -517,7 +519,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     protected void onDetach(@NonNull View view) {
         super.onDetach(view);
         if (conversationUser.hasSpreedCapabilityWithName("no-ping")
-                && getActivity() != null && !getActivity().isChangingConfigurations()) {
+                && getActivity() != null && !getActivity().isChangingConfigurations() && !isLeavingForConversation) {
             wasDetached = true;
             leaveRoom();
         }
@@ -1013,6 +1015,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void startACall(boolean isVoiceOnlyCall) {
+        isLeavingForConversation = true;
         if (!isVoiceOnlyCall) {
             Intent videoCallIntent = getIntentForCall(false);
             if (videoCallIntent != null) {

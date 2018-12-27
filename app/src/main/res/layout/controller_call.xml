@@ -70,7 +70,9 @@
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
             android:background="@color/grey950"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
