@@ -19,6 +19,9 @@
   -->
 
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">設定</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">サーバーアドレス</string>
     <string name="nc_server_not_installed">%1$sのインストールを完了してください</string>
