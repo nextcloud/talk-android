@@ -49,6 +49,7 @@ public final class TextMatchers {
 
     public enum SpecialURLType {
         NONE,
+        REGULAR,
         GIPHY,
         TENOR,
     }
@@ -70,6 +71,8 @@ public final class TextMatchers {
                 if (pattern.matcher(specialLink).matches()) {
                     return SpecialURLType.TENOR;
                 }
+            } else {
+                return SpecialURLType.REGULAR;
             }
         }
 
