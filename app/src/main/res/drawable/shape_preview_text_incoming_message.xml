@@ -26,7 +26,7 @@
         android:topLeftRadius="0dp"
         android:bottomRightRadius="@dimen/message_bubble_corners_radius"
         android:bottomLeftRadius="@dimen/message_bubble_corners_radius"
-        android:topRightRadius="0dp" />
+        android:topRightRadius="@dimen/message_bubble_corners_radius" />
 
-    <solid android:color="@color/white_two" />
+    <solid android:color="@color/nc_white_color" />
 </shape>

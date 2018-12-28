@@ -33,16 +33,16 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.EmojiDetection;
+import com.nextcloud.talk.utils.TextMatchers;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
-import com.stfalcon.chatkit.utils.ShapeImageView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +65,7 @@ public class MagicIncomingTextMessageViewHolder
     EmoticonTextView messageText;
 
     @BindView(R.id.messageUserAvatar)
-    ShapeImageView messageUserAvatarView;
+    SimpleDraweeView messageUserAvatarView;
 
     @BindView(R.id.messageTime)
     TextView messageTimeView;
@@ -156,7 +156,7 @@ public class MagicIncomingTextMessageViewHolder
                 }
             }
 
-        } else if (EmojiDetection.isMessageWithSingleEmoticonOnly(context, message.getText())) {
+        } else if (TextMatchers.isMessageWithSingleEmoticonOnly(context, message.getText())) {
             messageString.setSpan(new RelativeSizeSpan(2.5f), 0, messageString.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             layoutParams.setWrapBefore(true);

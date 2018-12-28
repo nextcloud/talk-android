@@ -22,19 +22,33 @@ package com.nextcloud.talk.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 
@@ -47,6 +61,8 @@ import java.util.regex.Pattern;
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -54,6 +70,68 @@ import androidx.core.graphics.drawable.DrawableCompat;
 public class DisplayUtils {
 
     private static final String TAG = "DisplayUtils";
+
+    public static void setClickableString(String string, String url, TextView textView){
+        SpannableString spannableString = new SpannableString(string);
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+            }
+        }, 0, string.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        textView.setText(spannableString);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private static void updateViewSize(@Nullable ImageInfo imageInfo, SimpleDraweeView draweeView) {
+        if (imageInfo != null) {
+            draweeView.getLayoutParams().width = imageInfo.getWidth();
+            draweeView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+        }
+    }
+
+    public static ControllerListener getImageControllerListener(SimpleDraweeView draweeView) {
+        return new ControllerListener() {
+            @Override
+            public void onSubmit(String id, Object callerContext) {
+
+            }
+
+            @Override
+            public void onFinalImageSet(String id, @javax.annotation.Nullable Object imageInfo, @javax.annotation.Nullable Animatable animatable) {
+                updateViewSize((ImageInfo)imageInfo, draweeView);
+            }
+
+            @Override
+            public void onIntermediateImageSet(String id, @javax.annotation.Nullable Object imageInfo) {
+                updateViewSize((ImageInfo) imageInfo, draweeView);
+            }
+
+            @Override
+            public void onIntermediateImageFailed(String id, Throwable throwable) {
+
+            }
+
+            @Override
+            public void onFailure(String id, Throwable throwable) {
+
+            }
+
+            @Override
+            public void onRelease(String id) {
+
+            }
+        };
+    }
 
     public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();

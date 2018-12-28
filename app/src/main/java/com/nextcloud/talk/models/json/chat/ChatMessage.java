@@ -25,6 +25,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.TextMatchers;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 import com.stfalcon.chatkit.commons.models.MessageContentType;
@@ -44,6 +45,10 @@ import lombok.Data;
 @JsonObject
 public class ChatMessage implements IMessage, MessageContentType, MessageContentType.Image {
 
+    public TextMatchers.SpecialURLType getSpecialURLType() {
+        return TextMatchers.getSpecialUrlTypeMessage(getMessage());
+    }
+
     @Nullable
     @Override
     public String getImageUrl() {
@@ -57,6 +62,10 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
                             baseUrl, individualHashMap.get("id"), 480, 480);
                 }
             }
+        }
+
+        if (getSpecialURLType() != TextMatchers.SpecialURLType.NONE) {
+            return getMessage().trim();
         }
 
         return null;

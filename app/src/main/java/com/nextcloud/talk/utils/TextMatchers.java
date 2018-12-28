@@ -25,6 +25,7 @@ package com.nextcloud.talk.utils;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 
 import com.nextcloud.talk.R;
 
@@ -32,17 +33,48 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public final class EmojiDetection {
+public final class TextMatchers {
 
     private static final String TAG = "EmojiDetection";
 
     private static Pattern regexPattern;
+
+    public enum SpecialURLType {
+        NONE,
+        GIPHY,
+        TENOR,
+    }
+
+    public static SpecialURLType getSpecialUrlTypeMessage(@NonNull final String text) {
+        List<String> links = new ArrayList<>();
+        Matcher m = Patterns.WEB_URL.matcher(text);
+        while (m.find()) {
+            String url = m.group();
+            links.add(url);
+        }
+
+        if (links.size() == 1 && text.trim().length() == links.get(0).length()) {
+            String specialLink = links.get(0);
+            if (specialLink.startsWith("https://media.giphy.com/") && specialLink.endsWith(".gif")) {
+                return SpecialURLType.GIPHY;
+            } else if (specialLink.contains("tenor.com/")) {
+                Pattern pattern = Pattern.compile("https://media.*\\.tenor\\.com.*\\.gif.*", Pattern.CASE_INSENSITIVE);
+                if (pattern.matcher(specialLink).matches()) {
+                    return SpecialURLType.TENOR;
+                }
+            }
+        }
+
+        return SpecialURLType.NONE;
+    }
 
     public static boolean isMessageWithSingleEmoticonOnly(@NonNull final Context context,
                                                           @Nullable final CharSequence text) {

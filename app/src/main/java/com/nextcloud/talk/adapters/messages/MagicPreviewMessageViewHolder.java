@@ -28,8 +28,9 @@ import android.widget.TextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.TextMatchers;
 import com.stfalcon.chatkit.messages.MessageHolders;
-import com.stfalcon.chatkit.utils.RoundedImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,31 +52,26 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         if (userAvatar != null) {
             if (message.isGrouped) {
                 userAvatar.setVisibility(View.INVISIBLE);
-                ((RoundedImageView) image).setCorners(R.dimen.message_bubble_corners_radius, R.dimen.message_bubble_corners_radius, 0, 0);
             } else {
                 userAvatar.setVisibility(View.VISIBLE);
             }
         }
 
-
-        if (message.getUser().getId().equals(message.activeUserId)) {
-            time.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.white60));
-            if (!message.isGrouped) {
-                ((RoundedImageView) image).setCorners(R.dimen.message_bubble_corners_radius, 0, 0, 0);
-            }
-        } else {
-            time.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.warm_grey_four));
-            if (!message.isGrouped) {
-                ((RoundedImageView) image).setCorners(0, R.dimen.message_bubble_corners_radius, 0, 0);
-            }
+        if (message.getSpecialURLType() == TextMatchers.SpecialURLType.NONE) {
+            // it's a preview for a Nextcloud share
+            messageText.setText(message.getSelectedIndividualHashMap().get("name"));
+            DisplayUtils.setClickableString(message.getSelectedIndividualHashMap().get("name"), message.getSelectedIndividualHashMap().get("link"), messageText);
+            image.setOnClickListener(v -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
+                browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
+            });
+        } else if (message.getSpecialURLType() == TextMatchers.SpecialURLType.GIPHY){
+            messageText.setText("GIPHY");
+            DisplayUtils.setClickableString("GIPHY", "https://giphy.com", messageText);
+        } else if (message.getSpecialURLType() == TextMatchers.SpecialURLType.TENOR) {
+            messageText.setText("Tenor");
+            DisplayUtils.setClickableString("Tenor", "https://tenor.com", messageText);
         }
-
-
-        messageText.setText(message.getSelectedIndividualHashMap().get("name"));
-        image.setOnClickListener(v -> {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
-            browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
-        });
     }
 }

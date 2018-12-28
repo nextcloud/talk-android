@@ -44,7 +44,6 @@
             android:layout_height="wrap_content"
             android:layout_alignWithParentIfMissing="true"
             android:textColorHighlight="@color/nc_grey"
-
             android:textIsSelectable="true" />
 
         <TextView

@@ -251,7 +251,7 @@ public class RestModule {
         }
     }
 
-    private class HeadersInterceptor implements Interceptor {
+    public static class HeadersInterceptor implements Interceptor {
 
         @Override
         public Response intercept(@NonNull Chain chain) throws IOException {
