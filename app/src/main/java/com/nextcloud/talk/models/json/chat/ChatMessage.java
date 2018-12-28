@@ -23,6 +23,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.TextMatchers;
@@ -49,6 +50,19 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
         return TextMatchers.getSpecialUrlTypeMessage(getMessage());
     }
 
+    private boolean hasFileAttachment() {
+        if (messageParameters != null && messageParameters.size() > 0) {
+            for (String key : messageParameters.keySet()) {
+                Map<String, String> individualHashMap = messageParameters.get(key);
+                if (individualHashMap.get("type").equals("file")) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     @Nullable
     @Override
     public String getImageUrl() {
@@ -64,7 +78,8 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
             }
         }
 
-        if (getSpecialURLType() != TextMatchers.SpecialURLType.NONE) {
+        if (!getSpecialURLType().equals(TextMatchers.SpecialURLType.NONE) &&
+                !getSpecialURLType().equals(TextMatchers.SpecialURLType.REGULAR)) {
             return getMessage().trim();
         }
 
@@ -146,6 +161,25 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     @Override
     public String getText() {
         return ChatUtils.getParsedMessage(getMessage(), getMessageParameters());
+    }
+
+    public String getLastMessageDisplayText() {
+        if (getSpecialURLType().equals(TextMatchers.SpecialURLType.NONE)) {
+            return getText();
+        } else {
+            if (getSpecialURLType().equals(TextMatchers.SpecialURLType.GIPHY)
+                    || getSpecialURLType().equals(TextMatchers.SpecialURLType.TENOR)) {
+                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_gif));
+            } else if (getSpecialURLType().equals(TextMatchers.SpecialURLType.REGULAR)) {
+                if (hasFileAttachment()) {
+                    return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_an_attachment));
+                } else {
+                    return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_link));
+                }
+            }
+        }
+
+        return "";
     }
 
     @Override
