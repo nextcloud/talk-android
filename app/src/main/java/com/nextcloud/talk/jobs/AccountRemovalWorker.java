@@ -249,6 +249,6 @@ public class AccountRemovalWorker extends Worker {
             }
         }
 
-        return Result.SUCCESS;
+        return Result.success();
     }
 }
