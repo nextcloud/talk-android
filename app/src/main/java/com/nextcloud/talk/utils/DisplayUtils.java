@@ -93,7 +93,7 @@ public class DisplayUtils {
 
     private static void updateViewSize(@Nullable ImageInfo imageInfo, SimpleDraweeView draweeView) {
         if (imageInfo != null) {
-            draweeView.getLayoutParams().width = imageInfo.getWidth();
+            draweeView.getLayoutParams().width = imageInfo.getWidth() > 480 ? 480 : imageInfo.getWidth();
             draweeView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
             draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
         }

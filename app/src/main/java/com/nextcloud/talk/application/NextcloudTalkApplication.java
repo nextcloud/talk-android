@@ -144,7 +144,6 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
                 .build();
 
         Fresco.initialize(this, imagePipelineConfig);
-        FLog.setMinimumLoggingLevel(FLog.VERBOSE);
 
         new ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync();
         DeviceUtils.ignoreSpecialBatteryFeatures();
