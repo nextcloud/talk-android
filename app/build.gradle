@@ -157,7 +157,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok:1.18.4"
     annotationProcessor "org.projectlombok:lombok:1.18.4"
 
-    implementation 'com.jakewharton:butterknife:9.0.0-rc1'
+    implementation 'com.jakewharton:butterknife:9.0.0-rc2'
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc1'
 
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.3'

@@ -96,6 +96,7 @@ public class DisplayUtils {
             draweeView.getLayoutParams().width = imageInfo.getWidth() > 480 ? 480 : imageInfo.getWidth();
             draweeView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
             draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+            draweeView.requestLayout();
         }
     }
 
