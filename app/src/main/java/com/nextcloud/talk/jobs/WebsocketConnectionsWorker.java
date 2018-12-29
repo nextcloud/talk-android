@@ -81,6 +81,6 @@ public class WebsocketConnectionsWorker extends Worker {
             }
         }
 
-        return Result.SUCCESS;
+        return Result.success();
     }
 }
