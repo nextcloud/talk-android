@@ -52,6 +52,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.RotationOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.nextcloud.talk.R;
@@ -323,6 +324,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 public void loadImage(SimpleDraweeView imageView, String url) {
                     ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
                             .setProgressiveRenderingEnabled(true)
+                            .setRotationOptions(RotationOptions.autoRotate())
                             .disableDiskCache()
                             .build();
 
