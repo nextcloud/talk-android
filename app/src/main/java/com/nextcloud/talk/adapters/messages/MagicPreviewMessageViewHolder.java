@@ -29,7 +29,6 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.TextMatchers;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import butterknife.BindView;

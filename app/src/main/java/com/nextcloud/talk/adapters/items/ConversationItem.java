@@ -43,7 +43,6 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.TextMatchers;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
 import org.apache.commons.lang3.StringUtils;
