@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.adapters.messages;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
@@ -44,6 +45,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         ButterKnife.bind(this, itemView);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
