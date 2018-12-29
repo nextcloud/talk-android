@@ -57,7 +57,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             }
         }
 
-        if (message.getSpecialURLType() == TextMatchers.SpecialURLType.NONE) {
+        if (message.getMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
             // it's a preview for a Nextcloud share
             messageText.setText(message.getSelectedIndividualHashMap().get("name"));
             DisplayUtils.setClickableString(message.getSelectedIndividualHashMap().get("name"), message.getSelectedIndividualHashMap().get("link"), messageText);
@@ -66,12 +66,14 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
             });
-        } else if (message.getSpecialURLType() == TextMatchers.SpecialURLType.GIPHY){
+        } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE){
             messageText.setText("GIPHY");
             DisplayUtils.setClickableString("GIPHY", "https://giphy.com", messageText);
-        } else if (message.getSpecialURLType() == TextMatchers.SpecialURLType.TENOR) {
+        } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE) {
             messageText.setText("Tenor");
             DisplayUtils.setClickableString("Tenor", "https://tenor.com", messageText);
+        } else {
+            messageText.setText("");
         }
     }
 }

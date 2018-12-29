@@ -28,6 +28,7 @@ import android.util.Log;
 import android.util.Patterns;
 
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.models.json.chat.ChatMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,6 +41,10 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import eu.medsea.mimeutil.MimeUtil;
+import eu.medsea.mimeutil.detector.ExtensionMimeDetector;
+import eu.medsea.mimeutil.detector.MagicMimeMimeDetector;
+import eu.medsea.mimeutil.detector.OpendesktopMimeDetector;
 
 public final class TextMatchers {
 
@@ -47,14 +52,7 @@ public final class TextMatchers {
 
     private static Pattern regexPattern;
 
-    public enum SpecialURLType {
-        NONE,
-        REGULAR,
-        GIPHY,
-        TENOR,
-    }
-
-    public static SpecialURLType getSpecialUrlTypeMessage(@NonNull final String text) {
+    public static ChatMessage.MessageType getMessageTypeFromString(@NonNull final String text) {
         List<String> links = new ArrayList<>();
         Matcher m = Patterns.WEB_URL.matcher(text);
         while (m.find()) {
@@ -65,18 +63,38 @@ public final class TextMatchers {
         if (links.size() == 1 && text.trim().length() == links.get(0).length()) {
             String specialLink = links.get(0);
             if (specialLink.startsWith("https://media.giphy.com/") && specialLink.endsWith(".gif")) {
-                return SpecialURLType.GIPHY;
-            } else if (specialLink.contains("tenor.com/")) {
-                Pattern pattern = Pattern.compile("https://media.*\\.tenor\\.com.*\\.gif.*", Pattern.CASE_INSENSITIVE);
-                if (pattern.matcher(specialLink).matches()) {
-                    return SpecialURLType.TENOR;
-                }
+                return ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE;
+            } else if (specialLink.contains("tenor.com/") &&
+                    Pattern.compile("https://media.*\\.tenor\\.com.*\\.gif.*",
+                            Pattern.CASE_INSENSITIVE).matcher(specialLink).matches()) {
+                return ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE;
             } else {
-                return SpecialURLType.REGULAR;
+                if (specialLink.contains("?")) {
+                    specialLink = specialLink.substring(0, specialLink.indexOf("?"));
+                }
+                MimeUtil.registerMimeDetector(MagicMimeMimeDetector.class.getName());
+                MimeUtil.registerMimeDetector(ExtensionMimeDetector.class.getName());
+                MimeUtil.registerMimeDetector(OpendesktopMimeDetector.class.getName());
+
+                String mimeType = MimeUtil.getMostSpecificMimeType(MimeUtil.getMimeTypes(specialLink)).toString();
+                if (mimeType.startsWith("image/")) {
+                    if (mimeType.equalsIgnoreCase("image/gif")) {
+                        return ChatMessage.MessageType.SINGLE_LINK_GIF_MESSAGE;
+                    } else {
+                        return ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE;
+                    }
+                } else if (mimeType.startsWith("video/")) {
+                    return ChatMessage.MessageType.SINGLE_LINK_VIDEO_MESSAGE;
+                } else if (mimeType.startsWith("audio/")) {
+                    return ChatMessage.MessageType.SINGLE_LINK_AUDIO_MESSAGE;
+                }
+
+                return ChatMessage.MessageType.SINGLE_LINK_MESSAGE;
             }
         }
 
-        return SpecialURLType.NONE;
+        // if we have 0 or more than 1 link, we're a regular message
+        return ChatMessage.MessageType.REGULAR_TEXT_MESSAGE;
     }
 
     public static boolean isMessageWithSingleEmoticonOnly(@NonNull final Context context,

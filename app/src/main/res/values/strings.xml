@@ -183,6 +183,10 @@
     <string name="nc_sent_a_link">sent a link.</string>
     <string name="nc_sent_a_gif">sent a GIF.</string>
     <string name="nc_sent_an_attachment">sent an attachment.</string>
+    <string name="nc_sent_an_audio">sent an audio.</string>
+    <string name="nc_sent_a_video">sent a video.</string>
+    <string name="nc_sent_an_image">sent an image.</string>
+
 
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">No more items to load. Refresh to retry.</string>

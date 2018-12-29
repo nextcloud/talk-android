@@ -40,6 +40,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.TextMatchers;
@@ -126,7 +127,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.dialogUnreadBubble.setVisibility(View.GONE);
         }
 
-        String authorDisplayName = "";
+        String authorDisplayName;
 
         if (conversation.isHasPassword()) {
             holder.passwordProtectedRoomImageView.setVisibility(View.VISIBLE);
@@ -159,7 +160,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     }
                 }
 
-                if (conversation.getLastMessage().getSpecialURLType().equals(TextMatchers.SpecialURLType.NONE)) {
+                if (conversation.getLastMessage().getMessageType().equals(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE)) {
                     authorDisplayName += ": ";
                 } else {
                     authorDisplayName += " ";
