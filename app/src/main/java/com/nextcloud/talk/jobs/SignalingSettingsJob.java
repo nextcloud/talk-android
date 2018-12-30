@@ -155,6 +155,6 @@ public class SignalingSettingsJob extends Worker {
         OneTimeWorkRequest websocketConnectionsWorker = new OneTimeWorkRequest.Builder(WebsocketConnectionsWorker.class).build();
         WorkManager.getInstance().enqueue(websocketConnectionsWorker);
 
-        return Result.SUCCESS;
+        return Result.success();
     }
 }

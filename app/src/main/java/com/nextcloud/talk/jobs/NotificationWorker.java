@@ -509,6 +509,6 @@ public class NotificationWorker extends Worker {
         } catch (Exception exception) {
             Log.d(TAG, "Something went very wrong " + exception.getLocalizedMessage());
         }
-        return Result.SUCCESS;
+        return Result.success();
     }
 }

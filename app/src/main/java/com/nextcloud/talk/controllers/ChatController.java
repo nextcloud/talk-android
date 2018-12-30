@@ -25,10 +25,10 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -43,21 +43,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.RotationOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
@@ -80,11 +77,11 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.otaliastudios.autocomplete.Autocomplete;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
@@ -97,7 +94,6 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
-import com.stfalcon.chatkit.utils.RoundedImageView;
 import com.webianks.library.PopupBubble;
 
 import org.parceler.Parcels;
@@ -113,7 +109,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import autodagger.AutoInjector;
@@ -326,38 +321,20 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             adapter = new MessagesListAdapter<>(conversationUser.getUserId(), messageHolders, new ImageLoader() {
                 @Override
-                public void loadImage(ImageView imageView, String url) {
-                    if (!(imageView instanceof RoundedImageView)) {
-                        GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                                .asBitmap()
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .load(url)
-                                .centerInside()
-                                .override(imageView.getMeasuredWidth(), imageView.getMeasuredHeight())
-                                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                                .listener(new RequestListener<Bitmap>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                                        TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
-                                                .endConfig().buildRound("?", getResources().getColor(R.color.nc_grey));
-                                        imageView.setImageDrawable(drawable);
-                                        return true;
-                                    }
+                public void loadImage(SimpleDraweeView imageView, String url) {
+                    ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+                            .setProgressiveRenderingEnabled(true)
+                            .setRotationOptions(RotationOptions.autoRotate())
+                            .disableDiskCache()
+                            .build();
 
-                                    @Override
-                                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                                        return false;
-                                    }
-                                })
-                                .into(imageView);
-                    } else {
-                        GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                                .asBitmap()
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .override(480, 480)
-                                .load(url)
-                                .into(imageView);
-                    }
+                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                            .setImageRequest(request)
+                            .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
+                            .setOldController(imageView.getController())
+                            .setAutoPlayAnimations(true)
+                            .build();
+                    imageView.setController(draweeController);
                 }
             });
         } else {

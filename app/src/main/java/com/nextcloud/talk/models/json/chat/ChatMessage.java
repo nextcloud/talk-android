@@ -19,20 +19,26 @@
  */
 package com.nextcloud.talk.models.json.chat;
 
+import android.text.TextUtils;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.TextMatchers;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 import com.stfalcon.chatkit.commons.models.MessageContentType;
 
 import org.parceler.Parcel;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -43,6 +49,22 @@ import lombok.Data;
 @Data
 @JsonObject
 public class ChatMessage implements IMessage, MessageContentType, MessageContentType.Image {
+    List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
+            MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
+            MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
+
+    private boolean hasFileAttachment() {
+        if (messageParameters != null && messageParameters.size() > 0) {
+            for (String key : messageParameters.keySet()) {
+                Map<String, String> individualHashMap = messageParameters.get(key);
+                if (individualHashMap.get("type").equals("file")) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     @Nullable
     @Override
@@ -59,7 +81,36 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
             }
         }
 
+        if (!messageTypesToIgnore.contains(getMessageType())) {
+            return getMessage().trim();
+        }
+
         return null;
+    }
+
+    public MessageType getMessageType() {
+        if (!TextUtils.isEmpty(getSystemMessage())) {
+            return MessageType.SYSTEM_MESSAGE;
+        }
+
+        if (hasFileAttachment()) {
+            return MessageType.SINGLE_NC_ATTACHMENT_MESSAGE;
+        }
+
+        return TextMatchers.getMessageTypeFromString(getText());
+    }
+
+    public enum MessageType {
+        REGULAR_TEXT_MESSAGE,
+        SYSTEM_MESSAGE,
+        SINGLE_LINK_GIPHY_MESSAGE,
+        SINGLE_LINK_TENOR_MESSAGE,
+        SINGLE_LINK_GIF_MESSAGE,
+        SINGLE_LINK_MESSAGE,
+        SINGLE_LINK_VIDEO_MESSAGE,
+        SINGLE_LINK_IMAGE_MESSAGE,
+        SINGLE_LINK_AUDIO_MESSAGE,
+        SINGLE_NC_ATTACHMENT_MESSAGE,
     }
 
     public enum SystemMessageType {
@@ -137,6 +188,30 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     @Override
     public String getText() {
         return ChatUtils.getParsedMessage(getMessage(), getMessageParameters());
+    }
+
+    public String getLastMessageDisplayText() {
+        if (getMessageType().equals(MessageType.REGULAR_TEXT_MESSAGE) || getMessageType().equals(MessageType.SYSTEM_MESSAGE)) {
+            return getText();
+        } else {
+            if (getMessageType().equals(MessageType.SINGLE_LINK_GIPHY_MESSAGE)
+                    || getMessageType().equals(MessageType.SINGLE_LINK_TENOR_MESSAGE)
+                    || getMessageType().equals(MessageType.SINGLE_LINK_GIF_MESSAGE)) {
+                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_gif));
+            } else if (getMessageType().equals(MessageType.SINGLE_NC_ATTACHMENT_MESSAGE)) {
+                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_an_attachment));
+            } else if (getMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
+                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_link));
+            } else if (getMessageType().equals(MessageType.SINGLE_LINK_AUDIO_MESSAGE)) {
+                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_an_audio));
+            } else if (getMessageType().equals(MessageType.SINGLE_LINK_VIDEO_MESSAGE)) {
+                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_video));
+            } else if (getMessageType().equals(MessageType.SINGLE_LINK_IMAGE_MESSAGE)) {
+                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_an_image));
+            }
+        }
+
+        return "";
     }
 
     @Override

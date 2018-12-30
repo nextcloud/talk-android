@@ -24,6 +24,9 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.facebook.cache.disk.DiskCacheConfig;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
 import com.nextcloud.talk.dagger.modules.DatabaseModule;
@@ -35,6 +38,7 @@ import com.nextcloud.talk.jobs.SignalingSettingsJob;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.DeviceUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule;
 import com.nextcloud.talk.utils.database.user.UserModule;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
@@ -45,6 +49,7 @@ import org.webrtc.voiceengine.WebRtcAudioUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import androidx.lifecycle.LifecycleObserver;
@@ -55,6 +60,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoComponent;
 import autodagger.AutoInjector;
+import okhttp3.OkHttpClient;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 @AutoComponent(
@@ -71,6 +77,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 @Singleton
 @AutoInjector(NextcloudTalkApplication.class)
 public class NextcloudTalkApplication extends MultiDexApplication implements LifecycleObserver {
+    @Inject
+    OkHttpClient okHttpClient;
+
     private static final String TAG = NextcloudTalkApplication.class.getSimpleName();
 
     //region Singleton
@@ -123,6 +132,17 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         buildComponent();
 
         componentApplication.inject(this);
+
+        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
+                .setNetworkFetcher(new OkHttpNetworkFetcherWithCache(okHttpClient))
+                .setMainDiskCacheConfig(DiskCacheConfig.newBuilder(this)
+                        .setMaxCacheSize(0)
+                        .setMaxCacheSizeOnLowDiskSpace(0)
+                        .setMaxCacheSizeOnVeryLowDiskSpace(0)
+                        .build())
+                .build();
+
+        Fresco.initialize(this, imagePipelineConfig);
 
         new ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync();
         DeviceUtils.ignoreSpecialBatteryFeatures();

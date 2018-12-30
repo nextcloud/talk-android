@@ -40,6 +40,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
@@ -125,7 +126,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.dialogUnreadBubble.setVisibility(View.GONE);
         }
 
-        String authorDisplayName = "";
+        String authorDisplayName;
 
         if (conversation.isHasPassword()) {
             holder.passwordProtectedRoomImageView.setVisibility(View.VISIBLE);
@@ -144,38 +145,45 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.dialogDate.setText(DateUtils.getRelativeTimeSpanString(conversation.getLastActivity() * 1000L,
                     System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
 
-            if (conversation.getType() == Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL || !(TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage()))) {
+            if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage())) {
                 holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
                 holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
-                holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
                 if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())) {
-                    authorDisplayName = context.getString(R.string.nc_chat_you) + ": ";
+                    authorDisplayName = context.getString(R.string.nc_chat_you);
                 } else {
                     if (!TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName())) {
-                        authorDisplayName = conversation.getLastMessage().getActorDisplayName() + ": ";
+                        authorDisplayName = conversation.getLastMessage().getActorDisplayName();
                     } else {
-                        authorDisplayName = context.getString(R.string.nc_nick_guest) + ": ";
+                        authorDisplayName = context.getString(R.string.nc_nick_guest);
                     }
                 }
 
-                String fullString = authorDisplayName + conversation.getLastMessage().getText();
+                if (conversation.getLastMessage().getMessageType().equals(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE)) {
+                    authorDisplayName += ": ";
+                } else {
+                    authorDisplayName += " ";
+                }
+
+                String fullString = authorDisplayName + conversation.getLastMessage().getLastMessageDisplayText();
                 Spannable spannableString = new SpannableString(fullString);
                 final StyleSpan boldStyleSpan = new StyleSpan(Typeface.BOLD);
-                spannableString.setSpan(boldStyleSpan, 0, fullString.indexOf(":") + 1, Spannable
-                        .SPAN_INCLUSIVE_INCLUSIVE);
+                spannableString.setSpan(boldStyleSpan, 0, fullString.indexOf(" "), Spannable
+                        .SPAN_INCLUSIVE_EXCLUSIVE);
 
                 holder.dialogLastMessage.setText(spannableString);
-                holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
 
                 int smallAvatarSize = Math.round(context.getResources().getDimension(R.dimen.small_item_height));
 
                 if (conversation.getLastMessage().getActorType().equals("guests")) {
+                    holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
                     TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
                             .endConfig().buildRound(String.valueOf(authorDisplayName.charAt(0)),
                                     context.getResources().getColor(R.color.nc_grey));
                     holder.dialogLastMessageUserAvatar.setImageDrawable(drawable);
-                } else {
+                } else if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())
+                        || !conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
+                    holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
                     GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                             conversation.getLastMessage().getActorId(), R.dimen.small_item_height), new LazyHeaders.Builder()
                             .setHeader("Accept", "image/*")
@@ -190,6 +198,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                             .override(smallAvatarSize, smallAvatarSize)
                             .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                             .into(holder.dialogLastMessageUserAvatar);
+                } else {
+                    holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
                 }
             }
 

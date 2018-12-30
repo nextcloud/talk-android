@@ -163,6 +163,6 @@ public class CapabilitiesWorker extends Worker {
                     });
         }
 
-        return Result.SUCCESS;
+        return Result.success();
     }
 }

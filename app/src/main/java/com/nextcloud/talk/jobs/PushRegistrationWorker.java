@@ -42,6 +42,6 @@ public class PushRegistrationWorker extends Worker {
         pushUtils.generateRsa2048KeyPair();
         pushUtils.pushRegistrationToServer();
 
-        return Result.SUCCESS;
+        return Result.success();
     }
 }
