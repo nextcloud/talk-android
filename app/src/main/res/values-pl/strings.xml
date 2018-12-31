@@ -151,7 +151,6 @@ komórkowe. Możesz próbować dołączyć do rozmowy przez przeglądarkę inter
     <string name="nc_new_messages">Nowa wiadomość</string>
     <string name="nc_no_messages_yet">Nie ma nowych wiadomości</string>
     <string name="nc_chat_you">Ty</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Brak nowych elementów do załadowania. Odśwież aby spróbować ponownie.</string>
     <string name="nc_endless_disabled">Brak elementów do załadowania (osiągnięty max)</string>

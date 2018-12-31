@@ -115,7 +115,6 @@
     <string name="nc_new_messages">Uudet viestit</string>
     <string name="nc_no_messages_yet">Ei viestejä vielä</string>
     <string name="nc_chat_you">Sinä</string>
-
     <string name="nc_description_send_message_button">Lähetä viesti</string>
 
     <string name="nc_conversations_empty">Et ole puhunut vielä kenellekään!\n Napauta aloittaaksesi keskustelun.</string>

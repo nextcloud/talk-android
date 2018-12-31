@@ -135,7 +135,6 @@
     <string name="nc_new_messages">Mesazh i ri</string>
     <string name="nc_no_messages_yet">Ska mesazhe akoma</string>
     <string name="nc_chat_you">Ju</string>
-
     <string name="nc_endless_disabled">Ska më artikuj për t\'u ngarkuar (u arrit maksimumi).</string>
     <string name="nc_endless_cancel">U anullua nga përdoruesi.</string>
     <string name="nc_endless_error">Ndodhi një gabim gjatë ngarkimit të artikujve.</string>
