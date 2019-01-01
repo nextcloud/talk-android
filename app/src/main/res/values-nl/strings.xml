@@ -169,6 +169,14 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_new_messages">Nieuwe berichten</string>
     <string name="nc_no_messages_yet">Nog geen berichten</string>
     <string name="nc_chat_you">Je</string>
+    <string name="nc_sent_a_link">verstuurde een link.</string>
+    <string name="nc_sent_a_gif">verstuurde een GIF.</string>
+    <string name="nc_sent_an_attachment">verstuurde een bijlage.</string>
+    <string name="nc_sent_an_audio">verstuurde een audiobestand.</string>
+    <string name="nc_sent_a_video">verstuurde een video.</string>
+    <string name="nc_sent_an_image">verstuurde een afbeelding.</string>
+
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Niets meer te laden. Verversen om nog eens te proberen</string>
     <string name="nc_endless_disabled">Niets meer te laden (max bereikt).</string>
