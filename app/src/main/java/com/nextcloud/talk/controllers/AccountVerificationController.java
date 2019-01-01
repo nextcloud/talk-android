@@ -105,7 +105,7 @@ public class AccountVerificationController extends BaseController {
     private boolean isAccountImport;
     private String originalProtocol;
 
-    public AccountVerificationController(Bundle args) {
+    AccountVerificationController(Bundle args) {
         super(args);
         if (args != null) {
             baseUrl = args.getString(BundleKeys.KEY_BASE_URL);
@@ -230,7 +230,7 @@ public class AccountVerificationController extends BaseController {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (getActivity() != null) {
+                        if (getActivity() != null && getResources() != null) {
                             getActivity().runOnUiThread(() -> progressText.setText(String.format(getResources().getString(
                                     R.string.nc_nextcloud_talk_app_not_installed), getResources().getString(R.string.nc_app_name))));
                         }

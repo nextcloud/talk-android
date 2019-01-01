@@ -563,7 +563,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     @OnClick(R.id.emptyLayout)
-    public void sendHello() {
+    void sendHello() {
         if (!isHelloClicked) {
             isHelloClicked = true;
             sendMessage(getResources().getString(R.string.nc_hello) + " 👋", 1);
