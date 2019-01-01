@@ -24,12 +24,9 @@ import android.os.Bundle;
 import android.transition.ChangeBounds;
 import android.transition.ChangeClipBounds;
 import android.transition.ChangeTransform;
-import android.transition.Explode;
 import android.transition.Fade;
-import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.TransitionSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
