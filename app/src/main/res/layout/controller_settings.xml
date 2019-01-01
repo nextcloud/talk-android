@@ -50,7 +50,8 @@
                 android:id="@+id/avatar_image"
                 android:layout_width="@dimen/avatar_size_big"
                 android:layout_height="@dimen/avatar_size_big"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:transitionName="userAvatar.transitionTag" />
 
             <TextView
                 android:id="@+id/display_name_text"

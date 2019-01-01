@@ -81,6 +81,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoInjector;
@@ -190,6 +191,7 @@ public class SettingsController extends BaseController {
         super.onViewBound(view);
         setHasOptionsMenu(true);
 
+        ViewCompat.setTransitionName(avatarImageView, "userAvatar.transitionTag");
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         getCurrentUser();

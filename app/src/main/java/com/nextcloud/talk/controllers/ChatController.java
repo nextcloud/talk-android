@@ -109,6 +109,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import autodagger.AutoInjector;
@@ -421,15 +422,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 .getString(R.string.nc_description_send_message_button));
 
         if (conversationUser.hasSpreedCapabilityWithName("mention-flag") && getActivity() != null) {
-            getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
-                bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
-                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
-                getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
-                        .pushChangeHandler(new HorizontalChangeHandler())
-                        .popChangeHandler(new HorizontalChangeHandler())));
-            });
+            getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> showConversationInfoScreen());
         }
 
         if (adapterWasNull) {
@@ -445,6 +438,17 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
     }
 
+
+    private void showConversationInfoScreen() {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
+            bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+            getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
+                    .pushChangeHandler(new HorizontalChangeHandler())
+                    .popChangeHandler(new HorizontalChangeHandler())));
+
+    }
 
     private void setupMentionAutocomplete() {
         float elevation = 6f;
@@ -985,6 +989,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 return true;
             case R.id.conversation_voice_call:
                 startACall(true);
+                return true;
+            case R.id.conversation_info:
+                showConversationInfoScreen();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
