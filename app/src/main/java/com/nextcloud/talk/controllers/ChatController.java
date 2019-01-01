@@ -901,7 +901,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
 
                     boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0 ||
-                            adapter.getItemCount() == 0;
+                            (adapter != null && adapter.getItemCount() == 0);
 
                     if (!shouldScroll && popupBubble != null) {
                         if (!popupBubble.isShown()) {
