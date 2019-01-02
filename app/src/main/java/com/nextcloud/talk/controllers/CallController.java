@@ -318,10 +318,6 @@ public class CallController extends BaseController {
             Log.e(TAG, "Failed to evict cache");
         }
 
-        if (isVoiceOnlyCall) {
-            callControlEnableSpeaker.setVisibility(View.VISIBLE);
-        }
-
         callControls.setZ(100.0f);
         basicInitialization();
 
@@ -426,6 +422,7 @@ public class CallController extends BaseController {
 
     private void initViews() {
         if (isVoiceOnlyCall) {
+            callControlEnableSpeaker.setVisibility(View.VISIBLE);
             cameraSwitchButton.setVisibility(View.GONE);
             cameraControlButton.setVisibility(View.GONE);
             pipVideoView.setVisibility(View.GONE);
@@ -604,13 +601,15 @@ public class CallController extends BaseController {
     }
 
     @OnLongClick(R.id.call_control_microphone)
-    public boolean onMicrophoneLongClick() {
+    boolean onMicrophoneLongClick() {
         if (!audioOn) {
             callControlHandler.removeCallbacksAndMessages(null);
             cameraSwitchHandler.removeCallbacksAndMessages(null);
             isPTTActive = true;
             callControls.setVisibility(View.VISIBLE);
-            cameraSwitchButton.setVisibility(View.VISIBLE);
+            if (!isVoiceOnlyCall) {
+                cameraSwitchButton.setVisibility(View.VISIBLE);
+            }
         }
 
         onMicrophoneClick();
