@@ -27,15 +27,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
@@ -48,8 +45,8 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferencestorage.DatabaseStorageModule;
 import com.yarolegovich.mp.MaterialChoicePreference;
 import com.yarolegovich.mp.MaterialPreferenceCategory;
@@ -96,7 +93,7 @@ public class ConversationInfoController extends BaseController {
     MaterialPreferenceCategory nameCategoryView;
 
     @BindView(R.id.avatar_image)
-    ImageView conversationAvatarImageView;
+    SimpleDraweeView conversationAvatarImageView;
 
     @BindView(R.id.display_name_text)
     TextView conversationDisplayName;
@@ -334,51 +331,31 @@ public class ConversationInfoController extends BaseController {
     }
 
     private void loadConversationAvatar() {
-        int avatarSize = getResources().getDimensionPixelSize(R.dimen.avatar_size_big);
 
         switch (conversation.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
                 if (!TextUtils.isEmpty(conversation.getName())) {
-                    GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(),
-                            conversation.getName(), R.dimen.avatar_size), new LazyHeaders.Builder()
-                            .setHeader("Accept", "image/*")
-                            .setHeader("User-Agent", ApiUtils.getUserAgent())
-                            .build());
-
-                    GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(glideUrl)
-                            .centerInside()
-                            .override(avatarSize, avatarSize)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(conversationAvatarImageView);
-
+                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                    .setOldController(conversationAvatarImageView.getController())
+                    .setAutoPlayAnimations(true)
+                    .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(),
+                            conversation.getName(), R.dimen.avatar_size_big)))
+                    .build();
+                    conversationAvatarImageView.setController(draweeController);
                 }
                 break;
             case ROOM_GROUP_CALL:
-
-                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(R.drawable.ic_people_group_white_24px)
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(conversationAvatarImageView);
+                conversationAvatarImageView.getHierarchy().setPlaceholderImage(DisplayUtils
+                        .getRoundedBitmapDrawableFromVectorDrawableResource(getResources(),
+                                R.drawable.ic_people_group_white_24px));
                 break;
             case ROOM_PUBLIC_CALL:
-                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(R.drawable.ic_link_white_24px)
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(conversationAvatarImageView);
+                conversationAvatarImageView.getHierarchy().setPlaceholderImage(DisplayUtils
+                        .getRoundedBitmapDrawableFromVectorDrawableResource(getResources(),
+                                R.drawable.ic_link_white_24px));
                 break;
             default:
-
+                break;
         }
     }
 }

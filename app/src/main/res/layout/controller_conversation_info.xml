@@ -58,10 +58,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
+                    <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/avatar_image"
                         android:layout_width="@dimen/avatar_size_big"
                         android:layout_height="@dimen/avatar_size_big"
+                        apc:roundAsCircle="true"
                         android:layout_centerHorizontal="true" />
 
                     <TextView

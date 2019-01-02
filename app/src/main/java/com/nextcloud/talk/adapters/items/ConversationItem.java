@@ -43,6 +43,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
 import org.apache.commons.lang3.StringUtils;
@@ -220,25 +221,15 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             switch (objectType) {
                 case "share:password":
                     shouldLoadAvatar = false;
-                    GlideApp.with(context)
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(R.drawable.ic_file_password_request)
-                            .centerInside()
-                            .override(avatarSize, avatarSize)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(holder.dialogAvatar);
+                    holder.dialogAvatar.setImageBitmap(DisplayUtils
+                            .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
+                                    R.drawable.ic_file_password_request));
                     break;
                 case "file":
                     shouldLoadAvatar = false;
-                    GlideApp.with(context)
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(R.drawable.ic_file_icon)
-                            .centerInside()
-                            .override(avatarSize, avatarSize)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(holder.dialogAvatar);
+                    holder.dialogAvatar.setImageBitmap(DisplayUtils
+                            .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
+                                    R.drawable.ic_file_icon));
                     break;
                 default:
                     break;
@@ -270,25 +261,14 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     }
                     break;
                 case ROOM_GROUP_CALL:
-
-                    GlideApp.with(context)
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(R.drawable.ic_people_group_white_24px)
-                            .centerInside()
-                            .override(avatarSize, avatarSize)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(holder.dialogAvatar);
+                    holder.dialogAvatar.setImageBitmap(DisplayUtils
+                            .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
+                                    R.drawable.ic_people_group_white_24px));
                     break;
                 case ROOM_PUBLIC_CALL:
-                    GlideApp.with(context)
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(R.drawable.ic_link_white_24px)
-                            .centerInside()
-                            .override(avatarSize, avatarSize)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(holder.dialogAvatar);
+                    holder.dialogAvatar.setImageBitmap(DisplayUtils
+                            .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
+                                    R.drawable.ic_link_white_24px));
 
                     break;
                 default:

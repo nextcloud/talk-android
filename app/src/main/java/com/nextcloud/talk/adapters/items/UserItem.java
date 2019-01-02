@@ -37,6 +37,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
 import org.apache.commons.lang3.StringUtils;
@@ -161,14 +162,9 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
         } else if ("groups".equals(participant.getSource())) {
 
-            GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .load(R.drawable.ic_people_group_white_24px)
-                    .centerInside()
-                    .override(avatarSize, avatarSize)
-                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                    .into(flipView.getFrontImageView());
+            flipView.setFrontImageBitmap(DisplayUtils
+                    .getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(),
+                            R.drawable.ic_people_group_white_24px));
         }
 
         if (!isEnabled()) {

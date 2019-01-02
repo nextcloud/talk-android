@@ -28,7 +28,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -52,9 +51,6 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.RotationOptions;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
@@ -322,14 +318,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
             adapter = new MessagesListAdapter<>(conversationUser.getUserId(), messageHolders, new ImageLoader() {
                 @Override
                 public void loadImage(SimpleDraweeView imageView, String url) {
-                    ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
-                            .setProgressiveRenderingEnabled(true)
-                            .setRotationOptions(RotationOptions.autoRotate())
-                            .disableDiskCache()
-                            .build();
-
                     DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                            .setImageRequest(request)
+                            .setImageRequest(DisplayUtils.getImageRequestForUrl(url))
                             .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
                             .setOldController(imageView.getController())
                             .setAutoPlayAnimations(true)

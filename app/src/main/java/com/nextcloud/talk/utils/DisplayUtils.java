@@ -25,9 +25,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.text.Spannable;
@@ -48,7 +52,11 @@ import android.widget.TextView;
 
 import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.RotationOptions;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 
@@ -98,6 +106,34 @@ public class DisplayUtils {
             draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
             draweeView.requestLayout();
         }
+    }
+
+    public static Bitmap getRoundedBitmapFromVectorDrawableResource(Resources resources, int resource) {
+        VectorDrawable vectorDrawable = (VectorDrawable) resources.getDrawable(resource);
+        Bitmap bitmap = getBitmap(vectorDrawable);
+        new RoundAsCirclePostprocessor(true).process(bitmap);
+        return bitmap;
+    }
+
+    public static Drawable getRoundedBitmapDrawableFromVectorDrawableResource(Resources resources, int resource) {
+        return new BitmapDrawable(getRoundedBitmapFromVectorDrawableResource(resources, resource));
+    }
+
+    private static Bitmap getBitmap(VectorDrawable vectorDrawable) {
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        vectorDrawable.draw(canvas);
+        return bitmap;
+    }
+
+    public static ImageRequest getImageRequestForUrl(String url) {
+        return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+                .setProgressiveRenderingEnabled(true)
+                .setRotationOptions(RotationOptions.autoRotate())
+                .disableDiskCache()
+                .build();
     }
 
     public static ControllerListener getImageControllerListener(SimpleDraweeView draweeView) {

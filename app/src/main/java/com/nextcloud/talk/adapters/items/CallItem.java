@@ -39,6 +39,7 @@ import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
 import org.apache.commons.lang3.StringUtils;
@@ -159,28 +160,18 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                 holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
                         .nc_description_more_menu_group), conversation.getDisplayName()));
 
-                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(R.drawable.ic_people_group_white_24px)
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(holder.avatarImageView.getFrontImageView());
+                holder.avatarImageView.setFrontImageBitmap(DisplayUtils
+                        .getRoundedBitmapFromVectorDrawableResource(resources,
+                                R.drawable.ic_people_group_white_24px));
                 holder.avatarImageView.setVisibility(View.VISIBLE);
                 break;
             case ROOM_PUBLIC_CALL:
                 holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
                         .nc_description_more_menu_public), conversation.getDisplayName()));
 
-                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(R.drawable.ic_link_white_24px)
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(holder.avatarImageView.getFrontImageView());
+                holder.avatarImageView.setFrontImageBitmap(DisplayUtils
+                        .getRoundedBitmapFromVectorDrawableResource(resources,
+                                R.drawable.ic_link_white_24px));
                 holder.avatarImageView.setVisibility(View.VISIBLE);
                 break;
             default:
