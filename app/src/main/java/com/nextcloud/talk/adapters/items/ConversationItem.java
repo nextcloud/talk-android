@@ -169,8 +169,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 String fullString = authorDisplayName + conversation.getLastMessage().getLastMessageDisplayText();
                 Spannable spannableString = new SpannableString(fullString);
                 final StyleSpan boldStyleSpan = new StyleSpan(Typeface.BOLD);
-                spannableString.setSpan(boldStyleSpan, 0, fullString.indexOf(" "), Spannable
-                        .SPAN_INCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(boldStyleSpan, 0, authorDisplayName.length(), Spannable
+                        .SPAN_INCLUSIVE_INCLUSIVE);
 
                 holder.dialogLastMessage.setText(spannableString);
 

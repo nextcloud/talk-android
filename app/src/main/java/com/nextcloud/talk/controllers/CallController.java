@@ -556,7 +556,6 @@ public class CallController extends BaseController {
             localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
             localMediaStream.addTrack(localVideoTrack);
             localVideoTrack.setEnabled(false);
-
             localVideoTrack.addSink(pipVideoView);
         }
 
