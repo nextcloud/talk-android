@@ -66,7 +66,6 @@
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
     <string name="nc_settings_wrong_account">Reautorizován může být pouze aktuální účet</string>
-    <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
     <string name="nc_settings_account_updated">Váš už existující účet byl aktualizován, namísto přidání nového</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánován ke smazání a není možné ho změnit</string>
     <string name="nc_settings_notification_sounds">Zvuky oznamování</string>

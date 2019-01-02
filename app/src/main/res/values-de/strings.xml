@@ -66,7 +66,6 @@
     <string name="nc_settings_remove_account">Konto entfernen</string>
     <string name="nc_settings_add_account">Konto hinzufügen</string>
     <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
-    <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem Sie versucht haben sich zu autorisieren</string>
     <string name="nc_settings_account_updated">Ihr bereits existierendes Konto wurde aktualisiert, anstelle ein Neues hinzuzufügen</string>
     <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann nicht verändert werden</string>
     <string name="nc_settings_notification_sounds">Benachrichtigungstöne</string>

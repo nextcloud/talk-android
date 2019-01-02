@@ -62,7 +62,6 @@
     <string name="nc_settings_remove_account">Odstrani račun</string>
     <string name="nc_settings_add_account">Dodaj račun</string>
     <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
-    <string name="nc_settings_no_talk_installed">Paket Talk na strežniku, s katerim se izvaja overitev, ni nameščen.</string>
     <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>
     <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
     <string name="nc_settings_notification_sounds">Obvestilni zvoki</string>

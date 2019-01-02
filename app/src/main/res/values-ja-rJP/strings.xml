@@ -66,7 +66,6 @@
     <string name="nc_settings_remove_account">アカウントを削除</string>
     <string name="nc_settings_add_account">新規アカウント追加</string>
     <string name="nc_settings_wrong_account">現在のアカウントのみ再認可できます</string>
-    <string name="nc_settings_no_talk_installed">トークンアプリが許可を得ようとしたサーバーにインストールされていません</string>
     <string name="nc_settings_account_updated">新しいアカウントを追加する代わりに、既存のアカウントが更新されました</string>
     <string name="nc_account_scheduled_for_deletion">アカウントは削除予定であり、変更することはできません</string>
     <string name="nc_settings_notification_sounds">通知音</string>
