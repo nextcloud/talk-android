@@ -208,15 +208,20 @@ public class WebViewLoginController extends BaseController {
                     basePageLoaded = true;
                 }
 
-                if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+                if (!TextUtils.isEmpty(username)) {
                     if (loginStep == 1) {
                         webView.loadUrl("javascript: {document.getElementsByClassName('login')[0].click(); };");
                     } else if (!automatedLoginAttempted) {
                         automatedLoginAttempted = true;
-                        webView.loadUrl("javascript: {" +
-                                "document.getElementById('user').value = '" + username + "';" +
-                                "document.getElementById('password').value = '" + password + "';" +
-                                "document.getElementById('submit').click(); };");
+                        if (TextUtils.isEmpty(password)) {
+                            webView.loadUrl("javascript: {" +
+                                    "document.getElementById('user').value = '" + username + "'; };");
+                        } else {
+                            webView.loadUrl("javascript: {" +
+                                    "document.getElementById('user').value = '" + username + "';" +
+                                    "document.getElementById('password').value = '" + password + "';" +
+                                    "document.getElementById('submit').click(); };");
+                        }
                     }
                 }
 

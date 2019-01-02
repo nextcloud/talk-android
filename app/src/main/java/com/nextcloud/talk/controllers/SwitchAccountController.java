@@ -86,7 +86,7 @@ public class SwitchAccountController extends BaseController {
         public boolean onItemClick(View view, int position) {
             if (userItems.size() > position) {
                 Account account = ((AdvancedUserItem) userItems.get(position)).getAccount();
-                verifyAccount(account);
+                reauthorizeFromImport(account);
             }
 
             return true;
@@ -237,15 +237,11 @@ public class SwitchAccountController extends BaseController {
         swipeRefreshLayout.setEnabled(false);
     }
 
-    private void verifyAccount(Account account) {
+    private void reauthorizeFromImport(Account account) {
         ImportAccount importAccount = AccountUtils.getInformationFromAccount(account);
-        Bundle bundle = new Bundle();
-        bundle.putString(BundleKeys.KEY_USERNAME, importAccount.getUsername());
-        bundle.putString(BundleKeys.KEY_TOKEN, importAccount.getToken());
-        bundle.putString(BundleKeys.KEY_BASE_URL, importAccount.getBaseUrl());
-        bundle.putBoolean(BundleKeys.KEY_IS_ACCOUNT_IMPORT, true);
-        getRouter().pushController(RouterTransaction.with(new AccountVerificationController
-                (bundle)).pushChangeHandler(new HorizontalChangeHandler())
+        getRouter().pushController(RouterTransaction.with(new WebViewLoginController(importAccount.getBaseUrl(),
+                false, importAccount.getUsername(), ""))
+                .pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler()));
     }
 
