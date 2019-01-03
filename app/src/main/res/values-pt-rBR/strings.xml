@@ -66,6 +66,7 @@
     <string name="nc_settings_remove_account">Excluir conta</string>
     <string name="nc_settings_add_account">Adicionar uma conta</string>
     <string name="nc_settings_wrong_account">Somente a conta atual pode ser reautorizada</string>
+    <string name="nc_settings_no_talk_installed">O aplicativo Talk não está instalado no servidor em que você tentou se autenticar</string>
     <string name="nc_settings_account_updated">Sua conta atual foi atualizada, em vez de adicionar uma nova</string>
     <string name="nc_account_scheduled_for_deletion">A conta está agendada para exclusão e não pode ser alterada</string>
     <string name="nc_settings_notification_sounds">Sons de notificação</string>
