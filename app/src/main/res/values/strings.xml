@@ -202,7 +202,7 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Tap to be the first to say %1$s!</string>
-    <string name="nc_conversations_empty">You haven\'t talked to anyone yet!\n Tap to start a conversation.</string>
+    <string name="nc_conversations_empty">Join a conversation or start a new one\n Say hi to your friends and colleagues!</string>
     <string name="nc_hello">Hello</string>
 
     <!-- Other -->
