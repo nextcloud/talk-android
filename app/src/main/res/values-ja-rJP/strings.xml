@@ -180,7 +180,6 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">タップして %1$s と言いましょう！</string>
-    <string name="nc_conversations_empty">あなたは誰ともまだ話していません！\n会話を開始するにはタップしてください。</string>
     <string name="nc_hello">こんにちは</string>
 
     <!-- Other -->

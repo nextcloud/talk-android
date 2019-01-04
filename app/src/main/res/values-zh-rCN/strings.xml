@@ -155,7 +155,6 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">点击以成为第一位说%1$s的人！</string>
-    <string name="nc_conversations_empty">您还没有跟任何人说过话！\n点击以开始会话</string>
     <string name="nc_hello">您好</string>
 
     <!-- Other -->

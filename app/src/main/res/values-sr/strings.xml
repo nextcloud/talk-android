@@ -189,7 +189,6 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Тапните да будете први који ће рећи %1$s!</string>
-    <string name="nc_conversations_empty">Још нисте попричали ни са ким!\nКликните да започнете разговор.</string>
     <string name="nc_hello">Здраво</string>
 
     <!-- Other -->

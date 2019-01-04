@@ -181,7 +181,6 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">¡Pulsa para ser el primero en decir %1$s!</string>
-    <string name="nc_conversations_empty">Todavía no has hablado con nadie. \n Pulsa para empezar una conversación.</string>
     <string name="nc_hello">Hola</string>
 
     <!-- Other -->

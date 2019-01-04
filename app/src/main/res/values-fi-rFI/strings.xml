@@ -117,7 +117,6 @@
     <string name="nc_chat_you">Sinä</string>
     <string name="nc_description_send_message_button">Lähetä viesti</string>
 
-    <string name="nc_conversations_empty">Et ole puhunut vielä kenellekään!\n Napauta aloittaaksesi keskustelun.</string>
     <string name="nc_hello">Hei</string>
 
     </resources>

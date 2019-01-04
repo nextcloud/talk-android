@@ -176,7 +176,6 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Нажмите чтобы первым сказать «%1$s»!</string>
-    <string name="nc_conversations_empty">Список пуст!\n Нажмите чтобы начать беседу.</string>
     <string name="nc_hello">Привет</string>
 
     <!-- Other -->

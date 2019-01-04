@@ -191,7 +191,6 @@ móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Toque para ser o primeiro en dicir %1$s!</string>
-    <string name="nc_conversations_empty">Aínda non falou con ninguén!\n Toque para iniciar a conversa.</string>
     <string name="nc_hello">Ola</string>
 
     <!-- Other -->

@@ -181,7 +181,6 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Klepněte a buďte první kdo řekne %1$s!</string>
-    <string name="nc_conversations_empty">Zatím jste ještě s nikým nemluvili!\n Začněte konverzaci klepnutím.</string>
     <string name="nc_hello">Ahoj</string>
 
     <!-- Other -->

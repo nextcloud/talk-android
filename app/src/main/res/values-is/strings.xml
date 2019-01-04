@@ -178,7 +178,6 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Ýttu til að verða fyrstur til að segja %1$s!</string>
-    <string name="nc_conversations_empty">Þú hefur ekki sjallað við neinn ennþá!\n Ýttu til að hefja samtal.</string>
     <string name="nc_hello">Halló</string>
 
     <!-- Other -->

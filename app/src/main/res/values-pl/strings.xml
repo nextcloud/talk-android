@@ -164,7 +164,6 @@ komórkowe. Możesz próbować dołączyć do rozmowy przez przeglądarkę inter
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Stuknij aby być pierwszą/ym, który powie %1$s!</string>
-    <string name="nc_conversations_empty">Jeszcze z nikim nie rozmawiałeś!\n Stuknij aby zacząć rozmowę.</string>
     <string name="nc_hello">Cześć</string>
 
     <!-- Other -->

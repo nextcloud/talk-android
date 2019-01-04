@@ -190,7 +190,6 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Tik om als eerste %1$s te zeggen!</string>
-    <string name="nc_conversations_empty">Je hebt nog met niemand gesproken. Tik om een gesprek te starten.</string>
     <string name="nc_hello">Hallo</string>
 
     <!-- Other -->
