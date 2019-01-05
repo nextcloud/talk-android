@@ -190,6 +190,7 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Tocca per essere il primo a dire %1$s!</string>
+    <string name="nc_conversations_empty">Unisciti a una conversazione o avviane una nuova\nSaluta i tuoi amici e i tuoi colleghi!</string>
     <string name="nc_hello">Ciao</string>
 
     <!-- Other -->

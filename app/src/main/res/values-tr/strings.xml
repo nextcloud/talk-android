@@ -190,6 +190,7 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">%1$s demek için dokunun!</string>
+    <string name="nc_conversations_empty">Bir görüşmeye katılın ya da yeni bir görüşme başlatın\nArkadaş ve İş arkadaşlarınıza merhaba deyin!</string>
     <string name="nc_hello">Merhaba</string>
 
     <!-- Other -->

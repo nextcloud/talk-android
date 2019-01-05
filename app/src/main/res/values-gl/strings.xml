@@ -30,8 +30,8 @@
     <string name="nc_server_version">%1$s só funciona con %2$s 13 ou superior</string>
     <string name="nc_server_import_account_plain">Importar unha conta</string>
     <string name="nc_server_import_accounts_plain">Importar contas</string>
-    <string name="nc_server_import_account">Importar unha conta dende a aplicación %1$s</string>
-    <string name="nc_server_import_accounts">Importar contas dende a aplicación %1$s</string>
+    <string name="nc_server_import_account">Importar unha conta dende o aplicativo %1$s</string>
+    <string name="nc_server_import_accounts">Importar contas dende o aplicativo%1$s</string>
     <string name="nc_server_failed_to_import_account">Produciuse un fallo ao importar a conta seleccionada</string>
     <string name="nc_Server_account_imported">A conta seleccionada foi importada e xa está dispoñíbel</string>
     <string name="nc_get_from_provider">Aínda non ten un servidor? \nPrema aquí para obter un dun provedo</string>
@@ -43,7 +43,7 @@
     <string name="nc_external_server_failed">
 Produciuse un fallo aorecuperar os axustes da señalización</string>
     <string name="nc_display_name_not_fetched">Non foi posíbel obter o nome para amosar, interrompendo</string>
-    <string name="nc_nextcloud_talk_app_not_installed">A aplicación %1$s non está instalada no servidor, interrompendo</string>
+    <string name="nc_nextcloud_talk_app_not_installed">O aplicativo %1$s non está instalado no servidor, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
 
     <string name="nc_never">Non conectou nunca</string>
@@ -68,6 +68,7 @@ Produciuse un fallo aorecuperar os axustes da señalización</string>
     <string name="nc_settings_remove_account">Retirar a conta</string>
     <string name="nc_settings_add_account">Engadir unha conta nova</string>
     <string name="nc_settings_wrong_account">Só pode volver a autorizarse a conta actual</string>
+    <string name="nc_settings_no_talk_installed">O aplicativo Talk non está instalado no servidor contra o que tentou autenticarse</string>
     <string name="nc_settings_account_updated">Actualizouse a súa conta xa existente no canto de crear unha nova</string>
     <string name="nc_account_scheduled_for_deletion">A conta está programada para a súa eliminación e non pode ser cambiada</string>
     <string name="nc_settings_notification_sounds">Sons de notificación</string>
@@ -191,6 +192,7 @@ móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Toque para ser o primeiro en dicir %1$s!</string>
+    <string name="nc_conversations_empty">Únase a unha conversa ou inicie unha nova\n Saúde aos teus amigos e colegas!</string>
     <string name="nc_hello">Ola</string>
 
     <!-- Other -->

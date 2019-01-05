@@ -19,6 +19,9 @@
   -->
 
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Inställningar</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Serveradress</string>
     <string name="nc_server_not_installed">Vänligen slutför din %1$s-installation</string>
@@ -35,6 +38,8 @@
 
     <!-- Account verification -->
     <string name="nc_push_disabled">Push-meddelanden inaktiverade</string>
+    <string name="nc_capabilities_failed">Misslyckades att hämta funktioner, avbryter</string>
+    <string name="nc_external_server_failed">Misslyckades hämta signaleringsinställningar</string>
     <string name="nc_display_name_not_fetched">Visningsnamn kunde inte hämtas, avbryter</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app inte installerad på servern, avbryter</string>
     <string name="nc_display_name_not_stored">Kunde inte lagra visningsnamnet, avbryter</string>
@@ -61,9 +66,15 @@
     <string name="nc_settings_remove_account">Ta bort konto</string>
     <string name="nc_settings_add_account">Lägg till ett nytt konto</string>
     <string name="nc_settings_wrong_account">Bara nuvarande konto kan återautentiseras</string>
+    <string name="nc_settings_no_talk_installed">Talk-appen är inte installerad på den server som du försöker autentisera mot</string>
     <string name="nc_settings_account_updated">Ditt redan befintliga konto uppdaterades, istället för att lägga till ett nytt</string>
     <string name="nc_account_scheduled_for_deletion">Kontot är schemalagt för radering och kan inte ändras</string>
+    <string name="nc_settings_notification_sounds">Notifieringsljud</string>
+    <string name="nc_settings_call_ringtone">En-till-en samtal</string>
+    <string name="nc_settings_other_notifications_ringtone">Övrigt</string>
     <string name="nc_settings_no_ringtone">Inget ljud</string>
+    <string name="nc_settings_vibrate">Vibrera</string>
+    <string name="nc_settings_vibrate_desc">Din telefon kommer att vibrera om den inte tystas</string>
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Användarnamn</string>
     <string name="nc_password">Lösenord</string>
@@ -78,6 +89,9 @@
 
     <string name="nc_select_an_account">Välj ett konto</string>
 
+    <!-- Conversation menu -->
+    <string name="nc_start_conversation">Starta en konversation</string>
+    <string name="nc_configure_room">Anpassa konversation</string>
     <string name="nc_leave">Lämna konversationen</string>
     <string name="nc_rename">Byt namn på konversation</string>
     <string name="nc_set_password">Sätt ett lösenord</string>
@@ -88,8 +102,12 @@
     <string name="nc_make_call_public">Gör konversationen offentlig</string>
     <string name="nc_make_call_private">Gör samtalet privat</string>
     <string name="nc_delete_call">Ta bort konversation</string>
+    <string name="nc_new_conversation">Ny konversation</string>
     <string name="nc_join_via_link">Gå med via länk</string>
     <string name="nc_join_via_web">Gå med via webb</string>
+    <string name="nc_add_to_favorites">Lägg till som favorit</string>
+    <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Välj kontakter</string>
     <string name="nc_contacts_done">Färdig</string>
@@ -103,11 +121,23 @@
     <string name="nc_connecting_call">Ansluter...</string>
     <string name="nc_incoming_call">Inkommande samtal från</string>
     <string name="nc_nick_guest">Gäst</string>
+    <string name="nc_public_call">Ny publik konversation</string>
+    <string name="nc_public_call_explanation">Offentliga konversationer låter dig bjuda in externa användare via en
+        speciellt utformad länk.</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s aviseringskanal</string>
     <string name="nc_notification_channel_calls">Samtal aviseringskanal</string>
     <string name="nc_notification_channel_messages">Meddelande aviseringskanal</string>
     <string name="nc_notification_channel_calls_description">Visar inkommande samtal</string>
+    <string name="nc_notification_settings">Meddelandeinställningar</string>
+    <string name="nc_plain_old_messages">Meddelanden</string>
+    <string name="nc_notify_me_always">Meddela alltid</string>
+    <string name="nc_notify_me_mention">Meddela när omnämnd</string>
+    <string name="nc_notify_me_never">Meddela aldrig</string>
+    <string name="nc_mute_calls">Tysta alla samtal</string>
+    <string name="nc_mute_calls_description">Du kommer inte få några samtalsnotifieringar</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>
     <string name="nc_failed_signaling_settings">Målservern stöder inte att gå med i offentliga konversationer via mobil-
@@ -134,12 +164,43 @@
     <string name="nc_date_header_today">Idag</string>
     <string name="nc_conversation_menu_voice_call">Röstsamtal</string>
     <string name="nc_conversation_menu_video_call">Videosamtal</string>
+    <string name="nc_conversation_menu_conversation_info">Konversationsinfo</string>
     <string name="nc_new_messages">Nya meddelanden</string>
+    <string name="nc_no_messages_yet">Inga meddelanden än</string>
+    <string name="nc_chat_you">Du</string>
+    <string name="nc_sent_a_link">skickade en länk.</string>
+    <string name="nc_sent_a_gif">skickade en GIF.</string>
+    <string name="nc_sent_an_attachment">skickade en bilaga.</string>
+    <string name="nc_sent_an_audio">skickade en ljudfil.</string>
+    <string name="nc_sent_a_video">skickade en video.</string>
+    <string name="nc_sent_an_image">skickade en bild.</string>
+
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Inga fler objekt att ladda. Uppdatera för att försöka igen.</string>
     <string name="nc_endless_disabled">Inga fler objekt att ladda (max nått).</string>
+    <string name="nc_endless_cancel">Avbruten av användaren.</string>
     <string name="nc_endless_error">Ett fel uppstod när fler objekt laddades in.</string>
 
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">Meny för konversation med %1$s</string>
+    <string name="nc_description_more_menu_public">Meny för gruppkonversation %1$s</string>
+    <string name="nc_description_more_menu_group">Meny för publik konversation %1$s</string>
     <string name="nc_description_send_message_button">Skicka meddelande</string>
 
-    </resources>
+    <!-- Empty states -->
+    <string name="nc_chat_empty">Tryck för att vara den första att säga %1$s!</string>
+    <string name="nc_conversations_empty">Gå med i en konversation eller starta en ny\n Säg hej till dina vänner och kollegor!</string>
+    <string name="nc_hello">Hej</string>
+
+    <!-- Other -->
+    <string name="nc_limit_hit">Gränsen för 1000 tecken har uppnåtts</string>
+    <string name="nc_groups">Grupper</string>
+    <string name="nc_participants">Deltagare</string>
+
+    <string name="nc_owner">Ägare</string>
+    <string name="nc_moderator">Moderator</string>
+    <string name="nc_user">Användare</string>
+    <string name="nc_guest">Gäst</string>
+    <string name="nc_following_link">Användare följer en offentlig länk</string>
+</resources>
