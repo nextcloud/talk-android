@@ -112,7 +112,9 @@ dependencies {
     implementation 'org.michaelevans.colorart:library:0.0.3'
     implementation "android.arch.work:work-runtime:1.0.0-beta01"
     implementation "android.arch.work:work-firebase:${workVersion}"
-    androidTestImplementation "android.arch.work:work-testing:${workVersion}"
+    androidTestImplementation "android.arch.work:work-testing:1.0.0-beta01"
+    implementation "android.arch.work:work-rxjava2:1.0.0-beta01"
+
 
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
 
@@ -157,8 +159,8 @@ dependencies {
     compileOnly "org.projectlombok:lombok:1.18.4"
     annotationProcessor "org.projectlombok:lombok:1.18.4"
 
-    implementation 'com.jakewharton:butterknife:9.0.0-rc2'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc2'
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.3'
 
