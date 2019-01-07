@@ -1572,7 +1572,7 @@ public class CallController extends BaseController {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
                         iceServers, sdpConstraints, sessionId, callSession, null, false, true, type);
             } else {
-                if (!type.equals("screen")) {
+                if (!"screen".equals(type)) {
                     magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
                             iceServers, sdpConstraints, sessionId, callSession, localMediaStream, false, false, type);
                 } else {
@@ -1911,7 +1911,7 @@ public class CallController extends BaseController {
                     gotNick(session + "+" + type, getPeerConnectionWrapperForSessionIdAndType(session, "video", false).getNick(), false);
                 }
 
-                if (type.equals("video")) {
+                if ("video".equals(type)) {
                     setupAvatarForSession(session);
                 }
 
