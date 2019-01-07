@@ -129,7 +129,7 @@ public class MagicWebRTCUtils {
         }
         Log.d(TAG, "Change media description from: " + lines[mLineIndex] + " to " + newMLine);
         lines[mLineIndex] = newMLine;
-        return joinString(Arrays.asList(lines), "\r\n", true /* delimiterAtEnd */);
+        return joinString(Arrays.asList(lines), "\r\n", true);
     }
 
     /**

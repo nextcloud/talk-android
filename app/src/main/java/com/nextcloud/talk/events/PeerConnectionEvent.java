@@ -29,13 +29,15 @@ public class PeerConnectionEvent {
     private final String sessionId;
     private final String nick;
     private final Boolean changeValue;
+    private final String videoStreamType;
 
     public PeerConnectionEvent(PeerConnectionEventType peerConnectionEventType, @Nullable String sessionId,
-                               @Nullable String nick, Boolean changeValue) {
+                               @Nullable String nick, Boolean changeValue, @Nullable String videoStreamType) {
         this.peerConnectionEventType = peerConnectionEventType;
         this.nick = nick;
         this.changeValue = changeValue;
         this.sessionId = sessionId;
+        this.videoStreamType = videoStreamType;
     }
 
     public enum PeerConnectionEventType {

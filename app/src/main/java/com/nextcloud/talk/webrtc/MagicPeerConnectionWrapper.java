@@ -71,14 +71,16 @@ public class MagicPeerConnectionWrapper {
 
     private MediaStream localMediaStream;
     private boolean isMCUPublisher;
+    private String videoStreamType;
 
     public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                       List<PeerConnection.IceServer> iceServerList,
                                       MediaConstraints mediaConstraints,
                                       String sessionId, String localSession, @Nullable MediaStream mediaStream,
-                                      boolean isMCUPublisher, boolean hasMCU) {
+                                      boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
 
         this.localMediaStream = mediaStream;
+        this.videoStreamType = videoStreamType;
 
         this.sessionId = sessionId;
         this.mediaConstraints = mediaConstraints;
@@ -112,6 +114,10 @@ public class MagicPeerConnectionWrapper {
                 }
             }
         }
+    }
+
+    public String getVideoStreamType() {
+        return videoStreamType;
     }
 
     public void removePeerConnection() {
@@ -243,32 +249,32 @@ public class MagicPeerConnectionWrapper {
                         if (!internalNick.equals(nick)) {
                             setNick(nick);
                             EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                    .NICK_CHANGE, sessionId, getNick(), null));
+                                    .NICK_CHANGE, sessionId, getNick(), null, videoStreamType));
                         }
                     } else {
                         if (dataChannelMessage.getPayload() != null) {
                             HashMap<String, String> payloadHashMap = (HashMap<String, String>) dataChannelMessage.getPayload();
                             EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                    .NICK_CHANGE, payloadHashMap.get("userid"), payloadHashMap.get("name"), null));
+                                    .NICK_CHANGE, payloadHashMap.get("userid"), payloadHashMap.get("name"), null, videoStreamType));
                         }
                     }
 
                 } else if ("audioOn".equals(dataChannelMessage.getType())) {
                     remoteAudioOn = true;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .AUDIO_CHANGE, sessionId, null, remoteAudioOn));
+                            .AUDIO_CHANGE, sessionId, null, remoteAudioOn, videoStreamType));
                 } else if ("audioOff".equals(dataChannelMessage.getType())) {
                     remoteAudioOn = false;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .AUDIO_CHANGE, sessionId, null, remoteAudioOn));
+                            .AUDIO_CHANGE, sessionId, null, remoteAudioOn, videoStreamType));
                 } else if ("videoOn".equals(dataChannelMessage.getType())) {
                     remoteVideoOn = true;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .VIDEO_CHANGE, sessionId, null, remoteVideoOn));
+                            .VIDEO_CHANGE, sessionId, null, remoteVideoOn, videoStreamType));
                 } else if ("videoOff".equals(dataChannelMessage.getType())) {
                     remoteVideoOn = false;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .VIDEO_CHANGE, sessionId, null, remoteVideoOn));
+                            .VIDEO_CHANGE, sessionId, null, remoteVideoOn, videoStreamType));
                 }
             } catch (IOException e) {
                 Log.d(TAG, "Failed to parse data channel message");
@@ -290,7 +296,7 @@ public class MagicPeerConnectionWrapper {
                         .PEER_CONNECTED, sessionId, null, null));*/
 
                 if (!isMCUPublisher) {
-                    EventBus.getDefault().post(new MediaStreamEvent(remoteMediaStream, sessionId));
+                    EventBus.getDefault().post(new MediaStreamEvent(remoteMediaStream, sessionId, videoStreamType));
                 }
 
                 if (hasInitiated) {
@@ -299,7 +305,7 @@ public class MagicPeerConnectionWrapper {
 
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.CLOSED)) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .PEER_CLOSED, sessionId, null, null));
+                        .PEER_CLOSED, sessionId, null, null, videoStreamType));
             }
         }
 
@@ -320,7 +326,7 @@ public class MagicPeerConnectionWrapper {
             ncIceCandidate.setSdpMLineIndex(iceCandidate.sdpMLineIndex);
             ncIceCandidate.setCandidate(iceCandidate.sdp);
             EventBus.getDefault().post(new SessionDescriptionSendEvent(null, sessionId,
-                    "candidate", ncIceCandidate));
+                    "candidate", ncIceCandidate, videoStreamType));
         }
 
         @Override
@@ -336,7 +342,7 @@ public class MagicPeerConnectionWrapper {
         @Override
         public void onRemoveStream(MediaStream mediaStream) {
             if (!isMCUPublisher) {
-                EventBus.getDefault().post(new MediaStreamEvent(null, sessionId));
+                EventBus.getDefault().post(new MediaStreamEvent(null, sessionId, videoStreamType));
             }
         }
 
@@ -383,7 +389,7 @@ public class MagicPeerConnectionWrapper {
 
 
             EventBus.getDefault().post(new SessionDescriptionSendEvent(sessionDescriptionWithPreferredCodec, sessionId,
-                    sessionDescription.type.canonicalForm().toLowerCase(), null));
+                    sessionDescription.type.canonicalForm().toLowerCase(), null, videoStreamType));
 
             if (peerConnection != null) {
                 peerConnection.setLocalDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
