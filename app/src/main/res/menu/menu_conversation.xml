@@ -26,19 +26,19 @@
         android:icon="@drawable/ic_call_white_24dp"
         android:orderInCategory="0"
         android:title="@string/nc_conversation_menu_voice_call"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/conversation_video_call"
         android:icon="@drawable/ic_videocam_white_24px"
         android:orderInCategory="1"
         android:title="@string/nc_conversation_menu_video_call"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/conversation_info"
         android:icon="@drawable/ic_info_white_24dp"
         android:orderInCategory="1"
         android:title="@string/nc_conversation_menu_conversation_info"
-        app:showAsAction="never|withText" />
+        app:showAsAction="never" />
 </menu>
