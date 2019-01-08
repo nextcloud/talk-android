@@ -58,7 +58,6 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         super.onCreate(savedInstanceState);
     }
