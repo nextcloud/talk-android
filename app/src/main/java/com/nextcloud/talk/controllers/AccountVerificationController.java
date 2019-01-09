@@ -105,7 +105,7 @@ public class AccountVerificationController extends BaseController {
     private boolean isAccountImport;
     private String originalProtocol;
 
-    AccountVerificationController(Bundle args) {
+    public AccountVerificationController(Bundle args) {
         super(args);
         if (args != null) {
             baseUrl = args.getString(BundleKeys.KEY_BASE_URL);
