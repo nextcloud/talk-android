@@ -89,8 +89,8 @@
             android:visibility="gone"
             app:checked="false"
             app:enableInitialAnimation="false"
-            app:frontBackgroundColor="@color/colorPrimary"
-            app:frontImage="@drawable/ic_mic_white_24px" />
+            app:frontBackgroundColor="@color/nc_darkGreen"
+            app:frontImage="@drawable/ic_call_white_24dp" />
 
         <com.nextcloud.talk.utils.MagicFlipView
             android:id="@+id/callControlHangupView"
@@ -110,7 +110,7 @@
             android:visibility="gone"
             app:checked="false"
             app:enableInitialAnimation="false"
-            app:frontBackgroundColor="@color/colorPrimary"
+            app:frontBackgroundColor="@color/nc_darkGreen"
             app:frontImage="@drawable/ic_videocam_white_24px" />
     </LinearLayout>
 
