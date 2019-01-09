@@ -199,8 +199,6 @@ dependencies {
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.kevalpatel2106:emoticongifkeyboard:1.1'
 
-    implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
-
     implementation group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation ('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
