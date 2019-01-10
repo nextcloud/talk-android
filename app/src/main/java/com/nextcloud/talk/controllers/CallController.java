@@ -726,7 +726,7 @@ public class CallController extends BaseController {
 
     }
 
-    @OnClick(R.id.call_control_switch_camera)
+    @OnClick({R.id.call_control_switch_camera, R.id.pip_video_view})
     public void switchCamera() {
         CameraVideoCapturer cameraVideoCapturer = (CameraVideoCapturer) videoCapturer;
         if (cameraVideoCapturer != null) {
