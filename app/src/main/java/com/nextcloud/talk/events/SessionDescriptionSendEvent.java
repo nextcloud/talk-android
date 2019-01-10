@@ -35,12 +35,14 @@ public class SessionDescriptionSendEvent {
     private final String type;
     @Nullable
     private final NCIceCandidate ncIceCandidate;
+    private final String videoStreamType;
 
     public SessionDescriptionSendEvent(@Nullable SessionDescription sessionDescription, String peerId, String type,
-                                       @Nullable NCIceCandidate ncIceCandidate) {
+                                       @Nullable NCIceCandidate ncIceCandidate, @Nullable String videoStreamType) {
         this.sessionDescription = sessionDescription;
         this.peerId = peerId;
         this.type = type;
         this.ncIceCandidate = ncIceCandidate;
+        this.videoStreamType = videoStreamType;
     }
 }
