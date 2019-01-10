@@ -1283,7 +1283,7 @@ public class CallController extends BaseController {
         if (ncSignalingMessage.getRoomType().equals("video") || ncSignalingMessage.getRoomType().equals("screen")) {
             MagicPeerConnectionWrapper magicPeerConnectionWrapper =
                     getPeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
-                            ncSignalingMessage.getRoomType(),false);
+                            ncSignalingMessage.getRoomType(), false);
 
             String type = null;
             if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() != null) {
@@ -1505,7 +1505,7 @@ public class CallController extends BaseController {
         hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
 
         for (String sessionId : newSessions) {
-            getPeerConnectionWrapperForSessionIdAndType(sessionId, "video",hasMCU && sessionId.equals(webSocketClient.getSessionId()));
+            getPeerConnectionWrapperForSessionIdAndType(sessionId, "video", hasMCU && sessionId.equals(webSocketClient.getSessionId()));
         }
 
         for (String sessionId : oldSesssions) {
@@ -1600,17 +1600,12 @@ public class CallController extends BaseController {
     private void endPeerConnection(String sessionId, boolean justScreen) {
         List<MagicPeerConnectionWrapper> magicPeerConnectionWrappers;
         MagicPeerConnectionWrapper magicPeerConnectionWrapper;
-        if (!(magicPeerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty() && getActivity()
-                != null) {
+        if (!(magicPeerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()
+                && getActivity() != null) {
             for (int i = 0; i < magicPeerConnectionWrappers.size(); i++) {
                 magicPeerConnectionWrapper = magicPeerConnectionWrappers.get(i);
                 if (magicPeerConnectionWrapper.getSessionId().equals(sessionId)) {
-                    if (magicPeerConnectionWrapper.getVideoStreamType().equals("screen")) {
-                        MagicPeerConnectionWrapper finalMagicPeerConnectionWrapper = magicPeerConnectionWrapper;
-                        getActivity().runOnUiThread(() -> removeMediaStream(sessionId + "+" +
-                                finalMagicPeerConnectionWrapper.getVideoStreamType()));
-                        deleteMagicPeerConnection(magicPeerConnectionWrapper);
-                    } else if (!justScreen) {
+                    if (magicPeerConnectionWrapper.getVideoStreamType().equals("screen") || !justScreen) {
                         MagicPeerConnectionWrapper finalMagicPeerConnectionWrapper = magicPeerConnectionWrapper;
                         getActivity().runOnUiThread(() -> removeMediaStream(sessionId + "+" +
                                 finalMagicPeerConnectionWrapper.getVideoStreamType()));
@@ -1650,7 +1645,7 @@ public class CallController extends BaseController {
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
         if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
                 .PEER_CLOSED)) {
-            endPeerConnection(peerConnectionEvent.getSessionId(), false);
+            endPeerConnection(peerConnectionEvent.getSessionId(), peerConnectionEvent.getVideoStreamType().equals("screen"));
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.SENSOR_FAR) ||
                 peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
@@ -1667,7 +1662,7 @@ public class CallController extends BaseController {
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.NICK_CHANGE)) {
-            gotNick(peerConnectionEvent.getSessionId() + "+" + peerConnectionEvent.getVideoStreamType(), peerConnectionEvent.getNick(), true);
+            gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick(), true, peerConnectionEvent.getVideoStreamType());
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.VIDEO_CHANGE) && !isVoiceOnlyCall) {
             gotAudioOrVideoChange(true, peerConnectionEvent.getSessionId() + "+" + peerConnectionEvent.getVideoStreamType(),
@@ -1906,9 +1901,9 @@ public class CallController extends BaseController {
                 surfaceViewRenderer.setOnClickListener(videoOnClickListener);
                 remoteRenderersLayout.addView(relativeLayout);
                 if (hasExternalSignalingServer) {
-                    gotNick(session + "+" + type, webSocketClient.getDisplayNameForSession(session), false);
+                    gotNick(session, webSocketClient.getDisplayNameForSession(session), false, type);
                 } else {
-                    gotNick(session + "+" + type, getPeerConnectionWrapperForSessionIdAndType(session, "video", false).getNick(), false);
+                    gotNick(session, getPeerConnectionWrapperForSessionIdAndType(session, type, false).getNick(), false, type);
                 }
 
                 if ("video".equals(type)) {
@@ -1920,11 +1915,13 @@ public class CallController extends BaseController {
         }
     }
 
-    private void gotNick(String sessionOrUserId, String nick, boolean isFromAnEvent) {
+    private void gotNick(String sessionOrUserId, String nick, boolean isFromAnEvent, String type) {
         if (isFromAnEvent && hasExternalSignalingServer) {
             // get session based on userId
             sessionOrUserId = webSocketClient.getSessionForUserId(sessionOrUserId);
         }
+
+        sessionOrUserId += "+" + type;
 
         if (relativeLayout != null) {
             RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionOrUserId);

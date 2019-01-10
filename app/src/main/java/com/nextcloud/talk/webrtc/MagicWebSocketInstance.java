@@ -29,6 +29,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
@@ -201,9 +202,14 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     break;
                 case "message":
                     CallOverallWebSocketMessage callOverallWebSocketMessage = LoganSquare.parse(text, CallOverallWebSocketMessage.class);
-                    if (callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage().getFrom() != null) {
+                    NCSignalingMessage ncSignalingMessage = callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage();
+                    if (TextUtils.isEmpty(ncSignalingMessage.getFrom()) && callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage() != null) {
+                        ncSignalingMessage.setFrom(callOverallWebSocketMessage.getCallWebSocketMessage().getSenderWebSocketMessage().getSessionId());
+                    }
+
+                    if (!TextUtils.isEmpty(ncSignalingMessage.getFrom())) {
                         HashMap<String, String> messageHashMap = new HashMap<>();
-                        messageHashMap.put("jobId", Integer.toString(magicMap.add(callOverallWebSocketMessage.getCallWebSocketMessage().getNcSignalingMessage())));
+                        messageHashMap.put("jobId", Integer.toString(magicMap.add(ncSignalingMessage)));
                         eventBus.post(new WebSocketCommunicationEvent("signalingMessage", messageHashMap));
                     }
                     break;
