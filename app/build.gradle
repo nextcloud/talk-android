@@ -17,8 +17,8 @@ android {
         targetSdkVersion 28
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode 74
-        versionName "3.2.0beta1"
+        versionCode 75
+        versionName "3.2.0beta2"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
