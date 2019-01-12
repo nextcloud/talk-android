@@ -31,6 +31,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
+import com.vanniktech.emoji.EmojiTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +39,7 @@ import butterknife.ButterKnife;
 public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
 
     @BindView(R.id.messageText)
-    TextView messageText;
+    EmojiTextView messageText;
 
     public MagicPreviewMessageViewHolder(View itemView) {
         super(itemView);

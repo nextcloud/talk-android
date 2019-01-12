@@ -54,7 +54,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="12sp" />
 
-        <androidx.emoji.widget.EmojiTextView
+        <com.vanniktech.emoji.EmojiTextView
             android:id="@id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
