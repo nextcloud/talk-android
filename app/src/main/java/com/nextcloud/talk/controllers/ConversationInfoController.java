@@ -115,7 +115,7 @@ public class ConversationInfoController extends BaseController {
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
     private List<AbstractFlexibleItem> recyclerViewItems = new ArrayList<>();
 
-    ConversationInfoController(Bundle args) {
+    public ConversationInfoController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);

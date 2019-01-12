@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.activities;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;

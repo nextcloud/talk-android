@@ -108,12 +108,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
-    implementation 'androidx.emoji:emoji-bundled:1.0.0'
+    implementation 'com.github.vanniktech.Emoji:emoji-twitter:182e1ff4f4'
     implementation 'org.michaelevans.colorart:library:0.0.3'
-    implementation "android.arch.work:work-runtime:1.0.0-beta01"
+    implementation "android.arch.work:work-runtime:1.0.0-alpha13"
     implementation "android.arch.work:work-firebase:${workVersion}"
-    androidTestImplementation "android.arch.work:work-testing:1.0.0-beta01"
-    implementation "android.arch.work:work-rxjava2:1.0.0-beta01"
+    androidTestImplementation "android.arch.work:work-testing:1.0.0-alpha13"
+    implementation "android.arch.work:work-rxjava2:1.0.0-alpha13"
 
 
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
@@ -188,7 +188,7 @@ dependencies {
 
     implementation 'com.github.wooplr:Spotlight:1.3'
 
-    implementation 'com.github.mario:chatkit:628c909ef4'
+    implementation 'com.github.mario:chatkit:d63d61db95'
 
     implementation 'com.otaliastudios:autocomplete:1.1.0'
 

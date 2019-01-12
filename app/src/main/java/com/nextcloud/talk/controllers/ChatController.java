@@ -26,6 +26,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -90,6 +92,10 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
+import com.vanniktech.emoji.EmojiEditText;
+import com.vanniktech.emoji.EmojiPopup;
+import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
+import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener;
 import com.webianks.library.PopupBubble;
 
 import org.parceler.Parcels;
@@ -137,6 +143,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     TextView sendHiTextView;
     @BindView(R.id.progressBar)
     ProgressBar loadingProgressBar;
+    @BindView(R.id.smileyButton)
+    ImageButton smileyButton;
     private List<Disposable> disposableList = new ArrayList<>();
     private String conversationName;
     private String roomToken;
@@ -165,6 +173,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private static final byte CONTENT_TYPE_SYSTEM_MESSAGE = 1;
 
     private boolean wasDetached;
+    private EmojiPopup emojiPopup;
 
     public ChatController(Bundle args) {
         super(args);
@@ -467,6 +476,21 @@ public class ChatController extends BaseController implements MessagesListAdapte
         ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
 
 
+        emojiPopup = EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener(new OnEmojiPopupShownListener() {
+            @Override
+            public void onEmojiPopupShown() {
+                smileyButton.setColorFilter(getResources().getColor(R.color.colorPrimary),
+                        PorterDuff.Mode.SRC_IN);
+            }
+        }).setOnEmojiPopupDismissListener(new OnEmojiPopupDismissListener() {
+            @Override
+            public void onEmojiPopupDismiss() {
+                if (smileyButton != null) {
+                    smileyButton.clearColorFilter();
+                }
+            }
+        }).build((EmojiEditText) messageInputView.getInputEditText());
+
         if (mentionAutocomplete != null && mentionAutocomplete.isPopupShowing()) {
             mentionAutocomplete.dismissPopup();
         }
@@ -550,6 +574,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         }
                     });
         }
+    }
+
+    @OnClick(R.id.smileyButton)
+    void onSmileyClick() {
+        emojiPopup.toggle();
     }
 
     @OnClick(R.id.emptyLayout)

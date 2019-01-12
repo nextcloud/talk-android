@@ -42,6 +42,8 @@ import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule;
 import com.nextcloud.talk.utils.database.user.UserModule;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
+import com.vanniktech.emoji.EmojiManager;
+import com.vanniktech.emoji.twitter.TwitterEmojiProvider;
 
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.voiceengine.WebRtcAudioManager;
@@ -159,6 +161,8 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         //        ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork);
 
         WorkManager.getInstance().cancelUniqueWork("DailyCapabilitiesUpdateWork");
+        EmojiManager.install(new TwitterEmojiProvider());
+
     }
 
     @Override

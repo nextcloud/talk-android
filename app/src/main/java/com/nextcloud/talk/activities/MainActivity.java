@@ -41,8 +41,6 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import javax.inject.Inject;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.emoji.bundled.BundledEmojiCompatConfig;
-import androidx.emoji.text.EmojiCompat;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,8 +70,6 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
-        EmojiCompat.init(config);
 
         setContentView(R.layout.activity_main);
 

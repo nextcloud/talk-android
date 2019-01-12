@@ -38,7 +38,7 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
-        <com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView
+        <com.vanniktech.emoji.EmojiTextView
             android:id="@id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

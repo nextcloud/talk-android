@@ -45,6 +45,7 @@ import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
+import com.vanniktech.emoji.EmojiTextView;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -287,13 +288,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         @BindView(R.id.dialogAvatar)
         ImageView dialogAvatar;
         @BindView(R.id.dialogName)
-        TextView dialogName;
+        EmojiTextView dialogName;
         @BindView(R.id.dialogDate)
         TextView dialogDate;
         @BindView(R.id.dialogLastMessageUserAvatar)
         ImageView dialogLastMessageUserAvatar;
         @BindView(R.id.dialogLastMessage)
-        TextView dialogLastMessage;
+        EmojiTextView dialogLastMessage;
         @BindView(R.id.dialogUnreadBubble)
         TextView dialogUnreadBubble;
         @BindView(R.id.passwordProtectedRoomImageView)

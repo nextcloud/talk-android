@@ -27,6 +27,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.BitmapDrawable;
@@ -59,6 +60,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.vanniktech.emoji.EmojiTextView;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -117,6 +119,11 @@ public class DisplayUtils {
 
     public static Drawable getRoundedBitmapDrawableFromVectorDrawableResource(Resources resources, int resource) {
         return new BitmapDrawable(getRoundedBitmapFromVectorDrawableResource(resources, resource));
+    }
+
+    public static float getDefaultEmojiFontSize(EmojiTextView emojiTextView) {
+        final Paint.FontMetrics fontMetrics = emojiTextView.getPaint().getFontMetrics();
+        return fontMetrics.descent - fontMetrics.ascent;
     }
 
     private static Bitmap getBitmap(VectorDrawable vectorDrawable) {

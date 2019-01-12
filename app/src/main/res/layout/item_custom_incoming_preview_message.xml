@@ -59,7 +59,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
 
-            <com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView
+            <com.vanniktech.emoji.EmojiTextView
                 android:id="@id/messageText"
                 android:layout_width="wrap_content"
                 android:textColorLink="@color/warm_grey_four"

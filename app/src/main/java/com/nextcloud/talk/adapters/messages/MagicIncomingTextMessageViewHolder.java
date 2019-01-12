@@ -28,14 +28,12 @@ import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.flexbox.FlexboxLayout;
-import com.kevalpatel2106.emoticongifkeyboard.widget.EmoticonTextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
@@ -43,6 +41,7 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.TextMatchers;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
+import com.vanniktech.emoji.EmojiTextView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +61,7 @@ public class MagicIncomingTextMessageViewHolder
     TextView messageAuthor;
 
     @BindView(R.id.messageText)
-    EmoticonTextView messageText;
+    EmojiTextView messageText;
 
     @BindView(R.id.messageUserAvatar)
     SimpleDraweeView messageUserAvatarView;
@@ -131,6 +130,8 @@ public class MagicIncomingTextMessageViewHolder
 
         Spannable messageString = new SpannableString(message.getText());
 
+        float emojiSize = DisplayUtils.getDefaultEmojiFontSize(messageText);
+
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
@@ -156,13 +157,13 @@ public class MagicIncomingTextMessageViewHolder
                 }
             }
 
-        } else if (TextMatchers.isMessageWithSingleEmoticonOnly(context, message.getText())) {
-            messageString.setSpan(new RelativeSizeSpan(2.5f), 0, messageString.length(),
-                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.getText())) {
+            emojiSize *= 2.5f;
             layoutParams.setWrapBefore(true);
             itemView.setSelected(true);
         }
 
+        messageText.setEmojiSize((int) emojiSize, true);
         messageTimeView.setLayoutParams(layoutParams);
         messageText.setText(messageString);
     }

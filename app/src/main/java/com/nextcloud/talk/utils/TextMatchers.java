@@ -22,18 +22,12 @@
 
 package com.nextcloud.talk.utils;
 
-import android.content.Context;
-import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 
-import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.vanniktech.emoji.EmojiInformation;
+import com.vanniktech.emoji.EmojiUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -48,9 +42,7 @@ import eu.medsea.mimeutil.detector.OpendesktopMimeDetector;
 
 public final class TextMatchers {
 
-    private static final String TAG = "EmojiDetection";
-
-    private static Pattern regexPattern;
+    private static final String TAG = "TextMatchers";
 
     public static ChatMessage.MessageType getMessageTypeFromString(@NonNull final String text) {
         List<String> links = new ArrayList<>();
@@ -97,59 +89,8 @@ public final class TextMatchers {
         return ChatMessage.MessageType.REGULAR_TEXT_MESSAGE;
     }
 
-    public static boolean isMessageWithSingleEmoticonOnly(@NonNull final Context context,
-                                                          @Nullable final CharSequence text) {
-
-        int startPosition = -1;
-        int endPosition = -1;
-
-        if (!TextUtils.isEmpty(text)) {
-            final Matcher matcher = getRegex(context).matcher(text);
-            while (matcher.find()) {
-                if (startPosition == -1 && endPosition == -1) {
-                    startPosition = matcher.start();
-                    endPosition = matcher.end();
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-
-        return startPosition == 0 && text.length() == endPosition;
-    }
-
-    @NonNull
-    private static Pattern getRegex(@NonNull final Context context) {
-        if (regexPattern == null) {
-            String regex = readTextFile(context, R.raw.regex);
-            regexPattern = Pattern.compile(regex);
-        }
-
-        return regexPattern;
-    }
-
-    @NonNull
-    private static String readTextFile(@NonNull Context context, int rowResource) {
-        InputStream inputStream = context.getResources().openRawResource(rowResource);
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-
-        StringBuilder builder = new StringBuilder();
-        try {
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) builder.append(sCurrentLine);
-        } catch (IOException e) {
-            Log.e(TAG, e.getLocalizedMessage());
-        } finally {
-            try {
-                inputStream.close();
-                br.close();
-            } catch (IOException e) {
-                Log.e(TAG, e.getLocalizedMessage());
-            }
-        }
-
-        return builder.toString();
+    public static boolean isMessageWithSingleEmoticonOnly(@Nullable final String text) {
+        final EmojiInformation emojiInformation = EmojiUtils.emojiInformation(text);
+        return (emojiInformation.isOnlyEmojis && emojiInformation.emojis.size() == 1);
     }
 }

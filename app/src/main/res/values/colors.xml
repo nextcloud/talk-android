@@ -17,5 +17,9 @@
     <color name="nc_grey">#D5D5D5</color>
     <color name="white30">#E9FFFFFF</color>
     <color name="grey950">#111111</color>
+
+    <color name="emoji_background">#ECEFF1</color>
+    <color name="emoji_icons">#61000000</color>
+    <color name="emoji_divider">#15000000</color>
 </resources>
 
