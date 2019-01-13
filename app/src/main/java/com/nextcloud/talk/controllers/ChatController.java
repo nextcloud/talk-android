@@ -93,7 +93,10 @@ import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
 import com.vanniktech.emoji.EmojiEditText;
+import com.vanniktech.emoji.EmojiImageView;
 import com.vanniktech.emoji.EmojiPopup;
+import com.vanniktech.emoji.emoji.Emoji;
+import com.vanniktech.emoji.listeners.OnEmojiClickListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener;
 import com.webianks.library.PopupBubble;
@@ -135,6 +138,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     MessagesList messagesListView;
     @BindView(R.id.messageInputView)
     MessageInput messageInputView;
+    @BindView(R.id.messageInput)
+    EmojiEditText messageInput;
     @BindView(R.id.popupBubbleView)
     PopupBubble popupBubble;
     @BindView(R.id.emptyLayout)
@@ -388,9 +393,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         InputFilter[] filters = new InputFilter[1];
         filters[0] = new InputFilter.LengthFilter(1000);
-        messageInputView.getInputEditText().setFilters(filters);
+        messageInput.setFilters(filters);
 
-        messageInputView.getInputEditText().addTextChangedListener(new TextWatcher() {
+        messageInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -399,9 +404,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() == 1000) {
-                    messageInputView.getInputEditText().setError(getResources().getString(R.string.nc_limit_hit));
+                    messageInput.setError(getResources().getString(R.string.nc_limit_hit));
                 } else {
-                    messageInputView.getInputEditText().setError(null);
+                   messageInput.setError(null);
                 }
             }
 
@@ -438,13 +443,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
 
     private void showConversationInfoScreen() {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
-            bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
-            getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler())));
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
+        bundle.putString(BundleKeys.KEY_BASE_URL, baseUrl);
+        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+        getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
+                .pushChangeHandler(new HorizontalChangeHandler())
+                .popChangeHandler(new HorizontalChangeHandler())));
 
     }
 
@@ -454,15 +459,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
         AutocompletePresenter<Mention> presenter = new MentionAutocompletePresenter(getApplicationContext(), roomToken);
         AutocompleteCallback<Mention> callback = new MentionAutocompleteCallback();
 
-        if (messageInputView != null && messageInputView.getInputEditText() != null) {
-            mentionAutocomplete = Autocomplete.<Mention>on(messageInputView.getInputEditText())
-                    .with(elevation)
-                    .with(backgroundDrawable)
-                    .with(new CharPolicy('@'))
-                    .with(presenter)
-                    .with(callback)
-                    .build();
-        }
+        mentionAutocomplete = Autocomplete.<Mention>on(messageInput)
+                .with(elevation)
+                .with(backgroundDrawable)
+                .with(new CharPolicy('@'))
+                .with(presenter)
+                .with(callback)
+                .build();
     }
 
     @Override
@@ -489,7 +492,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     smileyButton.clearColorFilter();
                 }
             }
-        }).build((EmojiEditText) messageInputView.getInputEditText());
+        }).setOnEmojiClickListener(new OnEmojiClickListener() {
+            @Override
+            public void onEmojiClick(@NonNull EmojiImageView emoji, @NonNull Emoji imageView) {
+                messageInput.getEditableText().append(" ");
+            }
+        }).build(messageInput);
 
         if (mentionAutocomplete != null && mentionAutocomplete.isPopupShowing()) {
             mentionAutocomplete.dismissPopup();
