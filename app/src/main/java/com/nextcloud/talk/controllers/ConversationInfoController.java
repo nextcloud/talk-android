@@ -28,7 +28,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -48,6 +47,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferencestorage.DatabaseStorageModule;
+import com.vanniktech.emoji.EmojiTextView;
 import com.yarolegovich.mp.MaterialChoicePreference;
 import com.yarolegovich.mp.MaterialPreferenceCategory;
 import com.yarolegovich.mp.MaterialPreferenceScreen;
@@ -96,7 +96,7 @@ public class ConversationInfoController extends BaseController {
     SimpleDraweeView conversationAvatarImageView;
 
     @BindView(R.id.display_name_text)
-    TextView conversationDisplayName;
+    EmojiTextView conversationDisplayName;
 
     @BindView(R.id.participants_list_category)
     MaterialPreferenceCategory participantsListCategory;
