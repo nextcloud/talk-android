@@ -28,7 +28,9 @@ android {
             // used for f-droid
             generic
             gplay
+
         }
+
         // Enabling multidex support.
         multiDexEnabled true
 
@@ -47,6 +49,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
