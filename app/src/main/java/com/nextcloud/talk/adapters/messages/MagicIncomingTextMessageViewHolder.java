@@ -161,6 +161,7 @@ public class MagicIncomingTextMessageViewHolder
             emojiSize *= 2.5f;
             layoutParams.setWrapBefore(true);
             itemView.setSelected(true);
+            messageAuthor.setVisibility(View.GONE);
         }
 
         messageText.setEmojiSize((int) emojiSize, true);
