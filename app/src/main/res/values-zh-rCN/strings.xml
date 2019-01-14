@@ -19,6 +19,9 @@
   -->
 
 <resources>
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">设置</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">服务器地址</string>
     <string name="nc_server_not_installed">请完成你的 %1$s 安装</string>
@@ -146,11 +149,14 @@
     <string name="nc_conversation_menu_voice_call">语音通话</string>
     <string name="nc_conversation_menu_video_call">视频通话</string>
     <string name="nc_conversation_menu_conversation_info">会话信息</string>
+    <string name="nc_new_messages">新消息</string>
     <string name="nc_chat_you">您</string>
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">无更多条目可以加载，请刷新重试。</string>
     <string name="nc_endless_disabled">无更多条目可以加载 （已达到最大数目）。</string>
     <string name="nc_endless_cancel">已被用户取消</string>
+    <string name="nc_endless_error">在加载更多项目时发生错误。</string>
+
     <string name="nc_description_send_message_button">发送消息</string>
 
     <!-- Empty states -->
