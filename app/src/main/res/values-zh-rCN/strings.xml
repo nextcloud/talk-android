@@ -24,9 +24,9 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">服务器地址</string>
-    <string name="nc_server_not_installed">请完成你的 %1$s 安装</string>
-    <string name="nc_server_db_upgrade_needed">请升级你的%1$s数据库</string>
-    <string name="nc_server_maintenance">请将你的 %1$s 退出维护模式</string>
+    <string name="nc_server_not_installed">请完成您的 %1$s 安装</string>
+    <string name="nc_server_db_upgrade_needed">请升级您的%1$s数据库</string>
+    <string name="nc_server_maintenance">请将您的 %1$s 退出维护模式</string>
     <string name="nc_server_version">%1$s 仅支持 %2$s 13 及更高版本</string>
     <string name="nc_server_import_account_plain">导入账户</string>
     <string name="nc_server_import_accounts_plain">导入账户</string>
@@ -34,7 +34,7 @@
     <string name="nc_server_import_accounts">从 %1$s 应用导入账号</string>
     <string name="nc_server_failed_to_import_account">选择的账户导入失败</string>
     <string name="nc_Server_account_imported">选择的账户导入成功并可立即使用</string>
-    <string name="nc_get_from_provider">还没有服务器吗？\n 点此查看供应商</string>
+    <string name="nc_get_from_provider">还没有服务器吗？\n点此查看供应商</string>
 
     <!-- Account verification -->
     <string name="nc_push_disabled">通知推送已禁用</string>
@@ -50,7 +50,7 @@
     <string name="nc_certificate_dialog_text">您是否信任由 %1$s 颁发给 %2$s，生效时间从 %3$s 至 %4$s的未知证书？</string>
     <string name="nc_yes">是的</string>
     <string name="nc_no">不</string>
-    <string name="nc_certificate_error">你的 SSL 设置阻止了连接</string>
+    <string name="nc_certificate_error">您的 SSL 设置阻止了连接</string>
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">代理</string>
@@ -139,6 +139,8 @@
     <string name="nc_wrong_link">会话链接无效</string>
     <string name="nc_share_text_pass">\n密码： %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_configure_cert_auth">选择验证证书</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
 
@@ -153,17 +155,17 @@
     <string name="nc_chat_you">您</string>
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">无更多条目可以加载，请刷新重试。</string>
-    <string name="nc_endless_disabled">无更多条目可以加载 （已达到最大数目）。</string>
-    <string name="nc_endless_cancel">已被用户取消</string>
+    <string name="nc_endless_disabled">无更多条目可以加载（已达到最大数目）。</string>
+    <string name="nc_endless_cancel">已被用户取消。</string>
     <string name="nc_endless_error">在加载更多项目时发生错误。</string>
 
     <string name="nc_description_send_message_button">发送消息</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">点击以成为第一位说%1$s的人！</string>
+    <string name="nc_chat_empty">点击以成为第一位说 %1$s 的人！</string>
     <string name="nc_hello">您好</string>
 
     <!-- Other -->
-    <string name="nc_limit_hit">已达到 1000 字母限制</string>
+    <string name="nc_limit_hit">已达到 1000 字符限制</string>
     <string name="nc_groups">群组</string>
     </resources>

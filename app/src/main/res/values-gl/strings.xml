@@ -39,7 +39,7 @@
     <!-- Account verification -->
     <string name="nc_push_disabled">Notificacións «push» desactivadas
 </string>
-    <string name="nc_capabilities_failed">Produciuse un fallo ao recuperar capacidades. Interrompendo.</string>
+    <string name="nc_capabilities_failed">Produciuse un fallo ao recuperar funcionalidades. Interrompendo.</string>
     <string name="nc_external_server_failed">
 Produciuse un fallo aorecuperar os axustes da señalización</string>
     <string name="nc_display_name_not_fetched">Non foi posíbel obter o nome para amosar, interrompendo</string>

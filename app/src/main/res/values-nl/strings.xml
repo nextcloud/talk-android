@@ -67,6 +67,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_remove_account">Verwijder account</string>
     <string name="nc_settings_add_account">Toevoegen nieuw account</string>
     <string name="nc_settings_wrong_account">Alleen het huidige account kan opnieuw worden geautoriseerd</string>
+    <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waartegen je probeert te authenticeren</string>
     <string name="nc_settings_account_updated">Je al bestaande account werd bijgewerkt, in plaats van een nieuwe aan te maken</string>
     <string name="nc_account_scheduled_for_deletion">Het account is gemarkeerd voor verwijdering en kan niet worden gewijzigd</string>
     <string name="nc_settings_notification_sounds">Meldingengeluiden</string>
@@ -190,6 +191,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
 
     <!-- Empty states -->
     <string name="nc_chat_empty">Tik om als eerste %1$s te zeggen!</string>
+    <string name="nc_conversations_empty">Doe mee met een discussie, of start een nieuwe\n Zeg hallo tegen je vrienden en collega\'s! </string>
     <string name="nc_hello">Hallo</string>
 
     <!-- Other -->
