@@ -214,8 +214,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
             switch (new EnumParticipantTypeConverter().convertToInt(participant.getType())) {
                 case 1:
-                    userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_owner);
-                    break;
+                    //userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_owner);
+                    //break;
                 case 2:
                     userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_moderator);
                     break;
