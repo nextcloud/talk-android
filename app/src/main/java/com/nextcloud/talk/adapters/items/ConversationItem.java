@@ -21,12 +21,8 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -128,7 +124,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.dialogUnreadBubble.setVisibility(View.GONE);
         }
 
-        String authorDisplayName;
 
         if (conversation.isHasPassword()) {
             holder.passwordProtectedRoomImageView.setVisibility(View.VISIBLE);
@@ -151,29 +146,15 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
                 holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
-                if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())) {
-                    authorDisplayName = context.getString(R.string.nc_chat_you);
-                } else {
-                    if (!TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName())) {
-                        authorDisplayName = conversation.getLastMessage().getActorDisplayName();
-                    } else {
-                        authorDisplayName = context.getString(R.string.nc_nick_guest);
-                    }
-                }
-
+                conversation.getLastMessage().setActiveUserId(userEntity.getUserId());
+                String authorDisplayName = "";
                 if (conversation.getLastMessage().getMessageType().equals(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE)) {
-                    authorDisplayName += ": ";
-                } else {
-                    authorDisplayName += " ";
+                    authorDisplayName = !TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName()) ?
+                            conversation.getLastMessage().getActorDisplayName() + ": " :
+                            NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest) + ": ";
                 }
 
-                String fullString = authorDisplayName + conversation.getLastMessage().getLastMessageDisplayText();
-                Spannable spannableString = new SpannableString(fullString);
-                final StyleSpan boldStyleSpan = new StyleSpan(Typeface.BOLD);
-                spannableString.setSpan(boldStyleSpan, 0, authorDisplayName.length(), Spannable
-                        .SPAN_INCLUSIVE_INCLUSIVE);
-
-                holder.dialogLastMessage.setText(spannableString);
+                holder.dialogLastMessage.setText(authorDisplayName + conversation.getLastMessage().getLastMessageDisplayText());
 
                 int smallAvatarSize = Math.round(context.getResources().getDimension(R.dimen.small_item_height));
 
