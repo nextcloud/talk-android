@@ -116,9 +116,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
     implementation 'com.github.vanniktech.Emoji:emoji-twitter:182e1ff4f4'
     implementation 'org.michaelevans.colorart:library:0.0.3'
-    implementation "android.arch.work:work-runtime:1.0.0-alpha13"
+    implementation "android.arch.work:work-runtime:1.0.0-alpha11"
     implementation "android.arch.work:work-firebase:${workVersion}"
-    androidTestImplementation "android.arch.work:work-testing:1.0.0-alpha13"
+    androidTestImplementation "android.arch.work:work-testing:1.0.0-alpha11"
     implementation "android.arch.work:work-rxjava2:1.0.0-alpha13"
 
 
