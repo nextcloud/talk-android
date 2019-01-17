@@ -20,6 +20,7 @@
 package com.nextcloud.talk.models.json.chat;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
@@ -197,17 +198,47 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
             if (getMessageType().equals(MessageType.SINGLE_LINK_GIPHY_MESSAGE)
                     || getMessageType().equals(MessageType.SINGLE_LINK_TENOR_MESSAGE)
                     || getMessageType().equals(MessageType.SINGLE_LINK_GIF_MESSAGE)) {
-                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_gif));
+                if (getActorId().equals(getActiveUserId())) {
+                    return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_gif_you));
+                } else {
+                    return (String.format(NextcloudTalkApplication.getSharedApplication().getResources().getString(R.string.nc_sent_a_gif),
+                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest)));
+                }
             } else if (getMessageType().equals(MessageType.SINGLE_NC_ATTACHMENT_MESSAGE)) {
-                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_an_attachment));
+                if (getActorId().equals(getActiveUserId())) {
+                    return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_an_attachment_you));
+                } else {
+                    return (String.format(NextcloudTalkApplication.getSharedApplication().getResources().getString(R.string.nc_sent_an_attachment),
+                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest)));
+                }
             } else if (getMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
-                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_link));
+                if (getActorId().equals(getActiveUserId())) {
+                    return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_link_you));
+                } else {
+                    return (String.format(NextcloudTalkApplication.getSharedApplication().getResources().getString(R.string.nc_sent_a_link),
+                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest)));
+                }
             } else if (getMessageType().equals(MessageType.SINGLE_LINK_AUDIO_MESSAGE)) {
-                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_an_audio));
+                if (getActorId().equals(getActiveUserId())) {
+                    return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_an_audio_you));
+                } else {
+                    return (String.format(NextcloudTalkApplication.getSharedApplication().getResources().getString(R.string.nc_sent_an_audio),
+                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest)));
+                }
             } else if (getMessageType().equals(MessageType.SINGLE_LINK_VIDEO_MESSAGE)) {
-                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_video));
+                if (getActorId().equals(getActiveUserId())) {
+                    return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_a_video_you));
+                } else {
+                    return (String.format(NextcloudTalkApplication.getSharedApplication().getResources().getString(R.string.nc_sent_a_video),
+                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest)));
+                }
             } else if (getMessageType().equals(MessageType.SINGLE_LINK_IMAGE_MESSAGE)) {
-                return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_an_image));
+                if (getActorId().equals(getActiveUserId())) {
+                    return (NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_sent_an_image_you));
+                } else {
+                    return (String.format(NextcloudTalkApplication.getSharedApplication().getResources().getString(R.string.nc_sent_an_image),
+                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest)));
+                }
             }
         }
 
