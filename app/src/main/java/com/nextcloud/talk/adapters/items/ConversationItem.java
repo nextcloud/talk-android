@@ -151,7 +151,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 String text;
                 if (conversation.getLastMessage().getMessageType().equals(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE)) {
                     if (conversation.getLastMessage().getActorId().equals(conversation.getLastMessage().getActiveUserId())) {
-                        text = String.format(context.getString(R.string.nc_formatted_message_you), conversation.getLastMessage().getLastMessageDisplayText();
+                        text = String.format(context.getString(R.string.nc_formatted_message_you), conversation.getLastMessage().getLastMessageDisplayText());
                     } else {
                         authorDisplayName = !TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName()) ?
                                 conversation.getLastMessage().getActorDisplayName() :
