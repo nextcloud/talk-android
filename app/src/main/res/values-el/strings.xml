@@ -81,6 +81,8 @@
     <string name="nc_nick_guest">Επισκέπτης</string>
     <string name="nc_public_call">Νέα δημόσια συνομιλία</string>
     <string name="nc_notification_channel_calls_description">Εμφανίζει εισερχόμενες κλήσεις</string>
+    <string name="nc_notification_settings">Ρυθμίσεις ειδοποιήσεων</string>
+    <string name="nc_plain_old_messages">Μηνύματα</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>
     <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
@@ -98,6 +100,7 @@
     <string name="nc_date_header_today">Σήμερα</string>
     <string name="nc_conversation_menu_voice_call">Κλήση ήχου</string>
     <string name="nc_conversation_menu_video_call">Κλήση βίντεο</string>
+    <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>
     <string name="nc_new_messages">Νέα μηνύματα</string>
     <string name="nc_no_messages_yet">Κανένα μήνυμα ακόμα</string>
     <string name="nc_chat_you">Εσύ</string>
@@ -111,4 +114,8 @@
 
     <string name="nc_hello">Γεια σας</string>
 
+    <string name="nc_groups">Ομάδες</string>
+    <string name="nc_owner">Ιδιοκτήτης</string>
+    <string name="nc_user">Χρήστης</string>
+    <string name="nc_guest">Επισκέπτης</string>
     </resources>
