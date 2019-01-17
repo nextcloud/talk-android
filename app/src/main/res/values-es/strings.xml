@@ -18,7 +18,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Bottom Navigation -->
     <string name="nc_settings">Configuración</string>
 
@@ -167,15 +167,6 @@
     <string name="nc_conversation_menu_conversation_info">Información de la conversación</string>
     <string name="nc_new_messages">Mensajes nuevos</string>
     <string name="nc_no_messages_yet">Aún no hay mensajes</string>
-    <string name="nc_chat_you">Tú</string>
-    <string name="nc_sent_a_link">ha enviado un enlace.</string>
-    <string name="nc_sent_a_gif">ha enviado un GIF.</string>
-    <string name="nc_sent_an_attachment">ha enviado un adjunto.</string>
-    <string name="nc_sent_an_audio">ha enviado un audio.</string>
-    <string name="nc_sent_a_video">ha enviado un vídeo.</string>
-    <string name="nc_sent_an_image">ha enviado una imagen.</string>
-
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">No hay más ítems que cargar. Recarga para volver a intentarlo.</string>
     <string name="nc_endless_disabled">No hay más ítems que cargar (se ha alcanzado el máximo).</string>

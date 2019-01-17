@@ -18,7 +18,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Bottom Navigation -->
     <string name="nc_settings">Paramètres</string>
 
@@ -167,15 +167,6 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_conversation_menu_conversation_info">Infos sur la conversation</string>
     <string name="nc_new_messages">Nouveaux messages</string>
     <string name="nc_no_messages_yet">Pas de messages</string>
-    <string name="nc_chat_you">Vous</string>
-    <string name="nc_sent_a_link">lien envoyé.</string>
-    <string name="nc_sent_a_gif">GIF envoyé.</string>
-    <string name="nc_sent_an_attachment">pièce jointe envoyée.</string>
-    <string name="nc_sent_an_audio">fichier audio envoyé.</string>
-    <string name="nc_sent_a_video">fichier vidéo envoyé.</string>
-    <string name="nc_sent_an_image">image envoyée.</string>
-
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Plus aucun élément à charger. Rafraichissez pour réessayer.</string>
     <string name="nc_endless_disabled">Plus aucun élément à charger (maximum atteint).</string>

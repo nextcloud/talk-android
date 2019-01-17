@@ -18,7 +18,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Server selection -->
     <string name="nc_server_url">Địa chỉ máy chủ</string>
     <string name="nc_server_not_installed">Hãy hoàn tất cài đặt %1$s của bạn</string>
@@ -152,7 +152,6 @@
     <string name="nc_conversation_menu_video_call">Gọi Video</string>
     <string name="nc_new_messages">Thông điệp mới</string>
     <string name="nc_no_messages_yet">Chưa có thông điệp nào</string>
-    <string name="nc_chat_you">Bạn</string>
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Không có mục nào được tải. Thử bấm làm mới lại.</string>
     <string name="nc_endless_disabled">Không có mục nào để tải (đã đạt giới hạn)</string>

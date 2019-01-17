@@ -18,7 +18,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Server selection -->
     <string name="nc_server_url">Tjeneradresse</string>
     <string name="nc_server_not_installed">Fullført din %1$s-installasjon</string>
@@ -117,5 +117,4 @@
     <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
     <string name="nc_new_messages">Ny melding</string>
     <string name="nc_no_messages_yet">Ingen meldiner enda</string>
-    <string name="nc_chat_you">Du</string>
     </resources>

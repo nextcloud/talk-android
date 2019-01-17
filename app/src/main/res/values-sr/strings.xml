@@ -18,7 +18,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Bottom Navigation -->
     <string name="nc_settings">Поставке</string>
 
@@ -166,15 +166,6 @@
     <string name="nc_conversation_menu_conversation_info">Информације о разговору</string>
     <string name="nc_new_messages">Нове поруке</string>
     <string name="nc_no_messages_yet">Још нема порука</string>
-    <string name="nc_chat_you">Ви</string>
-    <string name="nc_sent_a_link">је послао/ла везу.</string>
-    <string name="nc_sent_a_gif">је послао/ла GIF.</string>
-    <string name="nc_sent_an_attachment">је послао/ла прилог.</string>
-    <string name="nc_sent_an_audio">је послао/ла звучни фајл.</string>
-    <string name="nc_sent_a_video">је послао/ла видео.</string>
-    <string name="nc_sent_an_image">је послао/ла слику.</string>
-
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Нема више контаката. Освежите да пробате поново.</string>
     <string name="nc_endless_disabled">Нема више ставки за учитавање (достигнут максимум).</string>

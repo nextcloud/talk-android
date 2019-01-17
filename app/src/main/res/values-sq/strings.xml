@@ -18,7 +18,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Server selection -->
     <string name="nc_server_url">Adresa e serverit</string>
     <string name="nc_server_not_installed">Ju lutem përfundoni %1$s instalimin tuaj</string>
@@ -134,7 +134,6 @@
     <string name="nc_conversation_menu_video_call">Thirrje me Video</string>
     <string name="nc_new_messages">Mesazh i ri</string>
     <string name="nc_no_messages_yet">Ska mesazhe akoma</string>
-    <string name="nc_chat_you">Ju</string>
     <string name="nc_endless_disabled">Ska më artikuj për t\'u ngarkuar (u arrit maksimumi).</string>
     <string name="nc_endless_cancel">U anullua nga përdoruesi.</string>
     <string name="nc_endless_error">Ndodhi një gabim gjatë ngarkimit të artikujve.</string>

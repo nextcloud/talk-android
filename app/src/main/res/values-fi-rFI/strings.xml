@@ -18,7 +18,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Server selection -->
     <string name="nc_server_url">Palvelimen osoite</string>
     <string name="nc_server_not_installed">Viimeistele %1$s-asennuksesi</string>
@@ -114,7 +114,6 @@
     <string name="nc_conversation_menu_video_call">Videopuhelu</string>
     <string name="nc_new_messages">Uudet viestit</string>
     <string name="nc_no_messages_yet">Ei viestejä vielä</string>
-    <string name="nc_chat_you">Sinä</string>
     <string name="nc_description_send_message_button">Lähetä viesti</string>
 
     <string name="nc_hello">Hei</string>

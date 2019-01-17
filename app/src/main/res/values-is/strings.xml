@@ -18,7 +18,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Server selection -->
     <string name="nc_server_url">Vistfang þjóns</string>
     <string name="nc_server_not_installed">Kláraðu uppsetninguna þína á %1$s</string>
@@ -163,7 +163,6 @@
     <string name="nc_conversation_menu_conversation_info">Upplýsingar um samtal</string>
     <string name="nc_new_messages">Ný skilaboð</string>
     <string name="nc_no_messages_yet">Engin skilaboð ennþá</string>
-    <string name="nc_chat_you">Þú</string>
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Ekki fleiri atriði til að hlaða inn. Endurlestu síðuna til að reyna aftur.</string>
     <string name="nc_endless_disabled">Ekki fleiri atriði til að hlaða inn (hámarki náð).</string>

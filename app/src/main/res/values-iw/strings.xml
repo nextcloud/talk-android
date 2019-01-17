@@ -18,7 +18,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Server selection -->
     <string name="nc_server_url">כתובת השרת</string>
     <string name="nc_server_not_installed">נא לסיים את ההתקנה של %1$s אצלך</string>
