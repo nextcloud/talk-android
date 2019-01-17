@@ -146,15 +146,26 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
                 holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
-                conversation.getLastMessage().setActiveUserId(userEntity.getUserId());
                 String authorDisplayName = "";
+                conversation.getLastMessage().setActiveUserId(userEntity.getUserId());
+                String text;
                 if (conversation.getLastMessage().getMessageType().equals(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE)) {
-                    authorDisplayName = !TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName()) ?
-                            conversation.getLastMessage().getActorDisplayName() + ": " :
-                            NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest) + ": ";
+                    if (conversation.getLastMessage().getActorId().equals(conversation.getLastMessage().getActiveUserId())) {
+                        text = String.format(context.getString(R.string.nc_formatted_message_you), conversation.getLastMessage().getLastMessageDisplayText();
+                    } else {
+                        authorDisplayName = !TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName()) ?
+                                conversation.getLastMessage().getActorDisplayName() :
+                                "guests".equals(conversation.getLastMessage().getActorType()) ?
+                                        NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest) : "";
+                        text = String.format(context.getString(R.string.nc_formatted_message),
+                                authorDisplayName,
+                                conversation.getLastMessage().getLastMessageDisplayText());
+                    }
+                } else {
+                    text = conversation.getLastMessage().getLastMessageDisplayText();
                 }
 
-                holder.dialogLastMessage.setText(authorDisplayName + conversation.getLastMessage().getLastMessageDisplayText());
+                holder.dialogLastMessage.setText(text);
 
                 int smallAvatarSize = Math.round(context.getResources().getDimension(R.dimen.small_item_height));
 
