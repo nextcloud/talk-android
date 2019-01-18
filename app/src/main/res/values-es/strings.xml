@@ -167,6 +167,21 @@
     <string name="nc_conversation_menu_conversation_info">Información de la conversación</string>
     <string name="nc_new_messages">Mensajes nuevos</string>
     <string name="nc_no_messages_yet">Aún no hay mensajes</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s ha enviado un enlace.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s ha enviado un GIF.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s ha enviado un adjunto.</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s ha enviado un audio.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s ha enviado un vídeo.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s ha enviado una imagen.</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Has enviado un enlace.</string>
+    <string name="nc_sent_a_gif_you">Has enviado un GIF.</string>
+    <string name="nc_sent_an_attachment_you">Has enviado un adjunto.</string>
+    <string name="nc_sent_an_audio_you">Has enviado un audio.</string>
+    <string name="nc_sent_a_video_you">Has enviado un video.</string>
+    <string name="nc_sent_an_image_you">Has enviado una imagen.</string>
+    <!-- When translating to German, please use non-formal variant -->
+    <string name="nc_formatted_message_you">Tu: %1$s</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">No hay más ítems que cargar. Recarga para volver a intentarlo.</string>
     <string name="nc_endless_disabled">No hay más ítems que cargar (se ha alcanzado el máximo).</string>

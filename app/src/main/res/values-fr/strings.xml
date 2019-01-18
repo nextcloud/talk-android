@@ -167,6 +167,21 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_conversation_menu_conversation_info">Infos sur la conversation</string>
     <string name="nc_new_messages">Nouveaux messages</string>
     <string name="nc_no_messages_yet">Pas de messages</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s a envoyé un lien.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s a envoyé un GIF.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s a envoyé une pièce jointe.</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s a envoyé un fichier audio.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s a envoyé une vidéo.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s a envoyé une image.</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Vous avez envoyé un lien.</string>
+    <string name="nc_sent_a_gif_you">Vous avez envoyé un GIF.</string>
+    <string name="nc_sent_an_attachment_you">Vous avez envoyé une pièce jointe.</string>
+    <string name="nc_sent_an_audio_you">Vous avez envoyé un fichier audio.</string>
+    <string name="nc_sent_a_video_you">Vous avez envoyé une vidéo.</string>
+    <string name="nc_sent_an_image_you">Vous avez envoyé une image.</string>
+    <!-- When translating to German, please use non-formal variant -->
+    <string name="nc_formatted_message_you">Vous : %1$s</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Plus aucun élément à charger. Rafraichissez pour réessayer.</string>
     <string name="nc_endless_disabled">Plus aucun élément à charger (maximum atteint).</string>

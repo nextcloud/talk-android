@@ -167,6 +167,21 @@
     <string name="nc_conversation_menu_conversation_info">Unterhaltungs-Informartion</string>
     <string name="nc_new_messages">Neue Nachrichten</string>
     <string name="nc_no_messages_yet">Noch keine Nachrichten</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s hat einen Link gesendet.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s hat ein GIF gesendet.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s hat eine Datei gesendet.</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s hat eine Audio-Datei gesendet.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s hat ein Video gesendet.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s hat ein Bild gesendet.</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Sie haben einen Link gesendet.</string>
+    <string name="nc_sent_a_gif_you">Sie haben ein GIF gesendet.</string>
+    <string name="nc_sent_an_attachment_you">Sie haben eine Datei gesendet.</string>
+    <string name="nc_sent_an_audio_you">Sie haben eine Audio-Datei gesendet.</string>
+    <string name="nc_sent_a_video_you">Sie haben ein Video gesendet.</string>
+    <string name="nc_sent_an_image_you">Sie haben ein Bild gesendet.</string>
+    <!-- When translating to German, please use non-formal variant -->
+    <string name="nc_formatted_message_you">Sie: %1$s</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Keine weiteren Kontakte zum Laden. Neuanstoßen zum Laden.</string>
     <string name="nc_endless_disabled">Keine weiteren Kontakte zum Laden (Grenze erreicht).</string>
