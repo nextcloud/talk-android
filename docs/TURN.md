@@ -13,18 +13,19 @@ The configuration of Nextcloud Talk mainly depends on your desired usage:
 
 2. **Make coturn run as daemon on startup**
    - On **Debian and Ubuntu** you just need to enable the deployed init.d service by adjusting the related environment variable:
-`sudo sed -i '/TURNSERVER_ENABLED/c\TURNSERVER_ENABLED=1' /etc/default/coturn`
+      - `sudo sed -i '/TURNSERVER_ENABLED/c\TURNSERVER_ENABLED=1' /etc/default/coturn`
+   - On **Debian Buster** the most current package update implements a systemd unit, which does not use `/etc/default/coturn` but is enabled automatically after install. To check whether a systemd unit is available:
+      - `ls -l /lib/systemd/system/coturn.service`
    - On **other OS/distributions**, if you installed coturn manually, you may want to setup an init.d/systemd unit or use another method to run the following during boot:
-`/path/to/turnserver -c /path/to/turnserver.conf -o`
-     - `-o` starts the server in daemon mode, `-c` defines the path to the config file.
+      - `/path/to/turnserver -c /path/to/turnserver.conf -o`
+      - `-o` starts the server in daemon mode, `-c` defines the path to the config file.
 
-3. **Configure _turnserver.conf_ for usage with Nextcloud Talk**\
+3. **Configure _turnserver.conf_ for usage with Nextcloud Talk**
 At last you need to adjust the TURN servers configuration file to work with Nextcloud Talk. On Debian and Ubuntu, it can be found at `/etc/turnserver.conf`. The configuration depends on if you want to use TLS for secure connection or not. You may want to start without TLS for testing and then switch, if everything is working fine:
-   - **Without TLS** uncomment/adjust the following settings. Choose the listening port, e.g. `5349` (which is default value) and an authentication secret, where a random hex is recommended: `openssl rand -hex 32`:
+   - **Without TLS** uncomment/adjust the following settings. Choose the listening port, e.g. `3478` (default for non-TLS) or `5349` (default for TLS) and an authentication secret, where a random hex is recommended: `openssl rand -hex 32`:
 
          listening-port=<yourChosenPortNumber>
          fingerprint
-         lt-cred-mech
          use-auth-secret
          static-auth-secret=<yourChosen/GeneratedSecret>
          realm=your.domain.org
@@ -37,7 +38,6 @@ At last you need to adjust the TURN servers configuration file to work with Next
 
          tls-listening-port=<yourChosenPortNumber>
          fingerprint
-         lt-cred-mech
          use-auth-secret
          static-auth-secret=<yourChosen/GeneratedSecret>
          realm=your.domain.org
@@ -69,7 +69,7 @@ At last you need to adjust the TURN servers configuration file to work with Next
 
 4. `sudo systemctl restart coturn` or corresponding restart method
 
-5. **Configure Nextcloud Talk to use your TURN server**\
+5. **Configure Nextcloud Talk to use your TURN server**
 Go to Nextcloud admin panel > Talk settings. Btw. if you already have your own TURN server, you can and may want to use it as STUN server as well:
 
        STUN servers: your.domain.org:<yourChosenPortNumber>
@@ -77,13 +77,14 @@ Go to Nextcloud admin panel > Talk settings. Btw. if you already have your own T
        TURN secret: <yourChosen/GeneratedSecret>
        UDP and TCP
    Do not add `http(s)://` here, this causes errors, the protocol is simply a different one. Also `turn:` or something as prefix is not needed. Just enter the bare `domain:port`.
-   
-6. **Port forwarding**\
-If your TURN server is running **behind a NAT**, then don't forget to forward `<yourChosenPortNumber>` to the related machine. It needs to be available for the Talk users, not just the Nextcloud instance.
+
+6. **Port opening/forwarding**\
+The TURN server on `<yourChosenPortNumber>` needs to be available for all Talk participants, so you need to open it to the web and if your TURN server is running **behind a NAT**, forward it to the related machine.
+
 ### What else
  Nextcloud Talk is still based on the Spreed video calls app (just got renamed on last major update) and thus the Spreed.ME WebRTC solution. For this reason all guides about how to configure coturn for one of them, applies to all of them.
 
-**Futher reference**:
+**Futher reference**
 - https://github.com/spreedbox/spreedbox/wiki/Use-TURN-server
 - https://github.com/nextcloud/spreed/issues/667
 
