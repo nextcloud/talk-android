@@ -167,6 +167,21 @@
     <string name="nc_conversation_menu_conversation_info">Konversationsinfo</string>
     <string name="nc_new_messages">Nya meddelanden</string>
     <string name="nc_no_messages_yet">Inga meddelanden än</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s skickade en länk.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s skickade en GIF.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s skickade en bilaga.</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s skickade en ljudfil.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s skickade en video.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s skickade en bild.</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Du skickade en länk.</string>
+    <string name="nc_sent_a_gif_you">Du skickade en GIF.</string>
+    <string name="nc_sent_an_attachment_you">Du skickade en bilaga.</string>
+    <string name="nc_sent_an_audio_you">Du skickade en ljudfil.</string>
+    <string name="nc_sent_a_video_you">Du skickade en video.</string>
+    <string name="nc_sent_an_image_you">Du skickade en bild.</string>
+    <!-- When translating to German, please use non-formal variant -->
+    <string name="nc_formatted_message_you">Du: %1$s</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Inga fler objekt att ladda. Uppdatera för att försöka igen.</string>
     <string name="nc_endless_disabled">Inga fler objekt att ladda (max nått).</string>
