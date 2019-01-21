@@ -50,6 +50,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -181,6 +182,7 @@ public class AccountVerificationController extends BaseController {
 
         ncApi.getServerStatus(queryUrl)
                 .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Status>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -195,7 +197,12 @@ public class AccountVerificationController extends BaseController {
                             baseUrl = "http://" + baseUrl;
                         }
 
-                        checkEverything();
+                        if (isAccountImport) {
+                            getRouter().pushController(RouterTransaction.with(new WebViewLoginController(baseUrl,
+                                    false, username, "")));
+                        } else {
+                            checkEverything();
+                        }
                     }
 
                     @Override
@@ -248,7 +255,7 @@ public class AccountVerificationController extends BaseController {
                 });
     }
 
-    private void storeProfile(String credentials, String displayName, String userId) {
+    private void storeProfile(String displayName, String userId) {
         userUtils.createOrUpdateUser(username, token,
                 baseUrl, displayName, null, true,
                 userId, null, null,
@@ -314,7 +321,7 @@ public class AccountVerificationController extends BaseController {
                         }
 
                         if (!TextUtils.isEmpty(displayName)) {
-                            storeProfile(credentials, displayName, userProfileOverall.getOcs().getData().getUserId());
+                            storeProfile(displayName, userProfileOverall.getOcs().getData().getUserId());
                         } else {
                             if (getActivity() != null) {
                                 getActivity().runOnUiThread(() -> progressText.setText(progressText.getText().toString() + "\n" +

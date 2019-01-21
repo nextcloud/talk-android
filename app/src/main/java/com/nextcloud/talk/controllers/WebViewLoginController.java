@@ -214,8 +214,7 @@ public class WebViewLoginController extends BaseController {
                     } else if (!automatedLoginAttempted) {
                         automatedLoginAttempted = true;
                         if (TextUtils.isEmpty(password)) {
-                            webView.loadUrl("javascript: {" +
-                                    "document.getElementById('user').value = '" + username + "'; };");
+                            webView.loadUrl("javascript:var justStore = document.getElementById('user').value = '" + username + "';");
                         } else {
                             webView.loadUrl("javascript: {" +
                                     "document.getElementById('user').value = '" + username + "';" +

@@ -168,6 +168,10 @@ public class SwitchAccountController extends BaseController {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         swipeRefreshLayout.setEnabled(false);
 
+        if (getActionBar() != null) {
+            getActionBar().show();
+        }
+
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(userItems, getActivity(), false);
 
@@ -196,9 +200,6 @@ public class SwitchAccountController extends BaseController {
                 adapter.addListener(onSwitchItemClickListener);
                 adapter.updateDataSet(userItems, false);
             } else {
-                if (getActionBar() != null) {
-                    getActionBar().show();
-                }
                 Account account;
                 ImportAccount importAccount;
                 for (Object accountObject : AccountUtils.findAccounts(userUtils.getUsers())) {
@@ -239,8 +240,12 @@ public class SwitchAccountController extends BaseController {
 
     private void reauthorizeFromImport(Account account) {
         ImportAccount importAccount = AccountUtils.getInformationFromAccount(account);
-        getRouter().pushController(RouterTransaction.with(new WebViewLoginController(importAccount.getBaseUrl(),
-                false, importAccount.getUsername(), ""))
+        Bundle bundle = new Bundle();
+        bundle.putString(BundleKeys.KEY_BASE_URL, importAccount.getBaseUrl());
+        bundle.putString(BundleKeys.KEY_USERNAME, importAccount.getUsername());
+        bundle.putString(BundleKeys.KEY_TOKEN, importAccount.getToken());
+        bundle.putBoolean(BundleKeys.KEY_IS_ACCOUNT_IMPORT, true);
+        getRouter().pushController(RouterTransaction.with(new AccountVerificationController(bundle))
                 .pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler()));
     }
