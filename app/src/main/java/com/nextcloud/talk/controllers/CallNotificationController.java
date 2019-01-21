@@ -453,7 +453,9 @@ public class CallNotificationController extends BaseController {
                                     script.forEach(output);
                                     output.copyTo(resource);
 
-                                    backgroundImageView.setImageDrawable(new BitmapDrawable(resource));
+                                    if (backgroundImageView != null) {
+                                        backgroundImageView.setImageDrawable(new BitmapDrawable(resource));
+                                    }
                                 } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
                                     ColorArt colorArt = new ColorArt(resource);
                                     int color = colorArt.getBackgroundColor();
@@ -463,7 +465,9 @@ public class CallNotificationController extends BaseController {
                                     hsv[2] *= 0.75f;
                                     color = Color.HSVToColor(hsv);
 
-                                    backgroundImageView.setImageDrawable(new ColorDrawable(color));
+                                    if (backgroundImageView != null) {
+                                        backgroundImageView.setImageDrawable(new ColorDrawable(color));
+                                    }
                                 }
                             }
                         });
