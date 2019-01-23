@@ -39,6 +39,7 @@
     <!-- Account verification -->
     <string name="nc_push_disabled">通知推送已禁用</string>
     <string name="nc_capabilities_failed">获取容量已失败，正在中止</string>
+    <string name="nc_external_server_failed">获取网络设置失败</string>
     <string name="nc_display_name_not_fetched">无法获取显示名，中止</string>
     <string name="nc_nextcloud_talk_app_not_installed">服务器未安装 %1$s 应用，中止</string>
     <string name="nc_display_name_not_stored">无法储存显示名称，终止中</string>
@@ -65,6 +66,7 @@
     <string name="nc_settings_remove_account">移除账户</string>
     <string name="nc_settings_add_account">添加一个新账户</string>
     <string name="nc_settings_wrong_account">仅当前帐户可以重新授权</string>
+    <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装Talk应用</string>
     <string name="nc_settings_account_updated">已经更新了您现有的帐户，而不是添加新的帐户</string>
     <string name="nc_account_scheduled_for_deletion">此账户已计划删除，且无法更改</string>
     <string name="nc_settings_notification_sounds">通知音效</string>
@@ -120,6 +122,8 @@
     <string name="nc_incoming_call">来电</string>
     <string name="nc_nick_guest">来宾</string>
     <string name="nc_public_call">新的公共会话</string>
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s在%2$s通知频道中</string>
     <string name="nc_notification_channel_calls">通话提醒频道</string>
     <string name="nc_notification_channel_messages">信息提醒频道</string>
     <string name="nc_notification_channel_calls_description">显示来电</string>
@@ -129,6 +133,8 @@
     <string name="nc_notify_me_mention">当被提及时提醒</string>
     <string name="nc_notify_me_never">从不提醒</string>
     <string name="nc_mute_calls">通话静音</string>
+    <string name="nc_mute_calls_description">您将不会受到任何来自本机的通知</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
     <string name="nc_failed_signaling_settings">目标服务器不支持通过手机加入到公开会话中。您可以尝试通过浏览器加入会话。</string>
@@ -137,10 +143,12 @@
     <string name="nc_call_name">会话名称</string>
     <string name="nc_call_name_is_same">您输入的名称已经存在</string>
     <string name="nc_wrong_link">会话链接无效</string>
+    <string name="nc_share_subject">%1$s邀请</string>
     <string name="nc_share_text_pass">\n密码： %1$s</string>
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Push-to-talk</string>
+    <string name="nc_push_to_talk_desc">麦克风已禁用，单击&amp;来使用“随按即说”功能</string>
     <string name="nc_configure_cert_auth">选择验证证书</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
 
@@ -152,19 +160,42 @@
     <string name="nc_conversation_menu_video_call">视频通话</string>
     <string name="nc_conversation_menu_conversation_info">会话信息</string>
     <string name="nc_new_messages">新消息</string>
+    <string name="nc_no_messages_yet">没有新消息</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s发送一个链接</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s发送一个GIF图</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s作为附件发送</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s发送一段音频</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s发送一个视频</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s发送一张图片</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">你已发送一个链接</string>
+    <string name="nc_sent_a_gif_you">你已发送一张GIF图</string>
+    <string name="nc_sent_an_attachment_you">你已发送一个附件</string>
+    <string name="nc_sent_an_audio_you">你已发送一段音频</string>
+    <string name="nc_sent_a_video_you">你已发送一个视频</string>
+    <string name="nc_sent_an_image_you">你已发送一张图片</string>
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">无更多条目可以加载，请刷新重试。</string>
     <string name="nc_endless_disabled">无更多条目可以加载（已达到最大数目）。</string>
     <string name="nc_endless_cancel">已被用户取消。</string>
     <string name="nc_endless_error">在加载更多项目时发生错误。</string>
 
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">联系人菜单%1$s</string>
+    <string name="nc_description_more_menu_public">分组菜单%1$s</string>
+    <string name="nc_description_more_menu_group">公共讨论菜单%1$s</string>
     <string name="nc_description_send_message_button">发送消息</string>
 
     <!-- Empty states -->
     <string name="nc_chat_empty">点击以成为第一位说 %1$s 的人！</string>
+    <string name="nc_conversations_empty">加入一场交谈或开始一个新的对话
+向你的朋友和同事打个招呼吧</string>
     <string name="nc_hello">您好</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">已达到 1000 字符限制</string>
     <string name="nc_groups">群组</string>
-    </resources>
+    <string name="nc_owner">拥有者</string>
+    <string name="nc_user">用户</string>
+    <string name="nc_guest">访客</string>
+    <string name="nc_following_link">使用公共链接的用户</string>
+</resources>
