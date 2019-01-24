@@ -203,7 +203,9 @@ public class ConversationInfoController extends BaseController {
 
         setupAdapter();
 
-        participantsListCategory.setVisibility(View.VISIBLE);
+        if (participantsListCategory != null) {
+            participantsListCategory.setVisibility(View.VISIBLE);
+        }
         adapter.notifyDataSetChanged();
     }
 
