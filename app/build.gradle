@@ -118,6 +118,7 @@ dependencies {
     implementation 'org.michaelevans.colorart:library:0.0.3'
     implementation "android.arch.work:work-runtime:${workVersion}"
     implementation "android.arch.work:work-rxjava2:${workVersion}"
+    androidTestImplementation "android.arch.work:work-testing:${workVersion}"
 
 
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
