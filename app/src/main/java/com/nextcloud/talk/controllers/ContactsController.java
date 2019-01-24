@@ -291,7 +291,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             } else {
                                 conversationIntent.putExtras(bundle);
                                 startActivity(conversationIntent);
-                                new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!isDestroyed() && !isBeingDestroyed()) {
+                                            getRouter().popCurrentController();
+                                        }
+                                    }
+                                }, 100);
                             }
                         }
 
