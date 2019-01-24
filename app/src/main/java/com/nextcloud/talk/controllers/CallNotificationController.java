@@ -437,7 +437,7 @@ public class CallNotificationController extends BaseController {
                                             (getActivity()).getBitmapPool(), resource, avatarSize, avatarSize));
                                 }
 
-                                if (getResources() != null) {
+                                if (getResources() != null && incomingTextRelativeLayout != null) {
                                     incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
                                             .incoming_gradient));
                                 }
@@ -453,7 +453,7 @@ public class CallNotificationController extends BaseController {
                                     script.forEach(output);
                                     output.copyTo(resource);
 
-                                    if (backgroundImageView != null) {
+                                    if (backgroundImageView != null && backgroundImageView != null) {
                                         backgroundImageView.setImageDrawable(new BitmapDrawable(resource));
                                     }
                                 } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
