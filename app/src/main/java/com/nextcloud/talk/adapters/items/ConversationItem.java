@@ -170,6 +170,9 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 int smallAvatarSize = Math.round(context.getResources().getDimension(R.dimen.small_item_height));
 
                 if (conversation.getLastMessage().getActorType().equals("guests")) {
+                    if (TextUtils.isEmpty(authorDisplayName)) {
+                        authorDisplayName = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest);
+                    }
                     holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
                     TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
                             .endConfig().buildRound(String.valueOf(authorDisplayName.charAt(0)),
