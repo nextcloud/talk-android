@@ -909,7 +909,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
                 }
 
-                adapter.addToEnd(chatMessageList, false);
+                if (adapter != null) {
+                    adapter.addToEnd(chatMessageList, false);
+                }
 
             } else {
 
