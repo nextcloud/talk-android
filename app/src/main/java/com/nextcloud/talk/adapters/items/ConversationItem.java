@@ -213,7 +213,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
         boolean shouldLoadAvatar = true;
         String objectType;
-        if (TextUtils.isEmpty(objectType = conversation.getObjectType())) {
+        if (!TextUtils.isEmpty(objectType = conversation.getObjectType())) {
             switch (objectType) {
                 case "share:password":
                     shouldLoadAvatar = false;
