@@ -17,8 +17,8 @@ android {
         targetSdkVersion 28
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode 80
-        versionName "3.2.1"
+        versionCode 81
+        versionName "3.2.2"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
@@ -123,7 +123,7 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
 
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.0'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation "io.reactivex.rxjava2:rxjava:2.2.2"
@@ -195,7 +195,7 @@ dependencies {
 
     implementation 'com.github.mario:chatkit:d63d61db95'
 
-    implementation 'com.otaliastudios:autocomplete:1.1.0'
+    implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
     implementation 'com.github.Kennyc1012:BottomSheet:2.4.1'
     implementation 'eu.davidea:flipview:1.2.0'
