@@ -431,8 +431,7 @@ public class CallController extends BaseController {
                 cameraSwitchButton.setVisibility(View.GONE);
             }
 
-            // setting this to true because it's not shown by default
-            pipVideoView.setMirror(false);
+            pipVideoView.setMirror(true);
             pipVideoView.init(rootEglBase.getEglBaseContext(), null);
             pipVideoView.setZOrderMediaOverlay(true);
             // disabled because it causes some devices to crash
@@ -591,7 +590,6 @@ public class CallController extends BaseController {
                 VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
 
                 if (videoCapturer != null) {
-                    pipVideoView.setMirror(false);
                     return videoCapturer;
                 }
             }
@@ -733,7 +731,6 @@ public class CallController extends BaseController {
             cameraVideoCapturer.switchCamera(new CameraVideoCapturer.CameraSwitchHandler() {
                 @Override
                 public void onCameraSwitchDone(boolean b) {
-                    pipVideoView.setMirror(false);
                 }
 
                 @Override
