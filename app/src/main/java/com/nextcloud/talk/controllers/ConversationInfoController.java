@@ -333,31 +333,32 @@ public class ConversationInfoController extends BaseController {
     }
 
     private void loadConversationAvatar() {
-
-        switch (conversation.getType()) {
-            case ROOM_TYPE_ONE_TO_ONE_CALL:
-                if (!TextUtils.isEmpty(conversation.getName())) {
-                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(conversationAvatarImageView.getController())
-                    .setAutoPlayAnimations(true)
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(),
-                            conversation.getName(), R.dimen.avatar_size_big)))
-                    .build();
-                    conversationAvatarImageView.setController(draweeController);
-                }
-                break;
-            case ROOM_GROUP_CALL:
-                conversationAvatarImageView.getHierarchy().setPlaceholderImage(DisplayUtils
-                        .getRoundedBitmapDrawableFromVectorDrawableResource(getResources(),
-                                R.drawable.ic_people_group_white_24px));
-                break;
-            case ROOM_PUBLIC_CALL:
-                conversationAvatarImageView.getHierarchy().setPlaceholderImage(DisplayUtils
-                        .getRoundedBitmapDrawableFromVectorDrawableResource(getResources(),
-                                R.drawable.ic_link_white_24px));
-                break;
-            default:
-                break;
+        if (conversationAvatarImageView != null) {
+            switch (conversation.getType()) {
+                case ROOM_TYPE_ONE_TO_ONE_CALL:
+                    if (!TextUtils.isEmpty(conversation.getName())) {
+                        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                                .setOldController(conversationAvatarImageView.getController())
+                                .setAutoPlayAnimations(true)
+                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(),
+                                        conversation.getName(), R.dimen.avatar_size_big)))
+                                .build();
+                        conversationAvatarImageView.setController(draweeController);
+                    }
+                    break;
+                case ROOM_GROUP_CALL:
+                    conversationAvatarImageView.getHierarchy().setPlaceholderImage(DisplayUtils
+                            .getRoundedBitmapDrawableFromVectorDrawableResource(getResources(),
+                                    R.drawable.ic_people_group_white_24px));
+                    break;
+                case ROOM_PUBLIC_CALL:
+                    conversationAvatarImageView.getHierarchy().setPlaceholderImage(DisplayUtils
+                            .getRoundedBitmapDrawableFromVectorDrawableResource(getResources(),
+                                    R.drawable.ic_link_white_24px));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
