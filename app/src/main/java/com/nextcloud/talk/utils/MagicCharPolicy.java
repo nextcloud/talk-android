@@ -43,7 +43,7 @@ public class MagicCharPolicy implements AutocompletePolicy {
         }
 
         int[] span = new int[2];
-        Pattern pattern = Pattern.compile("@.*\\w*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+        Pattern pattern = Pattern.compile("@+\\S*", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(text);
 
         while (matcher.find()) {
