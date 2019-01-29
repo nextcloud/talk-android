@@ -475,23 +475,27 @@ public class CallNotificationController extends BaseController {
 
                 break;
             case ROOM_GROUP_CALL:
-                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(R.drawable.ic_people_group_white_24px)
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(avatarImageView);
+                if (avatarImageView != null) {
+                    GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                            .asBitmap()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .load(R.drawable.ic_people_group_white_24px)
+                            .centerInside()
+                            .override(avatarSize, avatarSize)
+                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                            .into(avatarImageView);
+                }
             case ROOM_PUBLIC_CALL:
-                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(R.drawable.ic_link_white_24px)
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(avatarImageView);
+                if (avatarImageView != null) {
+                    GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                            .asBitmap()
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .load(R.drawable.ic_link_white_24px)
+                            .centerInside()
+                            .override(avatarSize, avatarSize)
+                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                            .into(avatarImageView);
+                }
                 break;
             default:
         }

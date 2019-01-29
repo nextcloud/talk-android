@@ -208,7 +208,7 @@ public class WebViewLoginController extends BaseController {
                     basePageLoaded = true;
                 }
 
-                if (!TextUtils.isEmpty(username)) {
+                if (!TextUtils.isEmpty(username) && webView != null) {
                     if (loginStep == 1) {
                         webView.loadUrl("javascript: {document.getElementsByClassName('login')[0].click(); };");
                     } else if (!automatedLoginAttempted) {
