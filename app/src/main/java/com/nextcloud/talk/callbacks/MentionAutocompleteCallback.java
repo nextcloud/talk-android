@@ -21,17 +21,16 @@
 package com.nextcloud.talk.callbacks;
 
 import android.text.Editable;
-
 import com.nextcloud.talk.models.json.mention.Mention;
+import com.nextcloud.talk.utils.MagicCharPolicy;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
-import com.otaliastudios.autocomplete.CharPolicy;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
     @Override
     public boolean onPopupItemClicked(Editable editable, Mention item) {
-        int[] range = CharPolicy.getQueryRange(editable);
+        int[] range = MagicCharPolicy.getQueryRange(editable);
         if (range == null) return false;
-        int start = range[0];
+        int start = range[0] + 1;
         int end = range[1];
         String replacement = item.getId() + " ";
         editable.replace(start, end, replacement);
