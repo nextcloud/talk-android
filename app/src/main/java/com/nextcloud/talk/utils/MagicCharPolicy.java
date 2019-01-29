@@ -22,7 +22,6 @@ package com.nextcloud.talk.utils;
 
 import android.text.Spannable;
 import android.text.Spanned;
-import android.util.Log;
 import androidx.annotation.Nullable;
 import com.otaliastudios.autocomplete.AutocompletePolicy;
 
