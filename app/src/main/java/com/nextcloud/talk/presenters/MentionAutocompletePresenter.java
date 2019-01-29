@@ -21,9 +21,10 @@
 package com.nextcloud.talk.presenters;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
-
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+import autodagger.AutoInjector;
 import com.nextcloud.talk.adapters.items.MentionAutocompleteItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -33,21 +34,16 @@ import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.otaliastudios.autocomplete.RecyclerViewPresenter;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-import autodagger.AutoInjector;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention> implements FlexibleAdapter.OnItemClickListener {
@@ -90,56 +86,60 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
 
     @Override
     protected void onQuery(@Nullable CharSequence query) {
-        if (!TextUtils.isEmpty(query)) {
 
-            adapter.setFilter(query.toString());
-            ncApi.getMentionAutocompleteSuggestions(ApiUtils.getCredentials(currentUser.getUsername(), currentUser
-                            .getToken()), ApiUtils.getUrlForMentionSuggestions(currentUser.getBaseUrl(), roomToken),
-                    query.toString(), null)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .retry(3)
-                    .subscribe(new Observer<MentionOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                        }
-
-                        @Override
-                        public void onNext(MentionOverall mentionOverall) {
-                            List<Mention> mentionsList = mentionOverall.getOcs().getData();
-
-                            if (mentionsList.size() == 0) {
-                                adapter.clear();
-                            } else {
-                                List<AbstractFlexibleItem> internalAbstractFlexibleItemList = new ArrayList<>();
-                                for (Mention mention : mentionsList) {
-                                    internalAbstractFlexibleItemList.add(
-                                            new MentionAutocompleteItem(mention.getId(), mention.getLabel(),
-                                                    currentUser));
-                                }
-
-                                if (adapter.getItemCount() != 0) {
-                                    adapter.clear();
-                                }
-
-                                adapter.updateDataSet(internalAbstractFlexibleItemList);
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            adapter.clear();
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
+        String queryString;
+        if (query != null && query.length() > 1) {
+            queryString = String.valueOf(query.subSequence(1, query.length()));
         } else {
-            adapter.clear();
+            queryString = "";
         }
+
+        adapter.setFilter(queryString);
+        ncApi.getMentionAutocompleteSuggestions(ApiUtils.getCredentials(currentUser.getUsername(), currentUser
+                        .getToken()), ApiUtils.getUrlForMentionSuggestions(currentUser.getBaseUrl(), roomToken),
+                queryString, 5)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(3)
+                .subscribe(new Observer<MentionOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(MentionOverall mentionOverall) {
+                        List<Mention> mentionsList = mentionOverall.getOcs().getData();
+
+                        if (mentionsList.size() == 0) {
+                            adapter.clear();
+                        } else {
+                            List<AbstractFlexibleItem> internalAbstractFlexibleItemList = new ArrayList<>();
+                            for (Mention mention : mentionsList) {
+                                internalAbstractFlexibleItemList.add(
+                                        new MentionAutocompleteItem(mention.getId(), mention.getLabel(),
+                                                currentUser));
+                            }
+
+                            if (adapter.getItemCount() != 0) {
+                                adapter.clear();
+                            }
+
+                            adapter.updateDataSet(internalAbstractFlexibleItemList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        adapter.clear();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
+
 
     @Override
     public boolean onItemClick(View view, int position) {

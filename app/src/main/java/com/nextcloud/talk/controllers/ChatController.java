@@ -36,18 +36,14 @@ import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
+import android.view.*;
+import android.widget.*;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -74,17 +70,13 @@ import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.KeyboardUtils;
-import com.nextcloud.talk.utils.NotificationUtils;
+import com.nextcloud.talk.utils.*;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.otaliastudios.autocomplete.Autocomplete;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
 import com.otaliastudios.autocomplete.AutocompletePresenter;
-import com.otaliastudios.autocomplete.CharPolicy;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.messages.MessageHolders;
@@ -100,31 +92,18 @@ import com.vanniktech.emoji.listeners.OnEmojiClickListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener;
 import com.webianks.library.PopupBubble;
-
-import org.parceler.Parcels;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import org.parceler.Parcels;
 import retrofit2.HttpException;
 import retrofit2.Response;
+
+import javax.inject.Inject;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
@@ -406,7 +385,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 if (s.length() == 1000) {
                     messageInput.setError(getResources().getString(R.string.nc_limit_hit));
                 } else {
-                   messageInput.setError(null);
+                    messageInput.setError(null);
                 }
             }
 
@@ -459,11 +438,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
         AutocompletePresenter<Mention> presenter = new MentionAutocompletePresenter(getApplicationContext(), roomToken);
         AutocompleteCallback<Mention> callback = new MentionAutocompleteCallback();
 
-        if (mentionAutocomplete != null) {
+        if (mentionAutocomplete == null && messageInput != null) {
             mentionAutocomplete = Autocomplete.<Mention>on(messageInput)
                     .with(elevation)
                     .with(backgroundDrawable)
-                    .with(new CharPolicy('@'))
+                    .with(new MagicCharPolicy('@'))
                     .with(presenter)
                     .with(callback)
                     .build();
