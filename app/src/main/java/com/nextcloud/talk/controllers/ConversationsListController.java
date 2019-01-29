@@ -343,6 +343,7 @@ public class ConversationsListController extends BaseController implements Searc
                     }
 
                     adapter.updateDataSet(callItems, true);
+                    recyclerView.smoothScrollToPosition(0);
 
                     if (searchItem != null) {
                         searchItem.setVisible(callItems.size() > 0);
