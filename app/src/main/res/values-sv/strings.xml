@@ -39,7 +39,7 @@
     <!-- Account verification -->
     <string name="nc_push_disabled">Push-meddelanden inaktiverade</string>
     <string name="nc_capabilities_failed">Misslyckades att hämta funktioner, avbryter</string>
-    <string name="nc_external_server_failed">Misslyckades hämta signaleringsinställningar</string>
+    <string name="nc_external_server_failed">Misslyckades med att hämta signaleringsinställningar</string>
     <string name="nc_display_name_not_fetched">Visningsnamn kunde inte hämtas, avbryter</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app inte installerad på servern, avbryter</string>
     <string name="nc_display_name_not_stored">Kunde inte lagra visningsnamnet, avbryter</string>
