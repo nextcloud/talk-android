@@ -396,7 +396,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         });
 
         messageInputView.setInputListener(input -> {
-            sendMessage(input, 1);
+            sendMessage(input);
             return true;
         });
 
@@ -574,7 +574,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     void sendHello() {
         if (!isHelloClicked) {
             isHelloClicked = true;
-            sendMessage(getResources().getString(R.string.nc_hello) + " 👋", 1);
+            sendMessage(getResources().getString(R.string.nc_hello) + " 👋");
         }
     }
 
@@ -672,63 +672,56 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
     }
 
-    private void sendMessage(CharSequence message, int attempt) {
-        if (attempt < 4) {
+    private void sendMessage(CharSequence message) {
 
-            ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(baseUrl, roomToken), message, conversationUser
-                    .getDisplayName())
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<GenericOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+        ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(baseUrl, roomToken), message, conversationUser
+                .getDisplayName())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(GenericOverall genericOverall) {
+                        if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage.toString())) {
+                            myFirstMessage = message;
                         }
 
-                        @Override
-                        public void onNext(GenericOverall genericOverall) {
-                            if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage.toString())) {
-                                myFirstMessage = message;
-                            }
+                        if (popupBubble != null && popupBubble.isShown()) {
+                            popupBubble.hide();
+                        }
 
-                            if (popupBubble != null && popupBubble.isShown()) {
-                                popupBubble.hide();
-                            }
+                        if (messagesListView != null) {
+                            messagesListView.smoothScrollToPosition(0);
+                        }
+                    }
 
-                            if (messagesListView != null) {
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof HttpException) {
+                            int code = ((HttpException) e).code();
+                            if (Integer.toString(code).startsWith("2")) {
+                                if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage.toString())) {
+                                    myFirstMessage = message;
+                                }
+
+                                if (popupBubble != null && popupBubble.isShown()) {
+                                    popupBubble.hide();
+                                }
+
                                 messagesListView.smoothScrollToPosition(0);
                             }
                         }
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            if (e instanceof HttpException) {
-                                int code = ((HttpException) e).code();
-                                if (Integer.toString(code).startsWith("2")) {
-                                    if (conversationUser.getUserId().equals("?") && TextUtils.isEmpty(myFirstMessage.toString())) {
-                                        myFirstMessage = message;
-                                    }
+                    @Override
+                    public void onComplete() {
 
-                                    if (popupBubble != null && popupBubble.isShown()) {
-                                        popupBubble.hide();
-                                    }
-
-                                    messagesListView.smoothScrollToPosition(0);
-                                } else {
-                                    sendMessage(message, attempt + 1);
-
-                                }
-                            } else {
-                                sendMessage(message, attempt + 1);
-                            }
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        }
+                    }
+                });
     }
 
     private void pullChatMessages(int lookIntoFuture) {
