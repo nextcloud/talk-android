@@ -294,7 +294,9 @@ public class ConversationInfoController extends BaseController {
                                         break;
                                 }
 
-                                messageNotificationLevel.setValue(stringValue);
+                                if (messageNotificationLevel != null) {
+                                    messageNotificationLevel.setValue(stringValue);
+                                }
                             } else {
                                 setProperNotificationValue(conversation);
                             }
@@ -320,15 +322,17 @@ public class ConversationInfoController extends BaseController {
     }
 
     private void setProperNotificationValue(Conversation conversation) {
-        if (conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
-            // hack to see if we get mentioned always or just on mention
-            if (conversationUser.hasSpreedCapabilityWithName("mention-flag")) {
-                messageNotificationLevel.setValue("always");
+        if (messageNotificationLevel != null) {
+            if (conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
+                // hack to see if we get mentioned always or just on mention
+                if (conversationUser.hasSpreedCapabilityWithName("mention-flag")) {
+                    messageNotificationLevel.setValue("always");
+                } else {
+                    messageNotificationLevel.setValue("mention");
+                }
             } else {
                 messageNotificationLevel.setValue("mention");
             }
-        } else {
-            messageNotificationLevel.setValue("mention");
         }
     }
 
