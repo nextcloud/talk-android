@@ -258,59 +258,63 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (!isPublicCall && adapter.getSelectedPositions().size() == 1) {
             String roomType = "1";
 
-            if ("groups".equals(((UserItem) adapter.getItem(adapter.getSelectedPositions().get(0))).getModel().getSource())) {
+            int firstSelectedPosition = adapter.getSelectedPositions().get(0);
+            Object selectedObject = adapter.getItem(firstSelectedPosition);
+            if (selectedObject != null && "groups".equals(((UserItem) selectedObject).getModel().getSource())) {
                 roomType = "2";
             }
 
-            RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType,
-                    ((UserItem) adapter.getItem(adapter.getSelectedPositions().get(0))).getModel().getUserId(), null);
-            ncApi.createRoom(credentials,
-                    retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<RoomOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+            if (selectedObject != null) {
+                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType,
+                        ((UserItem) selectedObject).getModel().getUserId(), null);
+                ncApi.createRoom(credentials,
+                        retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<RoomOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
-                        }
-
-                        @Override
-                        public void onNext(RoomOverall roomOverall) {
-                            Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
-                            bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
-
-                            if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
-                                bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
-                                        roomOverall.getOcs().getData().getDisplayName());
-                                conversationIntent.putExtras(bundle);
-                                getRouter().replaceTopController((RouterTransaction.with(new ChatController(bundle))
-                                        .pushChangeHandler(new HorizontalChangeHandler())
-                                        .popChangeHandler(new HorizontalChangeHandler())));
-                            } else {
-                                conversationIntent.putExtras(bundle);
-                                startActivity(conversationIntent);
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (!isDestroyed() && !isBeingDestroyed()) {
-                                            getRouter().popCurrentController();
-                                        }
-                                    }
-                                }, 100);
                             }
-                        }
 
-                        @Override
-                        public void onError(Throwable e) {
+                            @Override
+                            public void onNext(RoomOverall roomOverall) {
+                                Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
+                                bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
 
-                        }
+                                if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+                                    bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
+                                            roomOverall.getOcs().getData().getDisplayName());
+                                    conversationIntent.putExtras(bundle);
+                                    getRouter().replaceTopController((RouterTransaction.with(new ChatController(bundle))
+                                            .pushChangeHandler(new HorizontalChangeHandler())
+                                            .popChangeHandler(new HorizontalChangeHandler())));
+                                } else {
+                                    conversationIntent.putExtras(bundle);
+                                    startActivity(conversationIntent);
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isDestroyed() && !isBeingDestroyed()) {
+                                                getRouter().popCurrentController();
+                                            }
+                                        }
+                                    }, 100);
+                                }
+                            }
 
-                        @Override
-                        public void onComplete() {
-                        }
-                    });
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+                            }
+                        });
+            }
         } else {
 
             Bundle bundle = new Bundle();
@@ -375,7 +379,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_contacts, menu);
         searchItem = menu.findItem(R.id.action_search);
@@ -385,7 +389,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
         searchItem.setVisible(contactItems.size() > 0);
         checkAndHandleDoneMenuItem();
