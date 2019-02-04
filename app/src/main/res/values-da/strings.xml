@@ -68,9 +68,11 @@
     <string name="nc_settings_other_notifications_ringtone">Andre</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
     <string name="nc_settings_vibrate">Vibrer</string>
+    <string name="nc_settings_vibrate_desc">Din telefon vil vibrere med mindre den er på lydløs</string>
     <string name="nc_no_proxy">Ikke proxy</string>
     <string name="nc_username">Brugernavn</string>
     <string name="nc_password">Adgangskode</string>
+    <string name="nc_conversation_link">Samtalelink</string>
     <string name="nc_new_password">Ny adgangskode</string>
     <string name="nc_wrong_password">Forkert adgangskode</string>
     <string name="nc_about">Om</string>
@@ -83,6 +85,7 @@
 
     <!-- Conversation menu -->
     <string name="nc_start_conversation">Start en samtale</string>
+    <string name="nc_configure_room">Samtaleopsætning</string>
     <string name="nc_leave">Forlad samtale</string>
     <string name="nc_rename">Omdøb samtale</string>
     <string name="nc_set_password">Indstil en adgangskode</string>
@@ -94,6 +97,8 @@
     <string name="nc_make_call_private">Gør samtalen privat</string>
     <string name="nc_delete_call">Slet samtale</string>
     <string name="nc_new_conversation">Ny samtale</string>
+    <string name="nc_join_via_link">Deltag via link</string>
+    <string name="nc_join_via_web">Deltag via web</string>
     <string name="nc_add_to_favorites">Føj til favoritter</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
 
@@ -109,12 +114,16 @@
     <string name="nc_nick_guest">Gæst</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
     <string name="nc_notification_channel_calls_description">Viser indkommende opkald</string>
+    <string name="nc_notification_settings">Meddelelsesindstillinger</string>
     <string name="nc_plain_old_messages">Beskeder</string>
     <string name="nc_notify_me_always">Giv altid besked</string>
     <string name="nc_notify_me_mention">Giv besked når du bliver omtalt</string>
     <string name="nc_notify_me_never">Giv aldrig besked</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Samtalenavn</string>
+    <string name="nc_proceed">Fortsæt</string>
+    <string name="nc_share_text_pass">\nAdgangskode: %1$s</string>
+
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Tryk-for-at-tale</string>
     <!-- Chat -->
@@ -123,6 +132,7 @@
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_conversation_menu_voice_call">Stemmeopkald</string>
     <string name="nc_conversation_menu_video_call">Videoopkald</string>
+    <string name="nc_conversation_menu_conversation_info">Samtaleinfo</string>
     <string name="nc_new_messages">Nye beskeder</string>
     <string name="nc_no_messages_yet">Ingen beskeder endnu</string>
     <string name="nc_sent_a_link" formatted="true">%1$s sendte et link.</string>
