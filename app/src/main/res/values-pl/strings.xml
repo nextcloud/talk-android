@@ -26,6 +26,7 @@
     <string name="nc_server_url">Adres serwera</string>
     <string name="nc_server_not_installed">Proszę zakończ instalację %1$s</string>
     <string name="nc_server_db_upgrade_needed">Zaktualizuj swoją %1$s bazę danych</string>
+    <string name="nc_server_maintenance">Proszę przeprowadzić %1$s konserwację do końca</string>
     <string name="nc_server_version">%1$s działa tylko z %2$s 13 i nowszym</string>
     <string name="nc_server_import_account_plain">Importuj konto</string>
     <string name="nc_server_import_accounts_plain">Importuj konta</string>
@@ -109,7 +110,7 @@
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Wybierz kontakty</string>
-    <string name="nc_contacts_done">Zrobione</string>
+    <string name="nc_contacts_done">Gotowe</string>
 
     <!-- Permissions -->
     <string name="nc_camera_permission_permanently_denied">Aby używać połączeń video, zezwól aplikacji na używanie aparatu w ustawieniach.</string>
@@ -132,6 +133,7 @@ poprzez specjalnie przygotowany link.</string>
     <string name="nc_notification_settings">Ustawienia powiadomień</string>
     <string name="nc_plain_old_messages">Wiadomości</string>
     <string name="nc_notify_me_always">Zawsze powiadamiaj</string>
+    <string name="nc_notify_me_mention">Powiadom, gdy wspomniano</string>
     <string name="nc_notify_me_never">Nigdy nie powiadamiaj</string>
     <string name="nc_mute_calls">Wycisz połączenia</string>
     <string name="nc_mute_calls_description">Nie otrzymasz żadnego powiadomienia o połączeniu</string>
