@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Asetukset</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Palvelimen osoite</string>
     <string name="nc_server_not_installed">Viimeistele %1$s-asennuksesi</string>
@@ -50,6 +53,7 @@
     <string name="nc_settings_notification_sounds">Ilmoitusäänet</string>
     <string name="nc_settings_no_ringtone">Ei ääntä</string>
     <string name="nc_settings_vibrate">Värinä</string>
+    <string name="nc_settings_vibrate_desc">Puhelimesi värisee ellei se ole hiljennetty</string>
     <string name="nc_no_proxy">Ei välityspalvelinta</string>
     <string name="nc_username">Käyttäjätunnus</string>
     <string name="nc_password">Salasana</string>
@@ -96,6 +100,14 @@
     <string name="nc_notification_channel_calls">Puhelujen ilmoituskanava</string>
     <string name="nc_notification_channel_messages">Viestien ilmoituskanava</string>
     <string name="nc_notification_channel_calls_description">Näyttää saapuvat puhelut</string>
+    <string name="nc_notification_settings">Ilmoitusasetukset</string>
+    <string name="nc_plain_old_messages">Viestit</string>
+    <string name="nc_notify_me_always">Ilmoita aina</string>
+    <string name="nc_notify_me_mention">Ilmoita kun mainittu</string>
+    <string name="nc_notify_me_never">Älä ilmoita koskaan</string>
+    <string name="nc_mute_calls">Mykistä puhelut</string>
+    <string name="nc_mute_calls_description">Et saa mitään ilmoituksia puheluista</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Pahoittelut, jokin meni vikaan!</string>
     <string name="nc_all_ok_operation">OK, kaikki valmista!</string>
@@ -106,16 +118,45 @@
     <string name="nc_share_text">Liity keskusteluun osoitteessa %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nSalasana: %1$s</string>
 
+    <string name="nc_configure_cert_auth">Valitse tunnistautumisvarmenne</string>
+    <string name="nc_change_cert_auth">Vaihda tunnistautumisvarmenne</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Kirjoita viesti…</string>
     <string name="nc_date_header_yesterday">Eilen</string>
     <string name="nc_date_header_today">Tänään</string>
     <string name="nc_conversation_menu_voice_call">Äänipuhelu</string>
     <string name="nc_conversation_menu_video_call">Videopuhelu</string>
+    <string name="nc_conversation_menu_conversation_info">Keskustelun tiedot</string>
     <string name="nc_new_messages">Uudet viestit</string>
     <string name="nc_no_messages_yet">Ei viestejä vielä</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s lähetti linkin.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s lähetti GIF-kuvan.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s lähetti liitteen.</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s lähetti ääntä.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s lähetti videon.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s lähetti kuvan.</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Lähetit linkin.</string>
+    <string name="nc_sent_a_gif_you">Lähetit GIF-kuvan.</string>
+    <string name="nc_sent_an_attachment_you">Lähetit liitteen.</string>
+    <string name="nc_sent_an_audio_you">Lähetit ääntä.</string>
+    <string name="nc_sent_a_video_you">Lähetit videon.</string>
+    <string name="nc_sent_an_image_you">Lähetit kuvan.</string>
+    <!-- When translating to German, please use non-formal variant -->
+    <string name="nc_formatted_message_you">Sinä: %1$s</string>
+
     <string name="nc_description_send_message_button">Lähetä viesti</string>
 
+    <string name="nc_conversations_empty">Liity keskusteluun tai aloita uusi keskustelu\n Sano hei ystävillesi ja työkavereillesi!</string>
     <string name="nc_hello">Hei</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">1000 merkin raja tuli täyteen</string>
+    <string name="nc_groups">Ryhmät</string>
+    <string name="nc_participants">Osallistujat</string>
+
+    <string name="nc_owner">Omistaja</string>
+    <string name="nc_moderator">Moderaattori</string>
+    <string name="nc_user">Käyttäjä</string>
+    <string name="nc_guest">Vieras</string>
     </resources>

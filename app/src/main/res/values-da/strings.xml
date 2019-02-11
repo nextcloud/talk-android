@@ -150,6 +150,11 @@
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Dig: %1$s</string>
 
+    <string name="nc_endless_cancel">Annulleret af brugeren.</string>
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">Menu for samtalen med %1$s</string>
+    <string name="nc_description_more_menu_public">Menu for gruppesamtalen %1$s</string>
+    <string name="nc_description_more_menu_group">Menu for den offentlige samtale %1$s</string>
     <string name="nc_description_send_message_button">Send besked</string>
 
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny\n Sig hej til dine venner og kollegaer.</string>
