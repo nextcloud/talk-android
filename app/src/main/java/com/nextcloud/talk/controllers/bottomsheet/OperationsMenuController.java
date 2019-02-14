@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.api.NcApi;
@@ -48,6 +50,7 @@ import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.Call;
 import com.nextcloud.talk.models.json.call.CallOverall;
+import com.nextcloud.talk.models.json.capabilities.Capabilities;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
@@ -62,8 +65,8 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -121,7 +124,7 @@ public class OperationsMenuController extends BaseController {
     private ArrayList<String> invitedUsers = new ArrayList<>();
     private ArrayList<String> invitedGroups = new ArrayList<>();
 
-    private List<String> spreedCapabilities;
+    private Capabilities serverCapabilities;
     private String credentials;
 
     public OperationsMenuController(Bundle args) {
@@ -146,8 +149,8 @@ public class OperationsMenuController extends BaseController {
             this.conversationType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_CONVERSATION_TYPE));
         }
 
-        if (args.containsKey(BundleKeys.KEY_SPREED_CAPABILITIES)) {
-            this.spreedCapabilities = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_SPREED_CAPABILITIES));
+        if (args.containsKey(BundleKeys.KEY_SERVER_CAPABILITIES)) {
+            this.serverCapabilities = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_SERVER_CAPABILITIES));
         }
     }
 
@@ -473,16 +476,15 @@ public class OperationsMenuController extends BaseController {
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
                                 bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
-                                bundle.putParcelable(BundleKeys.KEY_SPREED_CAPABILITIES,
-                                        Parcels.wrap(capabilitiesOverall.getOcs().getData().getCapabilities()
-                                                .getSpreedCapability().getFeatures()));
+                                bundle.putParcelable(BundleKeys.KEY_SERVER_CAPABILITIES,
+                                        Parcels.wrap(capabilitiesOverall.getOcs().getData().getCapabilities()));
                                 bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
                                 getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
                                         .pushChangeHandler(new HorizontalChangeHandler())
                                         .popChangeHandler(new HorizontalChangeHandler()));
                             } else {
                                 initiateConversation(false, capabilitiesOverall.getOcs().getData()
-                                        .getCapabilities().getSpreedCapability().getFeatures());
+                                        .getCapabilities());
                             }
                         } else if (capabilitiesOverall.getOcs().getData()
                                 .getCapabilities().getSpreedCapability() != null &&
@@ -605,14 +607,14 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
-    private void initiateConversation(boolean dismissView, @Nullable List<String> spreedCapabilities) {
+    private void initiateConversation(boolean dismissView, @Nullable Capabilities capabilities) {
         Bundle bundle = new Bundle();
         boolean isGuestUser = false;
         boolean hasChatCapability;
 
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
             isGuestUser = true;
-            hasChatCapability = spreedCapabilities != null && spreedCapabilities.contains("chat-v2");
+            hasChatCapability = capabilities != null && capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null &&  capabilities.getSpreedCapability().getFeatures().contains("chat-v2");
         } else {
             hasChatCapability = currentUser.hasSpreedCapabilityWithName("chat-v2");
         }
@@ -631,6 +633,11 @@ public class OperationsMenuController extends BaseController {
                 conversationUser = new UserEntity();
                 conversationUser.setBaseUrl(baseUrl);
                 conversationUser.setUserId("?");
+                try {
+                    conversationUser.setCapabilities(LoganSquare.serialize(capabilities));
+                } catch (IOException e) {
+                    Log.e("OperationsMenu", "Failed to serialize capabilities");
+                }
             } else {
                 conversationUser = currentUser;
             }
@@ -692,7 +699,7 @@ public class OperationsMenuController extends BaseController {
             } else {
                 CallOverall callOverall = (CallOverall) o;
                 call = callOverall.getOcs().getData();
-                initiateConversation(true, spreedCapabilities);
+                initiateConversation(true, serverCapabilities);
             }
         }
 

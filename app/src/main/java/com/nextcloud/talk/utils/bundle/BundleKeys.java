@@ -47,7 +47,7 @@ public class BundleKeys {
     public static final String KEY_CONVERSATION_NAME = "KEY_CONVERSATION_NAME";
     public static final String KEY_CALL_VOICE_ONLY = "KEY_CALL_VOICE_ONLY";
     public static final String KEY_ACTIVE_CONVERSATION = "KEY_ACTIVE_CONVERSATION";
-    public static final String KEY_SPREED_CAPABILITIES = "KEY_SPREED_CAPABILITIES";
+    public static final String KEY_SERVER_CAPABILITIES = "KEY_SERVER_CAPABILITIES";
     public static final String KEY_FROM_NOTIFICATION_START_CALL = "KEY_FROM_NOTIFICATION_START_CALL";
     public static final String KEY_ROOM_ID = "KEY_ROOM_ID";
     public static final String KEY_ARE_CALL_SOUNDS = "KEY_ARE_CALL_SOUNDS";
