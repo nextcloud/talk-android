@@ -301,8 +301,10 @@ public class ConversationInfoController extends BaseController {
                                 setProperNotificationValue(conversation);
                             }
                         } else {
-                            messageNotificationLevel.setEnabled(false);
-                            messageNotificationLevel.setAlpha(0.38f);
+                            if (messageNotificationLevel != null) {
+                                messageNotificationLevel.setEnabled(false);
+                                messageNotificationLevel.setAlpha(0.38f);
+                            }
                             setProperNotificationValue(conversation);
                         }
 

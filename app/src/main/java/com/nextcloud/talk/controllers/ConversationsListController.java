@@ -581,9 +581,9 @@ public class ConversationsListController extends BaseController implements Searc
             }
 
             Bundle bundle = new Bundle();
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
             bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.getRoomId());
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
 
             if (conversation.hasPassword && (conversation.participantType.equals(Participant.ParticipantType.GUEST) ||
                     conversation.participantType.equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {

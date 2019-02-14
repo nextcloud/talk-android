@@ -482,8 +482,7 @@ public class OperationsMenuController extends BaseController {
                                         .popChangeHandler(new HorizontalChangeHandler()));
                             } else {
                                 initiateConversation(false, capabilitiesOverall.getOcs().getData()
-                                        .getCapabilities().getSpreedCapability()
-                                        .getFeatures());
+                                        .getCapabilities().getSpreedCapability().getFeatures());
                             }
                         } else if (capabilitiesOverall.getOcs().getData()
                                 .getCapabilities().getSpreedCapability() != null &&
@@ -608,10 +607,11 @@ public class OperationsMenuController extends BaseController {
 
     private void initiateConversation(boolean dismissView, @Nullable List<String> spreedCapabilities) {
         Bundle bundle = new Bundle();
+        boolean isGuestUser = false;
         boolean hasChatCapability;
 
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
-            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
+            isGuestUser = true;
             hasChatCapability = spreedCapabilities != null && spreedCapabilities.contains("chat-v2");
         } else {
             hasChatCapability = currentUser.hasSpreedCapabilityWithName("chat-v2");
@@ -626,6 +626,16 @@ public class OperationsMenuController extends BaseController {
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
             bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.getRoomId());
             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversation.getDisplayName());
+            UserEntity conversationUser;
+            if (isGuestUser) {
+                conversationUser = new UserEntity();
+                conversationUser.setBaseUrl(baseUrl);
+                conversationUser.setUserId("?");
+            } else {
+                conversationUser = currentUser;
+            }
+
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser);
             bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(call));
 
             conversationIntent.putExtras(bundle);
@@ -635,7 +645,6 @@ public class OperationsMenuController extends BaseController {
                         .pushChangeHandler(new HorizontalChangeHandler())
                         .popChangeHandler(new HorizontalChangeHandler()));
             }
-
         } else {
             initiateCall();
         }
