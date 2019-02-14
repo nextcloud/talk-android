@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -319,14 +320,14 @@ public class SettingsController extends BaseController {
         dispose(null);
         getCurrentUser();
 
-        if (shouldVibrateSwitchPreference.getVisibility() == View.VISIBLE) {
-            shouldVibrateSwitchPreference.setActivated(appPreferences.getShouldVibrateSetting());
-        }
-
         if (!TextUtils.isEmpty(currentUser.getClientCertificate())) {
             certificateSetup.setTitle(R.string.nc_client_cert_change);
         } else {
             certificateSetup.setTitle(R.string.nc_client_cert_setup);
+        }
+
+        if (shouldVibrateSwitchPreference.getVisibility() == View.VISIBLE) {
+            ((Checkable)shouldVibrateSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getShouldVibrateSetting());
         }
 
         String ringtoneName = "";

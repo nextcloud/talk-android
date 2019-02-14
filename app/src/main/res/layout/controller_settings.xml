@@ -135,7 +135,7 @@
             android:id="@+id/settings_always_vibrate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            apc:mp_default_value="true"
+            apc:mp_default_value="@bool/value_true"
             apc:mp_key="@string/nc_settings_vibrate_key"
             apc:mp_summary="@string/nc_settings_vibrate_desc"
             apc:mp_title="@string/nc_settings_vibrate" />
