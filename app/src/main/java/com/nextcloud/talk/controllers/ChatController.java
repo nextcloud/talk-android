@@ -157,6 +157,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private boolean wasDetached;
     private EmojiPopup emojiPopup;
 
+    private CharSequence myFirstMessage;
+
     public ChatController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
@@ -675,6 +677,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
+                        myFirstMessage = message;
+
                         if (popupBubble != null && popupBubble.isShown()) {
                             popupBubble.hide();
                         }
@@ -689,6 +693,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         if (e instanceof HttpException) {
                             int code = ((HttpException) e).code();
                             if (Integer.toString(code).startsWith("2")) {
+                                myFirstMessage = message;
+
                                 if (popupBubble != null && popupBubble.isShown()) {
                                     popupBubble.hide();
                                 }
@@ -877,6 +883,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     chatMessage.setBaseUrl(conversationUser.getBaseUrl());
                     chatMessageList.get(i).setActiveUserId(conversationUser.getUserId());
+
+                    if (conversationUser.getUserId().equals("?") && !TextUtils.isEmpty(myFirstMessage.toString())) {
+                        if (chatMessage.getActorType().equals("guests")) {
+                            conversationUser.setUserId(chatMessage.getActorId());
+                            setSenderId();
+                        }
+                    }
 
                     boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0 ||
                             (adapter != null && adapter.getItemCount() == 0);
