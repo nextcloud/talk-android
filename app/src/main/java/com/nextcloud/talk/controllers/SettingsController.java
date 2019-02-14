@@ -24,6 +24,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.security.KeyChain;
 import android.text.TextUtils;
@@ -234,6 +235,10 @@ public class SettingsController extends BaseController {
             shouldVibrateSwitchPreference.setVisibility(View.GONE);
         }
 
+         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            incognitoKeyboardSwitchPreference.setVisibility(View.GONE);
+         }
+
         if (!TextUtils.isEmpty(getResources().getString(R.string.nc_privacy_url))) {
             privacyButton.addPreferenceClickListener(view12 -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().
@@ -342,7 +347,9 @@ public class SettingsController extends BaseController {
         }
 
         ((Checkable)screenSecuritySwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsScreenSecured());
-        ((Checkable)incognitoKeyboardSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsKeyboardIncognito());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ((Checkable) incognitoKeyboardSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsKeyboardIncognito());
+        }
         ((Checkable)linkPreviewsSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getAreLinkPreviewsAllowed());
 
 

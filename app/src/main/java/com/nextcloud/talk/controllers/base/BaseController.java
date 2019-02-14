@@ -19,12 +19,17 @@
 package com.nextcloud.talk.controllers.base;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import androidx.annotation.RequiresApi;
 import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.AccountVerificationController;
@@ -90,6 +95,10 @@ public abstract class BaseController extends ButterKnifeController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
+            disableKeyboardPersonalisedLearning((ViewGroup) view);
+        }
     }
 
     // Note: This is just a quick demo of how an ActionBar *can* be accessed, not necessarily how it *should*
@@ -106,11 +115,12 @@ public abstract class BaseController extends ButterKnifeController {
 
     @Override
     protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+
         setTitle();
         if (getActionBar() != null) {
             getActionBar().setDisplayHomeAsUpEnabled(getParentController() != null || getRouter().getBackstackSize() > 1);
         }
-        super.onAttach(view);
     }
 
     @Override
@@ -140,5 +150,21 @@ public abstract class BaseController extends ButterKnifeController {
 
     protected String getTitle() {
         return null;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void disableKeyboardPersonalisedLearning(final ViewGroup viewGroup) {
+        View view;
+        EditText editText;
+
+        for(int i = 0; i < viewGroup.getChildCount(); i++) {
+            view = viewGroup.getChildAt(i);
+            if (view instanceof EditText) {
+                editText = (EditText) view;
+                editText.setImeOptions(editText.getImeOptions() | EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);
+            } else if (view instanceof ViewGroup) {
+                disableKeyboardPersonalisedLearning((ViewGroup) view);
+            }
+        }
     }
 }

@@ -223,7 +223,7 @@ public interface AppPreferences {
     void removeScreenLock();
 
     @KeyByString("incognito_keyboard")
-    @DefaultValue(R.bool.value_false)
+    @DefaultValue(R.bool.value_true)
     boolean getIsKeyboardIncognito();
 
     @KeyByString("incognito_keyboard")

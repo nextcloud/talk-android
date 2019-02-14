@@ -162,7 +162,7 @@
             android:id="@+id/settings_incognito_keyboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            apc:mp_default_value="@bool/value_false"
+            apc:mp_default_value="@bool/value_true"
             apc:mp_key="@string/nc_settings_incognito_keyboard_key"
             apc:mp_summary="@string/nc_settings_incognito_keyboard_desc"
             apc:mp_title="@string/nc_settings_incognito_keyboard_title" />
