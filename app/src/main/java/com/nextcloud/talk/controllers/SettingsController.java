@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -153,6 +154,15 @@ public class SettingsController extends BaseController {
     @BindView(R.id.settings_always_vibrate)
     MaterialSwitchPreference shouldVibrateSwitchPreference;
 
+    @BindView(R.id.settings_incognito_keyboard)
+    MaterialSwitchPreference incognitoKeyboardSwitchPreference;
+
+    @BindView(R.id.settings_screen_security)
+    MaterialSwitchPreference screenSecuritySwitchPreference;
+
+    @BindView(R.id.settings_link_previews)
+    MaterialSwitchPreference linkPreviewsSwitchPreference;
+
     @BindView(R.id.message_text)
     TextView messageText;
 
@@ -173,6 +183,7 @@ public class SettingsController extends BaseController {
 
     private OnPreferenceValueChangedListener<String> proxyTypeChangeListener;
     private OnPreferenceValueChangedListener<Boolean> proxyCredentialsChangeListener;
+    private OnPreferenceValueChangedListener<Boolean> screenSecurityChangeListener;
 
     private Disposable profileQueryDisposable;
     private Disposable dbQueryDisposable;
@@ -198,8 +209,8 @@ public class SettingsController extends BaseController {
         getCurrentUser();
 
         appPreferences.registerProxyTypeListener(proxyTypeChangeListener = new ProxyTypeChangeListener());
-        appPreferences.registerProxyCredentialsListener(proxyCredentialsChangeListener = new
-                ProxyCredentialsChangeListener());
+        appPreferences.registerProxyCredentialsListener(proxyCredentialsChangeListener = new ProxyCredentialsChangeListener());
+        appPreferences.registerScreenSecurityListener(screenSecurityChangeListener = new ScreenSecurityChangeListener());
 
         List<String> listWithIntFields = new ArrayList<>();
         listWithIntFields.add("proxy_port");
@@ -329,6 +340,11 @@ public class SettingsController extends BaseController {
         if (shouldVibrateSwitchPreference.getVisibility() == View.VISIBLE) {
             ((Checkable)shouldVibrateSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getShouldVibrateSetting());
         }
+
+        ((Checkable)screenSecuritySwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsScreenSecured());
+        ((Checkable)incognitoKeyboardSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsKeyboardIncognito());
+        ((Checkable)linkPreviewsSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getAreLinkPreviewsAllowed());
+
 
         String ringtoneName = "";
         RingtoneSettings ringtoneSettings;
@@ -532,6 +548,7 @@ public class SettingsController extends BaseController {
         if (appPreferences != null) {
             appPreferences.unregisterProxyTypeListener(proxyTypeChangeListener);
             appPreferences.unregisterProxyCredentialsListener(proxyCredentialsChangeListener);
+            appPreferences.unregisterScreenSecurityListener(screenSecurityChangeListener);
         }
         super.onDestroy();
     }
@@ -594,6 +611,21 @@ public class SettingsController extends BaseController {
         return getResources().getString(R.string.nc_app_name);
     }
 
+    private class ScreenSecurityChangeListener implements OnPreferenceValueChangedListener<Boolean> {
+
+        @Override
+        public void onChanged(Boolean newValue) {
+            if (newValue) {
+                if (getActivity() != null) {
+                    getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+                }
+            } else {
+                if (getActivity() != null) {
+                    getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+                }
+            }
+        }
+    }
     private class ProxyCredentialsChangeListener implements OnPreferenceValueChangedListener<Boolean> {
 
         @Override

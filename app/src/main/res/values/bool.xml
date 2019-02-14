@@ -21,4 +21,5 @@
 
 <resources>
     <bool name="value_true">true</bool>
+    <bool name="value_false">false</bool>
 </resources>

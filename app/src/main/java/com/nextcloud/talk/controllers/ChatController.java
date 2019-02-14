@@ -73,6 +73,7 @@ import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
 import com.nextcloud.talk.utils.*;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.otaliastudios.autocomplete.Autocomplete;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
@@ -113,6 +114,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     NcApi ncApi;
     @Inject
     UserUtils userUtils;
+    @Inject
+    AppPreferences appPreferences;
     @BindView(R.id.messagesListView)
     MessagesList messagesListView;
     @BindView(R.id.messageInputView)
@@ -151,6 +154,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private boolean isFirstMessagesProcessing = true;
     private boolean isHelloClicked;
     private boolean isLeavingForConversation;
+
+    private boolean isLinkPreviewAllowed;
 
     private static final byte CONTENT_TYPE_SYSTEM_MESSAGE = 1;
 
@@ -443,6 +448,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
         ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
 
+        isLinkPreviewAllowed = appPreferences.getAreLinkPreviewsAllowed();
 
         emojiPopup = EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener(new OnEmojiPopupShownListener() {
             @Override
@@ -856,8 +862,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             countGroupedMessages = 0;
                         }
                     }
-                    chatMessageList.get(i).setBaseUrl(conversationUser.getBaseUrl());
-                    chatMessageList.get(i).setActiveUserId(conversationUser.getUserId());
+
+                    ChatMessage chatMessage = chatMessageList.get(i);
+                    chatMessage.setLinkPreviewAllowed(isLinkPreviewAllowed);
+                    chatMessage.setBaseUrl(conversationUser.getBaseUrl());
+                    chatMessage.setActiveUserId(conversationUser.getUserId());
                     if (globalLastKnownPastMessageId == -1 || chatMessageList.get(i).getJsonMessageId() <
                             globalLastKnownPastMessageId) {
                         globalLastKnownPastMessageId = chatMessageList.get(i).getJsonMessageId();
@@ -882,7 +891,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     chatMessage = chatMessageList.get(i);
 
                     chatMessage.setBaseUrl(conversationUser.getBaseUrl());
-                    chatMessageList.get(i).setActiveUserId(conversationUser.getUserId());
+                    chatMessage.setActiveUserId(conversationUser.getUserId());
+                    chatMessage.setLinkPreviewAllowed(isLinkPreviewAllowed);
 
                     // if credentials are empty, we're acting as a guest
                     if (TextUtils.isEmpty(credentials) && !TextUtils.isEmpty(myFirstMessage.toString())) {

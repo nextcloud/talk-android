@@ -142,6 +142,40 @@
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        apc:mpc_title="@string/nc_settings_privacy"
+        apc:mpc_title_color="@color/colorPrimary">
+
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_screen_security"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@bool/value_false"
+            apc:mp_key="@string/nc_settings_screen_security_key"
+            apc:mp_summary="@string/nc_settings_screen_security_desc"
+            apc:mp_title="@string/nc_settings_screen_security_title" />
+
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_incognito_keyboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@bool/value_false"
+            apc:mp_key="@string/nc_settings_incognito_keyboard_key"
+            apc:mp_summary="@string/nc_settings_incognito_keyboard_desc"
+            apc:mp_title="@string/nc_settings_incognito_keyboard_title" />
+
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_link_previews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@bool/value_true"
+            apc:mp_key="@string/nc_settings_link_previews_key"
+            apc:mp_summary="@string/nc_settings_link_previews_desc"
+            apc:mp_title="@string/nc_settings_link_previews_title" />
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
         android:layout_width="match_parent"
@@ -202,7 +236,6 @@
             apc:mp_key="@string/nc_settings_proxy_password_key"
             apc:mp_show_value="onRight"
             apc:mp_title="@string/nc_password" />
-
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
     <com.yarolegovich.mp.MaterialPreferenceCategory

@@ -192,6 +192,58 @@ public interface AppPreferences {
     @RemoveMethod
     void removeVibrateSetting();
 
+    @KeyByString("screen_security")
+    @DefaultValue(R.bool.value_false)
+    boolean getIsScreenSecured();
+
+    @KeyByString("screen_security")
+    void setScreenSecurity(boolean value);
+
+    @KeyByString("screen_security")
+    @RemoveMethod
+    void removeScreenSecurity();
+
+    @KeyByString("screen_security")
+    @RegisterChangeListenerMethod
+    void registerScreenSecurityListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByString("screen_security")
+    @UnregisterChangeListenerMethod
+    void unregisterScreenSecurityListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByString("screen_lock")
+    @DefaultValue(R.bool.value_false)
+    boolean getIsScreenLocked();
+
+    @KeyByString("screen_lock")
+    void setScreenLock(boolean value);
+
+    @KeyByString("screen_lock")
+    @RemoveMethod
+    void removeScreenLock();
+
+    @KeyByString("incognito_keyboard")
+    @DefaultValue(R.bool.value_false)
+    boolean getIsKeyboardIncognito();
+
+    @KeyByString("incognito_keyboard")
+    void setIncognitoKeyboard(boolean value);
+
+    @KeyByString("incognito_keyboard")
+    @RemoveMethod
+    void removeIncognitoKeyboard();
+
+    @KeyByString("link_previews")
+    @DefaultValue(R.bool.value_true)
+    boolean getAreLinkPreviewsAllowed();
+
+    @KeyByString("link_previews")
+    void setLinkPreviewsAllowed(boolean value);
+
+    @KeyByString("link_previews")
+    @RemoveMethod
+    void removeLinkPreviews();
+
     @ClearMethod
     void clear();
 }

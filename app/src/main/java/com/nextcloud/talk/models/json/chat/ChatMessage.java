@@ -82,7 +82,7 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
             }
         }
 
-        if (!messageTypesToIgnore.contains(getMessageType())) {
+        if (!messageTypesToIgnore.contains(getMessageType()) && isLinkPreviewAllowed) {
             return getMessage().trim();
         }
 
@@ -163,6 +163,8 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     public String activeUserId;
     @JsonIgnore
     public Map<String, String> selectedIndividualHashMap;
+    @JsonIgnore
+    public boolean isLinkPreviewAllowed;
 
 
     public Map<String, String> getSelectedIndividualHashMap() {

@@ -23,11 +23,13 @@ package com.nextcloud.talk.activities;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.CertificateEvent;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
@@ -53,10 +55,16 @@ public class BaseActivity extends AppCompatActivity {
     @Inject
     EventBus eventBus;
 
+    @Inject
+    AppPreferences appPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         super.onCreate(savedInstanceState);
+        if (appPreferences.getIsScreenSecured()) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+        }
     }
 
     public void showCertificateDialog(X509Certificate cert, MagicTrustManager magicTrustManager,
