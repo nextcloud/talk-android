@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:imeOptions="actionDone|flagNoFullscreen"
+        android:imeOptions="actionDone"
         android:layout_toStartOf="@id/sendButtonSpace"
         android:inputType="textAutoCorrect|textMultiLine|textCapSentences"/>
 

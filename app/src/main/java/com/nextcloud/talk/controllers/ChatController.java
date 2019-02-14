@@ -463,8 +463,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
         emojiPopup = EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener(new OnEmojiPopupShownListener() {
             @Override
             public void onEmojiPopupShown() {
-                smileyButton.setColorFilter(getResources().getColor(R.color.colorPrimary),
-                        PorterDuff.Mode.SRC_IN);
+                if (getResources() != null) {
+                    smileyButton.setColorFilter(getResources().getColor(R.color.colorPrimary),
+                            PorterDuff.Mode.SRC_IN);
+                }
             }
         }).setOnEmojiPopupDismissListener(new OnEmojiPopupDismissListener() {
             @Override

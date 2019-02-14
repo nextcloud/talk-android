@@ -114,7 +114,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
-    implementation 'com.github.vanniktech.Emoji:emoji-twitter:182e1ff4f4'
+    implementation 'com.github.vanniktech:Emoji:746caa4623'
     implementation 'org.michaelevans.colorart:library:0.0.3'
     implementation "android.arch.work:work-runtime:${workVersion}"
     implementation "android.arch.work:work-rxjava2:${workVersion}"

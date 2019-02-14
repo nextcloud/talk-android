@@ -18,11 +18,13 @@
  */
 package com.nextcloud.talk.controllers.base;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.view.inputmethod.InputMethodManager;
 import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.AccountVerificationController;
@@ -47,6 +49,8 @@ public abstract class BaseController extends ButterKnifeController {
     private static final String TAG = "BaseController";
     @Inject
     AppPreferences appPreferences;
+    @Inject
+    Context context;
 
     protected BaseController() {
         cleanTempCertPreference();
@@ -107,6 +111,15 @@ public abstract class BaseController extends ButterKnifeController {
             getActionBar().setDisplayHomeAsUpEnabled(getParentController() != null || getRouter().getBackstackSize() > 1);
         }
         super.onAttach(view);
+    }
+
+    @Override
+    protected void onDetach(@NonNull View view) {
+        super.onDetach(view);
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     protected void setTitle() {
