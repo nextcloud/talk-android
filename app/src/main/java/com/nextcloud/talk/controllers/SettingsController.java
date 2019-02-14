@@ -22,6 +22,8 @@ package com.nextcloud.talk.controllers;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.KeyguardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -36,7 +38,13 @@ import android.view.WindowManager;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import autodagger.AutoInjector;
+import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
@@ -61,37 +69,18 @@ import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
-import com.yarolegovich.mp.MaterialChoicePreference;
-import com.yarolegovich.mp.MaterialEditTextPreference;
-import com.yarolegovich.mp.MaterialPreferenceCategory;
-import com.yarolegovich.mp.MaterialPreferenceScreen;
-import com.yarolegovich.mp.MaterialStandardPreference;
-import com.yarolegovich.mp.MaterialSwitchPreference;
-
-import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import autodagger.AutoInjector;
-import butterknife.BindView;
+import com.yarolegovich.mp.*;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
+import org.greenrobot.eventbus.EventBus;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class SettingsController extends BaseController {
@@ -164,6 +153,9 @@ public class SettingsController extends BaseController {
     @BindView(R.id.settings_link_previews)
     MaterialSwitchPreference linkPreviewsSwitchPreference;
 
+    @BindView(R.id.settings_screen_lock)
+    MaterialSwitchPreference screenLockSwitchPreference;
+
     @BindView(R.id.message_text)
     TextView messageText;
 
@@ -178,6 +170,9 @@ public class SettingsController extends BaseController {
 
     @Inject
     UserUtils userUtils;
+
+    @Inject
+    Context context;
 
     private UserEntity currentUser;
     private String credentials;
@@ -235,9 +230,18 @@ public class SettingsController extends BaseController {
             shouldVibrateSwitchPreference.setVisibility(View.GONE);
         }
 
-         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             incognitoKeyboardSwitchPreference.setVisibility(View.GONE);
-         }
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            screenLockSwitchPreference.setVisibility(View.GONE);
+        } else {
+            screenLockSwitchPreference.setSummary(String.format(Locale.getDefault(),
+                    getResources().getString(R.string.nc_settings_screen_lock_desc),
+                    getResources().getString(R.string.nc_app_name)));
+        }
+
 
         if (!TextUtils.isEmpty(getResources().getString(R.string.nc_privacy_url))) {
             privacyButton.addPreferenceClickListener(view12 -> {
@@ -343,15 +347,34 @@ public class SettingsController extends BaseController {
         }
 
         if (shouldVibrateSwitchPreference.getVisibility() == View.VISIBLE) {
-            ((Checkable)shouldVibrateSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getShouldVibrateSetting());
+            ((Checkable) shouldVibrateSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getShouldVibrateSetting());
         }
 
-        ((Checkable)screenSecuritySwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsScreenSecured());
+        ((Checkable) screenSecuritySwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsScreenSecured());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ((Checkable) incognitoKeyboardSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsKeyboardIncognito());
         }
-        ((Checkable)linkPreviewsSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getAreLinkPreviewsAllowed());
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ((Checkable) incognitoKeyboardSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsKeyboardIncognito());
+        }
+
+        ((Checkable) linkPreviewsSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getAreLinkPreviewsAllowed());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+
+            if (keyguardManager.isDeviceSecure()) {
+                screenLockSwitchPreference.setEnabled(true);
+                ((Checkable) screenLockSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsScreenLocked());
+                screenLockSwitchPreference.setAlpha(1.0f);
+            } else {
+                screenLockSwitchPreference.setEnabled(false);
+                appPreferences.setScreenLock(false);
+                ((Checkable) screenLockSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(false);
+                screenLockSwitchPreference.setAlpha(0.38f);
+            }
+        }
 
         String ringtoneName = "";
         RingtoneSettings ringtoneSettings;
@@ -633,6 +656,7 @@ public class SettingsController extends BaseController {
             }
         }
     }
+
     private class ProxyCredentialsChangeListener implements OnPreferenceValueChangedListener<Boolean> {
 
         @Override

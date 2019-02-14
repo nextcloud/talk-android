@@ -21,14 +21,20 @@
 package com.nextcloud.talk.activities;
 
 import android.annotation.SuppressLint;
+import android.app.KeyguardManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 
+import androidx.annotation.RequiresApi;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.CertificateEvent;
+import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
@@ -51,6 +57,7 @@ import autodagger.AutoInjector;
 @AutoInjector(NextcloudTalkApplication.class)
 public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
+    private static final int REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS = 112;
 
     @Inject
     EventBus eventBus;
@@ -58,12 +65,62 @@ public class BaseActivity extends AppCompatActivity {
     @Inject
     AppPreferences appPreferences;
 
+    private KeyguardManager keyguardManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         super.onCreate(savedInstanceState);
+        if (appPreferences.getIsScreenLocked()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                SecurityUtils.createKey();
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (appPreferences.getIsScreenSecured()) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkIfWeAreSecure();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void checkIfWeAreSecure() {
+        keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        if (keyguardManager != null && keyguardManager.isKeyguardSecure() && appPreferences.getIsScreenLocked()) {
+            if (!SecurityUtils.checkIfWeAreAuthenticated()) {
+                showAuthenticationScreen();
+            }
+        }
+    }
+
+    private void showAuthenticationScreen() {
+        Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(null, null);
+        if (intent != null) {
+            startActivityForResult(intent, REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
+            if (resultCode == RESULT_OK) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (SecurityUtils.checkIfWeAreAuthenticated()) {
+                        // all went well
+                    }
+                }
+            } else {
+                // we didnt auth
+            }
         }
     }
 
