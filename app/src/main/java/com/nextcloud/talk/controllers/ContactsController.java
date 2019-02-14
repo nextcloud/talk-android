@@ -23,6 +23,7 @@ package com.nextcloud.talk.controllers;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -68,6 +69,7 @@ import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -125,6 +127,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     UserUtils userUtils;
     @Inject
     EventBus eventBus;
+    @Inject
+    AppPreferences appPreferences;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
     @BindView(R.id.recycler_view)
@@ -355,7 +359,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
                 searchView.setMaxWidth(Integer.MAX_VALUE);
                 searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
-                searchView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN);
+                int imeOptions = EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
+                    imeOptions |= EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
+                }
+                searchView.setImeOptions(imeOptions);
                 searchView.setQueryHint(getResources().getString(R.string.nc_search));
                 if (searchManager != null) {
                     searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));

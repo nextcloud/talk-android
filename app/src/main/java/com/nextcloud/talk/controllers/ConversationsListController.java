@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -74,6 +75,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -121,6 +123,9 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Inject
     NcApi ncApi;
+
+    @Inject
+    AppPreferences appPreferences;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -240,7 +245,11 @@ public class ConversationsListController extends BaseController implements Searc
                 searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
                 searchView.setMaxWidth(Integer.MAX_VALUE);
                 searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
-                searchView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN);
+                int imeOptions = EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
+                    imeOptions |= EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
+                }
+                searchView.setImeOptions(imeOptions);
                 searchView.setQueryHint(getResources().getString(R.string.nc_search));
                 if (searchManager != null) {
                     searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
