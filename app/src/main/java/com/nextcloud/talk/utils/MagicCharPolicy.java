@@ -51,8 +51,6 @@ public class MagicCharPolicy implements AutocompletePolicy {
                 span[1] = matcher.end();
                 if (text.subSequence(matcher.start(), matcher.end()).charAt(0) == character) {
                     return span;
-                } else {
-                    return null;
                 }
             }
         }
