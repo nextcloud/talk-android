@@ -385,7 +385,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
-        if (conversationUser.hasSpreedCapabilityWithName("mention-flag") && getActivity() != null) {
+        if (!conversationUser.getUserId().equals("?") && conversationUser.hasSpreedCapabilityWithName("mention" + "-flag") && getActivity() != null) {
             getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> showConversationInfoScreen());
         }
 
@@ -952,6 +952,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_conversation, menu);
+        if (conversationUser.getUserId().equals("?")) {
+            menu.removeItem(R.id.conversation_info);
+        }
     }
 
 
