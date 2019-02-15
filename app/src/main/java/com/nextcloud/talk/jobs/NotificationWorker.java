@@ -467,8 +467,7 @@ public class NotificationWorker extends Worker {
                             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
                         }
 
-                        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(signatureVerification
-                                .getUserEntity()));
+                        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, signatureVerification.getUserEntity());
 
                         bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL,
                                 startACall);

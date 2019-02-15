@@ -281,7 +281,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             public void onNext(RoomOverall roomOverall) {
                                 Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
                                 Bundle bundle = new Bundle();
-                                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
+                                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
                                 bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                                 bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
 
@@ -889,7 +889,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 if (getActivity() != null) {
                                     Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
                                     Bundle bundle = new Bundle();
-                                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
+                                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
                                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                                     bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
                                     conversationIntent.putExtras(bundle);

@@ -663,7 +663,7 @@ public class OperationsMenuController extends BaseController {
         eventBus.post(new BottomSheetLockEvent(true, 0, true, true));
         Bundle bundle = new Bundle();
         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(currentUser));
+        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
         }

@@ -407,7 +407,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void showConversationInfoScreen() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
+        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser);
         bundle.putString(BundleKeys.KEY_BASE_URL, conversationUser.getBaseUrl());
         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
         getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
@@ -1012,7 +1012,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             Bundle bundle = new Bundle();
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
             bundle.putString(BundleKeys.KEY_ROOM_ID, roomId);
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser);
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword);
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser.getBaseUrl());
 
