@@ -670,7 +670,7 @@ public class SettingsController extends BaseController {
         @Override
         public void onChanged(String newValue) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                SecurityUtils.createKey(newValue);
+                SecurityUtils.createKey(appPreferences.getScreenLockTimeout());
             }
         }
     }
