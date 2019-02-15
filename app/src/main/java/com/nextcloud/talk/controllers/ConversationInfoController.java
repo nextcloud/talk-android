@@ -119,7 +119,7 @@ public class ConversationInfoController extends BaseController {
         super(args);
         setHasOptionsMenu(true);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-        conversationUser = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
+        conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY);
         conversationToken = args.getString(BundleKeys.KEY_ROOM_TOKEN);
         baseUrl = args.getString(BundleKeys.KEY_BASE_URL);
         credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());

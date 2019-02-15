@@ -153,7 +153,7 @@ public class CallNotificationController extends BaseController {
 
         this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
         this.currentConversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
-        this.userBeingCalled = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
+        this.userBeingCalled = args.getParcelable(BundleKeys.KEY_USER_ENTITY);
 
         this.originalBundle = args;
 
