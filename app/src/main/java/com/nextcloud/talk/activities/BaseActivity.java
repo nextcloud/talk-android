@@ -219,12 +219,4 @@ public class BaseActivity extends AppCompatActivity {
         super.onStop();
         eventBus.unregister(this);
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (!disposable.isDisposed()) {
-            disposable.dispose();
-        }
-    }
 }

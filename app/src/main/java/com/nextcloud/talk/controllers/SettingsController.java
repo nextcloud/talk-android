@@ -392,7 +392,6 @@ public class SettingsController extends BaseController {
                 screenLockTimeoutChoicePreference.setEnabled(false);
                 appPreferences.removeScreenLock();
                 appPreferences.removeScreenLockTimeout();
-                screenLockTimeoutChoicePreference.setValue("0");
                 ((Checkable) screenLockSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(false);
                 screenLockSwitchPreference.setAlpha(0.38f);
                 screenLockTimeoutChoicePreference.setAlpha(0.38f);
