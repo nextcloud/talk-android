@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.utils;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
@@ -28,6 +29,8 @@ import android.security.keystore.KeyProperties;
 import android.security.keystore.UserNotAuthenticatedException;
 import android.util.Log;
 import androidx.annotation.RequiresApi;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.hardware.fingerprint.FingerprintManagerCompat;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 
@@ -78,6 +81,24 @@ public class SecurityUtils {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
+    public static BiometricPrompt.CryptoObject getCryptoObject() {
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_GCM + "/" + KeyProperties.ENCRYPTION_PADDING_NONE);
+        } catch (NoSuchAlgorithmException e) {
+            Log.w(TAG, e.getLocalizedMessage());
+        } catch (NoSuchPaddingException e) {
+            Log.w(TAG, e.getLocalizedMessage());
+        }
+
+        BiometricPrompt.CryptoObject cryptoObject = null;
+        if (cipher != null) {
+            cryptoObject = new BiometricPrompt.CryptoObject(cipher);
+        }
+
+        return cryptoObject;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public static void createKey(String validity) {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -108,5 +129,10 @@ public class SecurityUtils {
         int[] entryIntValues = resources.getIntArray(R.array.screen_lock_timeout_entry_int_values);
         int indexOfValidity = entryValues.indexOf(validity);
         return entryIntValues[indexOfValidity];
+    }
+
+    public static boolean isFingerprintAvailable(Context context) {
+        FingerprintManagerCompat fingerprintManager = FingerprintManagerCompat.from(context);
+        return fingerprintManager.isHardwareDetected() && fingerprintManager.hasEnrolledFingerprints();
     }
 }

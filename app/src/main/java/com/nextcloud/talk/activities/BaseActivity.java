@@ -26,16 +26,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
 import autodagger.AutoInjector;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.CertificateEvent;
+import com.nextcloud.talk.utils.HandlerExecutor;
 import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
@@ -49,6 +52,7 @@ import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class BaseActivity extends AppCompatActivity {
@@ -60,6 +64,9 @@ public class BaseActivity extends AppCompatActivity {
 
     @Inject
     AppPreferences appPreferences;
+
+    @Inject
+    Context context;
 
     private KeyguardManager keyguardManager;
 
@@ -93,9 +100,31 @@ public class BaseActivity extends AppCompatActivity {
         keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         if (keyguardManager != null && keyguardManager.isKeyguardSecure() && appPreferences.getIsScreenLocked()) {
             if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.getScreenLockTimeout())) {
-                showAuthenticationScreen();
+                if (SecurityUtils.isFingerprintAvailable(context)) {
+                    showBiometricDialog();
+                } else {
+                    showAuthenticationScreen();
+                }
             }
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void showBiometricDialog() {
+        final BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle(String.format(context.getString(R.string.nc_biometric_unlock), context.getString(R.string.nc_app_name)))
+                .setNegativeButtonText(context.getString(R.string.nc_cancel))
+                .build();
+
+        Executor mainExecutor = new HandlerExecutor(new Handler(getMainLooper()));
+
+        final BiometricPrompt biometricPrompt = new BiometricPrompt(this, mainExecutor,
+                new BiometricPrompt.AuthenticationCallback() {
+
+                }
+        );
+
+        biometricPrompt.authenticate(promptInfo, SecurityUtils.getCryptoObject());
     }
 
     private void showAuthenticationScreen() {
@@ -189,5 +218,13 @@ public class BaseActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         eventBus.unregister(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (!disposable.isDisposed()) {
+            disposable.dispose();
+        }
     }
 }

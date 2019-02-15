@@ -112,6 +112,8 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
 
+    <string name="nc_biometric_unlock">Unlock %1$s</string>
+    <string name="nc_cancel">Cancel</string>
 
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_username">Username</string>
