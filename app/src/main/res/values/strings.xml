@@ -94,7 +94,7 @@
     <string name="nc_none">None</string>
     <string name="nc_settings_screen_lock_timeout_key" translatable="false">screen_lock_timeout</string>
     <string name="nc_settings_screen_security_title">Screen security</string>
-    <string name="nc_settings_screen_security_desc">Prevents screenshots in the recents list and inside the app</string>
+    <string name="nc_settings_screen_security_desc">Prevents screenshots in the recent list and inside the app</string>
     <string name="nc_settings_screen_security_key" translatable="false">screen_security</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
     <string name="nc_settings_incognito_keyboard_desc">Instructs keyboard to disable personalized learning (without guarantees)</string>
