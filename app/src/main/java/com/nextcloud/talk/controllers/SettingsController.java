@@ -63,6 +63,7 @@ import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
+import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
@@ -156,6 +157,9 @@ public class SettingsController extends BaseController {
     @BindView(R.id.settings_screen_lock)
     MaterialSwitchPreference screenLockSwitchPreference;
 
+    @BindView(R.id.settings_screen_lock_timeout)
+    MaterialChoicePreference screenLockTimeoutChoicePreference;
+
     @BindView(R.id.message_text)
     TextView messageText;
 
@@ -180,6 +184,8 @@ public class SettingsController extends BaseController {
     private OnPreferenceValueChangedListener<String> proxyTypeChangeListener;
     private OnPreferenceValueChangedListener<Boolean> proxyCredentialsChangeListener;
     private OnPreferenceValueChangedListener<Boolean> screenSecurityChangeListener;
+    private OnPreferenceValueChangedListener<Boolean> screenLockChangeListener;
+    private OnPreferenceValueChangedListener<String> screenLockTimeoutChangeListener;
 
     private Disposable profileQueryDisposable;
     private Disposable dbQueryDisposable;
@@ -207,6 +213,8 @@ public class SettingsController extends BaseController {
         appPreferences.registerProxyTypeListener(proxyTypeChangeListener = new ProxyTypeChangeListener());
         appPreferences.registerProxyCredentialsListener(proxyCredentialsChangeListener = new ProxyCredentialsChangeListener());
         appPreferences.registerScreenSecurityListener(screenSecurityChangeListener = new ScreenSecurityChangeListener());
+        appPreferences.registerScreenLockListener(screenLockChangeListener = new ScreenLockListener());
+        appPreferences.registerScreenLockTimeoutListener(screenLockTimeoutChangeListener = new ScreenLockTimeoutListener());
 
         List<String> listWithIntFields = new ArrayList<>();
         listWithIntFields.add("proxy_port");
@@ -236,6 +244,7 @@ public class SettingsController extends BaseController {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             screenLockSwitchPreference.setVisibility(View.GONE);
+            screenLockTimeoutChoicePreference.setVisibility(View.GONE);
         } else {
             screenLockSwitchPreference.setSummary(String.format(Locale.getDefault(),
                     getResources().getString(R.string.nc_settings_screen_lock_desc),
@@ -366,13 +375,27 @@ public class SettingsController extends BaseController {
 
             if (keyguardManager.isDeviceSecure()) {
                 screenLockSwitchPreference.setEnabled(true);
+                screenLockTimeoutChoicePreference.setEnabled(true);
                 ((Checkable) screenLockSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsScreenLocked());
+
+                screenLockTimeoutChoicePreference.setEnabled(appPreferences.getIsScreenLocked());
+
+                if (appPreferences.getIsScreenLocked()) {
+                    screenLockTimeoutChoicePreference.setAlpha(1.0f);
+                } else {
+                    screenLockTimeoutChoicePreference.setAlpha(0.38f);
+                }
+
                 screenLockSwitchPreference.setAlpha(1.0f);
             } else {
                 screenLockSwitchPreference.setEnabled(false);
-                appPreferences.setScreenLock(false);
+                screenLockTimeoutChoicePreference.setEnabled(false);
+                appPreferences.removeScreenLock();
+                appPreferences.removeScreenLockTimeout();
+                screenLockTimeoutChoicePreference.setValue("0");
                 ((Checkable) screenLockSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(false);
                 screenLockSwitchPreference.setAlpha(0.38f);
+                screenLockTimeoutChoicePreference.setAlpha(0.38f);
             }
         }
 
@@ -579,6 +602,8 @@ public class SettingsController extends BaseController {
             appPreferences.unregisterProxyTypeListener(proxyTypeChangeListener);
             appPreferences.unregisterProxyCredentialsListener(proxyCredentialsChangeListener);
             appPreferences.unregisterScreenSecurityListener(screenSecurityChangeListener);
+            appPreferences.unregisterScreenLockListener(screenLockChangeListener);
+            appPreferences.unregisterScreenLockTimeoutListener(screenLockTimeoutChangeListener);
         }
         super.onDestroy();
     }
@@ -641,13 +666,37 @@ public class SettingsController extends BaseController {
         return getResources().getString(R.string.nc_app_name);
     }
 
+    private class ScreenLockTimeoutListener implements OnPreferenceValueChangedListener<String> {
+
+        @Override
+        public void onChanged(String newValue) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                SecurityUtils.createKey(newValue);
+            }
+        }
+    }
+
+    private class ScreenLockListener implements OnPreferenceValueChangedListener<Boolean> {
+
+        @Override
+        public void onChanged(Boolean newValue) {
+            screenLockTimeoutChoicePreference.setEnabled(newValue);
+
+            if (newValue) {
+                screenLockTimeoutChoicePreference.setAlpha(1.0f);
+            } else {
+                screenLockTimeoutChoicePreference.setAlpha(0.38f);
+            }
+        }
+    }
+
     private class ScreenSecurityChangeListener implements OnPreferenceValueChangedListener<Boolean> {
 
         @Override
         public void onChanged(Boolean newValue) {
             if (newValue) {
                 if (getActivity() != null) {
-                    getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+                    getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
                 }
             } else {
                 if (getActivity() != null) {

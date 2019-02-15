@@ -157,6 +157,17 @@
             apc:mp_key="@string/nc_settings_screen_lock_key"
             apc:mp_title="@string/nc_settings_screen_lock_title" />
 
+        <com.yarolegovich.mp.MaterialChoicePreference
+            android:id="@+id/settings_screen_lock_timeout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@string/nc_screen_lock_timeout_thirty"
+            apc:mp_entry_values="@array/screen_lock_timeout_entry_values"
+            apc:mp_entry_descriptions="@array/screen_lock_timeout_descriptions"
+            apc:mp_key="@string/nc_settings_screen_lock_timeout_key"
+            apc:mp_show_value="onRight"
+            apc:mp_title="@string/nc_settings_screen_lock_timeout_title" />
+
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/settings_screen_security"
             android:layout_width="match_parent"

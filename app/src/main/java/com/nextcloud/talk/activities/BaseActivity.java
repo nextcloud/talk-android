@@ -29,8 +29,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
-
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import autodagger.AutoInjector;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.CertificateEvent;
@@ -38,21 +40,15 @@ import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import javax.inject.Inject;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.util.List;
-
-import javax.inject.Inject;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class BaseActivity extends AppCompatActivity {
@@ -73,7 +69,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (appPreferences.getIsScreenLocked()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                SecurityUtils.createKey();
+                SecurityUtils.createKey(appPreferences.getScreenLockTimeout());
             }
         }
     }

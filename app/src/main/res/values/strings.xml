@@ -103,6 +103,15 @@
     <string name="nc_settings_link_previews_desc">Allows previews of content from received links for supported services</string>
     <string name="nc_settings_link_previews_key" translatable="false">link_previews</string>
 
+    <string name="nc_screen_lock_timeout_30">30 seconds</string>
+    <string name="nc_screen_lock_timeout_60">1 minute</string>
+    <string name="nc_screen_lock_timeout_300">5 minutes</string>
+    <string name="nc_screen_lock_timeout_600">10 minutes</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
 
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_username">Username</string>
