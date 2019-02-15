@@ -215,7 +215,7 @@ public class CallController extends BaseController {
 
         roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
         roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "");
-        conversationUser = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
+        conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY);
 
         if (conversationUser == null) {
             conversationUser = userUtils.getCurrentUser();
