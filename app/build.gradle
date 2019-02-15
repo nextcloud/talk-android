@@ -39,8 +39,8 @@ android {
         lintOptions {
             disable 'InvalidPackage'
             disable 'MissingTranslation'
-            disable "ValidController",
-                    "ValidControllerChangeHandler"
+            disable "ValidController"
+            disable "ValidControllerChangeHandler"
         }
     }
 
