@@ -373,7 +373,7 @@ public class SettingsController extends BaseController {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
 
-            if (keyguardManager.isDeviceSecure()) {
+            if (keyguardManager.isKeyguardSecure()) {
                 screenLockSwitchPreference.setEnabled(true);
                 screenLockTimeoutChoicePreference.setEnabled(true);
                 ((Checkable) screenLockSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsScreenLocked());
