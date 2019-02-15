@@ -28,7 +28,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import autodagger.AutoInjector;
+import butterknife.BindView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -51,18 +54,6 @@ import com.vanniktech.emoji.EmojiTextView;
 import com.yarolegovich.mp.MaterialChoicePreference;
 import com.yarolegovich.mp.MaterialPreferenceCategory;
 import com.yarolegovich.mp.MaterialPreferenceScreen;
-
-import org.parceler.Parcels;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import autodagger.AutoInjector;
-import butterknife.BindView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -70,43 +61,38 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import org.parceler.Parcels;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ConversationInfoController extends BaseController {
 
+    @BindView(R.id.notification_settings)
+    MaterialPreferenceScreen materialPreferenceScreen;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.conversation_info_message_notifications)
+    MaterialChoicePreference messageNotificationLevel;
+    @BindView(R.id.conversation_info_name)
+    MaterialPreferenceCategory nameCategoryView;
+    @BindView(R.id.avatar_image)
+    SimpleDraweeView conversationAvatarImageView;
+    @BindView(R.id.display_name_text)
+    EmojiTextView conversationDisplayName;
+    @BindView(R.id.participants_list_category)
+    MaterialPreferenceCategory participantsListCategory;
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
+    @Inject
+    NcApi ncApi;
     private String baseUrl;
     private String conversationToken;
     private UserEntity conversationUser;
     private String credentials;
-
-    @BindView(R.id.notification_settings)
-    MaterialPreferenceScreen materialPreferenceScreen;
-
-    @BindView(R.id.progressBar)
-    ProgressBar progressBar;
-
-    @BindView(R.id.conversation_info_message_notifications)
-    MaterialChoicePreference messageNotificationLevel;
-
-    @BindView(R.id.conversation_info_name)
-    MaterialPreferenceCategory nameCategoryView;
-
-    @BindView(R.id.avatar_image)
-    SimpleDraweeView conversationAvatarImageView;
-
-    @BindView(R.id.display_name_text)
-    EmojiTextView conversationDisplayName;
-
-    @BindView(R.id.participants_list_category)
-    MaterialPreferenceCategory participantsListCategory;
-
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-
-    @Inject
-    NcApi ncApi;
-
     private Disposable roomDisposable;
     private Disposable participantsDisposable;
 

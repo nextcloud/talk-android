@@ -26,7 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.View;
-
+import androidx.core.view.ViewCompat;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
@@ -34,8 +34,6 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import java.util.Map;
-
-import androidx.core.view.ViewCompat;
 
 public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 

@@ -110,6 +110,7 @@ import java.util.concurrent.TimeUnit;
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
         MessagesListAdapter.Formatter<Date>, MessagesListAdapter.OnMessageLongClickListener, MessageHolders.ContentChecker {
     private static final String TAG = "ChatController";
+    private static final byte CONTENT_TYPE_SYSTEM_MESSAGE = 1;
     @Inject
     NcApi ncApi;
     @Inject
@@ -154,11 +155,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private boolean isFirstMessagesProcessing = true;
     private boolean isHelloClicked;
     private boolean isLeavingForConversation;
-
     private boolean isLinkPreviewAllowed;
-
-    private static final byte CONTENT_TYPE_SYSTEM_MESSAGE = 1;
-
     private boolean wasDetached;
     private EmojiPopup emojiPopup;
 
@@ -627,7 +624,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private void leaveRoom() {
         ncApi.leaveRoom(credentials,
                 ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser.getBaseUrl(),
-                roomToken))
+                        roomToken))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
@@ -672,7 +669,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken),
                 message, conversationUser
-                .getDisplayName())
+                        .getDisplayName())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {

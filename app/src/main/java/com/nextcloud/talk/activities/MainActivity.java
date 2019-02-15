@@ -23,7 +23,10 @@ package com.nextcloud.talk.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewGroup;
-
+import androidx.appcompat.widget.Toolbar;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -37,16 +40,11 @@ import com.nextcloud.talk.controllers.ServerSelectionController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-
-import javax.inject.Inject;
-
-import androidx.appcompat.widget.Toolbar;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.requery.Persistable;
 import io.requery.android.sqlcipher.SqlCipherDatabaseSource;
 import io.requery.reactivex.ReactiveEntityStore;
+
+import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public final class MainActivity extends BaseActivity implements ActionBarProvider {

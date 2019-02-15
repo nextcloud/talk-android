@@ -23,12 +23,10 @@ package com.nextcloud.talk.utils;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-
-import com.nextcloud.talk.R;
-import com.vanniktech.emoji.EmojiTextView;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import com.nextcloud.talk.R;
+import com.vanniktech.emoji.EmojiTextView;
 
 public class EmojiToolbar extends Toolbar {
     private EmojiTextView emojiTitleTextView;

@@ -21,7 +21,6 @@
 package com.nextcloud.talk.models.json.converters;
 
 import android.os.Parcel;
-
 import org.parceler.ParcelConverter;
 import org.parceler.Parcels;
 

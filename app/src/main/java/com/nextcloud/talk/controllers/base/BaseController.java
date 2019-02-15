@@ -24,12 +24,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import autodagger.AutoInjector;
 import com.bluelinelabs.conductor.Controller;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.AccountVerificationController;
@@ -39,14 +41,9 @@ import com.nextcloud.talk.controllers.WebViewLoginController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public abstract class BaseController extends ButterKnifeController {
@@ -157,7 +154,7 @@ public abstract class BaseController extends ButterKnifeController {
         View view;
         EditText editText;
 
-        for(int i = 0; i < viewGroup.getChildCount(); i++) {
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
             view = viewGroup.getChildAt(i);
             if (view instanceof EditText) {
                 editText = (EditText) view;

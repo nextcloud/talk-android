@@ -19,10 +19,9 @@
  */
 package com.nextcloud.talk.utils.database.arbitrarystorage;
 
+import androidx.annotation.Nullable;
 import com.nextcloud.talk.models.database.ArbitraryStorage;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
-
-import androidx.annotation.Nullable;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import io.requery.Persistable;

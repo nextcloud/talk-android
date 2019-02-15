@@ -22,7 +22,6 @@ package com.nextcloud.talk.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
 import eu.davidea.flipview.FlipView;
 
 public class MagicFlipView extends FlipView {

@@ -40,9 +40,7 @@ import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Build;
 import android.util.Log;
-
 import com.nextcloud.talk.events.PeerConnectionEvent;
-
 import org.greenrobot.eventbus.EventBus;
 import org.webrtc.ThreadUtils;
 
@@ -58,10 +56,10 @@ public class MagicAudioManager {
     private static final String SPEAKERPHONE_AUTO = "auto";
     private static final String SPEAKERPHONE_FALSE = "false";
     private final Context magicContext;
-    // Contains speakerphone setting: auto, true or false
-    private String useSpeakerphone;
     // Handles all tasks related to Bluetooth headset devices.
     private final MagicBluetoothManager bluetoothManager;
+    // Contains speakerphone setting: auto, true or false
+    private String useSpeakerphone;
     private AudioManager audioManager;
     private AudioManagerEvents audioManagerEvents;
     private AudioManagerState amState;
@@ -95,22 +93,6 @@ public class MagicAudioManager {
     private BroadcastReceiver wiredHeadsetReceiver;
     // Callback method for changes in audio focus.
     private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
-
-    public void toggleUseSpeakerphone() {
-        if (useSpeakerphone.equals(SPEAKERPHONE_FALSE)) {
-            useSpeakerphone = SPEAKERPHONE_AUTO;
-            setDefaultAudioDevice(AudioDevice.SPEAKER_PHONE);
-        } else {
-            useSpeakerphone = SPEAKERPHONE_FALSE;
-            setDefaultAudioDevice(AudioDevice.EARPIECE);
-        }
-
-        updateAudioDeviceState();
-    }
-
-    public boolean isSpeakerphoneAutoOn() {
-        return (useSpeakerphone.equals(SPEAKERPHONE_AUTO));
-    }
 
     private MagicAudioManager(Context context, boolean useProximitySensor) {
         Log.d(TAG, "ctor");
@@ -154,6 +136,22 @@ public class MagicAudioManager {
      */
     public static MagicAudioManager create(Context context, boolean useProximitySensor) {
         return new MagicAudioManager(context, useProximitySensor);
+    }
+
+    public void toggleUseSpeakerphone() {
+        if (useSpeakerphone.equals(SPEAKERPHONE_FALSE)) {
+            useSpeakerphone = SPEAKERPHONE_AUTO;
+            setDefaultAudioDevice(AudioDevice.SPEAKER_PHONE);
+        } else {
+            useSpeakerphone = SPEAKERPHONE_FALSE;
+            setDefaultAudioDevice(AudioDevice.EARPIECE);
+        }
+
+        updateAudioDeviceState();
+    }
+
+    public boolean isSpeakerphoneAutoOn() {
+        return (useSpeakerphone.equals(SPEAKERPHONE_AUTO));
     }
 
     /**

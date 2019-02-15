@@ -23,12 +23,10 @@ package com.nextcloud.talk.models.json.autocomplete;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-
+import lombok.Data;
 import org.parceler.Parcel;
 
 import java.util.List;
-
-import lombok.Data;
 
 @Parcel
 @Data

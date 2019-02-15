@@ -46,7 +46,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
-
 import org.webrtc.ThreadUtils;
 
 import java.util.List;

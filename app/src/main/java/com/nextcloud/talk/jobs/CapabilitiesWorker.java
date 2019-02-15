@@ -22,7 +22,11 @@ package com.nextcloud.talk.jobs;
 
 import android.content.Context;
 import android.util.Log;
-
+import androidx.annotation.NonNull;
+import androidx.work.Data;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
+import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -32,26 +36,18 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.IOException;
-import java.net.CookieManager;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.work.Data;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
-import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
+import org.greenrobot.eventbus.EventBus;
 import retrofit2.Retrofit;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.net.CookieManager;
+import java.util.ArrayList;
+import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CapabilitiesWorker extends Worker {

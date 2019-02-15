@@ -20,12 +20,10 @@
 
 package com.nextcloud.talk.events;
 
-import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
-
-import org.webrtc.SessionDescription;
-
 import androidx.annotation.Nullable;
+import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import lombok.Data;
+import org.webrtc.SessionDescription;
 
 @Data
 public class SessionDescriptionSendEvent {

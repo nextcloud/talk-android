@@ -24,16 +24,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 import com.vanniktech.emoji.EmojiTextView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
 
@@ -67,7 +65,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
             });
-        } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE){
+        } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
             messageText.setText("GIPHY");
             DisplayUtils.setClickableString("GIPHY", "https://giphy.com", messageText);
         } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE) {

@@ -49,12 +49,9 @@ import java.util.List;
 public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention> implements FlexibleAdapter.OnItemClickListener {
     @Inject
     NcApi ncApi;
-
-    private UserEntity currentUser;
-
     @Inject
     UserUtils userUtils;
-
+    private UserEntity currentUser;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
     private Context context;
 

@@ -22,12 +22,10 @@ package com.nextcloud.talk.models.json.sharees;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-
+import lombok.Data;
 import org.parceler.Parcel;
 
 import java.util.List;
-
-import lombok.Data;
 
 @Parcel
 @Data

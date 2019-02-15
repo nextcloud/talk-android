@@ -20,8 +20,7 @@
 package com.nextcloud.talk.models.json.chat;
 
 import android.text.TextUtils;
-import android.util.Log;
-
+import androidx.annotation.Nullable;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -33,26 +32,48 @@ import com.nextcloud.talk.utils.TextMatchers;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 import com.stfalcon.chatkit.commons.models.MessageContentType;
-
+import lombok.Data;
 import org.parceler.Parcel;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import androidx.annotation.Nullable;
-import lombok.Data;
+import java.util.*;
 
 @Parcel
 @Data
 @JsonObject
 public class ChatMessage implements IMessage, MessageContentType, MessageContentType.Image {
+    @JsonIgnore
+    public boolean isGrouped;
+    @JsonIgnore
+    public String activeUserId;
+    @JsonIgnore
+    public Map<String, String> selectedIndividualHashMap;
+    @JsonIgnore
+    public boolean isLinkPreviewAllowed;
     List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
             MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
             MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
+    String baseUrl;
+    @JsonField(name = "id")
+    int jsonMessageId;
+    @JsonField(name = "token")
+    String token;
+    // guests or users
+    @JsonField(name = "actorType")
+    String actorType;
+    @JsonField(name = "actorId")
+    String actorId;
+    // send when crafting a message
+    @JsonField(name = "actorDisplayName")
+    String actorDisplayName;
+    @JsonField(name = "timestamp")
+    long timestamp;
+    // send when crafting a message, max 1000 lines
+    @JsonField(name = "message")
+    String message;
+    @JsonField(name = "messageParameters")
+    HashMap<String, HashMap<String, String>> messageParameters;
+    @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
+    SystemMessageType systemMessageType;
 
     private boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {
@@ -100,72 +121,6 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
 
         return TextMatchers.getMessageTypeFromString(getText());
     }
-
-    public enum MessageType {
-        REGULAR_TEXT_MESSAGE,
-        SYSTEM_MESSAGE,
-        SINGLE_LINK_GIPHY_MESSAGE,
-        SINGLE_LINK_TENOR_MESSAGE,
-        SINGLE_LINK_GIF_MESSAGE,
-        SINGLE_LINK_MESSAGE,
-        SINGLE_LINK_VIDEO_MESSAGE,
-        SINGLE_LINK_IMAGE_MESSAGE,
-        SINGLE_LINK_AUDIO_MESSAGE,
-        SINGLE_NC_ATTACHMENT_MESSAGE,
-    }
-
-    public enum SystemMessageType {
-        DUMMY,
-        CONVERSATION_CREATED,
-        CONVERSATION_RENAMED,
-        CALL_STARTED,
-        CALL_JOINED,
-        CALL_LEFT,
-        CALL_ENDED,
-        GUESTS_ALLOWED,
-        GUESTS_DISALLOWED,
-        PASSWORD_SET,
-        PASSWORD_REMOVED,
-        USER_ADDED,
-        USER_REMOVED,
-        MODERATOR_PROMOTED,
-        MODERATOR_DEMOTED,
-        FILE_SHARED,
-    }
-
-    String baseUrl;
-    @JsonField(name = "id")
-    int jsonMessageId;
-    @JsonField(name = "token")
-    String token;
-    // guests or users
-    @JsonField(name = "actorType")
-    String actorType;
-    @JsonField(name = "actorId")
-    String actorId;
-    // send when crafting a message
-    @JsonField(name = "actorDisplayName")
-    String actorDisplayName;
-    @JsonField(name = "timestamp")
-    long timestamp;
-    // send when crafting a message, max 1000 lines
-    @JsonField(name = "message")
-    String message;
-    @JsonField(name = "messageParameters")
-    HashMap<String, HashMap<String, String>> messageParameters;
-
-    @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
-    SystemMessageType systemMessageType;
-
-    @JsonIgnore
-    public boolean isGrouped;
-    @JsonIgnore
-    public String activeUserId;
-    @JsonIgnore
-    public Map<String, String> selectedIndividualHashMap;
-    @JsonIgnore
-    public boolean isLinkPreviewAllowed;
-
 
     public Map<String, String> getSelectedIndividualHashMap() {
         return selectedIndividualHashMap;
@@ -279,5 +234,37 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     @Override
     public String getSystemMessage() {
         return new EnumSystemMessageTypeConverter().convertToString(getSystemMessageType());
+    }
+
+    public enum MessageType {
+        REGULAR_TEXT_MESSAGE,
+        SYSTEM_MESSAGE,
+        SINGLE_LINK_GIPHY_MESSAGE,
+        SINGLE_LINK_TENOR_MESSAGE,
+        SINGLE_LINK_GIF_MESSAGE,
+        SINGLE_LINK_MESSAGE,
+        SINGLE_LINK_VIDEO_MESSAGE,
+        SINGLE_LINK_IMAGE_MESSAGE,
+        SINGLE_LINK_AUDIO_MESSAGE,
+        SINGLE_NC_ATTACHMENT_MESSAGE,
+    }
+
+    public enum SystemMessageType {
+        DUMMY,
+        CONVERSATION_CREATED,
+        CONVERSATION_RENAMED,
+        CALL_STARTED,
+        CALL_JOINED,
+        CALL_LEFT,
+        CALL_ENDED,
+        GUESTS_ALLOWED,
+        GUESTS_DISALLOWED,
+        PASSWORD_SET,
+        PASSWORD_REMOVED,
+        USER_ADDED,
+        USER_REMOVED,
+        MODERATOR_PROMOTED,
+        MODERATOR_DEMOTED,
+        FILE_SHARED,
     }
 }

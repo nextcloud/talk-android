@@ -20,6 +20,7 @@
  */
 package com.nextcloud.talk.api;
 
+import androidx.annotation.Nullable;
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
@@ -35,25 +36,13 @@ import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
-
-import java.util.List;
-import java.util.Map;
-
-import androidx.annotation.Nullable;
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-import retrofit2.http.DELETE;
-import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.POST;
-import retrofit2.http.PUT;
-import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
-import retrofit2.http.Url;
+import retrofit2.http.*;
+
+import java.util.List;
+import java.util.Map;
 
 public interface NcApi {
 

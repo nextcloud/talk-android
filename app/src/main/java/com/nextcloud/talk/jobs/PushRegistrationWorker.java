@@ -21,12 +21,10 @@
 package com.nextcloud.talk.jobs;
 
 import android.content.Context;
-
-import com.nextcloud.talk.utils.PushUtils;
-
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+import com.nextcloud.talk.utils.PushUtils;
 
 public class PushRegistrationWorker extends Worker {
     public static final String TAG = "PushRegistrationWorker";

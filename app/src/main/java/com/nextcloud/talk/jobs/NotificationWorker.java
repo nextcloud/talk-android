@@ -37,7 +37,13 @@ import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.work.Data;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
+import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
@@ -61,9 +67,16 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
 import org.parceler.Parcels;
+import retrofit2.Retrofit;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.security.InvalidKeyException;
@@ -72,23 +85,6 @@ import java.security.PrivateKey;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.zip.CRC32;
-
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.work.Data;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
-import autodagger.AutoInjector;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import okhttp3.JavaNetCookieJar;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class NotificationWorker extends Worker {

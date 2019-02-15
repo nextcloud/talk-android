@@ -21,22 +21,15 @@
 package com.nextcloud.talk.utils.animations;
 
 import android.os.Bundle;
-import android.transition.ChangeBounds;
-import android.transition.ChangeClipBounds;
-import android.transition.ChangeTransform;
-import android.transition.Fade;
-import android.transition.Transition;
-import android.transition.TransitionSet;
+import android.transition.*;
 import android.view.View;
 import android.view.ViewGroup;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.bluelinelabs.conductor.changehandler.SharedElementTransitionChangeHandler;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class SharedElementTransition extends SharedElementTransitionChangeHandler {
     private static final String KEY_WAIT_FOR_TRANSITION_NAMES = "SharedElementTransition.names";

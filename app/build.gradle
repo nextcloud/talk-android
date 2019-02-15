@@ -17,7 +17,7 @@ android {
         targetSdkVersion 28
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode 82
+        versionCode 120
         versionName "3.2.3"
 
         flavorDimensions "default"

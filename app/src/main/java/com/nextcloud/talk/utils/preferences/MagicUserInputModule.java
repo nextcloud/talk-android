@@ -28,18 +28,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-
+import androidx.appcompat.app.AlertDialog;
 import autodagger.AutoInjector;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.yarolegovich.mp.io.StandardUserInputModule;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.appcompat.app.AlertDialog;
-
-import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicUserInputModule extends StandardUserInputModule {

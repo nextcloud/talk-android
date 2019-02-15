@@ -23,22 +23,20 @@
 package com.nextcloud.talk.utils;
 
 import android.util.Patterns;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.vanniktech.emoji.EmojiInformation;
 import com.vanniktech.emoji.EmojiUtils;
+import eu.medsea.mimeutil.MimeUtil;
+import eu.medsea.mimeutil.detector.ExtensionMimeDetector;
+import eu.medsea.mimeutil.detector.MagicMimeMimeDetector;
+import eu.medsea.mimeutil.detector.OpendesktopMimeDetector;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import eu.medsea.mimeutil.MimeUtil;
-import eu.medsea.mimeutil.detector.ExtensionMimeDetector;
-import eu.medsea.mimeutil.detector.MagicMimeMimeDetector;
-import eu.medsea.mimeutil.detector.OpendesktopMimeDetector;
 
 public final class TextMatchers {
 

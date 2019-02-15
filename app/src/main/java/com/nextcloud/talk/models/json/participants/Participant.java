@@ -24,11 +24,9 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.converters.ObjectParcelConverter;
-
+import lombok.Data;
 import org.parceler.Parcel;
 import org.parceler.ParcelPropertyConverter;
-
-import lombok.Data;
 
 @Parcel
 @Data
@@ -58,6 +56,7 @@ public class Participant {
     @ParcelPropertyConverter(ObjectParcelConverter.class)
     @JsonField(name = "inCall")
     Object inCall;
+    String source;
 
     public ParticipantFlags getParticipantFlags() {
         ParticipantFlags participantFlags = ParticipantFlags.NOT_IN_CALL;
@@ -75,7 +74,6 @@ public class Participant {
 
         return participantFlags;
     }
-    String source;
 
     public enum ParticipantType {
         DUMMY,
@@ -87,20 +85,16 @@ public class Participant {
     }
 
     public enum ParticipantFlags {
-        NOT_IN_CALL (0),
-        IN_CALL (1),
-        IN_CALL_WITH_AUDIO (3),
-        IN_CALL_WITH_VIDEO (5),
-        IN_CALL_WITH_AUDIO_AND_VIDEO (7);
+        NOT_IN_CALL(0),
+        IN_CALL(1),
+        IN_CALL_WITH_AUDIO(3),
+        IN_CALL_WITH_VIDEO(5),
+        IN_CALL_WITH_AUDIO_AND_VIDEO(7);
 
         private long value;
 
         ParticipantFlags(long value) {
             this.value = value;
-        }
-
-        public long getValue() {
-            return value;
         }
 
         public static ParticipantFlags fromValue(long value) {
@@ -117,6 +111,10 @@ public class Participant {
             } else {
                 return NOT_IN_CALL;
             }
+        }
+
+        public long getValue() {
+            return value;
         }
 
     }

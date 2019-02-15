@@ -26,7 +26,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -37,14 +39,9 @@ import com.nextcloud.talk.controllers.CallController;
 import com.nextcloud.talk.controllers.CallNotificationController;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
-
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicCallActivity extends BaseActivity {
