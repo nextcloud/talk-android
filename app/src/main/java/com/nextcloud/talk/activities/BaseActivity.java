@@ -92,7 +92,7 @@ public class BaseActivity extends AppCompatActivity {
     private void checkIfWeAreSecure() {
         keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         if (keyguardManager != null && keyguardManager.isKeyguardSecure() && appPreferences.getIsScreenLocked()) {
-            if (!SecurityUtils.checkIfWeAreAuthenticated()) {
+            if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.getScreenLockTimeout())) {
                 showAuthenticationScreen();
             }
         }
@@ -110,7 +110,7 @@ public class BaseActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
             if (resultCode == RESULT_OK) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (SecurityUtils.checkIfWeAreAuthenticated()) {
+                    if (SecurityUtils.checkIfWeAreAuthenticated(appPreferences.getScreenLockTimeout())) {
                         // all went well
                     }
                 }

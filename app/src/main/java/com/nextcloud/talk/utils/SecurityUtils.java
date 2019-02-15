@@ -44,7 +44,7 @@ public class SecurityUtils {
     private static final byte[] SECRET_BYTE_ARRAY = new byte[]{1, 2, 3, 4, 5, 6};
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public static boolean checkIfWeAreAuthenticated() {
+    public static boolean checkIfWeAreAuthenticated(String screenLockTimeout) {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
@@ -63,11 +63,17 @@ public class SecurityUtils {
             // User is not authenticated, let's authenticate with device credentials.
             return false;
         } catch (KeyPermanentlyInvalidatedException e) {
+            // This happens if the lock screen has been disabled or reset after the key was
+            // generated after the key was generated.
+            // Shouldnt really happen because we regenerate the key every time an activity
+            // is created, but oh well
+            // Create key, and attempt again
+            createKey(screenLockTimeout);
             return false;
         } catch (BadPaddingException | IllegalBlockSizeException | KeyStoreException |
                 CertificateException | UnrecoverableKeyException | IOException
                 | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
