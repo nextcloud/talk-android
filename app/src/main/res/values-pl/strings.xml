@@ -24,7 +24,7 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Adres serwera</string>
-    <string name="nc_server_not_installed">Proszę zakończ instalację %1$s</string>
+    <string name="nc_server_not_installed">Proszę zakończyć instalację %1$s</string>
     <string name="nc_server_db_upgrade_needed">Zaktualizuj swoją %1$s bazę danych</string>
     <string name="nc_server_maintenance">Proszę przeprowadzić %1$s konserwację do końca</string>
     <string name="nc_server_version">%1$s działa tylko z %2$s 13 i nowszym</string>
@@ -32,17 +32,17 @@
     <string name="nc_server_import_accounts_plain">Importuj konta</string>
     <string name="nc_server_import_account">Importuj konto z aplikacji %1$s</string>
     <string name="nc_server_import_accounts">Importuj konta z aplikacji %1$s</string>
-    <string name="nc_server_failed_to_import_account">Import konta nie powiódł się</string>
+    <string name="nc_server_failed_to_import_account">Nie udało się zaimportować wybranego konta</string>
     <string name="nc_Server_account_imported">Wybrane konto jest zaimportowane i dostępne</string>
-    <string name="nc_get_from_provider">Nie masz jeszcze serwera?\nKliknij tu i zdobądź go od dostawcy</string>
+    <string name="nc_get_from_provider">Nie masz jeszcze serwera?\nKliknij tutaj, aby uzyskać jeden od dostawcy</string>
 
     <!-- Account verification -->
     <string name="nc_push_disabled">Powiadomienie push wyłączone</string>
-    <string name="nc_capabilities_failed">Błąd pobierania, przerywam żądanie</string>
+    <string name="nc_capabilities_failed">Błąd pobierania, przerywano żądanie</string>
     <string name="nc_external_server_failed">Nie udało się pobrać ustawień sygnałowych</string>
-    <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerywam żądanie</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Aplikacja %1$s nie została zainstalowana na serwerze, przerywam żądanie</string>
-    <string name="nc_display_name_not_stored">Nie można zapisać nazwy wyświetlanej, przerywam żądanie</string>
+    <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerywano żądanie</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Aplikacja %1$s nie została zainstalowana na serwerze, przerywano żądanie</string>
+    <string name="nc_display_name_not_stored">Nie można zapisać wyświetlanej nazwy, przerywano żądanie</string>
 
     <string name="nc_never">Nigdy nie dołączył</string>
     <string name="nc_search">Szukaj</string>
@@ -113,12 +113,12 @@
     <string name="nc_contacts_done">Gotowe</string>
 
     <!-- Permissions -->
-    <string name="nc_camera_permission_permanently_denied">Aby używać połączeń video, zezwól aplikacji na używanie aparatu w ustawieniach.</string>
-    <string name="nc_microphone_permission_permanently_denied">Aby używać połączeń audio, zezwól aplikacji na używanie mikrofonu w ustawieniach.</string>
+    <string name="nc_camera_permission_permanently_denied">Aby włączyć komunikację wideo, proszę udzielić dostępu dla \"Kamera\" w ustawieniach systemu.</string>
+    <string name="nc_microphone_permission_permanently_denied">Aby włączyć komunikację głosową, proszę udzielić dostępu dla \"Mikrofon\" w ustawieniach systemu.</string>
     <string name="nc_permissions_settings">Ustawienia</string>
 
     <!-- Call -->
-    <string name="nc_connecting_call">Łączę</string>
+    <string name="nc_connecting_call">Łączę...</string>
     <string name="nc_incoming_call">Połączenie przychodzące od </string>
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_public_call">Nowa rozmowa publiczna</string>
@@ -139,22 +139,22 @@ poprzez specjalnie przygotowany link.</string>
     <string name="nc_mute_calls_description">Nie otrzymasz żadnego powiadomienia o połączeniu</string>
 
     <!-- Bottom sheet menu -->
-    <string name="nc_failed_to_perform_operation">Coś poszło nie tak!</string>
+    <string name="nc_failed_to_perform_operation">Przepraszam, coś poszło nie tak!</string>
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje rozmów publicznych przez telefony 
 komórkowe. Możesz próbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
     <string name="nc_all_ok_operation">OK, wszystko gotowe!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
     <string name="nc_proceed">Kontynuuj</string>
-    <string name="nc_call_name_is_same">Nazwa którą wprowadziłeś już istnieje</string>
+    <string name="nc_call_name_is_same">Wprowadzona nazwa jest taka sama, jak nazwa istniejąca</string>
     <string name="nc_wrong_link">Link rozmowy jest nieprawidłowy</string>
     <string name="nc_share_text">Dołącz do rozmowy %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s zaprasza</string>
-    <string name="nc_share_text_pass">\nPassword: %1$s</string>
+    <string name="nc_share_text_pass">\nHasło: %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_push_to_talk">Push-to-talk</string>
-    <string name="nc_push_to_talk_desc">Gdy mikrofon jest wyłączony, kliknij &amp; i przytrzymaj aby użyć funkcji Push-to-talk</string>
+    <string name="nc_push_to_talk">Naciśnij i mów</string>
+    <string name="nc_push_to_talk_desc">Gdy mikrofon jest wyłączony, kliknij&amp;i przytrzymaj, aby użyć funkcji \"Naciśnij i mów\"</string>
     <string name="nc_configure_cert_auth">Wybierz certyfikat uwierzytelnienia</string>
     <string name="nc_change_cert_auth">Zmień certyfikat uwierzytelnienia</string>
 
@@ -183,8 +183,8 @@ komórkowe. Możesz próbować dołączyć do rozmowy przez przeglądarkę inter
     <string name="nc_formatted_message_you">Ty: %1$s</string>
 
     <!-- Contacts endless loading -->
-    <string name="nc_no_more_load_retry">Brak nowych elementów do załadowania. Odśwież aby spróbować ponownie.</string>
-    <string name="nc_endless_disabled">Brak elementów do załadowania (osiągnięty max)</string>
+    <string name="nc_no_more_load_retry">Brak nowych elementów do załadowania. Odśwież, aby spróbować ponownie.</string>
+    <string name="nc_endless_disabled">Brak elementów do załadowania (osiągnięty maksimum).</string>
     <string name="nc_endless_cancel">Anulowane przez użytkownika.</string>
     <string name="nc_endless_error">Wystąpił błąd podczas ładowania kolejnych elementów.</string>
 
@@ -195,8 +195,8 @@ komórkowe. Możesz próbować dołączyć do rozmowy przez przeglądarkę inter
     <string name="nc_description_send_message_button">Wyślij wiadomość</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">Stuknij aby być pierwszą/ym, który powie %1$s!</string>
-    <string name="nc_conversations_empty">Dołącz do rozmowy lub rozpocznij nową\n Powitaj swoich znajomych i przyjaciół!</string>
+    <string name="nc_chat_empty">Stuknij, aby być pierwszym, który powie %1$s!</string>
+    <string name="nc_conversations_empty">Dołącz do rozmowy lub rozpocznij nową\n Przywitaj się z przyjaciółmi i kolegami!</string>
     <string name="nc_hello">Cześć</string>
 
     <!-- Other -->

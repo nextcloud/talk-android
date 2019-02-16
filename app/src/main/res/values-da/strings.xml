@@ -24,9 +24,9 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Serveradresse</string>
-    <string name="nc_server_not_installed">Venligst slutfør %1$s din installation</string>
-    <string name="nc_server_db_upgrade_needed">Venligst opdatere din %1$s databas</string>
-    <string name="nc_server_maintenance">Venligst få  %1$s ud fra vedligeholdelse </string>
+    <string name="nc_server_not_installed">Afslut venligst din %1$s installation</string>
+    <string name="nc_server_db_upgrade_needed">Opdater venligst din %1$s database</string>
+    <string name="nc_server_maintenance">Få venligst  %1$s ud fra vedligeholdelse </string>
     <string name="nc_server_version">%1$svirker kun med %2$s 13 og nyere</string>
     <string name="nc_server_import_account_plain">Importer konto</string>
     <string name="nc_server_import_accounts_plain">Importer konti</string>
@@ -38,12 +38,17 @@
 
     <!-- Account verification -->
     <string name="nc_push_disabled">Pushbeskeder er slået fra</string>
+    <string name="nc_capabilities_failed">Anskaffelse af evner fejlede, annullerer</string>
+    <string name="nc_external_server_failed">Anskaffelse af signaleringsindstillinger fejlede</string>
     <string name="nc_display_name_not_fetched">Display navn kunne ikke hentes, afbrydes</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s appen er ikke installeret på serveren, afbryder</string>
+    <string name="nc_display_name_not_stored">Kunne ikke opbevare skærmnavn, afbryder</string>
+
     <string name="nc_never">Aldrig ansluttet</string>
     <string name="nc_search">Søg</string>
 
     <string name="nc_certificate_dialog_title">Tjek certifikatet</string>
+    <string name="nc_certificate_dialog_text">Stoler du på det, indtil nu, ukendte SSL certifikat ,udstedt af %1$s for %2$s,  gyldig fra %3$s til %4$s?</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nej</string>
     <string name="nc_certificate_error">Din SSL indstilling forhindrede forbindelse</string>
@@ -61,6 +66,7 @@
     <string name="nc_settings_remove_account">Fjern konto</string>
     <string name="nc_settings_add_account">Tilføj en konto</string>
     <string name="nc_settings_wrong_account">Kun nuværende konto kan gen autoriseres</string>
+    <string name="nc_settings_no_talk_installed">Talk appen er ikke installeret på serveren du prøver at blive godkendt på</string>
     <string name="nc_settings_account_updated">Vi har opdateret din eksisterende konto i stedet for at tilføje en ny</string>
     <string name="nc_account_scheduled_for_deletion">Kontoen er planlagt til sletning, og kan ikke ændres</string>
     <string name="nc_settings_notification_sounds">Notifikationslyde</string>
@@ -106,6 +112,9 @@
     <string name="nc_select_contacts">Vælg kontakter</string>
     <string name="nc_contacts_done">Færdig</string>
 
+    <!-- Permissions -->
+    <string name="nc_camera_permission_permanently_denied">For at aktivere video kommunikation accepter venligst \"Kamera\" tilladelsen i system indstillingerne</string>
+    <string name="nc_microphone_permission_permanently_denied">For at aktivere video kommunikation accepter venligst \"Mikrofon\" tilladelsen i system indstillingerne</string>
     <string name="nc_permissions_settings">Indstillinger</string>
 
     <!-- Call -->
@@ -113,19 +122,42 @@
     <string name="nc_incoming_call">Opkald fra</string>
     <string name="nc_nick_guest">Gæst</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
+    <string name="nc_public_call_explanation">Offentlige samtaler lader dig invitere folk udefra gennem et
+speciel lavet link.</string>
+
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s på %2$s notifikationskanal</string>
+    <string name="nc_notification_channel_calls">Opkalds notifikations kanal</string>
+    <string name="nc_notification_channel_messages">Beskeder notifikations kanal</string>
     <string name="nc_notification_channel_calls_description">Viser indkommende opkald</string>
     <string name="nc_notification_settings">Meddelelsesindstillinger</string>
     <string name="nc_plain_old_messages">Beskeder</string>
     <string name="nc_notify_me_always">Giv altid besked</string>
     <string name="nc_notify_me_mention">Giv besked når du bliver omtalt</string>
     <string name="nc_notify_me_never">Giv aldrig besked</string>
+    <string name="nc_mute_calls">Gør opkald lydløs</string>
+    <string name="nc_mute_calls_description">Du vil ikke modtage nogle notifikationer for opkald</string>
+
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Noget gik galt, undskyld!</string>
+    <string name="nc_failed_signaling_settings">Serveren understøtter ikke deltagelse i offentlige samtaler over mobil
+telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
+    <string name="nc_all_ok_operation">OK, alt er klar!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Samtalenavn</string>
     <string name="nc_proceed">Fortsæt</string>
+    <string name="nc_call_name_is_same">Navnet du har indtastet er ens med det eksisterende navn</string>
+    <string name="nc_wrong_link">Samtale link er ikke gyldigt</string>
+    <string name="nc_share_text">Deltag i samtalen på %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text_pass">\nAdgangskode: %1$s</string>
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Tryk-for-at-tale</string>
+    <string name="nc_push_to_talk_desc">Med mikrofonen deaktiveret, hold&amp;nede for at bruge Push-to-talk</string>
+    <string name="nc_configure_cert_auth">Vælg godkendelsescertifikat</string>
+    <string name="nc_change_cert_auth">Skift godkendelsescertifikat</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Skriv en besked…</string>
     <string name="nc_date_header_yesterday">I går</string>
@@ -150,16 +182,25 @@
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Dig: %1$s</string>
 
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Ikke flere ting at indlæse. Genindlæse for at prøve igen.</string>
+    <string name="nc_endless_disabled">Ikke flere ting at indlæse (maximum nået).</string>
     <string name="nc_endless_cancel">Annulleret af brugeren.</string>
+    <string name="nc_endless_error">Der skete en fejl under indlæsninge af flere ting.</string>
+
     <!-- Content descriptions -->
     <string name="nc_description_more_menu_one_to_one">Menu for samtalen med %1$s</string>
     <string name="nc_description_more_menu_public">Menu for gruppesamtalen %1$s</string>
     <string name="nc_description_more_menu_group">Menu for den offentlige samtale %1$s</string>
     <string name="nc_description_send_message_button">Send besked</string>
 
+    <!-- Empty states -->
+    <string name="nc_chat_empty">Klik for at være den første til at sige %1$s!</string>
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny\n Sig hej til dine venner og kollegaer.</string>
     <string name="nc_hello">Hej</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">1000 karakterbegrænsning er nået</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_participants">Deltagere</string>
 
@@ -167,4 +208,5 @@
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">ruger</string>
     <string name="nc_guest">Gæst</string>
-    </resources>
+    <string name="nc_following_link">Bruger følger et offentligt link</string>
+</resources>
