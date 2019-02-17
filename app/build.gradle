@@ -107,6 +107,8 @@ ext {
 
 configurations.all {
     exclude group: 'com.google.firebase', module: 'firebase-core'
+    exclude group: 'com.google.firebase', module: 'firebase-analytics'
+    exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
 }
 
 dependencies {
