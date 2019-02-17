@@ -38,11 +38,11 @@
 
     <!-- Account verification -->
     <string name="nc_push_disabled">Powiadomienie push wyłączone</string>
-    <string name="nc_capabilities_failed">Błąd pobierania, przerywano żądanie</string>
+    <string name="nc_capabilities_failed">Błąd pobierania, przerwano żądanie</string>
     <string name="nc_external_server_failed">Nie udało się pobrać ustawień sygnałowych</string>
-    <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerywano żądanie</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Aplikacja %1$s nie została zainstalowana na serwerze, przerywano żądanie</string>
-    <string name="nc_display_name_not_stored">Nie można zapisać wyświetlanej nazwy, przerywano żądanie</string>
+    <string name="nc_display_name_not_fetched">Nie udało się pobrać nazwy, przerwano żądanie</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Aplikacja %1$s nie została zainstalowana na serwerze, przerwano żądanie</string>
+    <string name="nc_display_name_not_stored">Nie można zapisać wyświetlanej nazwy, przerwano żądanie</string>
 
     <string name="nc_never">Nigdy nie dołączył</string>
     <string name="nc_search">Szukaj</string>
