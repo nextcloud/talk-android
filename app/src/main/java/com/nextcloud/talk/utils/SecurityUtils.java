@@ -74,7 +74,7 @@ public class SecurityUtils {
         } catch (BadPaddingException | IllegalBlockSizeException | KeyStoreException |
                 CertificateException | UnrecoverableKeyException | IOException
                 | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
