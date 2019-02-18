@@ -21,16 +21,10 @@
 package com.nextcloud.talk.dagger.modules;
 
 import android.content.Context;
-
+import androidx.annotation.NonNull;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.Models;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
-
-import net.orange_box.storebox.StoreBox;
-
-import javax.inject.Singleton;
-
-import androidx.annotation.NonNull;
 import dagger.Module;
 import dagger.Provides;
 import io.requery.Persistable;
@@ -39,6 +33,9 @@ import io.requery.reactivex.ReactiveEntityStore;
 import io.requery.reactivex.ReactiveSupport;
 import io.requery.sql.Configuration;
 import io.requery.sql.EntityDataStore;
+import net.orange_box.storebox.StoreBox;
+
+import javax.inject.Singleton;
 
 @Module
 public class DatabaseModule {

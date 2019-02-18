@@ -22,10 +22,8 @@ package com.nextcloud.talk.models;
 
 
 import com.nextcloud.talk.models.database.UserEntity;
-
-import org.parceler.Parcel;
-
 import lombok.Data;
+import org.parceler.Parcel;
 
 @Data
 @Parcel

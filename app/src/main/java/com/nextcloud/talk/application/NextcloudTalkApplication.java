@@ -23,7 +23,14 @@ package com.nextcloud.talk.application;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-
+import androidx.lifecycle.LifecycleObserver;
+import androidx.multidex.MultiDex;
+import androidx.multidex.MultiDexApplication;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import autodagger.AutoComponent;
+import autodagger.AutoInjector;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
@@ -44,25 +51,14 @@ import com.nextcloud.talk.utils.database.user.UserModule;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.twitter.TwitterEmojiProvider;
-
+import okhttp3.OkHttpClient;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import androidx.lifecycle.LifecycleObserver;
-import androidx.multidex.MultiDex;
-import androidx.multidex.MultiDexApplication;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-import autodagger.AutoComponent;
-import autodagger.AutoInjector;
-import okhttp3.OkHttpClient;
+import java.util.concurrent.TimeUnit;
 
 @AutoComponent(
         modules = {
@@ -78,15 +74,13 @@ import okhttp3.OkHttpClient;
 @Singleton
 @AutoInjector(NextcloudTalkApplication.class)
 public class NextcloudTalkApplication extends MultiDexApplication implements LifecycleObserver {
-    @Inject
-    OkHttpClient okHttpClient;
-
     private static final String TAG = NextcloudTalkApplication.class.getSimpleName();
-
     //region Singleton
     protected static NextcloudTalkApplication sharedApplication;
     //region Fields (components)
     protected NextcloudTalkApplicationComponent componentApplication;
+    @Inject
+    OkHttpClient okHttpClient;
     //endregion
 
     public static NextcloudTalkApplication getSharedApplication() {

@@ -23,7 +23,7 @@ package com.nextcloud.talk.webrtc;
 
 import android.text.TextUtils;
 import android.util.Log;
-
+import androidx.annotation.Nullable;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -33,25 +33,14 @@ import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
-
 import org.greenrobot.eventbus.EventBus;
-import org.webrtc.DataChannel;
-import org.webrtc.IceCandidate;
-import org.webrtc.MediaConstraints;
-import org.webrtc.MediaStream;
-import org.webrtc.PeerConnection;
-import org.webrtc.PeerConnectionFactory;
-import org.webrtc.RtpReceiver;
-import org.webrtc.SdpObserver;
-import org.webrtc.SessionDescription;
+import org.webrtc.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 public class MagicPeerConnectionWrapper {
     private static String TAG = "MagicPeerConnectionWrapper";
@@ -209,6 +198,10 @@ public class MagicPeerConnectionWrapper {
                 sendChannelData(new DataChannelMessage("audioOff"));
             }
         }
+    }
+
+    public boolean isMCUPublisher() {
+        return isMCUPublisher;
     }
 
     private class MagicDataChannelObserver implements DataChannel.Observer {
@@ -408,9 +401,5 @@ public class MagicPeerConnectionWrapper {
                 }
             }
         }
-    }
-
-    public boolean isMCUPublisher() {
-        return isMCUPublisher;
     }
 }

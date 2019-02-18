@@ -22,7 +22,6 @@ package com.nextcloud.talk.models.json.rooms;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-
 import lombok.Data;
 
 @Data

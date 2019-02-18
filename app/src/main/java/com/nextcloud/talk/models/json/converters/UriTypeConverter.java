@@ -22,7 +22,6 @@ package com.nextcloud.talk.models.json.converters;
 
 import android.net.Uri;
 import android.text.TextUtils;
-
 import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
 
 public class UriTypeConverter extends StringBasedTypeConverter<Uri> {

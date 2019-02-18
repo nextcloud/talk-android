@@ -21,7 +21,6 @@
 package com.nextcloud.talk.events;
 
 import com.nextcloud.talk.models.json.rooms.Conversation;
-
 import lombok.Data;
 
 @Data

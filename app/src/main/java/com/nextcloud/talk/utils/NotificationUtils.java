@@ -29,7 +29,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
-
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
 

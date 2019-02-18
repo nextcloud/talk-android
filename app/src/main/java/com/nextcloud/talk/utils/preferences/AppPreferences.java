@@ -21,13 +21,7 @@
 package com.nextcloud.talk.utils.preferences;
 
 import com.nextcloud.talk.R;
-
-import net.orange_box.storebox.annotations.method.ClearMethod;
-import net.orange_box.storebox.annotations.method.DefaultValue;
-import net.orange_box.storebox.annotations.method.KeyByString;
-import net.orange_box.storebox.annotations.method.RegisterChangeListenerMethod;
-import net.orange_box.storebox.annotations.method.RemoveMethod;
-import net.orange_box.storebox.annotations.method.UnregisterChangeListenerMethod;
+import net.orange_box.storebox.annotations.method.*;
 import net.orange_box.storebox.annotations.option.SaveOption;
 import net.orange_box.storebox.enums.SaveMode;
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
@@ -191,6 +185,86 @@ public interface AppPreferences {
     @KeyByString("notifications_vibrate")
     @RemoveMethod
     void removeVibrateSetting();
+
+    @KeyByString("screen_security")
+    @DefaultValue(R.bool.value_false)
+    boolean getIsScreenSecured();
+
+    @KeyByString("screen_security")
+    void setScreenSecurity(boolean value);
+
+    @KeyByString("screen_security")
+    @RemoveMethod
+    void removeScreenSecurity();
+
+    @KeyByString("screen_security")
+    @RegisterChangeListenerMethod
+    void registerScreenSecurityListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByString("screen_security")
+    @UnregisterChangeListenerMethod
+    void unregisterScreenSecurityListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByString("screen_lock")
+    @DefaultValue(R.bool.value_false)
+    boolean getIsScreenLocked();
+
+    @KeyByString("screen_lock")
+    void setScreenLock(boolean value);
+
+    @KeyByString("screen_lock")
+    @RemoveMethod
+    void removeScreenLock();
+
+    @KeyByString("screen_lock")
+    @RegisterChangeListenerMethod
+    void registerScreenLockListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByString("screen_lock")
+    @UnregisterChangeListenerMethod
+    void unregisterScreenLockListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByString("incognito_keyboard")
+    @DefaultValue(R.bool.value_true)
+    boolean getIsKeyboardIncognito();
+
+    @KeyByString("incognito_keyboard")
+    void setIncognitoKeyboard(boolean value);
+
+    @KeyByString("incognito_keyboard")
+    @RemoveMethod
+    void removeIncognitoKeyboard();
+
+    @KeyByString("link_previews")
+    @DefaultValue(R.bool.value_true)
+    boolean getAreLinkPreviewsAllowed();
+
+    @KeyByString("link_previews")
+    void setLinkPreviewsAllowed(boolean value);
+
+    @KeyByString("link_previews")
+    @RemoveMethod
+    void removeLinkPreviews();
+
+    @KeyByString("screen_lock_timeout")
+    @DefaultValue(R.string.nc_screen_lock_timeout_sixty)
+    String getScreenLockTimeout();
+
+    @KeyByString("screen_lock_timeout")
+    void setScreenLockTimeout(int value);
+
+    @KeyByString("screen_lock_timeout")
+    @RemoveMethod
+    void removeScreenLockTimeout();
+
+    @KeyByString("screen_lock_timeout")
+    @RegisterChangeListenerMethod
+    void registerScreenLockTimeoutListener(OnPreferenceValueChangedListener<String> listener);
+
+    @KeyByString("screen_lock_timeout")
+    @UnregisterChangeListenerMethod
+    void unregisterScreenLockTimeoutListener(OnPreferenceValueChangedListener<String> listener);
+
 
     @ClearMethod
     void clear();

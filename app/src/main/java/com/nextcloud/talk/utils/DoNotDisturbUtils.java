@@ -25,7 +25,6 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Vibrator;
-
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 
 public class DoNotDisturbUtils {

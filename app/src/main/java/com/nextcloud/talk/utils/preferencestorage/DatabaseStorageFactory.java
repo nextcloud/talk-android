@@ -21,7 +21,6 @@
 package com.nextcloud.talk.utils.preferencestorage;
 
 import android.content.Context;
-
 import com.nextcloud.talk.models.database.UserEntity;
 import com.yarolegovich.mp.io.StorageModule;
 

@@ -20,10 +20,10 @@
 
 package com.nextcloud.talk.events;
 
-import java.util.HashMap;
-
 import androidx.annotation.Nullable;
 import lombok.Data;
+
+import java.util.HashMap;
 
 @Data
 public class WebSocketCommunicationEvent {

@@ -27,19 +27,17 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.nextcloud.talk.R;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
-
-import java.util.List;
-
 import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
+
+import java.util.List;
 
 public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
     private String title;

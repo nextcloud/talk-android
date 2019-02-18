@@ -22,29 +22,38 @@ package com.nextcloud.talk.utils.preferences;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Build;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-
+import androidx.appcompat.app.AlertDialog;
+import autodagger.AutoInjector;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.yarolegovich.mp.io.StandardUserInputModule;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.appcompat.app.AlertDialog;
-
+@AutoInjector(NextcloudTalkApplication.class)
 public class MagicUserInputModule extends StandardUserInputModule {
+
+    @Inject
+    AppPreferences appPreferences;
 
     private List<String> keysWithIntegerInput = new ArrayList<>();
 
     public MagicUserInputModule(Context context) {
         super(context);
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
 
     public MagicUserInputModule(Context context, List<String> keysWithIntegerInput) {
         super(context);
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         this.keysWithIntegerInput = keysWithIntegerInput;
     }
 
@@ -55,7 +64,11 @@ public class MagicUserInputModule extends StandardUserInputModule {
             CharSequence defaultValue,
             final Listener<String> listener) {
         final View view = LayoutInflater.from(context).inflate(R.layout.dialog_edittext, null);
-        final EditText inputField = (EditText) view.findViewById(R.id.mp_text_input);
+        final EditText inputField = view.findViewById(R.id.mp_text_input);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
+            inputField.setImeOptions(inputField.getImeOptions() | EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);
+        }
 
         if (defaultValue != null) {
             inputField.setText(defaultValue);

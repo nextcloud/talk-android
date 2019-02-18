@@ -27,12 +27,10 @@ import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
-
+import lombok.Data;
 import org.parceler.Parcel;
 
 import java.util.HashMap;
-
-import lombok.Data;
 
 @Parcel
 @Data
@@ -80,13 +78,6 @@ public class Conversation {
     @JsonField(name = "notificationLevel", typeConverter = EnumNotificationLevelConverter.class)
     NotificationLevel notificationLevel;
 
-    public enum NotificationLevel {
-        DEFAULT,
-        ALWAYS,
-        MENTION,
-        NEVER
-    }
-
     public boolean isPublic() {
         return (RoomType.ROOM_PUBLIC_CALL.equals(type));
     }
@@ -107,6 +98,13 @@ public class Conversation {
 
     public boolean isDeletable() {
         return (canModerate() && ((participants != null && participants.size() > 2) || numberOfGuests > 0));
+    }
+
+    public enum NotificationLevel {
+        DEFAULT,
+        ALWAYS,
+        MENTION,
+        NEVER
     }
 
     @Parcel

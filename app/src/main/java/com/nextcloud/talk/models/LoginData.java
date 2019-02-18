@@ -20,9 +20,8 @@
  */
 package com.nextcloud.talk.models;
 
-import org.parceler.Parcel;
-
 import lombok.Data;
+import org.parceler.Parcel;
 
 @Parcel
 @Data

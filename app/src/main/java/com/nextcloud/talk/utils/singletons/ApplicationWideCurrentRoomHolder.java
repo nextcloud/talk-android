@@ -23,13 +23,12 @@ package com.nextcloud.talk.utils.singletons;
 import com.nextcloud.talk.models.database.UserEntity;
 
 public class ApplicationWideCurrentRoomHolder {
+    private static final ApplicationWideCurrentRoomHolder holder = new ApplicationWideCurrentRoomHolder();
     private String currentRoomId = "";
     private String currentRoomToken = "";
     private UserEntity userInRoom = new UserEntity();
     private boolean inCall = false;
     private String session = "";
-
-    private static final ApplicationWideCurrentRoomHolder holder = new ApplicationWideCurrentRoomHolder();
 
     public static ApplicationWideCurrentRoomHolder getInstance() {
         return holder;

@@ -23,22 +23,7 @@ package com.nextcloud.talk.models.json.converters;
 import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_JOINED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_LEFT;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_STARTED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CONVERSATION_CREATED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CONVERSATION_RENAMED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.DUMMY;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.FILE_SHARED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.GUESTS_ALLOWED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.GUESTS_DISALLOWED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MODERATOR_DEMOTED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MODERATOR_PROMOTED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PASSWORD_REMOVED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PASSWORD_SET;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_ADDED;
-import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_REMOVED;
+import static com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.*;
 
 /*
 

@@ -22,7 +22,7 @@ package com.nextcloud.talk.utils.glide;
 
 
 import android.content.Context;
-
+import autodagger.AutoInjector;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.Registry;
@@ -31,13 +31,10 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.AppGlideModule;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-
-import java.io.InputStream;
+import okhttp3.OkHttpClient;
 
 import javax.inject.Inject;
-
-import autodagger.AutoInjector;
-import okhttp3.OkHttpClient;
+import java.io.InputStream;
 
 @AutoInjector(NextcloudTalkApplication.class)
 @GlideModule

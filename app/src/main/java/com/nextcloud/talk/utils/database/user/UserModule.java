@@ -19,16 +19,15 @@
  */
 package com.nextcloud.talk.utils.database.user;
 
+import autodagger.AutoInjector;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.dagger.modules.DatabaseModule;
-
-import javax.inject.Inject;
-
-import autodagger.AutoInjector;
 import dagger.Module;
 import dagger.Provides;
 import io.requery.Persistable;
 import io.requery.reactivex.ReactiveEntityStore;
+
+import javax.inject.Inject;
 
 @Module(includes = DatabaseModule.class)
 @AutoInjector(NextcloudTalkApplication.class)

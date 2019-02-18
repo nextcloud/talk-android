@@ -25,7 +25,6 @@
 package com.nextcloud.talk.utils.animations;
 
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;

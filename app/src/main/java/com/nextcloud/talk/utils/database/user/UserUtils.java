@@ -21,13 +21,9 @@
 package com.nextcloud.talk.utils.database.user;
 
 import android.text.TextUtils;
-
+import androidx.annotation.Nullable;
 import com.nextcloud.talk.models.database.User;
 import com.nextcloud.talk.models.database.UserEntity;
-
-import java.util.List;
-
-import androidx.annotation.Nullable;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -35,6 +31,8 @@ import io.reactivex.schedulers.Schedulers;
 import io.requery.Persistable;
 import io.requery.query.Result;
 import io.requery.reactivex.ReactiveEntityStore;
+
+import java.util.List;
 
 public class UserUtils {
     private ReactiveEntityStore<Persistable> dataStore;

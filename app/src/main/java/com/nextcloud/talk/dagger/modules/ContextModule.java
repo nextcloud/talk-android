@@ -21,7 +21,6 @@
 package com.nextcloud.talk.dagger.modules;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import dagger.Module;
 import dagger.Provides;

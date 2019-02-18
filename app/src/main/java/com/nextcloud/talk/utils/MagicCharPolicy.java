@@ -36,6 +36,17 @@ public class MagicCharPolicy implements AutocompletePolicy {
         this.character = character;
     }
 
+    @Nullable
+    public static int[] getQueryRange(Spannable text) {
+        QuerySpan[] span = text.getSpans(0, text.length(), QuerySpan.class);
+        if (span == null || span.length == 0) return null;
+        if (span.length > 1) {
+            // Do absolutely nothing
+        }
+        QuerySpan sp = span[0];
+        return new int[]{text.getSpanStart(sp), text.getSpanEnd(sp)};
+    }
+
     private int[] checkText(Spannable text, int cursorPos) {
         if (text.length() == 0) {
             return null;
@@ -84,7 +95,6 @@ public class MagicCharPolicy implements AutocompletePolicy {
         return text.subSequence(text.getSpanStart(sp), text.getSpanEnd(sp));
     }
 
-
     @Override
     public void onDismiss(Spannable text) {
         // Remove any span added by shouldShow. Should be useless, but anyway.
@@ -95,16 +105,5 @@ public class MagicCharPolicy implements AutocompletePolicy {
     }
 
     private static class QuerySpan {
-    }
-
-    @Nullable
-    public static int[] getQueryRange(Spannable text) {
-        QuerySpan[] span = text.getSpans(0, text.length(), QuerySpan.class);
-        if (span == null || span.length == 0) return null;
-        if (span.length > 1) {
-            // Do absolutely nothing
-        }
-        QuerySpan sp = span[0];
-        return new int[]{text.getSpanStart(sp), text.getSpanEnd(sp)};
     }
 }

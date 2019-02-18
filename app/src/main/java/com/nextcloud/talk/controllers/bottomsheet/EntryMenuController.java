@@ -32,7 +32,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-
+import androidx.annotation.NonNull;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
@@ -44,18 +47,12 @@ import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
-
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
+
+import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class EntryMenuController extends BaseController {
@@ -131,7 +128,8 @@ public class EntryMenuController extends BaseController {
             bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, editText.getText().toString());
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
-            if (originalBundle.containsKey(BundleKeys.KEY_SERVER_CAPABILITIES)) { bundle.putParcelable(BundleKeys.KEY_SERVER_CAPABILITIES, originalBundle.getParcelable(BundleKeys.KEY_SERVER_CAPABILITIES));
+            if (originalBundle.containsKey(BundleKeys.KEY_SERVER_CAPABILITIES)) {
+                bundle.putParcelable(BundleKeys.KEY_SERVER_CAPABILITIES, originalBundle.getParcelable(BundleKeys.KEY_SERVER_CAPABILITIES));
             }
 
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))

@@ -29,7 +29,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-
+import androidx.annotation.Nullable;
 import com.kennyc.bottomsheet.adapters.AppAdapter;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -39,8 +39,6 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import androidx.annotation.Nullable;
 
 public class ShareUtils {
 

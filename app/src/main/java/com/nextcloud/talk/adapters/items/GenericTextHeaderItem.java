@@ -23,20 +23,17 @@ package com.nextcloud.talk.adapters.items;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
-import com.nextcloud.talk.R;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.nextcloud.talk.R;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractHeaderItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderItem.HeaderViewHolder> implements IFilterable<String> {
     private static final String TAG = "GenericTextHeaderItem";

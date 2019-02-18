@@ -21,15 +21,12 @@
 package com.nextcloud.talk.models;
 
 import android.net.Uri;
-
+import androidx.annotation.Nullable;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.UriTypeConverter;
-
-import org.parceler.Parcel;
-
-import androidx.annotation.Nullable;
 import lombok.Data;
+import org.parceler.Parcel;
 
 @Parcel
 @JsonObject

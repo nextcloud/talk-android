@@ -29,15 +29,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
-
+import autodagger.AutoInjector;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import javax.inject.Inject;
-
-import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class PackageReplacedReceiver extends BroadcastReceiver {

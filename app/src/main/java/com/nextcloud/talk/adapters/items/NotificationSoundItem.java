@@ -22,18 +22,16 @@ package com.nextcloud.talk.adapters.items;
 
 import android.view.View;
 import android.widget.TextView;
-
-import com.nextcloud.talk.R;
-import com.nextcloud.talk.utils.MagicFlipView;
-
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.nextcloud.talk.R;
+import com.nextcloud.talk.utils.MagicFlipView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
+
+import java.util.List;
 
 public class NotificationSoundItem extends AbstractFlexibleItem<NotificationSoundItem.NotificationSoundItemViewHolder> {
 

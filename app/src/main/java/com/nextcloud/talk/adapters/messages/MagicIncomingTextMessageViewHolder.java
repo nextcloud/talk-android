@@ -30,7 +30,10 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
-
+import androidx.core.view.ViewCompat;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.flexbox.FlexboxLayout;
@@ -43,15 +46,9 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 import com.vanniktech.emoji.EmojiTextView;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.inject.Inject;
-
-import androidx.core.view.ViewCompat;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicIncomingTextMessageViewHolder

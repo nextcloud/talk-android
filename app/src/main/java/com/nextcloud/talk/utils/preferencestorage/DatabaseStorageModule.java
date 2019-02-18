@@ -21,7 +21,7 @@
 package com.nextcloud.talk.utils.preferencestorage;
 
 import android.os.Bundle;
-
+import autodagger.AutoInjector;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
@@ -30,15 +30,12 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.yarolegovich.mp.io.StorageModule;
-
-import java.util.Set;
-
-import javax.inject.Inject;
-
-import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import javax.inject.Inject;
+import java.util.Set;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class DatabaseStorageModule implements StorageModule {

@@ -35,7 +35,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import autodagger.AutoInjector;
+import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -61,24 +64,17 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
-
-import org.greenrobot.eventbus.EventBus;
-import org.parceler.Parcels;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import autodagger.AutoInjector;
-import butterknife.BindView;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import org.greenrobot.eventbus.EventBus;
+import org.parceler.Parcels;
 import retrofit2.HttpException;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.ArrayList;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class OperationsMenuController extends BaseController {
@@ -614,7 +610,7 @@ public class OperationsMenuController extends BaseController {
 
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
             isGuestUser = true;
-            hasChatCapability = capabilities != null && capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null &&  capabilities.getSpreedCapability().getFeatures().contains("chat-v2");
+            hasChatCapability = capabilities != null && capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null && capabilities.getSpreedCapability().getFeatures().contains("chat-v2");
         } else {
             hasChatCapability = currentUser.hasSpreedCapabilityWithName("chat-v2");
         }

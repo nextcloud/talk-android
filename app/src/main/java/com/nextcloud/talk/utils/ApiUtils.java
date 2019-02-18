@@ -20,18 +20,16 @@
 package com.nextcloud.talk.utils;
 
 import android.net.Uri;
-
+import androidx.annotation.DimenRes;
+import androidx.annotation.Nullable;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RetrofitBucket;
+import okhttp3.Credentials;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import androidx.annotation.DimenRes;
-import androidx.annotation.Nullable;
-import okhttp3.Credentials;
 
 public class ApiUtils {
     private static String ocsApiVersion = "/ocs/v2.php";

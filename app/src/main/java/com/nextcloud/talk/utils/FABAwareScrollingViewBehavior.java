@@ -18,14 +18,12 @@ package com.nextcloud.talk.utils;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
-
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.ViewCompat;
 
 public class FABAwareScrollingViewBehavior extends AppBarLayout.ScrollingViewBehavior {
 

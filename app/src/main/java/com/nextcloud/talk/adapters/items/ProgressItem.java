@@ -29,20 +29,18 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.nextcloud.talk.R;
-
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.nextcloud.talk.R;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.Payload;
 import eu.davidea.flexibleadapter.helpers.AnimatorHelper;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
+
+import java.util.List;
 
 /**
  * @author Davide Steduto
@@ -115,6 +113,14 @@ public class ProgressItem extends AbstractFlexibleItem<ProgressItem.ProgressView
     }
 
 
+    public enum StatusEnum {
+        MORE_TO_LOAD, //Default = should have an empty Payload
+        DISABLE_ENDLESS, //Endless is disabled because user has set limits
+        NO_MORE_LOAD, //Non-empty Payload = Payload.NO_MORE_LOAD
+        ON_CANCEL,
+        ON_ERROR
+    }
+
     static class ProgressViewHolder extends FlexibleViewHolder {
 
         @BindView(R.id.progress_bar)
@@ -131,14 +137,6 @@ public class ProgressItem extends AbstractFlexibleItem<ProgressItem.ProgressView
         public void scrollAnimators(@NonNull List<Animator> animators, int position, boolean isForward) {
             AnimatorHelper.scaleAnimator(animators, itemView, 0f);
         }
-    }
-
-    public enum StatusEnum {
-        MORE_TO_LOAD, //Default = should have an empty Payload
-        DISABLE_ENDLESS, //Endless is disabled because user has set limits
-        NO_MORE_LOAD, //Non-empty Payload = Payload.NO_MORE_LOAD
-        ON_CANCEL,
-        ON_ERROR
     }
 
 }

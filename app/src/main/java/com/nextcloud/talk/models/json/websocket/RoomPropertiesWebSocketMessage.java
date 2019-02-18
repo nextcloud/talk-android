@@ -24,10 +24,8 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
 import com.nextcloud.talk.models.json.rooms.Conversation;
-
-import org.parceler.Parcel;
-
 import lombok.Data;
+import org.parceler.Parcel;
 
 @Data
 @Parcel

@@ -21,9 +21,8 @@
 package com.nextcloud.talk.utils.singletons;
 
 public class AvatarStatusCodeHolder {
-    private int statusCode;
-
     private static final AvatarStatusCodeHolder holder = new AvatarStatusCodeHolder();
+    private int statusCode;
 
     public static AvatarStatusCodeHolder getInstance() {
         return holder;
