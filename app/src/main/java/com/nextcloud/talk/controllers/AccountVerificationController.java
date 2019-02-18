@@ -153,7 +153,6 @@ public class AccountVerificationController extends BaseController {
         } else {
             checkEverything();
         }
-
     }
 
     private void checkEverything() {

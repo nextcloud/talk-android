@@ -102,6 +102,7 @@
     <string name="nc_settings_link_previews_title">Show link previews</string>
     <string name="nc_settings_link_previews_desc">Allows previews of content from received links for supported services</string>
     <string name="nc_settings_link_previews_key" translatable="false">link_previews</string>
+    <string name="nc_locked">Tap to unlock</string>
 
     <string name="nc_screen_lock_timeout_30">30 seconds</string>
     <string name="nc_screen_lock_timeout_60">1 minute</string>

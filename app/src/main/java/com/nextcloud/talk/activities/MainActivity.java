@@ -20,9 +20,13 @@
  */
 package com.nextcloud.talk.activities;
 
+import android.app.KeyguardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.ViewGroup;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import autodagger.AutoInjector;
 import butterknife.BindView;
@@ -31,13 +35,12 @@ import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.controllers.CallNotificationController;
-import com.nextcloud.talk.controllers.ChatController;
-import com.nextcloud.talk.controllers.ConversationsListController;
-import com.nextcloud.talk.controllers.ServerSelectionController;
+import com.nextcloud.talk.controllers.*;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
+import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import io.requery.Persistable;
@@ -48,7 +51,6 @@ import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public final class MainActivity extends BaseActivity implements ActionBarProvider {
-
     private static final String TAG = "MainActivity";
 
     @BindView(R.id.toolbar)
@@ -113,6 +115,30 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkIfWeAreSecure();
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void checkIfWeAreSecure() {
+        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        if (keyguardManager != null && keyguardManager.isKeyguardSecure() && appPreferences.getIsScreenLocked()) {
+            if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.getScreenLockTimeout())) {
+                if (router != null && router.getControllerWithTag(LockedController.TAG) == null) {
+                    router.pushController(RouterTransaction.with(new LockedController())
+                            .pushChangeHandler(new VerticalChangeHandler())
+                            .popChangeHandler(new VerticalChangeHandler())
+                            .tag(LockedController.TAG));
+                }
+            }
+        }
+    }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -133,6 +159,10 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
 
     @Override
     public void onBackPressed() {
+        if (router.getControllerWithTag(LockedController.TAG) != null) {
+            return;
+        }
+
         if (!router.handleBack()) {
             super.onBackPressed();
         }
