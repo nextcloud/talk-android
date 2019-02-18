@@ -161,7 +161,7 @@
             android:id="@+id/settings_screen_lock_timeout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            apc:mp_default_value="@string/nc_screen_lock_timeout_thirty"
+            apc:mp_default_value="@string/nc_screen_lock_timeout_sixty"
             apc:mp_entry_values="@array/screen_lock_timeout_entry_values"
             apc:mp_entry_descriptions="@array/screen_lock_timeout_descriptions"
             apc:mp_key="@string/nc_settings_screen_lock_timeout_key"

@@ -247,7 +247,7 @@ public interface AppPreferences {
     void removeLinkPreviews();
 
     @KeyByString("screen_lock_timeout")
-    @DefaultValue(R.string.nc_screen_lock_timeout_thirty)
+    @DefaultValue(R.string.nc_screen_lock_timeout_sixty)
     String getScreenLockTimeout();
 
     @KeyByString("screen_lock_timeout")
