@@ -178,8 +178,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                             .endConfig().buildRound(String.valueOf(authorDisplayName.charAt(0)),
                                     context.getResources().getColor(R.color.nc_grey));
                     holder.dialogLastMessageUserAvatar.setImageDrawable(drawable);
-                } else if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())
-                        || !conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
+                } else if (!conversation.getLastMessage().getActorId().equals(userEntity.getUserId())
+                        && !conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
                     holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
                     GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
                             conversation.getLastMessage().getActorId(), R.dimen.small_item_height), new LazyHeaders.Builder()
