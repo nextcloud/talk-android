@@ -24,9 +24,9 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Adres serwera</string>
-    <string name="nc_server_not_installed">Proszę zakończyć instalację %1$s</string>
+    <string name="nc_server_not_installed">Zakończ instalację %1$s</string>
     <string name="nc_server_db_upgrade_needed">Zaktualizuj swoją %1$s bazę danych</string>
-    <string name="nc_server_maintenance">Proszę przeprowadzić %1$s konserwację do końca</string>
+    <string name="nc_server_maintenance">Przeprowadź %1$s konserwację do końca</string>
     <string name="nc_server_version">%1$s działa tylko z %2$s 13 i nowszym</string>
     <string name="nc_server_import_account_plain">Importuj konto</string>
     <string name="nc_server_import_accounts_plain">Importuj konta</string>
@@ -74,7 +74,6 @@
     <string name="nc_settings_other_notifications_ringtone">Inne</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
     <string name="nc_settings_vibrate">Wibracje</string>
-    <string name="nc_settings_vibrate_desc">Twój telefon będzie wibrował, chyba że zostanie wyciszony</string>
     <string name="nc_no_proxy">Brak proxy</string>
     <string name="nc_username">Nazwa użytkownika</string>
     <string name="nc_password">Hasło</string>
@@ -113,9 +112,9 @@
     <string name="nc_contacts_done">Gotowe</string>
 
     <!-- Permissions -->
-    <string name="nc_camera_permission_permanently_denied">Aby włączyć komunikację wideo, proszę udzielić dostępu dla \"Kamera\" w ustawieniach systemu.</string>
-    <string name="nc_microphone_permission_permanently_denied">Aby włączyć komunikację głosową, proszę udzielić dostępu dla \"Mikrofon\" w ustawieniach systemu.</string>
-    <string name="nc_permissions_settings">Ustawienia</string>
+    <string name="nc_camera_permission_permanently_denied">Aby włączyć komunikację wideo, należy udzielić dostępu dla \"Kamera\" w ustawieniach systemu.</string>
+    <string name="nc_microphone_permission_permanently_denied">Aby włączyć komunikację głosową, należy udzielić dostępu dla \"Mikrofon\" w ustawieniach systemu.</string>
+    <string name="nc_permissions_settings">Otwórz ustawienia</string>
 
     <!-- Call -->
     <string name="nc_connecting_call">Łączę...</string>

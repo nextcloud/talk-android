@@ -74,7 +74,6 @@
     <string name="nc_settings_other_notifications_ringtone">Andre</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
     <string name="nc_settings_vibrate">Vibrer</string>
-    <string name="nc_settings_vibrate_desc">Din telefon vil vibrere med mindre den er på lydløs</string>
     <string name="nc_no_proxy">Ikke proxy</string>
     <string name="nc_username">Brugernavn</string>
     <string name="nc_password">Adgangskode</string>

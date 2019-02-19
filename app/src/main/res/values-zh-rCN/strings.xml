@@ -74,7 +74,6 @@
     <string name="nc_settings_other_notifications_ringtone">其他</string>
     <string name="nc_settings_no_ringtone">无声音</string>
     <string name="nc_settings_vibrate">震动</string>
-    <string name="nc_settings_vibrate_desc">您的手机将会震动，除非您的手机已静音</string>
     <string name="nc_no_proxy">无代理</string>
     <string name="nc_username">用户名</string>
     <string name="nc_password">密码</string>

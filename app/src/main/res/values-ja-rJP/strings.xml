@@ -73,7 +73,6 @@
     <string name="nc_settings_other_notifications_ringtone">その他</string>
     <string name="nc_settings_no_ringtone">音無し</string>
     <string name="nc_settings_vibrate">振動</string>
-    <string name="nc_settings_vibrate_desc">あなたの電話は消音されない限り振動します</string>
     <string name="nc_no_proxy">プロキシを利用しない</string>
     <string name="nc_username">ユーザー名</string>
     <string name="nc_password">パスワード</string>
