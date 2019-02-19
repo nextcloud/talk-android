@@ -83,7 +83,7 @@
     <string name="nc_settings_default_ringtone" translatable="false">Librem by feandesign</string>
     <string name="nc_settings_no_ringtone">No sound</string>
     <string name="nc_settings_vibrate">Vibrate</string>
-    <string name="nc_settings_vibrate_desc">Phone will unless it\'s silenced</string>
+    <string name="nc_settings_vibrate_desc">Phone will vibrate unless it\'s silenced</string>
     <string name="nc_settings_vibrate_key" translatable="false">notifications_vibrate</string>
 
     <string name="nc_settings_privacy">Privacy</string>
