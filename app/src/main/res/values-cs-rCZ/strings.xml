@@ -74,6 +74,31 @@
     <string name="nc_settings_other_notifications_ringtone">Ostatní</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
     <string name="nc_settings_vibrate">Vibrovat</string>
+    <string name="nc_settings_privacy">Soukromí</string>
+    <string name="nc_settings_screen_lock_title">Zámek obrazovky</string>
+    <string name="nc_settings_screen_lock_desc">Zamknout %1$s Android zámkem obrazovky nebo snímačem otisků prstu</string>
+    <string name="nc_settings_screen_lock_timeout_title">Časový limit nečinnosti pro zámek obrazovky</string>
+    <string name="nc_none">Žádné</string>
+    <string name="nc_settings_screen_security_title">Zabezpečení obrazovky</string>
+    <string name="nc_settings_screen_security_desc">Brání snímkům obrazovky v seznamu nedávných a uvnitř aplikace</string>
+    <string name="nc_settings_incognito_keyboard_title">Inkognito klávesnice</string>
+    <string name="nc_settings_incognito_keyboard_desc">Sdělit klávesnici že má vypnout přizpůsobené učení (bez záruky)</string>
+    <string name="nc_settings_link_previews_title">Zobrazit náhledy odkazu</string>
+    <string name="nc_settings_link_previews_desc">U podporovaných služeb umožňuje náhledy obsahu z obdržených odkazů</string>
+    <string name="nc_locked">Odemkněte ťuknutím</string>
+
+    <string name="nc_screen_lock_timeout_30">30 sekund</string>
+    <string name="nc_screen_lock_timeout_60">1 minuta</string>
+    <string name="nc_screen_lock_timeout_300">5 minut</string>
+    <string name="nc_screen_lock_timeout_600">10 minut</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">Odemknout %1$s</string>
+    <string name="nc_cancel">Storno</string>
+
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Uživatelské jméno</string>
     <string name="nc_password">Heslo</string>

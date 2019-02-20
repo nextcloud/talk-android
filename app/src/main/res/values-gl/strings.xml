@@ -76,6 +76,31 @@ Produciuse un fallo aorecuperar os axustes da señalización</string>
     <string name="nc_settings_other_notifications_ringtone">Outro</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
     <string name="nc_settings_vibrate">Vibrar</string>
+    <string name="nc_settings_privacy">Privacidade</string>
+    <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
+    <string name="nc_settings_screen_lock_desc">Bloquear %1$s co bloqueo de pantalla de Android ou coa pegada dactilar</string>
+    <string name="nc_settings_screen_lock_timeout_title">Tempo de inactividade para o bloqueo da pantalla</string>
+    <string name="nc_none">Ningún</string>
+    <string name="nc_settings_screen_security_title">Seguridade da pantalla</string>
+    <string name="nc_settings_screen_security_desc">Evita capturas de pantalla na lista recente e dentro da aplicación</string>
+    <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
+    <string name="nc_settings_incognito_keyboard_desc">Indícalle ao teclado que desactive a aprendizaxe personalizada (sen garantías)</string>
+    <string name="nc_settings_link_previews_title">Amosar as vistas previas das ligazóns</string>
+    <string name="nc_settings_link_previews_desc">Permite obter vistas do contido de ligazóns recibidas para servizos compatíbeis</string>
+    <string name="nc_locked">Toque para desbloquear</string>
+
+    <string name="nc_screen_lock_timeout_30">30 segundos</string>
+    <string name="nc_screen_lock_timeout_60">1 minuto</string>
+    <string name="nc_screen_lock_timeout_300">5 minutos</string>
+    <string name="nc_screen_lock_timeout_600">10 minutos</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">Desbloquear %1$s</string>
+    <string name="nc_cancel">Cancelar</string>
+
     <string name="nc_no_proxy">Sen proxy </string>
     <string name="nc_username">Nome de usuario</string>
     <string name="nc_password">Contrasinal</string>

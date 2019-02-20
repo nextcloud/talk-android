@@ -74,6 +74,31 @@
     <string name="nc_settings_other_notifications_ringtone">Outro</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_vibrate">Vibrar</string>
+    <string name="nc_settings_privacy">Privacidade</string>
+    <string name="nc_settings_screen_lock_title">Bloquear tela</string>
+    <string name="nc_settings_screen_lock_desc">Bloquear %1$s com o bloqueio do Android ou com a digital</string>
+    <string name="nc_settings_screen_lock_timeout_title">Tempo para bloqueio de tela</string>
+    <string name="nc_none">Nada</string>
+    <string name="nc_settings_screen_security_title">Segurança da tela</string>
+    <string name="nc_settings_screen_security_desc">Impede capturas de tela na lista recente e dentro do aplicativo</string>
+    <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
+    <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
+    <string name="nc_settings_link_previews_title">Pré-visualizar links</string>
+    <string name="nc_settings_link_previews_desc">Permite pré-visualizar links recebidos para serviços suportados</string>
+    <string name="nc_locked">Toque para desbloquear</string>
+
+    <string name="nc_screen_lock_timeout_30">30 seconds</string>
+    <string name="nc_screen_lock_timeout_60">1 minuto</string>
+    <string name="nc_screen_lock_timeout_300">5 minutos</string>
+    <string name="nc_screen_lock_timeout_600">10 minutos</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">Desbloquear %1$s</string>
+    <string name="nc_cancel">Cancelar</string>
+
     <string name="nc_no_proxy">Sem proxy</string>
     <string name="nc_username">Usuário</string>
     <string name="nc_password">Senha</string>

@@ -74,6 +74,22 @@
     <string name="nc_settings_other_notifications_ringtone">Autre</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
     <string name="nc_settings_vibrate">Vibrer</string>
+    <string name="nc_settings_privacy">Vie privée</string>
+    <string name="nc_none">Aucun</string>
+    <string name="nc_locked">Appuyer pour déverrouiller</string>
+
+    <string name="nc_screen_lock_timeout_30">30 secondes</string>
+    <string name="nc_screen_lock_timeout_60">1 minute</string>
+    <string name="nc_screen_lock_timeout_300">5 minutes</string>
+    <string name="nc_screen_lock_timeout_600">10 minutes</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
+    <string name="nc_cancel">Annuler</string>
+
     <string name="nc_no_proxy">Aucun proxy</string>
     <string name="nc_username">Nom d\'utilisateur</string>
     <string name="nc_password">Mot de passe</string>
