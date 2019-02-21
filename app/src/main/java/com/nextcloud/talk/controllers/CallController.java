@@ -208,6 +208,7 @@ public class CallController extends BaseController {
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private boolean hasMCU;
     private boolean hasExternalSignalingServer;
+    private String conversationPassword;
 
     public CallController(Bundle args) {
         super(args);
@@ -216,16 +217,13 @@ public class CallController extends BaseController {
         roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
         roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "");
         conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY);
-
-        if (conversationUser == null) {
-            conversationUser = userUtils.getCurrentUser();
-        }
-
-        credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
+        conversationPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "");
         isVoiceOnlyCall = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
 
         if (conversationUser.getUserId().equals("?")) {
             credentials = null;
+        } else {
+            credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
         }
 
         baseUrl = args.getString(BundleKeys.KEY_MODIFIED_BASE_URL, "");
@@ -994,7 +992,8 @@ public class CallController extends BaseController {
     }
 
     private void joinRoomAndCall() {
-        ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken), null)
+        ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl,
+                roomToken), conversationPassword)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
