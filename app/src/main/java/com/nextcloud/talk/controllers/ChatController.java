@@ -892,7 +892,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     chatMessage.setLinkPreviewAllowed(isLinkPreviewAllowed);
 
                     // if credentials are empty, we're acting as a guest
-                    if (TextUtils.isEmpty(credentials) && !TextUtils.isEmpty(myFirstMessage.toString())) {
+                    if (TextUtils.isEmpty(credentials) && myFirstMessage != null && !TextUtils.isEmpty(myFirstMessage.toString())) {
                         if (chatMessage.getActorType().equals("guests")) {
                             conversationUser.setUserId(chatMessage.getActorId());
                             setSenderId();
