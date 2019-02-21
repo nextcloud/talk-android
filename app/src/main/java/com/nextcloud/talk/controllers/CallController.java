@@ -261,11 +261,7 @@ public class CallController extends BaseController {
         conversationPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "");
         isVoiceOnlyCall = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
 
-        if (conversationUser.getUserId().equals("?")) {
-            credentials = null;
-        } else {
-            credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
-        }
+        credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
 
         baseUrl = args.getString(BundleKeys.KEY_MODIFIED_BASE_URL, "");
 
@@ -1199,7 +1195,8 @@ public class CallController extends BaseController {
         webSocketConnectionHelper = new WebSocketConnectionHelper();
         webSocketClient = webSocketConnectionHelper.getExternalSignalingInstanceForServer(
                 externalSignalingServer.getExternalSignalingServer(),
-                conversationUser, externalSignalingServer.getExternalSignalingTicket());
+                conversationUser, externalSignalingServer.getExternalSignalingTicket(),
+                TextUtils.isEmpty(credentials));
 
         if (webSocketClient.isConnected()) {
             joinRoomAndCall();
@@ -1376,6 +1373,11 @@ public class CallController extends BaseController {
         localMediaStream = null;
         localAudioTrack = null;
         localVideoTrack = null;
+
+
+        if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
+            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(-1);
+        }
 
         if (!dueToNetworkChange) {
             hangupNetworkCalls();

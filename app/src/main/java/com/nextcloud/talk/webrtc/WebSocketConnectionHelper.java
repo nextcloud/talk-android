@@ -57,7 +57,7 @@ public class WebSocketConnectionHelper {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
 
-    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket) {
+    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket, boolean isGuest) {
         String generatedURL = url.replace("https://", "wss://").replace("http://", "ws://");
 
         if (generatedURL.endsWith("/")) {
@@ -66,10 +66,16 @@ public class WebSocketConnectionHelper {
             generatedURL += "/spreed";
         }
 
+        long userId = isGuest ? -1 : userEntity.getId();
+
+
         MagicWebSocketInstance magicWebSocketInstance;
-        if (magicWebSocketInstanceMap.containsKey(userEntity.getId()) && (magicWebSocketInstance = magicWebSocketInstanceMap.get(userEntity.getId())) != null && !magicWebSocketInstance.isPermanentlyClosed()) {
+        if (userId != -1 && magicWebSocketInstanceMap.containsKey(userEntity.getId()) && (magicWebSocketInstance = magicWebSocketInstanceMap.get(userEntity.getId())) != null && !magicWebSocketInstance.isPermanentlyClosed()) {
             return magicWebSocketInstance;
         } else {
+            if (userId == -1) {
+                deleteExternalSignalingInstanceForUserEntity(userId);
+            }
             magicWebSocketInstance = new MagicWebSocketInstance(userEntity, generatedURL, webSocketTicket);
             magicWebSocketInstanceMap.put(userEntity.getId(), magicWebSocketInstance);
             return magicWebSocketInstance;

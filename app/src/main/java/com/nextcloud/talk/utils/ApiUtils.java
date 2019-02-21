@@ -21,6 +21,7 @@ package com.nextcloud.talk.utils;
 
 import android.net.Uri;
 
+import android.text.TextUtils;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -211,6 +212,9 @@ public class ApiUtils {
     }
 
     public static String getCredentials(String username, String token) {
+        if (TextUtils.isEmpty(username) && TextUtils.isEmpty(token)) {
+            return null;
+        }
         return Credentials.basic(username, token);
     }
 
