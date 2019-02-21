@@ -74,6 +74,32 @@
     <string name="nc_settings_other_notifications_ringtone">Övrigt</string>
     <string name="nc_settings_no_ringtone">Inget ljud</string>
     <string name="nc_settings_vibrate">Vibrera</string>
+    <string name="nc_settings_vibrate_desc">Din telefon kommer att vibrera om den inte tystas</string>
+    <string name="nc_settings_privacy">Integritet</string>
+    <string name="nc_settings_screen_lock_title">Skärmlås</string>
+    <string name="nc_settings_screen_lock_desc">Lås %1$s med Android skärmlås eller fingeravtryck</string>
+    <string name="nc_settings_screen_lock_timeout_title">Tidsgräns för skärmlås</string>
+    <string name="nc_none">Ingen</string>
+    <string name="nc_settings_screen_security_title">Skärmsäkerhet</string>
+    <string name="nc_settings_screen_security_desc">Förhindrar skärmdumpar i den senaste listan och inuti appen</string>
+    <string name="nc_settings_incognito_keyboard_title">Inkognito-tangentbord</string>
+    <string name="nc_settings_incognito_keyboard_desc">Instruerar tangentbordet att inaktivera personlig inlärning (utan garantier)</string>
+    <string name="nc_settings_link_previews_title">Visa förhandsvisning för länkar</string>
+    <string name="nc_settings_link_previews_desc">Tillåter förhandsvisningar av innehåll från mottagna länkar för supporterade tjänster</string>
+    <string name="nc_locked">Tryck för att låsa upp</string>
+
+    <string name="nc_screen_lock_timeout_30">30 sekunder</string>
+    <string name="nc_screen_lock_timeout_60">1 minut</string>
+    <string name="nc_screen_lock_timeout_300">5 minuter</string>
+    <string name="nc_screen_lock_timeout_600">10 minuter</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">Lås upp %1$s</string>
+    <string name="nc_cancel">Avbryt</string>
+
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Användarnamn</string>
     <string name="nc_password">Lösenord</string>

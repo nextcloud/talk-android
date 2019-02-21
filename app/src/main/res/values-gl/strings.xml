@@ -76,6 +76,7 @@ Produciuse un fallo aorecuperar os axustes da señalización</string>
     <string name="nc_settings_other_notifications_ringtone">Outro</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
     <string name="nc_settings_vibrate">Vibrar</string>
+    <string name="nc_settings_vibrate_desc">O teléfono vibrará, a non ser que estea silenciado</string>
     <string name="nc_settings_privacy">Privacidade</string>
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
     <string name="nc_settings_screen_lock_desc">Bloquear %1$s co bloqueo de pantalla de Android ou coa pegada dactilar</string>

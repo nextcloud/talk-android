@@ -74,6 +74,7 @@
     <string name="nc_settings_other_notifications_ringtone">Ostatní</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
     <string name="nc_settings_vibrate">Vibrovat</string>
+    <string name="nc_settings_vibrate_desc">Pokud není ztišený, telefon bude vibrovat</string>
     <string name="nc_settings_privacy">Soukromí</string>
     <string name="nc_settings_screen_lock_title">Zámek obrazovky</string>
     <string name="nc_settings_screen_lock_desc">Zamknout %1$s Android zámkem obrazovky nebo snímačem otisků prstu</string>

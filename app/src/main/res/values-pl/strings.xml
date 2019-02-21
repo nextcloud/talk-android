@@ -74,6 +74,32 @@
     <string name="nc_settings_other_notifications_ringtone">Inne</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
     <string name="nc_settings_vibrate">Wibracje</string>
+    <string name="nc_settings_vibrate_desc">Telefon będzie wibrował, chyba że zostanie wyciszony</string>
+    <string name="nc_settings_privacy">Prywatność</string>
+    <string name="nc_settings_screen_lock_title">Blokada ekranu</string>
+    <string name="nc_settings_screen_lock_desc">Zablokuj %1$s za pomocą blokady ekranu Androida lub odcisku palca</string>
+    <string name="nc_settings_screen_lock_timeout_title">Czas bezczynności do blokady ekranu</string>
+    <string name="nc_none">Żadna</string>
+    <string name="nc_settings_screen_security_title">Zabezpieczenie ekranu</string>
+    <string name="nc_settings_screen_security_desc">Zapobiega zrzutom ekranu ostatniej listy i z wewnątrz aplikacji</string>
+    <string name="nc_settings_incognito_keyboard_title">Klawiatura incognito</string>
+    <string name="nc_settings_incognito_keyboard_desc">Poleca klawiaturę, aby wyłączyć spersonalizowane uczenie (bez gwarancji)</string>
+    <string name="nc_settings_link_previews_title">Pokaż podgląd linków</string>
+    <string name="nc_settings_link_previews_desc">Umożliwia podgląd treści z otrzymanych linków dla obsługiwanych usług</string>
+    <string name="nc_locked">Stuknij, aby odblokować</string>
+
+    <string name="nc_screen_lock_timeout_30">30 sekund</string>
+    <string name="nc_screen_lock_timeout_60">1 minuta</string>
+    <string name="nc_screen_lock_timeout_300">5 minut</string>
+    <string name="nc_screen_lock_timeout_600">10 minut</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">Odblokuj %1$s</string>
+    <string name="nc_cancel">Anuluj</string>
+
     <string name="nc_no_proxy">Brak proxy</string>
     <string name="nc_username">Nazwa użytkownika</string>
     <string name="nc_password">Hasło</string>
