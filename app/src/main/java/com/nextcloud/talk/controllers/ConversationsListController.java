@@ -153,6 +153,9 @@ public class ConversationsListController extends BaseController implements Searc
 
     private boolean adapterWasNull = true;
 
+    private String lastClickedConversationToken;
+    private int scrollTo = 0;
+
     public ConversationsListController() {
         super();
         setHasOptionsMenu(true);
@@ -173,7 +176,7 @@ public class ConversationsListController extends BaseController implements Searc
         }
 
         if (adapter == null) {
-            adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
+            adapter = new FlexibleAdapter<>(callItems, getActivity(), true);
         } else {
             progressBarView.setVisibility(View.GONE);
         }
@@ -319,15 +322,24 @@ public class ConversationsListController extends BaseController implements Searc
                         }
                     }
 
+                    Conversation conversation;
+                    AbstractFlexibleItem itemToScrollTo = null;
                     for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
+                        conversation = roomsOverall.getOcs().getData().get(i);
                         if (shouldUseLastMessageLayout) {
-                            callItems.add(new ConversationItem(roomsOverall.getOcs().getData().get(i),
-                                    currentUser));
+                            ConversationItem conversationItem = new ConversationItem(conversation, currentUser);
+                            if (!TextUtils.isEmpty(lastClickedConversationToken) && lastClickedConversationToken.equals(conversation.getToken())) {
+                                itemToScrollTo = conversationItem;
+                            }
+                            callItems.add(conversationItem);
                         } else {
-                            callItems.add(new CallItem(roomsOverall.getOcs().getData().get(i), currentUser));
+                            CallItem callItem = new CallItem(conversation, currentUser);
+                            if (!TextUtils.isEmpty(lastClickedConversationToken) && lastClickedConversationToken.equals(conversation.getToken())) {
+                                itemToScrollTo = callItem;
+                            }
+                            callItems.add(callItem);
                         }
                     }
-
 
                     if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
                         Collections.sort(callItems, (o1, o2) -> {
@@ -343,9 +355,13 @@ public class ConversationsListController extends BaseController implements Searc
                                 Long.compare(((CallItem) t1).getModel().getLastPing(),
                                         ((CallItem) callItem).getModel().getLastPing()));
                     }
+                    if (itemToScrollTo == null || callItems.indexOf(itemToScrollTo) == -1) {
+                        scrollTo = 0;
+                    } else {
+                        scrollTo = callItems.indexOf(itemToScrollTo);
+                    }
 
                     adapter.updateDataSet(callItems, true);
-                    recyclerView.smoothScrollToPosition(0);
 
                     if (searchItem != null) {
                         searchItem.setVisible(callItems.size() > 0);
@@ -423,6 +439,29 @@ public class ConversationsListController extends BaseController implements Searc
 
         fastScroller.addOnScrollStateChangeListener(this);
         adapter.setFastScroller(fastScroller);
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                recyclerView.smoothScrollToPosition(scrollTo);
+                lastClickedConversationToken = "";
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                super.onItemRangeChanged(positionStart, itemCount);
+                recyclerView.smoothScrollToPosition(scrollTo);
+                lastClickedConversationToken = "";
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
+                super.onItemRangeChanged(positionStart, itemCount, payload);
+                recyclerView.smoothScrollToPosition(scrollTo);
+                lastClickedConversationToken = "";
+            }
+        });
+
         fastScroller.setBubbleTextCreator(position -> {
             String displayName;
             if (shouldUseLastMessageLayout) {
@@ -579,6 +618,8 @@ public class ConversationsListController extends BaseController implements Searc
             } else {
                 conversation = ((CallItem) clickedItem).getModel();
             }
+
+            lastClickedConversationToken = conversation.getToken();
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
