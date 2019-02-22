@@ -29,16 +29,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import autodagger.AutoInjector;
+import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat;
@@ -73,28 +76,6 @@ import com.nextcloud.talk.utils.animations.SharedElementTransition;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
-
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.parceler.Parcels;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.view.MenuItemCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import autodagger.AutoInjector;
-import butterknife.BindView;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
@@ -102,7 +83,17 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.parceler.Parcels;
 import retrofit2.HttpException;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
@@ -157,6 +148,9 @@ public class ConversationsListController extends BaseController implements Searc
 
     private boolean adapterWasNull = true;
 
+    private String lastClickedConversationToken;
+    private int scrollTo = 0;
+
     public ConversationsListController() {
         super();
         setHasOptionsMenu(true);
@@ -177,7 +171,7 @@ public class ConversationsListController extends BaseController implements Searc
         }
 
         if (adapter == null) {
-            adapter = new FlexibleAdapter<>(callItems, getActivity(), false);
+            adapter = new FlexibleAdapter<>(callItems, getActivity(), true);
         } else {
             progressBarView.setVisibility(View.GONE);
         }
@@ -319,15 +313,24 @@ public class ConversationsListController extends BaseController implements Searc
                         }
                     }
 
+                    Conversation conversation;
+                    AbstractFlexibleItem itemToScrollTo = null;
                     for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
+                        conversation = roomsOverall.getOcs().getData().get(i);
                         if (shouldUseLastMessageLayout) {
-                            callItems.add(new ConversationItem(roomsOverall.getOcs().getData().get(i),
-                                    currentUser));
+                            ConversationItem conversationItem = new ConversationItem(conversation, currentUser);
+                            if (!TextUtils.isEmpty(lastClickedConversationToken) && lastClickedConversationToken.equals(conversation.getToken())) {
+                                itemToScrollTo = conversationItem;
+                            }
+                            callItems.add(conversationItem);
                         } else {
-                            callItems.add(new CallItem(roomsOverall.getOcs().getData().get(i), currentUser));
+                            CallItem callItem = new CallItem(conversation, currentUser);
+                            if (!TextUtils.isEmpty(lastClickedConversationToken) && lastClickedConversationToken.equals(conversation.getToken())) {
+                                itemToScrollTo = callItem;
+                            }
+                            callItems.add(callItem);
                         }
                     }
-
 
                     if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
                         Collections.sort(callItems, (o1, o2) -> {
@@ -343,9 +346,13 @@ public class ConversationsListController extends BaseController implements Searc
                                 Long.compare(((CallItem) t1).getModel().getLastPing(),
                                         ((CallItem) callItem).getModel().getLastPing()));
                     }
+                    if (itemToScrollTo == null || callItems.indexOf(itemToScrollTo) == -1) {
+                        scrollTo = 0;
+                    } else {
+                        scrollTo = callItems.indexOf(itemToScrollTo);
+                    }
 
                     adapter.updateDataSet(callItems, true);
-                    recyclerView.smoothScrollToPosition(0);
 
                     if (searchItem != null) {
                         searchItem.setVisible(callItems.size() > 0);
@@ -423,6 +430,29 @@ public class ConversationsListController extends BaseController implements Searc
 
         fastScroller.addOnScrollStateChangeListener(this);
         adapter.setFastScroller(fastScroller);
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                recyclerView.smoothScrollToPosition(scrollTo);
+                lastClickedConversationToken = "";
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                super.onItemRangeChanged(positionStart, itemCount);
+                recyclerView.smoothScrollToPosition(scrollTo);
+                lastClickedConversationToken = "";
+            }
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
+                super.onItemRangeChanged(positionStart, itemCount, payload);
+                recyclerView.smoothScrollToPosition(scrollTo);
+                lastClickedConversationToken = "";
+            }
+        });
+
         fastScroller.setBubbleTextCreator(position -> {
             String displayName;
             if (shouldUseLastMessageLayout) {
@@ -579,6 +609,8 @@ public class ConversationsListController extends BaseController implements Searc
             } else {
                 conversation = ((CallItem) clickedItem).getModel();
             }
+
+            lastClickedConversationToken = conversation.getToken();
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
