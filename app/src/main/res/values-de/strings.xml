@@ -74,6 +74,32 @@
     <string name="nc_settings_other_notifications_ringtone">Andere</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
     <string name="nc_settings_vibrate">Vibrieren</string>
+    <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
+    <string name="nc_settings_privacy">Datenschutz</string>
+    <string name="nc_settings_screen_lock_title">Bildschirmsperre</string>
+    <string name="nc_settings_screen_lock_desc">Sperre %1$s mit Android-Sperrbildschirm oder Fingerabdruck</string>
+    <string name="nc_settings_screen_lock_timeout_title">Zeitüberschreitung der Bildschirm-Inaktivitätsperre</string>
+    <string name="nc_none">Keine</string>
+    <string name="nc_settings_screen_security_title">Bildschirmsicherheit</string>
+    <string name="nc_settings_screen_security_desc">Verhindert Screenshots in der aktuellen Liste und in der App</string>
+    <string name="nc_settings_incognito_keyboard_title">Inkognito-Tastatur</string>
+    <string name="nc_settings_incognito_keyboard_desc">Weist die Tastatur an, das personalisierte Lernen zu deaktivieren (ohne Garantien)</string>
+    <string name="nc_settings_link_previews_title">Zeige Link-Vorschau</string>
+    <string name="nc_settings_link_previews_desc">Ermöglicht die Vorschau von Inhalten von empfangenen Links für unterstützte Dienste</string>
+    <string name="nc_locked">Zum Entsperren antippen</string>
+
+    <string name="nc_screen_lock_timeout_30">30 Sekunden</string>
+    <string name="nc_screen_lock_timeout_60">1 Minute</string>
+    <string name="nc_screen_lock_timeout_300">5 Minuten</string>
+    <string name="nc_screen_lock_timeout_600">10 Minuten</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">%1$s entsperren</string>
+    <string name="nc_cancel">Abbrechen</string>
+
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Benutzername</string>
     <string name="nc_password">Passwort</string>
