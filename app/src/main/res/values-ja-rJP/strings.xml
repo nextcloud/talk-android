@@ -73,6 +73,11 @@
     <string name="nc_settings_other_notifications_ringtone">その他</string>
     <string name="nc_settings_no_ringtone">音無し</string>
     <string name="nc_settings_vibrate">振動</string>
+    <string name="nc_settings_screen_security_title">スクリーンセキュリティ</string>
+    <string name="nc_screen_lock_timeout_60">1 分間
+</string>
+    <string name="nc_screen_lock_timeout_300">5分</string>
+    <string name="nc_screen_lock_timeout_600">10分</string>
     <string name="nc_no_proxy">プロキシを利用しない</string>
     <string name="nc_username">ユーザー名</string>
     <string name="nc_password">パスワード</string>
