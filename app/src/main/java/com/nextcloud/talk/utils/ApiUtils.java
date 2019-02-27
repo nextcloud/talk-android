@@ -20,7 +20,6 @@
 package com.nextcloud.talk.utils;
 
 import android.net.Uri;
-
 import android.text.TextUtils;
 import androidx.annotation.DimenRes;
 import com.nextcloud.talk.BuildConfig;

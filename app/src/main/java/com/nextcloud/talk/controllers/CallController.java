@@ -92,7 +92,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.parceler.Parcels;
 import org.webrtc.*;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
