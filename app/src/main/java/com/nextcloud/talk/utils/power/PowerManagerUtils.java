@@ -134,16 +134,31 @@ public class PowerManagerUtils {
     private synchronized void setWakeLockState(WakeLockState newState) {
         switch(newState) {
             case FULL:
-                fullLock.acquire();
-                partialLock.acquire();
-                wifiLock.acquire();
+                if (!fullLock.isHeld()) {
+                    fullLock.acquire();
+                }
+
+                if (!partialLock.isHeld()) {
+                    partialLock.acquire();
+                }
+
+                if (!wifiLock.isHeld()) {
+                    wifiLock.acquire();
+                }
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     proximityLock.release();
                 }
                 break;
             case PARTIAL:
-                partialLock.acquire();
-                wifiLock.acquire();
+                if (!partialLock.isHeld()) {
+                    partialLock.acquire();
+                }
+
+                if (!wifiLock.isHeld()) {
+                    wifiLock.acquire();
+                }
+
                 fullLock.release();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     proximityLock.release();
@@ -158,9 +173,16 @@ public class PowerManagerUtils {
                 }
                 break;
             case PROXIMITY:
-                partialLock.acquire();
-                wifiLock.acquire();
-                fullLock.release();
+                if (!partialLock.isHeld()) {
+                    partialLock.acquire();
+                }
+
+                if (!wifiLock.isHeld()) {
+                    wifiLock.acquire();
+                }
+                fullLock.release(
+                        
+                );
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     proximityLock.acquire();
                 }

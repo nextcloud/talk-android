@@ -496,7 +496,18 @@ public class CallController extends BaseController {
             final MagicAudioManager.AudioDevice device, final Set<MagicAudioManager.AudioDevice> availableDevices) {
         Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
                 + "selected: " + device);
+
+        final boolean shouldDisableProximityLock = (device.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET)
+                || device.equals(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
+                || device.equals(MagicAudioManager.AudioDevice.BLUETOOTH));
+
+        if (shouldDisableProximityLock) {
+            powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITHOUT_PROXIMITY_SENSOR_LOCK);
+        } else {
+            powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITH_PROXIMITY_SENSOR_LOCK);
+        }
     }
+
 
     private void cameraInitialization() {
         videoCapturer = createCameraCapturer(cameraEnumerator);
