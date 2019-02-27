@@ -25,6 +25,7 @@ package com.nextcloud.talk.utils.power;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.PowerManager;
@@ -50,6 +51,8 @@ public class PowerManagerUtils {
     private final boolean wifiLockEnforced;
     private boolean proximityDisabled = false;
 
+    private int orientation;
+
     public enum PhoneState {
         IDLE,
         PROCESSING,  //used when the phone is active but before the user should be alerted.
@@ -63,6 +66,11 @@ public class PowerManagerUtils {
         PARTIAL,
         SLEEP,
         PROXIMITY
+    }
+
+    public void setOrientation(int newOrientation) {
+        orientation = newOrientation;
+        updateInCallWakeLockState();
     }
 
     public PowerManagerUtils() {
@@ -84,6 +92,7 @@ public class PowerManagerUtils {
         wifiLock.setReferenceCounted(false);
 
         wifiLockEnforced = isWifiPowerActiveModeEnabled(context);
+        orientation = context.getResources().getConfiguration().orientation;
     }
 
     public void updatePhoneState(PhoneState state) {
@@ -109,7 +118,7 @@ public class PowerManagerUtils {
     }
 
     private void updateInCallWakeLockState() {
-        if (wifiLockEnforced && !proximityDisabled) {
+        if (orientation != Configuration.ORIENTATION_LANDSCAPE && wifiLockEnforced && !proximityDisabled) {
             setWakeLockState(WakeLockState.PROXIMITY);
         } else {
             setWakeLockState(WakeLockState.FULL);

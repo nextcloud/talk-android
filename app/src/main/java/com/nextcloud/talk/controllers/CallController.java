@@ -74,6 +74,7 @@ import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
+import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.webrtc.*;
@@ -209,6 +210,8 @@ public class CallController extends BaseController {
     private boolean hasExternalSignalingServer;
     private String conversationPassword;
 
+    private PowerManagerUtils powerManagerUtils;
+
     public CallController(Bundle args) {
         super(args);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -228,6 +231,7 @@ public class CallController extends BaseController {
         }
 
         isFromNotification = TextUtils.isEmpty(roomToken);
+        powerManagerUtils = new PowerManagerUtils();
     }
 
     @Override
@@ -717,7 +721,6 @@ public class CallController extends BaseController {
             if (localMediaStream != null && localMediaStream.videoTracks.size() > 0) {
                 localMediaStream.videoTracks.get(0).setEnabled(enable);
             }
-
             if (enable) {
                 pipVideoView.setVisibility(View.VISIBLE);
             } else {
@@ -1592,6 +1595,8 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
+        powerManagerUtils.setOrientation(Objects.requireNonNull(getResources()).getConfiguration().orientation);
+
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             remoteRenderersLayout.setOrientation(LinearLayout.HORIZONTAL);
         } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
