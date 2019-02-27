@@ -82,7 +82,7 @@ public class LeaveConversationWorker extends Worker {
             EventStatus eventStatus = new EventStatus(operationUser.getId(),
                     EventStatus.EventType.CONVERSATION_UPDATE, true);
 
-            ncApi.leaveRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(operationUser.getBaseUrl(), conversationToken))
+            ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForRemoveSelfFromRoom(operationUser.getBaseUrl(), conversationToken))
                     .subscribeOn(Schedulers.newThread())
                     .blockingSubscribe(new Observer<GenericOverall>() {
                         Disposable disposable;
