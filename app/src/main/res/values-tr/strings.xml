@@ -74,6 +74,32 @@
     <string name="nc_settings_other_notifications_ringtone">Diğer</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
     <string name="nc_settings_vibrate">Titreşim</string>
+    <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
+    <string name="nc_settings_privacy">Gizlilik</string>
+    <string name="nc_settings_screen_lock_title">Ekran kilidi</string>
+    <string name="nc_settings_screen_lock_desc">%1$s Android ekran kilidi ya da parmak izi ile kilitlensin</string>
+    <string name="nc_settings_screen_lock_timeout_title">Ekran kilidi zaman aşımı süresi</string>
+    <string name="nc_none">Yok</string>
+    <string name="nc_settings_screen_security_title">Ekran güvenliği</string>
+    <string name="nc_settings_screen_security_desc">Son dosyalar listesi ve uygulama ekran görüntülerinin alınmasını engeller</string>
+    <string name="nc_settings_incognito_keyboard_title">Tuş takımı gizliliği</string>
+    <string name="nc_settings_incognito_keyboard_desc">Tuş takımında kişisel öğrenmeyi devre dışı bırakır (garanti edilmez)</string>
+    <string name="nc_settings_link_previews_title">Bağlantı ön izlemeleri görüntülensin</string>
+    <string name="nc_settings_link_previews_desc">Desteklenen aygıtlarda alınan bağlantının içeriğinin ön izlemesini görüntüler</string>
+    <string name="nc_locked">Kilidi açmak için dokunun</string>
+
+    <string name="nc_screen_lock_timeout_30">30 saniye</string>
+    <string name="nc_screen_lock_timeout_60">1 dakika</string>
+    <string name="nc_screen_lock_timeout_300">5 dakika</string>
+    <string name="nc_screen_lock_timeout_600">10 dakika</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">%1$s Kilidini Aç</string>
+    <string name="nc_cancel">İptal</string>
+
     <string name="nc_no_proxy">Vekil sunucu yok</string>
     <string name="nc_username">Kullanıcı adı</string>
     <string name="nc_password">Parola</string>

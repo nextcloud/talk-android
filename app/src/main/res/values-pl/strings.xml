@@ -138,7 +138,7 @@
     <string name="nc_contacts_done">Gotowe</string>
 
     <!-- Permissions -->
-    <string name="nc_camera_permission_permanently_denied">Aby włączyć komunikację wideo, należy udzielić dostępu dla \"Kamera\" w ustawieniach systemu.</string>
+    <string name="nc_camera_permission_permanently_denied">Aby włączyć komunikację wideo, należy udzielić dostępu dla \"Aparat\" w ustawieniach systemu.</string>
     <string name="nc_microphone_permission_permanently_denied">Aby włączyć komunikację głosową, należy udzielić dostępu dla \"Mikrofon\" w ustawieniach systemu.</string>
     <string name="nc_permissions_settings">Otwórz ustawienia</string>
 
