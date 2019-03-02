@@ -74,6 +74,32 @@
     <string name="nc_settings_other_notifications_ringtone">Otro</string>
     <string name="nc_settings_no_ringtone">Sonido NO</string>
     <string name="nc_settings_vibrate">Vibrar</string>
+    <string name="nc_settings_vibrate_desc">Tu teléfono vibrará a menos que esté silenciado</string>
+    <string name="nc_settings_privacy">Privacidad</string>
+    <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
+    <string name="nc_settings_screen_lock_desc">Bloquea %1$s con el bloqueo de pantalla de Android o la huella dactilar</string>
+    <string name="nc_settings_screen_lock_timeout_title">Tiempo de inactividad para bloqueo de pantalla</string>
+    <string name="nc_none">Ninguno</string>
+    <string name="nc_settings_screen_security_title">Seguridad de la pantalla</string>
+    <string name="nc_settings_screen_security_desc">Evita capturas de pantalla en la lista de recientes y dentro de la app</string>
+    <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
+    <string name="nc_settings_incognito_keyboard_desc">Indica al teclado que desactive el aprendizaje personalizado (sin garantías)</string>
+    <string name="nc_settings_link_previews_title">Mostrar previsualización de enlace</string>
+    <string name="nc_settings_link_previews_desc">Permite previsualizar el contenido de enlaces recibos para servicios soportados</string>
+    <string name="nc_locked">Pulsar para desbloquear</string>
+
+    <string name="nc_screen_lock_timeout_30">30 segundos</string>
+    <string name="nc_screen_lock_timeout_60">1 minuto</string>
+    <string name="nc_screen_lock_timeout_300">5 minutos</string>
+    <string name="nc_screen_lock_timeout_600">10 minutos</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">Desbloquear %1$s</string>
+    <string name="nc_cancel">Cancelar</string>
+
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Nombre de usuario</string>
     <string name="nc_password">Contraseña</string>

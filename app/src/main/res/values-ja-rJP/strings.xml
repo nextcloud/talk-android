@@ -73,11 +73,20 @@
     <string name="nc_settings_other_notifications_ringtone">その他</string>
     <string name="nc_settings_no_ringtone">音無し</string>
     <string name="nc_settings_vibrate">振動</string>
+    <string name="nc_settings_privacy">プライバシー</string>
     <string name="nc_settings_screen_security_title">スクリーンセキュリティ</string>
+    <string name="nc_screen_lock_timeout_30">30 秒</string>
     <string name="nc_screen_lock_timeout_60">1 分間
 </string>
     <string name="nc_screen_lock_timeout_300">5分</string>
     <string name="nc_screen_lock_timeout_600">10分</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_cancel">キャンセル</string>
+
     <string name="nc_no_proxy">プロキシを利用しない</string>
     <string name="nc_username">ユーザー名</string>
     <string name="nc_password">パスワード</string>
@@ -99,7 +108,7 @@
     <string name="nc_rename">会話の名前を変更する</string>
     <string name="nc_set_password">パスワードを設定</string>
     <string name="nc_change_password">パスワードを変更</string>
-    <string name="nc_clear_password">パスワードをクリアする</string>
+    <string name="nc_clear_password">パスワードを削除</string>
     <string name="nc_share_link">リンクの共有</string>
     <string name="nc_share_link_via">経由でリンクを共有</string>
     <string name="nc_make_call_public">会話を公開する</string>
@@ -125,7 +134,7 @@
     <string name="nc_incoming_call">着信コール</string>
     <string name="nc_nick_guest">ゲスト</string>
     <string name="nc_public_call">新規公開会話</string>
-    <string name="nc_public_call_explanation">公開の会話を使用すると、外からの人を特別に細工されたリンクに招待できます。</string>
+    <string name="nc_public_call_explanation">公開会話を使用すると、特別なリンクを介して外部からユーザーを招待できます。</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%2$s通知チャンネルの%1$s</string>
@@ -183,6 +192,7 @@
 
     <!-- Empty states -->
     <string name="nc_chat_empty">タップして %1$s と言いましょう！</string>
+    <string name="nc_conversations_empty">会話に参加するか、新しい会話を開始して友人や同僚に挨拶しましょう！</string>
     <string name="nc_hello">こんにちは</string>
 
     <!-- Other -->
