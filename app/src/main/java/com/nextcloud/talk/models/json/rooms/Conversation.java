@@ -20,8 +20,11 @@
  */
 package com.nextcloud.talk.models.json.rooms;
 
+import android.content.res.Resources;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
@@ -97,8 +100,20 @@ public class Conversation {
     }
 
     public boolean canLeave() {
-        return !canModerate() || (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getCount() > 1);
+        return !canModerate() || (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getParticipants().size() > 1);
 
+    }
+
+    public String getDeleteWarningMessage() {
+        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        if (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+            return String.format(resources.getString(R.string.nc_delete_conversation_one2one),
+                    getDisplayName());
+        } else if (getParticipants().size() > 1) {
+            return resources.getString(R.string.nc_delete_conversation_more);
+        }
+
+        return resources.getString(R.string.nc_delete_conversation_default);
     }
 
     public enum NotificationLevel {

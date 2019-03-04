@@ -21,6 +21,7 @@
 package com.nextcloud.talk.controllers;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -59,6 +60,8 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferencestorage.DatabaseStorageModule;
 import com.vanniktech.emoji.EmojiTextView;
+import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 import com.yarolegovich.mp.MaterialChoicePreference;
 import com.yarolegovich.mp.MaterialPreferenceCategory;
 import com.yarolegovich.mp.MaterialPreferenceScreen;
@@ -78,6 +81,8 @@ import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ConversationInfoController extends BaseController {
+
+    private static final int ID_DELETE_CONVERSATION_DIALOG = 0;
 
     @BindView(R.id.notification_settings)
     MaterialPreferenceScreen materialPreferenceScreen;
@@ -104,7 +109,9 @@ public class ConversationInfoController extends BaseController {
 
     @Inject
     NcApi ncApi;
-    private String baseUrl;
+    @Inject
+    Context context;
+
     private String conversationToken;
     private UserEntity conversationUser;
     private String credentials;
@@ -116,13 +123,14 @@ public class ConversationInfoController extends BaseController {
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
     private List<AbstractFlexibleItem> recyclerViewItems = new ArrayList<>();
 
+    private LovelySaveStateHandler saveStateHandler;
+
     public ConversationInfoController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY);
         conversationToken = args.getString(BundleKeys.KEY_ROOM_TOKEN);
-        baseUrl = args.getString(BundleKeys.KEY_BASE_URL);
         credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
     }
 
@@ -145,6 +153,11 @@ public class ConversationInfoController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
+
+        if (saveStateHandler == null) {
+            saveStateHandler = new LovelySaveStateHandler();
+        }
+
         materialPreferenceScreen.setStorageModule(new DatabaseStorageModule(conversationUser, conversationToken));
         if (adapter == null) {
             fetchRoomInfo();
@@ -156,6 +169,55 @@ public class ConversationInfoController extends BaseController {
             progressBar.setVisibility(View.GONE);
             conversationDisplayName.setText(conversation.getDisplayName());
             setupAdapter();
+        }
+    }
+
+    private void showLovelyDialog(int dialogId, Bundle savedInstanceState) {
+        switch (dialogId) {
+            case ID_DELETE_CONVERSATION_DIALOG:
+                showDeleteConversationDialog(savedInstanceState);
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    private void showDeleteConversationDialog(Bundle savedInstanceState) {
+        if (getActivity() != null) {
+            new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                    .setTopColorRes(R.color.nc_darkRed)
+                    .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
+                            R.drawable.ic_delete_black_24dp, R.color.white))
+                    .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
+                    .setTitle(R.string.nc_delete_call)
+                    .setMessage(conversation.getDeleteWarningMessage())
+                    .setPositiveButton(R.string.nc_delete, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            deleteConversation();
+                        }
+                    })
+                    .setNegativeButton(R.string.nc_cancel, null)
+                    .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler)
+                    .setSavedInstanceState(savedInstanceState)
+                    .show();
+        }
+    }
+
+    @Override
+    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+        saveStateHandler.saveInstanceState(outState);
+        super.onSaveViewState(view, outState);
+    }
+
+    @Override
+    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+        super.onRestoreViewState(view, savedViewState);
+        if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
+            //Dialog won't be restarted automatically, so we need to call this method.
+            //Each dialog knows how to restore its state
+            showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState);
         }
     }
 
@@ -254,8 +316,7 @@ public class ConversationInfoController extends BaseController {
         }
     }
 
-    @OnClick(R.id.deleteConversationAction)
-    void deleteConversation() {
+    private void deleteConversation() {
         Data data;
         if ((data = getWorkerData()) != null) {
             OneTimeWorkRequest deleteConversationWorker =
@@ -263,6 +324,11 @@ public class ConversationInfoController extends BaseController {
             WorkManager.getInstance().enqueue(deleteConversationWorker);
             popTwoLastControllers();
         }
+    }
+
+    @OnClick(R.id.deleteConversationAction)
+    void deleteConversationClick() {
+        showDeleteConversationDialog(null);
     }
 
     private Data getWorkerData() {
@@ -278,9 +344,8 @@ public class ConversationInfoController extends BaseController {
 
     private void popTwoLastControllers() {
         List<RouterTransaction> backstack = getRouter().getBackstack();
-        backstack.remove(backstack.size() - 2);
+        backstack = backstack.subList(0, backstack.size() - 2);
         getRouter().setBackstack(backstack, new HorizontalChangeHandler());
-        getRouter().popCurrentController();
     }
 
     private void fetchRoomInfo() {
