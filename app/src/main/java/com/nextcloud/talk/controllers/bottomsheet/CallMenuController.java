@@ -28,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.Data;
@@ -42,8 +43,10 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.AppItem;
 import com.nextcloud.talk.adapters.items.MenuItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.controllers.ConversationsListController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.jobs.LeaveConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -81,6 +84,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private Intent shareIntent;
 
     private UserEntity currentUser;
+    private ConversationMenuInterface conversationMenuInterface;
 
     public CallMenuController(Bundle args) {
         super(args);
@@ -88,6 +92,15 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         if (args.containsKey(BundleKeys.KEY_MENU_TYPE)) {
             this.menuType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_MENU_TYPE));
         }
+    }
+
+    public CallMenuController(Bundle args, @Nullable ConversationMenuInterface conversationMenuInterface) {
+        super(args);
+        this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        if (args.containsKey(BundleKeys.KEY_MENU_TYPE)) {
+            this.menuType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_MENU_TYPE));
+        }
+        this.conversationMenuInterface = conversationMenuInterface;
     }
 
     @Override
@@ -217,19 +230,20 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
                 if (tag > 0) {
                     if (tag == 1 || tag == 9) {
-                        Data data;
-                        if ((data = getWorkerData()) != null) {
                             if (tag == 1) {
-                                OneTimeWorkRequest leaveConversationWorker =
-                                        new OneTimeWorkRequest.Builder(LeaveConversationWorker.class).setInputData(data).build();
-                                WorkManager.getInstance().enqueue(leaveConversationWorker);
+                                Data data;
+                                if ((data = getWorkerData()) != null) {
+                                    OneTimeWorkRequest leaveConversationWorker =
+                                            new OneTimeWorkRequest.Builder(LeaveConversationWorker.class).setInputData(data).build();
+                                    WorkManager.getInstance().enqueue(leaveConversationWorker);
+                                }
                             } else {
-                                OneTimeWorkRequest deleteConversationWorker =
-                                        new OneTimeWorkRequest.Builder(DeleteConversationWorker.class).setInputData(data).build();
-                                WorkManager.getInstance().enqueue(deleteConversationWorker);
+                                Bundle deleteConversationBundle;
+                                if ((deleteConversationBundle = getDeleteConversationBundle()) != null) {
+                                    conversationMenuInterface.openLovelyDialogWithIdAndBundle(ConversationsListController.ID_DELETE_CONVERSATION_DIALOG, deleteConversationBundle);
+                                }
                             }
                             eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
-                        }
                     } else {
                         bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
                         if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
@@ -243,7 +257,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                                     .popChangeHandler(new HorizontalChangeHandler()));
                         } else {
                             bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(MenuType.SHARE));
-                            getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle))
+                            getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle, null))
                                     .pushChangeHandler(new HorizontalChangeHandler())
                                     .popChangeHandler(new HorizontalChangeHandler()));
                         }
@@ -292,4 +306,15 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         return null;
     }
 
+    private Bundle getDeleteConversationBundle() {
+        if (!TextUtils.isEmpty(conversation.getToken())) {
+            Bundle bundle = new Bundle();
+            bundle.putLong(BundleKeys.KEY_INTERNAL_USER_ID, currentUser.getId());
+            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
+            return bundle;
+        }
+
+        return null;
+
+    }
 }
