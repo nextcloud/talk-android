@@ -167,5 +167,4 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
             super.onBackPressed();
         }
     }
-
 }

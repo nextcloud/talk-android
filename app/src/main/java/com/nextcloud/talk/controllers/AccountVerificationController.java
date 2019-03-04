@@ -193,8 +193,10 @@ public class AccountVerificationController extends BaseController {
                         }
 
                         if (isAccountImport) {
-                            getRouter().pushController(RouterTransaction.with(new WebViewLoginController(baseUrl,
-                                    false, username, "")));
+                            getRouter().replaceTopController(RouterTransaction.with(new WebViewLoginController(baseUrl,
+                                    false, username, ""))
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
                         } else {
                             checkEverything();
                         }
