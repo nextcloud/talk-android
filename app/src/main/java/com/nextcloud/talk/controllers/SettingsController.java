@@ -62,6 +62,7 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -70,6 +71,8 @@ import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
+import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 import com.yarolegovich.mp.*;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -178,6 +181,8 @@ public class SettingsController extends BaseController {
     @Inject
     Context context;
 
+    private LovelySaveStateHandler saveStateHandler;
+
     private UserEntity currentUser;
     private String credentials;
 
@@ -189,6 +194,8 @@ public class SettingsController extends BaseController {
 
     private Disposable profileQueryDisposable;
     private Disposable dbQueryDisposable;
+
+    private static final int ID_REMOVE_ACCOUNT_WARNING_DIALOG = 0;
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
@@ -209,6 +216,10 @@ public class SettingsController extends BaseController {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         getCurrentUser();
+
+        if (saveStateHandler == null) {
+            saveStateHandler = new LovelySaveStateHandler();
+        }
 
         appPreferences.registerProxyTypeListener(proxyTypeChangeListener = new ProxyTypeChangeListener());
         appPreferences.registerProxyCredentialsListener(proxyCredentialsChangeListener = new ProxyCredentialsChangeListener());
@@ -302,7 +313,6 @@ public class SettingsController extends BaseController {
                     .popChangeHandler(new VerticalChangeHandler()));
         });
 
-
         String host = null;
         int port = -1;
 
@@ -336,6 +346,78 @@ public class SettingsController extends BaseController {
                     null, alias, null);
         }, new String[]{"RSA", "EC"}, null, finalHost, finalPort, currentUser.getClientCertificate
                 ()));
+    }
+
+    private void showLovelyDialog(int dialogId, Bundle savedInstanceState) {
+        switch (dialogId) {
+            case ID_REMOVE_ACCOUNT_WARNING_DIALOG:
+                showRemoveAccountWarning(savedInstanceState);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+        saveStateHandler.saveInstanceState(outState);
+        super.onSaveViewState(view, outState);
+    }
+
+    @Override
+    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+        super.onRestoreViewState(view, savedViewState);
+        if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
+            //Dialog won't be restarted automatically, so we need to call this method.
+            //Each dialog knows how to restore its state
+            showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState);
+        }
+    }
+
+    private void showRemoveAccountWarning(Bundle savedInstanceState) {
+        if (getActivity() != null) {
+            new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                    .setTopColorRes(R.color.nc_darkRed)
+                    .setIcon(DisplayUtils.getTintedDrawable(getResources(),
+                            R.drawable.ic_delete_black_24dp, R.color.white))
+                    .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
+                    .setTitle(R.string.nc_settings_remove_account)
+                    .setMessage(R.string.nc_settings_remove_confirmation)
+                    .setPositiveButton(R.string.nc_settings_remove, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            removeCurrentAccount();
+                        }
+                    })
+                    .setNegativeButton(R.string.nc_cancel, null)
+                    .setInstanceStateHandler(ID_REMOVE_ACCOUNT_WARNING_DIALOG, saveStateHandler)
+                    .setSavedInstanceState(savedInstanceState)
+                    .show();
+        }
+    }
+
+    private void removeCurrentAccount() {
+        boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser.getId());
+
+        OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
+        WorkManager.getInstance().enqueue(accountRemovalWork);
+
+        if (otherUserExists && getView() != null) {
+            onViewBound(getView());
+            onAttach(getView());
+        } else if (!otherUserExists) {
+            if (getParentController() == null || getParentController().getRouter() == null) {
+                if (getActivity() != null) {
+                    // Something went very wrong, finish the app
+                    getActivity().finish();
+                }
+            } else {
+                getParentController().getRouter().setRoot(RouterTransaction.with(
+                        new ServerSelectionController())
+                        .pushChangeHandler(new VerticalChangeHandler())
+                        .popChangeHandler(new VerticalChangeHandler()));
+            }
+        }
     }
 
     @Override
@@ -495,28 +577,7 @@ public class SettingsController extends BaseController {
 
 
             removeAccountButton.addPreferenceClickListener(view1 -> {
-                boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser.getId());
-
-                OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
-                WorkManager.getInstance().enqueue(accountRemovalWork);
-
-                if (otherUserExists && getView() != null) {
-                    onViewBound(getView());
-                    onAttach(getView());
-                } else if (!otherUserExists) {
-                    if (getParentController() == null || getParentController().getRouter() == null) {
-                        if (getActivity() != null) {
-                            // Something went very wrong, finish the app
-                            getActivity().finish();
-                        }
-                    } else {
-                        getParentController().getRouter().setRoot(RouterTransaction.with(
-                                new ServerSelectionController())
-                                .pushChangeHandler(new VerticalChangeHandler())
-                                .popChangeHandler(new VerticalChangeHandler()));
-                    }
-                }
-
+                showLovelyDialog(ID_REMOVE_ACCOUNT_WARNING_DIALOG, null);
             });
         }
 

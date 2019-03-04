@@ -308,11 +308,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         } else {
 
             Bundle bundle = new Bundle();
-            Conversation.RoomType roomType;
+            Conversation.ConversationType roomType;
             if (isPublicCall) {
-                roomType = Conversation.RoomType.ROOM_PUBLIC_CALL;
+                roomType = Conversation.ConversationType.ROOM_PUBLIC_CALL;
             } else {
-                roomType = Conversation.RoomType.ROOM_GROUP_CALL;
+                roomType = Conversation.ConversationType.ROOM_GROUP_CALL;
             }
 
             bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));

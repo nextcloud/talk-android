@@ -160,6 +160,7 @@ public class PowerManagerUtils {
                 }
 
                 fullLock.release();
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     proximityLock.release();
                 }
@@ -180,6 +181,7 @@ public class PowerManagerUtils {
                 if (!wifiLock.isHeld()) {
                     wifiLock.acquire();
                 }
+
                 fullLock.release(
                         
                 );

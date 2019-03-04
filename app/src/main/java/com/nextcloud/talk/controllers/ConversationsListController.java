@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
@@ -41,6 +42,9 @@ import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -68,6 +72,8 @@ import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
+import com.nextcloud.talk.interfaces.ConversationMenuInterface;
+import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.rooms.Conversation;
@@ -79,6 +85,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
@@ -101,11 +109,12 @@ import java.util.List;
 @AutoInjector(NextcloudTalkApplication.class)
 public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
         FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, FastScroller
-                .OnScrollStateChangeListener {
+                .OnScrollStateChangeListener, ConversationMenuInterface {
 
     public static final String TAG = "ConversationsListController";
 
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
+    public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
 
     @Inject
     UserUtils userUtils;
@@ -115,6 +124,9 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Inject
     NcApi ncApi;
+
+    @Inject
+    Context context;
 
     @Inject
     AppPreferences appPreferences;
@@ -159,6 +171,10 @@ public class ConversationsListController extends BaseController implements Searc
     private String lastClickedConversationToken;
     private int scrollTo = 0;
 
+    private LovelySaveStateHandler saveStateHandler;
+
+    private Bundle conversationMenuBundle = null;
+
     public ConversationsListController() {
         super();
         setHasOptionsMenu(true);
@@ -176,6 +192,10 @@ public class ConversationsListController extends BaseController implements Searc
 
         if (getActionBar() != null) {
             getActionBar().show();
+        }
+
+        if (saveStateHandler == null) {
+            saveStateHandler = new LovelySaveStateHandler();
         }
 
         if (adapter == null) {
@@ -505,16 +525,24 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-        super.onSaveViewState(view, outState);
+        saveStateHandler.saveInstanceState(outState);
+
         if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
             outState.putString(KEY_SEARCH_QUERY, searchView.getQuery().toString());
         }
+
+        super.onSaveViewState(view, outState);
     }
 
     @Override
     public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         super.onRestoreViewState(view, savedViewState);
         searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
+        if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
+            //Dialog won't be restarted automatically, so we need to call this method.
+            //Each dialog knows how to restore its state
+            showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState);
+        }
     }
 
     @Override
@@ -584,7 +612,7 @@ public class ConversationsListController extends BaseController implements Searc
 
         if (shouldShowCallMenuController) {
             getChildRouter((ViewGroup) view).setRoot(
-                    RouterTransaction.with(new CallMenuController(bundle))
+                    RouterTransaction.with(new CallMenuController(bundle, this))
                             .popChangeHandler(new VerticalChangeHandler())
                             .pushChangeHandler(new VerticalChangeHandler()));
         } else {
@@ -677,7 +705,7 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(EventStatus eventStatus) {
-        if (currentUser != null && eventStatus.getUserId() == currentUser.getId()){
+        if (currentUser != null && eventStatus.getUserId() == currentUser.getId()) {
             switch (eventStatus.getEventType()) {
                 case CONVERSATION_UPDATE:
                     if (eventStatus.isAllGood() && !isRefreshing) {
@@ -688,5 +716,72 @@ public class ConversationsListController extends BaseController implements Searc
                     break;
             }
         }
+    }
+
+    private void showDeleteConversationDialog(Bundle savedInstanceState) {
+        if (getActivity() != null && conversationMenuBundle != null && currentUser != null && conversationMenuBundle.getLong(BundleKeys.KEY_INTERNAL_USER_ID) == currentUser.getId()) {
+
+            Conversation conversation =
+                    Parcels.unwrap(conversationMenuBundle.getParcelable(BundleKeys.KEY_ROOM));
+
+            if (conversation != null) {
+                new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                        .setTopColorRes(R.color.nc_darkRed)
+                        .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
+                                R.drawable.ic_delete_black_24dp, R.color.white))
+                        .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
+                        .setTitle(R.string.nc_delete_call)
+                        .setMessage(conversation.getDeleteWarningMessage())
+                        .setPositiveButton(R.string.nc_delete, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Data.Builder data = new Data.Builder();
+                                data.putLong(BundleKeys.KEY_INTERNAL_USER_ID,
+                                        conversationMenuBundle.getLong(BundleKeys.KEY_INTERNAL_USER_ID));
+                                data.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
+                                conversationMenuBundle = null;
+                                deleteConversation(data.build());
+                            }
+                        })
+                        .setNegativeButton(R.string.nc_cancel, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                conversationMenuBundle = null;
+                            }
+                        })
+                        .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler)
+                        .setSavedInstanceState(savedInstanceState)
+                        .show();
+            }
+        }
+    }
+
+    private void deleteConversation(Data data) {
+        OneTimeWorkRequest deleteConversationWorker =
+                new OneTimeWorkRequest.Builder(DeleteConversationWorker.class).setInputData(data).build();
+        WorkManager.getInstance().enqueue(deleteConversationWorker);
+    }
+
+    private void showLovelyDialog(int dialogId, Bundle savedInstanceState) {
+        switch (dialogId) {
+            case ID_DELETE_CONVERSATION_DIALOG:
+                showDeleteConversationDialog(savedInstanceState);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void openLovelyDialogWithIdAndBundle(int dialogId, Bundle bundle) {
+        conversationMenuBundle = bundle;
+        switch (dialogId) {
+            case ID_DELETE_CONVERSATION_DIALOG:
+                showLovelyDialog(dialogId, null);
+                break;
+            default:
+                break;
+        }
+
     }
 }

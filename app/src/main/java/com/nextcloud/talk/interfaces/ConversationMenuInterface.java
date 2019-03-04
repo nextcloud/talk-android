@@ -18,22 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.models.json.websocket;
+package com.nextcloud.talk.interfaces;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
-import com.nextcloud.talk.models.json.rooms.Conversation;
-import lombok.Data;
-import org.parceler.Parcel;
+import android.os.Bundle;
 
-@Data
-@Parcel
-@JsonObject
-public class RoomPropertiesWebSocketMessage {
-    @JsonField(name = "name")
-    String name;
-
-    @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
-    Conversation.ConversationType roomType;
+public interface ConversationMenuInterface {
+    void openLovelyDialogWithIdAndBundle(int dialogId, Bundle bundle);
 }

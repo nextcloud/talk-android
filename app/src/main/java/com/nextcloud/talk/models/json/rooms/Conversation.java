@@ -20,8 +20,11 @@
  */
 package com.nextcloud.talk.models.json.rooms;
 
+import android.content.res.Resources;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.R;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
@@ -45,7 +48,7 @@ public class Conversation {
     @JsonField(name = "displayName")
     public String displayName;
     @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
-    public RoomType type;
+    public ConversationType type;
     @JsonField(name = "count")
     public long count;
     @JsonField(name = "lastPing")
@@ -79,7 +82,7 @@ public class Conversation {
     NotificationLevel notificationLevel;
 
     public boolean isPublic() {
-        return (RoomType.ROOM_PUBLIC_CALL.equals(type));
+        return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
     }
 
     public boolean isGuest() {
@@ -93,11 +96,24 @@ public class Conversation {
     }
 
     public boolean isNameEditable() {
-        return (canModerate() && !RoomType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
+        return (canModerate() && !ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
     }
 
-    public boolean isDeletable() {
-        return (canModerate() && ((participants != null && participants.size() > 2) || numberOfGuests > 0));
+    public boolean canLeave() {
+        return !canModerate() || (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getParticipants().size() > 1);
+
+    }
+
+    public String getDeleteWarningMessage() {
+        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        if (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+            return String.format(resources.getString(R.string.nc_delete_conversation_one2one),
+                    getDisplayName());
+        } else if (getParticipants().size() > 1) {
+            return resources.getString(R.string.nc_delete_conversation_more);
+        }
+
+        return resources.getString(R.string.nc_delete_conversation_default);
     }
 
     public enum NotificationLevel {
@@ -108,7 +124,7 @@ public class Conversation {
     }
 
     @Parcel
-    public enum RoomType {
+    public enum ConversationType {
         DUMMY,
         ROOM_TYPE_ONE_TO_ONE_CALL,
         ROOM_GROUP_CALL,

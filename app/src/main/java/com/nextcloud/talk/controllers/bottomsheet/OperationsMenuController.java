@@ -116,7 +116,7 @@ public class OperationsMenuController extends BaseController {
 
     private Disposable disposable;
 
-    private Conversation.RoomType conversationType;
+    private Conversation.ConversationType conversationType;
     private ArrayList<String> invitedUsers = new ArrayList<>();
     private ArrayList<String> invitedGroups = new ArrayList<>();
 
@@ -184,13 +184,6 @@ public class OperationsMenuController extends BaseController {
             }
 
             switch (operationCode) {
-                case 1:
-                    ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForRemoveSelfFromRoom(currentUser.getBaseUrl(), conversation.getToken()))
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(operationsObserver);
-                    break;
                 case 2:
                     ncApi.renameRoom(credentials, ApiUtils.getRoom(currentUser.getBaseUrl(), conversation.getToken()),
                             conversation.getName())
@@ -227,14 +220,6 @@ public class OperationsMenuController extends BaseController {
                 case 8:
                     ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), conversation
                             .getToken()))
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(operationsObserver);
-                    break;
-                case 9:
-                    ncApi.deleteRoom(credentials, ApiUtils.getRoom(currentUser.getBaseUrl(),
-                            conversation.getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
@@ -278,7 +263,7 @@ public class OperationsMenuController extends BaseController {
                         invite = invitedGroups.get(0);
                     }
 
-                    if (conversationType.equals(Conversation.RoomType.ROOM_PUBLIC_CALL) ||
+                    if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) ||
                             !currentUser.hasSpreedCapabilityWithName("empty-group-room")) {
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
                                 "3", invite, null);
@@ -307,7 +292,7 @@ public class OperationsMenuController extends BaseController {
                                 @Override
                                 public void onNext(RoomOverall roomOverall) {
                                     conversation = roomOverall.getOcs().getData();
-                                    if (conversationType.equals(Conversation.RoomType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
+                                    if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
                                         performGroupCallWorkaround(credentials);
                                     } else {
                                         inviteUsersToAConversation();

@@ -28,8 +28,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -39,8 +43,12 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.AppItem;
 import com.nextcloud.talk.adapters.items.MenuItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.controllers.ConversationsListController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.interfaces.ConversationMenuInterface;
+import com.nextcloud.talk.jobs.DeleteConversationWorker;
+import com.nextcloud.talk.jobs.LeaveConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -75,12 +83,24 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private MenuType menuType;
     private Intent shareIntent;
 
+    private UserEntity currentUser;
+    private ConversationMenuInterface conversationMenuInterface;
+
     public CallMenuController(Bundle args) {
         super(args);
         this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
         if (args.containsKey(BundleKeys.KEY_MENU_TYPE)) {
             this.menuType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_MENU_TYPE));
         }
+    }
+
+    public CallMenuController(Bundle args, @Nullable ConversationMenuInterface conversationMenuInterface) {
+        super(args);
+        this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        if (args.containsKey(BundleKeys.KEY_MENU_TYPE)) {
+            this.menuType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_MENU_TYPE));
+        }
+        this.conversationMenuInterface = conversationMenuInterface;
     }
 
     @Override
@@ -128,12 +148,11 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
             }
 
-            UserEntity currentUser;
+            currentUser = userUtils.getCurrentUser();
 
             if (conversation.isFavorite()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_border_black_24dp, R.color.grey_600)));
-            } else if ((currentUser = userUtils.getCurrentUser()) != null &&
-                    currentUser.hasSpreedCapabilityWithName("favorites")) {
+            } else if (currentUser.hasSpreedCapabilityWithName("favorites")) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites)
                         , 98, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_black_24dp, R.color.grey_600)));
             }
@@ -143,7 +162,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                         .ic_pencil_grey600_24dp)));
             }
 
-            if (conversation.canModerate()) {
+            if (conversation.canModerate() && !currentUser.hasSpreedCapabilityWithName("locked-one-to-one-rooms")) {
                 if (!conversation.isPublic()) {
                     menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public), 3, getResources().getDrawable(R.drawable
                             .ic_link_grey600_24px)));
@@ -158,6 +177,9 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                                 .ic_lock_plus_grey600_24dp)));
                     }
                 }
+
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9, getResources().getDrawable(R.drawable
+                        .ic_delete_grey600_24dp)));
             }
 
             if (conversation.isPublic()) {
@@ -169,13 +191,11 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 }
             }
 
-            if (conversation.isDeletable()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9, getResources().getDrawable(R.drawable
-                        .ic_delete_grey600_24dp)));
-            }
 
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1, getResources().getDrawable(R.drawable
-                    .ic_close_grey600_24dp)));
+            if (conversation.canLeave()) {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1, getResources().getDrawable(R.drawable
+                        .ic_close_grey600_24dp)));
+            }
         } else if (menuType.equals(MenuType.SHARE)) {
             prepareIntent();
             List<AppAdapter.AppInfo> appInfoList = ShareUtils.getShareApps(getActivity(), shareIntent, null,
@@ -209,21 +229,38 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 }
 
                 if (tag > 0) {
-                    bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
-                    if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
-                        eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
-                        getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
-                                .pushChangeHandler(new HorizontalChangeHandler())
-                                .popChangeHandler(new HorizontalChangeHandler()));
-                    } else if (tag != 7) {
-                        getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
-                                .pushChangeHandler(new HorizontalChangeHandler())
-                                .popChangeHandler(new HorizontalChangeHandler()));
+                    if (tag == 1 || tag == 9) {
+                            if (tag == 1) {
+                                Data data;
+                                if ((data = getWorkerData()) != null) {
+                                    OneTimeWorkRequest leaveConversationWorker =
+                                            new OneTimeWorkRequest.Builder(LeaveConversationWorker.class).setInputData(data).build();
+                                    WorkManager.getInstance().enqueue(leaveConversationWorker);
+                                }
+                            } else {
+                                Bundle deleteConversationBundle;
+                                if ((deleteConversationBundle = getDeleteConversationBundle()) != null) {
+                                    conversationMenuInterface.openLovelyDialogWithIdAndBundle(ConversationsListController.ID_DELETE_CONVERSATION_DIALOG, deleteConversationBundle);
+                                }
+                            }
+                            eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     } else {
-                        bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(MenuType.SHARE));
-                        getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle))
-                                .pushChangeHandler(new HorizontalChangeHandler())
-                                .popChangeHandler(new HorizontalChangeHandler()));
+                        bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
+                        if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
+                            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+                            getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        } else if (tag != 7) {
+                            getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        } else {
+                            bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(MenuType.SHARE));
+                            getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle, null))
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        }
                     }
                 }
             }
@@ -256,5 +293,28 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     @Parcel
     public enum MenuType {
         REGULAR, SHARE
+    }
+
+    private Data getWorkerData() {
+        if (!TextUtils.isEmpty(conversation.getToken())) {
+            Data.Builder data = new Data.Builder();
+            data.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
+            data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, currentUser.getId());
+            return data.build();
+        }
+
+        return null;
+    }
+
+    private Bundle getDeleteConversationBundle() {
+        if (!TextUtils.isEmpty(conversation.getToken())) {
+            Bundle bundle = new Bundle();
+            bundle.putLong(BundleKeys.KEY_INTERNAL_USER_ID, currentUser.getId());
+            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
+            return bundle;
+        }
+
+        return null;
+
     }
 }
