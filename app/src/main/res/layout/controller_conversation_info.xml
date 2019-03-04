@@ -23,7 +23,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/nc_white_color"
+    android:background="@color/bg_controller_conv_info"
     android:orientation="vertical">
 
     <ProgressBar
@@ -71,7 +71,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/avatar_image"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/margin_between_elements" />
+                        android:layout_marginTop="@dimen/margin_between_elements"
+                        android:textColor="@color/fg_default" />
 
                 </RelativeLayout>
             </com.yarolegovich.mp.MaterialPreferenceCategory>
@@ -116,7 +117,7 @@
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:listitem="@layout/rv_item_contact"></androidx.recyclerview.widget.RecyclerView>
+                    tools:listitem="@layout/rv_item_contact" />
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 

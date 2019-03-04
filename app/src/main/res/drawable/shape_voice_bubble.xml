@@ -23,7 +23,7 @@
     <item>
         <shape
             android:shape="oval">
-            <solid android:color="@color/white"/>
+            <solid android:color="@color/bg_default"/>
         </shape>
     </item>
     <item android:drawable="@drawable/ic_mic_grey_600_24dp"/>

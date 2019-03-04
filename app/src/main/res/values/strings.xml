@@ -88,6 +88,11 @@
     <string name="nc_settings_vibrate_desc">Phone will vibrate unless it\'s silenced</string>
     <string name="nc_settings_vibrate_key" translatable="false">notifications_vibrate</string>
 
+    <string name="nc_settings_appearance">Appearance</string>
+    <string name="nc_settings_theme_title">Theme</string>
+    <string name="nc_settings_theme_key">theme</string>
+    <string name="nc_settings_theme_light">Light</string>
+    <string name="nc_settings_theme_dark">Dark</string>
     <string name="nc_settings_privacy">Privacy</string>
     <string name="nc_settings_screen_lock_title">Screen lock</string>
     <string name="nc_settings_screen_lock_desc">Lock %1$s with Android screen lock or supported biometric method</string>

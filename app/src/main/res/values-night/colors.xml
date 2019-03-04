@@ -3,7 +3,9 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
-  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~ @author Daniel Bailey
+  ~ Copyright (C) 2019 Daniel Bailey <db@grappleIT.co.uk>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -19,8 +21,20 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-    <solid
-        android:color="@color/bg_default"/>
-</shape>
+<resources>
+    <color name="conversation_item_header">#6c94a8</color>
+
+    <color name="fg_default">#eeeeee</color>
+
+    <color name="bg_default">#333333</color>
+    <color name="bg_alt">#333333</color>
+
+    <!-- Chat window incoming message text & informational -->
+    <color name="nc_incoming_text_default">#8FADBD</color>
+    <color name="bg_message_list_incoming_bubble">#444444</color>
+    <color name="nc_grey">@android:color/holo_purple</color>
+    <color name="bg_bottom_sheet">#222222</color>
+
+    <color name="emoji_background">#313031</color>
+    <color name="emoji_divider">#15FFFFFF</color>
+</resources>

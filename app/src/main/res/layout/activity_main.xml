@@ -36,7 +36,8 @@
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:contentInsetStart="24dp"
             app:contentInsetStartWithNavigation="0dp"
-            app:titleMarginStart="0dp" />
+            app:titleMarginStart="0dp"
+            app:popupTheme="@style/appActionBarPopupMenu" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.bluelinelabs.conductor.ChangeHandlerFrameLayout

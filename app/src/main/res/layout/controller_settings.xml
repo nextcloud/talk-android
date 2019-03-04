@@ -60,7 +60,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/avatar_image"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/margin_between_elements" />
+                android:layout_marginTop="@dimen/margin_between_elements"
+                android:textColor="@color/fg_default" />
 
             <TextView
                 android:id="@+id/base_url_text"
@@ -68,7 +69,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/display_name_text"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="4dp" />
+                android:layout_margin="4dp"
+                android:textColor="@color/fg_default" />
 
 
             <com.yarolegovich.mp.MaterialStandardPreference
@@ -108,6 +110,22 @@
                 apc:mp_title="@string/nc_settings_add_account" />
 
         </RelativeLayout>
+
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        apc:mpc_title="@string/nc_settings_appearance"
+        apc:mpc_title_color="@color/colorPrimary">
+
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_theme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_key="@string/nc_settings_theme_key"
+            apc:mp_title="@string/nc_settings_theme_title" />
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 

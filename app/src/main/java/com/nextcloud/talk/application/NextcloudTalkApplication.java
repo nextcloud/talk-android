@@ -25,6 +25,8 @@ import android.os.Build;
 import android.util.Log;
 import androidx.emoji.bundled.BundledEmojiCompatConfig;
 import androidx.emoji.text.EmojiCompat;
+
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
@@ -54,6 +56,7 @@ import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule;
 import com.nextcloud.talk.utils.database.user.UserModule;
 import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.googlecompat.GoogleCompatEmojiProvider;
@@ -90,6 +93,9 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
     protected static NextcloudTalkApplication sharedApplication;
     //region Fields (components)
     protected NextcloudTalkApplicationComponent componentApplication;
+
+    @Inject
+    AppPreferences appPreferences;
     @Inject
     OkHttpClient okHttpClient;
     //endregion
@@ -124,8 +130,6 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
     //region Overridden methods
     @Override
     public void onCreate() {
-        super.onCreate();
-
         sharedApplication = this;
 
         SecurityKeyManager securityKeyManager = SecurityKeyManager.getInstance();
@@ -140,6 +144,9 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         DavUtils.registerCustomFactories();
 
         componentApplication.inject(this);
+
+        setAppTheme(appPreferences.isDarkThemeEnabled());
+        super.onCreate();
 
         ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
                 .setNetworkFetcher(new OkHttpNetworkFetcherWithCache(okHttpClient))
@@ -191,6 +198,18 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         return componentApplication;
     }
     //endregion
+
+    //region Setters
+    public static void setAppTheme(Boolean darkTheme) {
+        if (darkTheme) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+    }
+    //endregion
+
+
 
     //region Protected methods
     protected void buildComponent() {
