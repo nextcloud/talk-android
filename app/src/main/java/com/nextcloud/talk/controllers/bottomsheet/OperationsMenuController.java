@@ -185,8 +185,7 @@ public class OperationsMenuController extends BaseController {
 
             switch (operationCode) {
                 case 1:
-                    ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForRemoveSelfFromRoom(currentUser.getBaseUrl
-                            (), conversation.getToken()))
+                    ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForRemoveSelfFromRoom(currentUser.getBaseUrl(), conversation.getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
@@ -234,7 +233,8 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(operationsObserver);
                     break;
                 case 9:
-                    ncApi.deleteRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(currentUser.getBaseUrl(), conversation.getToken()))
+                    ncApi.deleteRoom(credentials, ApiUtils.getRoom(currentUser.getBaseUrl(),
+                            conversation.getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)

@@ -389,7 +389,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
-        if (!conversationUser.getUserId().equals("?") && conversationUser.hasSpreedCapabilityWithName("mention" + "-flag") && getActivity() != null) {
+        if (!conversationUser.getUserId().equals("?") && conversationUser.hasSpreedCapabilityWithName("mention-flag") && getActivity() != null) {
             getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> showConversationInfoScreen());
         }
 

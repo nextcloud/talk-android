@@ -41,6 +41,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.util.Log;
 import com.nextcloud.talk.events.PeerConnectionEvent;
+import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.webrtc.ThreadUtils;
 
@@ -94,6 +95,8 @@ public class MagicAudioManager {
     // Callback method for changes in audio focus.
     private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
 
+    private PowerManagerUtils powerManagerUtils;
+
     private MagicAudioManager(Context context, boolean useProximitySensor) {
         Log.d(TAG, "ctor");
         ThreadUtils.checkIsOnMainThread();
@@ -102,6 +105,9 @@ public class MagicAudioManager {
         bluetoothManager = MagicBluetoothManager.create(context, this);
         wiredHeadsetReceiver = new WiredHeadsetReceiver();
         amState = AudioManagerState.UNINITIALIZED;
+
+        powerManagerUtils = new PowerManagerUtils();
+        powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITH_PROXIMITY_SENSOR_LOCK);
 
         if (useProximitySensor) {
             useSpeakerphone = SPEAKERPHONE_AUTO;
@@ -312,6 +318,8 @@ public class MagicAudioManager {
             proximitySensor.stop();
             proximitySensor = null;
         }
+
+        powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.IDLE);
 
         audioManagerEvents = null;
         Log.d(TAG, "AudioManager stopped");

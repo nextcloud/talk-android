@@ -30,8 +30,14 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
+import butterknife.OnClick;
+import com.bluelinelabs.conductor.RouterTransaction;
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -40,6 +46,8 @@ import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.jobs.DeleteConversationWorker;
+import com.nextcloud.talk.jobs.LeaveConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
@@ -54,6 +62,7 @@ import com.vanniktech.emoji.EmojiTextView;
 import com.yarolegovich.mp.MaterialChoicePreference;
 import com.yarolegovich.mp.MaterialPreferenceCategory;
 import com.yarolegovich.mp.MaterialPreferenceScreen;
+import com.yarolegovich.mp.MaterialStandardPreference;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -61,7 +70,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import org.parceler.Parcels;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -87,6 +95,11 @@ public class ConversationInfoController extends BaseController {
     MaterialPreferenceCategory participantsListCategory;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.deleteConversationAction)
+    MaterialStandardPreference deleteConversationAction;
+    @BindView(R.id.ownOptions)
+    MaterialPreferenceCategory ownOptionsCategory;
+
     @Inject
     NcApi ncApi;
     private String baseUrl;
@@ -228,6 +241,46 @@ public class ConversationInfoController extends BaseController {
 
     }
 
+    @OnClick(R.id.leaveConversationAction)
+    void leaveConversation() {
+        Data data;
+        if ((data = getWorkerData()) != null) {
+            OneTimeWorkRequest leaveConversationWorker =
+                    new OneTimeWorkRequest.Builder(LeaveConversationWorker.class).setInputData(data).build();
+            WorkManager.getInstance().enqueue(leaveConversationWorker);
+            popTwoLastControllers();
+        }
+    }
+
+    @OnClick(R.id.deleteConversationAction)
+    void deleteConversation() {
+        Data data;
+        if ((data = getWorkerData()) != null) {
+            OneTimeWorkRequest deleteConversationWorker =
+                    new OneTimeWorkRequest.Builder(DeleteConversationWorker.class).setInputData(data).build();
+            WorkManager.getInstance().enqueue(deleteConversationWorker);
+            popTwoLastControllers();
+        }
+    }
+
+    private Data getWorkerData() {
+        if (!TextUtils.isEmpty(conversationToken) && conversationUser != null) {
+            Data.Builder data = new Data.Builder();
+            data.putString(BundleKeys.KEY_ROOM_TOKEN, conversationToken);
+            data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.getId());
+            return data.build();
+        }
+
+        return null;
+    }
+
+    private void popTwoLastControllers() {
+        List<RouterTransaction> backstack = getRouter().getBackstack();
+        backstack.remove(backstack.size() - 2);
+        getRouter().setBackstack(backstack, new HorizontalChangeHandler());
+        getRouter().popCurrentController();
+    }
+
     private void fetchRoomInfo() {
         ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser.getBaseUrl(), conversationToken))
                 .subscribeOn(Schedulers.newThread())
@@ -241,6 +294,14 @@ public class ConversationInfoController extends BaseController {
                     @Override
                     public void onNext(RoomOverall roomOverall) {
                         conversation = roomOverall.getOcs().getData();
+
+                        ownOptionsCategory.setVisibility(View.VISIBLE);
+                        if (!conversation.isDeletable()) {
+                            deleteConversationAction.setVisibility(View.GONE);
+                        } else {
+                            deleteConversationAction.setVisibility(View.VISIBLE);
+                        }
+
                         getListOfParticipants();
 
                         if (progressBar != null) {

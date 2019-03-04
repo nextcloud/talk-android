@@ -66,6 +66,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.controllers.bottomsheet.CallMenuController;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
@@ -152,6 +153,8 @@ public class ConversationsListController extends BaseController implements Searc
     private String credentials;
 
     private boolean adapterWasNull = true;
+
+    private boolean isRefreshing;
 
     private String lastClickedConversationToken;
     private int scrollTo = 0;
@@ -292,6 +295,8 @@ public class ConversationsListController extends BaseController implements Searc
     private void fetchData(boolean fromBottomSheet) {
         dispose(null);
 
+        isRefreshing = true;
+
         callItems = new ArrayList<>();
 
         roomsQueryDisposable = ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(currentUser.getBaseUrl()))
@@ -412,6 +417,7 @@ public class ConversationsListController extends BaseController implements Searc
                         }, 2500);
                     }
 
+                    isRefreshing = false;
                 });
 
     }
@@ -665,6 +671,21 @@ public class ConversationsListController extends BaseController implements Searc
 
                 MoreMenuClickEvent moreMenuClickEvent = new MoreMenuClickEvent(conversation);
                 onMessageEvent(moreMenuClickEvent);
+            }
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(EventStatus eventStatus) {
+        if (currentUser != null && eventStatus.getUserId() == currentUser.getId()){
+            switch (eventStatus.getEventType()) {
+                case CONVERSATION_UPDATE:
+                    if (eventStatus.isAllGood() && !isRefreshing) {
+                        fetchData(false);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }

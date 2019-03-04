@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class SignalingSettingsJob extends Worker {
+public class SignalingSettingsWorker extends Worker {
     private static final String TAG = "SignalingSettingsJob";
 
     @Inject
@@ -58,7 +58,7 @@ public class SignalingSettingsJob extends Worker {
     @Inject
     EventBus eventBus;
 
-    public SignalingSettingsJob(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+    public SignalingSettingsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
 

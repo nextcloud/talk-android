@@ -43,7 +43,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.jobs.CapabilitiesWorker;
 import com.nextcloud.talk.jobs.PushRegistrationWorker;
-import com.nextcloud.talk.jobs.SignalingSettingsJob;
+import com.nextcloud.talk.jobs.SignalingSettingsWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
@@ -395,7 +395,7 @@ public class AccountVerificationController extends BaseController {
                 .putLong(BundleKeys.KEY_INTERNAL_USER_ID, internalAccountId)
                 .build();
 
-        OneTimeWorkRequest signalingSettings = new OneTimeWorkRequest.Builder(SignalingSettingsJob.class)
+        OneTimeWorkRequest signalingSettings = new OneTimeWorkRequest.Builder(SignalingSettingsWorker.class)
                 .setInputData(userData)
                 .build();
         WorkManager.getInstance().enqueue(signalingSettings);

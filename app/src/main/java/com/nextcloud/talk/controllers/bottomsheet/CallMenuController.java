@@ -43,6 +43,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -130,12 +131,11 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
             UserEntity currentUser;
 
             if (conversation.isFavorite()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, getResources()
-                        .getDrawable(R.drawable.ic_star_border_grey600_24dp)));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_border_black_24dp, R.color.grey_600)));
             } else if ((currentUser = userUtils.getCurrentUser()) != null &&
                     currentUser.hasSpreedCapabilityWithName("favorites")) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites), 98, getResources()
-                        .getDrawable(R.drawable.ic_star_grey600_24dp)));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites)
+                        , 98, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_black_24dp, R.color.grey_600)));
             }
 
             if (conversation.isNameEditable()) {
