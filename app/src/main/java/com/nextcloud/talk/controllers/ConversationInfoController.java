@@ -97,7 +97,9 @@ public class ConversationInfoController extends BaseController {
     RecyclerView recyclerView;
     @BindView(R.id.deleteConversationAction)
     MaterialStandardPreference deleteConversationAction;
-    @BindView(R.id.ownOptions)
+    @BindView(R.id.leaveConversationAction)
+    MaterialStandardPreference leaveConversationAction;
+    @BindView(R.id.otherRoomOptions)
     MaterialPreferenceCategory ownOptionsCategory;
 
     @Inject
@@ -296,7 +298,14 @@ public class ConversationInfoController extends BaseController {
                         conversation = roomOverall.getOcs().getData();
 
                         ownOptionsCategory.setVisibility(View.VISIBLE);
-                        if (!conversation.isDeletable()) {
+
+                        if (!conversation.canLeave()) {
+                            leaveConversationAction.setVisibility(View.GONE);
+                        } else {
+                            leaveConversationAction.setVisibility(View.VISIBLE);
+                        }
+
+                        if (!conversation.canModerate()) {
                             deleteConversationAction.setVisibility(View.GONE);
                         } else {
                             deleteConversationAction.setVisibility(View.VISIBLE);

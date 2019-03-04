@@ -128,12 +128,11 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
             }
 
-            UserEntity currentUser;
+            UserEntity currentUser = userUtils.getCurrentUser();
 
             if (conversation.isFavorite()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_border_black_24dp, R.color.grey_600)));
-            } else if ((currentUser = userUtils.getCurrentUser()) != null &&
-                    currentUser.hasSpreedCapabilityWithName("favorites")) {
+            } else if (currentUser.hasSpreedCapabilityWithName("favorites")) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites)
                         , 98, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_black_24dp, R.color.grey_600)));
             }
@@ -143,7 +142,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                         .ic_pencil_grey600_24dp)));
             }
 
-            if (conversation.canModerate()) {
+            if (conversation.canModerate() && !currentUser.hasSpreedCapabilityWithName("locked-one-to-one-rooms")) {
                 if (!conversation.isPublic()) {
                     menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public), 3, getResources().getDrawable(R.drawable
                             .ic_link_grey600_24px)));
@@ -158,6 +157,9 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                                 .ic_lock_plus_grey600_24dp)));
                     }
                 }
+
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9, getResources().getDrawable(R.drawable
+                        .ic_delete_grey600_24dp)));
             }
 
             if (conversation.isPublic()) {
@@ -169,13 +171,11 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 }
             }
 
-            if (conversation.canLeave()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9, getResources().getDrawable(R.drawable
-                        .ic_delete_grey600_24dp)));
-            }
 
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1, getResources().getDrawable(R.drawable
-                    .ic_close_grey600_24dp)));
+            if (conversation.canLeave()) {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1, getResources().getDrawable(R.drawable
+                        .ic_close_grey600_24dp)));
+            }
         } else if (menuType.equals(MenuType.SHARE)) {
             prepareIntent();
             List<AppAdapter.AppInfo> appInfoList = ShareUtils.getShareApps(getActivity(), shareIntent, null,
