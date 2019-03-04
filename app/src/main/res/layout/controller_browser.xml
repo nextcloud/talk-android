@@ -23,13 +23,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:background="@color/bg_default"
     android:orientation="vertical">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/path_navigation"
         android:layout_width="match_parent"
         android:layout_height="64dp"
+        android:background="@color/bg_default"
         app:menu="@menu/file_browser_path" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -45,6 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"
+        android:background="@color/bg_default"
         app:menu="@menu/file_browser_bottom" />
 
     <include

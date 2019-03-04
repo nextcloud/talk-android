@@ -43,7 +43,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/nc_incoming_call"
             android:textAlignment="center"
-            android:textColor="@color/white30"
+            android:textColor="@color/controller_call_incomingCallTextView"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

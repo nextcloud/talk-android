@@ -35,6 +35,8 @@
         android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_logo" />
 
+    <!-- Server selection window should be ignorant of theme colour
+        thus colors are set statically -->
     <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
         android:id="@+id/text_field_boxes"
         android:layout_width="match_parent"
@@ -46,7 +48,8 @@
         app:helperText=" "
         app:labelText="@string/nc_server_url"
         app:panelBackgroundColor="@color/colorPrimary"
-        app:primaryColor="@android:color/white">
+        app:primaryColor="@android:color/white"
+        app:secondaryColor="@android:color/white">
 
         <studio.carbonylgroup.textfieldboxes.ExtendedEditText
             android:id="@+id/extended_edit_text"
@@ -55,7 +58,7 @@
             android:imeOptions="actionDone"
             android:inputType="textUri"
             android:singleLine="true"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/fg_inverse" />
 
     </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 

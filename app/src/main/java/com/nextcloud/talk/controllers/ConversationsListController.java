@@ -683,7 +683,7 @@ public class ConversationsListController extends BaseController implements Searc
                 new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
                         .setTopColorRes(R.color.nc_darkRed)
                         .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
-                                R.drawable.ic_delete_black_24dp, R.color.white))
+                                R.drawable.ic_delete_black_24dp, R.color.bg_default))
                         .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
                         .setTitle(R.string.nc_delete_call)
                         .setMessage(conversation.getDeleteWarningMessage())

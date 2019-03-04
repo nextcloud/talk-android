@@ -31,14 +31,22 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import java.util.Map;
+import javax.inject.Inject;
+import autodagger.AutoInjector;
 
+@AutoInjector(NextcloudTalkApplication.class)
 public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
+
+    @Inject
+    AppPreferences appPreferences;
 
     public MagicSystemMessageViewHolder(View itemView) {
         super(itemView);
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
 
     @Override
@@ -47,9 +55,13 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
         Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
 
-        Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
-                resources.getColor(R.color.transparent),
-                resources.getColor(R.color.white_two), R.drawable.shape_grouped_incoming_message);
+        int normalColor = appPreferences.isDarkThemeEnabled() ? resources.getColor(R.color.bg_system_bubble_dark) :
+                                                                resources.getColor(R.color.white_two);
+        int pressedColor = normalColor;
+
+        Drawable bubbleDrawable = DisplayUtils.getMessageSelector(normalColor,
+                resources.getColor(R.color.transparent), pressedColor,
+                R.drawable.shape_grouped_incoming_message);
         ViewCompat.setBackground(bubble, bubbleDrawable);
 
         Spannable messageString = new SpannableString(message.getText());
@@ -73,7 +85,6 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
                 }
             }
         }
-
         text.setText(messageString);
     }
 }

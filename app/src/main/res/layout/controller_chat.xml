@@ -48,8 +48,8 @@
         app:incomingBubblePaddingLeft="@dimen/message_bubble_corners_padding"
         app:incomingBubblePaddingRight="@dimen/message_bubble_corners_padding"
         app:incomingBubblePaddingTop="@dimen/message_bubble_corners_padding"
-        app:incomingDefaultBubbleColor="@color/white_two"
-        app:incomingDefaultBubblePressedColor="@color/white_two"
+        app:incomingDefaultBubbleColor="@color/bg_message_list_incoming_bubble"
+        app:incomingDefaultBubblePressedColor="@color/bg_message_list_incoming_bubble"
         app:incomingDefaultBubbleSelectedColor="@color/transparent"
         app:incomingImageTimeTextSize="12sp"
         app:incomingTextColor="@color/nc_incoming_text_default"
@@ -81,7 +81,7 @@
         app:pb_backgroundColor="@color/colorPrimary"
         app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
         app:pb_text="@string/nc_new_messages"
-        app:pb_textColor="@color/white" />
+        app:pb_textColor="@color/bg_default" />
 
     <View
         android:id="@+id/separator"
@@ -90,7 +90,7 @@
         android:layout_above="@+id/messageInputView"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@color/nc_light_grey" />
+        android:background="@color/controller_chat_separator" />
 
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/messageInputView"
@@ -108,7 +108,7 @@
         app:inputButtonMargin="8dp"
         app:inputButtonWidth="36dp"
         app:inputHint="@string/nc_hint_enter_a_message"
-        app:inputTextColor="@color/black"
+        app:inputTextColor="@color/fg_default"
         app:inputTextSize="16sp"
         app:showAttachmentButton="true" />
 

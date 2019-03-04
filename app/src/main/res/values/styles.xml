@@ -21,14 +21,17 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:panelFullBackground">@color/colorPrimary</item>
         <item name="android:itemBackground">@color/nc_outcoming_text_default</item>
-        <item name="android:textColor">@color/nc_text_color</item>
+        <item name="android:textColor">@color/fg_default</item>
+        <item name="android:popupMenuStyle">@style/appActionBarPopupMenu</item>
+        <item name="actionOverflowMenuStyle">@style/appActionBarPopupMenu</item>
+        <item name="actionBarStyle">@style/appActionBarStyle</item>
     </style>
 
     <style name="ErrorAppearance" parent="@android:style/TextAppearance">
@@ -46,6 +49,22 @@
 
     <style name="ChipMentionTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="appActionBarStyle" parent="@style/Widget.MaterialComponents.ActionBar.Solid">
+        <item name="android:colorPrimary">@color/fg_inverse</item>
+        <item name="android:textColor">@color/fg_inverse</item>
+    </style>
+
+    <style name="Toolbar_TextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:colorPrimary">@color/fg_inverse</item>
+        <item name="android:textColor">@color/fg_inverse</item>
+    </style>
+
+    <style name="appActionBarPopupMenu" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:colorPrimary">@color/fg_inverse</item>
+        <item name="android:background">@color/bg_alt</item>
+        <item name="android:textColor">@color/fg_default</item>
     </style>
 
 </resources>

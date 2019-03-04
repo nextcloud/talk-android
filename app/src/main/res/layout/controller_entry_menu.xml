@@ -22,7 +22,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/nc_white_color">
+    android:background="@color/bg_bottom_sheet">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout"
