@@ -62,8 +62,8 @@
                         android:id="@+id/avatar_image"
                         android:layout_width="@dimen/avatar_size_big"
                         android:layout_height="@dimen/avatar_size_big"
-                        apc:roundAsCircle="true"
-                        android:layout_centerHorizontal="true" />
+                        android:layout_centerHorizontal="true"
+                        apc:roundAsCircle="true" />
 
                     <com.vanniktech.emoji.EmojiTextView
                         android:id="@+id/display_name_text"
@@ -77,20 +77,20 @@
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
             <com.yarolegovich.mp.MaterialPreferenceCategory
+                android:id="@+id/otherRoomOptions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/conversation_info_name"
-                android:id="@+id/otherRoomOptions"
                 android:visibility="gone">
 
                 <com.yarolegovich.mp.MaterialStandardPreference
+                    android:id="@+id/favoiteConversationAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     apc:mp_icon="@drawable/ic_star_black_24dp"
                     apc:mp_icon_tint="@color/grey_600"
-                    apc:mp_title="@string/nc_add_to_favorites"
-                    android:id="@+id/favoriteConversationAction">
-                    
+                    apc:mp_title="@string/nc_add_to_favorites">
+
                 </com.yarolegovich.mp.MaterialStandardPreference>
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
@@ -119,29 +119,29 @@
                     tools:listitem="@layout/rv_item_contact"></androidx.recyclerview.widget.RecyclerView>
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
-            
+
             <com.yarolegovich.mp.MaterialPreferenceCategory
+                android:id="@+id/ownOptions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/participants_list_category"
-                android:visibility="gone"
-                android:id="@+id/ownOptions">
+                android:visibility="gone">
 
                 <com.yarolegovich.mp.MaterialStandardPreference
+                    android:id="@+id/leaveConversationAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    apc:mp_title="@string/nc_leave"
                     apc:mp_icon="@drawable/ic_exit_to_app_black_24dp"
                     apc:mp_icon_tint="@color/grey_600"
-                    android:id="@+id/leaveConversationAction" />
+                    apc:mp_title="@string/nc_leave" />
 
                 <com.yarolegovich.mp.MaterialStandardPreference
+                    android:id="@+id/deleteConversationAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    apc:mp_title="@string/nc_delete_call"
-                    apc:mp_icon_tint="@color/grey_600"
                     apc:mp_icon="@drawable/ic_delete_black_24dp"
-                    android:id="@+id/deleteConversationAction" />
+                    apc:mp_icon_tint="@color/grey_600"
+                    apc:mp_title="@string/nc_delete_call" />
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
         </RelativeLayout>

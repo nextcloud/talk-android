@@ -99,7 +99,7 @@ public class ConversationInfoController extends BaseController {
     MaterialStandardPreference deleteConversationAction;
     @BindView(R.id.leaveConversationAction)
     MaterialStandardPreference leaveConversationAction;
-    @BindView(R.id.otherRoomOptions)
+    @BindView(R.id.ownOptions)
     MaterialPreferenceCategory ownOptionsCategory;
 
     @Inject
