@@ -35,5 +35,5 @@ public class RoomPropertiesWebSocketMessage {
     String name;
 
     @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
-    Conversation.RoomType roomType;
+    Conversation.ConversationType roomType;
 }

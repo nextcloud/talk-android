@@ -169,7 +169,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 }
             }
 
-            if (conversation.isDeletable()) {
+            if (conversation.canLeave()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9, getResources().getDrawable(R.drawable
                         .ic_delete_grey600_24dp)));
             }

@@ -116,7 +116,7 @@ public class OperationsMenuController extends BaseController {
 
     private Disposable disposable;
 
-    private Conversation.RoomType conversationType;
+    private Conversation.ConversationType conversationType;
     private ArrayList<String> invitedUsers = new ArrayList<>();
     private ArrayList<String> invitedGroups = new ArrayList<>();
 
@@ -278,7 +278,7 @@ public class OperationsMenuController extends BaseController {
                         invite = invitedGroups.get(0);
                     }
 
-                    if (conversationType.equals(Conversation.RoomType.ROOM_PUBLIC_CALL) ||
+                    if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) ||
                             !currentUser.hasSpreedCapabilityWithName("empty-group-room")) {
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
                                 "3", invite, null);
@@ -307,7 +307,7 @@ public class OperationsMenuController extends BaseController {
                                 @Override
                                 public void onNext(RoomOverall roomOverall) {
                                     conversation = roomOverall.getOcs().getData();
-                                    if (conversationType.equals(Conversation.RoomType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
+                                    if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
                                         performGroupCallWorkaround(credentials);
                                     } else {
                                         inviteUsersToAConversation();

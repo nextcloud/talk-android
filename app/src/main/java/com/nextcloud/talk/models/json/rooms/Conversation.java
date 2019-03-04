@@ -45,7 +45,7 @@ public class Conversation {
     @JsonField(name = "displayName")
     public String displayName;
     @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
-    public RoomType type;
+    public ConversationType type;
     @JsonField(name = "count")
     public long count;
     @JsonField(name = "lastPing")
@@ -79,7 +79,7 @@ public class Conversation {
     NotificationLevel notificationLevel;
 
     public boolean isPublic() {
-        return (RoomType.ROOM_PUBLIC_CALL.equals(type));
+        return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
     }
 
     public boolean isGuest() {
@@ -93,11 +93,12 @@ public class Conversation {
     }
 
     public boolean isNameEditable() {
-        return (canModerate() && !RoomType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
+        return (canModerate() && !ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
     }
 
-    public boolean isDeletable() {
-        return (canModerate() && ((participants != null && participants.size() > 2) || numberOfGuests > 0));
+    public boolean canLeave() {
+        return !canModerate() || (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getCount() > 1);
+
     }
 
     public enum NotificationLevel {
@@ -108,7 +109,7 @@ public class Conversation {
     }
 
     @Parcel
-    public enum RoomType {
+    public enum ConversationType {
         DUMMY,
         ROOM_TYPE_ONE_TO_ONE_CALL,
         ROOM_GROUP_CALL,

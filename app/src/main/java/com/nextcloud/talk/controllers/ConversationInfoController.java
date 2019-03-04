@@ -372,7 +372,7 @@ public class ConversationInfoController extends BaseController {
 
     private void setProperNotificationValue(Conversation conversation) {
         if (messageNotificationLevel != null) {
-            if (conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
+            if (conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
                 // hack to see if we get mentioned always or just on mention
                 if (conversationUser.hasSpreedCapabilityWithName("mention-flag")) {
                     messageNotificationLevel.setValue("always");

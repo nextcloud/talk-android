@@ -140,12 +140,12 @@ public class NotificationWorker extends Worker {
                             Conversation conversation = roomOverall.getOcs().getData();
 
                             intent.putExtra(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
-                            if (conversation.getType().equals(Conversation.RoomType.ROOM_TYPE_ONE_TO_ONE_CALL) ||
+                            if (conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) ||
                                     (!TextUtils.isEmpty(conversation.getObjectType()) && "share:password".equals
                                             (conversation.getObjectType()))) {
                                 context.startActivity(intent);
                             } else {
-                                if (conversation.getType().equals(Conversation.RoomType.ROOM_GROUP_CALL)) {
+                                if (conversation.getType().equals(Conversation.ConversationType.ROOM_GROUP_CALL)) {
                                     conversationType = "group";
                                 } else {
                                     conversationType = "public";
