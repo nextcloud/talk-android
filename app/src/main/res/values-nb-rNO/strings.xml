@@ -75,6 +75,9 @@
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
     <string name="nc_settings_vibrate">Vibrer</string>
     <string name="nc_settings_privacy">Personvern</string>
+    <string name="nc_screen_lock_timeout_60">1 minutt</string>
+    <string name="nc_screen_lock_timeout_300">5 minutter</string>
+    <string name="nc_screen_lock_timeout_600">10 minutter</string>
     <string name="nc_no_proxy">Ingen mellomserver</string>
     <string name="nc_username">Brukernavn</string>
     <string name="nc_password">Passord</string>
