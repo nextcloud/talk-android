@@ -69,6 +69,8 @@
     <string name="nc_settings_reauthorize">Reauthorize</string>
     <string name="nc_client_cert_setup">Set up client certificate</string>
     <string name="nc_client_cert_change">Change client certificate</string>
+    <string name="nc_settings_remove">Remove</string>
+    <string name="nc_settings_remove_confirmation">Please confirm your intent to remove the current account.</string>
     <string name="nc_settings_remove_account">Remove account</string>
     <string name="nc_settings_add_account">Add a new account</string>
     <string name="nc_settings_wrong_account">Only current account can be reauthorized</string>
