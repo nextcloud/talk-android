@@ -184,13 +184,6 @@ public class OperationsMenuController extends BaseController {
             }
 
             switch (operationCode) {
-                case 1:
-                    ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForRemoveSelfFromRoom(currentUser.getBaseUrl(), conversation.getToken()))
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(operationsObserver);
-                    break;
                 case 2:
                     ncApi.renameRoom(credentials, ApiUtils.getRoom(currentUser.getBaseUrl(), conversation.getToken()),
                             conversation.getName())
@@ -227,14 +220,6 @@ public class OperationsMenuController extends BaseController {
                 case 8:
                     ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), conversation
                             .getToken()))
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(operationsObserver);
-                    break;
-                case 9:
-                    ncApi.deleteRoom(credentials, ApiUtils.getRoom(currentUser.getBaseUrl(),
-                            conversation.getToken()))
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)

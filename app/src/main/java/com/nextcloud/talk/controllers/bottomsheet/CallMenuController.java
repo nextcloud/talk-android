@@ -30,6 +30,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -41,6 +44,8 @@ import com.nextcloud.talk.adapters.items.MenuItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.jobs.DeleteConversationWorker;
+import com.nextcloud.talk.jobs.LeaveConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -74,6 +79,8 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
     private MenuType menuType;
     private Intent shareIntent;
+
+    private UserEntity currentUser;
 
     public CallMenuController(Bundle args) {
         super(args);
@@ -128,7 +135,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
             }
 
-            UserEntity currentUser = userUtils.getCurrentUser();
+            currentUser = userUtils.getCurrentUser();
 
             if (conversation.isFavorite()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_border_black_24dp, R.color.grey_600)));
@@ -209,21 +216,37 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                 }
 
                 if (tag > 0) {
-                    bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
-                    if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
-                        eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
-                        getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
-                                .pushChangeHandler(new HorizontalChangeHandler())
-                                .popChangeHandler(new HorizontalChangeHandler()));
-                    } else if (tag != 7) {
-                        getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
-                                .pushChangeHandler(new HorizontalChangeHandler())
-                                .popChangeHandler(new HorizontalChangeHandler()));
+                    if (tag == 1 || tag == 9) {
+                        Data data;
+                        if ((data = getWorkerData()) != null) {
+                            if (tag == 1) {
+                                OneTimeWorkRequest leaveConversationWorker =
+                                        new OneTimeWorkRequest.Builder(LeaveConversationWorker.class).setInputData(data).build();
+                                WorkManager.getInstance().enqueue(leaveConversationWorker);
+                            } else {
+                                OneTimeWorkRequest deleteConversationWorker =
+                                        new OneTimeWorkRequest.Builder(DeleteConversationWorker.class).setInputData(data).build();
+                                WorkManager.getInstance().enqueue(deleteConversationWorker);
+                            }
+                            eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
+                        }
                     } else {
-                        bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(MenuType.SHARE));
-                        getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle))
-                                .pushChangeHandler(new HorizontalChangeHandler())
-                                .popChangeHandler(new HorizontalChangeHandler()));
+                        bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
+                        if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
+                            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+                            getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        } else if (tag != 7) {
+                            getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        } else {
+                            bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(MenuType.SHARE));
+                            getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle))
+                                    .pushChangeHandler(new HorizontalChangeHandler())
+                                    .popChangeHandler(new HorizontalChangeHandler()));
+                        }
                     }
                 }
             }
@@ -257,4 +280,16 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     public enum MenuType {
         REGULAR, SHARE
     }
+
+    private Data getWorkerData() {
+        if (!TextUtils.isEmpty(conversation.getToken())) {
+            Data.Builder data = new Data.Builder();
+            data.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
+            data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, currentUser.getId());
+            return data.build();
+        }
+
+        return null;
+    }
+
 }
