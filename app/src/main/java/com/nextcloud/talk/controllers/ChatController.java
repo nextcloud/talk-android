@@ -370,7 +370,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() == 1000) {
-                    messageInput.setError(getResources().getString(R.string.nc_limit_hit));
+                    messageInput.setError(Objects.requireNonNull(getResources()).getString(R.string.nc_limit_hit));
                 } else {
                     messageInput.setError(null);
                 }
@@ -381,7 +381,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 for (int i = 0; i < mentionSpans.length; i++) {
                     mentionSpan = mentionSpans[i];
                     if (start >= editable.getSpanStart(mentionSpan) && start < editable.getSpanEnd(mentionSpan)) {
-                        editable.removeSpan(mentionSpan);
+                        if (!editable.subSequence(editable.getSpanStart(mentionSpan),
+                                editable.getSpanEnd(mentionSpan)).toString().trim().equals(mentionSpan.getLabel())) {
+                            editable.removeSpan(mentionSpan);
+                        }
                     }
                 }
             }
