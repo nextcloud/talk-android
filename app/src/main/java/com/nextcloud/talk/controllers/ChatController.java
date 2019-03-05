@@ -666,13 +666,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
         final Editable editable = messageInput.getEditableText();
         Spans.MentionSpan mentionSpans[] = editable.getSpans(0, editable.length(), Spans.MentionSpan.class);
         Spans.MentionSpan mentionSpan;
-        mentionAutocomplete.setEnabled(false);
         for (int i = 0; i < mentionSpans.length; i++) {
             mentionSpan = mentionSpans[i];
             editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@" + mentionSpan.getId());
         }
 
-        mentionAutocomplete.setEnabled(true);
         messageInput.setText("");
         sendMessage(editable);
     }
