@@ -203,27 +203,34 @@ public class DisplayUtils {
     }
 
 
-    public static Spannable searchAndColor(String text, Spannable spannable, String searchText, @ColorInt int color) {
+    public static Spannable searchAndColor(String text, String searchText, @ColorInt int color) {
+
+        Spannable spannableString = new SpannableString(text);
 
         if (TextUtils.isEmpty(text) || TextUtils.isEmpty(searchText)) {
-            return spannable;
+            return spannableString;
         }
 
-        Matcher m = Pattern.compile(searchText, Pattern.CASE_INSENSITIVE | Pattern.LITERAL)
-                .matcher(text);
+        Matcher m = Pattern.compile(searchText,
+                Pattern.CASE_INSENSITIVE | Pattern.LITERAL | Pattern.MULTILINE)
+                .matcher(spannableString);
 
 
         int textSize = NextcloudTalkApplication.getSharedApplication().getResources().getDimensionPixelSize(R.dimen
                 .chat_text_size);
+
+        int lastStartIndex = -1;
         while (m.find()) {
-            int start = text.indexOf(m.group());
-            int end = text.indexOf(m.group()) + m.group().length();
-            spannable.setSpan(new ForegroundColorSpan(color), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.setSpan(new AbsoluteSizeSpan(textSize), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            int start = text.indexOf(m.group(), lastStartIndex);
+            int end = start + m.group().length();
+            lastStartIndex = end;
+            spannableString.setSpan(new ForegroundColorSpan(color), start, end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new AbsoluteSizeSpan(textSize), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        return spannable;
+        return spannableString;
     }
 
     public static Drawable getMessageSelector(@ColorInt int normalColor, @ColorInt int selectedColor,

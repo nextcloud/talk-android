@@ -374,6 +374,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 } else {
                     messageInput.setError(null);
                 }
+
+                Editable editable = messageInput.getEditableText();
+                Spans.MentionSpan[] mentionSpans = editable.getSpans(0, messageInput.length(), Spans.MentionSpan.class);
+                Spans.MentionSpan mentionSpan;
+                for (int i = 0; i < mentionSpans.length; i++) {
+                    mentionSpan = mentionSpans[i];
+                    if (start >= editable.getSpanStart(mentionSpan) && start < editable.getSpanEnd(mentionSpan)) {
+                        editable.removeSpan(mentionSpan);
+                    }
+                }
             }
 
             @Override

@@ -38,7 +38,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         String replacement = item.getLabel();
         editable.replace(start, end, replacement + " ");
         Spans.MentionSpan mentionSpan = new Spans.MentionSpan(Typeface.BOLD, item.getId(), item.getLabel());
-        editable.setSpan(mentionSpan, start, start + replacement.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        editable.setSpan(mentionSpan, start, start + item.getLabel().length() , Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return true;
     }
 
