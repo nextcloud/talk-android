@@ -23,9 +23,6 @@ package com.nextcloud.talk.callbacks;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.Spanned;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
-import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.utils.MagicCharPolicy;
 import com.nextcloud.talk.utils.text.Spans;
@@ -41,7 +38,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         String replacement = item.getLabel();
         editable.replace(start, end, replacement + " ");
         Spans.MentionSpan mentionSpan = new Spans.MentionSpan(Typeface.BOLD, item.getId(), item.getLabel());
-        editable.setSpan(mentionSpan, 0, replacement.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        editable.setSpan(mentionSpan, start, start + replacement.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return true;
     }
 
