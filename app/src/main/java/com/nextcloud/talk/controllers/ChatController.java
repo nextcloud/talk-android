@@ -75,6 +75,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
+import com.nextcloud.talk.utils.text.Spans;
 import com.otaliastudios.autocomplete.Autocomplete;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
 import com.otaliastudios.autocomplete.AutocompletePresenter;
@@ -381,11 +382,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             }
         });
 
-        messageInputView.setInputListener(input -> {
-            sendMessage(input);
-            return true;
-        });
-
+        messageInputView.getButton().setOnClickListener(v -> submitMessage());
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
@@ -663,6 +660,21 @@ public class ChatController extends BaseController implements MessagesListAdapte
         } catch (IllegalAccessException e) {
             Log.w(TAG, "Failed to access and set field");
         }
+    }
+
+    private void submitMessage() {
+        final Editable editable = messageInput.getEditableText();
+        Spans.MentionSpan mentionSpans[] = editable.getSpans(0, editable.length(), Spans.MentionSpan.class);
+        Spans.MentionSpan mentionSpan;
+        mentionAutocomplete.setEnabled(false);
+        for (int i = 0; i < mentionSpans.length; i++) {
+            mentionSpan = mentionSpans[i];
+            editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@" + mentionSpan.getId());
+        }
+
+        mentionAutocomplete.setEnabled(true);
+        messageInput.setText("");
+        sendMessage(editable);
     }
 
     private void sendMessage(CharSequence message) {
