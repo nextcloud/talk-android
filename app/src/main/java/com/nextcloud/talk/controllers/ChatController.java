@@ -75,6 +75,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
+import com.nextcloud.talk.utils.text.Spans;
 import com.otaliastudios.autocomplete.Autocomplete;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
 import com.otaliastudios.autocomplete.AutocompletePresenter;
@@ -369,9 +370,22 @@ public class ChatController extends BaseController implements MessagesListAdapte
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() == 1000) {
-                    messageInput.setError(getResources().getString(R.string.nc_limit_hit));
+                    messageInput.setError(Objects.requireNonNull(getResources()).getString(R.string.nc_limit_hit));
                 } else {
                     messageInput.setError(null);
+                }
+
+                Editable editable = messageInput.getEditableText();
+                Spans.MentionSpan[] mentionSpans = editable.getSpans(0, messageInput.length(), Spans.MentionSpan.class);
+                Spans.MentionSpan mentionSpan;
+                for (int i = 0; i < mentionSpans.length; i++) {
+                    mentionSpan = mentionSpans[i];
+                    if (start >= editable.getSpanStart(mentionSpan) && start < editable.getSpanEnd(mentionSpan)) {
+                        if (!editable.subSequence(editable.getSpanStart(mentionSpan),
+                                editable.getSpanEnd(mentionSpan)).toString().trim().equals(mentionSpan.getLabel())) {
+                            editable.removeSpan(mentionSpan);
+                        }
+                    }
                 }
             }
 
@@ -381,11 +395,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             }
         });
 
-        messageInputView.setInputListener(input -> {
-            sendMessage(input);
-            return true;
-        });
-
+        messageInputView.getButton().setOnClickListener(v -> submitMessage());
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
@@ -662,6 +672,19 @@ public class ChatController extends BaseController implements MessagesListAdapte
         } catch (IllegalAccessException e) {
             Log.w(TAG, "Failed to access and set field");
         }
+    }
+
+    private void submitMessage() {
+        final Editable editable = messageInput.getEditableText();
+        Spans.MentionSpan mentionSpans[] = editable.getSpans(0, editable.length(), Spans.MentionSpan.class);
+        Spans.MentionSpan mentionSpan;
+        for (int i = 0; i < mentionSpans.length; i++) {
+            mentionSpan = mentionSpans[i];
+            editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@" + mentionSpan.getId());
+        }
+
+        messageInput.setText("");
+        sendMessage(editable);
     }
 
     private void sendMessage(CharSequence message) {

@@ -143,8 +143,7 @@ public class MagicIncomingTextMessageViewHolder
                                 .nc_incoming_text_mention_others);
                     }
 
-                    messageString = DisplayUtils.searchAndColor(messageText.getText().toString(),
-                            messageString, "@" + individualHashMap.get("name"), color);
+                    messageString = DisplayUtils.searchAndColor(message.getText(), "@" + individualHashMap.get("name"), color);
                 } else if (individualHashMap.get("type").equals("file")) {
                     itemView.setOnClickListener(v -> {
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));
