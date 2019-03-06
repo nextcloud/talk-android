@@ -124,13 +124,17 @@
         android:layout_alignParentBottom="true"
         android:inputType="textLongMessage|textAutoComplete"
         android:maxLength="1000"
+        app:attachmentButtonDefaultBgColor="@color/colorPrimary"
+        app:attachmentButtonDefaultIconColor="@color/white"
+        app:attachmentButtonHeight="36dp"
+        app:attachmentButtonWidth="36dp"
         app:inputButtonDefaultBgColor="@color/colorPrimary"
-        app:inputButtonDefaultBgPressedColor="@color/colorPrimaryDark"
-        app:inputButtonHeight="30dp"
-        app:inputButtonMargin="16dp"
-        app:inputButtonWidth="30dp"
+        app:inputButtonHeight="36dp"
+        app:inputButtonMargin="8dp"
+        app:inputButtonWidth="36dp"
         app:inputHint="@string/nc_hint_enter_a_message"
         app:inputTextColor="@color/black"
-        app:inputTextSize="16sp" />
+        app:inputTextSize="16sp"
+        app:showAttachmentButton="true" />
 
 </RelativeLayout>

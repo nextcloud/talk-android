@@ -29,11 +29,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
@@ -41,17 +39,15 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.glide.GlideApp;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
-import eu.davidea.flipview.FlipView;
 import eu.davidea.viewholders.FlexibleViewHolder;
-import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements IFilterable<String> {
 
@@ -134,21 +130,14 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                         .nc_description_more_menu_one_to_one), conversation.getDisplayName()));
 
                 if (!TextUtils.isEmpty(conversation.getName())) {
-                    GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                            conversation.getName(), R.dimen.avatar_size), new LazyHeaders.Builder()
-                            .setHeader("Accept", "image/*")
-                            .setHeader("User-Agent", ApiUtils.getUserAgent())
-                            .build());
-
-                    GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(glideUrl)
-                            .centerInside()
-                            .override(avatarSize, avatarSize)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(holder.avatarImageView.getFrontImageView());
-
+                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                            .setOldController(holder.avatarImageView.getController())
+                            .setAutoPlayAnimations(true)
+                            .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                                    conversation.getLastMessage().getActorId(),
+                                    R.dimen.avatar_size), null))
+                            .build();
+                    holder.avatarImageView.setController(draweeController);
                 } else {
                     holder.avatarImageView.setVisibility(View.GONE);
                 }
@@ -156,19 +145,13 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
             case ROOM_GROUP_CALL:
                 holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
                         .nc_description_more_menu_group), conversation.getDisplayName()));
-
-                holder.avatarImageView.setFrontImageBitmap(DisplayUtils
-                        .getRoundedBitmapFromVectorDrawableResource(resources,
-                                R.drawable.ic_people_group_white_24px));
+                holder.avatarImageView.setActualImageResource(R.drawable.ic_people_group_white_24px);
                 holder.avatarImageView.setVisibility(View.VISIBLE);
                 break;
             case ROOM_PUBLIC_CALL:
                 holder.moreMenuButton.setContentDescription(String.format(resources.getString(R.string
                         .nc_description_more_menu_public), conversation.getDisplayName()));
-
-                holder.avatarImageView.setFrontImageBitmap(DisplayUtils
-                        .getRoundedBitmapFromVectorDrawableResource(resources,
-                                R.drawable.ic_link_white_24px));
+                holder.avatarImageView.setActualImageResource(R.drawable.ic_link_white_24px);
                 holder.avatarImageView.setVisibility(View.VISIBLE);
                 break;
             default:
@@ -182,8 +165,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
     @Override
     public boolean filter(String constraint) {
         return conversation.getDisplayName() != null &&
-                StringUtils.containsIgnoreCase(conversation.getDisplayName().trim(), constraint);
-
+                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(conversation.getDisplayName().trim()).find();
     }
 
     static class RoomItemViewHolder extends FlexibleViewHolder {
@@ -193,7 +175,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
         @BindView(R.id.secondary_text)
         public TextView roomLastPing;
         @BindView(R.id.avatar_image)
-        public FlipView avatarImageView;
+        public SimpleDraweeView avatarImageView;
         @BindView(R.id.more_menu)
         public ImageButton moreMenuButton;
         @BindView(R.id.password_protected_image_view)

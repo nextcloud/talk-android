@@ -39,39 +39,16 @@ import javax.inject.Inject;
 
 public class PowerManagerUtils {
     private static final String TAG = "PowerManagerUtils";
-
-    @Inject
-    Context context;
-
     private final PowerManager.WakeLock fullLock;
     private final PowerManager.WakeLock partialLock;
     private final WifiManager.WifiLock wifiLock;
-    private ProximityLock proximityLock;
-
     private final boolean wifiLockEnforced;
+    @Inject
+    Context context;
+    private ProximityLock proximityLock;
     private boolean proximityDisabled = false;
 
     private int orientation;
-
-    public enum PhoneState {
-        IDLE,
-        PROCESSING,  //used when the phone is active but before the user should be alerted.
-        INTERACTIVE,
-        WITHOUT_PROXIMITY_SENSOR_LOCK,
-        WITH_PROXIMITY_SENSOR_LOCK
-    }
-
-    public enum WakeLockState {
-        FULL,
-        PARTIAL,
-        SLEEP,
-        PROXIMITY
-    }
-
-    public void setOrientation(int newOrientation) {
-        orientation = newOrientation;
-        updateInCallWakeLockState();
-    }
 
     public PowerManagerUtils() {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -95,8 +72,13 @@ public class PowerManagerUtils {
         orientation = context.getResources().getConfiguration().orientation;
     }
 
+    public void setOrientation(int newOrientation) {
+        orientation = newOrientation;
+        updateInCallWakeLockState();
+    }
+
     public void updatePhoneState(PhoneState state) {
-        switch(state) {
+        switch (state) {
             case IDLE:
                 setWakeLockState(WakeLockState.SLEEP);
                 break;
@@ -132,7 +114,7 @@ public class PowerManagerUtils {
 
     @SuppressLint("WakelockTimeout")
     private synchronized void setWakeLockState(WakeLockState newState) {
-        switch(newState) {
+        switch (newState) {
             case FULL:
                 if (!fullLock.isHeld()) {
                     fullLock.acquire();
@@ -183,7 +165,7 @@ public class PowerManagerUtils {
                 }
 
                 fullLock.release(
-                        
+
                 );
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     proximityLock.acquire();
@@ -192,5 +174,20 @@ public class PowerManagerUtils {
             default:
                 // something went very very wrong
         }
+    }
+
+    public enum PhoneState {
+        IDLE,
+        PROCESSING,  //used when the phone is active but before the user should be alerted.
+        INTERACTIVE,
+        WITHOUT_PROXIMITY_SENSOR_LOCK,
+        WITH_PROXIMITY_SENSOR_LOCK
+    }
+
+    public enum WakeLockState {
+        FULL,
+        PARTIAL,
+        SLEEP,
+        PROXIMITY
     }
 }

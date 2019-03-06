@@ -22,20 +22,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/call_header_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/rv_item_view_height"
+    android:layout_margin="@dimen/double_margin_between_elements"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/initial_relative_layout"
         android:layout_width="match_parent"
-        android:layout_height="72dp">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/public_call_link"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="@dimen/small_item_height"
+            android:layout_height="@dimen/small_item_height"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginEnd="8dp"
             android:contentDescription="@null"
             android:src="@drawable/ic_public_black_24px"
@@ -45,8 +45,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_toEndOf="@id/public_call_link"
             android:ellipsize="middle"
             android:singleLine="true"
@@ -61,15 +59,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:minHeight="72dp"
+        android:minHeight="@dimen/small_item_height"
         android:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
             android:text="@string/nc_public_call_explanation"
             android:textAlignment="center"
             android:textAppearance="?android:attr/textAppearanceListItem"

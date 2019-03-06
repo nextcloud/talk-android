@@ -17,18 +17,19 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/backgroundImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/backgroundImageView"
+        android:scaleType="centerCrop"
         android:src="@color/grey950"
-        android:scaleType="centerCrop"/>
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <RelativeLayout
         android:id="@+id/incomingTextRelativeLayout"
@@ -62,56 +63,50 @@
 
     </RelativeLayout>
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/avatarImageView"
         android:layout_width="@dimen/avatar_size_very_big"
         android:layout_height="@dimen/avatar_size_very_big"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45"
-        tools:src="@color/white" />
+        android:layout_centerInParent="true"
+        app:roundAsCircle="true"
+        tools:srcCompat="@tools:sample/avatars[0]" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:animateLayoutChanges="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:orientation="horizontal">
 
-        <com.nextcloud.talk.utils.MagicFlipView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/callAnswerVoiceOnlyView"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="24dp"
             android:visibility="gone"
-            app:checked="false"
-            app:enableInitialAnimation="false"
-            app:frontBackgroundColor="@color/nc_darkGreen"
-            app:frontImage="@drawable/ic_call_white_24dp" />
+            app:backgroundImage="@color/nc_darkGreen"
+            app:placeholderImage="@drawable/ic_call_white_24dp"
+            app:roundAsCircle="true" />
 
-        <com.nextcloud.talk.utils.MagicFlipView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/callControlHangupView"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="24dp"
-            app:checked="false"
-            app:enableInitialAnimation="false"
-            app:frontBackgroundColor="@color/nc_darkRed"
-            app:frontImage="@drawable/ic_call_end_white_24px" />
+            app:backgroundImage="@color/nc_darkRed"
+            app:placeholderImage="@drawable/ic_call_end_white_24px"
+            app:roundAsCircle="true" />
 
-        <com.nextcloud.talk.utils.MagicFlipView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/callAnswerCameraView"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="24dp"
             android:visibility="gone"
-            app:checked="false"
-            app:enableInitialAnimation="false"
-            app:frontBackgroundColor="@color/nc_darkGreen"
-            app:frontImage="@drawable/ic_videocam_white_24px" />
+            app:backgroundImage="@color/nc_darkGreen"
+            app:placeholderImage="@drawable/ic_videocam_white_24px"
+            app:roundAsCircle="true" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

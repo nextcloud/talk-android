@@ -36,7 +36,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Checkable;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,10 +48,9 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
@@ -67,7 +65,6 @@ import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
@@ -90,112 +87,77 @@ import java.util.*;
 public class SettingsController extends BaseController {
 
     public static final String TAG = "SettingsController";
-
+    private static final int ID_REMOVE_ACCOUNT_WARNING_DIALOG = 0;
     @BindView(R.id.settings_screen)
     MaterialPreferenceScreen settingsScreen;
-
     @BindView(R.id.settings_proxy_choice)
     MaterialChoicePreference proxyChoice;
-
     @BindView(R.id.settings_proxy_port_edit)
     MaterialEditTextPreference proxyPortEditText;
-
     @BindView(R.id.settings_licence)
     MaterialStandardPreference licenceButton;
-
     @BindView(R.id.settings_privacy)
     MaterialStandardPreference privacyButton;
-
     @BindView(R.id.settings_source_code)
     MaterialStandardPreference sourceCodeButton;
-
     @BindView(R.id.settings_version)
     MaterialStandardPreference versionInfo;
-
     @BindView(R.id.avatar_image)
-    ImageView avatarImageView;
-
+    SimpleDraweeView avatarImageView;
     @BindView(R.id.display_name_text)
     TextView displayNameTextView;
-
     @BindView(R.id.base_url_text)
     TextView baseUrlTextView;
-
     @BindView(R.id.settings_call_sound)
     MaterialStandardPreference settingsCallSound;
-
     @BindView(R.id.settings_message_sound)
     MaterialStandardPreference settingsMessageSound;
-
     @BindView(R.id.settings_remove_account)
     MaterialStandardPreference removeAccountButton;
-
     @BindView(R.id.settings_switch)
     MaterialStandardPreference switchAccountButton;
-
     @BindView(R.id.settings_reauthorize)
     MaterialStandardPreference reauthorizeButton;
-
     @BindView(R.id.settings_add_account)
     MaterialStandardPreference addAccountButton;
-
     @BindView(R.id.message_view)
     MaterialPreferenceCategory messageView;
-
     @BindView(R.id.settings_client_cert)
     MaterialStandardPreference certificateSetup;
-
     @BindView(R.id.settings_always_vibrate)
     MaterialSwitchPreference shouldVibrateSwitchPreference;
-
     @BindView(R.id.settings_incognito_keyboard)
     MaterialSwitchPreference incognitoKeyboardSwitchPreference;
-
     @BindView(R.id.settings_screen_security)
     MaterialSwitchPreference screenSecuritySwitchPreference;
-
     @BindView(R.id.settings_link_previews)
     MaterialSwitchPreference linkPreviewsSwitchPreference;
-
     @BindView(R.id.settings_screen_lock)
     MaterialSwitchPreference screenLockSwitchPreference;
-
     @BindView(R.id.settings_screen_lock_timeout)
     MaterialChoicePreference screenLockTimeoutChoicePreference;
-
     @BindView(R.id.message_text)
     TextView messageText;
-
     @Inject
     EventBus eventBus;
-
     @Inject
     AppPreferences appPreferences;
-
     @Inject
     NcApi ncApi;
-
     @Inject
     UserUtils userUtils;
-
     @Inject
     Context context;
-
     private LovelySaveStateHandler saveStateHandler;
-
     private UserEntity currentUser;
     private String credentials;
-
     private OnPreferenceValueChangedListener<String> proxyTypeChangeListener;
     private OnPreferenceValueChangedListener<Boolean> proxyCredentialsChangeListener;
     private OnPreferenceValueChangedListener<Boolean> screenSecurityChangeListener;
     private OnPreferenceValueChangedListener<Boolean> screenLockChangeListener;
     private OnPreferenceValueChangedListener<String> screenLockTimeoutChangeListener;
-
     private Disposable profileQueryDisposable;
     private Disposable dbQueryDisposable;
-
-    private static final int ID_REMOVE_ACCOUNT_WARNING_DIALOG = 0;
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
@@ -636,17 +598,13 @@ public class SettingsController extends BaseController {
             avatarId = currentUser.getUsername();
         }
 
-        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
-                avatarId, R.dimen.avatar_size_big), new LazyHeaders.Builder()
-                .setHeader("Accept", "image/*")
-                .setHeader("User-Agent", ApiUtils.getUserAgent())
-                .build());
-
-        GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                .load(glideUrl)
-                .centerInside()
-                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                .into(avatarImageView);
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                .setOldController(avatarImageView.getController())
+                .setAutoPlayAnimations(true)
+                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
+                        avatarId, R.dimen.avatar_size_big), null))
+                .build();
+        avatarImageView.setController(draweeController);
     }
 
     @Override

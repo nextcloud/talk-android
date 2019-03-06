@@ -22,25 +22,25 @@ package com.nextcloud.talk.adapters.items;
 
 import android.annotation.SuppressLint;
 import android.view.View;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
+<<<<<<< HEAD
 import com.nextcloud.talk.utils.glide.GlideApp;
+=======
+>>>>>>> Various improvements
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder>
         implements IFilterable<String> {
@@ -115,32 +115,23 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
         }
 
         if (source.equals("calls")) {
-            holder.avatarFlipView.setFrontImageBitmap(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px));
+            holder.simpleDraweeView.getHierarchy().setPlaceholderImage((DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px));
         } else {
-            GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
-                    objectId, R.dimen.avatar_size), new LazyHeaders.Builder()
-                    .setHeader("Accept", "image/*")
-                    .setHeader("User-Agent", ApiUtils.getUserAgent())
-                    .build());
-
-            int avatarSize = Math.round(NextcloudTalkApplication
-                    .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
-
-            GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .load(glideUrl)
-                    .centerInside()
-                    .override(avatarSize, avatarSize)
-                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                    .into(holder.avatarFlipView.getFrontImageView());
+        holder.simpleDraweeView.setController(null);
+            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                    .setOldController(holder.simpleDraweeView.getController())
+                    .setAutoPlayAnimations(true)
+                    .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
+                            objectId, R.dimen.avatar_size_big), null))
+                    .build();
+            holder.simpleDraweeView.setController(draweeController);
         }
     }
 
     @Override
     public boolean filter(String constraint) {
-        return objectId != null && StringUtils.containsIgnoreCase(objectId, constraint) ||
-                displayName != null && StringUtils.containsIgnoreCase(displayName, constraint);
-
+        return objectId != null && Pattern.compile(constraint,
+                Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(objectId).find()
+                || displayName != null && Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(displayName).find();
     }
 }

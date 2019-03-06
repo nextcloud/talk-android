@@ -1,4 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <!--
     Adapted to use TextButton style and Material buttons from LovelyDialog
   -->
@@ -8,7 +27,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/view_color_area"/>
+    <include layout="@layout/view_color_area" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -24,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="12dp" />
 
-            <include layout="@layout/view_title_and_message"/>
+            <include layout="@layout/view_title_and_message" />
 
         </LinearLayout>
     </ScrollView>

@@ -25,6 +25,9 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import lombok.Data;
 import org.parceler.Parcel;
 
+import java.util.HashMap;
+import java.util.List;
+
 @Parcel
 @Data
 @JsonObject
@@ -34,4 +37,10 @@ public class Capabilities {
 
     @JsonField(name = "notifications")
     NotificationsCapability notificationsCapability;
+
+    @JsonField(name = "theming")
+    ThemingCapability themingCapability;
+
+    @JsonField(name = "external")
+    HashMap<String, List<String>> externalCapability;
 }

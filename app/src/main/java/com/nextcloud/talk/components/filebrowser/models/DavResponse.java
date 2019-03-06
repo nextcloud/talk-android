@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,27 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.utils;
+package com.nextcloud.talk.components.filebrowser.models;
 
-import android.content.Context;
-import android.util.AttributeSet;
-import eu.davidea.flipview.FlipView;
+import at.bitfire.dav4android.Response;
+import lombok.Data;
 
-public class MagicFlipView extends FlipView {
-    public MagicFlipView(Context context) {
-        super(context);
-    }
-
-    public MagicFlipView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        try {
-            super.onDetachedFromWindow();
-        } catch (IllegalArgumentException e) {
-            stopFlipping();
-        }
-    }
+@Data
+public class DavResponse {
+    Response response;
+    Object data;
 }

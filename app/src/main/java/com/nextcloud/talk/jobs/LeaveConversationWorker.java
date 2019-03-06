@@ -86,6 +86,7 @@ public class LeaveConversationWorker extends Worker {
                     .subscribeOn(Schedulers.newThread())
                     .blockingSubscribe(new Observer<GenericOverall>() {
                         Disposable disposable;
+
                         @Override
                         public void onSubscribe(Disposable d) {
                             disposable = d;

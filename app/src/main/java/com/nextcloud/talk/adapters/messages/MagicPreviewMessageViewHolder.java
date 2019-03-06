@@ -32,12 +32,24 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
+import com.nextcloud.talk.components.filebrowser.models.DavResponse;
+import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
+import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.DrawableUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
 import com.vanniktech.emoji.EmojiTextView;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
@@ -47,6 +59,9 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
 
     @Inject
     Context context;
+
+    @Inject
+    OkHttpClient okHttpClient;
 
     public MagicPreviewMessageViewHolder(View itemView) {
         super(itemView);
@@ -58,7 +73,6 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
-
         if (userAvatar != null) {
             if (message.isGrouped) {
                 userAvatar.setVisibility(View.INVISIBLE);
@@ -80,6 +94,12 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             // it's a preview for a Nextcloud share
             messageText.setText(message.getSelectedIndividualHashMap().get("name"));
             DisplayUtils.setClickableString(message.getSelectedIndividualHashMap().get("name"), message.getSelectedIndividualHashMap().get("link"), messageText);
+            if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
+                image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap().get("mimetype"))));
+            } else {
+                fetchFileInformation("/" + message.getSelectedIndividualHashMap().get("path"), message.getActiveUser());
+            }
+
             image.setOnClickListener(v -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
                 browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -94,5 +114,37 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         } else {
             messageText.setText("");
         }
+    }
+
+    private void fetchFileInformation(String url, UserEntity activeUser) {
+        Single.fromCallable(new Callable<ReadFilesystemOperation>() {
+            @Override
+            public ReadFilesystemOperation call() {
+                return new ReadFilesystemOperation(okHttpClient, activeUser, url, 0);
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .subscribe(new SingleObserver<ReadFilesystemOperation>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(ReadFilesystemOperation readFilesystemOperation) {
+                        DavResponse davResponse = readFilesystemOperation.readRemotePath();
+                        if (davResponse.getData() != null) {
+                            List<BrowserFile> browserFileList = (List<BrowserFile>) davResponse.getData();
+                            if (!browserFileList.isEmpty()) {
+                                image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.getDrawableResourceIdForMimeType(browserFileList.get(0).getMimeType())));
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+                });
+
     }
 }

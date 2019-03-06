@@ -231,20 +231,20 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
                 if (tag > 0) {
                     if (tag == 1 || tag == 9) {
-                            if (tag == 1) {
-                                Data data;
-                                if ((data = getWorkerData()) != null) {
-                                    OneTimeWorkRequest leaveConversationWorker =
-                                            new OneTimeWorkRequest.Builder(LeaveConversationWorker.class).setInputData(data).build();
-                                    WorkManager.getInstance().enqueue(leaveConversationWorker);
-                                }
-                            } else {
-                                Bundle deleteConversationBundle;
-                                if ((deleteConversationBundle = getDeleteConversationBundle()) != null) {
-                                    conversationMenuInterface.openLovelyDialogWithIdAndBundle(ConversationsListController.ID_DELETE_CONVERSATION_DIALOG, deleteConversationBundle);
-                                }
+                        if (tag == 1) {
+                            Data data;
+                            if ((data = getWorkerData()) != null) {
+                                OneTimeWorkRequest leaveConversationWorker =
+                                        new OneTimeWorkRequest.Builder(LeaveConversationWorker.class).setInputData(data).build();
+                                WorkManager.getInstance().enqueue(leaveConversationWorker);
                             }
-                            eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
+                        } else {
+                            Bundle deleteConversationBundle;
+                            if ((deleteConversationBundle = getDeleteConversationBundle()) != null) {
+                                conversationMenuInterface.openLovelyDialogWithIdAndBundle(ConversationsListController.ID_DELETE_CONVERSATION_DIALOG, deleteConversationBundle);
+                            }
+                        }
+                        eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     } else {
                         bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
                         if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
@@ -291,11 +291,6 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         return true;
     }
 
-    @Parcel
-    public enum MenuType {
-        REGULAR, SHARE
-    }
-
     private Data getWorkerData() {
         if (!TextUtils.isEmpty(conversation.getToken())) {
             Data.Builder data = new Data.Builder();
@@ -317,5 +312,10 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
         return null;
 
+    }
+
+    @Parcel
+    public enum MenuType {
+        REGULAR, SHARE
     }
 }

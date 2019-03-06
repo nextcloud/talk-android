@@ -38,7 +38,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.Data;
@@ -51,12 +50,15 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.facebook.common.executors.UiThreadImmediateExecutorService;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.postprocessors.RoundPostprocessor;
+import com.facebook.imagepipeline.request.ImageRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
@@ -82,7 +84,6 @@ import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.animations.SharedElementTransition;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
@@ -111,10 +112,8 @@ public class ConversationsListController extends BaseController implements Searc
                 .OnScrollStateChangeListener, ConversationMenuInterface {
 
     public static final String TAG = "ConversationsListController";
-
-    private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
     public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
-
+    private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
     @Inject
     UserUtils userUtils;
 
@@ -207,27 +206,25 @@ public class ConversationsListController extends BaseController implements Searc
     private void loadUserAvatar(MenuItem menuItem) {
         if (getActivity() != null) {
             int avatarSize = (int) DisplayUtils.convertDpToPixel(menuItem.getIcon().getIntrinsicHeight(), getActivity());
+            ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(currentUser.getBaseUrl(),
+                    currentUser.getUserId(), avatarSize), null);
 
-            if (currentUser != null) {
-                GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(currentUser.getBaseUrl(),
-                        currentUser.getUserId(), avatarSize), new LazyHeaders.Builder()
-                        .setHeader("Accept", "image/*")
-                        .setHeader("User-Agent", ApiUtils.getUserAgent())
-                        .build());
+            ImagePipeline imagePipeline = Fresco.getImagePipeline();
+            DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
+            dataSource.subscribe(new BaseBitmapDataSubscriber() {
+                @Override
+                protected void onNewResultImpl(Bitmap bitmap) {
+                    if (bitmap != null) {
+                        new RoundPostprocessor(true).process(bitmap);
+                        menuItem.setIcon(new BitmapDrawable(bitmap));
+                    }
+                }
 
-                GlideApp.with(getActivity())
-                        .asBitmap()
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .load(glideUrl)
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                menuItem.setIcon(new BitmapDrawable(resource));
-                            }
-                        });
-            }
+                @Override
+                protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+                    menuItem.setIcon(R.drawable.ic_settings_white_24dp);
+                }
+            }, UiThreadImmediateExecutorService.getInstance());
         }
     }
 
@@ -433,11 +430,6 @@ public class ConversationsListController extends BaseController implements Searc
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setAdapter(adapter);
-
-        recyclerView.addItemDecoration(new DividerItemDecoration(
-                recyclerView.getContext(),
-                layoutManager.getOrientation()
-        ));
 
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);

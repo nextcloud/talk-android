@@ -75,6 +75,20 @@ public interface User extends Parcelable, Persistable, Serializable {
         return false;
     }
 
+    default boolean hasExternalCapability(String capabilityName) {
+        if (getCapabilities() != null) {
+            try {
+                Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                if (capabilities.getExternalCapability() != null && capabilities.getExternalCapability().containsKey("v1")) {
+                    return capabilities.getExternalCapability().get("v1").contains("capabilityName");
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to get capabilities for the user");
+            }
+        }
+        return false;
+    }
+
     default boolean hasSpreedCapabilityWithName(String capabilityName) {
         if (getCapabilities() != null) {
             try {

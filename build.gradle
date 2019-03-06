@@ -36,6 +36,9 @@ allprojects {
         maven {
             url 'https://jitpack.io'
         }
+        maven {
+            url  "https://dl.bintray.com/mdjanic/maven"
+        }
         maven { url 'https://maven.google.com' }
     }
 }

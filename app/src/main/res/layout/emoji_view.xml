@@ -32,7 +32,7 @@
         android:id="@+id/emojiViewDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_above="@id/emojiViewTab"/>
+        android:layout_above="@id/emojiViewTab" />
 
     <LinearLayout
         android:id="@+id/emojiViewTab"

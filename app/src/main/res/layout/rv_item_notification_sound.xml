@@ -19,33 +19,39 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/item_height"
-    android:orientation="vertical">
+    android:layout_height="48dp"
+    android:layout_margin="@dimen/double_margin_between_elements"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true">
 
 
-    <com.nextcloud.talk.utils.MagicFlipView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/magicFlipView"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/simpleDraweeView"
+        android:layout_width="@dimen/small_item_height"
+        android:layout_height="@dimen/small_item_height"
         android:layout_centerVertical="true"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        app:animationDuration="170"
-        app:checked="false"
-        app:enableInitialAnimation="true"
-        app:frontBackgroundColor="@color/colorPrimary"
-        app:frontImage="@drawable/ic_play_circle_outline_white_24dp"
-        app:rearBackgroundColor="@color/colorPrimary" />
+        android:layout_marginEnd="8dp"
+        app:roundAsCircle="true" />
 
     <TextView
         android:id="@+id/notificationNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:layout_toEndOf="@id/magicFlipView"
+        android:layout_toEndOf="@id/simpleDraweeView"
         android:ellipsize="end"
+        android:layout_toStartOf="@id/checkedImageView"
         android:textAppearance="?android:attr/textAppearanceListItem" />
+
+    <ImageView
+        android:id="@+id/checkedImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_check_black_24dp"
+        android:tint="@color/colorPrimary" />
 
 </RelativeLayout>

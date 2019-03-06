@@ -28,14 +28,12 @@ import butterknife.ButterKnife;
 import com.nextcloud.talk.R;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractHeaderItem;
-import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderItem.HeaderViewHolder> implements IFilterable<String> {
+public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderItem.HeaderViewHolder> {
     private static final String TAG = "GenericTextHeaderItem";
 
     private String title;
@@ -45,11 +43,6 @@ public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderI
         setHidden(false);
         setSelectable(false);
         this.title = title;
-    }
-
-    @Override
-    public boolean filter(String constraint) {
-        return StringUtils.containsIgnoreCase(title, constraint);
     }
 
     public String getModel() {

@@ -61,7 +61,7 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
                 int color;
                 if (individualHashMap != null && (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call"))) {
 
-                    if (individualHashMap.get("id").equals(message.getActiveUserId())) {
+                    if (individualHashMap.get("id").equals(message.getActiveUser().getUserId())) {
                         color = context.getResources().getColor(R.color.nc_incoming_text_mention_you);
                     } else {
                         color = context.getResources().getColor(R.color.nc_incoming_text_mention_others);

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -23,40 +24,43 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="@dimen/rv_item_view_height"
+    android:layout_margin="@dimen/double_margin_between_elements">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp">
+        android:layout_height="wrap_content">
 
         <FrameLayout
             android:id="@+id/dialogAvatarFrameLayout"
-            android:layout_width="@dimen/avatar_size"
-            android:layout_height="@dimen/avatar_size"
-            android:layout_centerVertical="true">
+            android:layout_width="@dimen/small_item_height"
+            android:layout_height="@dimen/small_item_height"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/margin_between_elements">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@id/dialogAvatar"
-                android:layout_width="@dimen/avatar_size"
-                android:layout_height="@dimen/avatar_size"
+                android:layout_width="@dimen/small_item_height"
+                android:layout_height="@dimen/small_item_height"
                 android:contentDescription="@null"
+                app:roundAsCircle="true"
                 tools:src="@drawable/ic_call_black_24dp" />
 
             <ImageView
                 android:id="@+id/passwordProtectedRoomImageView"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/margin_between_elements"
+                android:layout_height="@dimen/margin_between_elements"
                 android:layout_gravity="bottom|end"
                 android:background="@drawable/shape_lock_bubble" />
 
             <ImageView
                 android:id="@+id/favoriteConversationImageView"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="@dimen/margin_between_elements"
+                android:layout_height="@dimen/margin_between_elements"
                 android:layout_gravity="top|end"
                 android:background="@drawable/shape_favorite_bubble" />
         </FrameLayout>
@@ -66,7 +70,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/dialogAvatarFrameLayout"
-            android:layout_marginStart="8dp"
             android:layout_toStartOf="@id/dialogDate"
             android:layout_toEndOf="@id/dialogAvatarFrameLayout"
             android:ellipsize="end"
@@ -89,16 +92,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/dialogName"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/dialogAvatarFrameLayout">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@id/dialogLastMessageUserAvatar"
                 android:layout_width="@dimen/small_item_height"
                 android:layout_height="@dimen/small_item_height"
                 android:layout_marginEnd="8dp"
                 android:contentDescription="@null"
+                app:roundAsCircle="true"
                 tools:src="@drawable/ic_call_black_24dp" />
 
             <com.vanniktech.emoji.EmojiTextView

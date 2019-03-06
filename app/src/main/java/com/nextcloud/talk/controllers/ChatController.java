@@ -46,6 +46,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -58,6 +59,7 @@ import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback;
+import com.nextcloud.talk.components.filebrowser.controllers.BrowserController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.UserMentionClickEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
@@ -318,7 +320,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 @Override
                 public void loadImage(SimpleDraweeView imageView, String url) {
                     DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                            .setImageRequest(DisplayUtils.getImageRequestForUrl(url))
+                            .setImageRequest(DisplayUtils.getImageRequestForUrl(url, conversationUser))
                             .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
                             .setOldController(imageView.getController())
                             .setAutoPlayAnimations(true)
@@ -415,6 +417,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
             }
         });
 
+        messageInputView.setAttachmentsListener(new MessageInput.AttachmentsListener() {
+            @Override
+            public void onAddAttachments() {
+                showBrowserScreen(BrowserController.BrowserType.DAV_BROWSER);
+            }
+        });
+
         messageInputView.getButton().setOnClickListener(v -> submitMessage());
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
@@ -479,6 +488,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
 
+    private void showBrowserScreen(BrowserController.BrowserType browserType) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap(browserType));
+        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
+        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+        getRouter().pushController((RouterTransaction.with(new BrowserController(bundle))
+                .pushChangeHandler(new VerticalChangeHandler())
+                .popChangeHandler(new VerticalChangeHandler())));
+    }
+
     private void showConversationInfoScreen() {
         Bundle bundle = new Bundle();
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser);
@@ -486,7 +505,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
                 .pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler())));
-
     }
 
     private void setupMentionAutocomplete() {
@@ -532,7 +550,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
             @Override
             public void onEmojiPopupDismiss() {
                 if (smileyButton != null) {
-                    smileyButton.clearColorFilter();
+                    smileyButton.setColorFilter(getResources().getColor(R.color.emoji_icons),
+                            PorterDuff.Mode.SRC_IN);
                 }
             }
         }).setOnEmojiClickListener(new OnEmojiClickListener() {
@@ -950,8 +969,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     ChatMessage chatMessage = chatMessageList.get(i);
                     chatMessage.setLinkPreviewAllowed(isLinkPreviewAllowed);
-                    chatMessage.setBaseUrl(conversationUser.getBaseUrl());
-                    chatMessage.setActiveUserId(conversationUser.getUserId());
+                    chatMessage.setActiveUser(conversationUser);
+
                     if (globalLastKnownPastMessageId == -1 || chatMessageList.get(i).getJsonMessageId() <
                             globalLastKnownPastMessageId) {
                         globalLastKnownPastMessageId = chatMessageList.get(i).getJsonMessageId();
@@ -975,8 +994,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessage = chatMessageList.get(i);
 
-                    chatMessage.setBaseUrl(conversationUser.getBaseUrl());
-                    chatMessage.setActiveUserId(conversationUser.getUserId());
+                    chatMessage.setActiveUser(conversationUser);
                     chatMessage.setLinkPreviewAllowed(isLinkPreviewAllowed);
 
                     // if credentials are empty, we're acting as a guest

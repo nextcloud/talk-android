@@ -30,12 +30,11 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@id/image"
-        android:layout_width="480px"
-        android:layout_height="480px"
+        android:layout_width="@dimen/minimum_file_preview_size"
+        android:layout_height="@dimen/minimum_file_preview_size"
         android:layout_alignParentEnd="true"
         android:adjustViewBounds="true"
-        app:actualImageScaleType="fitCenter"
-        tools:ignore="PxUsage" />
+        app:actualImageScaleType="fitCenter"/>
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="wrap_content"
@@ -55,7 +54,7 @@
             android:id="@id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:autoLink="all"
+            android:autoLink="none"
             android:textColor="@color/warm_grey_four"
             android:textColorLink="@color/warm_grey_four"
             android:textIsSelectable="true"
