@@ -26,6 +26,7 @@ import android.util.Log;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -140,21 +141,16 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
         OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
         PeriodicWorkRequest periodicCapabilitiesUpdateWork = new PeriodicWorkRequest.Builder(CapabilitiesWorker.class,
-                1, TimeUnit.DAYS).build();
+                12, TimeUnit.HOURS).build();
         OneTimeWorkRequest capabilitiesUpdateWork = new OneTimeWorkRequest.Builder(CapabilitiesWorker.class).build();
         OneTimeWorkRequest signalingSettingsWork = new OneTimeWorkRequest.Builder(SignalingSettingsWorker.class).build();
 
-        //WorkManager.initialize(getApplicationContext(), new Configuration.Builder().build());
         WorkManager.getInstance().enqueue(pushRegistrationWork);
         WorkManager.getInstance().enqueue(accountRemovalWork);
         WorkManager.getInstance().enqueue(capabilitiesUpdateWork);
         WorkManager.getInstance().enqueue(signalingSettingsWork);
+        WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork", ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork);
 
-        // There is a bug with periodic work so we ignore this for now
-        //WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork",
-        //        ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork);
-
-        WorkManager.getInstance().cancelUniqueWork("DailyCapabilitiesUpdateWork");
         EmojiManager.install(new TwitterEmojiProvider());
 
     }
