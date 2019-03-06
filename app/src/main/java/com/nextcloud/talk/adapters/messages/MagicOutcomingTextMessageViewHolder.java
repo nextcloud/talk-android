@@ -88,20 +88,22 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
-                if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest")) {
-                    if (!individualHashMap.get("id").equals(message.getActiveUserId())) {
-                        messageString =
-                                DisplayUtils.searchAndColor(message.getText(),
-                                        "@" + individualHashMap.get("name"), NextcloudTalkApplication
-                                        .getSharedApplication().getResources().getColor(R.color.nc_outcoming_text_default));
+                if (individualHashMap != null) {
+                    if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call")) {
+                        if (!individualHashMap.get("id").equals(message.getActiveUserId())) {
+                            messageString =
+                                    DisplayUtils.searchAndColor(message.getText(),
+                                            "@" + individualHashMap.get("name"), NextcloudTalkApplication
+                                            .getSharedApplication().getResources().getColor(R.color.nc_outcoming_text_default));
+                        }
+
+                    } else if (individualHashMap.get("type").equals("file")) {
+                        itemView.setOnClickListener(v -> {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));
+                            context.startActivity(browserIntent);
+                        });
+
                     }
-
-                } else if (individualHashMap.get("type").equals("file")) {
-                    itemView.setOnClickListener(v -> {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));
-                        context.startActivity(browserIntent);
-                    });
-
                 }
             }
 

@@ -132,24 +132,26 @@ public class MagicIncomingTextMessageViewHolder
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
-                if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest")) {
-                    int color;
+                if (individualHashMap != null) {
+                    if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call")) {
+                        int color;
 
-                    if (individualHashMap.get("id").equals(message.getActiveUserId())) {
-                        color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
-                                .nc_incoming_text_mention_you);
-                    } else {
-                        color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
-                                .nc_incoming_text_mention_others);
+                        if (individualHashMap.get("id").equals(message.getActiveUserId())) {
+                            color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
+                                    .nc_incoming_text_mention_you);
+                        } else {
+                            color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
+                                    .nc_incoming_text_mention_others);
+                        }
+
+                        messageString = DisplayUtils.searchAndColor(message.getText(), "@" + individualHashMap.get("name"), color);
+                    } else if (individualHashMap.get("type").equals("file")) {
+                        itemView.setOnClickListener(v -> {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));
+                            context.startActivity(browserIntent);
+                        });
+
                     }
-
-                    messageString = DisplayUtils.searchAndColor(message.getText(), "@" + individualHashMap.get("name"), color);
-                } else if (individualHashMap.get("type").equals("file")) {
-                    itemView.setOnClickListener(v -> {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));
-                        context.startActivity(browserIntent);
-                    });
-
                 }
             }
 

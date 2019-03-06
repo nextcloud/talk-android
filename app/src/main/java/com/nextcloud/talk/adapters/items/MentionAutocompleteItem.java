@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
@@ -30,6 +31,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.glide.GlideApp;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -82,6 +84,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, UserItem.UserItemViewHolder holder, int position, List<Object> payloads) {
 
@@ -89,31 +92,39 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
             FlexibleUtils.highlightText(holder.contactDisplayName, displayName,
                     String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
-            FlexibleUtils.highlightText(holder.contactMentionId, "@" + userId,
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
-                            .getResources().getColor(R.color.colorPrimary));
+            if (holder.contactMentionId != null) {
+                FlexibleUtils.highlightText(holder.contactMentionId, "@" + userId,
+                        String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                                .getResources().getColor(R.color.colorPrimary));
+            }
         } else {
             holder.contactDisplayName.setText(displayName);
-            holder.contactMentionId.setText("@" + userId);
+            if (holder.contactMentionId != null) {
+                holder.contactMentionId.setText("@" + userId);
+            }
         }
 
-        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
-                userId, R.dimen.avatar_size), new LazyHeaders.Builder()
-                .setHeader("Accept", "image/*")
-                .setHeader("User-Agent", ApiUtils.getUserAgent())
-                .build());
+        if (userId.equals("all")) {
+            holder.avatarFlipView.setFrontImageBitmap(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px));
+        } else {
+            GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
+                    userId, R.dimen.avatar_size), new LazyHeaders.Builder()
+                    .setHeader("Accept", "image/*")
+                    .setHeader("User-Agent", ApiUtils.getUserAgent())
+                    .build());
 
-        int avatarSize = Math.round(NextcloudTalkApplication
-                .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
+            int avatarSize = Math.round(NextcloudTalkApplication
+                    .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
 
-        GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .load(glideUrl)
-                .centerInside()
-                .override(avatarSize, avatarSize)
-                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                .into(holder.avatarFlipView.getFrontImageView());
+            GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .load(glideUrl)
+                    .centerInside()
+                    .override(avatarSize, avatarSize)
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                    .into(holder.avatarFlipView.getFrontImageView());
+        }
     }
 
     @Override
