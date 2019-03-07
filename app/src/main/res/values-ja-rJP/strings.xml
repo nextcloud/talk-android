@@ -151,8 +151,8 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
-    <string name="nc_failed_signaling_settings">ターゲットのサーバは、モバイル経由での公開の会話への参加をサポートしていません
- あなたはWebブラウザ経由での参加はできるかもしれません。</string>
+    <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。
+Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_all_ok_operation">OK、すべて完了！</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">会話名</string>

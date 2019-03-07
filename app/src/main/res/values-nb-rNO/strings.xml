@@ -63,6 +63,7 @@
     <string name="nc_settings_reauthorize">Reautoriser</string>
     <string name="nc_client_cert_setup">Sett opp klient sertifikat</string>
     <string name="nc_client_cert_change">Endre klient sertifikat</string>
+    <string name="nc_settings_remove">Fjern</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
     <string name="nc_settings_add_account">Legg til ny konto</string>
     <string name="nc_settings_wrong_account">Bare gjeldende konto kan reautoriseres</string>
@@ -105,6 +106,7 @@
     <string name="nc_make_call_public">Gjør samtale offentlig</string>
     <string name="nc_make_call_private">Gjør samtale privat</string>
     <string name="nc_delete_call">Slett samtale</string>
+    <string name="nc_delete">Slett</string>
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_join_via_link">Bli med via lenke</string>
     <string name="nc_join_via_web">Bli med via nett</string>

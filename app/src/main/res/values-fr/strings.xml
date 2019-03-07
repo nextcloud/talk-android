@@ -63,6 +63,8 @@
     <string name="nc_settings_reauthorize">Réautoriser</string>
     <string name="nc_client_cert_setup">Configurer le certificat du client</string>
     <string name="nc_client_cert_change">Modifier le certificat du client</string>
+    <string name="nc_settings_remove">Effacer</string>
+    <string name="nc_settings_remove_confirmation">Veuillez confirmer votre volonté de supprimer le compte actuel.</string>
     <string name="nc_settings_remove_account">Supprimer le compte</string>
     <string name="nc_settings_add_account">Ajouter un nouveau compte</string>
     <string name="nc_settings_wrong_account">Seul le compte courant peut être ré-autorisé</string>
@@ -78,7 +80,11 @@
     <string name="nc_settings_privacy">Vie privée</string>
     <string name="nc_settings_screen_lock_title">Écran de verrouillage</string>
     <string name="nc_settings_screen_lock_desc">Verrouiller %1$s avec l\'écran de verrouillage d\'Android ou une empreinte digitale</string>
+    <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage écran</string>
     <string name="nc_none">Aucun</string>
+    <string name="nc_settings_screen_security_title">Sécurité de l\'écran</string>
+    <string name="nc_settings_link_previews_title">Afficher les prévisualisations de lien</string>
+    <string name="nc_settings_link_previews_desc">Autorise la prévisualisation du contenu des liens reçus pour les services pris en charge.</string>
     <string name="nc_locked">Appuyer pour déverrouiller</string>
 
     <string name="nc_screen_lock_timeout_30">30 secondes</string>
@@ -120,6 +126,11 @@
     <string name="nc_make_call_public">Effectuer une conversation privée</string>
     <string name="nc_make_call_private">Effectuer une conversation privée</string>
     <string name="nc_delete_call">Supprimer la conversation</string>
+    <string name="nc_delete">Supprimer</string>
+    <string name="nc_delete_conversation_default">Veuillez confirmer votre volonté de supprimer la conversation.</string>
+    <string name="nc_delete_conversation_one2one">Si vous supprimez la conversation, elle sera aussi supprimée pour %1$s.</string>
+    <string name="nc_delete_conversation_more">Si vous supprimez la conversation, elle sera supprimée pour tous les participants.</string>
+
     <string name="nc_new_conversation">Nouvelle conversation</string>
     <string name="nc_join_via_link">Joindre via le lien</string>
     <string name="nc_join_via_web">Joindre via le web</string>

@@ -63,6 +63,8 @@
     <string name="nc_settings_reauthorize">Znovu se ověřit</string>
     <string name="nc_client_cert_setup">Nastavit klientský certifikát</string>
     <string name="nc_client_cert_change">Změnit klientský certifikát</string>
+    <string name="nc_settings_remove">Odebrat</string>
+    <string name="nc_settings_remove_confirmation">Potvrďte, že chcete odebrat stávající účet.</string>
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
     <string name="nc_settings_wrong_account">Reautorizován může být pouze aktuální účet</string>
@@ -127,6 +129,12 @@
     <string name="nc_make_call_public">Zveřejnit konverzaci</string>
     <string name="nc_make_call_private">Udělat konverzaci neveřejnou</string>
     <string name="nc_delete_call">Smazat konverzaci</string>
+    <string name="nc_delete">Smazat</string>
+    <string name="nc_delete_conversation_default">Potvrďte, že chcete odebrat tuto konverzaci.</string>
+    <string name="nc_delete_conversation_one2one">Pokud konverzaci smažete, bude smazána
+        smazána pro %1$s.</string>
+    <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude smazána také pro všechny její ostatní účastníky.</string>
+
     <string name="nc_new_conversation">Nová konverzace</string>
     <string name="nc_join_via_link">Připojit prostřednictvím odkazu</string>
     <string name="nc_join_via_web">Připojit se přes web</string>

@@ -63,6 +63,8 @@
     <string name="nc_settings_reauthorize">Reautorizar</string>
     <string name="nc_client_cert_setup">Configurar certificado do cliente</string>
     <string name="nc_client_cert_change">Alterar certificado do cliente</string>
+    <string name="nc_settings_remove">Excluir</string>
+    <string name="nc_settings_remove_confirmation">Confirme se quer realmente excluir a conta atual.</string>
     <string name="nc_settings_remove_account">Excluir conta</string>
     <string name="nc_settings_add_account">Adicionar uma conta</string>
     <string name="nc_settings_wrong_account">Somente a conta atual pode ser reautorizada</string>
@@ -127,6 +129,12 @@
     <string name="nc_make_call_public">Fazer esta conversa pública</string>
     <string name="nc_make_call_private">Fazer esta conversa privada</string>
     <string name="nc_delete_call">Excluir conversa</string>
+    <string name="nc_delete">Excluir</string>
+    <string name="nc_delete_conversation_default">Confirme se quer realmente excluir a conversa.</string>
+    <string name="nc_delete_conversation_one2one">Se você excluir a conversa, ela também será
+        excluída para %1$s.</string>
+    <string name="nc_delete_conversation_more">Se você excluir a conversa, ela também será excluída para os outros participantes.</string>
+
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Juntar-se via link</string>
     <string name="nc_join_via_web">Juntar-se via web</string>

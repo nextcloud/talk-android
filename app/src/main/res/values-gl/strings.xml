@@ -65,6 +65,8 @@ Produciuse un fallo aorecuperar os axustes da señalización</string>
     <string name="nc_settings_reauthorize">Volver autorizar</string>
     <string name="nc_client_cert_setup">Estabelecer o certificado do cliente</string>
     <string name="nc_client_cert_change">Cambiar o certificado do cliente</string>
+    <string name="nc_settings_remove">Retirar</string>
+    <string name="nc_settings_remove_confirmation">Confirme a súa intención de retirar a conta actual.</string>
     <string name="nc_settings_remove_account">Retirar a conta</string>
     <string name="nc_settings_add_account">Engadir unha conta nova</string>
     <string name="nc_settings_wrong_account">Só pode volver a autorizarse a conta actual</string>
@@ -129,6 +131,12 @@ Produciuse un fallo aorecuperar os axustes da señalización</string>
     <string name="nc_make_call_public">Facer pública a conversa</string>
     <string name="nc_make_call_private">Facer privada a conversa</string>
     <string name="nc_delete_call">Eliminar a conversa</string>
+    <string name="nc_delete">Eliminar</string>
+    <string name="nc_delete_conversation_default">Confirme a súa intención de retirar a conversa.</string>
+    <string name="nc_delete_conversation_one2one">Se elimina a conversa, tamén se eliminará
+        para %1$s.</string>
+    <string name="nc_delete_conversation_more">Se elimina a conversa, tamén se eliminará para todos os demais participantes.</string>
+
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Xuntarse mediante unha ligazón</string>
     <string name="nc_join_via_web">Xuntarse medinte a web</string>
