@@ -83,6 +83,7 @@
     <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage écran</string>
     <string name="nc_none">Aucun</string>
     <string name="nc_settings_screen_security_title">Sécurité de l\'écran</string>
+    <string name="nc_settings_incognito_keyboard_title">Clavier incognito</string>
     <string name="nc_settings_link_previews_title">Afficher les prévisualisations de lien</string>
     <string name="nc_settings_link_previews_desc">Autorise la prévisualisation du contenu des liens reçus pour les services pris en charge.</string>
     <string name="nc_locked">Appuyer pour déverrouiller</string>
