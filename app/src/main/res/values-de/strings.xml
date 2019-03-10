@@ -63,6 +63,8 @@
     <string name="nc_settings_reauthorize">Erneut autorisieren</string>
     <string name="nc_client_cert_setup">Client-Zertifikat einrichten</string>
     <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
+    <string name="nc_settings_remove">Entfernen</string>
+    <string name="nc_settings_remove_confirmation">Bitte bestätigen Sie, dass Sie dieses Konto entfernen möchten.</string>
     <string name="nc_settings_remove_account">Konto entfernen</string>
     <string name="nc_settings_add_account">Konto hinzufügen</string>
     <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
@@ -127,6 +129,12 @@
     <string name="nc_make_call_public">Unterhaltung öffentlich machen</string>
     <string name="nc_make_call_private">Unterhaltung privat machen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
+    <string name="nc_delete">Löschen</string>
+    <string name="nc_delete_conversation_default">Bitte bestätigen Sie, dass Sie diese Unterhaltung entfernen möchten.</string>
+    <string name="nc_delete_conversation_one2one">Wenn Sie diese Unterhaltung entfernen, so wird diese auch
+       entfernt für %1$s.</string>
+    <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung entfernen, so wird diese auch für alle anderen Teilnehmer.</string>
+
     <string name="nc_new_conversation">Neue Unterhaltung</string>
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>

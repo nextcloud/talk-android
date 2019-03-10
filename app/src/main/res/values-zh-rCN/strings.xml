@@ -63,6 +63,7 @@
     <string name="nc_settings_reauthorize">重新认证</string>
     <string name="nc_client_cert_setup">设置客户端证书</string>
     <string name="nc_client_cert_change">修改客户端证书</string>
+    <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_account">移除账户</string>
     <string name="nc_settings_add_account">添加一个新账户</string>
     <string name="nc_settings_wrong_account">仅当前帐户可以重新授权</string>
