@@ -21,7 +21,7 @@
 
 <resources>
     <array name="proxy_type_descriptions">
-        <item>No proxy</item>
+        <item>@string/nc_no_proxy</item>
         <item>HTTP</item>
         <item>DIRECT</item>
         <item>SOCKS</item>
