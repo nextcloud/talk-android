@@ -83,7 +83,7 @@
     <string name="nc_settings_screen_lock_timeout_title">Czas bezczynności do blokady ekranu</string>
     <string name="nc_none">Brak</string>
     <string name="nc_settings_screen_security_title">Zabezpieczenie ekranu</string>
-    <string name="nc_settings_screen_security_desc">Zapobiega zrzutom ekranu ostatniej listy i z wewnątrz aplikacji</string>
+    <string name="nc_settings_screen_security_desc">Zapobiega zrzutom ekranu ostatniej listy i wnętrza aplikacji</string>
     <string name="nc_settings_incognito_keyboard_title">Klawiatura incognito</string>
     <string name="nc_settings_incognito_keyboard_desc">Wskaż klawiaturze, aby wyłączyła spersonalizowane uczenie (bez gwarancji)</string>
     <string name="nc_settings_link_previews_title">Pokaż podgląd linków</string>
@@ -131,7 +131,8 @@
     <string name="nc_delete_call">Usuń rozmowę</string>
     <string name="nc_delete">Usuń</string>
     <string name="nc_delete_conversation_default">Potwierdź zamiar usunięcia rozmowy.</string>
-    <string name="nc_delete_conversation_one2one">Jeśli usuniesz rozmowę, również usuniesz dla %1$s.</string>
+    <string name="nc_delete_conversation_one2one">Jeśli usuniesz rozmowę, usuniesz
+        również dla %1$s.</string>
     <string name="nc_delete_conversation_more">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla wszystkich pozostałych uczestników.</string>
 
     <string name="nc_new_conversation">Nowa rozmowa</string>
