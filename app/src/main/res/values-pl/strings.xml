@@ -76,7 +76,7 @@
     <string name="nc_settings_other_notifications_ringtone">Inne</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
     <string name="nc_settings_vibrate">Wibracje</string>
-    <string name="nc_settings_vibrate_desc">Telefon będzie wibrował, chyba że zostanie wyciszony</string>
+    <string name="nc_settings_vibrate_desc">Telefon będzie wibrować, pod warunkiem że nie zostanie wyciszony</string>
     <string name="nc_settings_privacy">Prywatność</string>
     <string name="nc_settings_screen_lock_title">Blokada ekranu</string>
     <string name="nc_settings_screen_lock_desc">Zablokuj %1$s za pomocą blokady ekranu Androida lub odcisku palca</string>
@@ -173,8 +173,8 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Przepraszam, coś poszło nie tak!</string>
-    <string name="nc_failed_signaling_settings">Serwer docelowy nie wspiera połączenia do rozmów publicznych przez telefony komórkowe.
-        Możesz próbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
+    <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe.
+        Możesz spróbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
     <string name="nc_all_ok_operation">OK, wszystko gotowe!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nazwa rozmowy</string>

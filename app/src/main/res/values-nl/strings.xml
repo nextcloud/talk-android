@@ -64,6 +64,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_reauthorize">Opnieuw autoriseren</string>
     <string name="nc_client_cert_setup">Instellen clientcertificaat</string>
     <string name="nc_client_cert_change">Wijzig clientcertificaat</string>
+    <string name="nc_settings_remove">Verwijderen</string>
     <string name="nc_settings_remove_account">Verwijder account</string>
     <string name="nc_settings_add_account">Toevoegen nieuw account</string>
     <string name="nc_settings_wrong_account">Alleen het huidige account kan opnieuw worden geautoriseerd</string>
@@ -80,6 +81,10 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_screen_lock_title">Schermvergrendeling</string>
     <string name="nc_none">Geen</string>
     <string name="nc_settings_screen_security_title">Schermbeveiliging</string>
+    <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
+    <string name="nc_settings_link_previews_title">Tonen link-voorbeelden</string>
+    <string name="nc_locked">Tikken om te deblokkeren</string>
+
     <string name="nc_screen_lock_timeout_30">30 seconden</string>
     <string name="nc_screen_lock_timeout_60">1 minuut</string>
     <string name="nc_screen_lock_timeout_300">5 minuten</string>
@@ -119,6 +124,9 @@ Kies er eentje van een provider.</string>
     <string name="nc_make_call_public">Maak gesprek openbaar</string>
     <string name="nc_make_call_private">Maak gesprek besloten</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
+    <string name="nc_delete">Verwijderen</string>
+    <string name="nc_delete_conversation_one2one">Als je het gesprek verwijderdt, wordt het ook
+        verwijderd voor %1$s.</string>
     <string name="nc_new_conversation">Nieuw gesprek</string>
     <string name="nc_join_via_link">Deelnemen via link</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
