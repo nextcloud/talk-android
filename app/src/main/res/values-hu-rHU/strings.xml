@@ -68,6 +68,13 @@
     <string name="nc_settings_notification_sounds">Értesítés hanja</string>
     <string name="nc_settings_no_ringtone">Nincs hang</string>
     <string name="nc_settings_vibrate">Rezeg</string>
+    <string name="nc_screen_lock_timeout_30">30 másodperc</string>
+    <string name="nc_screen_lock_timeout_300">5 perc</string>
+    <string name="nc_screen_lock_timeout_600">10 perc</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_cancel">Mégse</string>
+
     <string name="nc_no_proxy">Nincs proxy</string>
     <string name="nc_username">Felhasználónév</string>
     <string name="nc_password">Jelszó</string>
@@ -169,6 +176,8 @@
     <string name="nc_description_more_menu_group">Menü a nyilvános beszélgetéshez: %1$s</string>
     <string name="nc_description_send_message_button">Üzenet küldése</string>
 
+    <!-- Empty states -->
+    <string name="nc_chat_empty">Érintsd meg hogy te légy az első aki azt mondja %1$s!</string>
     <string name="nc_hello">Szia</string>
 
     <string name="nc_groups">Csoportok</string>
