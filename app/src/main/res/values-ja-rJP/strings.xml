@@ -63,6 +63,7 @@
     <string name="nc_settings_reauthorize">再認証する</string>
     <string name="nc_client_cert_setup">クライアント証明書を設定する</string>
     <string name="nc_client_cert_change">クライアント証明書を変更する</string>
+    <string name="nc_settings_remove">削除</string>
     <string name="nc_settings_remove_account">アカウントを削除</string>
     <string name="nc_settings_add_account">新規アカウント追加</string>
     <string name="nc_settings_wrong_account">現在のアカウントのみ再認可できます</string>
@@ -114,6 +115,7 @@
     <string name="nc_make_call_public">会話を公開する</string>
     <string name="nc_make_call_private">会話を非公開にする</string>
     <string name="nc_delete_call">会話を削除</string>
+    <string name="nc_delete">削除</string>
     <string name="nc_new_conversation">新しい会話</string>
     <string name="nc_join_via_link">リンク経由で参加</string>
     <string name="nc_join_via_web">ウェブ経由で参加</string>
