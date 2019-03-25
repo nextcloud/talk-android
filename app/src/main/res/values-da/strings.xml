@@ -64,6 +64,7 @@
     <string name="nc_client_cert_setup">Indstil klientcertifikat</string>
     <string name="nc_client_cert_change">Skift kliencertifikat</string>
     <string name="nc_settings_remove">Fjern</string>
+    <string name="nc_settings_remove_confirmation">Bekræft venligst din hensigt til at fjerne den aktuelle konto.</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
     <string name="nc_settings_add_account">Tilføj en konto</string>
     <string name="nc_settings_wrong_account">Kun nuværende konto kan gen autoriseres</string>
@@ -75,8 +76,20 @@
     <string name="nc_settings_other_notifications_ringtone">Andre</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
     <string name="nc_settings_vibrate">Vibrer</string>
+    <string name="nc_settings_vibrate_desc">Telefonen vil vibrere undtagen hvis sat til lydløs</string>
     <string name="nc_settings_privacy">Privatliv</string>
+    <string name="nc_settings_screen_lock_title">Skærm lås</string>
+    <string name="nc_settings_screen_lock_desc">Lås %1$s med Android Skærm lås eller fingeraftryk</string>
+    <string name="nc_settings_screen_lock_timeout_title">Skærm lås inaktivitets timeout</string>
     <string name="nc_none">Ingen</string>
+    <string name="nc_settings_screen_security_title">Skærm sikkerhed</string>
+    <string name="nc_settings_screen_security_desc">Forhindrer skærmkopi i nyeste liste og i selve app-en</string>
+    <string name="nc_settings_incognito_keyboard_title">Inkognito tastatur</string>
+    <string name="nc_settings_incognito_keyboard_desc">Indstiller tastatur til at deaktivere personaliseret indlæring (uden garanti)</string>
+    <string name="nc_settings_link_previews_title">Vis link forhåndsvisninger</string>
+    <string name="nc_settings_link_previews_desc">Tillader forhåndsvisning af indhold fra modtagne links for understøttede services</string>
+    <string name="nc_locked">Tryk for at låse op</string>
+
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
     <string name="nc_screen_lock_timeout_300">5 minutter</string>
@@ -117,6 +130,11 @@
     <string name="nc_make_call_private">Gør samtalen privat</string>
     <string name="nc_delete_call">Slet samtale</string>
     <string name="nc_delete">Slet</string>
+    <string name="nc_delete_conversation_default">Bekræft venligst din hensigt til at fjerne konversationen.</string>
+    <string name="nc_delete_conversation_one2one">Hvis du sletter konversationen, vil den også blive
+slettet for %1$s.</string>
+    <string name="nc_delete_conversation_more">Hvis du sletter konversationen, vil den også blive slettet for alle andre deltagere.</string>
+
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_join_via_link">Deltag via link</string>
     <string name="nc_join_via_web">Deltag via web</string>
