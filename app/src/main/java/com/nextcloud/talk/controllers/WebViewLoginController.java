@@ -35,16 +35,21 @@ import android.view.ViewGroup;
 import android.webkit.*;
 import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.CertificateEvent;
+import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -58,6 +63,7 @@ import io.requery.reactivex.ReactiveEntityStore;
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.CookieManager;
 import java.net.URLDecoder;
@@ -363,7 +369,7 @@ public class WebViewLoginController extends BaseController {
                 if (isPasswordUpdate) {
                     if (currentUser != null) {
                         userQueryDisposable = userUtils.createOrUpdateUser(null, loginData.getToken(),
-                                null, null, null, true,
+                                null, null, "", true,
                                 null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias(), null)
                                 .subscribeOn(Schedulers.newThread())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -371,6 +377,10 @@ public class WebViewLoginController extends BaseController {
                                             if (finalMessageType != null) {
                                                 ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);
                                             }
+
+                                            OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
+                                            WorkManager.getInstance().enqueue(pushRegistrationWork);
+
                                             getRouter().popCurrentController();
                                         }, throwable -> dispose(),
                                         this::dispose);

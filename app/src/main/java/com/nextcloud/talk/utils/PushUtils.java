@@ -232,9 +232,8 @@ public class PushUtils {
                             accountPushData = null;
                         }
 
-                        if (accountPushData != null && !accountPushData.getPushToken().equals(token) &&
-                                !userEntity.getScheduledForDeletion() ||
-                                TextUtils.isEmpty(providerValue) && !userEntity.getScheduledForDeletion()) {
+                        if (((TextUtils.isEmpty(providerValue) || accountPushData == null) && !userEntity.getScheduledForDeletion()) ||
+                                (accountPushData != null && !accountPushData.getPushToken().equals(token) && !userEntity.getScheduledForDeletion())) {
 
 
                             Map<String, String> queryMap = new HashMap<>();
