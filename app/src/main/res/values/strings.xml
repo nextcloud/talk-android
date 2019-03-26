@@ -90,7 +90,7 @@
 
     <string name="nc_settings_privacy">Privacy</string>
     <string name="nc_settings_screen_lock_title">Screen lock</string>
-    <string name="nc_settings_screen_lock_desc">Lock %1$s with Android screen lock or fingerprint</string>
+    <string name="nc_settings_screen_lock_desc">Lock %1$s with Android screen lock or supported biometric method</string>
     <string name="nc_settings_screen_lock_key" translatable="false">screen_lock</string>
     <string name="nc_settings_screen_lock_timeout_title">Screen lock inactivity timeout</string>
     <string name="nc_none">None</string>
