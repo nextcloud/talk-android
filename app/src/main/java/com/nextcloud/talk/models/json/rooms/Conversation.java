@@ -25,6 +25,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
@@ -90,17 +91,22 @@ public class Conversation {
                 Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participantType));
     }
 
-    public boolean canModerate() {
+
+    private boolean isLockedOneToOne(UserEntity conversationUser) {
+        return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && conversationUser.hasSpreedCapabilityWithName("locked-one-to-one-rooms"));
+    }
+
+    public boolean canModerate(UserEntity conversationUser) {
         return (Participant.ParticipantType.OWNER.equals(participantType)
-                || Participant.ParticipantType.MODERATOR.equals(participantType));
+                || Participant.ParticipantType.MODERATOR.equals(participantType) && !isLockedOneToOne(conversationUser));
     }
 
-    public boolean isNameEditable() {
-        return (canModerate() && !ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
+    public boolean isNameEditable(UserEntity conversationUser) {
+        return (canModerate(conversationUser) && !ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
     }
 
-    public boolean canLeave() {
-        return !canModerate() || (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getParticipants().size() > 1);
+    public boolean canLeave(UserEntity conversationUser) {
+        return !canModerate(conversationUser) || (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getParticipants().size() > 1);
 
     }
 

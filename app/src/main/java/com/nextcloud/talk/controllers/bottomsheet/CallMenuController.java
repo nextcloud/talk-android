@@ -157,12 +157,12 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                         , 98, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_black_24dp, R.color.grey_600)));
             }
 
-            if (conversation.isNameEditable()) {
+            if (conversation.isNameEditable(currentUser)) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename), 2, getResources().getDrawable(R.drawable
                         .ic_pencil_grey600_24dp)));
             }
 
-            if (conversation.canModerate() && !currentUser.hasSpreedCapabilityWithName("locked-one-to-one-rooms")) {
+            if (conversation.canModerate(currentUser)) {
                 if (!conversation.isPublic()) {
                     menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public), 3, getResources().getDrawable(R.drawable
                             .ic_link_grey600_24px)));
@@ -185,14 +185,14 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
             if (conversation.isPublic()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link), 7, getResources().getDrawable(R.drawable
                         .ic_link_grey600_24px)));
-                if (conversation.canModerate()) {
+                if (conversation.canModerate(currentUser)) {
                     menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private), 8, getResources().getDrawable(R.drawable
                             .ic_group_grey600_24px)));
                 }
             }
 
 
-            if (conversation.canLeave()) {
+            if (conversation.canLeave(currentUser)) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1, getResources().getDrawable(R.drawable
                         .ic_close_grey600_24dp)));
             }

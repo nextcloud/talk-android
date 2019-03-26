@@ -364,13 +364,13 @@ public class ConversationInfoController extends BaseController {
 
                         ownOptionsCategory.setVisibility(View.VISIBLE);
 
-                        if (!conversation.canLeave()) {
+                        if (!conversation.canLeave(conversationUser)) {
                             leaveConversationAction.setVisibility(View.GONE);
                         } else {
                             leaveConversationAction.setVisibility(View.VISIBLE);
                         }
 
-                        if (!conversation.canModerate()) {
+                        if (!conversation.canModerate(conversationUser)) {
                             deleteConversationAction.setVisibility(View.GONE);
                         } else {
                             deleteConversationAction.setVisibility(View.VISIBLE);
