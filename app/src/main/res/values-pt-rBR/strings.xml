@@ -79,7 +79,6 @@
     <string name="nc_settings_vibrate_desc">O telefone vai vibrar a menos que esteja silenciado</string>
     <string name="nc_settings_privacy">Privacidade</string>
     <string name="nc_settings_screen_lock_title">Bloquear tela</string>
-    <string name="nc_settings_screen_lock_desc">Bloquear %1$s com o bloqueio do Android ou com a digital</string>
     <string name="nc_settings_screen_lock_timeout_title">Tempo para bloqueio de tela</string>
     <string name="nc_none">Nada</string>
     <string name="nc_settings_screen_security_title">Segurança da tela</string>

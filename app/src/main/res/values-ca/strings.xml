@@ -53,23 +53,42 @@
     <string name="nc_no">No</string>
     <string name="nc_certificate_error">La vostra configuració SSL ha impedit la connexió</string>
 
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_title">Tipus de Proxy</string>
+    <string name="nc_settings_proxy_host_title">Servidor Proxy</string>
+    <string name="nc_settings_proxy_port_title">Port del Proxy</string>
     <string name="nc_settings_use_credentials_title">Feu servir les credencials</string>
     <string name="nc_settings_switch_account">Canvia entre els comptes</string>
     <string name="nc_settings_reauthorize">Re-autoritza</string>
     <string name="nc_client_cert_setup">Configureu el certificat del client</string>
     <string name="nc_client_cert_change">Canvia el certificat del client</string>
     <string name="nc_settings_remove">Suprimeix</string>
+    <string name="nc_settings_remove_confirmation">Si us plau, confirmeu la vostra intenció de suprimir el compte actual.</string>
     <string name="nc_settings_remove_account">Suprimeix el compte</string>
     <string name="nc_settings_add_account">Afegeix un nou compte</string>
     <string name="nc_settings_wrong_account">Només el compte actual pot ser re-autoritzat</string>
+    <string name="nc_settings_no_talk_installed">L\'aplicació de conversa no està instal·lada al servidor amb el qual heu intentat autenticar-vos</string>
+    <string name="nc_settings_account_updated">S\'ha actualitzat el vostre compte ja existent enlloc d’afegir-ne un de nou</string>
+    <string name="nc_account_scheduled_for_deletion">El compte està planificat per ser suprimit i no es pot canviar</string>
+    <string name="nc_settings_notification_sounds">So de les notificacions</string>
+    <string name="nc_settings_call_ringtone">Trucades individuals</string>
     <string name="nc_settings_other_notifications_ringtone">Un altre</string>
-    <string name="nc_settings_no_ringtone">Sense sons</string>
+    <string name="nc_settings_no_ringtone">Sense so</string>
     <string name="nc_settings_vibrate">Vibra</string>
     <string name="nc_settings_vibrate_desc">El telèfon vibrarà si no està silenciat</string>
     <string name="nc_settings_privacy">Privadesa</string>
     <string name="nc_settings_screen_lock_title">Bloqueig de pantalla</string>
-    <string name="nc_settings_screen_lock_desc">Bloca %1$s amb el bloqueig de pantalla de l\'Android o l\'empremta digital</string>
+    <string name="nc_settings_screen_lock_timeout_title">Temps d’inactivitat de bloqueig de pantalla</string>
     <string name="nc_none">Cap</string>
+    <string name="nc_settings_screen_security_title">Seguretat de la pantalla</string>
+    <string name="nc_settings_screen_security_desc">Impedeix captures de pantalla a la llista recent i dins de l\'aplicació</string>
+    <string name="nc_settings_incognito_keyboard_title">Teclat d\'incògnit</string>
+    <string name="nc_settings_incognito_keyboard_desc">Indica al teclat que inhabiliti l\'aprenentatge personalitzat (sense garanties)</string>
+    <string name="nc_settings_link_previews_title">Mostra les visualitzacions prèvies dels enllaços</string>
+    <string name="nc_settings_link_previews_desc">Permet la visualització prèvia del contingut dels enllaços rebuts per als serveis compatibles</string>
+    <string name="nc_locked">Toca per desbloquejar</string>
+
     <string name="nc_screen_lock_timeout_30">30 segons</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
     <string name="nc_screen_lock_timeout_300">5 minuts</string>
@@ -82,8 +101,10 @@
     <string name="nc_biometric_unlock">Desbloca %1$s</string>
     <string name="nc_cancel">Cancel·la</string>
 
+    <string name="nc_no_proxy">Sense proxy</string>
     <string name="nc_username">Nom d\'usuari</string>
     <string name="nc_password">Contrasenya</string>
+    <string name="nc_conversation_link">Enllaç de conversa</string>
     <string name="nc_new_password">Nova contrasenya</string>
     <string name="nc_wrong_password">Contrasenya incorrecta</string>
     <string name="nc_about">Quant a</string>
@@ -108,7 +129,14 @@
     <string name="nc_make_call_private">Fes que la conversa sigui privada</string>
     <string name="nc_delete_call">Suprimeix la conversa</string>
     <string name="nc_delete">Suprimeix</string>
+    <string name="nc_delete_conversation_default">Si us plau, confirmeu la vostra intenció de suprimir la conversa.</string>
+    <string name="nc_delete_conversation_one2one">Si suprimiu la conversa, també serà suprimit
+per %1$s.</string>
+    <string name="nc_delete_conversation_more">Si suprimiu la conversa, també s’eliminarà per a tots els altres participants.</string>
+
     <string name="nc_new_conversation">Nova conversa</string>
+    <string name="nc_join_via_link">Uneix-te a través d’un enllaç</string>
+    <string name="nc_join_via_web">Uneix-te via web</string>
     <string name="nc_add_to_favorites">Afegeix a favorits</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>
 
@@ -118,6 +146,7 @@
 
     <!-- Permissions -->
     <string name="nc_camera_permission_permanently_denied">Dóna permís a la Càmera dins de la Configuració per poder establir una connexió de vídeo.</string>
+    <string name="nc_microphone_permission_permanently_denied">Per habilitar la comunicació de veu, concediu el permís \"Micròfon\" a la configuració del sistema.</string>
     <string name="nc_permissions_settings">Configuració lliure</string>
 
     <!-- Call -->
@@ -125,6 +154,13 @@
     <string name="nc_incoming_call">Trucada entrant de</string>
     <string name="nc_nick_guest">Convidat</string>
     <string name="nc_public_call">Nova conversa pública</string>
+    <string name="nc_public_call_explanation">Les converses públiques us permeten convidar gent de fora a través d’un
+enllaç especialment dissenyat.</string>
+
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s a %2$s canal de notificació </string>
+    <string name="nc_notification_channel_calls">Canal de notificació de trucades</string>
+    <string name="nc_notification_channel_messages">Canal de notificació de missatges</string>
     <string name="nc_notification_channel_calls_description">Mostra les trucades entrants</string>
     <string name="nc_notification_settings">Paràmetres de les notificacions</string>
     <string name="nc_plain_old_messages">Missatges</string>
@@ -132,12 +168,25 @@
     <string name="nc_notify_me_mention">Notifica només quan s\'esmenti</string>
     <string name="nc_notify_me_never">No notifiquis mai</string>
     <string name="nc_mute_calls">Silencia les trucades</string>
+    <string name="nc_mute_calls_description">No rebreu cap notificació de trucades</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>
+    <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través del telèfon
+mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</string>
     <string name="nc_all_ok_operation">D\'acord, tot fet!</string>
     <string name="nc_ok">D\'acord</string>
     <string name="nc_call_name">Nom de la conversa</string>
+    <string name="nc_proceed">Continua</string>
+    <string name="nc_call_name_is_same">El nom que heu introduït és el mateix que l’actual</string>
     <string name="nc_wrong_link">L\'enllaç de la conversa no és vàlid</string>
+    <string name="nc_share_text">Afegeix-te a la conversa a %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s invitació</string>
+    <string name="nc_share_text_pass">\nContrasenya: %1$s</string>
+
+    <string name="nc_configure_cert_auth">Seleccioneu el certificat d’autenticació</string>
+    <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Introduïu un missatge...</string>
     <string name="nc_date_header_yesterday">Ahir</string>
@@ -159,12 +208,23 @@
     <string name="nc_sent_an_audio_you">Heu enviat un àudio.</string>
     <string name="nc_sent_a_video_you">Heu enviat un vídeo.</string>
     <string name="nc_sent_an_image_you">Heu enviat una imatge.</string>
-    <string name="nc_endless_disabled">No es poden carregar més articles (s\'ha assolit el màxim).</string>
+    <!-- When translating to German, please use non-formal variant -->
+    <string name="nc_formatted_message_you">Tu: %1$s</string>
+
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">No hi ha més elements a carregar. Actualitzeu per tornar-ho a provar.</string>
+    <string name="nc_endless_disabled">No es poden carregar més elements (s\'ha assolit el màxim).</string>
     <string name="nc_endless_cancel">Cancel·lat per l\'usuari.</string>
     <string name="nc_endless_error">S\'ha produït un error mentre es carregaven més elements.</string>
 
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">Menú per a converses amb %1$s</string>
+    <string name="nc_description_more_menu_public">Menú per converses de grup %1$s</string>
+    <string name="nc_description_more_menu_group">Menú per converses públiques %1$s</string>
     <string name="nc_description_send_message_button">Envia un missatge</string>
 
+    <!-- Empty states -->
+    <string name="nc_chat_empty">Toca per ser el primer a dir %1$s!</string>
     <string name="nc_conversations_empty">Afegiu-vos a una conversa on inicieu-ne una de nova\n Digueu hola als vostres amics i companys!</string>
     <string name="nc_hello">Hola</string>
 

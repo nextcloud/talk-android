@@ -80,7 +80,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_vibrate_desc">Telefoon zal trillen, tenzij deze is gedempt</string>
     <string name="nc_settings_privacy">Privacy</string>
     <string name="nc_settings_screen_lock_title">Schermvergrendeling</string>
-    <string name="nc_settings_screen_lock_desc">Blokkeer%1$s met Android schermbeveiliging of vingerafdruk</string>
     <string name="nc_settings_screen_lock_timeout_title">Schermblokkade inactiviteit time-out</string>
     <string name="nc_none">Geen</string>
     <string name="nc_settings_screen_security_title">Schermbeveiliging</string>

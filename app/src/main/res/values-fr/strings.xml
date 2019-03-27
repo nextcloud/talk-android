@@ -79,7 +79,6 @@
     <string name="nc_settings_vibrate_desc">Le téléphone va vibrer à moins qu\'il ne soit en mode silencieux</string>
     <string name="nc_settings_privacy">Vie privée</string>
     <string name="nc_settings_screen_lock_title">Écran de verrouillage</string>
-    <string name="nc_settings_screen_lock_desc">Verrouiller %1$s avec l\'écran de verrouillage d\'Android ou une empreinte digitale</string>
     <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage écran</string>
     <string name="nc_none">Aucun</string>
     <string name="nc_settings_screen_security_title">Sécurité de l\'écran</string>

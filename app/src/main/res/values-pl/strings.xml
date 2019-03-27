@@ -79,7 +79,6 @@
     <string name="nc_settings_vibrate_desc">Telefon będzie wibrować, pod warunkiem że nie zostanie wyciszony</string>
     <string name="nc_settings_privacy">Prywatność</string>
     <string name="nc_settings_screen_lock_title">Blokada ekranu</string>
-    <string name="nc_settings_screen_lock_desc">Zablokuj %1$s za pomocą blokady ekranu Androida lub odcisku palca</string>
     <string name="nc_settings_screen_lock_timeout_title">Czas bezczynności do blokady ekranu</string>
     <string name="nc_none">Brak</string>
     <string name="nc_settings_screen_security_title">Zabezpieczenie ekranu</string>

@@ -79,7 +79,6 @@
     <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
     <string name="nc_settings_privacy">Gizlilik</string>
     <string name="nc_settings_screen_lock_title">Ekran kilidi</string>
-    <string name="nc_settings_screen_lock_desc">%1$s Android ekran kilidi ya da parmak izi ile kilitlensin</string>
     <string name="nc_settings_screen_lock_timeout_title">Ekran kilidi zaman aşımı süresi</string>
     <string name="nc_none">Yok</string>
     <string name="nc_settings_screen_security_title">Ekran güvenliği</string>

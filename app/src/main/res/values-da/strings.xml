@@ -79,7 +79,6 @@
     <string name="nc_settings_vibrate_desc">Telefonen vil vibrere undtagen hvis sat til lydløs</string>
     <string name="nc_settings_privacy">Privatliv</string>
     <string name="nc_settings_screen_lock_title">Skærm lås</string>
-    <string name="nc_settings_screen_lock_desc">Lås %1$s med Android Skærm lås eller fingeraftryk</string>
     <string name="nc_settings_screen_lock_timeout_title">Skærm lås inaktivitets timeout</string>
     <string name="nc_none">Ingen</string>
     <string name="nc_settings_screen_security_title">Skærm sikkerhed</string>

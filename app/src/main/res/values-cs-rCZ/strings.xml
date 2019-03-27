@@ -79,7 +79,6 @@
     <string name="nc_settings_vibrate_desc">Pokud není ztišený, telefon bude vibrovat</string>
     <string name="nc_settings_privacy">Soukromí</string>
     <string name="nc_settings_screen_lock_title">Zámek obrazovky</string>
-    <string name="nc_settings_screen_lock_desc">Zamknout %1$s Android zámkem obrazovky nebo snímačem otisků prstu</string>
     <string name="nc_settings_screen_lock_timeout_title">Časový limit nečinnosti pro zámek obrazovky</string>
     <string name="nc_none">Žádné</string>
     <string name="nc_settings_screen_security_title">Zabezpečení obrazovky</string>
