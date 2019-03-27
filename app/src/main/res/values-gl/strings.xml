@@ -81,6 +81,7 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_settings_vibrate_desc">O teléfono vibrará, a non ser que estea silenciado</string>
     <string name="nc_settings_privacy">Privacidade</string>
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
+    <string name="nc_settings_screen_lock_desc">Bloquear %1$s co bloqueo de pantalla de Android ou co método biométrico compatíbel</string>
     <string name="nc_settings_screen_lock_timeout_title">Tempo de inactividade para o bloqueo da pantalla</string>
     <string name="nc_none">Ningún</string>
     <string name="nc_settings_screen_security_title">Seguridade da pantalla</string>

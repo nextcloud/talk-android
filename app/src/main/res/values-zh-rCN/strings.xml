@@ -79,6 +79,7 @@
     <string name="nc_settings_vibrate_desc">您的杀机将会震动，除非您的手机已静音</string>
     <string name="nc_settings_privacy">隐私</string>
     <string name="nc_settings_screen_lock_title">屏幕锁</string>
+    <string name="nc_settings_screen_lock_desc">使用安卓屏幕锁或受支持的生物统计学方法来锁定 %1$s</string>
     <string name="nc_settings_screen_lock_timeout_title">屏幕锁不活动超时时间</string>
     <string name="nc_none">无</string>
     <string name="nc_settings_screen_security_title">屏幕安全</string>
