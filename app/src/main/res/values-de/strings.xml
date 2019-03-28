@@ -79,6 +79,7 @@
     <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
     <string name="nc_settings_privacy">Datenschutz</string>
     <string name="nc_settings_screen_lock_title">Bildschirmsperre</string>
+    <string name="nc_settings_screen_lock_desc">Sperren Sie %1$s mit Android-Bildschirmsperre oder unterstützter biometrischer Methode. </string>
     <string name="nc_settings_screen_lock_timeout_title">Zeitüberschreitung der Bildschirm-Inaktivitätsperre</string>
     <string name="nc_none">Keine</string>
     <string name="nc_settings_screen_security_title">Bildschirmsicherheit</string>
