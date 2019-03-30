@@ -79,6 +79,7 @@
     <string name="nc_settings_vibrate_desc">Din telefon kommer att vibrera om den inte tystas</string>
     <string name="nc_settings_privacy">Integritet</string>
     <string name="nc_settings_screen_lock_title">Skärmlås</string>
+    <string name="nc_settings_screen_lock_desc">Lås %1$s med Android skärmslås eller biometrisk metod</string>
     <string name="nc_settings_screen_lock_timeout_title">Tidsgräns för skärmlås</string>
     <string name="nc_none">Ingen</string>
     <string name="nc_settings_screen_security_title">Skärmsäkerhet</string>
