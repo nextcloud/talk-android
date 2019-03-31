@@ -29,6 +29,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
+import com.nextcloud.talk.models.json.converters.EnumReadOnlyConversationConverter;
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import lombok.Data;
@@ -81,6 +82,9 @@ public class Conversation {
     String objectType;
     @JsonField(name = "notificationLevel", typeConverter = EnumNotificationLevelConverter.class)
     NotificationLevel notificationLevel;
+    @JsonField(name = "readOnly", typeConverter = EnumReadOnlyConversationConverter.class)
+    ConversationReadOnlyState conversationReadOnlyState;
+
 
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
@@ -127,6 +131,11 @@ public class Conversation {
         ALWAYS,
         MENTION,
         NEVER
+    }
+
+    public enum ConversationReadOnlyState {
+        CONVERSATION_READ_WRITE,
+        CONVERSATION_READ_ONLY
     }
 
     @Parcel

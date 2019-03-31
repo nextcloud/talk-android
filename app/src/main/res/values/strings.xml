@@ -259,4 +259,5 @@
     <string name="nc_user">User</string>
     <string name="nc_guest">Guest</string>
     <string name="nc_following_link">User following a public link</string>
+    <string name="nc_readonly_hint">This conversation is locked</string>
 </resources>

@@ -275,8 +275,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
 
                                 if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
-                                    bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
-                                            roomOverall.getOcs().getData().getDisplayName());
+                                    bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
+                                            Parcels.wrap(roomOverall.getOcs().getData()));
                                     conversationIntent.putExtras(bundle);
                                     getRouter().replaceTopController((RouterTransaction.with(new ChatController(bundle))
                                             .pushChangeHandler(new HorizontalChangeHandler())
@@ -888,8 +888,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     conversationIntent.putExtras(bundle);
 
                                     if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
-                                        bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
-                                                roomOverall.getOcs().getData().getDisplayName());
+                                        bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
+                                                Parcels.wrap(roomOverall.getOcs().getData()));
                                         getRouter().replaceTopController((RouterTransaction.with(new ChatController(bundle))
                                                 .pushChangeHandler(new HorizontalChangeHandler())
                                                 .popChangeHandler(new HorizontalChangeHandler())));

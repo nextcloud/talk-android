@@ -624,7 +624,7 @@ public class OperationsMenuController extends BaseController {
             }
 
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser);
-            bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(call));
+            bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation));
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, callPassword);
 
             conversationIntent.putExtras(bundle);

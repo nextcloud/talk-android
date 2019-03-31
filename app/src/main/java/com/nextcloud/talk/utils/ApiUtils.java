@@ -232,4 +232,8 @@ public class ApiUtils {
     public static String getUrlForNotificationWithId(String baseUrl, String notificationId) {
         return baseUrl + ocsApiVersion + "/apps/notifications/api/v2/notifications/" + notificationId;
     }
+
+    public static String getUrlForReadOnlyState(String baseUrl, String roomToken) {
+        return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + roomToken + "/read-only";
+    }
 }

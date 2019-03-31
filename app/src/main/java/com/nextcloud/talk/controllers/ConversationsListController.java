@@ -668,7 +668,7 @@ public class ConversationsListController extends BaseController implements Searc
                 currentUser = userUtils.getCurrentUser();
 
                 if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
-                    bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversation.getDisplayName());
+                    bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation));
                     getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler())));
