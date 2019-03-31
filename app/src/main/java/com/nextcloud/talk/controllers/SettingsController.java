@@ -723,7 +723,7 @@ public class SettingsController extends BaseController {
 
     @Override
     protected String getTitle() {
-        return getResources().getString(R.string.nc_app_name);
+        return getResources().getString(R.string.nc_settings);
     }
 
     private class ScreenLockTimeoutListener implements OnPreferenceValueChangedListener<String> {
