@@ -230,7 +230,7 @@ public class NotificationWorker extends Worker {
 
         smallIcon = R.drawable.ic_logo;
 
-        if (decryptedPushMessage.getType().equals("chat")) {
+        if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
             category = Notification.CATEGORY_MESSAGE;
         } else {
             category = Notification.CATEGORY_CALL;
@@ -238,7 +238,7 @@ public class NotificationWorker extends Worker {
 
         switch (conversationType) {
             case "one2one":
-                if (decryptedPushMessage.getType().equals("chat")) {
+                if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
                     largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_chat_black_24dp);
                 } else {
                     largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_call_black_24dp);
@@ -251,7 +251,7 @@ public class NotificationWorker extends Worker {
                 largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_link_black_24px);
                 break;
             default:
-                if (decryptedPushMessage.getType().equals("chat")) {
+                if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
                     largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_chat_black_24dp);
                 } else {
                     largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_call_black_24dp);
@@ -299,7 +299,7 @@ public class NotificationWorker extends Worker {
                     Long.toString(crc32.getValue()),
                     groupName);
 
-            if (decryptedPushMessage.getType().equals("chat")) {
+            if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
                 NotificationUtils.createNotificationChannel(context,
                         NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V3, context.getResources()
                                 .getString(R.string.nc_notification_channel_messages), context.getResources()
@@ -357,7 +357,7 @@ public class NotificationWorker extends Worker {
                 AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
                         (AudioAttributes.CONTENT_TYPE_SONIFICATION);
 
-                if (decryptedPushMessage.getType().equals("chat")) {
+                if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
                     audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
                 } else {
                     audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST);
@@ -429,17 +429,7 @@ public class NotificationWorker extends Worker {
                     boolean hasChatSupport = signatureVerification.getUserEntity().
                             hasSpreedCapabilityWithName("chat-v2");
 
-                    boolean isInTheSameRoomAsNotification = (ApplicationWideCurrentRoomHolder.getInstance().
-                            getCurrentRoomId().equals(decryptedPushMessage.getId()) ||
-                            ApplicationWideCurrentRoomHolder.getInstance()
-                                    .getCurrentRoomToken().equals(decryptedPushMessage.getId())) &&
-                            signatureVerification.getUserEntity().equals(ApplicationWideCurrentRoomHolder
-                                    .getInstance().getUserInRoom());
-
-                    boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed") &&
-                            !decryptedPushMessage.getType().equals("room") &&
-                            (!isInTheSameRoomAsNotification ||
-                                    decryptedPushMessage.getType().equals("call"));
+                    boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed");
 
                     if (shouldShowNotification) {
                         Intent intent;
@@ -479,7 +469,9 @@ public class NotificationWorker extends Worker {
                                 }
                                 break;
                             case "room":
-                                // do absolutely nothing, we won't even come to this point
+                                if (bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
+                                    showNotificationForCallWithNoPing(intent);
+                                }
                                 break;
                             case "chat":
                                 if (decryptedPushMessage.getNotificationId() != Long.MIN_VALUE) {
