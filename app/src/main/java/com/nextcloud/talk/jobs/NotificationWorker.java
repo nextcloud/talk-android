@@ -266,6 +266,9 @@ public class NotificationWorker extends Worker {
 
         CRC32 crc32 = new CRC32();
 
+        String baseUrl =
+                signatureVerification.getUserEntity().getBaseUrl().substring(signatureVerification.getUserEntity().getBaseUrl().indexOf("://") + 3);
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "1")
                 .setLargeIcon(largeIcon)
                 .setSmallIcon(smallIcon)
@@ -273,7 +276,7 @@ public class NotificationWorker extends Worker {
                 .setPriority(priority)
                 .setWhen(Calendar.getInstance().getTimeInMillis())
                 .setShowWhen(true)
-                .setSubText(signatureVerification.getUserEntity().getDisplayName())
+                .setSubText(baseUrl)
                 .setContentTitle(decryptedPushMessage.getSubject())
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);

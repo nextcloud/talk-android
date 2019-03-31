@@ -59,7 +59,7 @@ public class NotificationUtils {
 
             channel.setDescription(channelDescription);
             channel.enableLights(enableLights);
-            channel.setLightColor(Color.RED);
+            channel.setLightColor(R.color.colorPrimary);
             channel.setSound(null, null);
 
             notificationManager.createNotificationChannel(channel);
