@@ -185,7 +185,6 @@
     <string name="nc_notify_me_mention">Notify when mentioned</string>
     <string name="nc_notify_me_never">Never notify</string>
     <string name="nc_mute_calls">Mute calls</string>
-    <string name="nc_mute_calls_description">You will not receive any notification for calls</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>

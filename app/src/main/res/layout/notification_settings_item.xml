@@ -47,7 +47,6 @@
             android:layout_height="wrap_content"
             apc:mp_default_value="false"
             apc:mp_key="mute_calls"
-            apc:mp_summary="@string/nc_mute_calls_description"
             apc:mp_title="@string/nc_mute_calls" />
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
