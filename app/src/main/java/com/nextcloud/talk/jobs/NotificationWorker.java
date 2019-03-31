@@ -266,8 +266,8 @@ public class NotificationWorker extends Worker {
 
         CRC32 crc32 = new CRC32();
 
-        String baseUrl =
-                signatureVerification.getUserEntity().getBaseUrl().substring(signatureVerification.getUserEntity().getBaseUrl().indexOf("://") + 3);
+        Uri uri = Uri.parse(signatureVerification.getUserEntity().getBaseUrl());
+        String baseUrl = uri.getHost();
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "1")
                 .setLargeIcon(largeIcon)

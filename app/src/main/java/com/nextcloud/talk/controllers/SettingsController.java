@@ -522,7 +522,7 @@ public class SettingsController extends BaseController {
 
         if (currentUser != null) {
 
-            baseUrlTextView.setText(currentUser.getBaseUrl());
+            baseUrlTextView.setText(Uri.parse(currentUser.getBaseUrl()).getHost());
 
             reauthorizeButton.addPreferenceClickListener(view14 -> {
                 getRouter().pushController(RouterTransaction.with(
