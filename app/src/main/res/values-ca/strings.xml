@@ -44,7 +44,7 @@
     <string name="nc_nextcloud_talk_app_not_installed">L\'aplicació %1$s no està instal·lada al servidor, s\'està avortant</string>
     <string name="nc_display_name_not_stored">No s\'ha pogut emmagatzemar el nom de visualització, s\'està avortant</string>
 
-    <string name="nc_never">Mai us hi heu unit</string>
+    <string name="nc_never">Mai no us hi heu unit</string>
     <string name="nc_search">Cerca</string>
 
     <string name="nc_certificate_dialog_title">Verifica el certificat</string>
@@ -79,6 +79,7 @@
     <string name="nc_settings_vibrate_desc">El telèfon vibrarà si no està silenciat</string>
     <string name="nc_settings_privacy">Privadesa</string>
     <string name="nc_settings_screen_lock_title">Bloqueig de pantalla</string>
+    <string name="nc_settings_screen_lock_desc">Bloca %1$s amb el bloqueig de pantalla d\'Android o mètode biomètric compatible </string>
     <string name="nc_settings_screen_lock_timeout_title">Temps d’inactivitat de bloqueig de pantalla</string>
     <string name="nc_none">Cap</string>
     <string name="nc_settings_screen_security_title">Seguretat de la pantalla</string>
@@ -136,7 +137,7 @@ per %1$s.</string>
 
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Uneix-te a través d’un enllaç</string>
-    <string name="nc_join_via_web">Uneix-te via web</string>
+    <string name="nc_join_via_web">Uneix-te-vos via web</string>
     <string name="nc_add_to_favorites">Afegeix a favorits</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>
 
