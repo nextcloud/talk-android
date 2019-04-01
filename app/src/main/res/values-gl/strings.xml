@@ -171,7 +171,6 @@ mediante unha ligazón creada especialmente.</string>
     <string name="nc_notify_me_mention">Notificar cando son mencionado</string>
     <string name="nc_notify_me_never">Non notificar nunca</string>
     <string name="nc_mute_calls">Silenciar as chamadas</string>
-    <string name="nc_mute_calls_description">Non recibirá ningunha notificación de chamada</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sentímolo, algo foi mal!</string>
@@ -244,4 +243,4 @@ móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_guest">Convidado</string>
     <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
-</resources>
+    </resources>

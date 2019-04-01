@@ -79,6 +79,7 @@
     <string name="nc_settings_vibrate_desc">Telefonen vil vibrere undtagen hvis sat til lydløs</string>
     <string name="nc_settings_privacy">Privatliv</string>
     <string name="nc_settings_screen_lock_title">Skærm lås</string>
+    <string name="nc_settings_screen_lock_desc">Lås %1$s med Android Skærm lås en understøttet biometrisk metode</string>
     <string name="nc_settings_screen_lock_timeout_title">Skærm lås inaktivitets timeout</string>
     <string name="nc_none">Ingen</string>
     <string name="nc_settings_screen_security_title">Skærm sikkerhed</string>
@@ -168,7 +169,6 @@ speciel lavet link.</string>
     <string name="nc_notify_me_mention">Giv besked når du bliver omtalt</string>
     <string name="nc_notify_me_never">Giv aldrig besked</string>
     <string name="nc_mute_calls">Gør opkald lydløs</string>
-    <string name="nc_mute_calls_description">Du vil ikke modtage nogle notifikationer for opkald</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noget gik galt, undskyld!</string>
@@ -241,4 +241,4 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_user">ruger</string>
     <string name="nc_guest">Gæst</string>
     <string name="nc_following_link">Bruger følger et offentligt link</string>
-</resources>
+    </resources>

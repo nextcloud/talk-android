@@ -167,7 +167,6 @@ grâce à un lien spécialement créé.</string>
     <string name="nc_notify_me_mention">Notifier quand mentionné</string>
     <string name="nc_notify_me_never">Ne jamais notifier</string>
     <string name="nc_mute_calls">Rendre les appels silencieux</string>
-    <string name="nc_mute_calls_description">Vous ne recevrez aucune notification pour les appels</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
@@ -240,4 +239,4 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_user">Utilisateur</string>
     <string name="nc_guest">Invité</string>
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
-</resources>
+    </resources>

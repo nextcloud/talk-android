@@ -169,7 +169,6 @@ enllaç especialment dissenyat.</string>
     <string name="nc_notify_me_mention">Notifica només quan s\'esmenti</string>
     <string name="nc_notify_me_never">No notifiquis mai</string>
     <string name="nc_mute_calls">Silencia les trucades</string>
-    <string name="nc_mute_calls_description">No rebreu cap notificació de trucades</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>
@@ -239,4 +238,4 @@ mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</str
     <string name="nc_user">Usuari</string>
     <string name="nc_guest">Convidat</string>
     <string name="nc_following_link">Usuari que segueix un enllaç públic</string>
-</resources>
+    </resources>

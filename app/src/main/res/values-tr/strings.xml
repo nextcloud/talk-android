@@ -79,6 +79,7 @@
     <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
     <string name="nc_settings_privacy">Gizlilik</string>
     <string name="nc_settings_screen_lock_title">Ekran kilidi</string>
+    <string name="nc_settings_screen_lock_desc">%1$s Android ekran kilidi ya da desteklenen biyometrik yöntem ile kilitlensin</string>
     <string name="nc_settings_screen_lock_timeout_title">Ekran kilidi zaman aşımı süresi</string>
     <string name="nc_none">Yok</string>
     <string name="nc_settings_screen_security_title">Ekran güvenliği</string>
@@ -168,7 +169,6 @@
     <string name="nc_notify_me_mention">Anmalar bildirilsin</string>
     <string name="nc_notify_me_never">Asla bildirilmesin</string>
     <string name="nc_mute_calls">Bildirimleri kapat</string>
-    <string name="nc_mute_calls_description">Bu seçenek etkinleştirildiğinde, hiç bir çağrı bildirimi alınmaz</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
@@ -241,4 +241,4 @@
     <string name="nc_user">Kullanıcı</string>
     <string name="nc_guest">Konuk</string>
     <string name="nc_following_link">Herkese açık bir bağlantıyı izleyen kullanıcı</string>
-</resources>
+    </resources>

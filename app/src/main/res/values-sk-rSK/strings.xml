@@ -135,7 +135,6 @@
     <string name="nc_notify_me_mention">Notifikuj pri spomenutí</string>
     <string name="nc_notify_me_never">Nikdy nenotifikuj</string>
     <string name="nc_mute_calls">Stíš hovory</string>
-    <string name="nc_mute_calls_description">Nebudete dostávať notifikáciu pre hovory</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa nepodarilo!</string>
@@ -208,4 +207,4 @@
     <string name="nc_user">Používateľ</string>
     <string name="nc_guest">Hosť</string>
     <string name="nc_following_link">Používateľ z verejného odkazu</string>
-</resources>
+    </resources>

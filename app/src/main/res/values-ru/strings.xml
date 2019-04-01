@@ -151,7 +151,6 @@
     <string name="nc_notify_me_mention">Уведомлять при упоминании</string>
     <string name="nc_notify_me_never">Не уведомлять</string>
     <string name="nc_mute_calls">Не уведомлять о вызовах</string>
-    <string name="nc_mute_calls_description">Не выводить никаких уведомлений о вызовах</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
@@ -223,4 +222,4 @@
     <string name="nc_user">Пользователь</string>
     <string name="nc_guest">Гость</string>
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
-</resources>
+    </resources>

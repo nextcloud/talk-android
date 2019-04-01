@@ -167,7 +167,6 @@
     <string name="nc_notify_me_mention">当被提及时提醒</string>
     <string name="nc_notify_me_never">从不提醒</string>
     <string name="nc_mute_calls">通话静音</string>
-    <string name="nc_mute_calls_description">您将不会受到任何来自本机的通知</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
@@ -240,4 +239,4 @@
     <string name="nc_user">用户</string>
     <string name="nc_guest">访客</string>
     <string name="nc_following_link">使用公共链接的用户</string>
-</resources>
+    </resources>

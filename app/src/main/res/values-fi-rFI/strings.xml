@@ -105,7 +105,6 @@
     <string name="nc_notify_me_mention">Ilmoita kun mainittu</string>
     <string name="nc_notify_me_never">Älä ilmoita koskaan</string>
     <string name="nc_mute_calls">Mykistä puhelut</string>
-    <string name="nc_mute_calls_description">Et saa mitään ilmoituksia puheluista</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Pahoittelut, jokin meni vikaan!</string>

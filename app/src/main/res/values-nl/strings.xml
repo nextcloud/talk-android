@@ -169,7 +169,6 @@ via een persoonlijke link.</string>
     <string name="nc_notify_me_mention">Waarschuwen bij vermelding</string>
     <string name="nc_notify_me_never">Nooit waarschuwen</string>
     <string name="nc_mute_calls">Gesprekken dempen</string>
-    <string name="nc_mute_calls_description">Je ontvangt geen melding van gesprekken</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
@@ -242,4 +241,4 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_user">Gebruiker</string>
     <string name="nc_guest">Gast</string>
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
-</resources>
+    </resources>

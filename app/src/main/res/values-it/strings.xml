@@ -169,7 +169,6 @@
     <string name="nc_notify_me_mention">Notifica su menzione</string>
     <string name="nc_notify_me_never">Non notificare mai</string>
     <string name="nc_mute_calls">Silenzia le chiamate</string>
-    <string name="nc_mute_calls_description">Non riceverai alcuna notifica per le chiamate</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Spiacenti, qualcosa non ha funzionato!</string>
@@ -242,4 +241,4 @@
     <string name="nc_user">Utente</string>
     <string name="nc_guest">Ospite</string>
     <string name="nc_following_link">Utente che segue un collegamento pubblico</string>
-</resources>
+    </resources>

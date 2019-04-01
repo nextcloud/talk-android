@@ -143,7 +143,6 @@
     <string name="nc_notify_me_mention">להודיע כשהזכירו אותי</string>
     <string name="nc_notify_me_never">לא להודיע אף פעם</string>
     <string name="nc_mute_calls">השתקת שיחות</string>
-    <string name="nc_mute_calls_description">לא תתקבלנה התראות או שיחות</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">משהו השתבש, עמך הסליחה!</string>
@@ -198,4 +197,4 @@
     <string name="nc_user">משתמש</string>
     <string name="nc_guest">אורח</string>
     <string name="nc_following_link">משתמש שעוקב אחר קישור ציבורי</string>
-</resources>
+    </resources>

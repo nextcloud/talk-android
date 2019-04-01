@@ -169,7 +169,6 @@
     <string name="nc_notify_me_mention">Meddela när omnämnd</string>
     <string name="nc_notify_me_never">Meddela aldrig</string>
     <string name="nc_mute_calls">Tysta alla samtal</string>
-    <string name="nc_mute_calls_description">Du kommer inte få några samtalsnotifieringar</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>
@@ -242,4 +241,4 @@
     <string name="nc_user">Användare</string>
     <string name="nc_guest">Gäst</string>
     <string name="nc_following_link">Användare följer en offentlig länk</string>
-</resources>
+    </resources>

@@ -135,7 +135,6 @@
     <string name="nc_notify_me_mention">Tilkynna þegar minnst er á</string>
     <string name="nc_notify_me_never">Aldrei tilkynna</string>
     <string name="nc_mute_calls">Þagga samtöl</string>
-    <string name="nc_mute_calls_description">Þér munu ekki berast neinar tilkynningar um samtöl</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
@@ -208,4 +207,4 @@
     <string name="nc_user">Notandi</string>
     <string name="nc_guest">Gestur</string>
     <string name="nc_following_link">Notandi sem fylgdi almenningstengli</string>
-</resources>
+    </resources>

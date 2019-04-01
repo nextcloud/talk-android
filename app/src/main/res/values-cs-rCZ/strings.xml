@@ -169,7 +169,6 @@
     <string name="nc_notify_me_mention">Upozornit při zmínění</string>
     <string name="nc_notify_me_never">Nikdy neoznamovat</string>
     <string name="nc_mute_calls">Ztišit hovory</string>
-    <string name="nc_mute_calls_description">Neobdržíte žádná oznámení o hovorech</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
@@ -242,4 +241,4 @@
     <string name="nc_user">Uživatel</string>
     <string name="nc_guest">Host</string>
     <string name="nc_following_link">Uživatel následující veřejný odkaz</string>
-</resources>
+    </resources>

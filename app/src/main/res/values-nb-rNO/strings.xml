@@ -140,7 +140,6 @@
     <string name="nc_notify_me_mention">Varsle når nevnt</string>
     <string name="nc_notify_me_never">Aldri varsle</string>
     <string name="nc_mute_calls">Slå av samtaler</string>
-    <string name="nc_mute_calls_description">Du mottar ikke varsling for samtaler</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
@@ -213,4 +212,4 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_user">Bruker</string>
     <string name="nc_guest">Gjest</string>
     <string name="nc_following_link">Bruker følger en offentlig lenke</string>
-</resources>
+    </resources>
