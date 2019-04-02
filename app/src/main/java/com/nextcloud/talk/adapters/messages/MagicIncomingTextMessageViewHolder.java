@@ -110,7 +110,9 @@ public class MagicIncomingTextMessageViewHolder
 
                 messageUserAvatarView.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
             } else if (message.getActorType().equals("bots")) {
-                TextDrawable drawable = TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">", context.getResources().getColor(R.color.nc_grey));
+                TextDrawable drawable =
+                        TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">",
+                                context.getResources().getColor(R.color.black));
                 messageUserAvatarView.setVisibility(View.VISIBLE);
                 messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
             }

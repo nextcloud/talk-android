@@ -197,7 +197,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                                 .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                                 .into(holder.dialogLastMessageUserAvatar);
                     } else {
-                        TextDrawable drawable = TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">", context.getResources().getColor(R.color.nc_grey));
+                        TextDrawable drawable =
+                                TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">", context.getResources().getColor(R.color.black));
                         holder.dialogLastMessageUserAvatar.setImageDrawable(drawable);
 
                     }
