@@ -100,6 +100,12 @@ public class DisplayUtils {
         }
     }
 
+    public static Drawable getRoundedDrawable(Drawable drawable) {
+        Bitmap bitmap = getBitmap(drawable);
+        new RoundAsCirclePostprocessor(true).process(bitmap);
+        return new BitmapDrawable(bitmap);
+    }
+
     public static Bitmap getRoundedBitmapFromVectorDrawableResource(Resources resources, int resource) {
         VectorDrawable vectorDrawable = (VectorDrawable) resources.getDrawable(resource);
         Bitmap bitmap = getBitmap(vectorDrawable);
@@ -116,12 +122,12 @@ public class DisplayUtils {
         return fontMetrics.descent - fontMetrics.ascent;
     }
 
-    private static Bitmap getBitmap(VectorDrawable vectorDrawable) {
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
-                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+    private static Bitmap getBitmap(Drawable drawable) {
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        vectorDrawable.draw(canvas);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
         return bitmap;
     }
 

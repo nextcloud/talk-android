@@ -143,7 +143,8 @@ public class Conversation {
         DUMMY,
         ROOM_TYPE_ONE_TO_ONE_CALL,
         ROOM_GROUP_CALL,
-        ROOM_PUBLIC_CALL
+        ROOM_PUBLIC_CALL,
+        ROOM_SYSTEM
     }
 
 }

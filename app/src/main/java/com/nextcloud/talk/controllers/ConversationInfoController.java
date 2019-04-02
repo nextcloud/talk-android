@@ -22,6 +22,8 @@ package com.nextcloud.talk.controllers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -62,10 +64,7 @@ import com.nextcloud.talk.utils.preferencestorage.DatabaseStorageModule;
 import com.vanniktech.emoji.EmojiTextView;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
-import com.yarolegovich.mp.MaterialChoicePreference;
-import com.yarolegovich.mp.MaterialPreferenceCategory;
-import com.yarolegovich.mp.MaterialPreferenceScreen;
-import com.yarolegovich.mp.MaterialStandardPreference;
+import com.yarolegovich.mp.*;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -106,6 +105,8 @@ public class ConversationInfoController extends BaseController {
     MaterialStandardPreference leaveConversationAction;
     @BindView(R.id.ownOptions)
     MaterialPreferenceCategory ownOptionsCategory;
+    @BindView(R.id.muteCalls)
+    MaterialSwitchPreference muteCalls;
 
     @Inject
     NcApi ncApi;
@@ -376,6 +377,10 @@ public class ConversationInfoController extends BaseController {
                             deleteConversationAction.setVisibility(View.VISIBLE);
                         }
 
+                        if (Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
+                            muteCalls.setVisibility(View.GONE);
+                        }
+
                         getListOfParticipants();
 
                         if (progressBar != null) {
@@ -483,6 +488,13 @@ public class ConversationInfoController extends BaseController {
                             .getRoundedBitmapDrawableFromVectorDrawableResource(getResources(),
                                     R.drawable.ic_link_white_24px));
                     break;
+                case ROOM_SYSTEM:
+                        Drawable[] layers = new Drawable[2];
+                        layers[0] = context.getDrawable(R.drawable.ic_launcher_background);
+                        layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground);
+                        LayerDrawable layerDrawable = new LayerDrawable(layers);
+                        conversationAvatarImageView.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
+
                 default:
                     break;
             }

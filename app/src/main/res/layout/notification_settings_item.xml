@@ -46,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_default_value="false"
+            android:id="@+id/muteCalls"
             apc:mp_key="mute_calls"
             apc:mp_title="@string/nc_mute_calls" />
 

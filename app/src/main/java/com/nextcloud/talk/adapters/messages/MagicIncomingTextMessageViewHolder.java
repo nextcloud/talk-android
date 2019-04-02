@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -69,6 +70,9 @@ public class MagicIncomingTextMessageViewHolder
     @Inject
     UserUtils userUtils;
 
+    @Inject
+    Context context;
+
     private View itemView;
 
     public MagicIncomingTextMessageViewHolder(View itemView) {
@@ -91,29 +95,34 @@ public class MagicIncomingTextMessageViewHolder
             messageAuthor.setText(R.string.nc_nick_guest);
         }
 
-        if (message.getActorType().equals("guests") && !message.isGrouped()) {
-            TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
-                    .endConfig().buildRound(String.valueOf(messageAuthor.getText().charAt(0)), NextcloudTalkApplication
-                            .getSharedApplication().getResources().getColor(R.color.nc_grey));
+        if (!message.isGrouped) {
             messageUserAvatarView.setVisibility(View.VISIBLE);
-            messageUserAvatarView.setImageDrawable(drawable);
-        }
+            if (message.getActorType().equals("guests")) {
+                TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
+                        .endConfig().buildRound(String.valueOf(messageAuthor.getText().charAt(0)), NextcloudTalkApplication
+                                .getSharedApplication().getResources().getColor(R.color.nc_grey));
+                messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
+            } else if (message.getActorType().equals("bots") && message.getActorId().equals("changelog")) {
+                Drawable[] layers = new Drawable[2];
+                layers[0] = context.getDrawable(R.drawable.ic_launcher_background);
+                layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground);
+                LayerDrawable layerDrawable = new LayerDrawable(layers);
 
-        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
-        if (message.isGrouped()) {
+                messageUserAvatarView.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
+            } else if (message.getActorType().equals("bots")) {
+                TextDrawable drawable = TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">", context.getResources().getColor(R.color.nc_grey));
+                messageUserAvatarView.setVisibility(View.VISIBLE);
+                messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
+            }
+        } else {
+            Resources resources = context.getResources();
+
             messageUserAvatarView.setVisibility(View.INVISIBLE);
             Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
                     resources.getColor(R.color.transparent),
                     resources.getColor(R.color.white_two), R.drawable.shape_grouped_incoming_message);
             ViewCompat.setBackground(bubble, bubbleDrawable);
             messageAuthor.setVisibility(View.GONE);
-        } else {
-            messageUserAvatarView.setVisibility(View.VISIBLE);
-            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
-                    resources.getColor(R.color.transparent),
-                    resources.getColor(R.color.white_two), R.drawable.shape_incoming_message);
-            ViewCompat.setBackground(bubble, bubbleDrawable);
-            messageAuthor.setVisibility(View.VISIBLE);
         }
 
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();

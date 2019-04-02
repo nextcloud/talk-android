@@ -429,8 +429,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (currentConversation != null && !readOnlyCheckPerformed) {
 
             readOnlyCheckPerformed = true;
-            if (currentConversation.getConversationReadOnlyState() != null &&
-                    !currentConversation.getConversationReadOnlyState().equals(Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY)) {
+            if (currentConversation.getConversationReadOnlyState() != null && currentConversation.getConversationReadOnlyState().equals(Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY)) {
                 messageInput.setHint(R.string.nc_readonly_hint);
 
                 conversationVoiceCallMenuItem.getIcon().setAlpha(99);
@@ -1060,7 +1059,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
             conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call);
         }
 
-        checkReadOnlyState();
+        if (conversationUser.hasSpreedCapabilityWithName("read-only-rooms")) {
+            checkReadOnlyState();
+        }
     }
 
 

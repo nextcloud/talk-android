@@ -47,7 +47,7 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
-        <TextView
+        <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/messageAuthor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

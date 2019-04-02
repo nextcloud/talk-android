@@ -21,6 +21,8 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -139,7 +141,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.dialogDate.setText(DateUtils.getRelativeTimeSpanString(conversation.getLastActivity() * 1000L,
                     System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
 
-            if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage())) {
+            if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage()) || Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
                 holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
                 holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
@@ -178,20 +180,27 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 } else if (!conversation.getLastMessage().getActorId().equals(userEntity.getUserId())
                         && !conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
                     holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
-                    GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                            conversation.getLastMessage().getActorId(), R.dimen.small_item_height), new LazyHeaders.Builder()
-                            .setHeader("Accept", "image/*")
-                            .setHeader("User-Agent", ApiUtils.getUserAgent())
-                            .build());
 
-                    GlideApp.with(context)
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(glideUrl)
-                            .centerInside()
-                            .override(smallAvatarSize, smallAvatarSize)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(holder.dialogLastMessageUserAvatar);
+                    if (!"bots".equals(conversation.getLastMessage().getActorType())) {
+                        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                                conversation.getLastMessage().getActorId(), R.dimen.small_item_height), new LazyHeaders.Builder()
+                                .setHeader("Accept", "image/*")
+                                .setHeader("User-Agent", ApiUtils.getUserAgent())
+                                .build());
+
+                        GlideApp.with(context)
+                                .asBitmap()
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .load(glideUrl)
+                                .centerInside()
+                                .override(smallAvatarSize, smallAvatarSize)
+                                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                                .into(holder.dialogLastMessageUserAvatar);
+                    } else {
+                        TextDrawable drawable = TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">", context.getResources().getColor(R.color.nc_grey));
+                        holder.dialogLastMessageUserAvatar.setImageDrawable(drawable);
+
+                    }
                 } else {
                     holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
                 }
@@ -227,6 +236,24 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 default:
                     break;
             }
+        }
+
+        if (Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
+            Drawable[] layers = new Drawable[2];
+            layers[0] = context.getDrawable(R.drawable.ic_launcher_background);
+            layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground);
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
+
+            GlideApp.with(context)
+                    .asDrawable()
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .load(layerDrawable)
+                    .centerInside()
+                    .override(avatarSize, avatarSize)
+                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                    .into(holder.dialogAvatar);
+
+            shouldLoadAvatar = false;
         }
 
         if (shouldLoadAvatar) {
