@@ -241,4 +241,5 @@
     <string name="nc_user">Uživatel</string>
     <string name="nc_guest">Host</string>
     <string name="nc_following_link">Uživatel následující veřejný odkaz</string>
-    </resources>
+    <string name="nc_readonly_hint">Tato konverzace je uzamčena.</string>
+</resources>

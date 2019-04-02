@@ -241,4 +241,5 @@
     <string name="nc_user">Użytkownik</string>
     <string name="nc_guest">Gość</string>
     <string name="nc_following_link">Użytkownik korzysta z łącza publicznego</string>
-    </resources>
+    <string name="nc_readonly_hint">Ta rozmowa jest zablokowana</string>
+</resources>

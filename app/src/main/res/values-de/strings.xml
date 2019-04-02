@@ -241,4 +241,5 @@
     <string name="nc_user">Benutzer</string>
     <string name="nc_guest">Gast</string>
     <string name="nc_following_link">Benutzer kommt von einem öffentlichen Link</string>
-    </resources>
+    <string name="nc_readonly_hint">Die Unterhaltung ist gesperrt</string>
+</resources>

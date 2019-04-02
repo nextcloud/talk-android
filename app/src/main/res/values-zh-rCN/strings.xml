@@ -239,4 +239,5 @@
     <string name="nc_user">用户</string>
     <string name="nc_guest">访客</string>
     <string name="nc_following_link">使用公共链接的用户</string>
-    </resources>
+    <string name="nc_readonly_hint">此会话已被锁定</string>
+</resources>

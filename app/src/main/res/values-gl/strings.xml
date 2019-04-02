@@ -243,4 +243,5 @@ móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_guest">Convidado</string>
     <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
-    </resources>
+    <string name="nc_readonly_hint">Esta conversa está bloqueada.</string>
+</resources>

@@ -39,10 +39,13 @@
     <string name="nc_settings_proxy_title">Įgaliotasis serveris</string>
     <string name="nc_settings_proxy_type_title">Įgaliotojo serverio tipas</string>
     <string name="nc_settings_proxy_port_title">Įgaliotojo serverio prievadas</string>
+    <string name="nc_settings_remove">Šalinti</string>
+    <string name="nc_settings_remove_confirmation">Patvirtinkite savo ketinimą pašalinti esamą paskyrą.</string>
     <string name="nc_settings_remove_account">Šalinti paskyrą</string>
     <string name="nc_settings_add_account">Pridėti naują paskyrą</string>
     <string name="nc_settings_notification_sounds">Pranešimų garsai</string>
     <string name="nc_settings_vibrate">Vibruoti</string>
+    <string name="nc_settings_privacy">Privatumas</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klaviatūra</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>

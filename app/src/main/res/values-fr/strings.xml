@@ -239,4 +239,5 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_user">Utilisateur</string>
     <string name="nc_guest">Invité</string>
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
-    </resources>
+    <string name="nc_readonly_hint">Cette conversation est verrouillée</string>
+</resources>
