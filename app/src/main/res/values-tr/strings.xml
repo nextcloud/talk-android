@@ -241,4 +241,5 @@
     <string name="nc_user">Kullanıcı</string>
     <string name="nc_guest">Konuk</string>
     <string name="nc_following_link">Herkese açık bir bağlantıyı izleyen kullanıcı</string>
-    </resources>
+    <string name="nc_readonly_hint">Bu görüşme kilitli</string>
+</resources>
