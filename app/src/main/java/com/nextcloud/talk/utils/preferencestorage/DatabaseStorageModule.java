@@ -21,6 +21,7 @@
 package com.nextcloud.talk.utils.preferencestorage;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import autodagger.AutoInjector;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -49,6 +50,7 @@ public class DatabaseStorageModule implements StorageModule {
     private String conversationToken;
     private long accountIdentifier;
 
+    private String messageNotificationLevel;
     public DatabaseStorageModule(UserEntity conversationUser, String conversationToken) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
@@ -68,45 +70,49 @@ public class DatabaseStorageModule implements StorageModule {
             arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, value, conversationToken);
         } else {
             if (conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
-                int intValue;
-                switch (value) {
-                    case "never":
-                        intValue = 3;
-                        break;
-                    case "mention":
-                        intValue = 2;
-                        break;
-                    case "always":
-                        intValue = 1;
-                        break;
-                    default:
-                        intValue = 0;
+                if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(value)) {
+                    int intValue;
+                    switch (value) {
+                        case "never":
+                            intValue = 3;
+                            break;
+                        case "mention":
+                            intValue = 2;
+                            break;
+                        case "always":
+                            intValue = 1;
+                            break;
+                        default:
+                            intValue = 0;
+                    }
+
+                    ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
+                            ApiUtils.getUrlForSettingNotificationlevel(conversationUser.getBaseUrl(), conversationToken),
+                            intValue)
+                            .subscribeOn(Schedulers.newThread())
+                            .subscribe(new Observer<GenericOverall>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(GenericOverall genericOverall) {
+                                    messageNotificationLevel = value;
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                }
+                            });
+                } else {
+                    messageNotificationLevel = value;
                 }
-
-                ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
-                        ApiUtils.getUrlForSettingNotificationlevel(conversationUser.getBaseUrl(), conversationToken),
-                        intValue)
-                        .subscribeOn(Schedulers.newThread())
-                        .subscribe(new Observer<GenericOverall>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(GenericOverall genericOverall) {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-                            }
-                        });
             }
         }
     }
@@ -133,11 +139,15 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public String getString(String key, String defaultVal) {
-        ArbitraryStorageEntity valueFromDb = arbitraryStorageUtils.getStorageSetting(accountIdentifier, key, conversationToken);
-        if (valueFromDb == null) {
-            return defaultVal;
+        if (!key.equals("message_notification_level")) {
+            ArbitraryStorageEntity valueFromDb = arbitraryStorageUtils.getStorageSetting(accountIdentifier, key, conversationToken);
+            if (valueFromDb == null) {
+                return defaultVal;
+            } else {
+                return valueFromDb.getValue();
+            }
         } else {
-            return valueFromDb.getValue();
+            return messageNotificationLevel;
         }
     }
 
