@@ -9,4 +9,10 @@
         <item name="android:panelFullBackground">@color/colorPrimary</item>
         <item name="android:itemBackground">@color/colorPrimary</item>
     </style>
+
+    <style name="ErrorAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/nc_darkRed</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>

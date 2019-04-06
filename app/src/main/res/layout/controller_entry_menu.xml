@@ -24,19 +24,18 @@
     android:layout_height="wrap_content"
     android:background="@color/nc_white_color">
 
-    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-        android:id="@+id/text_field_boxes"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        app:errorColor="@color/nc_darkRed"
-        app:helperText=" "
-        app:panelBackgroundColor="@color/nc_white_color"
-        app:primaryColor="@color/colorPrimary">
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        app:errorTextAppearance="@style/ErrorAppearance"
+        app:passwordToggleDrawable="@drawable/asl_password_visibility"
+        app:passwordToggleTint="@color/grey_600"
+        app:helperText="">
 
-        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-            android:id="@+id/extended_edit_text"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
@@ -44,19 +43,19 @@
             android:singleLine="true"
             android:textColor="@color/colorPrimary" />
 
-    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/ok_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text_field_boxes"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_below="@id/text_input_layout"
         android:layout_marginBottom="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:alpha="0.7"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:background="#0000"
         android:enabled="false"
         android:text="@string/nc_proceed"

@@ -22,6 +22,7 @@ package com.nextcloud.talk.controllers.bottomsheet;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -32,12 +33,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import androidx.annotation.NonNull;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -47,12 +47,16 @@ import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
+
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
-import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
-import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class EntryMenuController extends BaseController {
@@ -60,11 +64,11 @@ public class EntryMenuController extends BaseController {
     @BindView(R.id.ok_button)
     Button proceedButton;
 
-    @BindView(R.id.extended_edit_text)
-    ExtendedEditText editText;
+    @BindView(R.id.text_edit)
+    TextInputEditText editText;
 
-    @BindView(R.id.text_field_boxes)
-    TextFieldBoxes textFieldBoxes;
+    @BindView(R.id.text_input_layout)
+    TextInputLayout textInputLayout;
 
     @Inject
     EventBus eventBus;
@@ -109,7 +113,7 @@ public class EntryMenuController extends BaseController {
         super.onAttach(view);
         if (ApplicationWideMessageHolder.getInstance().getMessageType() != null &&
                 ApplicationWideMessageHolder.getInstance().getMessageType().equals(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG)) {
-            textFieldBoxes.setError(getResources().getString(R.string.nc_wrong_password), true);
+            textInputLayout.setError(getResources().getString(R.string.nc_wrong_password));
             ApplicationWideMessageHolder.getInstance().setMessageType(null);
             if (proceedButton.isEnabled()) {
                 proceedButton.setEnabled(false);
@@ -214,19 +218,20 @@ public class EntryMenuController extends BaseController {
                                 proceedButton.setEnabled(true);
                                 proceedButton.setAlpha(1.0f);
                             }
+                            textInputLayout.setErrorEnabled(false);
                         } else {
                             if (proceedButton.isEnabled()) {
                                 proceedButton.setEnabled(false);
                                 proceedButton.setAlpha(0.38f);
                             }
-                            textFieldBoxes.setError(getResources().getString(R.string.nc_call_name_is_same),
-                                    true);
+                            textInputLayout.setError(getResources().getString(R.string.nc_call_name_is_same));
                         }
                     } else if (operationCode != 10) {
                         if (!proceedButton.isEnabled()) {
                             proceedButton.setEnabled(true);
                             proceedButton.setAlpha(1.0f);
                         }
+                        textInputLayout.setErrorEnabled(false);
                     } else if (editText.getText().toString().startsWith("http://") ||
                             editText.getText().toString().startsWith("https://") &&
                                     editText.getText().toString().contains("/call/")) {
@@ -234,21 +239,21 @@ public class EntryMenuController extends BaseController {
                         if (!proceedButton.isEnabled()) {
                             proceedButton.setEnabled(true);
                             proceedButton.setAlpha(1.0f);
-
                         }
+                        textInputLayout.setErrorEnabled(false);
                     } else {
                         if (proceedButton.isEnabled()) {
                             proceedButton.setEnabled(false);
                             proceedButton.setAlpha(0.38f);
                         }
-                        textFieldBoxes.setError(getResources().getString(R.string.nc_wrong_link),
-                                true);
+                        textInputLayout.setError(getResources().getString(R.string.nc_wrong_link));
                     }
                 } else {
                     if (proceedButton.isEnabled()) {
                         proceedButton.setEnabled(false);
                         proceedButton.setAlpha(0.38f);
                     }
+                    textInputLayout.setErrorEnabled(false);
                 }
             }
         });
@@ -279,7 +284,8 @@ public class EntryMenuController extends BaseController {
                 break;
         }
 
-        textFieldBoxes.setLabelText(labelText);
-        textFieldBoxes.requestFocus();
+        textInputLayout.setPasswordVisibilityToggleEnabled(operationCode == 99 || operationCode == 4 || operationCode == 6 || operationCode == 7);
+        textInputLayout.setHint(labelText);
+        textInputLayout.requestFocus();
     }
 }
