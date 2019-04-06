@@ -122,6 +122,7 @@ public class OperationsMenuController extends BaseController {
 
     private Capabilities serverCapabilities;
     private String credentials;
+    private String conversationName;
 
     public OperationsMenuController(Bundle args) {
         super(args);
@@ -148,6 +149,9 @@ public class OperationsMenuController extends BaseController {
         if (args.containsKey(BundleKeys.KEY_SERVER_CAPABILITIES)) {
             this.serverCapabilities = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_SERVER_CAPABILITIES));
         }
+
+        this.conversationName = args.getString(BundleKeys.KEY_CONVERSATION_NAME, "");
+
     }
 
     @Override
@@ -266,7 +270,7 @@ public class OperationsMenuController extends BaseController {
                     if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) ||
                             !currentUser.hasSpreedCapabilityWithName("empty-group-room")) {
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
-                                "3", invite, null);
+                                "3", invite, conversationName);
                     } else {
                         String roomType = "2";
                         if (!currentUser.hasSpreedCapabilityWithName("empty-group-room")) {
@@ -275,7 +279,7 @@ public class OperationsMenuController extends BaseController {
                         }
 
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
-                                roomType, invite, null);
+                                roomType, invite, conversationName);
                     }
 
                     final boolean isGroupCallWorkaroundFinal = isGroupCallWorkaround;

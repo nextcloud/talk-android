@@ -333,7 +333,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIds);
             bundle.putStringArrayList(BundleKeys.KEY_INVITED_GROUP, groupIds);
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 11);
-            prepareAndShowBottomSheetWithBundle(bundle, false);
+            prepareAndShowBottomSheetWithBundle(bundle, true);
         }
     }
 
