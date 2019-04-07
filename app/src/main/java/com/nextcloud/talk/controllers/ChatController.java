@@ -433,18 +433,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 messageInput.setHint(R.string.nc_readonly_hint);
 
                 conversationVoiceCallMenuItem.getIcon().setAlpha(99);
-                conversationVoiceCallMenuItem.setEnabled(false);
                 conversationVideoMenuItem.getIcon().setAlpha(99);
-                conversationVideoMenuItem.setEnabled(false);
 
                 setChildrenState(messageInputView, false);
             } else {
                 messageInput.setHint("");
 
                 conversationVoiceCallMenuItem.getIcon().setAlpha(255);
-                conversationVoiceCallMenuItem.setEnabled(true);
                 conversationVideoMenuItem.getIcon().setAlpha(255);
-                conversationVideoMenuItem.setEnabled(true);
 
                 setChildrenState(messageInputView, true);
             }
@@ -1048,7 +1044,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_conversation, menu);
         if (conversationUser.getUserId().equals("?")) {
@@ -1058,6 +1054,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
             conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call);
             conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call);
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
 
         if (conversationUser.hasSpreedCapabilityWithName("read-only-rooms")) {
             checkReadOnlyState();
@@ -1072,11 +1073,17 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 getRouter().popCurrentController();
                 return true;
             case R.id.conversation_video_call:
-                startACall(false);
-                return true;
+                if (conversationVideoMenuItem.getIcon().getAlpha() == 255) {
+                    startACall(false);
+                    return true;
+                }
+                return false;
             case R.id.conversation_voice_call:
-                startACall(true);
-                return true;
+                if (conversationVoiceCallMenuItem.getIcon().getAlpha() == 255) {
+                    startACall(true);
+                    return true;
+                }
+                return false;
             case R.id.conversation_info:
                 showConversationInfoScreen();
                 return true;
