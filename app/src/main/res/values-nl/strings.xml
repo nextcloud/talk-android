@@ -80,6 +80,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_vibrate_desc">Telefoon zal trillen, tenzij deze is gedempt</string>
     <string name="nc_settings_privacy">Privacy</string>
     <string name="nc_settings_screen_lock_title">Schermvergrendeling</string>
+    <string name="nc_settings_screen_lock_desc">Vergrendel %1$s via de Android schermvergendeling of een ondersteunde biometrische methode</string>
     <string name="nc_settings_screen_lock_timeout_title">Schermblokkade inactiviteit time-out</string>
     <string name="nc_none">Geen</string>
     <string name="nc_settings_screen_security_title">Schermbeveiliging</string>
@@ -241,4 +242,5 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_user">Gebruiker</string>
     <string name="nc_guest">Gast</string>
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
-    </resources>
+    <string name="nc_readonly_hint">Dit gesprek is gesloten</string>
+</resources>
