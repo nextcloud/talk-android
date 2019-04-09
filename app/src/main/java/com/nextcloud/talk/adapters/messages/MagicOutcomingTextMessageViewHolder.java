@@ -105,7 +105,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                                             messageString,
                                             individualHashMap.get("id"),
                                             individualHashMap.get("name"),
-                                            R.xml.chip_accent_background);
+                                            R.xml.chip_outgoing_own_mention);
                         }
                     } else if (individualHashMap.get("type").equals("file")) {
                         itemView.setOnClickListener(v -> {
