@@ -35,10 +35,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -98,6 +95,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -267,6 +265,8 @@ public class CallController extends BaseController {
                 .setDuration(310)
                 .setRepeatCount(PulseAnimation.INFINITE)
                 .setRepeatMode(PulseAnimation.REVERSE);
+
+        setPipVideoViewDimensions();
 
         try {
             cache.evictAll();
@@ -540,7 +540,6 @@ public class CallController extends BaseController {
             if (enumerator.isFrontFacing(deviceName)) {
                 Logging.d(TAG, "Creating front facing camera capturer.");
                 VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
-
                 if (videoCapturer != null) {
                     pipVideoView.setMirror(true);
                     return videoCapturer;
@@ -1431,7 +1430,7 @@ public class CallController extends BaseController {
             videoCapturer.startCapture(1280, 720, 30);
         }
     }
-
+    
     private void processUsersInRoom(List<HashMap<String, Object>> users) {
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSesssions = new HashSet<>();
@@ -1608,13 +1607,31 @@ public class CallController extends BaseController {
     public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
         powerManagerUtils.setOrientation(Objects.requireNonNull(getResources()).getConfiguration().orientation);
 
+
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             remoteRenderersLayout.setOrientation(LinearLayout.HORIZONTAL);
         } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             remoteRenderersLayout.setOrientation(LinearLayout.VERTICAL);
         }
+
+        setPipVideoViewDimensions();
     }
 
+    private void setPipVideoViewDimensions() {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) pipVideoView.getLayoutParams();
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            remoteRenderersLayout.setOrientation(LinearLayout.HORIZONTAL);
+            layoutParams.height = (int) getResources().getDimension(R.dimen.large_preview_dimension);
+            layoutParams.width = FrameLayout.LayoutParams.WRAP_CONTENT;
+            pipVideoView.setLayoutParams(layoutParams);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            remoteRenderersLayout.setOrientation(LinearLayout.VERTICAL);
+            layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT;
+            layoutParams.width = (int) getResources().getDimension(R.dimen.large_preview_dimension);
+            pipVideoView.setLayoutParams(layoutParams);
+        }
+    }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
         if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
