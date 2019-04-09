@@ -36,7 +36,6 @@ import androidx.fragment.app.FragmentActivity;
 import autodagger.AutoInjector;
 import butterknife.OnClick;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.utils.SecurityUtils;

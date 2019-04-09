@@ -21,12 +21,11 @@
 package com.nextcloud.talk.utils.text;
 
 import android.graphics.drawable.Drawable;
-import android.text.style.StyleSpan;
 import androidx.annotation.NonNull;
 import lombok.Data;
 
 public class Spans {
-    
+
     @Data
     public static class MentionChipSpan extends TextAlignedImageSpan {
         String id;
