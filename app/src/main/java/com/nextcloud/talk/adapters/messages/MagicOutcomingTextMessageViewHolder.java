@@ -92,7 +92,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                     if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call")) {
                         if (!individualHashMap.get("id").equals(message.getActiveUserId())) {
                             messageString =
-                                    DisplayUtils.searchAndColor(message.getText(),
+                                    DisplayUtils.searchAndColor(messageString,
                                             "@" + individualHashMap.get("name"), NextcloudTalkApplication
                                             .getSharedApplication().getResources().getColor(R.color.nc_outcoming_text_default));
                         }

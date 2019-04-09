@@ -101,8 +101,8 @@ public class Conversation {
     }
 
     public boolean canModerate(UserEntity conversationUser) {
-        return (Participant.ParticipantType.OWNER.equals(participantType)
-                || Participant.ParticipantType.MODERATOR.equals(participantType) && !isLockedOneToOne(conversationUser));
+        return ((Participant.ParticipantType.OWNER.equals(participantType)
+                || Participant.ParticipantType.MODERATOR.equals(participantType)) && !isLockedOneToOne(conversationUser));
     }
 
     public boolean isNameEditable(UserEntity conversationUser) {

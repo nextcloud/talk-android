@@ -209,10 +209,10 @@ public class DisplayUtils {
     }
 
 
-    public static Spannable searchAndColor(String text, String searchText, @ColorInt int color) {
+    public static Spannable searchAndColor(Spannable text, String searchText, @ColorInt int color) {
 
         Spannable spannableString = new SpannableString(text);
-
+        String stringText = text.toString();
         if (TextUtils.isEmpty(text) || TextUtils.isEmpty(searchText)) {
             return spannableString;
         }
@@ -227,7 +227,7 @@ public class DisplayUtils {
 
         int lastStartIndex = -1;
         while (m.find()) {
-            int start = text.indexOf(m.group(), lastStartIndex);
+            int start = stringText.indexOf(m.group(), lastStartIndex);
             int end = start + m.group().length();
             lastStartIndex = end;
             spannableString.setSpan(new ForegroundColorSpan(color), start, end,

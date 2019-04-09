@@ -68,7 +68,8 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
                     }
 
                     messageString =
-                            DisplayUtils.searchAndColor(message.getText(), "@" + individualHashMap.get("name"), color);
+                            DisplayUtils.searchAndColor(messageString,
+                                    "@" + individualHashMap.get("name"), color);
                 }
             }
         }
