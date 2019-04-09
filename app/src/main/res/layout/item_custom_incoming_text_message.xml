@@ -52,6 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
+            android:layout_marginBottom="4dp"
             android:textSize="12sp" />
 
         <com.vanniktech.emoji.EmojiTextView
@@ -59,10 +60,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textIsSelectable="true"
+            android:lineSpacingMultiplier="1.2"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true" />
-
 
         <TextView
             android:id="@id/messageTime"

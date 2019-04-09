@@ -58,6 +58,9 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
     @Inject
     UserUtils userUtils;
 
+    @Inject
+    Context context;
+
     private View itemView;
 
     public MagicOutcomingTextMessageViewHolder(View itemView) {
@@ -76,7 +79,6 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
 
         Spannable messageString = new SpannableString(message.getText());
 
-        Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
         itemView.setSelected(false);
         messageTimeView.setTextColor(context.getResources().getColor(R.color.white60));
 
@@ -92,11 +94,19 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                     if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call")) {
                         if (!individualHashMap.get("id").equals(message.getActiveUserId())) {
                             messageString =
-                                    DisplayUtils.searchAndColor(messageString,
-                                            "@" + individualHashMap.get("name"), NextcloudTalkApplication
-                                            .getSharedApplication().getResources().getColor(R.color.nc_outcoming_text_default));
+                                    DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
+                                            messageString,
+                                            individualHashMap.get("id"),
+                                            individualHashMap.get("name"),
+                                            R.xml.chip_simple_background);
+                        } else {
+                            messageString =
+                                    DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
+                                            messageString,
+                                            individualHashMap.get("id"),
+                                            individualHashMap.get("name"),
+                                            R.xml.chip_outgoing_own_mention);
                         }
-
                     } else if (individualHashMap.get("type").equals("file")) {
                         itemView.setOnClickListener(v -> {
                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));

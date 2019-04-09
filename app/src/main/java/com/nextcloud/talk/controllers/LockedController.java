@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.biometric.BiometricPrompt;
+import androidx.fragment.app.FragmentActivity;
 import autodagger.AutoInjector;
 import butterknife.OnClick;
 import com.nextcloud.talk.R;
@@ -88,7 +89,7 @@ public class LockedController extends BaseController {
 
             Executor executor = Executors.newSingleThreadExecutor();
 
-            final BiometricPrompt biometricPrompt = new BiometricPrompt((MainActivity) context, executor,
+            final BiometricPrompt biometricPrompt = new BiometricPrompt((FragmentActivity) context, executor,
                     new BiometricPrompt.AuthenticationCallback() {
                         @Override
                         public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {

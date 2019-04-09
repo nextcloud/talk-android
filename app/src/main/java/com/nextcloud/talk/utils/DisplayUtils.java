@@ -37,10 +37,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.*;
 import android.text.method.LinkMovementMethod;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
+import android.text.style.*;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -57,8 +54,10 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.google.android.material.chip.ChipDrawable;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.utils.text.Spans;
 import com.vanniktech.emoji.EmojiTextView;
 
 import java.lang.reflect.Constructor;
@@ -209,6 +208,38 @@ public class DisplayUtils {
     }
 
 
+    public static Drawable getDrawableForMentionChipSpan(Context context, String label, @XmlRes int chipResource) {
+        ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
+        chip.setText(label);
+        chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
+        return chip;
+    }
+
+    public static Spannable searchAndReplaceWithMentionSpan(Context context, Spannable text,
+                                                            String id, String label,
+                                                            @XmlRes int chipXmlRes) {
+
+        Spannable spannableString = new SpannableString(text);
+        String stringText = text.toString();
+
+        Matcher m = Pattern.compile("@" + label,
+                Pattern.CASE_INSENSITIVE | Pattern.LITERAL | Pattern.MULTILINE)
+                .matcher(spannableString);
+
+        int lastStartIndex = -1;
+        Spans.MentionChipSpan mentionChipSpan;
+        while (m.find()) {
+            int start = stringText.indexOf(m.group(), lastStartIndex);
+            int end = start + m.group().length();
+            lastStartIndex = end;
+            mentionChipSpan = new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
+                            label, chipXmlRes), DynamicDrawableSpan.ALIGN_BASELINE, id, label);
+            spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        return spannableString;
+
+    }
     public static Spannable searchAndColor(Spannable text, String searchText, @ColorInt int color) {
 
         Spannable spannableString = new SpannableString(text);
