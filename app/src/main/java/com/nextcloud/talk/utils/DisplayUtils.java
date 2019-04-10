@@ -263,7 +263,7 @@ public class DisplayUtils {
 
                                 // A hack to refresh the chip icon
                                 if (emojiEditText != null) {
-                                    emojiEditText.setTextKeepState(emojiEditText.getText());
+                                    emojiEditText.post(() -> emojiEditText.setTextKeepState(emojiEditText.getText(), TextView.BufferType.SPANNABLE));
                                 }
                             }
                         }
