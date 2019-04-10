@@ -105,6 +105,13 @@ public class UserUtils {
 
     }
 
+    public UserEntity getUserById(String id) {
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USER_ID.eq(id))
+                .limit(1).get();
+
+        return (UserEntity) findUserQueryResult.firstOrNull();
+    }
+
     public UserEntity getUserWithId(long id) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id))
                 .limit(1).get();

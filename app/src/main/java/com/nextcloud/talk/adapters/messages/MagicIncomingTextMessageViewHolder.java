@@ -151,6 +151,7 @@ public class MagicIncomingTextMessageViewHolder
                                             messageString,
                                             individualHashMap.get("id"),
                                             individualHashMap.get("name"),
+                                            userUtils.getUserById(message.getActiveUserId()),
                                             R.xml.chip_simple_background);
                         } else {
                             messageString =
@@ -158,6 +159,7 @@ public class MagicIncomingTextMessageViewHolder
                                             messageString,
                                             individualHashMap.get("id"),
                                             individualHashMap.get("name"),
+                                            userUtils.getUserById(message.getActiveUserId()),
                                             R.xml.chip_accent_background);
                         }
 

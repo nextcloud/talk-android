@@ -98,6 +98,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                                             messageString,
                                             individualHashMap.get("id"),
                                             individualHashMap.get("name"),
+                                            userUtils.getUserById(message.getActiveUserId()),
                                             R.xml.chip_simple_background);
                         } else {
                             messageString =
@@ -105,6 +106,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                                             messageString,
                                             individualHashMap.get("id"),
                                             individualHashMap.get("name"),
+                                            userUtils.getUserById(message.getActiveUserId()),
                                             R.xml.chip_outgoing_own_mention);
                         }
                     } else if (individualHashMap.get("type").equals("file")) {

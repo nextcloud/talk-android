@@ -485,7 +485,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
         float elevation = 6f;
         Drawable backgroundDrawable = new ColorDrawable(Color.WHITE);
         AutocompletePresenter<Mention> presenter = new MentionAutocompletePresenter(getApplicationContext(), roomToken);
-        AutocompleteCallback<Mention> callback = new MentionAutocompleteCallback(getActivity());
+        AutocompleteCallback<Mention> callback = new MentionAutocompleteCallback(getActivity(),
+                conversationUser);
 
         if (mentionAutocomplete == null && messageInput != null) {
             mentionAutocomplete = Autocomplete.<Mention>on(messageInput)

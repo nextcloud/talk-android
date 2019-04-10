@@ -29,10 +29,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.Animatable;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
+import android.graphics.drawable.*;
 import android.net.Uri;
 import android.os.Build;
 import android.text.*;
@@ -47,9 +44,17 @@ import androidx.annotation.*;
 import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import com.facebook.common.executors.UiThreadImmediateExecutorService;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.drawable.RoundedColorDrawable;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.RotationOptions;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -57,6 +62,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.android.material.chip.ChipDrawable;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.text.Spans;
 import com.vanniktech.emoji.EmojiTextView;
 
@@ -208,15 +214,52 @@ public class DisplayUtils {
     }
 
 
-    public static Drawable getDrawableForMentionChipSpan(Context context, String label, @XmlRes int chipResource) {
+    public static Drawable getDrawableForMentionChipSpan(Context context, String id, String label,
+                                                         UserEntity conversationUser,
+                                                         @XmlRes int chipResource) {
         ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
         chip.setText(label);
+        int drawable;
+
+        if (chipResource == R.xml.chip_accent_background) {
+            drawable = R.drawable.white_circle;
+        } else {
+            drawable = R.drawable.accent_circle;
+        }
+
+        chip.setChipIcon(context.getDrawable(drawable));
+
         chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
+
+        ImageRequest imageRequest =
+                getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big));
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
+
+        dataSource.subscribe(
+                new BaseBitmapDataSubscriber() {
+
+                    @Override
+                    protected void onNewResultImpl(Bitmap bitmap) {
+                        if (bitmap != null) {
+                            chip.setChipIcon(getRoundedDrawable(new BitmapDrawable(bitmap)));
+                            chip.invalidateSelf();
+                        }
+                    }
+
+                    @Override
+                    protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+                    }
+                },
+                UiThreadImmediateExecutorService.getInstance());
+
         return chip;
     }
 
+
     public static Spannable searchAndReplaceWithMentionSpan(Context context, Spannable text,
                                                             String id, String label,
+                                                            UserEntity conversationUser,
                                                             @XmlRes int chipXmlRes) {
 
         Spannable spannableString = new SpannableString(text);
@@ -233,13 +276,16 @@ public class DisplayUtils {
             int end = start + m.group().length();
             lastStartIndex = end;
             mentionChipSpan = new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
-                            label, chipXmlRes), DynamicDrawableSpan.ALIGN_BASELINE, id, label);
+                    id, label, conversationUser, chipXmlRes),
+                    DynamicDrawableSpan.ALIGN_BASELINE, id,
+                    label);
             spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         return spannableString;
 
     }
+
     public static Spannable searchAndColor(Spannable text, String searchText, @ColorInt int color) {
 
         Spannable spannableString = new SpannableString(text);

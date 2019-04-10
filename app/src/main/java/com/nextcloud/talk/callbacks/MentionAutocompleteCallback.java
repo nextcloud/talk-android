@@ -25,6 +25,7 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.text.style.DynamicDrawableSpan;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.MagicCharPolicy;
@@ -33,9 +34,11 @@ import com.otaliastudios.autocomplete.AutocompleteCallback;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
     private Context context;
+    private UserEntity conversationUser;
 
-    public MentionAutocompleteCallback(Context context) {
+    public MentionAutocompleteCallback(Context context, UserEntity conversationUser) {
         this.context = context;
+        this.conversationUser = conversationUser;
     }
 
     @Override
@@ -48,7 +51,9 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         editable.replace(start, end, replacement + " ");
         Spans.MentionChipSpan mentionChipSpan =
                 new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
-                        item.getLabel(), R.xml.chip_accent_background), DynamicDrawableSpan.ALIGN_BASELINE,
+                        item.getId(), item.getLabel(), conversationUser,
+                        R.xml.chip_accent_background),
+                        DynamicDrawableSpan.ALIGN_BASELINE,
                         item.getId(), item.getLabel());
         editable.setSpan(mentionChipSpan, start, start + item.getLabel().length() ,
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
