@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:panelFullBackground">@color/colorPrimary</item>
         <item name="android:itemBackground">@color/nc_outcoming_text_default</item>
-        <item name="android:textColor">@color/grey950</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="ErrorAppearance" parent="@android:style/TextAppearance">
