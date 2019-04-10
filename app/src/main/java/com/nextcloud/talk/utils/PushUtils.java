@@ -24,7 +24,9 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+
 import autodagger.AutoInjector;
+
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
@@ -36,12 +38,15 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
+
 import java.io.*;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -128,14 +133,13 @@ public class PushUtils {
 
     private int saveKeyToFile(Key key, String path) {
         byte[] encoded = key.getEncoded();
-        FileOutputStream keyFileOutputStream = null;
-        try {
+
+        try (FileOutputStream keyFileOutputStream = new FileOutputStream(path)) {
+            keyFileOutputStream.write(encoded);
+
             if (!new File(path).exists()) {
                 new File(path).createNewFile();
             }
-            keyFileOutputStream = new FileOutputStream(path);
-            keyFileOutputStream.write(encoded);
-            keyFileOutputStream.close();
             return 0;
         } catch (FileNotFoundException e) {
             Log.d(TAG, "Failed to save key to file");
@@ -397,12 +401,9 @@ public class PushUtils {
             path = privateKeyFile.getAbsolutePath();
         }
 
-        FileInputStream fileInputStream = null;
-        try {
-            fileInputStream = new FileInputStream(path);
+        try (FileInputStream fileInputStream = new FileInputStream(path)) {
             byte[] bytes = new byte[fileInputStream.available()];
             fileInputStream.read(bytes);
-            fileInputStream.close();
 
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
