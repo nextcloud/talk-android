@@ -20,15 +20,31 @@
 
 package com.nextcloud.talk.callbacks;
 
-import android.graphics.Typeface;
+import android.content.Context;
 import android.text.Editable;
 import android.text.Spanned;
+import android.text.style.DynamicDrawableSpan;
+import com.nextcloud.talk.R;
+import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.mention.Mention;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.MagicCharPolicy;
 import com.nextcloud.talk.utils.text.Spans;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
+import com.vanniktech.emoji.EmojiEditText;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
+    private Context context;
+    private UserEntity conversationUser;
+    private EmojiEditText emojiEditText;
+
+    public MentionAutocompleteCallback(Context context, UserEntity conversationUser,
+                                       EmojiEditText emojiEditText) {
+        this.context = context;
+        this.conversationUser = conversationUser;
+        this.emojiEditText = emojiEditText;
+    }
+
     @Override
     public boolean onPopupItemClicked(Editable editable, Mention item) {
         int[] range = MagicCharPolicy.getQueryRange(editable);
@@ -37,8 +53,14 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         int end = range[1];
         String replacement = item.getLabel();
         editable.replace(start, end, replacement + " ");
-        Spans.MentionSpan mentionSpan = new Spans.MentionSpan(Typeface.BOLD, item.getId(), item.getLabel());
-        editable.setSpan(mentionSpan, start, start + item.getLabel().length() , Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        Spans.MentionChipSpan mentionChipSpan =
+                new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
+                        item.getId(), item.getLabel(), conversationUser, item.getSource(),
+                        R.xml.chip_accent_background, emojiEditText),
+                        DynamicDrawableSpan.ALIGN_BASELINE,
+                        item.getId(), item.getLabel());
+        editable.setSpan(mentionChipSpan, start, start + item.getLabel().length(),
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return true;
     }
 

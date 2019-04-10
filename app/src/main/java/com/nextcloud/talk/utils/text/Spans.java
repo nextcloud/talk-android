@@ -20,20 +20,22 @@
 
 package com.nextcloud.talk.utils.text;
 
-import android.text.style.StyleSpan;
+import android.graphics.drawable.Drawable;
+import androidx.annotation.NonNull;
 import lombok.Data;
 
 public class Spans {
+
     @Data
-    public static class MentionSpan extends StyleSpan {
+    public static class MentionChipSpan extends TextAlignedImageSpan {
         String id;
         String label;
 
-        public MentionSpan(int style, String id, String label) {
-            super(style);
+        public MentionChipSpan(@NonNull Drawable drawable, int verticalAlignment, String id, String label) {
+            super(drawable, verticalAlignment);
             this.id = id;
             this.label = label;
         }
-
     }
+
 }

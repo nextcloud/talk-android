@@ -24,6 +24,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -37,10 +38,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.*;
 import android.text.method.LinkMovementMethod;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
+import android.text.style.*;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -50,15 +48,26 @@ import androidx.annotation.*;
 import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import com.facebook.common.executors.UiThreadImmediateExecutorService;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.RotationOptions;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.google.android.material.chip.ChipDrawable;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.utils.text.Spans;
+import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiTextView;
 
 import java.lang.reflect.Constructor;
@@ -208,6 +217,96 @@ public class DisplayUtils {
         return drawable;
     }
 
+
+    public static Drawable getDrawableForMentionChipSpan(Context context, String id, String label,
+                                                         UserEntity conversationUser, String type,
+                                                         @XmlRes int chipResource,
+                                                         @Nullable EmojiEditText emojiEditText) {
+        ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
+        chip.setText(label);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Configuration config = context.getResources().getConfiguration();
+            chip.setLayoutDirection(config.getLayoutDirection());
+        }
+
+        int drawable;
+
+        boolean isCall = "call".equals(type) || "calls".equals(type);
+
+        if (!isCall) {
+            if (chipResource == R.xml.chip_accent_background) {
+                drawable = R.drawable.white_circle;
+            } else {
+                drawable = R.drawable.accent_circle;
+            }
+
+            chip.setChipIcon(context.getDrawable(drawable));
+        } else {
+            chip.setChipIcon(getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px)));
+        }
+
+        chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
+
+        if (!isCall) {
+            ImageRequest imageRequest =
+                    getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big));
+            ImagePipeline imagePipeline = Fresco.getImagePipeline();
+            DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
+
+            dataSource.subscribe(
+                    new BaseBitmapDataSubscriber() {
+                        @Override
+                        protected void onNewResultImpl(Bitmap bitmap) {
+                            if (bitmap != null) {
+                                chip.setChipIcon(getRoundedDrawable(new BitmapDrawable(bitmap)));
+
+                                // A hack to refresh the chip icon
+                                if (emojiEditText != null) {
+                                    emojiEditText.post(() -> emojiEditText.setTextKeepState(emojiEditText.getText(), TextView.BufferType.SPANNABLE));
+                                }
+                            }
+                        }
+
+                        @Override
+                        protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+                        }
+                    },
+                    UiThreadImmediateExecutorService.getInstance());
+        }
+
+        return chip;
+    }
+
+
+    public static Spannable searchAndReplaceWithMentionSpan(Context context, Spannable text,
+                                                            String id, String label, String type,
+                                                            UserEntity conversationUser,
+                                                            @XmlRes int chipXmlRes) {
+
+        Spannable spannableString = new SpannableString(text);
+        String stringText = text.toString();
+
+        Matcher m = Pattern.compile("@" + label,
+                Pattern.CASE_INSENSITIVE | Pattern.LITERAL | Pattern.MULTILINE)
+                .matcher(spannableString);
+
+        int lastStartIndex = -1;
+        Spans.MentionChipSpan mentionChipSpan;
+        while (m.find()) {
+            int start = stringText.indexOf(m.group(), lastStartIndex);
+            int end = start + m.group().length();
+            lastStartIndex = end;
+            mentionChipSpan = new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
+                    id, label, conversationUser, type, chipXmlRes, null),
+                    DynamicDrawableSpan.ALIGN_BASELINE, id,
+                    label);
+            spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        return spannableString;
+
+    }
 
     public static Spannable searchAndColor(Spannable text, String searchText, @ColorInt int color) {
 

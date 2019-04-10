@@ -16,4 +16,12 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="ChipTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ChipAccentTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
 </resources>

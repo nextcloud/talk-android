@@ -22,7 +22,6 @@ package com.nextcloud.talk.controllers.bottomsheet;
 
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -33,7 +32,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-
+import androidx.annotation.NonNull;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.google.android.material.textfield.TextInputEditText;
@@ -47,16 +49,10 @@ import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
-
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
 import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class EntryMenuController extends BaseController {

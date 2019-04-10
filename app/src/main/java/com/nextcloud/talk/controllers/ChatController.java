@@ -118,6 +118,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     UserUtils userUtils;
     @Inject
     AppPreferences appPreferences;
+    @Inject
+    Context context;
     @BindView(R.id.messagesListView)
     MessagesList messagesListView;
     @BindView(R.id.messageInputView)
@@ -385,8 +387,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 }
 
                 Editable editable = messageInput.getEditableText();
-                Spans.MentionSpan[] mentionSpans = editable.getSpans(0, messageInput.length(), Spans.MentionSpan.class);
-                Spans.MentionSpan mentionSpan;
+                Spans.MentionChipSpan[] mentionSpans = editable.getSpans(0, messageInput.length(),
+                        Spans.MentionChipSpan.class);
+                Spans.MentionChipSpan mentionSpan;
                 for (int i = 0; i < mentionSpans.length; i++) {
                     mentionSpan = mentionSpans[i];
                     if (start >= editable.getSpanStart(mentionSpan) && start < editable.getSpanEnd(mentionSpan)) {
@@ -482,7 +485,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
         float elevation = 6f;
         Drawable backgroundDrawable = new ColorDrawable(Color.WHITE);
         AutocompletePresenter<Mention> presenter = new MentionAutocompletePresenter(getApplicationContext(), roomToken);
-        AutocompleteCallback<Mention> callback = new MentionAutocompleteCallback();
+        AutocompleteCallback<Mention> callback = new MentionAutocompleteCallback(getActivity(),
+                conversationUser, messageInput);
 
         if (mentionAutocomplete == null && messageInput != null) {
             mentionAutocomplete = Autocomplete.<Mention>on(messageInput)
@@ -728,8 +732,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void submitMessage() {
         final Editable editable = messageInput.getEditableText();
-        Spans.MentionSpan mentionSpans[] = editable.getSpans(0, editable.length(), Spans.MentionSpan.class);
-        Spans.MentionSpan mentionSpan;
+        Spans.MentionChipSpan mentionSpans[] = editable.getSpans(0, editable.length(),
+                Spans.MentionChipSpan.class);
+        Spans.MentionChipSpan mentionSpan;
         for (int i = 0; i < mentionSpans.length; i++) {
             mentionSpan = mentionSpans[i];
             editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@" + mentionSpan.getId());

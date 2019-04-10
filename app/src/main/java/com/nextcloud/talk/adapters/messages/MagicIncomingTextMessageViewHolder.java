@@ -145,18 +145,26 @@ public class MagicIncomingTextMessageViewHolder
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
                 if (individualHashMap != null) {
                     if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call")) {
-                        int color;
-
                         if (individualHashMap.get("id").equals(message.getActiveUserId())) {
-                            color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
-                                    .nc_incoming_text_mention_you);
+                            messageString =
+                                    DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
+                                            messageString,
+                                            individualHashMap.get("id"),
+                                            individualHashMap.get("name"),
+                                            individualHashMap.get("type"),
+                                            userUtils.getUserById(message.getActiveUserId()),
+                                            R.xml.chip_simple_background);
                         } else {
-                            color = NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color
-                                    .nc_incoming_text_mention_others);
+                            messageString =
+                                    DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
+                                            messageString,
+                                            individualHashMap.get("id"),
+                                            individualHashMap.get("name"),
+                                            individualHashMap.get("type"),
+                                            userUtils.getUserById(message.getActiveUserId()),
+                                            R.xml.chip_accent_background);
                         }
 
-                        messageString = DisplayUtils.searchAndColor(messageString,
-                                "@" + individualHashMap.get("name"), color);
                     } else if (individualHashMap.get("type").equals("file")) {
                         itemView.setOnClickListener(v -> {
                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));
