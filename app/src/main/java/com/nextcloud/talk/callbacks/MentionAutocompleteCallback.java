@@ -51,7 +51,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         editable.replace(start, end, replacement + " ");
         Spans.MentionChipSpan mentionChipSpan =
                 new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
-                        item.getId(), item.getLabel(), conversationUser, "user",
+                        item.getId(), item.getLabel(), conversationUser, item.getSource(),
                         R.xml.chip_accent_background),
                         DynamicDrawableSpan.ALIGN_BASELINE,
                         item.getId(), item.getLabel());

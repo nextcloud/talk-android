@@ -20,6 +20,7 @@
 package com.nextcloud.talk.models.json.mention;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import lombok.Data;
 import org.parceler.Parcel;
@@ -34,7 +35,7 @@ public class Mention {
     @JsonField(name = "label")
     String label;
 
-    // type of user (guests or users)
+    // type of user (guests or users or calls)
     @JsonField(name = "source")
     String source;
 }

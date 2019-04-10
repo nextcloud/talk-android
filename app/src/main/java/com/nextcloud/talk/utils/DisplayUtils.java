@@ -70,6 +70,7 @@ import com.vanniktech.emoji.EmojiTextView;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -228,7 +229,9 @@ public class DisplayUtils {
 
         int drawable;
 
-        if (!"call".equals(type)) {
+        boolean isCall = "call".equals(type) || "calls".equals(type);
+
+        if (!isCall) {
             if (chipResource == R.xml.chip_accent_background) {
                 drawable = R.drawable.white_circle;
             } else {
@@ -242,7 +245,7 @@ public class DisplayUtils {
 
         chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
 
-        if (!"call".equals(type)) {
+        if (!isCall) {
             ImageRequest imageRequest =
                     getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big));
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
@@ -255,7 +258,6 @@ public class DisplayUtils {
                         protected void onNewResultImpl(Bitmap bitmap) {
                             if (bitmap != null) {
                                 chip.setChipIcon(getRoundedDrawable(new BitmapDrawable(bitmap)));
-                                chip.invalidateSelf();
                             }
                         }
 

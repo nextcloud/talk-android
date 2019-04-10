@@ -113,7 +113,8 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                             List<AbstractFlexibleItem> internalAbstractFlexibleItemList = new ArrayList<>();
                             for (Mention mention : mentionsList) {
                                 internalAbstractFlexibleItemList.add(
-                                        new MentionAutocompleteItem(mention.getId(), mention.getLabel(),
+                                        new MentionAutocompleteItem(mention.getId(),
+                                                mention.getLabel(), mention.getSource(),
                                                 currentUser));
                             }
 
@@ -143,9 +144,9 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         Mention mention = new Mention();
         MentionAutocompleteItem mentionAutocompleteItem = (MentionAutocompleteItem) adapter.getItem(position);
         if (mentionAutocompleteItem != null) {
-            mention.setId(mentionAutocompleteItem.getUserId());
+            mention.setId(mentionAutocompleteItem.getObjectId());
             mention.setLabel(mentionAutocompleteItem.getDisplayName());
-            mention.setSource("users");
+            mention.setSource(mentionAutocompleteItem.getSource());
             dispatchClick(mention);
         }
         return true;

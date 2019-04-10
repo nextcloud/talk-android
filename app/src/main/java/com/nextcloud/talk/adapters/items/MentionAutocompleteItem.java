@@ -45,18 +45,28 @@ import java.util.List;
 public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder>
         implements IFilterable<String> {
 
-    private String userId;
+    private String objectId;
     private String displayName;
+    private String source;
     private UserEntity currentUser;
 
-    public MentionAutocompleteItem(String userId, String displayName, UserEntity currentUser) {
-        this.userId = userId;
+    public MentionAutocompleteItem(String objectId, String displayName, String source, UserEntity currentUser) {
+        this.objectId = objectId;
         this.displayName = displayName;
+        this.source = source;
         this.currentUser = currentUser;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getObjectId() {
+        return objectId;
     }
 
     public String getDisplayName() {
@@ -67,7 +77,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
     public boolean equals(Object o) {
         if (o instanceof MentionAutocompleteItem) {
             MentionAutocompleteItem inItem = (MentionAutocompleteItem) o;
-            return (userId.equals(inItem.userId) && displayName.equals(inItem.displayName));
+            return (objectId.equals(inItem.objectId) && displayName.equals(inItem.displayName));
         }
 
         return false;
@@ -93,22 +103,22 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
                     String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
             if (holder.contactMentionId != null) {
-                FlexibleUtils.highlightText(holder.contactMentionId, "@" + userId,
+                FlexibleUtils.highlightText(holder.contactMentionId, "@" + objectId,
                         String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
                                 .getResources().getColor(R.color.colorPrimary));
             }
         } else {
             holder.contactDisplayName.setText(displayName);
             if (holder.contactMentionId != null) {
-                holder.contactMentionId.setText("@" + userId);
+                holder.contactMentionId.setText("@" + objectId);
             }
         }
 
-        if (userId.equals("all")) {
+        if (source.equals("calls")) {
             holder.avatarFlipView.setFrontImageBitmap(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px));
         } else {
             GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
-                    userId, R.dimen.avatar_size), new LazyHeaders.Builder()
+                    objectId, R.dimen.avatar_size), new LazyHeaders.Builder()
                     .setHeader("Accept", "image/*")
                     .setHeader("User-Agent", ApiUtils.getUserAgent())
                     .build());
@@ -129,7 +139,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
 
     @Override
     public boolean filter(String constraint) {
-        return userId != null && StringUtils.containsIgnoreCase(userId, constraint) ||
+        return objectId != null && StringUtils.containsIgnoreCase(objectId, constraint) ||
                 displayName != null && StringUtils.containsIgnoreCase(displayName, constraint);
 
     }
