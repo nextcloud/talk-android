@@ -63,6 +63,7 @@
     <string name="nc_settings_reauthorize">Выйти и снова войти в систему</string>
     <string name="nc_client_cert_setup">Установка клиентского сертификата</string>
     <string name="nc_client_cert_change">Изменение клиентского сертификата</string>
+    <string name="nc_settings_remove">Удалить</string>
     <string name="nc_settings_remove_account">Удалить учётную запись</string>
     <string name="nc_settings_add_account">Добавить учётную запись</string>
     <string name="nc_settings_wrong_account">Повторный вход может быть выполнен только в текущую учётную запись</string>
@@ -118,6 +119,9 @@
     <string name="nc_make_call_public">Сделать беседу открытой</string>
     <string name="nc_make_call_private">Сделать беседу личной</string>
     <string name="nc_delete_call">Удалить беседу</string>
+    <string name="nc_delete">Удалить</string>
+    <string name="nc_delete_conversation_more">При удалении беседы, она будет также удалена у других участников</string>
+
     <string name="nc_new_conversation">Новая беседа</string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
     <string name="nc_join_via_web">Присоединиться через веб</string>
@@ -222,4 +226,5 @@
     <string name="nc_user">Пользователь</string>
     <string name="nc_guest">Гость</string>
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
-    </resources>
+    <string name="nc_readonly_hint">Беседа заблокировна</string>
+</resources>

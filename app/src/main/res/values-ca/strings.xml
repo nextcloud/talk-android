@@ -238,4 +238,5 @@ mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</str
     <string name="nc_user">Usuari</string>
     <string name="nc_guest">Convidat</string>
     <string name="nc_following_link">Usuari que segueix un enllaç públic</string>
-    </resources>
+    <string name="nc_readonly_hint">Aquesta conversa està bloquejada</string>
+</resources>
