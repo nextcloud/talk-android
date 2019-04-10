@@ -30,7 +30,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.*;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.text.*;
@@ -50,7 +53,6 @@ import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.ControllerListener;
-import com.facebook.drawee.drawable.RoundedColorDrawable;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.RotationOptions;
 import com.facebook.imagepipeline.core.ImagePipeline;
@@ -65,12 +67,12 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.text.Spans;
+import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiTextView;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -218,7 +220,8 @@ public class DisplayUtils {
 
     public static Drawable getDrawableForMentionChipSpan(Context context, String id, String label,
                                                          UserEntity conversationUser, String type,
-                                                         @XmlRes int chipResource) {
+                                                         @XmlRes int chipResource,
+                                                         @Nullable EmojiEditText emojiEditText) {
         ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
         chip.setText(label);
 
@@ -253,11 +256,15 @@ public class DisplayUtils {
 
             dataSource.subscribe(
                     new BaseBitmapDataSubscriber() {
-
                         @Override
                         protected void onNewResultImpl(Bitmap bitmap) {
                             if (bitmap != null) {
                                 chip.setChipIcon(getRoundedDrawable(new BitmapDrawable(bitmap)));
+
+                                // A hack to refresh the chip icon
+                                if (emojiEditText != null) {
+                                    emojiEditText.setTextKeepState(emojiEditText.getText());
+                                }
                             }
                         }
 
@@ -291,7 +298,7 @@ public class DisplayUtils {
             int end = start + m.group().length();
             lastStartIndex = end;
             mentionChipSpan = new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
-                    id, label, conversationUser, type, chipXmlRes),
+                    id, label, conversationUser, type, chipXmlRes, null),
                     DynamicDrawableSpan.ALIGN_BASELINE, id,
                     label);
             spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

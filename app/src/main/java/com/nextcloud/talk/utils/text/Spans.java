@@ -20,23 +20,9 @@
 
 package com.nextcloud.talk.utils.text;
 
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
-import com.facebook.common.executors.UiThreadImmediateExecutorService;
-import com.facebook.common.references.CloseableReference;
-import com.facebook.datasource.DataSource;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
-import com.facebook.imagepipeline.image.CloseableImage;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.nextcloud.talk.R;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.DisplayUtils;
 import lombok.Data;
-
-import static com.nextcloud.talk.utils.DisplayUtils.getImageRequestForUrl;
 
 public class Spans {
 

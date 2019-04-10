@@ -192,8 +192,10 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
 
             if (conversation.canLeave(currentUser)) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1, getResources().getDrawable(R.drawable
-                        .ic_close_grey600_24dp)));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1,
+                        DisplayUtils.getTintedDrawable(getResources(),
+                                R.drawable.ic_exit_to_app_black_24dp, R.color.grey_600)
+                ));
             }
         } else if (menuType.equals(MenuType.SHARE)) {
             prepareIntent();

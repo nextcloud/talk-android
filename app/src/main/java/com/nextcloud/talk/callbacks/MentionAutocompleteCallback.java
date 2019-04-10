@@ -31,14 +31,18 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.MagicCharPolicy;
 import com.nextcloud.talk.utils.text.Spans;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
+import com.vanniktech.emoji.EmojiEditText;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
     private Context context;
     private UserEntity conversationUser;
+    private EmojiEditText emojiEditText;
 
-    public MentionAutocompleteCallback(Context context, UserEntity conversationUser) {
+    public MentionAutocompleteCallback(Context context, UserEntity conversationUser,
+                                       EmojiEditText emojiEditText) {
         this.context = context;
         this.conversationUser = conversationUser;
+        this.emojiEditText = emojiEditText;
     }
 
     @Override
@@ -52,10 +56,10 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         Spans.MentionChipSpan mentionChipSpan =
                 new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
                         item.getId(), item.getLabel(), conversationUser, item.getSource(),
-                        R.xml.chip_accent_background),
+                        R.xml.chip_accent_background, emojiEditText),
                         DynamicDrawableSpan.ALIGN_BASELINE,
                         item.getId(), item.getLabel());
-        editable.setSpan(mentionChipSpan, start, start + item.getLabel().length() ,
+        editable.setSpan(mentionChipSpan, start, start + item.getLabel().length(),
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return true;
     }
