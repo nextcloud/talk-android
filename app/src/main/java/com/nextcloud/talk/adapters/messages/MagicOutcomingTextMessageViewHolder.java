@@ -98,6 +98,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                                             messageString,
                                             individualHashMap.get("id"),
                                             individualHashMap.get("name"),
+                                            individualHashMap.get("type"),
                                             userUtils.getUserById(message.getActiveUserId()),
                                             R.xml.chip_simple_background);
                         } else {
@@ -106,6 +107,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                                             messageString,
                                             individualHashMap.get("id"),
                                             individualHashMap.get("name"),
+                                            individualHashMap.get("type"),
                                             userUtils.getUserById(message.getActiveUserId()),
                                             R.xml.chip_outgoing_own_mention);
                         }

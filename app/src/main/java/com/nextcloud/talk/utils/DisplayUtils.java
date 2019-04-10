@@ -24,6 +24,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -215,50 +216,62 @@ public class DisplayUtils {
 
 
     public static Drawable getDrawableForMentionChipSpan(Context context, String id, String label,
-                                                         UserEntity conversationUser,
+                                                         UserEntity conversationUser, String type,
                                                          @XmlRes int chipResource) {
         ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
         chip.setText(label);
-        int drawable;
 
-        if (chipResource == R.xml.chip_accent_background) {
-            drawable = R.drawable.white_circle;
-        } else {
-            drawable = R.drawable.accent_circle;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Configuration config = context.getResources().getConfiguration();
+            chip.setLayoutDirection(config.getLayoutDirection());
         }
 
-        chip.setChipIcon(context.getDrawable(drawable));
+        int drawable;
+
+        if (!"call".equals(type)) {
+            if (chipResource == R.xml.chip_accent_background) {
+                drawable = R.drawable.white_circle;
+            } else {
+                drawable = R.drawable.accent_circle;
+            }
+
+            chip.setChipIcon(context.getDrawable(drawable));
+        } else {
+            chip.setChipIcon(getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px)));
+        }
 
         chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
 
-        ImageRequest imageRequest =
-                getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big));
-        ImagePipeline imagePipeline = Fresco.getImagePipeline();
-        DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
+        if (!"call".equals(type)) {
+            ImageRequest imageRequest =
+                    getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big));
+            ImagePipeline imagePipeline = Fresco.getImagePipeline();
+            DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
 
-        dataSource.subscribe(
-                new BaseBitmapDataSubscriber() {
+            dataSource.subscribe(
+                    new BaseBitmapDataSubscriber() {
 
-                    @Override
-                    protected void onNewResultImpl(Bitmap bitmap) {
-                        if (bitmap != null) {
-                            chip.setChipIcon(getRoundedDrawable(new BitmapDrawable(bitmap)));
-                            chip.invalidateSelf();
+                        @Override
+                        protected void onNewResultImpl(Bitmap bitmap) {
+                            if (bitmap != null) {
+                                chip.setChipIcon(getRoundedDrawable(new BitmapDrawable(bitmap)));
+                                chip.invalidateSelf();
+                            }
                         }
-                    }
 
-                    @Override
-                    protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                    }
-                },
-                UiThreadImmediateExecutorService.getInstance());
+                        @Override
+                        protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+                        }
+                    },
+                    UiThreadImmediateExecutorService.getInstance());
+        }
 
         return chip;
     }
 
 
     public static Spannable searchAndReplaceWithMentionSpan(Context context, Spannable text,
-                                                            String id, String label,
+                                                            String id, String label, String type,
                                                             UserEntity conversationUser,
                                                             @XmlRes int chipXmlRes) {
 
@@ -276,7 +289,7 @@ public class DisplayUtils {
             int end = start + m.group().length();
             lastStartIndex = end;
             mentionChipSpan = new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
-                    id, label, conversationUser, chipXmlRes),
+                    id, label, conversationUser, type, chipXmlRes),
                     DynamicDrawableSpan.ALIGN_BASELINE, id,
                     label);
             spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
