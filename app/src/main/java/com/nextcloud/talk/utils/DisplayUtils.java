@@ -65,10 +65,12 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.android.material.chip.ChipDrawable;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.events.UserMentionClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.text.Spans;
 import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiTextView;
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -291,6 +293,13 @@ public class DisplayUtils {
                 Pattern.CASE_INSENSITIVE | Pattern.LITERAL | Pattern.MULTILINE)
                 .matcher(spannableString);
 
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                EventBus.getDefault().post(new UserMentionClickEvent(id));
+            }
+        };
+
         int lastStartIndex = -1;
         Spans.MentionChipSpan mentionChipSpan;
         while (m.find()) {
@@ -302,6 +311,9 @@ public class DisplayUtils {
                     DynamicDrawableSpan.ALIGN_BASELINE, id,
                     label);
             spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if ("user".equals(type) && !conversationUser.getUserId().equals(id)) {
+                spannableString.setSpan(clickableSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            }
         }
 
         return spannableString;
