@@ -22,12 +22,13 @@
 
 package com.nextcloud.talk.utils;
 
-import android.util.Patterns;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.vanniktech.emoji.EmojiInformation;
 import com.vanniktech.emoji.EmojiUtils;
+
+import androidx.core.util.PatternsCompat;
 import eu.medsea.mimeutil.MimeUtil;
 import eu.medsea.mimeutil.detector.ExtensionMimeDetector;
 import eu.medsea.mimeutil.detector.MagicMimeMimeDetector;
@@ -44,7 +45,7 @@ public final class TextMatchers {
 
     public static ChatMessage.MessageType getMessageTypeFromString(@NonNull final String text) {
         List<String> links = new ArrayList<>();
-        Matcher m = Patterns.WEB_URL.matcher(text);
+        Matcher m = PatternsCompat.WEB_URL.matcher(text);
         while (m.find()) {
             String url = m.group();
             links.add(url);

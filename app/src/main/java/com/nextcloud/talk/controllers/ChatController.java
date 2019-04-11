@@ -59,6 +59,8 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.events.UserMentionClickEvent;
+import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.Call;
 import com.nextcloud.talk.models.json.call.CallOverall;
@@ -98,6 +100,9 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcels;
 import retrofit2.HttpException;
 import retrofit2.Response;
@@ -120,6 +125,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     AppPreferences appPreferences;
     @Inject
     Context context;
+    @Inject
+    EventBus eventBus;
     @BindView(R.id.messagesListView)
     MessagesList messagesListView;
     @BindView(R.id.messageInputView)
@@ -170,6 +177,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private MenuItem conversationVideoMenuItem;
 
     private boolean readOnlyCheckPerformed;
+
     public ChatController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
@@ -502,6 +510,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
+        eventBus.register(this);
 
         isLeavingForConversation = false;
         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
@@ -544,7 +553,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
 
         if (inChat) {
-            if (wasDetached & conversationUser.hasSpreedCapabilityWithName("no-ping")) {
+            if (wasDetached && conversationUser.hasSpreedCapabilityWithName("no-ping")) {
                 wasDetached = false;
                 joinRoomWithPassword();
             }
@@ -555,6 +564,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     protected void onDetach(@NonNull View view) {
         super.onDetach(view);
         ApplicationWideCurrentRoomHolder.getInstance().clear();
+        eventBus.unregister(this);
 
         if (conversationUser.hasSpreedCapabilityWithName("no-ping")
                 && getActivity() != null && !getActivity().isChangingConfigurations() && !isLeavingForConversation) {
@@ -683,7 +693,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             } else {
                 pullChatMessages(1);
             }
-         }
+        }
     }
 
     private void leaveRoom() {
@@ -701,7 +711,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     @Override
                     public void onNext(GenericOverall genericOverall) {
                         dispose();
-                        currentConversation = null;
                         if (!isDestroyed() && !isBeingDestroyed() && !wasDetached) {
                             getRouter().popCurrentController();
                         }
@@ -1159,5 +1168,64 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         return false;
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(UserMentionClickEvent userMentionClickEvent) {
+        if ((!currentConversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) || !currentConversation.getName().equals(userMentionClickEvent.getUserId()))) {
+            RetrofitBucket retrofitBucket =
+                    ApiUtils.getRetrofitBucketForCreateRoom(conversationUser.getBaseUrl(), "1",
+                            userMentionClickEvent.getUserId(), null);
+
+            ncApi.createRoom(credentials,
+                    retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(RoomOverall roomOverall) {
+                            Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser);
+                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
+                            bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
+
+                            if (conversationUser.hasSpreedCapabilityWithName("chat-v2")) {
+                                bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
+                                        Parcels.wrap(roomOverall.getOcs().getData()));
+                                conversationIntent.putExtras(bundle);
+
+                                getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
+                                        .pushChangeHandler(new HorizontalChangeHandler())
+                                        .popChangeHandler(new HorizontalChangeHandler())));
+                            } else {
+                                conversationIntent.putExtras(bundle);
+                                startActivity(conversationIntent);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!isDestroyed() && !isBeingDestroyed()) {
+                                            getRouter().popCurrentController();
+                                        }
+                                    }
+                                }, 100);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
+        }
     }
 }
