@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 public class TextMatchersTest {
 
     @Test
-    public void getMessageTypeFromString_assertRegularTextMessageParsing() {
+    public void getMessageTypeFromString_regularTextGiven_regularTextMessageTypeReturned() {
         String simpleMessageText = "Hello world! Have a cookie!";
         String messageContainingLink = "Hello https://nextcloud.com! Have a good day";
 
@@ -20,7 +20,7 @@ public class TextMatchersTest {
     }
 
     @Test
-    public void getMessageTypeFromString_assertSingleLinkMessageParsing() {
+    public void getMessageTypeFromString_singleUrlTextGiven_singleLinkMessageTypeReturned() {
         String simpleUrlText = "https://nextcloud.com/";
         String complexUrlText = "https://docs.nextcloud.com/server/15/admin_manual/#target-audience";
 
@@ -31,7 +31,7 @@ public class TextMatchersTest {
     }
 
     @Test
-    public void getMessageTypeFromString_assertSingleLinkImageMessage() {
+    public void getMessageTypeFromString_imageLinkGiven_singleLinkImageMessageReturned() {
         String simpleImageText = "https://nextcloud.com/image.jpg";
         String complexImageUrlText = "https://nextcloud.com/wp-content/themes/next/assets/img/features/mobileDesktop.png?x22777";
 
@@ -42,7 +42,7 @@ public class TextMatchersTest {
     }
 
     @Test
-    public void getMessageTypeFromString_assertSingleLinkGifMessage() {
+    public void getMessageTypeFromString_gifLinkGiven_gifMessageTypeReturned() {
         String gifImageText = "https://nextcloud.com/funny.gif";
 
         assertEquals(ChatMessage.MessageType.SINGLE_LINK_GIF_MESSAGE,
@@ -50,7 +50,7 @@ public class TextMatchersTest {
     }
 
     @Test
-    public void getMessageTypeFromString_assertSingleLinkAudioMessage() {
+    public void getMessageTypeFromString_audioLinkGiven_audioMessageTypeReturned() {
         String wavLink = "https://nextcloud.com/message.wav";
         String mp3Link = "https://nextcloud.com/message.mp3";
 
@@ -61,7 +61,7 @@ public class TextMatchersTest {
     }
 
     @Test
-    public void getMessageTypeFromString_assertSingleLinkVideoMessage() {
+    public void getMessageTypeFromString_videoLinkGiven_videoMessageTypeReturned() {
         String mp4Link = "https://nextcloud.com/message.mp4";
         String flvLink = "https://nextcloud.com/message.flv";
 
@@ -72,7 +72,7 @@ public class TextMatchersTest {
     }
 
     @Test
-    public void getMessageTypeFromString_assertSingleGiphyMessage() {
+    public void getMessageTypeFromString_giphyLinkGiven_giphyMessageTypeReturned() {
         String giphyLink = "https://media.giphy.com/media/11fucLQCTOdvBS/giphy.gif";
 
         assertEquals(ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE,
@@ -80,7 +80,7 @@ public class TextMatchersTest {
     }
 
     @Test
-    public void getMessageTypeFromString_assertSingleTenorMessage() {
+    public void getMessageTypeFromString_tenorLinkGiven_tenorMessageTypeReturned() {
         String tenorLink = "https://media.tenor.com/images/d98e76e3930cf171cc39e301c9e974af/tenor.gif";
 
         assertEquals(ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE,
