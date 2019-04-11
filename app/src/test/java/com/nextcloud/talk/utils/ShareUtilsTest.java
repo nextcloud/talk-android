@@ -50,22 +50,35 @@ public class ShareUtilsTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-    }
-
-    @Test
-    public void getStringForIntent_assertCorrectStringWithoutPassword() {
-
         mockStatic(TextUtils.class);
         when(userUtils.getCurrentUser()).thenReturn(userEntity);
         when(userEntity.getBaseUrl()).thenReturn(baseUrl);
         when(conversation.getToken()).thenReturn(token);
         when(context.getResources()).thenReturn(resources);
         when(resources.getString(R.string.nc_share_text)).thenReturn("Join the conversation at %1$s/index.php/call/%2$s");
+        when(resources.getString(R.string.nc_share_text_pass)).thenReturn("\nPassword: %1$s");
+
+    }
+
+    @Test
+    public void getStringForIntent_noPasswordGiven_correctStringWithoutPasswordReturned() {
         PowerMockito.when(TextUtils.isEmpty(anyString())).thenReturn(true);
 
-        String expectedResult = "Join the conversation at https://my.nextcloud.com/index.php/call/2aotbrjr";
+        String expectedResult = String.format("Join the conversation at %s/index.php/call/%s",
+                baseUrl, token);
         assertEquals("Intent string was not as expected",
                 expectedResult, ShareUtils.getStringForIntent(context, "", userUtils, conversation));
+    }
+
+    @Test
+    public void getStringForIntent_passwordGiven_correctStringWithPasswordReturned() {
+        PowerMockito.when(TextUtils.isEmpty(anyString())).thenReturn(false);
+
+        String password = "superSecret";
+        String expectedResult = String.format("Join the conversation at %s/index.php/call/%s\nPassword: %s",
+                baseUrl, token, password);
+        assertEquals("Intent string was not as expected",
+                expectedResult, ShareUtils.getStringForIntent(context, password, userUtils, conversation));
     }
 
 }
