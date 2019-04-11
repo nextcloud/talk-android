@@ -134,13 +134,17 @@ public class PushUtils {
     private int saveKeyToFile(Key key, String path) {
         byte[] encoded = key.getEncoded();
 
-        try (FileOutputStream keyFileOutputStream = new FileOutputStream(path)) {
-            keyFileOutputStream.write(encoded);
-
+        try {
             if (!new File(path).exists()) {
-                new File(path).createNewFile();
+                if (!new File(path).createNewFile()) {
+                    return -1;
+                }
             }
-            return 0;
+
+            try (FileOutputStream keyFileOutputStream = new FileOutputStream(path)) {
+                keyFileOutputStream.write(encoded);
+                return 0;
+            }
         } catch (FileNotFoundException e) {
             Log.d(TAG, "Failed to save key to file");
         } catch (IOException e) {
