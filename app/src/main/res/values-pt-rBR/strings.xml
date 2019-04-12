@@ -162,7 +162,7 @@
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas do canal de notificação</string>
     <string name="nc_notification_channel_messages">Mensagens do canal de notificação</string>
-    <string name="nc_notification_channel_calls_description">Mostrar chamadas recebidas</string>
+    <string name="nc_notification_channel_calls_description">Exibir chamadas recebidas</string>
     <string name="nc_notification_settings">Configurações de notificação</string>
     <string name="nc_plain_old_messages">Mensagens</string>
     <string name="nc_notify_me_always">Sempre notificar</string>

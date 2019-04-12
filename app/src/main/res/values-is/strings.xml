@@ -63,6 +63,8 @@
     <string name="nc_settings_reauthorize">Endurheimila</string>
     <string name="nc_client_cert_setup">Setja upp skilríki biðlara</string>
     <string name="nc_client_cert_change">Skipta um skilríki biðlara</string>
+    <string name="nc_settings_remove">Fjarlægja</string>
+    <string name="nc_settings_remove_confirmation">Endilega staðfestu að þú viljir fjarlægja þennan aðgang.</string>
     <string name="nc_settings_remove_account">Fjarlægja notandaaðgang</string>
     <string name="nc_settings_add_account">Bæta við nýjum notandaaðgangi</string>
     <string name="nc_settings_wrong_account">Aðeins er hægt að endurauðkenna núverandi notandaaðgang</string>
@@ -74,6 +76,26 @@
     <string name="nc_settings_other_notifications_ringtone">Annað</string>
     <string name="nc_settings_no_ringtone">Ekkert hljóð</string>
     <string name="nc_settings_vibrate">Titringur</string>
+    <string name="nc_settings_vibrate_desc">Síminn þinn mun titra nema hann sé á hljóðlausi stillingu</string>
+    <string name="nc_settings_privacy">Gagnaleynd</string>
+    <string name="nc_settings_screen_lock_title">Skjálæsing</string>
+    <string name="nc_settings_screen_lock_timeout_title">Tímamörk skjálæsingar við aðgerðaleysi</string>
+    <string name="nc_none">Ekkert</string>
+    <string name="nc_settings_screen_security_title">Öryggi skjás</string>
+    <string name="nc_locked">Ýttu til að aflæsa</string>
+
+    <string name="nc_screen_lock_timeout_30">30 sekúndur</string>
+    <string name="nc_screen_lock_timeout_60">1 mínúta</string>
+    <string name="nc_screen_lock_timeout_300">5 mínútur</string>
+    <string name="nc_screen_lock_timeout_600">10 mínútur</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">Aflæsa  %1$s</string>
+    <string name="nc_cancel">Hætta við</string>
+
     <string name="nc_no_proxy">Enginn milliþjónn</string>
     <string name="nc_username">Notandanafn</string>
     <string name="nc_password">Lykilorð</string>
@@ -101,6 +123,8 @@
     <string name="nc_make_call_public">Gera samtal opinbert</string>
     <string name="nc_make_call_private">Gera samtal að einka</string>
     <string name="nc_delete_call">Eyða samtali</string>
+    <string name="nc_delete">Eyða</string>
+    <string name="nc_delete_conversation_default">Endilega staðfestu að þú viljir fjarlægja þetta samtal.</string>
     <string name="nc_new_conversation">Nýtt samtal</string>
     <string name="nc_join_via_link">Taka þátt í gegnum tengil</string>
     <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
@@ -207,4 +231,5 @@
     <string name="nc_user">Notandi</string>
     <string name="nc_guest">Gestur</string>
     <string name="nc_following_link">Notandi sem fylgdi almenningstengli</string>
-    </resources>
+    <string name="nc_readonly_hint">Þetta samtal er læst</string>
+</resources>
