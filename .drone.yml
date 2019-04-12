@@ -1,42 +1,85 @@
-pipeline:
-  compile:
-    image: nextcloudci/android:android-44
-    commands:
-      # build app and assemble APK
-      - sh -c "if [ '${FLAVOR}' != 'Analysis' ]; then ./gradlew assemble${FLAVOR}; fi"
-    when:
-      matrix:
-        FLAVOR: [Generic, Gplay]
+kind: pipeline
+name: generic
 
-  analysis:
-    image: nextcloudci/android:android-44
-    commands:
-      - export BRANCH=$(scripts/analysis/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
-      - scripts/analysis/analysis-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER $DRONE_PULL_REQUEST
-    secrets: [ GIT_USERNAME, GIT_TOKEN, LOG_USERNAME, LOG_PASSWORD ]
-    when:
-      matrix:
-        FLAVOR: Analysis
-        
-  notify:
-      image: drillster/drone-email
-      host: $EMAIL_HOST
-      port: 587
-      username: $EMAIL_USERNAME
-      password: $EMAIL_PASSWORD
-      from: nextcloud-drone@kaminsky.me
-      recipients_only: true
-      recipients: [ $EMAIL_RECIPIENTS ]
-      secrets: [ EMAIL_USERNAME, EMAIL_PASSWORD, EMAIL_RECIPIENTS, EMAIL_HOST ]
-      when:
-        event: push
-        status: failure
-        branch: master
+steps:
+- name: generic
+  image: nextcloudci/android:android-44
+  commands:
+    - ./gradlew assembleGeneric
 
-matrix:
-  FLAVOR:
-    - Generic
-    - Gplay
-    - Analysis
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
+    - push
 
-branches: master
+---
+kind: pipeline
+name: gplay
+
+steps:
+- name: gplay
+  image: nextcloudci/android:android-44
+  commands:
+    - ./gradlew assembleGplay
+
+trigger:
+  branch:
+    - master
+  event:
+   - push
+   - pull_request
+---
+kind: pipeline
+name: analysis
+
+steps:
+- name: analysis
+  image: nextcloudci/android:android-44
+  environment:
+    GIT_USERNAME:
+      from_secret: GIT_USERNAME
+    GIT_TOKEN:
+      from_secret: GIT_TOKEN
+    LOG_USERNAME:
+      from_secret: LOG_USERNAME
+    LOG_PASSWORD:
+      from_secret: LOG_PASSWORD
+  commands:
+    - export BRANCH=$(scripts/analysis/getBranchName.sh $GIT_USERNAME $GIT_TOKEN $DRONE_PULL_REQUEST)
+    - scripts/analysis/analysis-wrapper.sh $GIT_USERNAME $GIT_TOKEN $BRANCH $LOG_USERNAME $LOG_PASSWORD $DRONE_BUILD_NUMBER $DRONE_PULL_REQUEST
+
+- name: notify
+  image: drillster/drone-email
+  host: $EMAIL_HOST
+  port: 587
+  username: $EMAIL_USERNAME
+  password: $EMAIL_PASSWORD
+  from: nextcloud-drone@kaminsky.me
+  skip_verify: true
+  recipients_only: true
+  recipients: [ $EMAIL_RECIPIENTS ]
+  environment:
+    EMAIL_USERNAME:
+      from_secret: EMAIL_USERNAME
+    EMAIL_PASSWORD:
+      from_secret: EMAIL_PASSWORD
+    EMAIL_RECIPIENTS:
+      from_secret: EMAIL_RECIPIENTS
+    EMAIL_HOST:
+      from_secret: EMAIL_HOST
+  when:
+    event:
+      - push
+    status:
+      - failure
+    branch:
+      - master
+
+trigger:
+  branch:
+    - master
+  event:
+    - push
+    - pull_request
