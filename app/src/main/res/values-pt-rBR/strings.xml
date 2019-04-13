@@ -110,7 +110,7 @@
     <string name="nc_wrong_password">Senha incorreta</string>
     <string name="nc_about">Sobre</string>
     <string name="nc_privacy">Privacidade</string>
-    <string name="nc_get_source_code">Obtenha o código fonte</string>
+    <string name="nc_get_source_code">Obtenha o código-fonte</string>
     <string name="nc_license_title">Licença</string>
     <string name="nc_license_summary">GNU General Public License, Versão 3</string>
 
