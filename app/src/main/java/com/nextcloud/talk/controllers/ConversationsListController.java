@@ -468,21 +468,27 @@ public class ConversationsListController extends BaseController implements Searc
             @Override
             public void onChanged() {
                 super.onChanged();
-                recyclerView.smoothScrollToPosition(scrollTo);
+                if (recyclerView != null) {
+                    recyclerView.smoothScrollToPosition(scrollTo);
+                }
                 lastClickedConversationToken = "";
             }
 
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount) {
                 super.onItemRangeChanged(positionStart, itemCount);
-                recyclerView.smoothScrollToPosition(scrollTo);
+                if (recyclerView != null) {
+                    recyclerView.smoothScrollToPosition(scrollTo);
+                }
                 lastClickedConversationToken = "";
             }
 
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
                 super.onItemRangeChanged(positionStart, itemCount, payload);
-                recyclerView.smoothScrollToPosition(scrollTo);
+                if (recyclerView != null) {
+                    recyclerView.smoothScrollToPosition(scrollTo);
+                }
                 lastClickedConversationToken = "";
             }
         });
