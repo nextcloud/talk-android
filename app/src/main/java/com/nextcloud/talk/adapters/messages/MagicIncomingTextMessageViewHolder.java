@@ -153,7 +153,7 @@ public class MagicIncomingTextMessageViewHolder
                                             individualHashMap.get("name"),
                                             individualHashMap.get("type"),
                                             userUtils.getUserById(message.getActiveUserId()),
-                                            R.xml.chip_simple_background);
+                                            R.xml.chip_accent_background);
                         } else {
                             messageString =
                                     DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
@@ -162,7 +162,7 @@ public class MagicIncomingTextMessageViewHolder
                                             individualHashMap.get("name"),
                                             individualHashMap.get("type"),
                                             userUtils.getUserById(message.getActiveUserId()),
-                                            R.xml.chip_accent_background);
+                                            R.xml.chip_simple_background);
                         }
 
                     } else if (individualHashMap.get("type").equals("file")) {
