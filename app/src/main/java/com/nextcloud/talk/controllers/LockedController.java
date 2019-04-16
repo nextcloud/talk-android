@@ -25,6 +25,8 @@ import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +60,6 @@ public class LockedController extends BaseController {
         return inflater.inflate(R.layout.controller_locked, container, false);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
@@ -66,8 +67,13 @@ public class LockedController extends BaseController {
         if (getActionBar() != null) {
             getActionBar().hide();
         }
+    }
 
-        showBiometricDialog();
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+        checkIfWeAreSecure();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -94,7 +100,7 @@ public class LockedController extends BaseController {
                         public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                             super.onAuthenticationSucceeded(result);
                             Log.d(TAG, "Fingerprint recognised successfully");
-                            getRouter().popCurrentController();
+                            new Handler(Looper.getMainLooper()).post(() -> getRouter().popCurrentController());
                         }
 
                         @Override
@@ -111,7 +117,12 @@ public class LockedController extends BaseController {
                     }
             );
 
-            biometricPrompt.authenticate(promptInfo, SecurityUtils.getCryptoObject());
+            BiometricPrompt.CryptoObject cryptoObject = SecurityUtils.getCryptoObject();
+            if (cryptoObject != null) {
+                biometricPrompt.authenticate(promptInfo, cryptoObject);
+            } else {
+                biometricPrompt.authenticate(promptInfo);
+            }
         }
     }
 
@@ -122,6 +133,8 @@ public class LockedController extends BaseController {
             if (keyguardManager != null && keyguardManager.isKeyguardSecure() && appPreferences.getIsScreenLocked()) {
                 if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.getScreenLockTimeout())) {
                     showBiometricDialog();
+                } else {
+                    getRouter().popCurrentController();
                 }
             }
         }

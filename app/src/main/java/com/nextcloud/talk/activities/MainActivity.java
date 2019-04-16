@@ -116,8 +116,8 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkIfWeAreSecure();
         }

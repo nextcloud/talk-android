@@ -44,6 +44,8 @@ public class SecurityUtils {
     private static final String CREDENTIALS_KEY = "KEY_CREDENTIALS";
     private static final byte[] SECRET_BYTE_ARRAY = new byte[]{1, 2, 3, 4, 5, 6};
 
+    private static BiometricPrompt.CryptoObject cryptoObject;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean checkIfWeAreAuthenticated(String screenLockTimeout) {
         try {
@@ -58,6 +60,7 @@ public class SecurityUtils {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             cipher.doFinal(SECRET_BYTE_ARRAY);
 
+            cryptoObject = new BiometricPrompt.CryptoObject(cipher);
             // If the user has recently authenticated, we will reach here
             return true;
         } catch (UserNotAuthenticatedException e) {
@@ -80,22 +83,9 @@ public class SecurityUtils {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static BiometricPrompt.CryptoObject getCryptoObject() {
-        Cipher cipher = null;
-        try {
-            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/" + KeyProperties.BLOCK_MODE_GCM + "/" + KeyProperties.ENCRYPTION_PADDING_NONE);
-        } catch (NoSuchAlgorithmException e) {
-            Log.w(TAG, e.getLocalizedMessage());
-        } catch (NoSuchPaddingException e) {
-            Log.w(TAG, e.getLocalizedMessage());
-        }
-
-        BiometricPrompt.CryptoObject cryptoObject = null;
-        if (cipher != null) {
-            cryptoObject = new BiometricPrompt.CryptoObject(cipher);
-        }
-
         return cryptoObject;
     }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static void createKey(String validity) {
         try {
