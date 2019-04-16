@@ -35,6 +35,7 @@
 
     <!-- Account verification -->
     <string name="nc_push_disabled">Azonnali üzenetek letilva</string>
+    <string name="nc_capabilities_failed">Lehetőségek lekérdezése sikertelen, megszakítás</string>
     <string name="nc_external_server_failed">Nem sikerült a jelzésváltás beállítása</string>
     <string name="nc_display_name_not_fetched">Megjelenítendő név nem beszerezhető, megszakítás</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app nincs telepítve a szerveren, megszakítás</string>
@@ -66,6 +67,7 @@
     <string name="nc_settings_account_updated">Új fiók hozzáadása helyett frissítettük a már létező fiókot</string>
     <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
     <string name="nc_settings_notification_sounds">Értesítés hanja</string>
+    <string name="nc_settings_other_notifications_ringtone">További</string>
     <string name="nc_settings_no_ringtone">Nincs hang</string>
     <string name="nc_settings_vibrate">Rezeg</string>
     <string name="nc_screen_lock_timeout_30">30 másodperc</string>
