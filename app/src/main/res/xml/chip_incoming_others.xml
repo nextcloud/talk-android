@@ -21,6 +21,8 @@
 
 <chip xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:textAppearance="@style/ChipMentionTextAppearance"
-    app:chipBackgroundColor="@color/white"
+    android:textAppearance="@style/ChipIncomingTextAppearance"
+    app:chipStrokeColor="@color/colorAccent"
+    app:chipBackgroundColor="@color/transparent"
+    app:chipStrokeWidth="1dp"
     app:closeIconEnabled="false" />

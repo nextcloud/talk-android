@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -16,11 +16,15 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="ChipTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
-        <item name="android:textColor">@android:color/white</item>
+    <style name="ChipIncomingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textColor">@color/nc_incoming_text_default</item>
     </style>
 
-    <style name="ChipAccentTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
+    <style name="ChipOutgoingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textColor">@color/nc_outcoming_text_default</item>
+    </style>
+
+    <style name="ChipMentionTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 

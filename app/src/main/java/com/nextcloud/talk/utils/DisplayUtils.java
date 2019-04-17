@@ -237,7 +237,7 @@ public class DisplayUtils {
         boolean isCall = "call".equals(type) || "calls".equals(type);
 
         if (!isCall) {
-            if (chipResource == R.xml.chip_accent_background) {
+            if (chipResource == R.xml.chip_outgoing_others || chipResource == R.xml.chip_accent_background) {
                 drawable = R.drawable.white_circle;
             } else {
                 drawable = R.drawable.accent_circle;

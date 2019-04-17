@@ -100,7 +100,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                                             individualHashMap.get("name"),
                                             individualHashMap.get("type"),
                                             userUtils.getUserById(message.getActiveUserId()),
-                                            R.xml.chip_simple_background);
+                                            R.xml.chip_outgoing_others);
                         } else {
                             messageString =
                                     DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),

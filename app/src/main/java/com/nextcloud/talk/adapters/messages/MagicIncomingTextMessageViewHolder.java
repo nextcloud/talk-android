@@ -162,7 +162,7 @@ public class MagicIncomingTextMessageViewHolder
                                             individualHashMap.get("name"),
                                             individualHashMap.get("type"),
                                             userUtils.getUserById(message.getActiveUserId()),
-                                            R.xml.chip_simple_background);
+                                            R.xml.chip_incoming_others);
                         }
 
                     } else if (individualHashMap.get("type").equals("file")) {
