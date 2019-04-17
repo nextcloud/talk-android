@@ -406,17 +406,10 @@ public class SettingsController extends BaseController {
             onViewBound(getView());
             onAttach(getView());
         } else if (!otherUserExists) {
-            if (getParentController() == null || getParentController().getRouter() == null) {
-                if (getActivity() != null) {
-                    // Something went very wrong, finish the app
-                    getActivity().finish();
-                }
-            } else {
-                getParentController().getRouter().setRoot(RouterTransaction.with(
-                        new ServerSelectionController())
-                        .pushChangeHandler(new VerticalChangeHandler())
-                        .popChangeHandler(new VerticalChangeHandler()));
-            }
+            getRouter().setRoot(RouterTransaction.with(
+                    new ServerSelectionController())
+                    .pushChangeHandler(new VerticalChangeHandler())
+                    .popChangeHandler(new VerticalChangeHandler()));
         }
     }
 
