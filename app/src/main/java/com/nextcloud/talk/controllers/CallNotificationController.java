@@ -445,7 +445,7 @@ public class CallNotificationController extends BaseController {
                                     script.forEach(output);
                                     output.copyTo(resource);
 
-                                    if (backgroundImageView != null && backgroundImageView != null) {
+                                    if (backgroundImageView != null) {
                                         backgroundImageView.setImageDrawable(new BitmapDrawable(resource));
                                     }
                                 } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
