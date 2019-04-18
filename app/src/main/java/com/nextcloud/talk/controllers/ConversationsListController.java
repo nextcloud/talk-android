@@ -167,9 +167,6 @@ public class ConversationsListController extends BaseController implements Searc
 
     private boolean isRefreshing;
 
-    private String lastClickedConversationToken;
-    private int scrollTo = 0;
-
     private LovelySaveStateHandler saveStateHandler;
 
     private Bundle conversationMenuBundle = null;
@@ -347,20 +344,13 @@ public class ConversationsListController extends BaseController implements Searc
                     }
 
                     Conversation conversation;
-                    AbstractFlexibleItem itemToScrollTo = null;
                     for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
                         conversation = roomsOverall.getOcs().getData().get(i);
                         if (shouldUseLastMessageLayout) {
                             ConversationItem conversationItem = new ConversationItem(conversation, currentUser);
-                            if (!TextUtils.isEmpty(lastClickedConversationToken) && lastClickedConversationToken.equals(conversation.getToken())) {
-                                itemToScrollTo = conversationItem;
-                            }
                             callItems.add(conversationItem);
                         } else {
                             CallItem callItem = new CallItem(conversation, currentUser);
-                            if (!TextUtils.isEmpty(lastClickedConversationToken) && lastClickedConversationToken.equals(conversation.getToken())) {
-                                itemToScrollTo = callItem;
-                            }
                             callItems.add(callItem);
                         }
                     }
@@ -378,11 +368,6 @@ public class ConversationsListController extends BaseController implements Searc
                         Collections.sort(callItems, (callItem, t1) ->
                                 Long.compare(((CallItem) t1).getModel().getLastPing(),
                                         ((CallItem) callItem).getModel().getLastPing()));
-                    }
-                    if (itemToScrollTo == null || callItems.indexOf(itemToScrollTo) == -1) {
-                        scrollTo = 0;
-                    } else {
-                        scrollTo = callItems.indexOf(itemToScrollTo);
                     }
 
                     adapter.updateDataSet(callItems, true);
@@ -464,34 +449,6 @@ public class ConversationsListController extends BaseController implements Searc
 
         fastScroller.addOnScrollStateChangeListener(this);
         adapter.setFastScroller(fastScroller);
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                if (recyclerView != null) {
-                    recyclerView.smoothScrollToPosition(scrollTo);
-                }
-                lastClickedConversationToken = "";
-            }
-
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
-                super.onItemRangeChanged(positionStart, itemCount);
-                if (recyclerView != null) {
-                    recyclerView.smoothScrollToPosition(scrollTo);
-                }
-                lastClickedConversationToken = "";
-            }
-
-            @Override
-            public void onItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
-                super.onItemRangeChanged(positionStart, itemCount, payload);
-                if (recyclerView != null) {
-                    recyclerView.smoothScrollToPosition(scrollTo);
-                }
-                lastClickedConversationToken = "";
-            }
-        });
 
         fastScroller.setBubbleTextCreator(position -> {
             String displayName;
@@ -658,7 +615,6 @@ public class ConversationsListController extends BaseController implements Searc
                 conversation = ((CallItem) clickedItem).getModel();
             }
 
-            lastClickedConversationToken = conversation.getToken();
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
