@@ -21,12 +21,9 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.content.Context;
-<<<<<<< HEAD
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-=======
-import android.graphics.drawable.BitmapDrawable;
->>>>>>> Various improvements
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -55,6 +52,10 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 import java.util.List;
 import java.util.regex.Pattern;
+
+<<<<<<<HEAD
+=======
+        >>>>>>>Various improvements
 
 public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements
         IFilterable<String> {

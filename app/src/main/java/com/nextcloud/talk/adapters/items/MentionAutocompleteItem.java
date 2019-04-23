@@ -29,10 +29,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-<<<<<<< HEAD
-import com.nextcloud.talk.utils.glide.GlideApp;
-=======
->>>>>>> Various improvements
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
@@ -115,7 +111,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
         }
 
         if (source.equals("calls")) {
-            holder.simpleDraweeView.getHierarchy().setPlaceholderImage((DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px));
+            holder.simpleDraweeView.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedBitmapDrawableFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px));
         } else {
         holder.simpleDraweeView.setController(null);
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()

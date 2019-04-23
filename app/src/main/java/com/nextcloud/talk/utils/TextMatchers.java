@@ -24,11 +24,10 @@ package com.nextcloud.talk.utils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.util.PatternsCompat;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.vanniktech.emoji.EmojiInformation;
 import com.vanniktech.emoji.EmojiUtils;
-
-import androidx.core.util.PatternsCompat;
 import eu.medsea.mimeutil.MimeUtil;
 import eu.medsea.mimeutil.detector.ExtensionMimeDetector;
 import eu.medsea.mimeutil.detector.MagicMimeMimeDetector;
