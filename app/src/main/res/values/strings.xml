@@ -259,6 +259,7 @@
     <string name="nc_guest">Guest</string>
     <string name="nc_following_link">User following a public link</string>
 
+    <string name="nc_readonly_hint">This conversation is locked</string>
 
     <!-- Browser component -->
     <string name="nc_file_browser">File browser"</string>

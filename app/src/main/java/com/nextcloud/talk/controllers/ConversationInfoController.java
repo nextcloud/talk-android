@@ -473,7 +473,7 @@ public class ConversationInfoController extends BaseController {
                                 .setOldController(conversationAvatarImageView.getController())
                                 .setAutoPlayAnimations(true)
                                 .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(),
-                                        conversation.getName(), R.dimen.avatar_size_big)))
+                                        conversation.getName(), R.dimen.avatar_size_big), null))
                                 .build();
                         conversationAvatarImageView.setController(draweeController);
                     }
