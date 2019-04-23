@@ -45,7 +45,6 @@
         android:imeOptions="actionDone"
         android:layout_toStartOf="@id/sendButtonSpace"
         android:layout_toEndOf="@id/attachmentButtonSpace"
-        android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="textAutoCorrect|textMultiLine|textCapSentences" />
 
     <androidx.legacy.widget.Space

@@ -101,6 +101,23 @@ public class AccountUtils {
         return appName;
     }
 
+    public static boolean canWeOpenFilesApp(Context context, String accountName) {
+        PackageManager pm = context.getPackageManager();
+        try {
+            pm.getPackageInfo(context.getString(R.string.nc_import_accounts_from), PackageManager.GET_ACTIVITIES);
+            final AccountManager accMgr = AccountManager.get(context);
+            final Account[] accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type));
+            for (Account account : accounts) {
+                if (account.name.equals(accountName)) {
+                    return true;
+                }
+            }
+        } catch (PackageManager.NameNotFoundException appNotFoundException) {
+
+        }
+        return false;
+    }
+
     public static ImportAccount getInformationFromAccount(Account account) {
         int lastAtPos = account.name.lastIndexOf("@");
         String urlString = account.name.substring(lastAtPos + 1);

@@ -53,10 +53,6 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 import java.util.List;
 import java.util.regex.Pattern;
 
-<<<<<<<HEAD
-=======
-        >>>>>>>Various improvements
-
 public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements
         IFilterable<String> {
 
@@ -181,37 +177,19 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         || !conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
                     holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
 
-<<<<<<< HEAD
                     if (!"bots".equals(conversation.getLastMessage().getActorType())) {
-                        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                                conversation.getLastMessage().getActorId(), R.dimen.small_item_height), new LazyHeaders.Builder()
-                                .setHeader("Accept", "image/*")
-                                .setHeader("User-Agent", ApiUtils.getUserAgent())
-                                .build());
-
-                        GlideApp.with(context)
-                                .asBitmap()
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .load(glideUrl)
-                                .centerInside()
-                                .override(smallAvatarSize, smallAvatarSize)
-                                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                                .into(holder.dialogLastMessageUserAvatar);
+                        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                                .setOldController(holder.dialogLastMessageUserAvatar.getController())
+                                .setAutoPlayAnimations(true)
+                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getLastMessage().getActorId(), R.dimen.small_item_height), userEntity))
+                                .build();
+                        holder.dialogLastMessageUserAvatar.setController(draweeController);
                     } else {
                         TextDrawable drawable =
                                 TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">", context.getResources().getColor(R.color.black));
                         holder.dialogLastMessageUserAvatar.setImageDrawable(drawable);
 
                     }
-=======
-                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                            .setOldController(holder.dialogLastMessageUserAvatar.getController())
-                            .setAutoPlayAnimations(true)
-                            .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getLastMessage().getActorId(), R.dimen.small_item_height), userEntity))
-                            .build();
-                    holder.dialogLastMessageUserAvatar.setController(draweeController);
-
->>>>>>> Various improvements
                 } else {
                     holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
                 }
@@ -253,14 +231,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground);
             LayerDrawable layerDrawable = new LayerDrawable(layers);
 
-            GlideApp.with(context)
-                    .asDrawable()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .load(layerDrawable)
-                    .centerInside()
-                    .override(avatarSize, avatarSize)
-                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                    .into(holder.dialogAvatar);
+            holder.dialogAvatar.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
 
             shouldLoadAvatar = false;
         }

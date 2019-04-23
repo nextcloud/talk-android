@@ -21,11 +21,13 @@
 package com.nextcloud.talk.adapters.messages;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.View;
 import autodagger.AutoInjector;
 import butterknife.BindView;
@@ -37,8 +39,10 @@ import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.utils.AccountUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DrawableUtils;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.stfalcon.chatkit.messages.MessageHolders;
 import com.vanniktech.emoji.EmojiTextView;
 import io.reactivex.Single;
@@ -101,9 +105,25 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             }
 
             image.setOnClickListener(v -> {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
-                browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
+
+                String accountString =
+                        message.getActiveUser().getUsername() + "@" + message.getActiveUser().getBaseUrl().replace("https://", "").replace("http://", "");
+
+                if (AccountUtils.canWeOpenFilesApp(context, accountString)) {
+                    Intent filesAppIntent = new Intent(Intent.ACTION_VIEW, null);
+                    final ComponentName componentName = new ComponentName(context.getString(R.string.nc_import_accounts_from), "com.owncloud.android.ui.activity.FileDisplayActivity");
+                    filesAppIntent.setComponent(componentName);
+                    filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    filesAppIntent.setPackage(context.getString(R.string.nc_import_accounts_from));
+                    Bundle options = new Bundle();
+                    options.putString(BundleKeys.KEY_ACCOUNT, accountString);
+                    options.putString(BundleKeys.KEY_FILE_PATH, "/" + message.getSelectedIndividualHashMap().get("path"));
+                    context.startActivity(filesAppIntent, options);
+                } else {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
+                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(browserIntent);
+                }
             });
         } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
             messageText.setText("GIPHY");
