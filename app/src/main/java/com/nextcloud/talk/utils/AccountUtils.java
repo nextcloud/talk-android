@@ -26,6 +26,7 @@ package com.nextcloud.talk.utils;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import com.nextcloud.talk.R;
@@ -99,6 +100,26 @@ public class AccountUtils {
         }
 
         return appName;
+    }
+
+    public static boolean canWeOpenFilesApp(Context context, String accountName) {
+        PackageManager pm = context.getPackageManager();
+        try {
+            PackageInfo packageInfo =
+                    pm.getPackageInfo(context.getString(R.string.nc_import_accounts_from), 0);
+            if (packageInfo.versionCode < 1) {
+                final AccountManager accMgr = AccountManager.get(context);
+                final Account[] accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type));
+                for (Account account : accounts) {
+                    if (account.name.equals(accountName)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (PackageManager.NameNotFoundException appNotFoundException) {
+
+        }
+        return false;
     }
 
     public static ImportAccount getInformationFromAccount(Account account) {

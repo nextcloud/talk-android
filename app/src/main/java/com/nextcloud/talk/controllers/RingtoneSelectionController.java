@@ -21,6 +21,7 @@
 package com.nextcloud.talk.controllers;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
@@ -70,10 +71,14 @@ public class RingtoneSelectionController extends BaseController implements Flexi
     @Inject
     AppPreferences appPreferences;
 
+    @Inject
+    Context context;
+
     private FlexibleAdapter adapter;
+    private RecyclerView.AdapterDataObserver adapterDataObserver;
     private List<AbstractFlexibleItem> abstractFlexibleItemList = new ArrayList<>();
 
-    private boolean callNotificationSounds = false;
+    private boolean callNotificationSounds;
     private MediaPlayer mediaPlayer;
     private Handler cancelMediaPlayerHandler;
 
@@ -100,21 +105,20 @@ public class RingtoneSelectionController extends BaseController implements Flexi
                     .setMode(SelectableAdapter.Mode.SINGLE);
 
             adapter.addListener(this);
-            fetchNotificationSounds();
 
             cancelMediaPlayerHandler = new Handler();
         }
 
         adapter.addListener(this);
         prepareViews();
+        fetchNotificationSounds();
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getRouter().popCurrentController();
-                return true;
+                return getRouter().popCurrentController();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -126,37 +130,71 @@ public class RingtoneSelectionController extends BaseController implements Flexi
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
+        adapterDataObserver = new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                findSelectedSound();
+            }
+        };
+
+        adapter.registerAdapterDataObserver(adapterDataObserver);
         swipeRefreshLayout.setEnabled(false);
     }
 
     @SuppressLint("LongLogTag")
-    private void fetchNotificationSounds() {
-        abstractFlexibleItemList = new ArrayList<>();
-        abstractFlexibleItemList.add(new NotificationSoundItem(getResources().getString(R.string.nc_settings_no_ringtone),
-                null));
-
-        String ringtoneString;
-
-        if (callNotificationSounds) {
-            ringtoneString = "android.resource://" + getApplicationContext().getPackageName() +
-                    "/raw/librem_by_feandesign_call";
-        } else {
-            ringtoneString = "android.resource://" + getApplicationContext().getPackageName() +
-                    "/raw/librem_by_feandesign_message";
-        }
-
-        abstractFlexibleItemList.add(new NotificationSoundItem(getResources()
-                .getString(R.string.nc_settings_default_ringtone), ringtoneString));
-
+    private void findSelectedSound() {
         boolean foundDefault = false;
 
         String preferencesString = null;
         if ((callNotificationSounds && TextUtils.isEmpty((preferencesString = appPreferences.getCallRingtoneUri())))
                 || (!callNotificationSounds && TextUtils.isEmpty((preferencesString = appPreferences
                 .getMessageRingtoneUri())))) {
-            ((NotificationSoundItem) abstractFlexibleItemList.get(1)).setSelected(true);
+            adapter.toggleSelection(1);
             foundDefault = true;
         }
+
+        if (!TextUtils.isEmpty(preferencesString) && !foundDefault) {
+            try {
+                RingtoneSettings ringtoneSettings = LoganSquare.parse(preferencesString, RingtoneSettings.class);
+                if (ringtoneSettings.getRingtoneUri() == null) {
+                    adapter.toggleSelection(0);
+                } else if (ringtoneSettings.getRingtoneUri().toString().equals(getRingtoneString())) {
+                    adapter.toggleSelection(1);
+                } else {
+                    NotificationSoundItem notificationSoundItem;
+                    for (int i = 2; i < adapter.getItemCount(); i++) {
+                        notificationSoundItem = (NotificationSoundItem) adapter.getItem(i);
+                        if (notificationSoundItem.getNotificationSoundUri().equals(ringtoneSettings.getRingtoneUri().toString())) {
+                            adapter.toggleSelection(i);
+                            break;
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to parse ringtone settings");
+            }
+        }
+
+        adapter.unregisterAdapterDataObserver(adapterDataObserver);
+        adapterDataObserver = null;
+    }
+
+    private String getRingtoneString() {
+        if (callNotificationSounds) {
+            return ("android.resource://" + context.getPackageName() +
+                    "/raw/librem_by_feandesign_call");
+        } else {
+            return ("android.resource://" + context.getPackageName() + "/raw" +
+                    "/librem_by_feandesign_message");
+        }
+
+    }
+
+    private void fetchNotificationSounds() {
+        abstractFlexibleItemList.add(new NotificationSoundItem(getResources().getString(R.string.nc_settings_no_ringtone), null));
+        abstractFlexibleItemList.add(new NotificationSoundItem(getResources()
+                .getString(R.string.nc_settings_default_ringtone), getRingtoneString()));
 
 
         if (getActivity() != null) {
@@ -181,29 +219,10 @@ public class RingtoneSelectionController extends BaseController implements Flexi
                 notificationSoundItem = new NotificationSoundItem(notificationTitle, completeNotificationUri);
 
                 abstractFlexibleItemList.add(notificationSoundItem);
-
-                if (!TextUtils.isEmpty(preferencesString) && !foundDefault) {
-                    try {
-                        RingtoneSettings ringtoneSettings = LoganSquare.parse(preferencesString, RingtoneSettings.class);
-                        if (ringtoneSettings.getRingtoneUri() == null) {
-                            ((NotificationSoundItem) abstractFlexibleItemList.get(0)).setSelected(true);
-                            foundDefault = true;
-                        } else if (completeNotificationUri.equals(ringtoneSettings.getRingtoneUri().toString())) {
-                            notificationSoundItem.setSelected(true);
-                            foundDefault = true;
-                        } else if (ringtoneSettings.getRingtoneUri().toString().equals(ringtoneString)) {
-                            ((NotificationSoundItem) abstractFlexibleItemList.get(1)).setSelected(true);
-                            foundDefault = true;
-                        }
-                    } catch (IOException e) {
-                        Log.e(TAG, "Failed to parse ringtone settings");
-                    }
-                }
             }
-
         }
 
-        adapter.updateDataSet(abstractFlexibleItemList, true);
+        adapter.updateDataSet(abstractFlexibleItemList, false);
     }
 
     @Override
@@ -242,14 +261,16 @@ public class RingtoneSelectionController extends BaseController implements Flexi
             if (callNotificationSounds) {
                 try {
                     appPreferences.setCallRingtoneUri(LoganSquare.serialize(ringtoneSettings));
-                    toggleSelection(position);
+                    adapter.toggleSelection(position);
+                    adapter.notifyDataSetChanged();
                 } catch (IOException e) {
                     Log.e(TAG, "Failed to store selected ringtone for calls");
                 }
             } else {
                 try {
                     appPreferences.setMessageRingtoneUri(LoganSquare.serialize(ringtoneSettings));
-                    toggleSelection(position);
+                    adapter.toggleSelection(position);
+                    adapter.notifyDataSetChanged();
                 } catch (IOException e) {
                     Log.e(TAG, "Failed to store selected ringtone for calls");
                 }
@@ -257,19 +278,6 @@ public class RingtoneSelectionController extends BaseController implements Flexi
         }
 
         return true;
-    }
-
-    private void toggleSelection(int position) {
-        adapter.toggleSelection(position);
-        ((NotificationSoundItem) adapter.getItem(position)).flipItemSelection();
-
-        NotificationSoundItem notificationSoundItem;
-        for (int i = 0; i < adapter.getItemCount(); i++) {
-            if (i != position) {
-                notificationSoundItem = (NotificationSoundItem) adapter.getItem(i);
-                notificationSoundItem.flipToFront();
-            }
-        }
     }
 
     private void endMediaPlayer() {

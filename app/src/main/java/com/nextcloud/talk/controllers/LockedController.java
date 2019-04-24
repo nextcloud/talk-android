@@ -154,7 +154,7 @@ public class LockedController extends BaseController {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS ) {
+        if (requestCode == REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
             if (resultCode == Activity.RESULT_OK) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (SecurityUtils.checkIfWeAreAuthenticated(appPreferences.getScreenLockTimeout())) {

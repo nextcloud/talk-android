@@ -20,7 +20,6 @@
 package com.nextcloud.talk.models.json.mention;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import lombok.Data;
 import org.parceler.Parcel;

@@ -21,17 +21,16 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.content.res.Resources;
+import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -39,18 +38,16 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.glide.GlideApp;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
-import eu.davidea.flipview.FlipView;
 import eu.davidea.viewholders.FlexibleViewHolder;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements
         ISectionable<UserItem.UserItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
@@ -58,9 +55,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     private Participant participant;
     private UserEntity userEntity;
     private GenericTextHeaderItem header;
-
-    private FlipView flipView;
-
 
     public UserItem(Participant participant, UserEntity userEntity, GenericTextHeaderItem genericTextHeaderItem) {
         this.participant = participant;
@@ -94,9 +88,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         return userEntity;
     }
 
-    public void flipItemSelection() {
-        flipView.flip(!flipView.isFlipped());
-    }
 
     @Override
     public int getLayoutRes() {
@@ -115,9 +106,13 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
 
-        flipView = holder.avatarFlipView;
-
-        flipView.flipSilently(adapter.isSelected(position));
+        if (holder.checkedImageView != null) {
+            if (adapter.isSelected(position)) {
+                holder.checkedImageView.setVisibility(View.VISIBLE);
+            } else {
+                holder.checkedImageView.setVisibility(View.GONE);
+            }
+        }
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getDisplayName(),
@@ -132,35 +127,23 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
         }
 
-        int avatarSize = Math.round(NextcloudTalkApplication
-                .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
-
         if (TextUtils.isEmpty(participant.getSource()) || participant.getSource().equals("users")) {
 
             if (Participant.ParticipantType.GUEST.equals(participant.getType()) ||
                     Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participant.getType())) {
                 // TODO: Show generated avatar for guests
             } else {
-                GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                        participant.getUserId(), R.dimen.avatar_size), new LazyHeaders.Builder()
-                        .setHeader("Accept", "image/*")
-                        .setHeader("User-Agent", ApiUtils.getUserAgent())
-                        .build());
+                DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                        .setOldController(holder.simpleDraweeView.getController())
+                        .setAutoPlayAnimations(true)
+                        .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                                participant.getUserId(), R.dimen.avatar_size), null))
+                        .build();
+                holder.simpleDraweeView.setController(draweeController);
 
-                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(glideUrl)
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                        .into(flipView.getFrontImageView());
             }
         } else if ("groups".equals(participant.getSource())) {
-
-            flipView.setFrontImageBitmap(DisplayUtils
-                    .getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(),
-                            R.drawable.ic_people_group_white_24px));
+            holder.simpleDraweeView.getHierarchy().setImage(new BitmapDrawable(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px)), 100, true);
         }
 
         if (!isEnabled()) {
@@ -206,37 +189,40 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     break;
             }
 
-            String userType = "";
 
-            switch (new EnumParticipantTypeConverter().convertToInt(participant.getType())) {
-                case 1:
-                    //userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_owner);
-                    //break;
-                case 2:
-                    userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_moderator);
-                    break;
-                case 3:
-                    userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_user);
-                    break;
-                case 4:
-                    userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest);
-                    break;
-                case 5:
-                    userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_following_link);
-                    break;
-                default:
-                    break;
+            if (holder.contactMentionId != null) {
+                String userType = "";
+
+                switch (new EnumParticipantTypeConverter().convertToInt(participant.getType())) {
+                    case 1:
+                        //userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_owner);
+                        //break;
+                    case 2:
+                        userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_moderator);
+                        break;
+                    case 3:
+                        userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_user);
+                        break;
+                    case 4:
+                        userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest);
+                        break;
+                    case 5:
+                        userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_following_link);
+                        break;
+                    default:
+                        break;
+                }
+
+                holder.contactMentionId.setText(userType);
+                holder.contactMentionId.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.colorPrimary));
             }
-
-            holder.contactMentionId.setText(userType);
-            holder.contactMentionId.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.colorPrimary));
         }
     }
 
     @Override
     public boolean filter(String constraint) {
         return participant.getDisplayName() != null &&
-                StringUtils.containsIgnoreCase(participant.getDisplayName().trim(), constraint);
+                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getDisplayName().trim()).find();
     }
 
     @Override
@@ -254,8 +240,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         @BindView(R.id.name_text)
         public TextView contactDisplayName;
-        @BindView(R.id.avatar_flip_view)
-        public FlipView avatarFlipView;
+        @BindView(R.id.simple_drawee_view)
+        public SimpleDraweeView simpleDraweeView;
         @Nullable
         @BindView(R.id.secondary_text)
         public TextView contactMentionId;
@@ -265,6 +251,9 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         @Nullable
         @BindView(R.id.videoCallImageView)
         ImageView videoCallImageView;
+        @Nullable
+        @BindView(R.id.checkedImageView)
+        ImageView checkedImageView;
 
         /**
          * Default constructor.

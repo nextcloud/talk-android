@@ -35,6 +35,7 @@ import autodagger.AutoInjector;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.nextcloud.talk.components.filebrowser.webdav.DavUtils;
 import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
 import com.nextcloud.talk.dagger.modules.DatabaseModule;
@@ -53,12 +54,14 @@ import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.twitter.TwitterEmojiProvider;
 import okhttp3.OkHttpClient;
+import org.conscrypt.Conscrypt;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.security.Security;
 import java.util.concurrent.TimeUnit;
 
 @AutoComponent(
@@ -121,6 +124,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         initializeWebRtc();
         DisplayUtils.useCompatVectorIfNeeded();
         buildComponent();
+        DavUtils.registerCustomFactories();
 
         componentApplication.inject(this);
 
@@ -134,6 +138,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
                 .build();
 
         Fresco.initialize(this, imagePipelineConfig);
+        Security.insertProviderAt(Conscrypt.newProvider(), 1);
 
         new ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync();
         DeviceUtils.ignoreSpecialBatteryFeatures();

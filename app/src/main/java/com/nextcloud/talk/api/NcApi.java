@@ -306,4 +306,11 @@ public interface NcApi {
     @PUT
     Observable<GenericOverall> setReadOnlyState(@Header("Authorization") String authorization, @Url String url, @Field("state") int state);
 
+
+    @FormUrlEncoded
+    @POST
+    Observable<Void> createRemoteShare(@Nullable @Header("Authorization") String authorization, @Url String url,
+                                       @Field("path") String remotePath,
+                                       @Field("shareWith") String roomToken,
+                                       @Field("shareType") String shareType);
 }

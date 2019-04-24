@@ -63,13 +63,13 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/ok_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/result_text_view"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:background="#0000"
         android:text="@string/nc_ok"
         android:textColor="@color/colorPrimary"
@@ -77,10 +77,10 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/web_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/result_text_view"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
         android:layout_toStartOf="@id/ok_button"

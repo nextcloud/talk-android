@@ -145,14 +145,14 @@ public class MagicIncomingTextMessageViewHolder
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
                 if (individualHashMap != null) {
                     if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call")) {
-                        if (individualHashMap.get("id").equals(message.getActiveUserId())) {
+                        if (individualHashMap.get("id").equals(message.getActiveUser().getUserId())) {
                             messageString =
                                     DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
                                             messageString,
                                             individualHashMap.get("id"),
                                             individualHashMap.get("name"),
                                             individualHashMap.get("type"),
-                                            userUtils.getUserById(message.getActiveUserId()),
+                                            userUtils.getUserById(message.getActiveUser().getUserId()),
                                             R.xml.chip_accent_background);
                         } else {
                             messageString =
@@ -161,7 +161,7 @@ public class MagicIncomingTextMessageViewHolder
                                             individualHashMap.get("id"),
                                             individualHashMap.get("name"),
                                             individualHashMap.get("type"),
-                                            userUtils.getUserById(message.getActiveUserId()),
+                                            userUtils.getUserById(message.getActiveUser().getUserId()),
                                             R.xml.chip_incoming_others);
                         }
 

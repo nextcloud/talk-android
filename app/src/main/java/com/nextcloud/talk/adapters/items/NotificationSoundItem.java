@@ -20,12 +20,16 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.utils.MagicFlipView;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
@@ -37,10 +41,6 @@ public class NotificationSoundItem extends AbstractFlexibleItem<NotificationSoun
 
     private String notificationSoundName;
     private String notificationSoundUri;
-
-    private boolean selected;
-
-    private MagicFlipView flipView;
 
     public NotificationSoundItem(String notificationSoundName, String notificationSoundUri) {
         this.notificationSoundName = notificationSoundName;
@@ -70,51 +70,34 @@ public class NotificationSoundItem extends AbstractFlexibleItem<NotificationSoun
         return new NotificationSoundItemViewHolder(view, adapter);
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
-    public void flipToFront() {
-        if (flipView != null && flipView.isFlipped()) {
-            flipView.flip(false);
-        }
-    }
-
-    public void flipItemSelection() {
-        if (flipView != null) {
-            flipView.flip(!flipView.isFlipped());
-        }
-    }
-
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, NotificationSoundItemViewHolder holder, int position, List<Object> payloads) {
-        flipView = holder.magicFlipView;
-
-        holder.magicFlipView.flipSilently(adapter.isSelected(position) || isSelected());
-
-        if (isSelected() && !adapter.isSelected(position)) {
-            adapter.toggleSelection(position);
-            selected = false;
-        }
-
         holder.notificationName.setText(notificationSoundName);
 
-        if (position == 0) {
-            holder.magicFlipView.setFrontImage(R.drawable.ic_stop_white_24dp);
+        if (adapter.isSelected(position)) {
+            holder.checkedImageView.setVisibility(View.VISIBLE);
         } else {
-            holder.magicFlipView.setFrontImage(R.drawable.ic_play_circle_outline_white_24dp);
+            holder.checkedImageView.setVisibility(View.GONE);
+        }
+
+        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        holder.simpleDraweeView.getHierarchy().setBackgroundImage(new ColorDrawable(resources.getColor(R.color.colorPrimary)));
+        if (position == 0) {
+            holder.simpleDraweeView.getHierarchy().setImage(resources.getDrawable(R.drawable.ic_stop_white_24dp), 100,
+                    true);
+        } else {
+            holder.simpleDraweeView.getHierarchy().setImage(resources.getDrawable(R.drawable.ic_play_circle_outline_white_24dp), 100,
+                    true);
         }
     }
 
     static class NotificationSoundItemViewHolder extends FlexibleViewHolder {
         @BindView(R.id.notificationNameTextView)
         public TextView notificationName;
-        @BindView(R.id.magicFlipView)
-        MagicFlipView magicFlipView;
+        @BindView(R.id.simpleDraweeView)
+        SimpleDraweeView simpleDraweeView;
+        @BindView(R.id.checkedImageView)
+        ImageView checkedImageView;
 
         /**
          * Default constructor.

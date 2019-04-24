@@ -197,9 +197,9 @@ public class RestModule {
             if (appPreferences.getProxyCredentials() &&
                     !TextUtils.isEmpty(appPreferences.getProxyUsername()) &&
                     !TextUtils.isEmpty(appPreferences.getProxyPassword())) {
-                httpClient.proxyAuthenticator(new ProxyAuthenticator(Credentials.basic(
+                httpClient.proxyAuthenticator(new MagicAuthenticator(Credentials.basic(
                         appPreferences.getProxyUsername(),
-                        appPreferences.getProxyPassword())));
+                        appPreferences.getProxyPassword()), "Proxy-Authorization"));
             }
         }
 
@@ -210,10 +210,10 @@ public class RestModule {
 
     public static class HeadersInterceptor implements Interceptor {
 
+        @NonNull
         @Override
         public Response intercept(@NonNull Chain chain) throws IOException {
             Request original = chain.request();
-
             Request request = original.newBuilder()
                     .header("User-Agent", ApiUtils.getUserAgent())
                     .header("Accept", "application/json")
@@ -231,23 +231,26 @@ public class RestModule {
         }
     }
 
-    private class ProxyAuthenticator implements Authenticator {
+    public static class MagicAuthenticator implements Authenticator {
 
         private String credentials;
+        private String authenticatorType;
 
-        private ProxyAuthenticator(String credentials) {
+        public MagicAuthenticator(@NonNull String credentials, @NonNull String authenticatorType) {
             this.credentials = credentials;
+            this.authenticatorType = authenticatorType;
         }
 
         @Nullable
         @Override
-        public Request authenticate(@NonNull Route route, @NonNull Response response) throws IOException {
-            if (credentials.equals(response.request().header("Proxy-Authorization"))) {
+        public Request authenticate(@Nullable Route route, @NonNull Response response) {
+            if (response.request().header(authenticatorType) != null) {
                 return null;
             }
 
-            int attemptsCount = 0;
             Response countedResponse = response;
+
+            int attemptsCount = 0;
 
             while ((countedResponse = countedResponse.priorResponse()) != null) {
                 attemptsCount++;
@@ -257,7 +260,7 @@ public class RestModule {
             }
 
             return response.request().newBuilder()
-                    .header("Proxy-Authorization", credentials)
+                    .header(authenticatorType, credentials)
                     .build();
         }
     }

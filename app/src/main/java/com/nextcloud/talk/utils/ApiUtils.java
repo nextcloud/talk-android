@@ -60,6 +60,21 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
+    public static String getUrlForFilePreviewWithRemotePath(String baseUrl, String remotePath, int px) {
+        return baseUrl + "/index.php/core/preview.png?file="
+                + Uri.encode(remotePath, "UTF-8")
+                + "&x=" + px + "&y=" + px + "&a=1&mode=cover&forceIcon=1";
+    }
+
+    public static String getUrlForFilePreviewWithFileId(String baseUrl, String fileId, int px) {
+        return baseUrl + "/index.php/core/preview?fileId="
+                + fileId + "&x=" + px + "&y=" + px + "&a=1&mode=cover&forceIcon=1";
+    }
+
+    public static String getSharingUrl(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/apps/files_sharing/api/v1/shares";
+    }
+
     public static RetrofitBucket getRetrofitBucketForContactsSearchFor14(String baseUrl, @Nullable String searchQuery) {
         RetrofitBucket retrofitBucket = getRetrofitBucketForContactsSearch(baseUrl, searchQuery);
         retrofitBucket.setUrl(baseUrl + ocsApiVersion + "/core/autocomplete/get");

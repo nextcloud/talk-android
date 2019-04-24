@@ -44,9 +44,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -65,18 +65,16 @@ import com.nextcloud.talk.models.json.signaling.*;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.MagicFlipView;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.animations.PulseAnimation;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.webrtc.*;
 import com.wooplr.spotlight.SpotlightView;
-import eu.davidea.flipview.FlipView;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -117,7 +115,7 @@ public class CallController extends BaseController {
     };
 
     @BindView(R.id.callControlEnableSpeaker)
-    MagicFlipView callControlEnableSpeaker;
+    SimpleDraweeView callControlEnableSpeaker;
 
     @BindView(R.id.pip_video_view)
     SurfaceViewRenderer pipVideoView;
@@ -129,11 +127,11 @@ public class CallController extends BaseController {
     @BindView(R.id.callControlsRelativeLayout)
     RelativeLayout callControls;
     @BindView(R.id.call_control_microphone)
-    FlipView microphoneControlButton;
+    SimpleDraweeView microphoneControlButton;
     @BindView(R.id.call_control_camera)
-    FlipView cameraControlButton;
+    SimpleDraweeView cameraControlButton;
     @BindView(R.id.call_control_switch_camera)
-    FlipView cameraSwitchButton;
+    SimpleDraweeView cameraSwitchButton;
     @BindView(R.id.connectingTextView)
     TextView connectingTextView;
 
@@ -260,7 +258,7 @@ public class CallController extends BaseController {
         microphoneControlButton.setOnTouchListener(new MicrophoneButtonTouchListener());
         videoOnClickListener = new VideoClickListener();
 
-        pulseAnimation = PulseAnimation.create().with(microphoneControlButton.getFrontImageView())
+        pulseAnimation = PulseAnimation.create().with(microphoneControlButton)
                 .setDuration(310)
                 .setRepeatCount(PulseAnimation.INFINITE)
                 .setRepeatMode(PulseAnimation.REVERSE);
@@ -454,7 +452,7 @@ public class CallController extends BaseController {
                     onCameraClick();
                 }
             } else {
-                cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_off_white_24px);
+                cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
                 cameraControlButton.setAlpha(0.7f);
                 cameraSwitchButton.setVisibility(View.GONE);
             }
@@ -465,7 +463,7 @@ public class CallController extends BaseController {
                 onMicrophoneClick();
             }
         } else {
-            microphoneControlButton.getFrontImageView().setImageResource(R.drawable.ic_mic_off_white_24px);
+            microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
         }
 
         if (!inCall) {
@@ -584,7 +582,7 @@ public class CallController extends BaseController {
     public void onEnableSpeakerphoneClick() {
         if (audioManager != null) {
             audioManager.toggleUseSpeakerphone();
-            callControlEnableSpeaker.flipSilently(!callControlEnableSpeaker.isFlipped());
+            //callControlEnableSpeaker.flipSilently(!callControlEnableSpeaker.isFlipped());
         }
     }
 
@@ -620,14 +618,14 @@ public class CallController extends BaseController {
                 audioOn = !audioOn;
 
                 if (audioOn) {
-                    microphoneControlButton.getFrontImageView().setImageResource(R.drawable.ic_mic_white_24px);
+                    microphoneControlButton.setActualImageResource(R.drawable.ic_mic_white_24px);
                 } else {
-                    microphoneControlButton.getFrontImageView().setImageResource(R.drawable.ic_mic_off_white_24px);
+                    microphoneControlButton.setActualImageResource(R.drawable.ic_mic_off_white_24px);
                 }
 
                 toggleMedia(audioOn, false);
             } else {
-                microphoneControlButton.getFrontImageView().setImageResource(R.drawable.ic_mic_white_24px);
+                microphoneControlButton.setActualImageResource(R.drawable.ic_mic_white_24px);
                 pulseAnimation.start();
                 toggleMedia(true, false);
             }
@@ -663,12 +661,12 @@ public class CallController extends BaseController {
             videoOn = !videoOn;
 
             if (videoOn) {
-                cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_white_24px);
+                cameraControlButton.setActualImageResource(R.drawable.ic_videocam_white_24px);
                 if (cameraEnumerator.getDeviceNames().length > 1) {
                     cameraSwitchButton.setVisibility(View.VISIBLE);
                 }
             } else {
-                cameraControlButton.getFrontImageView().setImageResource(R.drawable.ic_videocam_off_white_24px);
+                cameraControlButton.setActualImageResource(R.drawable.ic_videocam_off_white_24px);
                 cameraSwitchButton.setVisibility(View.GONE);
             }
 
@@ -1792,21 +1790,19 @@ public class CallController extends BaseController {
         if (remoteRenderersLayout != null) {
             RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(session + "+video");
             if (relativeLayout != null) {
-                ImageView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
+                SimpleDraweeView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
 
                 if (participantMap.containsKey(session) && avatarImageView.getDrawable() == null) {
 
-                    int size = Math.round(getResources().getDimension(R.dimen.avatar_size_big));
-
                     if (getActivity() != null) {
-                        GlideApp.with(getActivity())
-                                .asBitmap()
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .load(ApiUtils.getUrlForAvatarWithName(baseUrl, participantMap.get(session).getUserId(), R.dimen.avatar_size_big))
-                                .centerInside()
-                                .override(size, size)
-                                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                                .into(avatarImageView);
+                        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                                .setOldController(avatarImageView.getController())
+                                .setAutoPlayAnimations(true)
+                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(baseUrl,
+                                        participantMap.get(session).getUserId(),
+                                        R.dimen.avatar_size_big), null))
+                                .build();
+                        avatarImageView.setController(draweeController);
                     }
                 }
             }
@@ -1822,7 +1818,7 @@ public class CallController extends BaseController {
 
         RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(session + "+" + videoStreamType);
         SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id.surface_view);
-        ImageView imageView = relativeLayout.findViewById(R.id.avatarImageView);
+        SimpleDraweeView imageView = relativeLayout.findViewById(R.id.avatarImageView);
 
         if (mediaStream != null && mediaStream.videoTracks != null && mediaStream.videoTracks.size() > 0 && enable) {
             VideoTrack videoTrack = mediaStream.videoTracks.get(0);
@@ -1847,7 +1843,7 @@ public class CallController extends BaseController {
         RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionId);
         if (relativeLayout != null) {
             ImageView imageView;
-            ImageView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
+            SimpleDraweeView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
             SurfaceViewRenderer surfaceViewRenderer = relativeLayout.findViewById(R.id.surface_view);
 
             if (video) {
@@ -1942,7 +1938,7 @@ public class CallController extends BaseController {
             v.onTouchEvent(event);
             if (event.getAction() == MotionEvent.ACTION_UP && isPTTActive) {
                 isPTTActive = false;
-                microphoneControlButton.getFrontImageView().setImageResource(R.drawable.ic_mic_off_white_24px);
+                microphoneControlButton.setActualImageResource(R.drawable.ic_mic_off_white_24px);
                 pulseAnimation.stop();
                 toggleMedia(false, false);
                 animateCallControls(false, 5000);

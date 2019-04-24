@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -226,11 +225,6 @@ public class SwitchAccountController extends BaseController {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-
-        recyclerView.addItemDecoration(new DividerItemDecoration(
-                recyclerView.getContext(),
-                layoutManager.getOrientation()
-        ));
 
         swipeRefreshLayout.setEnabled(false);
     }

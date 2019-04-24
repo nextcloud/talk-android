@@ -30,10 +30,7 @@ import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.*;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
 import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,14 +47,16 @@ import butterknife.OnClick;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.facebook.common.executors.UiThreadImmediateExecutorService;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.postprocessors.BlurPostProcessor;
+import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -70,10 +69,9 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
-import com.nextcloud.talk.utils.MagicFlipView;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.glide.GlideApp;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
 import io.reactivex.Observer;
@@ -87,6 +85,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.michaelevans.colorart.library.ColorArt;
 import org.parceler.Parcels;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -113,13 +112,13 @@ public class CallNotificationController extends BaseController {
     TextView conversationNameTextView;
 
     @BindView(R.id.avatarImageView)
-    ImageView avatarImageView;
+    SimpleDraweeView avatarImageView;
 
     @BindView(R.id.callAnswerVoiceOnlyView)
-    MagicFlipView callAnswerVoiceOnlyView;
+    SimpleDraweeView callAnswerVoiceOnlyView;
 
     @BindView(R.id.callAnswerCameraView)
-    MagicFlipView callAnswerCameraView;
+    SimpleDraweeView callAnswerCameraView;
 
     @BindView(R.id.backgroundImageView)
     ImageView backgroundImageView;
@@ -148,7 +147,6 @@ public class CallNotificationController extends BaseController {
         this.userBeingCalled = args.getParcelable(BundleKeys.KEY_USER_ENTITY);
 
         this.originalBundle = args;
-
         credentials = ApiUtils.getCredentials(userBeingCalled.getUsername(), userBeingCalled.getToken());
     }
 
@@ -384,7 +382,6 @@ public class CallNotificationController extends BaseController {
 
         layoutParams.width = dimen;
         layoutParams.height = dimen;
-
         avatarImageView.setLayoutParams(layoutParams);
     }
 
@@ -402,92 +399,59 @@ public class CallNotificationController extends BaseController {
     }
 
     private void loadAvatar() {
-        int avatarSize = Math.round(NextcloudTalkApplication
-                .getSharedApplication().getResources().getDimension(R.dimen.avatar_fetching_size_very_big));
-
         switch (currentConversation.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
                 avatarImageView.setVisibility(View.VISIBLE);
 
-                GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
-                        currentConversation.getName(), R.dimen.avatar_size_very_big), new LazyHeaders.Builder()
-                        .setHeader("Accept", "image/*")
-                        .setHeader("User-Agent", ApiUtils.getUserAgent())
-                        .build());
+                ImageRequest imageRequest =
+                        DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
+                                currentConversation.getName(), R.dimen.avatar_size_very_big), null);
 
-                GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .load(glideUrl)
-                        .centerInside()
-                        .override(avatarSize, avatarSize)
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                                if (getActivity() != null && avatarImageView != null) {
-                                    avatarImageView.setImageBitmap(TransformationUtils.circleCrop(GlideApp.get
-                                            (getActivity()).getBitmapPool(), resource, avatarSize, avatarSize));
-                                }
+                ImagePipeline imagePipeline = Fresco.getImagePipeline();
+                DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
 
-                                if (getResources() != null && incomingTextRelativeLayout != null) {
-                                    incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
-                                            .incoming_gradient));
-                                }
+                dataSource.subscribe(new BaseBitmapDataSubscriber() {
+                    @Override
+                    protected void onNewResultImpl(@Nullable Bitmap bitmap) {
+                        avatarImageView.getHierarchy().setImage(new BitmapDrawable(bitmap), 100,
+                                true);
 
-                                if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 &&
-                                        userBeingCalled.hasSpreedCapabilityWithName("no-ping")) {
-                                    final Allocation input = Allocation.createFromBitmap(renderScript, resource);
-                                    final Allocation output = Allocation.createTyped(renderScript, input.getType());
-                                    final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(renderScript, Element
-                                            .U8_4(renderScript));
-                                    script.setRadius(15f);
-                                    script.setInput(input);
-                                    script.forEach(output);
-                                    output.copyTo(resource);
+                        if (getResources() != null) {
+                            incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
+                                    .incoming_gradient));
+                        }
 
-                                    if (backgroundImageView != null) {
-                                        backgroundImageView.setImageDrawable(new BitmapDrawable(resource));
-                                    }
-                                } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
-                                    ColorArt colorArt = new ColorArt(resource);
-                                    int color = colorArt.getBackgroundColor();
-
-                                    float[] hsv = new float[3];
-                                    Color.colorToHSV(color, hsv);
-                                    hsv[2] *= 0.75f;
-                                    color = Color.HSVToColor(hsv);
-
-                                    if (backgroundImageView != null) {
-                                        backgroundImageView.setImageDrawable(new ColorDrawable(color));
-                                    }
-                                }
+                        if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 &&
+                                userBeingCalled.hasSpreedCapabilityWithName("no-ping")) {
+                            if (getActivity() != null) {
+                                Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
+                                new BlurPostProcessor(5, getActivity()).process(backgroundBitmap);
+                                backgroundImageView.setImageDrawable(new BitmapDrawable(backgroundBitmap));
                             }
-                        });
+                        } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
+                            ColorArt colorArt = new ColorArt(bitmap);
+                            int color = colorArt.getBackgroundColor();
 
+                            float[] hsv = new float[3];
+                            Color.colorToHSV(color, hsv);
+                            hsv[2] *= 0.75f;
+                            color = Color.HSVToColor(hsv);
+
+                            backgroundImageView.setImageDrawable(new ColorDrawable(color));
+                        }
+                    }
+
+                    @Override
+                    protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+
+                    }
+                }, UiThreadImmediateExecutorService.getInstance());
 
                 break;
             case ROOM_GROUP_CALL:
-                if (avatarImageView != null) {
-                    GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(R.drawable.ic_people_group_white_24px)
-                            .centerInside()
-                            .override(avatarSize, avatarSize)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(avatarImageView);
-                }
+                avatarImageView.setActualImageResource(R.drawable.ic_people_group_white_24px);
             case ROOM_PUBLIC_CALL:
-                if (avatarImageView != null) {
-                    GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .load(R.drawable.ic_link_white_24px)
-                            .centerInside()
-                            .override(avatarSize, avatarSize)
-                            .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                            .into(avatarImageView);
-                }
+                avatarImageView.setActualImageResource(R.drawable.ic_link_white_24px);
                 break;
             default:
         }

@@ -21,6 +21,7 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.text.TextUtils;
@@ -31,11 +32,9 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -43,7 +42,6 @@ import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.glide.GlideApp;
 import com.vanniktech.emoji.EmojiTextView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -51,9 +49,9 @@ import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements
         IFilterable<String> {
@@ -146,10 +144,10 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
                 String authorDisplayName = "";
-                conversation.getLastMessage().setActiveUserId(userEntity.getUserId());
+                conversation.getLastMessage().setActiveUser(userEntity);
                 String text;
                 if (conversation.getLastMessage().getMessageType().equals(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE)) {
-                    if (conversation.getLastMessage().getActorId().equals(conversation.getLastMessage().getActiveUserId())) {
+                    if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())) {
                         text = String.format(context.getString(R.string.nc_formatted_message_you), conversation.getLastMessage().getLastMessageDisplayText());
                     } else {
                         authorDisplayName = !TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName()) ?
@@ -166,8 +164,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
                 holder.dialogLastMessage.setText(text);
 
-                int smallAvatarSize = Math.round(context.getResources().getDimension(R.dimen.small_item_height));
-
                 if (conversation.getLastMessage().getActorType().equals("guests")) {
                     if (TextUtils.isEmpty(authorDisplayName)) {
                         authorDisplayName = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest);
@@ -176,26 +172,18 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
                             .endConfig().buildRound(String.valueOf(authorDisplayName.charAt(0)),
                                     context.getResources().getColor(R.color.nc_grey));
-                    holder.dialogLastMessageUserAvatar.setImageDrawable(drawable);
-                } else if (!conversation.getLastMessage().getActorId().equals(userEntity.getUserId())
-                        && !conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
+                    holder.dialogLastMessageUserAvatar.getHierarchy().setImage(drawable, 100, true);
+                } else if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())
+                        || !conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
                     holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
 
                     if (!"bots".equals(conversation.getLastMessage().getActorType())) {
-                        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                                conversation.getLastMessage().getActorId(), R.dimen.small_item_height), new LazyHeaders.Builder()
-                                .setHeader("Accept", "image/*")
-                                .setHeader("User-Agent", ApiUtils.getUserAgent())
-                                .build());
-
-                        GlideApp.with(context)
-                                .asBitmap()
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .load(glideUrl)
-                                .centerInside()
-                                .override(smallAvatarSize, smallAvatarSize)
-                                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                                .into(holder.dialogLastMessageUserAvatar);
+                        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                                .setOldController(holder.dialogLastMessageUserAvatar.getController())
+                                .setAutoPlayAnimations(true)
+                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getLastMessage().getActorId(), R.dimen.small_item_height), userEntity))
+                                .build();
+                        holder.dialogLastMessageUserAvatar.setController(draweeController);
                     } else {
                         TextDrawable drawable =
                                 TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">", context.getResources().getColor(R.color.black));
@@ -213,8 +201,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.dialogLastMessage.setText(R.string.nc_no_messages_yet);
         }
 
-        int avatarSize = Math.round(context.getResources().getDimension(R.dimen.avatar_size));
-
 
         holder.dialogAvatar.setVisibility(View.VISIBLE);
 
@@ -224,15 +210,15 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             switch (objectType) {
                 case "share:password":
                     shouldLoadAvatar = false;
-                    holder.dialogAvatar.setImageBitmap(DisplayUtils
+                    holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
                             .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
-                                    R.drawable.ic_file_password_request));
+                                    R.drawable.ic_file_password_request)), 100, true);
                     break;
                 case "file":
                     shouldLoadAvatar = false;
-                    holder.dialogAvatar.setImageBitmap(DisplayUtils
+                    holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
                             .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
-                                    R.drawable.ic_file_icon));
+                                    R.drawable.ic_file_icon)), 100, true);
                     break;
                 default:
                     break;
@@ -245,14 +231,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground);
             LayerDrawable layerDrawable = new LayerDrawable(layers);
 
-            GlideApp.with(context)
-                    .asDrawable()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .load(layerDrawable)
-                    .centerInside()
-                    .override(avatarSize, avatarSize)
-                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                    .into(holder.dialogAvatar);
+            holder.dialogAvatar.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
 
             shouldLoadAvatar = false;
         }
@@ -260,37 +239,26 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         if (shouldLoadAvatar) {
             switch (conversation.getType()) {
                 case ROOM_TYPE_ONE_TO_ONE_CALL:
-
                     if (!TextUtils.isEmpty(conversation.getName())) {
-                        GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                                conversation.getName(), R.dimen.avatar_size), new LazyHeaders.Builder()
-                                .setHeader("Accept", "image/*")
-                                .setHeader("User-Agent", ApiUtils.getUserAgent())
-                                .build());
-
-                        GlideApp.with(context)
-                                .asBitmap()
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .load(glideUrl)
-                                .centerInside()
-                                .override(avatarSize, avatarSize)
-                                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                                .into(holder.dialogAvatar);
-
+                        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                                .setOldController(holder.dialogAvatar.getController())
+                                .setAutoPlayAnimations(true)
+                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getName(), R.dimen.avatar_size), null))
+                                .build();
+                        holder.dialogAvatar.setController(draweeController);
                     } else {
                         holder.dialogAvatar.setVisibility(View.GONE);
                     }
                     break;
                 case ROOM_GROUP_CALL:
-                    holder.dialogAvatar.setImageBitmap(DisplayUtils
+                    holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
                             .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
-                                    R.drawable.ic_people_group_white_24px));
+                                    R.drawable.ic_people_group_white_24px)), 100, true);
                     break;
                 case ROOM_PUBLIC_CALL:
-                    holder.dialogAvatar.setImageBitmap(DisplayUtils
+                    holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
                             .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
-                                    R.drawable.ic_link_white_24px));
-
+                                    R.drawable.ic_link_white_24px)), 100, true);
                     break;
                 default:
                     holder.dialogAvatar.setVisibility(View.GONE);
@@ -301,18 +269,18 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     @Override
     public boolean filter(String constraint) {
         return conversation.getDisplayName() != null &&
-                StringUtils.containsIgnoreCase(conversation.getDisplayName().trim(), constraint);
+                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(conversation.getDisplayName().trim()).find();
     }
 
     static class ConversationItemViewHolder extends FlexibleViewHolder {
         @BindView(R.id.dialogAvatar)
-        ImageView dialogAvatar;
+        SimpleDraweeView dialogAvatar;
         @BindView(R.id.dialogName)
         EmojiTextView dialogName;
         @BindView(R.id.dialogDate)
         TextView dialogDate;
         @BindView(R.id.dialogLastMessageUserAvatar)
-        ImageView dialogLastMessageUserAvatar;
+        SimpleDraweeView dialogLastMessageUserAvatar;
         @BindView(R.id.dialogLastMessage)
         EmojiTextView dialogLastMessage;
         @BindView(R.id.dialogUnreadBubble)

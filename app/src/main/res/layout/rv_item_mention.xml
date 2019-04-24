@@ -34,14 +34,11 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin">
 
-        <com.nextcloud.talk.utils.MagicFlipView
-            android:id="@+id/avatar_flip_view"
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/simple_drawee_view"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
-            app:animationDuration="170"
-            app:checked="false"
-            app:enableInitialAnimation="false"
-            app:rearBackgroundColor="@color/colorPrimary" />
+            app:roundAsCircle="true" />
 
     </FrameLayout>
 

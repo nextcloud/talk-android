@@ -80,7 +80,6 @@ import eu.davidea.flexibleadapter.SelectableAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
-import eu.davidea.flipview.FlipView;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -190,16 +189,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (isNewConversationView) {
             toggleNewCallHeaderVisibility(!isPublicCall);
         }
-
     }
 
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-
-        FlipView.resetLayoutAnimationDelay(true, 1000L);
-        FlipView.stopLayoutAnimation();
 
         currentUser = userUtils.getCurrentUser();
 
@@ -208,7 +203,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
 
         if (adapter == null) {
-            adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
+            adapter = new FlexibleAdapter<>(contactItems, getActivity(), true);
 
             if (currentUser != null) {
                 fetchData(true);
@@ -598,6 +593,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             });
 
 
+                            adapter.clearSelection();
                             if (!shouldFilterManually) {
                                 adapter.updateDataSet(newUserItemList, false);
                             } else {
@@ -660,7 +656,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private void prepareViews() {
         layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(new SmoothScrollLinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
@@ -911,7 +907,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             }
                         });
             } else {
-                ((UserItem) adapter.getItem(position)).flipItemSelection();
                 adapter.toggleSelection(position);
 
                 if (currentUser.hasSpreedCapabilityWithName("last-room-activity")
@@ -921,12 +916,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     List<Integer> selectedPositions = adapter.getSelectedPositions();
                     for (int i = 0; i < selectedPositions.size(); i++) {
                         if (!selectedPositions.get(i).equals(position) && "groups".equals(((UserItem) adapter.getItem(selectedPositions.get(i))).getModel().getSource())) {
-                            ((UserItem) adapter.getItem(selectedPositions.get(i))).flipItemSelection();
                             adapter.toggleSelection(selectedPositions.get(i));
                         }
                     }
 
                 }
+
+                adapter.notifyDataSetChanged();
 
                 checkAndHandleDoneMenuItem();
             }
@@ -955,7 +951,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 if (adapter.getItem(selectedPosition) instanceof UserItem) {
                     UserItem userItem = (UserItem) adapter.getItem(selectedPosition);
                     if ("groups".equals(userItem.getModel().getSource())) {
-                        ((UserItem) adapter.getItem(selectedPosition)).flipItemSelection();
                         adapter.toggleSelection(selectedPosition);
                     }
                 }

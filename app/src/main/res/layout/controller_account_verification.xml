@@ -48,7 +48,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/padding_between_elements"
+        android:layout_marginTop="@dimen/margin_between_elements"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:textAlignment="center"

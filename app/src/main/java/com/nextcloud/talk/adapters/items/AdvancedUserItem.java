@@ -26,26 +26,23 @@ import android.widget.*;
 import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.glide.GlideApp;
+import com.nextcloud.talk.utils.DisplayUtils;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
-import eu.davidea.flipview.FlipView;
 import eu.davidea.viewholders.FlexibleViewHolder;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.UserItemViewHolder> implements
         IFilterable<String> {
@@ -116,23 +113,15 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
         if (userEntity != null && userEntity.getBaseUrl() != null && userEntity.getBaseUrl().startsWith("http://") || userEntity.getBaseUrl().startsWith("https://")) {
             holder.avatarImageView.setVisibility(View.VISIBLE);
-            GlideUrl glideUrl = new GlideUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                    participant.getUserId(), R.dimen.avatar_size), new LazyHeaders.Builder()
-                    .setHeader("Accept", "image/*")
-                    .setHeader("User-Agent", ApiUtils.getUserAgent())
-                    .build());
 
-            int avatarSize = Math.round(NextcloudTalkApplication
-                    .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
+            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                    .setOldController(holder.avatarImageView.getController())
+                    .setAutoPlayAnimations(true)
+                    .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                            participant.getUserId(), R.dimen.avatar_size), null))
+                    .build();
+            holder.avatarImageView.setController(draweeController);
 
-            GlideApp.with(NextcloudTalkApplication.getSharedApplication().getApplicationContext())
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .load(glideUrl)
-                    .centerInside()
-                    .override(avatarSize, avatarSize)
-                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
-                    .into(holder.avatarImageView.getFrontImageView());
         } else {
             holder.avatarImageView.setVisibility(View.GONE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.linearLayout.getLayoutParams();
@@ -146,7 +135,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
     @Override
     public boolean filter(String constraint) {
         return participant.getName() != null &&
-                StringUtils.containsIgnoreCase(participant.getName().trim(), constraint);
+                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getName().trim()).find();
     }
 
 
@@ -157,7 +146,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         @BindView(R.id.secondary_text)
         public TextView serverUrl;
         @BindView(R.id.avatar_image)
-        public FlipView avatarImageView;
+        public SimpleDraweeView avatarImageView;
         @BindView(R.id.linear_layout)
         LinearLayout linearLayout;
         @BindView(R.id.more_menu)

@@ -1,20 +1,45 @@
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
 
     <dimen name="item_height">72dp</dimen>
     <dimen name="small_item_height">24dp</dimen>
+    <dimen name="rv_item_view_height">48dp</dimen>
 
     <!-- Custom transition dimensions -->
-    <dimen name="padding_between_elements">8dp</dimen>
     <dimen name="margin_between_elements">8dp</dimen>
+    <dimen name="double_margin_between_elements">16dp</dimen>
     <dimen name="avatar_size">40dp</dimen>
-    <dimen name="avatar_size_big">80dp</dimen>
+    <dimen name="avatar_size_big">96dp</dimen>
     <dimen name="avatar_size_very_big">@dimen/avatar_fetching_size_very_big</dimen>
     <dimen name="avatar_fetching_size_very_big">180dp</dimen>
 
     <dimen name="chat_text_size">14sp</dimen>
     <dimen name="message_bubble_corners_radius">6dp</dimen>
     <dimen name="message_bubble_corners_padding">8dp</dimen>
+
+    <dimen name="minimum_file_preview_size">48dp</dimen>
+    <dimen name="maximum_file_preview_size">192dp</dimen>
+
     <dimen name="large_preview_dimension">80dp</dimen>
 </resources>

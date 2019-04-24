@@ -60,6 +60,7 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
+import com.facebook.imagepipeline.postprocessors.RoundPostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.android.material.chip.ChipDrawable;
@@ -72,9 +73,13 @@ import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiTextView;
 import org.greenrobot.eventbus.EventBus;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,14 +91,14 @@ public class DisplayUtils {
         SpannableString spannableString = new SpannableString(string);
         spannableString.setSpan(new ClickableSpan() {
             @Override
-            public void onClick(@NonNull View widget) {
+            public void onClick(@Nonnull View widget) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
             }
 
             @Override
-            public void updateDrawState(TextPaint ds) {
+            public void updateDrawState(@NonNull TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
             }
@@ -104,7 +109,8 @@ public class DisplayUtils {
 
     private static void updateViewSize(@Nullable ImageInfo imageInfo, SimpleDraweeView draweeView) {
         if (imageInfo != null) {
-            draweeView.getLayoutParams().width = imageInfo.getWidth() > 480 ? 480 : imageInfo.getWidth();
+            int maxSize = draweeView.getContext().getResources().getDimensionPixelSize(R.dimen.maximum_file_preview_size);
+            draweeView.getLayoutParams().width = imageInfo.getWidth() > maxSize ? maxSize : imageInfo.getWidth();
             draweeView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
             draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
             draweeView.requestLayout();
@@ -120,7 +126,7 @@ public class DisplayUtils {
     public static Bitmap getRoundedBitmapFromVectorDrawableResource(Resources resources, int resource) {
         VectorDrawable vectorDrawable = (VectorDrawable) resources.getDrawable(resource);
         Bitmap bitmap = getBitmap(vectorDrawable);
-        new RoundAsCirclePostprocessor(true).process(bitmap);
+        new RoundPostprocessor(true).process(bitmap);
         return bitmap;
     }
 
@@ -142,11 +148,18 @@ public class DisplayUtils {
         return bitmap;
     }
 
-    public static ImageRequest getImageRequestForUrl(String url) {
+    public static ImageRequest getImageRequestForUrl(String url, @Nullable UserEntity userEntity) {
+        Map<String, String> headers = new HashMap<>();
+        if (userEntity != null && url.startsWith(userEntity.getBaseUrl()) && url.contains("index.php/core/preview?fileId=")) {
+            headers.put("Authorization", ApiUtils.getCredentials(userEntity.getUsername(),
+                    userEntity.getToken()));
+        }
+
         return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
                 .setProgressiveRenderingEnabled(true)
                 .setRotationOptions(RotationOptions.autoRotate())
                 .disableDiskCache()
+                .setHeaders(headers)
                 .build();
     }
 
@@ -252,7 +265,7 @@ public class DisplayUtils {
 
         if (!isCall) {
             ImageRequest imageRequest =
-                    getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big));
+                    getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big), null);
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
             DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
 
