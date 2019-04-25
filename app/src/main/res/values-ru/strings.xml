@@ -191,7 +191,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s отправил(а) файл видео.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s отправил(а) изображение.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Вы отправили ссылку.</string>
-    <string name="nc_sent_a_gif_you">Вы отправили GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Вы отправили GIF.</string>
     <string name="nc_sent_an_attachment_you">Вы отправили вложение.</string>
     <string name="nc_sent_an_audio_you">Вы отправили аудиофайл.</string>
     <string name="nc_sent_a_video_you">Вы отправили файл видео.</string>
@@ -226,5 +226,7 @@
     <string name="nc_user">Пользователь</string>
     <string name="nc_guest">Гость</string>
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
+
     <string name="nc_readonly_hint">Беседа заблокировна</string>
-</resources>
+
+    </resources>

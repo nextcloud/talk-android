@@ -206,7 +206,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s је послао видео.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s је послао слику.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Послали сте везу.</string>
-    <string name="nc_sent_a_gif_you">Послали сте GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Послали сте GIF.</string>
     <string name="nc_sent_an_attachment_you">Послали сте прилог.</string>
     <string name="nc_sent_an_audio_you">Послали сте звук.</string>
     <string name="nc_sent_a_video_you">Послали сте видео.</string>
@@ -241,5 +241,7 @@
     <string name="nc_user">Корисник</string>
     <string name="nc_guest">Гост</string>
     <string name="nc_following_link">Корисник који је пратио јавну везу</string>
+
     <string name="nc_readonly_hint">Разговор је закључан</string>
-</resources>
+
+    </resources>

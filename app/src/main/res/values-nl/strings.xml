@@ -207,7 +207,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s verstuurde een video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s verstuurde een afbeelding</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Je verstuurde een link.</string>
-    <string name="nc_sent_a_gif_you">Je verstuurde een GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Je verstuurde een GIF.</string>
     <string name="nc_sent_an_attachment_you">Je verstuurde een bijlage.</string>
     <string name="nc_sent_an_audio_you">Je verstuurde een geluidsbestand.</string>
     <string name="nc_sent_a_video_you">Je verstuurde een video.</string>
@@ -242,5 +242,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_user">Gebruiker</string>
     <string name="nc_guest">Gast</string>
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
+
     <string name="nc_readonly_hint">Dit gesprek is gesloten</string>
-</resources>
+
+    </resources>

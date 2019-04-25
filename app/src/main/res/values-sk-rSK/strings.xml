@@ -172,7 +172,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s poslal(a) video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s poslal(a) obrázok.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Odoslali ste odkaz.</string>
-    <string name="nc_sent_a_gif_you">Odoslali ste GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Odoslali ste GIF.</string>
     <string name="nc_sent_an_attachment_you">Odoslali ste prílohu.</string>
     <string name="nc_sent_an_audio_you">Odoslali ste zvuk.</string>
     <string name="nc_sent_a_video_you">Odoslali ste video.</string>
@@ -207,4 +207,5 @@
     <string name="nc_user">Používateľ</string>
     <string name="nc_guest">Hosť</string>
     <string name="nc_following_link">Používateľ z verejného odkazu</string>
+
     </resources>

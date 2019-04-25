@@ -208,7 +208,7 @@ móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s enviou un vídeo.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou unha imaxe.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Vostede enviou unha ligazón.</string>
-    <string name="nc_sent_a_gif_you">Vostede enviou un GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Vostede enviou un GIF.</string>
     <string name="nc_sent_an_attachment_you">Vostede enviou un anexo.</string>
     <string name="nc_sent_an_audio_you">Vostede enviou un ficheiro de son.</string>
     <string name="nc_sent_a_video_you">Vostede enviou un vídeo.</string>
@@ -243,5 +243,7 @@ móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_guest">Convidado</string>
     <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
+
     <string name="nc_readonly_hint">Esta conversa está bloqueada.</string>
-</resources>
+
+    </resources>

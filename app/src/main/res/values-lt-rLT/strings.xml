@@ -119,7 +119,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s išsiuntė vaizdo įrašą.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s išsiuntė paveikslą.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Jūs išsiuntėte nuorodą.</string>
-    <string name="nc_sent_a_gif_you">Jūs išsiuntėte GIF paveikslą.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Jūs išsiuntėte GIF paveikslą.</string>
     <string name="nc_sent_an_attachment_you">Jūs išsiuntėte priedą.</string>
     <string name="nc_sent_an_audio_you">Jūs išsiuntėte garso įrašą.</string>
     <string name="nc_sent_a_video_you">Jūs išsiuntėte vaizdo įrašą.</string>
@@ -144,4 +144,5 @@
     <string name="nc_user">Naudotojas</string>
     <string name="nc_guest">Svečias</string>
     <string name="nc_readonly_hint">Šis pokalbis yra užrakintas.</string>
-</resources>
+
+    </resources>

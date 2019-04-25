@@ -196,7 +196,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s sendi myndskeið.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sendi mynd.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Þú sendir tengil.</string>
-    <string name="nc_sent_a_gif_you">Þú sendir GIF-mynd.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Þú sendir GIF-mynd.</string>
     <string name="nc_sent_an_attachment_you">Þú sendir viðhengi.</string>
     <string name="nc_sent_an_audio_you">Þú sendir hljóðskrá.</string>
     <string name="nc_sent_a_video_you">Þú sendir myndskeið.</string>
@@ -231,5 +231,7 @@
     <string name="nc_user">Notandi</string>
     <string name="nc_guest">Gestur</string>
     <string name="nc_following_link">Notandi sem fylgdi almenningstengli</string>
+
     <string name="nc_readonly_hint">Þetta samtal er læst</string>
-</resources>
+
+    </resources>

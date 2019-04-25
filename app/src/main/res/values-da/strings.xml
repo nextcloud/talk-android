@@ -206,7 +206,7 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sendte en video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sendte et billede.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Du sendte et link.</string>
-    <string name="nc_sent_a_gif_you">Du sendte en GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Du sendte en GIF.</string>
     <string name="nc_sent_an_attachment_you">Du sendte en vedhæftning.</string>
     <string name="nc_sent_an_audio_you">Du sendte en lyd.</string>
     <string name="nc_sent_a_video_you">Du sendte en video.</string>
@@ -241,4 +241,5 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_user">ruger</string>
     <string name="nc_guest">Gæst</string>
     <string name="nc_following_link">Bruger følger et offentligt link</string>
+
     </resources>

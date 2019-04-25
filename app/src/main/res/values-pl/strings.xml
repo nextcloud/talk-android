@@ -206,7 +206,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s wysłał plik wideo.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s wysłał plik graficzny</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Wysłałeś link.</string>
-    <string name="nc_sent_a_gif_you">Wysłałeś GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Wysłałeś GIF.</string>
     <string name="nc_sent_an_attachment_you">Wysłałeś załącznik.</string>
     <string name="nc_sent_an_audio_you">Wysłałeś plik dźwiękowy</string>
     <string name="nc_sent_a_video_you">Wysłałeś plik wideo.</string>
@@ -241,5 +241,7 @@
     <string name="nc_user">Użytkownik</string>
     <string name="nc_guest">Gość</string>
     <string name="nc_following_link">Użytkownik korzysta z łącza publicznego</string>
+
     <string name="nc_readonly_hint">Ta rozmowa jest zablokowana</string>
-</resources>
+
+    </resources>

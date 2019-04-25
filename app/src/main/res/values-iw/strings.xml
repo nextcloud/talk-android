@@ -167,7 +167,7 @@
     <string name="nc_new_messages">הודעות חדשות</string>
     <string name="nc_no_messages_yet">אין הודעות עדיין</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">שלחת קישור.</string>
-    <string name="nc_sent_a_gif_you">שלחת הנפשה.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">שלחת הנפשה.</string>
     <string name="nc_sent_an_attachment_you">שלחת קובץ מצורף.</string>
     <string name="nc_sent_an_audio_you">שלחת קובץ שמע.</string>
     <string name="nc_sent_a_video_you">שלחת סרטון.</string>
@@ -197,4 +197,5 @@
     <string name="nc_user">משתמש</string>
     <string name="nc_guest">אורח</string>
     <string name="nc_following_link">משתמש שעוקב אחר קישור ציבורי</string>
+
     </resources>
