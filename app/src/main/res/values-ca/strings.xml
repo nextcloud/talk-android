@@ -203,7 +203,7 @@ mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</str
     <string name="nc_sent_a_video" formatted="true">%1$s ha enviat un vídeo.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s ha enviat una imatge.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Heu enviat un enllaç.</string>
-    <string name="nc_sent_a_gif_you">Heu enviat un GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Heu enviat un GIF.</string>
     <string name="nc_sent_an_attachment_you">Heu enviat un adjunt.</string>
     <string name="nc_sent_an_audio_you">Heu enviat un àudio.</string>
     <string name="nc_sent_a_video_you">Heu enviat un vídeo.</string>
@@ -238,5 +238,7 @@ mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</str
     <string name="nc_user">Usuari</string>
     <string name="nc_guest">Convidat</string>
     <string name="nc_following_link">Usuari que segueix un enllaç públic</string>
+
     <string name="nc_readonly_hint">Aquesta conversa està bloquejada</string>
-</resources>
+
+    </resources>

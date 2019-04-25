@@ -206,7 +206,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s ha inviato un video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s ha inviato un\'immagine.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Hai inviato un collegamento.</string>
-    <string name="nc_sent_a_gif_you">Hai inviato una GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Hai inviato una GIF.</string>
     <string name="nc_sent_an_attachment_you">Hai inviato un allegato.</string>
     <string name="nc_sent_an_audio_you">Hai inviato un audio.</string>
     <string name="nc_sent_a_video_you">Hai inviato un video.</string>
@@ -241,5 +241,7 @@
     <string name="nc_user">Utente</string>
     <string name="nc_guest">Ospite</string>
     <string name="nc_following_link">Utente che segue un collegamento pubblico</string>
+
     <string name="nc_readonly_hint">Questa conversazione è bloccata</string>
-</resources>
+
+    </resources>

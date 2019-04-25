@@ -206,7 +206,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s skickade en video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s skickade en bild.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Du skickade en länk.</string>
-    <string name="nc_sent_a_gif_you">Du skickade en GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Du skickade en GIF.</string>
     <string name="nc_sent_an_attachment_you">Du skickade en bilaga.</string>
     <string name="nc_sent_an_audio_you">Du skickade en ljudfil.</string>
     <string name="nc_sent_a_video_you">Du skickade en video.</string>
@@ -241,5 +241,7 @@
     <string name="nc_user">Användare</string>
     <string name="nc_guest">Gäst</string>
     <string name="nc_following_link">Användare följer en offentlig länk</string>
+
     <string name="nc_readonly_hint">Denna konversation är låst</string>
-</resources>
+
+    </resources>

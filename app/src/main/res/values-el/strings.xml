@@ -139,7 +139,7 @@
     <string name="nc_new_messages">Νέα μηνύματα</string>
     <string name="nc_no_messages_yet">Κανένα μήνυμα ακόμα</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Στείλατε σύνδεσμο.</string>
-    <string name="nc_sent_a_gif_you">Στείλατε εικόνα GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Στείλατε εικόνα GIF.</string>
     <string name="nc_sent_an_attachment_you">Στείλατε συνημμένο.</string>
     <string name="nc_sent_an_audio_you">Στείλατε αρχείο ήχου.</string>
     <string name="nc_sent_a_video_you">Στείλατε βίντεο.</string>
@@ -165,4 +165,5 @@
     <string name="nc_user">Χρήστης</string>
     <string name="nc_guest">Επισκέπτης</string>
     <string name="nc_readonly_hint">Η συνομιλία είναι κλειδωμένη</string>
-</resources>
+
+    </resources>

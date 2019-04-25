@@ -205,7 +205,7 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s a envoyé une vidéo.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s a envoyé une image.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Vous avez envoyé un lien.</string>
-    <string name="nc_sent_a_gif_you">Vous avez envoyé un GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Vous avez envoyé un GIF.</string>
     <string name="nc_sent_an_attachment_you">Vous avez envoyé une pièce jointe.</string>
     <string name="nc_sent_an_audio_you">Vous avez envoyé un fichier audio.</string>
     <string name="nc_sent_a_video_you">Vous avez envoyé une vidéo.</string>
@@ -240,5 +240,7 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_user">Utilisateur</string>
     <string name="nc_guest">Invité</string>
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
+
     <string name="nc_readonly_hint">Cette conversation est verrouillée</string>
-</resources>
+
+    </resources>

@@ -206,7 +206,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s poslal(a) video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s poslal(a) obrázek. </string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Odeslali jste odkaz.</string>
-    <string name="nc_sent_a_gif_you">Odeslali jste GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Odeslali jste GIF.</string>
     <string name="nc_sent_an_attachment_you">Odeslali jste přílohu.</string>
     <string name="nc_sent_an_audio_you">Odeslali jste zvuk.</string>
     <string name="nc_sent_a_video_you">Odeslali jste video.</string>
@@ -241,5 +241,7 @@
     <string name="nc_user">Uživatel</string>
     <string name="nc_guest">Host</string>
     <string name="nc_following_link">Uživatel následující veřejný odkaz</string>
+
     <string name="nc_readonly_hint">Tato konverzace je uzamčena.</string>
-</resources>
+
+    </resources>

@@ -203,7 +203,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s发送一个视频</string>
     <string name="nc_sent_an_image" formatted="true">%1$s发送一张图片</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">你已发送一个链接</string>
-    <string name="nc_sent_a_gif_you">你已发送一张GIF图</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">你已发送一张GIF图</string>
     <string name="nc_sent_an_attachment_you">你已发送一个附件</string>
     <string name="nc_sent_an_audio_you">你已发送一段音频</string>
     <string name="nc_sent_a_video_you">你已发送一个视频</string>
@@ -239,5 +239,7 @@
     <string name="nc_user">用户</string>
     <string name="nc_guest">访客</string>
     <string name="nc_following_link">使用公共链接的用户</string>
+
     <string name="nc_readonly_hint">此会话已被锁定</string>
-</resources>
+
+    </resources>

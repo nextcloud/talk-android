@@ -205,7 +205,7 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_sent_a_video" formatted="true">%1$sが動画ファイルを送信しました。</string>
     <string name="nc_sent_an_image" formatted="true">%1$sがイメージファイルを送信しました。</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">リンクを送信しました。</string>
-    <string name="nc_sent_a_gif_you">GIFを送信しました。</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">GIFを送信しました。</string>
     <string name="nc_sent_an_attachment_you">添付ファイルを送信しました。</string>
     <string name="nc_sent_an_audio_you">音声ファイルを送信しました</string>
     <string name="nc_sent_a_video_you">動画ファイルを送信しました。</string>
@@ -240,5 +240,7 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_user">ユーザー</string>
     <string name="nc_guest">ゲスト</string>
     <string name="nc_following_link">公開リンクをたどっているユーザー</string>
+
     <string name="nc_readonly_hint">この会話はロックされています</string>
-</resources>
+
+    </resources>

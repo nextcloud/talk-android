@@ -177,7 +177,7 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sendte en video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sendte et bilde.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Du sendte en lenke.</string>
-    <string name="nc_sent_a_gif_you">Du sendte en GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Du sendte en GIF.</string>
     <string name="nc_sent_an_attachment_you">Du sendte ett vedlegg.</string>
     <string name="nc_sent_an_audio_you">Du sendte en lyd.</string>
     <string name="nc_sent_a_video_you">Du sendte en video.</string>
@@ -212,4 +212,5 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_user">Bruker</string>
     <string name="nc_guest">Gjest</string>
     <string name="nc_following_link">Bruker følger en offentlig lenke</string>
+
     </resources>

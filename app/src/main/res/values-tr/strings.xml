@@ -206,7 +206,7 @@
     <string name="nc_sent_a_video" formatted="true">%1$s bir görüntü gönderdi.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s bir görsel gönderdi.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Bir bağlantı gönderdiniz.</string>
-    <string name="nc_sent_a_gif_you">Bir GIF gönderdiniz.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Bir GIF gönderdiniz.</string>
     <string name="nc_sent_an_attachment_you">Bir ek dosya gönderdiniz.</string>
     <string name="nc_sent_an_audio_you">Bir ses gönderdiniz.</string>
     <string name="nc_sent_a_video_you">Bir görüntü gönderdiniz.</string>
@@ -241,5 +241,7 @@
     <string name="nc_user">Kullanıcı</string>
     <string name="nc_guest">Konuk</string>
     <string name="nc_following_link">Herkese açık bir bağlantıyı izleyen kullanıcı</string>
+
     <string name="nc_readonly_hint">Bu görüşme kilitli</string>
-</resources>
+
+    </resources>
