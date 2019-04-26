@@ -242,4 +242,10 @@
 
     <string name="nc_readonly_hint">此会话已被锁定</string>
 
-    </resources>
+    <!-- Browser component -->
+    <string name="nc_file_browser">文件浏览器\"</string>
+    <string name="nc_select_files">选择文件</string>
+    <string name="nc_file_browser_back">返回</string>
+    <string name="nc_file_browser_refresh">刷新</string>
+    <string name="nc_last_modified">%1$s 我上一次更改： %2$s</string>
+</resources>

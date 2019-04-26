@@ -244,4 +244,10 @@
 
     <string name="nc_readonly_hint">Questa conversazione è bloccata</string>
 
-    </resources>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Navigatore di file\"</string>
+    <string name="nc_select_files">Seleziona file</string>
+    <string name="nc_file_browser_back">Indietro</string>
+    <string name="nc_file_browser_refresh">Aggiorna</string>
+    <string name="nc_last_modified">%1$s | Ultima modifica: %2$s</string>
+</resources>

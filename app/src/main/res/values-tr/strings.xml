@@ -244,4 +244,10 @@
 
     <string name="nc_readonly_hint">Bu görüşme kilitli</string>
 
-    </resources>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Dosya gezgini\"</string>
+    <string name="nc_select_files">Dosyaları seçin</string>
+    <string name="nc_file_browser_back">Geri</string>
+    <string name="nc_file_browser_refresh">Yenile</string>
+    <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
+</resources>

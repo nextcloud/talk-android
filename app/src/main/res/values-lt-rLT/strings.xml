@@ -30,6 +30,7 @@
     <string name="nc_server_import_account_plain">Importuoti paskyrą</string>
     <string name="nc_server_import_accounts_plain">Importuoti paskyras</string>
     <string name="nc_server_failed_to_import_account">Nepavyko importuoti pasirinktą paskyrą</string>
+    <string name="nc_Server_account_imported">Dabar, pasirinkta paskyra yra importuota ir prieinama</string>
     <string name="nc_certificate_dialog_text">Ar pasitikite iki šiol nežinomu SSL liudijimu, kurį išdavė %1$s, kuris skirtas %2$s ir galioja nuo %3$s iki %4$s?</string>
     <string name="nc_yes">Taip</string>
     <string name="nc_no">Ne</string>
@@ -46,6 +47,7 @@
     <string name="nc_settings_notification_sounds">Pranešimų garsai</string>
     <string name="nc_settings_vibrate">Vibruoti</string>
     <string name="nc_settings_privacy">Privatumas</string>
+    <string name="nc_settings_screen_security_title">Ekrano saugumas</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klaviatūra</string>
     <string name="nc_screen_lock_timeout_30">30 sekundžių</string>
     <string name="nc_screen_lock_timeout_60">1 minutė</string>
@@ -99,8 +101,10 @@
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
     <string name="nc_ok">Gerai</string>
     <string name="nc_call_name">Pokalbio pavadinimas</string>
+    <string name="nc_proceed">Tęsti</string>
     <string name="nc_call_name_is_same">Jūsų įvestas vardas yra toks pats kaip ir esamas</string>
     <string name="nc_share_text">Prisijunkite prie pokalbio, adresu %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s pakvietimas</string>
     <string name="nc_share_text_pass">\nSlaptažodis: %1$s</string>
 
     <!-- Chat -->
@@ -137,6 +141,7 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">Pasiekta 1000 simbolių riba</string>
+    <string name="nc_groups">Grupės</string>
     <string name="nc_participants">Dalyviai</string>
 
     <string name="nc_owner">Savininkas</string>
@@ -145,4 +150,6 @@
     <string name="nc_guest">Svečias</string>
     <string name="nc_readonly_hint">Šis pokalbis yra užrakintas.</string>
 
+    <string name="nc_file_browser_back">Atgal</string>
+    <string name="nc_file_browser_refresh">Įkelti iš naujo</string>
     </resources>
