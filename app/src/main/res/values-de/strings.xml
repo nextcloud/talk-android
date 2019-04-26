@@ -244,4 +244,10 @@
 
     <string name="nc_readonly_hint">Die Unterhaltung ist gesperrt</string>
 
-    </resources>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Datei-Browser\"</string>
+    <string name="nc_select_files">Dateien wählen</string>
+    <string name="nc_file_browser_back">Zurück</string>
+    <string name="nc_file_browser_refresh">Aktualisieren</string>
+    <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
+</resources>

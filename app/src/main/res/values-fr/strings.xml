@@ -243,4 +243,10 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
 
     <string name="nc_readonly_hint">Cette conversation est verrouillée</string>
 
-    </resources>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Explorateur de fichiers\"</string>
+    <string name="nc_select_files">Sélectionner les fichiers</string>
+    <string name="nc_file_browser_back">Retour</string>
+    <string name="nc_file_browser_refresh">Actualiser</string>
+    <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
+</resources>

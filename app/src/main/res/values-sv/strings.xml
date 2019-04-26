@@ -244,4 +244,10 @@
 
     <string name="nc_readonly_hint">Denna konversation är låst</string>
 
-    </resources>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Filhanterare\"</string>
+    <string name="nc_select_files">Välj filer</string>
+    <string name="nc_file_browser_back">Tillbaka</string>
+    <string name="nc_file_browser_refresh">Uppdatera</string>
+    <string name="nc_last_modified">%1$s | Senast ändrad: %2$s</string>
+</resources>
