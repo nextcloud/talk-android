@@ -244,4 +244,10 @@
 
     <string name="nc_readonly_hint">Ta rozmowa jest zablokowana</string>
 
-    </resources>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Przeglądarka plików\"</string>
+    <string name="nc_select_files">Wybierz pliki</string>
+    <string name="nc_file_browser_back">Wstecz</string>
+    <string name="nc_file_browser_refresh">Odśwież</string>
+    <string name="nc_last_modified">%1$s | Ostatnio zmodyfikowany: %2$s</string>
+</resources>

@@ -241,4 +241,10 @@ mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</str
 
     <string name="nc_readonly_hint">Aquesta conversa està bloquejada</string>
 
-    </resources>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Navegador de fitxers\"</string>
+    <string name="nc_select_files">Selecciona fitxers</string>
+    <string name="nc_file_browser_back">Enrere</string>
+    <string name="nc_file_browser_refresh">Actualitza</string>
+    <string name="nc_last_modified">%1$s | Darrera modificació: %2$s</string>
+</resources>

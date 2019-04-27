@@ -1,0 +1,136 @@
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">الإعدادات</string>
+
+    <!-- Server selection -->
+    <string name="nc_server_url">عنوان الخادم</string>
+    <string name="nc_server_import_account_plain">استيراد حساب</string>
+    <string name="nc_server_import_accounts_plain">استيراد حسابات</string>
+    <string name="nc_search">البحث</string>
+
+    <string name="nc_yes">نعم</string>
+    <string name="nc_no">لا</string>
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">وكيل البروكسي</string>
+    <string name="nc_settings_proxy_type_title">نوع البروكسي</string>
+    <string name="nc_settings_proxy_port_title">منفذ البروكسي</string>
+    <string name="nc_settings_remove">حذف</string>
+    <string name="nc_settings_remove_account">حذف حساب</string>
+    <string name="nc_settings_add_account">إضافة حساب جديد</string>
+    <string name="nc_settings_notification_sounds">نغمات الإشعار</string>
+    <string name="nc_settings_other_notifications_ringtone">آخر</string>
+    <string name="nc_settings_vibrate">اهتزاز</string>
+    <string name="nc_settings_privacy">الخصوصية</string>
+    <string name="nc_none">لا شيء</string>
+    <string name="nc_settings_screen_security_title">أمان الشاشة</string>
+    <string name="nc_settings_incognito_keyboard_title">لوحة المفاتيح في وضع المجهول</string>
+    <string name="nc_settings_link_previews_title">اظهر معاينات الروابط</string>
+    <string name="nc_locked">انقر لفك القفل</string>
+
+    <string name="nc_screen_lock_timeout_30">30 ثانية</string>
+    <string name="nc_screen_lock_timeout_60">دقيقة</string>
+    <string name="nc_screen_lock_timeout_300">5 دقائق</string>
+    <string name="nc_screen_lock_timeout_600">10 دقائق</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_cancel">إلغاء</string>
+
+    <string name="nc_no_proxy">بدون بروكسي</string>
+    <string name="nc_username">إسم المستخدم</string>
+    <string name="nc_password">كلمة السر</string>
+    <string name="nc_conversation_link">رابط المحادثة</string>
+    <string name="nc_new_password">كلمة سرية جديدة</string>
+    <string name="nc_wrong_password">كلمة سرية خاطئة</string>
+    <string name="nc_about">عن</string>
+    <string name="nc_privacy">الخصوصية</string>
+    <string name="nc_get_source_code">الحصول على الشفرة المصدرية</string>
+    <string name="nc_license_title"> الرخصة</string>
+    <string name="nc_select_an_account">اختيار حساب</string>
+
+    <!-- Conversation menu -->
+    <string name="nc_start_conversation">ابدأ محادثة</string>
+    <string name="nc_configure_room">ضبط المحادثة</string>
+    <string name="nc_leave">غادر المحادثة</string>
+    <string name="nc_rename">إعادة تسمية المحادثة</string>
+    <string name="nc_set_password">إدخِل كلمة سرية</string>
+    <string name="nc_change_password">تعديل الكلمة السرية</string>
+    <string name="nc_share_link">مشاركة الرابط</string>
+    <string name="nc_share_link_via">شارك الرابط عبر</string>
+    <string name="nc_delete_call">احذف المحادثة</string>
+    <string name="nc_delete">حذف </string>
+    <string name="nc_new_conversation">محادثة جديدة</string>
+    <string name="nc_join_via_link">الانضمام عبر رابط</string>
+    <string name="nc_join_via_web">الانضمام عبر الويب</string>
+    <string name="nc_add_to_favorites">أضف إلى المفضلة</string>
+    <string name="nc_remove_from_favorites">إزالتها مِن المفضلة</string>
+
+    <!-- Contacts -->
+    <string name="nc_select_contacts">اختر مراسِلين</string>
+    <string name="nc_contacts_done">تم</string>
+
+    <string name="nc_permissions_settings">فتح الإعدادات</string>
+
+    <!-- Call -->
+    <string name="nc_connecting_call">جارٍ الاتصال…</string>
+    <string name="nc_incoming_call">مكالمة واردة مِن</string>
+    <string name="nc_nick_guest">ضيف</string>
+    <string name="nc_public_call">محادثة عمومية جديدة</string>
+    <string name="nc_notification_settings">إعدادات الإشعار</string>
+    <string name="nc_plain_old_messages">الرسائل</string>
+    <string name="nc_mute_calls">كتم المكالمات</string>
+
+    <string name="nc_ok">موافق</string>
+    <string name="nc_call_name">اسم المحادثة</string>
+    <string name="nc_proceed">مواصلة</string>
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">ادخل رسالة</string>
+    <string name="nc_date_header_yesterday">البارحة</string>
+    <string name="nc_date_header_today">اليوم</string>
+    <string name="nc_conversation_menu_voice_call">اتصال فيديو</string>
+    <string name="nc_conversation_menu_video_call">اتصال فيديو</string>
+    <string name="nc_conversation_menu_conversation_info">بيانات المحادثة</string>
+    <string name="nc_new_messages">رسائل جديدة</string>
+    <string name="nc_no_messages_yet">ليس لديك رسائل بعد</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">لقد قمت بإرسال رابط.</string>
+    <string name="nc_sent_an_attachment_you">لقد قمت بإرسال مرفق.</string>
+    <string name="nc_sent_an_audio_you">لقد قمت بإرسال مقطع صوتي.</string>
+    <string name="nc_sent_a_video_you">لقد قمت بإرسال فيديو.</string>
+    <string name="nc_sent_an_image_you">لقد قمت بإرسال صورة.</string>
+    <string name="nc_endless_cancel">ألغي مِن طرف المستخدم.</string>
+    <string name="nc_description_send_message_button">أرسل رسالة</string>
+
+    <string name="nc_hello">أهلا</string>
+
+    <string name="nc_groups">الفِرَق</string>
+    <string name="nc_participants">المشارِكون</string>
+
+    <string name="nc_owner">المالك</string>
+    <string name="nc_moderator">مشرِف</string>
+    <string name="nc_user">مستخدم</string>
+    <string name="nc_guest">ضيف</string>
+    <string name="nc_file_browser_back">العودة</string>
+    <string name="nc_file_browser_refresh">تحديث</string>
+    </resources>
