@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -56,6 +57,7 @@ import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.postprocessors.BlurPostProcessor;
+import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
@@ -107,6 +109,9 @@ public class CallNotificationController extends BaseController {
 
     @Inject
     EventBus eventBus;
+
+    @Inject
+    Context context;
 
     @BindView(R.id.conversationNameTextView)
     TextView conversationNameTextView;
@@ -450,9 +455,11 @@ public class CallNotificationController extends BaseController {
 
                 break;
             case ROOM_GROUP_CALL:
-                avatarImageView.setActualImageResource(R.drawable.ic_people_group_white_24px);
+                avatarImageView.getHierarchy().setImage(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px))
+                        , 100, true);
             case ROOM_PUBLIC_CALL:
-                avatarImageView.setActualImageResource(R.drawable.ic_link_white_24px);
+                avatarImageView.getHierarchy().setImage(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px))
+                        , 100, true);
                 break;
             default:
         }
