@@ -113,8 +113,8 @@
                 android:layout_toEndOf="@id/dialogLastMessageUserAvatar"
                 android:ellipsize="end"
                 android:gravity="top"
-                android:lines="2"
-                android:singleLine="false"
+                android:lines="1"
+                android:singleLine="true"
                 android:textColor="@color/warm_grey_four"
                 tools:text="This is the last message\nof an incredibly long two line  conversation text" />
 
