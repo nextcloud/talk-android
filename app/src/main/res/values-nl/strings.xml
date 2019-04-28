@@ -245,4 +245,10 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
 
     <string name="nc_readonly_hint">Dit gesprek is gesloten</string>
 
-    </resources>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Bestandenbrowser\"</string>
+    <string name="nc_select_files">Selecteer bestanden</string>
+    <string name="nc_file_browser_back">Terug</string>
+    <string name="nc_file_browser_refresh">Verversen</string>
+    <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
+</resources>
