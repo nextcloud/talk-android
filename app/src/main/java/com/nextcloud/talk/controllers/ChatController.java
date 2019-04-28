@@ -1019,15 +1019,19 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         newMessagesCount = 0;
                     }
 
-                    chatMessage.setGrouped(adapter.isPreviousSameAuthor(chatMessage.getActorId(), -1) && (adapter.getSameAuthorLastMessagesCount(chatMessage.getActorId()) % 5) > 0);
+                    if (adapter != null) {
+                        chatMessage.setGrouped(adapter.isPreviousSameAuthor(chatMessage.getActorId(), -1) && (adapter.getSameAuthorLastMessagesCount(chatMessage.getActorId()) % 5) > 0);
+                        adapter.addToStart(chatMessage, shouldScroll);
+                    }
 
-                    adapter.addToStart(chatMessage, shouldScroll);
                 }
 
                 String xChatLastGivenHeader;
                 if (response.headers().size() > 0 && !TextUtils.isEmpty((xChatLastGivenHeader = response.headers().get
                         ("X-Chat-Last-Given")))) {
-                    globalLastKnownFutureMessageId = Integer.parseInt(xChatLastGivenHeader);
+                    if (xChatLastGivenHeader != null) {
+                        globalLastKnownFutureMessageId = Integer.parseInt(xChatLastGivenHeader);
+                    }
                 }
             }
 
