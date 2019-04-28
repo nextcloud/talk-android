@@ -57,6 +57,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
 import com.facebook.imagepipeline.postprocessors.RoundPostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -215,7 +216,7 @@ public class ConversationsListController extends BaseController implements Searc
                 @Override
                 protected void onNewResultImpl(Bitmap bitmap) {
                     if (bitmap != null) {
-                        new RoundPostprocessor(true).process(bitmap);
+                        new RoundAsCirclePostprocessor(true).process(bitmap);
                         menuItem.setIcon(new BitmapDrawable(bitmap));
                     }
                 }
