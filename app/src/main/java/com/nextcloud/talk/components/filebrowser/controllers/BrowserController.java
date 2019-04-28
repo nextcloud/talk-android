@@ -228,7 +228,9 @@ public class BrowserController extends BaseController implements ListingInterfac
 
             currentPath = objectList.get(0).getPath();
 
-            Objects.requireNonNull(getActivity()).runOnUiThread(this::setTitle);
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> setTitle());
+            }
 
             for (int i = 1; i < objectList.size(); i++) {
                 fileBrowserItems.add(new BrowserFileItem(objectList.get(i), activeUser, this));
@@ -236,10 +238,14 @@ public class BrowserController extends BaseController implements ListingInterfac
         }
 
         adapter.addItems(0, fileBrowserItems);
-        Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
-            adapter.notifyDataSetChanged();
-            changeEnabledStatusForBarItems(true);
-        });
+
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() -> {
+                adapter.notifyDataSetChanged();
+                changeEnabledStatusForBarItems(true);
+
+            });
+        }
     }
 
     private boolean shouldPathBeSelectedDueToParent(String currentPath) {
