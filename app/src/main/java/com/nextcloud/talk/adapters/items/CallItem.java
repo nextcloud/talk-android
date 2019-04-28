@@ -117,10 +117,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
         } else {
             holder.passwordProtectedImageView.setVisibility(View.GONE);
         }
-
-        int avatarSize = Math.round(NextcloudTalkApplication
-                .getSharedApplication().getResources().getDimension(R.dimen.avatar_size));
-
+        
         Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
         switch (conversation.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
@@ -134,7 +131,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                             .setOldController(holder.avatarImageView.getController())
                             .setAutoPlayAnimations(true)
                             .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                                    conversation.getLastMessage().getActorId(),
+                                    conversation.getName(),
                                     R.dimen.avatar_size), null))
                             .build();
                     holder.avatarImageView.setController(draweeController);
