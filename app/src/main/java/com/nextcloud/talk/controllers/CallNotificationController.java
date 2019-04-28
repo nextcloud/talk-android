@@ -413,37 +413,38 @@ public class CallNotificationController extends BaseController {
                 dataSource.subscribe(new BaseBitmapDataSubscriber() {
                     @Override
                     protected void onNewResultImpl(@Nullable Bitmap bitmap) {
-                        avatarImageView.getHierarchy().setImage(new BitmapDrawable(bitmap), 100,
-                                true);
+                        if (avatarImageView != null) {
+                            avatarImageView.getHierarchy().setImage(new BitmapDrawable(bitmap), 100,
+                                    true);
 
-                        if (getResources() != null) {
-                            incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
-                                    .incoming_gradient));
-                        }
-
-                        if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 &&
-                                userBeingCalled.hasSpreedCapabilityWithName("no-ping")) {
-                            if (getActivity() != null) {
-                                Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
-                                new BlurPostProcessor(5, getActivity()).process(backgroundBitmap);
-                                backgroundImageView.setImageDrawable(new BitmapDrawable(backgroundBitmap));
+                            if (getResources() != null) {
+                                incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
+                                        .incoming_gradient));
                             }
-                        } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
-                            ColorArt colorArt = new ColorArt(bitmap);
-                            int color = colorArt.getBackgroundColor();
 
-                            float[] hsv = new float[3];
-                            Color.colorToHSV(color, hsv);
-                            hsv[2] *= 0.75f;
-                            color = Color.HSVToColor(hsv);
+                            if ((AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 || AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) &&
+                                    userBeingCalled.hasSpreedCapabilityWithName("no-ping")) {
+                                if (getActivity() != null) {
+                                    Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
+                                    new BlurPostProcessor(5, getActivity()).process(backgroundBitmap);
+                                    backgroundImageView.setImageDrawable(new BitmapDrawable(backgroundBitmap));
+                                }
+                            } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
+                                ColorArt colorArt = new ColorArt(bitmap);
+                                int color = colorArt.getBackgroundColor();
 
-                            backgroundImageView.setImageDrawable(new ColorDrawable(color));
+                                float[] hsv = new float[3];
+                                Color.colorToHSV(color, hsv);
+                                hsv[2] *= 0.75f;
+                                color = Color.HSVToColor(hsv);
+
+                                backgroundImageView.setImageDrawable(new ColorDrawable(color));
+                            }
                         }
                     }
 
                     @Override
                     protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-
                     }
                 }, UiThreadImmediateExecutorService.getInstance());
 

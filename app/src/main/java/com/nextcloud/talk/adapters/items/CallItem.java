@@ -117,7 +117,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
         } else {
             holder.passwordProtectedImageView.setVisibility(View.GONE);
         }
-        
+
         Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
         switch (conversation.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:

@@ -85,7 +85,6 @@ public class ReadFilesystemOperation {
             e.printStackTrace();
         }
 
-
         remoteFiles.add(BrowserFile.getModelFromResponse(rootElement[0],
                 rootElement[0].getHref().toString().substring(basePath.length())));
         for (Response memberElement : memberElements) {
