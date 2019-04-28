@@ -94,8 +94,9 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="20dp"
-                android:backgroundTint="@color/colorPrimary"
-                app:actualImageResource="@drawable/ic_switch_video_white_24px" />
+                app:backgroundImage="@color/colorPrimary"
+                app:roundAsCircle="true"
+                app:placeholderImage="@drawable/ic_switch_video_white_24px" />
         </FrameLayout>
     </RelativeLayout>
 
@@ -115,7 +116,9 @@
             android:layout_above="@id/callControlsLinearLayoutView"
             android:layout_centerHorizontal="true"
             android:tint="@color/nc_darkRed"
-            app:actualImageResource="@drawable/ic_call_end_white_24px" />
+            app:backgroundImage="@color/colorPrimary"
+            app:roundAsCircle="true"
+            app:placeholderImage="@drawable/ic_call_end_white_24px" />
 
         <LinearLayout
             android:id="@+id/callControlsLinearLayoutView"
@@ -134,11 +137,15 @@
                 android:layout_height="60dp"
                 android:layout_marginStart="24dp"
                 android:alpha="0.7"
-                android:backgroundTint="@color/colorPrimary"
-                app:actualImageResource="@drawable/ic_mic_off_white_24px" />
+                app:backgroundImage="@color/colorPrimary"
+                app:roundAsCircle="true"
+                app:placeholderImage="@drawable/ic_mic_off_white_24px" />
 
             <com.facebook.drawee.view.SimpleDraweeView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/call_control_camera"
+                app:backgroundImage="@color/colorPrimary"
+                app:roundAsCircle="true"
+                app:placeholderImage="@drawable/ic_videocam_white_24px"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="24dp"
@@ -147,6 +154,8 @@
 
             <com.facebook.drawee.view.SimpleDraweeView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/callControlEnableSpeaker"
+                app:backgroundImage="@color/colorPrimary"
+                app:roundAsCircle="true"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="24dp"

@@ -452,7 +452,7 @@ public class CallController extends BaseController {
                     onCameraClick();
                 }
             } else {
-                cameraControlButton.setImageResource(R.drawable.ic_videocam_off_white_24px);
+                cameraControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_videocam_off_white_24px);
                 cameraControlButton.setAlpha(0.7f);
                 cameraSwitchButton.setVisibility(View.GONE);
             }
@@ -463,7 +463,7 @@ public class CallController extends BaseController {
                 onMicrophoneClick();
             }
         } else {
-            microphoneControlButton.setImageResource(R.drawable.ic_mic_off_white_24px);
+            microphoneControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
         }
 
         if (!inCall) {
@@ -618,14 +618,14 @@ public class CallController extends BaseController {
                 audioOn = !audioOn;
 
                 if (audioOn) {
-                    microphoneControlButton.setActualImageResource(R.drawable.ic_mic_white_24px);
+                    microphoneControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_white_24px);
                 } else {
-                    microphoneControlButton.setActualImageResource(R.drawable.ic_mic_off_white_24px);
+                    microphoneControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
                 }
 
                 toggleMedia(audioOn, false);
             } else {
-                microphoneControlButton.setActualImageResource(R.drawable.ic_mic_white_24px);
+                microphoneControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_white_24px);
                 pulseAnimation.start();
                 toggleMedia(true, false);
             }
@@ -661,12 +661,12 @@ public class CallController extends BaseController {
             videoOn = !videoOn;
 
             if (videoOn) {
-                cameraControlButton.setActualImageResource(R.drawable.ic_videocam_white_24px);
+                cameraControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_videocam_white_24px);
                 if (cameraEnumerator.getDeviceNames().length > 1) {
                     cameraSwitchButton.setVisibility(View.VISIBLE);
                 }
             } else {
-                cameraControlButton.setActualImageResource(R.drawable.ic_videocam_off_white_24px);
+                cameraControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_videocam_off_white_24px);
                 cameraSwitchButton.setVisibility(View.GONE);
             }
 
@@ -1938,7 +1938,7 @@ public class CallController extends BaseController {
             v.onTouchEvent(event);
             if (event.getAction() == MotionEvent.ACTION_UP && isPTTActive) {
                 isPTTActive = false;
-                microphoneControlButton.setActualImageResource(R.drawable.ic_mic_off_white_24px);
+                microphoneControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
                 pulseAnimation.stop();
                 toggleMedia(false, false);
                 animateCallControls(false, 5000);
