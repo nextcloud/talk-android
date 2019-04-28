@@ -363,78 +363,82 @@ public class ConversationInfoController extends BaseController {
                     public void onNext(RoomOverall roomOverall) {
                         conversation = roomOverall.getOcs().getData();
 
-                        ownOptionsCategory.setVisibility(View.VISIBLE);
+                        if (isAttached() && (!isBeingDestroyed() || !isDestroyed())) {
+                            ownOptionsCategory.setVisibility(View.VISIBLE);
 
-                        if (!conversation.canLeave(conversationUser)) {
-                            leaveConversationAction.setVisibility(View.GONE);
-                        } else {
-                            leaveConversationAction.setVisibility(View.VISIBLE);
-                        }
-
-                        if (!conversation.canModerate(conversationUser)) {
-                            deleteConversationAction.setVisibility(View.GONE);
-                        } else {
-                            deleteConversationAction.setVisibility(View.VISIBLE);
-                        }
-
-                        if (Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
-                            muteCalls.setVisibility(View.GONE);
-                        }
-
-                        getListOfParticipants();
-
-                        if (progressBar != null) {
-                            progressBar.setVisibility(View.GONE);
-                        }
-
-                        if (nameCategoryView != null) {
-                            nameCategoryView.setVisibility(View.VISIBLE);
-                        }
-
-                        if (conversationDisplayName != null) {
-                            conversationDisplayName.setText(conversation.getDisplayName());
-                        }
-
-                        loadConversationAvatar();
-
-                        if (conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
-                            if (messageNotificationLevel != null) {
-                                messageNotificationLevel.setEnabled(true);
-                                messageNotificationLevel.setAlpha(1.0f);
+                            if (leaveConversationAction != null) {
+                                if (!conversation.canLeave(conversationUser)) {
+                                    leaveConversationAction.setVisibility(View.GONE);
+                                } else {
+                                    leaveConversationAction.setVisibility(View.VISIBLE);
+                                }
                             }
 
-                            if (!conversation.getNotificationLevel().equals(Conversation.NotificationLevel.DEFAULT)) {
-                                String stringValue;
-                                switch (new EnumNotificationLevelConverter().convertToInt(conversation.getNotificationLevel())) {
-                                    case 1:
-                                        stringValue = "always";
-                                        break;
-                                    case 2:
-                                        stringValue = "mention";
-                                        break;
-                                    case 3:
-                                        stringValue = "never";
-                                        break;
-                                    default:
-                                        stringValue = "mention";
-                                        break;
+                            if (!conversation.canModerate(conversationUser)) {
+                                deleteConversationAction.setVisibility(View.GONE);
+                            } else {
+                                deleteConversationAction.setVisibility(View.VISIBLE);
+                            }
+
+                            if (Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
+                                muteCalls.setVisibility(View.GONE);
+                            }
+
+                            getListOfParticipants();
+
+                            if (progressBar != null) {
+                                progressBar.setVisibility(View.GONE);
+                            }
+
+                            if (nameCategoryView != null) {
+                                nameCategoryView.setVisibility(View.VISIBLE);
+                            }
+
+                            if (conversationDisplayName != null) {
+                                conversationDisplayName.setText(conversation.getDisplayName());
+                            }
+
+                            loadConversationAvatar();
+
+                            if (conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
+                                if (messageNotificationLevel != null) {
+                                    messageNotificationLevel.setEnabled(true);
+                                    messageNotificationLevel.setAlpha(1.0f);
                                 }
 
-                                if (messageNotificationLevel != null) {
-                                    messageNotificationLevel.setValue(stringValue);
+                                if (!conversation.getNotificationLevel().equals(Conversation.NotificationLevel.DEFAULT)) {
+                                    String stringValue;
+                                    switch (new EnumNotificationLevelConverter().convertToInt(conversation.getNotificationLevel())) {
+                                        case 1:
+                                            stringValue = "always";
+                                            break;
+                                        case 2:
+                                            stringValue = "mention";
+                                            break;
+                                        case 3:
+                                            stringValue = "never";
+                                            break;
+                                        default:
+                                            stringValue = "mention";
+                                            break;
+                                    }
+
+                                    if (messageNotificationLevel != null) {
+                                        messageNotificationLevel.setValue(stringValue);
+                                    }
+                                } else {
+                                    setProperNotificationValue(conversation);
                                 }
                             } else {
+                                if (messageNotificationLevel != null) {
+                                    messageNotificationLevel.setEnabled(false);
+                                    messageNotificationLevel.setAlpha(0.38f);
+                                }
                                 setProperNotificationValue(conversation);
                             }
-                        } else {
-                            if (messageNotificationLevel != null) {
-                                messageNotificationLevel.setEnabled(false);
-                                messageNotificationLevel.setAlpha(0.38f);
-                            }
-                            setProperNotificationValue(conversation);
-                        }
 
-                        materialPreferenceScreen.setVisibility(View.VISIBLE);
+                            materialPreferenceScreen.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     @Override
