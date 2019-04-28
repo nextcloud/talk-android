@@ -47,6 +47,7 @@ import com.stfalcon.chatkit.messages.MessageHolders;
 import com.vanniktech.emoji.EmojiTextView;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
@@ -142,7 +143,8 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             public ReadFilesystemOperation call() {
                 return new ReadFilesystemOperation(okHttpClient, activeUser, url, 0);
             }
-        }).subscribeOn(Schedulers.newThread())
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<ReadFilesystemOperation>() {
                     @Override
                     public void onSubscribe(Disposable d) {
