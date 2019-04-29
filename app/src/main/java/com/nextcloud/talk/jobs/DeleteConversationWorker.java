@@ -83,7 +83,7 @@ public class DeleteConversationWorker extends Worker {
                     EventStatus.EventType.CONVERSATION_UPDATE, true);
 
             ncApi.deleteRoom(credentials, ApiUtils.getRoom(operationUser.getBaseUrl(), conversationToken))
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .blockingSubscribe(new Observer<GenericOverall>() {
                         Disposable disposable;
 

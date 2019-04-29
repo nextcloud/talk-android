@@ -494,7 +494,7 @@ public class SettingsController extends BaseController {
 
             profileQueryDisposable = ncApi.getUserProfile(credentials,
                     ApiUtils.getUrlForUserProfile(currentUser.getBaseUrl()))
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(userProfileOverall -> {
 
@@ -516,7 +516,7 @@ public class SettingsController extends BaseController {
                                     null,
                                     null, displayName, null, null,
                                     null, currentUser.getId(), null, null, null)
-                                    .subscribeOn(Schedulers.newThread())
+                                    .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(userEntityResult -> {
                                                 displayNameTextView.setText(userEntityResult.getDisplayName());

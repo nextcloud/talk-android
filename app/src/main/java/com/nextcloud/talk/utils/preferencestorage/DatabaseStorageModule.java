@@ -89,7 +89,7 @@ public class DatabaseStorageModule implements StorageModule {
                     ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
                             ApiUtils.getUrlForSettingNotificationlevel(conversationUser.getBaseUrl(), conversationToken),
                             intValue)
-                            .subscribeOn(Schedulers.newThread())
+                            .subscribeOn(Schedulers.io())
                             .subscribe(new Observer<GenericOverall>() {
                                 @Override
                                 public void onSubscribe(Disposable d) {

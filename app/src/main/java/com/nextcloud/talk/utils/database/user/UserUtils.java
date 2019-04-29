@@ -90,7 +90,7 @@ public class UserUtils {
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
 
         return dataStore.delete(user)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
     }
@@ -101,7 +101,7 @@ public class UserUtils {
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
 
         return dataStore.delete(user)
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
 
     }
 
@@ -264,7 +264,7 @@ public class UserUtils {
 
         return dataStore.upsert(user)
                 .toObservable()
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
 }

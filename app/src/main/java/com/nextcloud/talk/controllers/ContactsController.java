@@ -253,7 +253,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         ((UserItem) selectedObject).getModel().getUserId(), null);
                 ncApi.createRoom(credentials,
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<RoomOverall>() {
                             @Override
@@ -447,7 +447,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         ncApi.getContactsWithSearchParam(
                 credentials,
                 retrofitBucket.getUrl(), shareTypesList, modifiedQueryMap)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
                 .subscribe(new Observer<ResponseBody>() {
@@ -865,7 +865,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                 ncApi.createRoom(credentials,
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<RoomOverall>() {
                             @Override
