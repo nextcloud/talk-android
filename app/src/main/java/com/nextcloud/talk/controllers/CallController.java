@@ -340,7 +340,7 @@ public class CallController extends BaseController {
     private void handleFromNotification() {
         ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
                 .retry(3)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RoomsOverall>() {
                     @Override
@@ -863,7 +863,7 @@ public class CallController extends BaseController {
         leavingCall = false;
 
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SignalingSettingsOverall>() {
@@ -894,7 +894,7 @@ public class CallController extends BaseController {
                                 try {
                                     userUtils.createOrUpdateUser(null, null, null, null, null, null, null,
                                             conversationUser.getId(), null, null, LoganSquare.serialize(externalSignalingServer))
-                                            .subscribeOn(Schedulers.newThread())
+                                            .subscribeOn(Schedulers.io())
                                             .subscribe();
                                 } catch (IOException exception) {
                                     Log.e(TAG, "Failed to serialize external signaling server");
@@ -949,7 +949,7 @@ public class CallController extends BaseController {
     private void checkCapabilities() {
         ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
                 .retry(3)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<CapabilitiesOverall>() {
                     @Override
@@ -999,7 +999,7 @@ public class CallController extends BaseController {
     private void joinRoomAndCall() {
         ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl,
                 roomToken), conversationPassword)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
                 .subscribe(new Observer<CallOverall>() {
@@ -1041,7 +1041,7 @@ public class CallController extends BaseController {
     private void performCall() {
         ncApi.joinCall(credentials,
                 ApiUtils.getUrlForCall(baseUrl, roomToken))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
@@ -1070,7 +1070,7 @@ public class CallController extends BaseController {
 
                         if (needsPing) {
                             ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
-                                    .subscribeOn(Schedulers.newThread())
+                                    .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
                                     .takeWhile(observable -> inCall)
@@ -1108,7 +1108,7 @@ public class CallController extends BaseController {
 
                         if (!hasExternalSignalingServer) {
                             ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))
-                                    .subscribeOn(Schedulers.newThread())
+                                    .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .repeatWhen(observable -> observable)
                                     .takeWhile(observable -> inCall)
@@ -1358,7 +1358,7 @@ public class CallController extends BaseController {
 
     private void hangupNetworkCalls() {
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
@@ -1395,7 +1395,7 @@ public class CallController extends BaseController {
 
     private void leaveRoom() {
         ncApi.leaveRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
@@ -1483,7 +1483,7 @@ public class CallController extends BaseController {
 
     private void getPeersForCall() {
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<ParticipantsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -1675,7 +1675,7 @@ public class CallController extends BaseController {
                 Observable
                         .interval(1, TimeUnit.SECONDS)
                         .takeWhile(observer -> inCall)
-                        .observeOn(Schedulers.newThread())
+                        .observeOn(Schedulers.io())
                         .doOnNext(n -> magicPeerConnectionWrapperList.get(finalI).sendChannelData(dataChannelMessage));
                 break;
             }
@@ -1743,7 +1743,7 @@ public class CallController extends BaseController {
             ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken),
                     strings.toString())
                     .retry(3)
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .subscribe(new Observer<SignalingOverall>() {
                         @Override
                         public void onSubscribe(Disposable d) {

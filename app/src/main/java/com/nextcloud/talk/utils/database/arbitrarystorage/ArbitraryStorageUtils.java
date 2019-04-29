@@ -46,7 +46,7 @@ public class ArbitraryStorageUtils {
 
         dataStore.upsert(arbitraryStorageEntity)
                 .toObservable()
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
@@ -63,6 +63,6 @@ public class ArbitraryStorageUtils {
         ReactiveScalar<Integer> deleteResult = dataStore.delete(ArbitraryStorage.class).where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier)).get();
 
         return deleteResult.single().toObservable()
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 }

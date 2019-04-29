@@ -76,7 +76,7 @@ public class ShareOperationWorker extends Worker {
                     filesArray.get(i),
                     roomToken,
                     "10")
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .blockingSubscribe(new Observer<Void>() {
                         @Override
                         public void onSubscribe(Disposable d) {

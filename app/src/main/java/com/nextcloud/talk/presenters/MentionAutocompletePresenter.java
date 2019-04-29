@@ -95,7 +95,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         ncApi.getMentionAutocompleteSuggestions(ApiUtils.getCredentials(currentUser.getUsername(), currentUser
                         .getToken()), ApiUtils.getUrlForMentionSuggestions(currentUser.getBaseUrl(), roomToken),
                 queryString, 5)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
                 .subscribe(new Observer<MentionOverall>() {

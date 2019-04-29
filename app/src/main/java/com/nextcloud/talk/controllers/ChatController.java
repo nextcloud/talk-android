@@ -213,7 +213,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void getRoomInfo() {
         ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser.getBaseUrl(), roomToken))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RoomOverall>() {
                     @Override
@@ -246,7 +246,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void handleFromNotification() {
         ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(conversationUser.getBaseUrl()))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RoomsOverall>() {
                     @Override
@@ -621,7 +621,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private void startPing() {
         if (!conversationUser.hasSpreedCapabilityWithName("no-ping")) {
             ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(conversationUser.getBaseUrl(), roomToken))
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
                     .takeWhile(observable -> inChat)
@@ -666,7 +666,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (currentCall == null) {
             ncApi.joinRoom(credentials,
                     ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser.getBaseUrl(), roomToken), roomPassword)
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
                     .subscribe(new Observer<CallOverall>() {
@@ -719,7 +719,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         ncApi.leaveRoom(credentials,
                 ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser.getBaseUrl(),
                         roomToken))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
@@ -777,7 +777,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken),
                 message, conversationUser
                         .getDisplayName())
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
@@ -850,7 +850,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 ncApi.pullChatMessages(credentials, ApiUtils.getUrlForChat(conversationUser.getBaseUrl(),
                         roomToken),
                         fieldMap)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .takeWhile(observable -> inChat && !wasDetached)
                         .retry(3, observable -> inChat && !wasDetached)
@@ -879,7 +879,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             } else {
                 ncApi.pullChatMessages(credentials,
                         ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken), fieldMap)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .retry(3, observable -> inChat && !wasDetached)
                         .takeWhile(observable -> inChat && !wasDetached)
@@ -1201,7 +1201,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             ncApi.createRoom(credentials,
                     retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<RoomOverall>() {
                         @Override

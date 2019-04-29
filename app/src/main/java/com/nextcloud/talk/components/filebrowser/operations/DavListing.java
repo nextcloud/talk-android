@@ -47,7 +47,7 @@ public class DavListing extends ListingAbstractClass {
             public ReadFilesystemOperation call() {
                 return new ReadFilesystemOperation(okHttpClient, currentUser, path, 1);
             }
-        }).subscribeOn(Schedulers.newThread())
+        }).subscribeOn(Schedulers.io())
                 .subscribe(new SingleObserver<ReadFilesystemOperation>() {
                     @Override
                     public void onSubscribe(Disposable d) {
