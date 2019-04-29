@@ -197,7 +197,7 @@ public class CallNotificationController extends BaseController {
     private void checkIfAnyParticipantsRemainInRoom() {
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(userBeingCalled.getBaseUrl(),
                 currentConversation.getToken()))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .takeWhile(observable -> !leavingScreen)
                 .retry(3)
                 .subscribe(new Observer<ParticipantsOverall>() {
@@ -246,7 +246,7 @@ public class CallNotificationController extends BaseController {
 
     private void handleFromNotification() {
         ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(userBeingCalled.getBaseUrl()))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RoomsOverall>() {

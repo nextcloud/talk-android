@@ -176,7 +176,7 @@ public class AccountVerificationController extends BaseController {
         }
 
         ncApi.getServerStatus(queryUrl)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Status>() {
                     @Override
@@ -220,7 +220,7 @@ public class AccountVerificationController extends BaseController {
 
     private void findServerTalkApp(String credentials) {
         ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<RoomsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -257,7 +257,7 @@ public class AccountVerificationController extends BaseController {
                 baseUrl, displayName, null, true,
                 userId, null, null,
                 appPreferences.getTemporaryClientCertAlias(), null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<UserEntity>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -297,7 +297,7 @@ public class AccountVerificationController extends BaseController {
     private void fetchProfile(String credentials) {
         ncApi.getUserProfile(credentials,
                 ApiUtils.getUrlForUserProfile(baseUrl))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<UserProfileOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {

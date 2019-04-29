@@ -368,7 +368,7 @@ public class WebViewLoginController extends BaseController {
                         userQueryDisposable = userUtils.createOrUpdateUser(null, loginData.getToken(),
                                 null, null, "", true,
                                 null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias(), null)
-                                .subscribeOn(Schedulers.newThread())
+                                .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(userEntity -> {
                                             if (finalMessageType != null) {

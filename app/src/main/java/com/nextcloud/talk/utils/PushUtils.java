@@ -271,7 +271,7 @@ public class PushUtils {
 
                                             ncApi.registerDeviceForNotificationsWithProxy(finalCredentials,
                                                     ApiUtils.getUrlPushProxy(), proxyMap)
-                                                    .subscribeOn(Schedulers.newThread())
+                                                    .subscribeOn(Schedulers.io())
                                                     .subscribe(new Observer<Void>() {
                                                         @Override
                                                         public void onSubscribe(Disposable d) {

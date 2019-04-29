@@ -280,7 +280,7 @@ public class ConversationInfoController extends BaseController {
 
     private void getListOfParticipants() {
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(conversationUser.getBaseUrl(), conversationToken))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ParticipantsOverall>() {
                     @Override
@@ -351,7 +351,7 @@ public class ConversationInfoController extends BaseController {
 
     private void fetchRoomInfo() {
         ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser.getBaseUrl(), conversationToken))
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RoomOverall>() {
                     @Override

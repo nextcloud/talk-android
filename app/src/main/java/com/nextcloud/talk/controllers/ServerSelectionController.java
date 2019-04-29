@@ -246,7 +246,7 @@ public class ServerSelectionController extends BaseController {
 
     private void checkServer(String queryUrl, boolean checkForcedHttps) {
         statusQueryDisposable = ncApi.getServerStatus(queryUrl)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(status -> {
                     String productName = getResources().getString(R.string.nc_server_product_name);
