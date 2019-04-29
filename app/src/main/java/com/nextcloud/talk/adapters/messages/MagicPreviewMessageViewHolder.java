@@ -143,8 +143,8 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             public ReadFilesystemOperation call() {
                 return new ReadFilesystemOperation(okHttpClient, activeUser, url, 0);
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .subscribe(new SingleObserver<ReadFilesystemOperation>() {
                     @Override
                     public void onSubscribe(Disposable d) {
