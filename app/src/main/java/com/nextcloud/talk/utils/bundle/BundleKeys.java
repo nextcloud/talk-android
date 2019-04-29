@@ -54,5 +54,5 @@ public class BundleKeys {
     public static final String KEY_BROWSER_TYPE = "KEY_BROWSER_TYPE";
     public static final String KEY_FILE_PATHS = "KEY_FILE_PATHS";
     public static final String KEY_ACCOUNT = "KEY_ACCOUNT";
-    public static final String KEY_FILE_PATH = "KEY_FILE_PATH";
+    public static final String KEY_FILE_ID = "KEY_FILE_ID";
 }
