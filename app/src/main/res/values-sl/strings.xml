@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Nastavitve</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Naslov strežnika</string>
     <string name="nc_server_not_installed">Dokončajte namestitev %1$s</string>
@@ -36,6 +39,7 @@
     <!-- Account verification -->
     <string name="nc_push_disabled">Potisno obveščanje je onemogočeno</string>
     <string name="nc_capabilities_failed">Pridobivanje podatkov o zmožnosti je spodletelo. Opravilo bo preklicano.</string>
+    <string name="nc_external_server_failed">Pridobivanje signalnih nastavitev je spodletelo</string>
     <string name="nc_display_name_not_fetched">Prikaznega imena ni mogoče pridobiti; opravilo je prekinjeno.</string>
     <string name="nc_nextcloud_talk_app_not_installed">Program %1$s na strežniku ni nameščen, zahteva bo preklicana.</string>
     <string name="nc_display_name_not_stored">Prikaznega imena ni mogoče shraniti; opravilo je prekinjeno.</string>
@@ -59,6 +63,8 @@
     <string name="nc_settings_reauthorize">Ponovno overi dostop</string>
     <string name="nc_client_cert_setup">Nastavi potrdilo odjemalca</string>
     <string name="nc_client_cert_change">Spremeni potrdilo odjemalca</string>
+    <string name="nc_settings_remove">Odstrani</string>
+    <string name="nc_settings_remove_confirmation">Potrdite zahtevo za odstranitev trenutnega računa.</string>
     <string name="nc_settings_remove_account">Odstrani račun</string>
     <string name="nc_settings_add_account">Dodaj račun</string>
     <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
@@ -69,6 +75,22 @@
     <string name="nc_settings_other_notifications_ringtone">Drugo</string>
     <string name="nc_settings_no_ringtone">Brez zvoka</string>
     <string name="nc_settings_vibrate">Tresenje</string>
+    <string name="nc_settings_privacy">Zasebnost</string>
+    <string name="nc_settings_screen_lock_title">Zaklep zaslona</string>
+    <string name="nc_none">Brez</string>
+    <string name="nc_settings_link_previews_title">Pokaži predoglede povezav</string>
+    <string name="nc_screen_lock_timeout_30">30 sekund</string>
+    <string name="nc_screen_lock_timeout_60">1 minuta</string>
+    <string name="nc_screen_lock_timeout_300">5 minut</string>
+    <string name="nc_screen_lock_timeout_600">10 minut</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">Odkleni %1$s</string>
+    <string name="nc_cancel">Prekliči</string>
+
     <string name="nc_no_proxy">Brez posredniškega strežnika</string>
     <string name="nc_username">Uporabniško ime</string>
     <string name="nc_password">Geslo</string>
@@ -96,6 +118,7 @@
     <string name="nc_make_call_public">Nastavi pogovor kot javen</string>
     <string name="nc_make_call_private">Nastavi pogovor kot zaseben</string>
     <string name="nc_delete_call">Izbriši pogovor</string>
+    <string name="nc_delete">Izbriši</string>
     <string name="nc_new_conversation">Nov pogovor</string>
     <string name="nc_join_via_link">Pridruži se prek povezave</string>
     <string name="nc_join_via_web">Pridruži se prek spleta</string>
@@ -119,9 +142,12 @@
     <string name="nc_notification_channel_calls">Kanal obvestil klicev</string>
     <string name="nc_notification_channel_messages">Kanal obvestil sporočil</string>
     <string name="nc_notification_channel_calls_description">Pokaži dohodne klice</string>
+    <string name="nc_plain_old_messages">Sporočila</string>
     <string name="nc_notify_me_always">Vedno obvesti</string>
     <string name="nc_notify_me_mention">Obvesti ob omembi</string>
     <string name="nc_notify_me_never">Nikoli ne obvesti</string>
+    <string name="nc_mute_calls">Utišaj klice</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom prek mobilnih
@@ -165,4 +191,12 @@
     <string name="nc_chat_empty">Tapnite za prvi %1$s!</string>
     <string name="nc_hello">pozdrav</string>
 
+    <string name="nc_groups">Skupine</string>
+    <string name="nc_participants">Udeleženci</string>
+
+    <string name="nc_owner">Lastnik</string>
+    <string name="nc_user">Uporabnik</string>
+    <string name="nc_guest">Gost</string>
+    <string name="nc_select_files">Izbor datotek</string>
+    <string name="nc_file_browser_refresh">Osveži</string>
     </resources>

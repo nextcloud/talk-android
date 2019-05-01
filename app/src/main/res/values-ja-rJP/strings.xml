@@ -243,4 +243,9 @@ Webブラウザ経由で会話への参加を試みてください。</string>
 
     <string name="nc_readonly_hint">この会話はロックされています</string>
 
+    <!-- Browser component -->
+    <string name="nc_file_browser">ファイルブラウザ</string>
+    <string name="nc_select_files">ファイルの選択</string>
+    <string name="nc_file_browser_back">戻る</string>
+    <string name="nc_file_browser_refresh">更新</string>
     </resources>
