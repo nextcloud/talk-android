@@ -27,11 +27,8 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.View;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
@@ -45,16 +42,21 @@ import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.stfalcon.chatkit.messages.MessageHolders;
 import com.vanniktech.emoji.EmojiTextView;
+
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
-
-import javax.inject.Inject;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
@@ -116,10 +118,9 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                     filesAppIntent.setComponent(componentName);
                     filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     filesAppIntent.setPackage(context.getString(R.string.nc_import_accounts_from));
-                    Bundle options = new Bundle();
-                    options.putString(BundleKeys.KEY_ACCOUNT, accountString);
-                    options.putString(BundleKeys.KEY_FILE_ID, message.getSelectedIndividualHashMap().get("id"));
-                    context.startActivity(filesAppIntent, options);
+                    filesAppIntent.putExtra(BundleKeys.KEY_ACCOUNT, accountString);
+                    filesAppIntent.putExtra(BundleKeys.KEY_FILE_ID, message.getSelectedIndividualHashMap().get("id"));
+                    context.startActivity(filesAppIntent);
                 } else {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
