@@ -107,7 +107,7 @@ public class AccountUtils {
         try {
             PackageInfo packageInfo =
                     pm.getPackageInfo(context.getString(R.string.nc_import_accounts_from), 0);
-            if (packageInfo.versionCode < 1) {
+            if (packageInfo.versionCode > 1) {
                 final AccountManager accMgr = AccountManager.get(context);
                 final Account[] accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type));
                 for (Account account : accounts) {
