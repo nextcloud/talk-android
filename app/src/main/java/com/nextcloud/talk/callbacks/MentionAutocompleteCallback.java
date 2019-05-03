@@ -24,6 +24,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.style.DynamicDrawableSpan;
+import com.facebook.widget.text.span.BetterImageSpan;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.mention.Mention;
@@ -57,7 +58,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
                 new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
                         item.getId(), item.getLabel(), conversationUser, item.getSource(),
                         R.xml.chip_text_entry, emojiEditText),
-                        DynamicDrawableSpan.ALIGN_BASELINE,
+                        BetterImageSpan.ALIGN_CENTER,
                         item.getId(), item.getLabel());
         editable.setSpan(mentionChipSpan, start, start + item.getLabel().length(),
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

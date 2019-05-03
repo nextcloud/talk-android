@@ -48,6 +48,7 @@ import androidx.annotation.*;
 import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.emoji.text.EmojiSpan;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
@@ -63,6 +64,7 @@ import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
 import com.facebook.imagepipeline.postprocessors.RoundPostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.facebook.widget.text.span.BetterImageSpan;
 import com.google.android.material.chip.ChipDrawable;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -321,7 +323,7 @@ public class DisplayUtils {
             lastStartIndex = end;
             mentionChipSpan = new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
                     id, label, conversationUser, type, chipXmlRes, null),
-                    DynamicDrawableSpan.ALIGN_BASELINE, id,
+                    BetterImageSpan.ALIGN_CENTER, id,
                     label);
             spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             if ("user".equals(type) && !conversationUser.getUserId().equals(id)) {
