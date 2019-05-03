@@ -22,12 +22,13 @@ package com.nextcloud.talk.utils.text;
 
 import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
+import com.facebook.widget.text.span.BetterImageSpan;
 import lombok.Data;
 
 public class Spans {
 
     @Data
-    public static class MentionChipSpan extends TextAlignedImageSpan {
+    public static class MentionChipSpan extends BetterImageSpan {
         String id;
         String label;
 
