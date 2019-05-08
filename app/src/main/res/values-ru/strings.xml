@@ -90,6 +90,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
 
+    <string name="nc_biometric_unlock">Разблокировать %1$s</string>
     <string name="nc_cancel">Отмена</string>
 
     <string name="nc_no_proxy">Не использовать прокси-сервер</string>
@@ -229,4 +230,9 @@
 
     <string name="nc_readonly_hint">Беседа заблокировна</string>
 
+    <!-- Browser component -->
+    <string name="nc_file_browser">Файловый менеджер\"</string>
+    <string name="nc_select_files">Выбрать файлы</string>
+    <string name="nc_file_browser_back">Назад</string>
+    <string name="nc_file_browser_refresh">Обновить</string>
     </resources>
