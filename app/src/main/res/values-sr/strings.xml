@@ -244,4 +244,10 @@
 
     <string name="nc_readonly_hint">Разговор је закључан</string>
 
-    </resources>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Прегледач фајлова\"</string>
+    <string name="nc_select_files">Одаберите фајлове</string>
+    <string name="nc_file_browser_back">Назад</string>
+    <string name="nc_file_browser_refresh">Освежи</string>
+    <string name="nc_last_modified">%1$s | Последње измењено: %2$s</string>
+</resources>
