@@ -109,10 +109,10 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
         if (conversation.getUnreadMessages() > 0) {
             holder.dialogUnreadBubble.setVisibility(View.VISIBLE);
-            if (conversation.getUnreadMessages() < 10) {
+            if (conversation.getUnreadMessages() < 100) {
                 holder.dialogUnreadBubble.setText(Long.toString(conversation.getUnreadMessages()));
             } else {
-                holder.dialogUnreadBubble.setText("9+");
+                holder.dialogUnreadBubble.setText("99+");
             }
 
             if (conversation.isUnreadMention()) {
