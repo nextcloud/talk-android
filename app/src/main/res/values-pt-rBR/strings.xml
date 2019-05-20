@@ -27,7 +27,7 @@
     <string name="nc_server_not_installed">Termine sua instalação %1$s</string>
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_maintenance">Coloque sua %1$s em manutenção</string>
-    <string name="nc_server_version">%1$s somente funciona com%2$s 13 e acima</string>
+    <string name="nc_server_version">%1$s somente funciona com%2$s 13 e posterior</string>
     <string name="nc_server_import_account_plain">Importar conta</string>
     <string name="nc_server_import_accounts_plain">Importar contas</string>
     <string name="nc_server_import_account">Importar conta do aplicativo %1$s</string>
@@ -55,7 +55,7 @@
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
-    <string name="nc_settings_proxy_type_title">Tipo de Proxy</string>
+    <string name="nc_settings_proxy_type_title">Tipo de proxy</string>
     <string name="nc_settings_proxy_host_title">Endereço do proxy</string>
     <string name="nc_settings_proxy_port_title">Porta do proxy</string>
     <string name="nc_settings_use_credentials_title">Usar autenticação</string>
@@ -90,7 +90,7 @@
     <string name="nc_settings_link_previews_desc">Permite pré-visualizar links recebidos para serviços suportados</string>
     <string name="nc_locked">Toque para desbloquear</string>
 
-    <string name="nc_screen_lock_timeout_30">30 seconds</string>
+    <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
     <string name="nc_screen_lock_timeout_600">10 minutos</string>
@@ -181,7 +181,7 @@
     <string name="nc_call_name_is_same">O nome que você inseriu é o mesmo que o existente</string>
     <string name="nc_wrong_link">O link de conversação não é válido</string>
     <string name="nc_share_text">Junte-se à conversa em %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_subject">%1$s convite</string>
+    <string name="nc_share_subject">Convite do %1$s</string>
     <string name="nc_share_text_pass">\nSenha: %1$s</string>
 
     <!-- Magical stuff -->
@@ -215,7 +215,7 @@
     <string name="nc_formatted_message_you">Você: %1$s</string>
 
     <!-- Contacts endless loading -->
-    <string name="nc_no_more_load_retry">Não há mais itens a carregar. Atualize para retentar.</string>
+    <string name="nc_no_more_load_retry">Não há mais itens a carregar. Atualize tentar novamente.</string>
     <string name="nc_endless_disabled">Não há mais itens a carregar (máx alcançado).</string>
     <string name="nc_endless_cancel">Cancelado pelo usuário.</string>
     <string name="nc_endless_error">Ocorreu um erro ao carregar mais itens.</string>
