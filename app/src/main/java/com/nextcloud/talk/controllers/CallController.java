@@ -199,7 +199,7 @@ public class CallController extends BaseController {
     private SpotlightView spotlightView;
 
     private ExternalSignalingServer externalSignalingServer;
-    private MagicWebSocketInstance webSocketClient;
+    private MagicWebSocketInstance webSocketClient ;
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private boolean hasMCU;
     private boolean hasExternalSignalingServer;
@@ -1166,11 +1166,7 @@ public class CallController extends BaseController {
                 conversationUser, externalSignalingServer.getExternalSignalingTicket(),
                 TextUtils.isEmpty(credentials));
 
-        if (webSocketClient.isConnected()) {
-            joinRoomAndCall();
-        } else {
-            webSocketClient.restartWebSocket();
-        }
+        joinRoomAndCall();
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

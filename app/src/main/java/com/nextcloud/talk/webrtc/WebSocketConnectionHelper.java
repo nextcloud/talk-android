@@ -57,7 +57,7 @@ public class WebSocketConnectionHelper {
 
 
         MagicWebSocketInstance magicWebSocketInstance;
-        if (userId != -1 && magicWebSocketInstanceMap.containsKey(userEntity.getId()) && (magicWebSocketInstance = magicWebSocketInstanceMap.get(userEntity.getId())) != null && !magicWebSocketInstance.isPermanentlyClosed()) {
+        if (userId != -1 && magicWebSocketInstanceMap.containsKey(userEntity.getId()) && (magicWebSocketInstance = magicWebSocketInstanceMap.get(userEntity.getId())) != null) {
             return magicWebSocketInstance;
         } else {
             if (userId == -1) {
