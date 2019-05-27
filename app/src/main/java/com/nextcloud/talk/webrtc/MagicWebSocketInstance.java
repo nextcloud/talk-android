@@ -38,6 +38,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,19 +57,22 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private String webSocketTicket;
     private String resumeId;
     private String sessionId;
+    private String ncBackendSession;
     private boolean hasMCU;
     private boolean connected;
     private WebSocketConnectionHelper webSocketConnectionHelper;
-    private WebSocket webSocket;
+    private WebSocket internalWebSocket;
     private MagicMap magicMap;
     private String connectionUrl;
 
     private String currentRoomToken;
-    private boolean isPermanentlyClosed = false;
     private int restartCount = 0;
+    private boolean reconnecting = false;
 
     private HashMap<String, String> displayNameHashMap;
     private HashMap<String, String> userIdSesssionHashMap;
+
+    private List<String> messagesQueue = new ArrayList<>();
 
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -81,53 +85,74 @@ public class MagicWebSocketInstance extends WebSocketListener {
         this.userIdSesssionHashMap = new HashMap<>();
         magicMap = new MagicMap();
 
+        connected = false;
         restartWebSocket();
     }
 
-    @Override
-    public void onOpen(WebSocket webSocket, Response response) {
+    private void sendHello() {
         try {
             if (TextUtils.isEmpty(resumeId)) {
-                webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModel(conversationUser, webSocketTicket)));
+                internalWebSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModel(conversationUser, webSocketTicket)));
             } else {
-                webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModelForResume(resumeId)));
+                internalWebSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledHelloModelForResume(resumeId)));
             }
         } catch (IOException e) {
             Log.e(TAG, "Failed to serialize hello model");
         }
     }
 
-    public void restartWebSocket() {
+    @Override
+    public void onOpen(WebSocket webSocket, Response response) {
+        sendHello();
+    }
+
+    private void restartWebSocket() {
+        reconnecting = true;
+
+        if (internalWebSocket != null) {
+            internalWebSocket.close(1000, null);
+            internalWebSocket.cancel();
+            messagesQueue = new ArrayList<>();
+            currentRoomToken = "";
+        }
+
         Request request = new Request.Builder().url(connectionUrl).build();
-        this.webSocket = okHttpClient.newWebSocket(request, this);
+        internalWebSocket = okHttpClient.newWebSocket(request, this);
+        restartCount++;
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
         Log.d(TAG, "Receiving : " + text);
-
         try {
             BaseWebSocketMessage baseWebSocketMessage = LoganSquare.parse(text, BaseWebSocketMessage.class);
             String messageType = baseWebSocketMessage.getType();
             switch (messageType) {
                 case "hello":
+                    connected = true;
+                    reconnecting = false;
                     restartCount = 0;
                     HelloResponseOverallWebSocketMessage helloResponseWebSocketMessage = LoganSquare.parse(text, HelloResponseOverallWebSocketMessage.class);
                     resumeId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getResumeId();
                     sessionId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getSessionId();
                     hasMCU = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().serverHasMCUSupport();
-                    connected = true;
+
+                    for (int i = 0; i < messagesQueue.size(); i++) {
+                        webSocket.send(messagesQueue.get(i));
+                    }
+
+                    messagesQueue = new ArrayList<>();
                     eventBus.post(new WebSocketCommunicationEvent("hello", null));
                     break;
                 case "error":
                     ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
-                    if (("no_such_session").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode().equals("no_such_session"))) {
+                    if (("no_such_session").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
                         resumeId = "";
-
-                    }
-                    if (!isPermanentlyClosed) {
+                        restartWebSocket();
+                    } else if (("hello_expected") .equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
                         restartWebSocket();
                     }
+
                     break;
                 case "room":
                     JoinedRoomOverallWebSocketMessage joinedRoomOverallWebSocketMessage = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage.class);
@@ -201,7 +226,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     break;
                 case "bye":
                     connected = false;
-                    isPermanentlyClosed = true;
+                    resumeId = "";
                 default:
                     break;
             }
@@ -218,18 +243,12 @@ public class MagicWebSocketInstance extends WebSocketListener {
     @Override
     public void onClosing(WebSocket webSocket, int code, String reason) {
         Log.d(TAG, "Closing : " + code + " / " + reason);
-        connected = false;
     }
 
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
         Log.d(TAG, "Error : " + t.getMessage());
-        connected = false;
-        if (restartCount < 4) {
-            restartWebSocket();
-        } else {
-            isPermanentlyClosed = true;
-        }
+        restartWebSocket();
     }
 
     public String getSessionId() {
@@ -241,28 +260,36 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     public void joinRoomWithRoomTokenAndSession(String roomToken, String normalBackendSession) {
-        if (!roomToken.equals(currentRoomToken)) {
-            if (isConnected()) {
-                try {
-                    webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession)));
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to serialize room overall websocket message");
+        if (!roomToken.equals(currentRoomToken) || !normalBackendSession.equals(ncBackendSession)) {
+            ncBackendSession = normalBackendSession;
+            try {
+                String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession));
+                if (!connected || reconnecting) {
+                    messagesQueue.add(message);
+                } else {
+                    internalWebSocket.send(message);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } else {
+        } else if (!roomToken.equals("")) {
             HashMap<String, String> joinRoomHashMap = new HashMap<>();
             joinRoomHashMap.put("roomToken", currentRoomToken);
             eventBus.post(new WebSocketCommunicationEvent("roomJoined", joinRoomHashMap));
+
         }
     }
 
     public void sendCallMessage(NCMessageWrapper ncMessageWrapper) {
-        if (isConnected()) {
-            try {
-                webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledCallMessageModel(ncMessageWrapper)));
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to serialize signaling message");
+        try {
+            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledCallMessageModel(ncMessageWrapper));
+            if (!connected || reconnecting) {
+                messagesQueue.add(message);
+            } else {
+                internalWebSocket.send(message);
             }
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to serialize signaling message");
         }
     }
 
@@ -273,34 +300,33 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     public void requestOfferForSessionIdWithType(String sessionIdParam, String roomType) {
-        if (isConnected()) {
-            try {
-                webSocket.send(LoganSquare.serialize(webSocketConnectionHelper.getAssembledRequestOfferModel(sessionIdParam, roomType)));
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to offer request");
+        try {
+            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledRequestOfferModel(sessionIdParam, roomType));
+            if (!connected || reconnecting) {
+                messagesQueue.add(message);
+            } else {
+                internalWebSocket.send(message);
             }
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to offer request");
         }
     }
 
     void sendBye() {
-        if (isConnected()) {
+        if (connected) {
             try {
                 ByeWebSocketMessage byeWebSocketMessage = new ByeWebSocketMessage();
                 byeWebSocketMessage.setType("bye");
                 byeWebSocketMessage.setBye(new HashMap<>());
-                webSocket.send(LoganSquare.serialize(byeWebSocketMessage));
+                internalWebSocket.send(LoganSquare.serialize(byeWebSocketMessage));
             } catch (IOException e) {
                 Log.e(TAG, "Failed to serialize bye message");
             }
         }
     }
 
-    public boolean isConnected() {
+    boolean isConnected() {
         return connected;
-    }
-
-    boolean isPermanentlyClosed() {
-        return isPermanentlyClosed;
     }
 
     public String getDisplayNameForSession(String session) {
