@@ -57,7 +57,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private String webSocketTicket;
     private String resumeId;
     private String sessionId;
-    private String ncBackendSession;
     private boolean hasMCU;
     private boolean connected;
     private WebSocketConnectionHelper webSocketConnectionHelper;
@@ -149,7 +148,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     if (("no_such_session").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
                         resumeId = "";
                         restartWebSocket();
-                    } else if (("hello_expected") .equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
+                    } else if (("hello_expected").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
                         restartWebSocket();
                     }
 
@@ -260,23 +259,15 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     public void joinRoomWithRoomTokenAndSession(String roomToken, String normalBackendSession) {
-        if (!roomToken.equals(currentRoomToken) || !normalBackendSession.equals(ncBackendSession)) {
-            ncBackendSession = normalBackendSession;
-            try {
-                String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession));
-                if (!connected || reconnecting) {
-                    messagesQueue.add(message);
-                } else {
-                    internalWebSocket.send(message);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession));
+            if (!connected || reconnecting) {
+                messagesQueue.add(message);
+            } else {
+                internalWebSocket.send(message);
             }
-        } else if (!roomToken.equals("")) {
-            HashMap<String, String> joinRoomHashMap = new HashMap<>();
-            joinRoomHashMap.put("roomToken", currentRoomToken);
-            eventBus.post(new WebSocketCommunicationEvent("roomJoined", joinRoomHashMap));
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
