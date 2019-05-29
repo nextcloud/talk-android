@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Definições</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Endereço do servidor</string>
     <string name="nc_server_import_account_plain">Importar conta</string>
@@ -54,12 +57,30 @@
     <string name="nc_settings_reauthorize">Voltar a autorizar</string>
     <string name="nc_client_cert_setup">Configurar certificado de cliente</string>
     <string name="nc_client_cert_change">Alterar certificado de cliente</string>
+    <string name="nc_settings_remove">Remover</string>
     <string name="nc_settings_remove_account">Remover conta</string>
     <string name="nc_settings_add_account">Adicionar uma nova conta</string>
     <string name="nc_settings_notification_sounds">Sons de notificação</string>
     <string name="nc_settings_other_notifications_ringtone">Outros</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_vibrate">Vibrar</string>
+    <string name="nc_settings_privacy">Privacidade</string>
+    <string name="nc_settings_screen_lock_title">Bloqueio de ecrã</string>
+    <string name="nc_none">Nenhum</string>
+    <string name="nc_settings_screen_security_title">Segurança de ecrã</string>
+    <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
+    <string name="nc_screen_lock_timeout_30">30 segundos</string>
+    <string name="nc_screen_lock_timeout_60">1 minuto</string>
+    <string name="nc_screen_lock_timeout_300">5 minutos</string>
+    <string name="nc_screen_lock_timeout_600">10 minutos</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_biometric_unlock">Desbloquear %1$s</string>
+    <string name="nc_cancel">Cancelar</string>
+
     <string name="nc_no_proxy">Sem proxy</string>
     <string name="nc_username">Nome de utilizador</string>
     <string name="nc_password">Palavra-passe</string>
@@ -85,6 +106,7 @@
     <string name="nc_share_link">Partilhar hiperligação</string>
     <string name="nc_share_link_via">Partilhar hiperligação via</string>
     <string name="nc_delete_call">Eliminar conversação</string>
+    <string name="nc_delete">Eliminar</string>
     <string name="nc_new_conversation">Nova conversação</string>
     <string name="nc_join_via_link">Aderir via hiperligação</string>
     <string name="nc_join_via_web">Aderir via Web</string>
@@ -105,6 +127,13 @@
     <string name="nc_notification_channel_calls">Canal de notificação de chamadas</string>
     <string name="nc_notification_channel_messages">Canal de notificação de mensagens</string>
     <string name="nc_notification_channel_calls_description">Mostra as chamadas a receber</string>
+    <string name="nc_notification_settings">Definições de notificação</string>
+    <string name="nc_plain_old_messages">Mensagens</string>
+    <string name="nc_notify_me_always">Notificar sempre</string>
+    <string name="nc_notify_me_mention">Notificar quando mencionado</string>
+    <string name="nc_notify_me_never">Nunca notificar</string>
+    <string name="nc_mute_calls">Silenciar chamadas</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, ocorreu algo de errado!</string>
     <string name="nc_all_ok_operation">Ok, tudo concluído!</string>
@@ -126,11 +155,32 @@
     <string name="nc_date_header_today">Hoje</string>
     <string name="nc_conversation_menu_voice_call">Chamada de voz</string>
     <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>
+    <string name="nc_conversation_menu_conversation_info">Informação da conversação</string>
     <string name="nc_new_messages">Novas mensagens</string>
     <string name="nc_no_messages_yet">Ainda sem mensagens</string>
+    <!-- When translating to German, please use non-formal variant -->
+    <string name="nc_formatted_message_you">Eu: %1$s</string>
+
     <string name="nc_endless_cancel">Cancelado pelo utilizador.</string>
     <string name="nc_description_send_message_button">Enviar mensagem</string>
 
     <string name="nc_hello">Olá</string>
 
-    </resources>
+    <string name="nc_groups">Grupos</string>
+    <string name="nc_participants">Participantes</string>
+
+    <string name="nc_owner">Proprietário</string>
+    <string name="nc_moderator">Moderador</string>
+    <string name="nc_user">Utilizador</string>
+    <string name="nc_guest">Convidado</string>
+    <string name="nc_following_link">Utilizador a seguir uma hiperligação pública</string>
+
+    <string name="nc_readonly_hint">Esta conversação está bloqueada</string>
+
+    <!-- Browser component -->
+    <string name="nc_file_browser">Navegador de ficheiro\"</string>
+    <string name="nc_select_files">Selecionar ficheiros</string>
+    <string name="nc_file_browser_back">Anterior</string>
+    <string name="nc_file_browser_refresh">Atualizar</string>
+    <string name="nc_last_modified">%1$s | Última modificação: %2$s</string>
+</resources>
