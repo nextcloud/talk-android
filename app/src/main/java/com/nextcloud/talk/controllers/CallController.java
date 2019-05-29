@@ -582,6 +582,11 @@ public class CallController extends BaseController {
     public void onEnableSpeakerphoneClick() {
         if (audioManager != null) {
             audioManager.toggleUseSpeakerphone();
+            if (audioManager.isSpeakerphoneAutoOn()) {
+                callControlEnableSpeaker.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_up_white_24dp);
+            } else {
+                callControlEnableSpeaker.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_mute_white_24dp);
+            }
         }
     }
 
