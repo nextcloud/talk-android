@@ -21,32 +21,22 @@
 package com.nextcloud.talk.utils.singletons;
 
 import android.content.Context;
-import android.database.Observable;
-import android.util.Log;
 import autodagger.AutoInjector;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.NetworkEvent;
-import com.nextcloud.talk.models.database.User;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.novoda.merlin.*;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.requery.Persistable;
-import io.requery.reactivex.ReactiveEntityStore;
-import io.requery.reactivex.ReactiveResult;
-import io.requery.util.ObservableList;
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
-import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MerlinTheWizard {
     private static Merlin merlin;
     private static MerlinsBeard merlinsBeard;
 
-    private  UserEntity currentUserEntity;
+    private UserEntity currentUserEntity;
 
     @Inject
     EventBus eventBus;
