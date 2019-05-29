@@ -20,21 +20,29 @@
 
 package com.nextcloud.talk.webrtc;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.events.NetworkEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.*;
 import com.nextcloud.talk.utils.MagicMap;
+import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
+import com.novoda.merlin.Endpoint;
+import com.novoda.merlin.MerlinsBeard;
+import com.novoda.merlin.ResponseCodeValidator;
 import okhttp3.*;
 import okio.ByteString;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -52,6 +60,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     @Inject
     EventBus eventBus;
+
+    @Inject
+    Context context;
 
     private UserEntity conversationUser;
     private String webSocketTicket;
@@ -71,6 +82,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private HashMap<String, String> displayNameHashMap;
     private HashMap<String, String> userIdSesssionHashMap;
 
+    private MerlinTheWizard merlinTheWizard;
     private List<String> messagesQueue = new ArrayList<>();
 
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
@@ -84,7 +96,10 @@ public class MagicWebSocketInstance extends WebSocketListener {
         this.userIdSesssionHashMap = new HashMap<>();
         magicMap = new MagicMap();
 
+        merlinTheWizard = new MerlinTheWizard();
         connected = false;
+        eventBus.register(this);
+
         restartWebSocket();
     }
 
@@ -107,6 +122,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     private void closeWebSocket(WebSocket webSocket) {
+        connected = false;
         webSocket.close(1000, null);
         webSocket.cancel();
         messagesQueue = new ArrayList<>();
@@ -116,9 +132,11 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private void restartWebSocket() {
         reconnecting = true;
 
-        Request request = new Request.Builder().url(connectionUrl).build();
-        okHttpClient.newWebSocket(request, this);
-        restartCount++;
+        if (merlinTheWizard.getMerlinsBeard().hasInternetAccess()) {
+            Request request = new Request.Builder().url(connectionUrl).build();
+            okHttpClient.newWebSocket(request, this);
+            restartCount++;
+        }
     }
 
     @Override
@@ -335,4 +353,12 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public String getSessionForUserId(String userId) {
         return userIdSesssionHashMap.get(userId);
     }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(NetworkEvent networkEvent) {
+        if (networkEvent.getNetworkConnectionEvent().equals(NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED) && !isConnected()) {
+            restartWebSocket();
+        }
+    }
+
 }

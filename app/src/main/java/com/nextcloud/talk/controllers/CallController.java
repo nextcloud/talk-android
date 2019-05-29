@@ -582,7 +582,6 @@ public class CallController extends BaseController {
     public void onEnableSpeakerphoneClick() {
         if (audioManager != null) {
             audioManager.toggleUseSpeakerphone();
-            //callControlEnableSpeaker.flipSilently(!callControlEnableSpeaker.isFlipped());
         }
     }
 

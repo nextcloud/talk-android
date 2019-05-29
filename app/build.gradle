@@ -215,6 +215,8 @@ dependencies {
 
     implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
+    implementation 'com.novoda:merlin:1.2.0'
+
     implementation 'com.github.Kennyc1012:BottomSheet:2.4.1'
     implementation 'com.github.mario:PopupBubble:a365177d96'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'

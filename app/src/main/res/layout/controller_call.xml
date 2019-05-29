@@ -155,6 +155,7 @@
             <com.facebook.drawee.view.SimpleDraweeView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/callControlEnableSpeaker"
                 app:backgroundImage="@color/colorPrimary"
+                app:placeholderImage="@drawable/ic_volume_up_white_24dp"
                 app:roundAsCircle="true"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
