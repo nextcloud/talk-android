@@ -558,13 +558,21 @@ public class ChatController extends BaseController implements MessagesListAdapte
             new KeyboardUtils(getActivity(), getView(), false);
         }
 
-        NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+        cancelNotificationsForCurrentConversation();
 
         if (inChat) {
             if (wasDetached && conversationUser.hasSpreedCapabilityWithName("no-ping")) {
                 wasDetached = false;
                 joinRoomWithPassword();
             }
+        }
+    }
+
+    private void cancelNotificationsForCurrentConversation() {
+        if (!conversationUser.hasSpreedCapabilityWithName("no-ping") && !TextUtils.isEmpty(roomId)) {
+            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser, roomId);
+        } else if (!TextUtils.isEmpty(roomToken)){
+            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser, roomToken);
         }
     }
 
@@ -895,7 +903,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             List<ChatMessage> chatMessageList = chatOverall.getOcs().getData();
 
             if (isFirstMessagesProcessing) {
-                NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+                cancelNotificationsForCurrentConversation();
 
                 isFirstMessagesProcessing = false;
                 if (loadingProgressBar != null) {
@@ -998,7 +1006,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             }
         } else if (response.code() == 304 && !isFromTheFuture) {
             if (isFirstMessagesProcessing) {
-                NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+                cancelNotificationsForCurrentConversation();
 
                 isFirstMessagesProcessing = false;
                 if (loadingProgressBar != null) {
