@@ -137,10 +137,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     EmojiEditText messageInput;
     @BindView(R.id.popupBubbleView)
     PopupBubble popupBubble;
-    @BindView(R.id.emptyLayout)
-    RelativeLayout emptyLayout;
-    @BindView(R.id.sendHiTextView)
-    TextView sendHiTextView;
     @BindView(R.id.progressBar)
     ProgressBar loadingProgressBar;
     @BindView(R.id.smileyButton)
@@ -296,9 +292,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         getActionBar().show();
         boolean adapterWasNull = false;
 
-        sendHiTextView.setText(String.format(getResources().getString(R.string.nc_chat_empty), getResources()
-                .getString(R.string.nc_hello)));
-
         if (adapter == null) {
 
             loadingProgressBar.setVisibility(View.VISIBLE);
@@ -329,11 +322,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 }
             });
         } else {
-            if (adapter.getItemCount() == 0) {
-                emptyLayout.setVisibility(View.VISIBLE);
-            } else {
-                messagesListView.setVisibility(View.VISIBLE);
-            }
+            messagesListView.setVisibility(View.VISIBLE);
         }
 
 
@@ -653,14 +642,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         emojiPopup.toggle();
     }
 
-    @OnClick(R.id.emptyLayout)
-    void sendHello() {
-        if (!isHelloClicked) {
-            isHelloClicked = true;
-            sendMessage(getResources().getString(R.string.nc_hello) + " 👋");
-        }
-    }
-
     private void joinRoomWithPassword() {
 
         if (currentCall == null) {
@@ -921,33 +902,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     loadingProgressBar.setVisibility(View.GONE);
                 }
 
-                if (chatMessageList.size() == 0) {
-                    if (emptyLayout != null) {
-                        emptyLayout.setVisibility(View.VISIBLE);
-                    }
-
-                    if (messagesListView != null) {
-                        messagesListView.setVisibility(View.GONE);
-                    }
-
-                } else {
-                    if (emptyLayout != null) {
-                        emptyLayout.setVisibility(View.GONE);
-                    }
-
-                    if (messagesListView != null) {
-                        messagesListView.setVisibility(View.VISIBLE);
-                    }
-
-                }
-            } else {
-                if (emptyLayout != null) {
-                    emptyLayout.setVisibility(View.GONE);
-                }
-
                 if (messagesListView != null) {
                     messagesListView.setVisibility(View.VISIBLE);
                 }
+
             }
 
             int countGroupedMessages = 0;
@@ -1045,10 +1003,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 isFirstMessagesProcessing = false;
                 if (loadingProgressBar != null) {
                     loadingProgressBar.setVisibility(View.GONE);
-                }
-
-                if (emptyLayout != null && emptyLayout.getVisibility() != View.VISIBLE) {
-                    emptyLayout.setVisibility(View.VISIBLE);
                 }
             }
 
