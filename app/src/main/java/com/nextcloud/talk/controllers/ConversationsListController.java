@@ -37,6 +37,8 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -58,7 +60,6 @@ import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
-import com.facebook.imagepipeline.postprocessors.RoundPostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
@@ -215,9 +216,11 @@ public class ConversationsListController extends BaseController implements Searc
             dataSource.subscribe(new BaseBitmapDataSubscriber() {
                 @Override
                 protected void onNewResultImpl(Bitmap bitmap) {
-                    if (bitmap != null) {
-                        new RoundAsCirclePostprocessor(true).process(bitmap);
-                        menuItem.setIcon(new BitmapDrawable(bitmap));
+                    if (bitmap != null && getResources() != null) {
+                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                        roundedBitmapDrawable.setCircular(true);
+                        roundedBitmapDrawable.setAntiAlias(true);
+                        menuItem.setIcon(roundedBitmapDrawable);
                     }
                 }
 
