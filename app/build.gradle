@@ -136,8 +136,8 @@ dependencies {
     implementation fileTree(include: ['*'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha4'
-    implementation 'com.github.vanniktech:Emoji:746caa4623'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
+    implementation 'com.github.vanniktech:Emoji:0.6.0'
     implementation 'org.michaelevans.colorart:library:0.0.3'
     implementation "android.arch.work:work-runtime:${workVersion}"
     implementation "android.arch.work:work-rxjava2:${workVersion}"

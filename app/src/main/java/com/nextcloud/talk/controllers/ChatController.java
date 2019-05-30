@@ -550,10 +550,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
             }
         }).build(messageInput);
 
-        if (mentionAutocomplete != null && mentionAutocomplete.isPopupShowing()) {
-            mentionAutocomplete.dismissPopup();
-        }
-
         if (getActivity() != null) {
             new KeyboardUtils(getActivity(), getView(), false);
         }
@@ -586,6 +582,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 && getActivity() != null && !getActivity().isChangingConfigurations() && !isLeavingForConversation) {
             wasDetached = true;
             leaveRoom();
+        }
+
+        if (mentionAutocomplete != null && mentionAutocomplete.isPopupShowing()) {
+            mentionAutocomplete.dismissPopup();
         }
     }
 
