@@ -291,16 +291,15 @@ public class NotificationWorker extends Worker {
             notificationBuilder.setColor(context.getResources().getColor(R.color.colorPrimary));
         }
 
+        String groupName = signatureVerification.getUserEntity().getId() + "@" + decryptedPushMessage.getId();
+        crc32.update(groupName.getBytes());
+        notificationBuilder.setGroup(Long.toString(crc32.getValue()));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            String groupName = String.format(context.getResources().getString(R.string
-                    .nc_notification_channel), signatureVerification.getUserEntity()
-                    .getUserId(), signatureVerification.getUserEntity().getBaseUrl());
-            crc32.update(groupName.getBytes());
-
-            NotificationUtils.createNotificationChannelGroup(context,
+            /*NotificationUtils.createNotificationChannelGroup(context,
                     Long.toString(crc32.getValue()),
-                    groupName);
+                    groupName);*/
 
             if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
                 NotificationUtils.createNotificationChannel(context,
@@ -317,10 +316,9 @@ public class NotificationWorker extends Worker {
                                 .getString(R.string.nc_notification_channel_calls_description), true,
                         NotificationManager.IMPORTANCE_HIGH);
 
-                notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V3);
+                notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V3);
             }
 
-            notificationBuilder.setGroup(Long.toString(crc32.getValue()));
         } else {
             // red color for the lights
             notificationBuilder.setLights(0xFFFF0000, 200, 200);

@@ -1108,7 +1108,11 @@ public class CallController extends BaseController {
                             urlToken = roomToken;
                         }
 
-                        NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser);
+                        if (!conversationUser.hasSpreedCapabilityWithName("no-ping") && !TextUtils.isEmpty(roomId)) {
+                            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser, roomId);
+                        } else if (!TextUtils.isEmpty(roomToken)){
+                            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser, roomToken);
+                        }
 
                         if (!hasExternalSignalingServer) {
                             ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))

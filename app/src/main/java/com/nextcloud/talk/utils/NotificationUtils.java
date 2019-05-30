@@ -79,7 +79,8 @@ public class NotificationUtils {
         }
     }
 
-    public static void cancelExistingNotifications(Context context, UserEntity conversationUser) {
+    public static void cancelExistingNotifications(Context context, UserEntity conversationUser,
+                                                   String roomTokenOrId) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && conversationUser.getId() != -1 &&
                 context != null) {
 
@@ -87,13 +88,12 @@ public class NotificationUtils {
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
             CRC32 crc32 = new CRC32();
-            String groupName = String.format(context.getResources().getString(R.string
-                    .nc_notification_channel), conversationUser.getUserId(), conversationUser.getBaseUrl());
+            String groupName = conversationUser.getId() + "@" + roomTokenOrId;
             crc32.update(groupName.getBytes());
             String crc32GroupString = Long.toString(crc32.getValue());
 
             if (notificationManager != null) {
-                StatusBarNotification statusBarNotifications[] = notificationManager.getActiveNotifications();
+                StatusBarNotification[] statusBarNotifications = notificationManager.getActiveNotifications();
                 for (StatusBarNotification statusBarNotification : statusBarNotifications) {
 
                     if (statusBarNotification.getNotification() != null &&
