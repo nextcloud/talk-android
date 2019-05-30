@@ -37,31 +37,6 @@
         android:indeterminateTintMode="src_in"
         android:visibility="gone" />
 
-    <RelativeLayout
-        android:id="@+id/emptyLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/wawingTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="👋"
-            android:textAlignment="center"
-            android:textSize="72sp" />
-
-        <TextView
-            android:id="@+id/sendHiTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/wawingTextView"
-            android:layout_margin="8dp"
-            android:textAlignment="center"
-            android:textSize="20sp" />
-    </RelativeLayout>
-
     <com.stfalcon.chatkit.messages.MessagesList
         android:id="@+id/messagesListView"
         android:layout_width="match_parent"
