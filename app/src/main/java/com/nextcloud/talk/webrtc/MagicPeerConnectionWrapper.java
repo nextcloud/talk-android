@@ -21,9 +21,11 @@
 
 package com.nextcloud.talk.webrtc;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.Nullable;
+import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -33,15 +35,18 @@ import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
+import com.nextcloud.talk.utils.LoggingUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.webrtc.*;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@AutoInjector(NextcloudTalkApplication.class)
 public class MagicPeerConnectionWrapper {
     private static String TAG = "MagicPeerConnectionWrapper";
     private List<IceCandidate> iceCandidates = new ArrayList<>();
@@ -62,11 +67,16 @@ public class MagicPeerConnectionWrapper {
     private boolean isMCUPublisher;
     private String videoStreamType;
 
+    @Inject
+    Context context;
+
     public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                       List<PeerConnection.IceServer> iceServerList,
                                       MediaConstraints mediaConstraints,
                                       String sessionId, String localSession, @Nullable MediaStream mediaStream,
                                       boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
+
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
 
         this.localMediaStream = mediaStream;
         this.videoStreamType = videoStreamType;
@@ -231,6 +241,8 @@ public class MagicPeerConnectionWrapper {
             data.get(bytes);
             String strData = new String(bytes);
             Log.d(TAG, "Got msg: " + strData + " over " + TAG + " " + sessionId);
+            LoggingUtils.writeLogEntryToFile(context,
+                    "Got msg: " + strData + " over " + peerConnection.hashCode() + " " + sessionId);
 
             try {
                 DataChannelMessage dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
@@ -284,6 +296,9 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
+            LoggingUtils.writeLogEntryToFile(context,
+                    "iceConnectionChangeTo: " + iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
+
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
                 /*EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CONNECTED, sessionId, null, null));*/
@@ -363,11 +378,16 @@ public class MagicPeerConnectionWrapper {
         @Override
         public void onCreateFailure(String s) {
             Log.d(TAG, s);
+            LoggingUtils.writeLogEntryToFile(context,
+                    "SDPObserver createFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId);
+
         }
 
         @Override
         public void onSetFailure(String s) {
             Log.d(TAG, s);
+            LoggingUtils.writeLogEntryToFile(context,
+                    "SDPObserver setFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId);
         }
 
         @Override
