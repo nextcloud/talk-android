@@ -44,6 +44,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
+import butterknife.OnClick;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
@@ -59,10 +60,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.DoNotDisturbUtils;
-import com.nextcloud.talk.utils.SecurityUtils;
+import com.nextcloud.talk.utils.*;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -318,6 +316,13 @@ public class SettingsController extends BaseController {
                 break;
             default:
                 break;
+        }
+    }
+
+    @OnClick(R.id.settings_version)
+    void sendLogs() {
+        if (getResources().getBoolean(R.bool.nc_is_debug)) {
+            LoggingUtils.sendMailWithAttachment(context);
         }
     }
 

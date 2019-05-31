@@ -183,7 +183,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
                 .busModule(new BusModule())
                 .contextModule(new ContextModule(getApplicationContext()))
                 .databaseModule(new DatabaseModule())
-                .restModule(new RestModule())
+                .restModule(new RestModule(getApplicationContext()))
                 .userModule(new UserModule())
                 .arbitraryStorageModule(new ArbitraryStorageModule())
                 .build();
