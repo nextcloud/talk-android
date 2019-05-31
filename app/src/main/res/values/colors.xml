@@ -27,6 +27,7 @@
     <color name="nc_incoming_text_default">#37505D</color>
     <color name="nc_incoming_text_mention_you">#C98879</color>
     <color name="nc_incoming_text_mention_others">#37505D</color>
+    <color name="nc_text_color">@color/black</color>
 
     <color name="nc_darkRed">#D32F2F</color>
     <color name="nc_darkGreen">#006400</color>

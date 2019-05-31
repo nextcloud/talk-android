@@ -58,7 +58,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textSize="16sp"
+            android:textColor="@color/nc_incoming_text_default"
             tools:text="Call item text" />
 
         <TextView
@@ -67,7 +68,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="12sp"
+            android:textColor="@color/warm_grey_four"
             tools:text="A week ago" />
 
     </LinearLayout>
