@@ -27,8 +27,11 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.view.View;
-
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
@@ -42,21 +45,17 @@ import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.stfalcon.chatkit.messages.MessageHolders;
 import com.vanniktech.emoji.EmojiTextView;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import javax.inject.Inject;
-
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
+
+import javax.inject.Inject;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
@@ -144,8 +143,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             public ReadFilesystemOperation call() {
                 return new ReadFilesystemOperation(okHttpClient, activeUser, url, 0);
             }
-        }).subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.io())
+        }).observeOn(Schedulers.io())
                 .subscribe(new SingleObserver<ReadFilesystemOperation>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -158,9 +156,8 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                         if (davResponse.getData() != null) {
                             List<BrowserFile> browserFileList = (List<BrowserFile>) davResponse.getData();
                             if (!browserFileList.isEmpty()) {
-                                image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.getDrawableResourceIdForMimeType(browserFileList.get(0).getMimeType())));
+                                new Handler(context.getMainLooper()).post(() -> image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.getDrawableResourceIdForMimeType(browserFileList.get(0).getMimeType()))));
                             }
-
                         }
                     }
 
