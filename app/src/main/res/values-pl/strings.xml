@@ -227,7 +227,6 @@
     <string name="nc_description_send_message_button">Wyślij wiadomość</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">Stuknij, aby być pierwszym, który powie %1$s!</string>
     <string name="nc_conversations_empty">Dołącz do rozmowy lub rozpocznij nową\n Przywitaj się z przyjaciółmi i kolegami!</string>
     <string name="nc_hello">Cześć</string>
 

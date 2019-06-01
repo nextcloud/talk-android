@@ -224,7 +224,6 @@ mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</str
     <string name="nc_description_send_message_button">Envia un missatge</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">Toca per ser el primer a dir %1$s!</string>
     <string name="nc_conversations_empty">Afegiu-vos a una conversa on inicieu-ne una de nova\n Digueu hola als vostres amics i companys!</string>
     <string name="nc_hello">Hola</string>
 

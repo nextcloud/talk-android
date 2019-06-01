@@ -226,7 +226,6 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_description_send_message_button">メッセージを送信</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">タップして %1$s と言いましょう！</string>
     <string name="nc_conversations_empty">会話に参加するか、新しい会話を開始して友人や同僚に挨拶しましょう！</string>
     <string name="nc_hello">こんにちは</string>
 

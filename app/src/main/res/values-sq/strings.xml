@@ -144,8 +144,6 @@
     <string name="nc_description_more_menu_group">Menuja për bisedën publike %1$s</string>
     <string name="nc_description_send_message_button">Dërgo mesazh</string>
 
-    <!-- Empty states -->
-    <string name="nc_chat_empty">Klikoni për të qenë i pari për të thënë %1$s!</string>
     <string name="nc_hello">Përshëndetje</string>
 
     </resources>

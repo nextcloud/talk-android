@@ -198,7 +198,6 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_description_send_message_button">Send melding</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">Trykk for å være den første til å si %1$s!</string>
     <string name="nc_conversations_empty">Bli med i en samtale eller start en ny\n Si hei til dine venner og kolleger!</string>
     <string name="nc_hello">Hallo</string>
 

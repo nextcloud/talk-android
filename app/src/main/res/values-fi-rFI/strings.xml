@@ -145,6 +145,7 @@
 
     <string name="nc_description_send_message_button">Lähetä viesti</string>
 
+    <!-- Empty states -->
     <string name="nc_conversations_empty">Liity keskusteluun tai aloita uusi keskustelu\n Sano hei ystävillesi ja työkavereillesi!</string>
     <string name="nc_hello">Hei</string>
 

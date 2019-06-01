@@ -228,7 +228,6 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_description_send_message_button">Verstuur bericht</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">Tik om als eerste %1$s te zeggen!</string>
     <string name="nc_conversations_empty">Doe mee met een discussie, of start een nieuwe\n Zeg hallo tegen je vrienden en collega\'s! </string>
     <string name="nc_hello">Hallo</string>
 

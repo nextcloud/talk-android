@@ -224,7 +224,6 @@
     <string name="nc_description_send_message_button">发送消息</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">点击以成为第一位说 %1$s 的人！</string>
     <string name="nc_conversations_empty">加入一场交谈或开始一个新的对话
 向你的朋友和同事打个招呼吧</string>
     <string name="nc_hello">您好</string>

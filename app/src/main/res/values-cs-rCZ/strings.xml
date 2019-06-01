@@ -227,7 +227,6 @@
     <string name="nc_description_send_message_button">Poslat zprávu</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">Klepněte a buďte první kdo řekne %1$s!</string>
     <string name="nc_conversations_empty">Připojte se k rozhovoru nebo začněte nový\n Pozdravte své přátele a kolegy!</string>
     <string name="nc_hello">Ahoj</string>
 

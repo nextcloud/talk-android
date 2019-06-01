@@ -226,7 +226,6 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_description_send_message_button">Envoyer un message</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">Touchez pour être la première personne à dire %1$s !</string>
     <string name="nc_conversations_empty">Rejoignez une conversation existante ou démarrez une nouvelle conversation\n. Echangez avec vos collègues ou amis !</string>
     <string name="nc_hello">Bonjour</string>
 

@@ -227,7 +227,6 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_description_send_message_button">Send besked</string>
 
     <!-- Empty states -->
-    <string name="nc_chat_empty">Klik for at være den første til at sige %1$s!</string>
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny\n Sig hej til dine venner og kollegaer.</string>
     <string name="nc_hello">Hej</string>
 
