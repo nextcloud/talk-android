@@ -27,6 +27,7 @@
     <string name="nc_server_not_installed">Užbaikite savo %1$s diegimą</string>
     <string name="nc_server_db_upgrade_needed">Atnaujinkite savo %1$s duomenų bazę</string>
     <string name="nc_server_maintenance">Išjunkite savo %1$s techninės priežiūros veikseną</string>
+    <string name="nc_server_version">%1$s veikia tik naudojant %2$s 13 ar naujesnę versiją</string>
     <string name="nc_server_import_account_plain">Importuoti paskyrą</string>
     <string name="nc_server_import_accounts_plain">Importuoti paskyras</string>
     <string name="nc_server_failed_to_import_account">Nepavyko importuoti pasirinktą paskyrą</string>
