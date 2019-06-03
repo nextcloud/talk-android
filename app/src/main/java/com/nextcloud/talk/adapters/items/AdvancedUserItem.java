@@ -101,6 +101,8 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
+        holder.avatarImageView.setController(null);
+
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(),
                     String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()

@@ -96,6 +96,10 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ConversationItemViewHolder holder, int position, List<Object> payloads) {
         Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+
+        holder.dialogAvatar.setController(null);
+        holder.dialogLastMessageUserAvatar.setController(null);
+
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.dialogName, conversation.getDisplayName(),
                     String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()

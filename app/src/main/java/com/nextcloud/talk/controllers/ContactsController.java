@@ -89,7 +89,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcels;
-import retrofit2.HttpException;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -100,7 +99,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     public static final String TAG = "ContactsController";
 
-    private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
     @Nullable
     @BindView(R.id.initial_relative_layout)
     RelativeLayout initialRelativeLayout;
@@ -140,7 +138,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private Disposable contactsQueryDisposable;
     private Disposable cacheQueryDisposable;
     private FlexibleAdapter adapter;
-    private List<AbstractFlexibleItem> contactItems = new ArrayList<>();
+    private List<AbstractFlexibleItem> contactItems;
     private BottomSheet bottomSheet;
     private View view;
     private int currentPage;
@@ -150,7 +148,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private MenuItem searchItem;
     private SearchView searchView;
-    private String searchQuery;
 
     private boolean isNewConversationView;
     private boolean isPublicCall;
@@ -203,6 +200,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
 
         if (adapter == null) {
+            contactItems = new ArrayList<>();
             adapter = new FlexibleAdapter<>(contactItems, getActivity(), true);
 
             if (currentUser != null) {
@@ -220,16 +218,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         adapter.setEndlessScrollListener(this, new ProgressItem());
 
-        adapter.registerAdapterDataObserver(new androidx.recyclerview.widget.RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                checkAndHandleDoneMenuItem();
-                adapter.filterItems();
-                adapter.onLoadMoreComplete(null);
-            }
-        });
-
         adapter.setStickyHeaderElevation(5)
                 .setUnlinkAllItemsOnRemoveHeaders(true)
                 .setDisplayHeadersAtStartUp(true)
@@ -239,67 +227,84 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     private void selectionDone() {
-        if (!isPublicCall && adapter.getSelectedPositions().size() == 1) {
+        List abstractFlexibleItemList = adapter.getCurrentItems();
+
+        ArrayList<String> userIds = new ArrayList<>();
+        ArrayList<String> groupIds = new ArrayList<>();
+
+        UserItem userItem;
+        for (int i = 0; i < abstractFlexibleItemList.size(); i++) {
+            if (abstractFlexibleItemList.get(i) instanceof UserItem) {
+                userItem = (UserItem) abstractFlexibleItemList.get(i);
+                if ("groups".equals(userItem.getModel().getSource())) {
+                    groupIds.add(userItem.getModel().getUserId());
+                } else {
+                    userIds.add(userItem.getModel().getUserId());
+                }
+            }
+        }
+
+        if (!isPublicCall && (groupIds.size() + userIds.size() == 1)) {
+            String userId;
             String roomType = "1";
 
-            int firstSelectedPosition = adapter.getSelectedPositions().get(0);
-            Object selectedObject = adapter.getItem(firstSelectedPosition);
-            if (selectedObject != null && "groups".equals(((UserItem) selectedObject).getModel().getSource())) {
+            if (groupIds.size() == 1) {
                 roomType = "2";
+                userId = groupIds.get(0);
+            } else {
+                userId = userIds.get(0);
             }
 
-            if (selectedObject != null) {
-                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType,
-                        ((UserItem) selectedObject).getModel().getUserId(), null);
-                ncApi.createRoom(credentials,
-                        retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<RoomOverall>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+            RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType,
+                    userId, null);
+            ncApi.createRoom(credentials,
+                    retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                            }
+                        }
 
-                            @Override
-                            public void onNext(RoomOverall roomOverall) {
-                                Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
-                                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
-                                bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
+                        @Override
+                        public void onNext(RoomOverall roomOverall) {
+                            Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
+                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
+                            bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
 
-                                if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
-                                    bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
-                                            Parcels.wrap(roomOverall.getOcs().getData()));
-                                    conversationIntent.putExtras(bundle);
-                                    getRouter().replaceTopController((RouterTransaction.with(new ChatController(bundle))
-                                            .pushChangeHandler(new HorizontalChangeHandler())
-                                            .popChangeHandler(new HorizontalChangeHandler())));
-                                } else {
-                                    conversationIntent.putExtras(bundle);
-                                    startActivity(conversationIntent);
-                                    new Handler().postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (!isDestroyed() && !isBeingDestroyed()) {
-                                                getRouter().popCurrentController();
-                                            }
+                            if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+                                bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
+                                        Parcels.wrap(roomOverall.getOcs().getData()));
+                                conversationIntent.putExtras(bundle);
+                                getRouter().replaceTopController((RouterTransaction.with(new ChatController(bundle))
+                                        .pushChangeHandler(new HorizontalChangeHandler())
+                                        .popChangeHandler(new HorizontalChangeHandler())));
+                            } else {
+                                conversationIntent.putExtras(bundle);
+                                startActivity(conversationIntent);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!isDestroyed() && !isBeingDestroyed()) {
+                                            getRouter().popCurrentController();
                                         }
-                                    }, 100);
-                                }
+                                    }
+                                }, 100);
                             }
+                        }
 
-                            @Override
-                            public void onError(Throwable e) {
+                        @Override
+                        public void onError(Throwable e) {
 
-                            }
+                        }
 
-                            @Override
-                            public void onComplete() {
-                            }
-                        });
-            }
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
         } else {
 
             Bundle bundle = new Bundle();
@@ -311,20 +316,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
 
             bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));
-            ArrayList<String> userIds = new ArrayList<>();
-            Set<Integer> selectedPositions = adapter.getSelectedPositionsAsSet();
-            ArrayList<String> groupIds = new ArrayList<>();
-            for (int selectedPosition : selectedPositions) {
-                if (adapter.getItem(selectedPosition) instanceof UserItem) {
-                    UserItem userItem = (UserItem) adapter.getItem(selectedPosition);
-                    if (!"groups".equals(userItem.getModel().getSource())) {
-                        userIds.add(userItem.getModel().getUserId());
-                    } else {
-                        groupIds.add(userItem.getModel().getUserId());
-                    }
-                }
-            }
-
             bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIds);
             bundle.putStringArrayList(BundleKeys.KEY_INVITED_GROUP, groupIds);
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 11);
@@ -396,13 +387,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         userHeaderItems = new HashMap<>();
 
-
-        String query = "";
-        if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
-            query = searchView.getQuery().toString();
-        } else if (startFromScratch) {
-            contactItems = new ArrayList<>();
-        }
+        String query = (String) adapter.getFilter(String.class);
 
         RetrofitBucket retrofitBucket;
         boolean serverIs14OrUp = false;
@@ -461,7 +446,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             Participant participant;
 
                             List<AbstractFlexibleItem> newUserItemList = new ArrayList<>();
-                            newUserItemList.addAll(contactItems);
 
                             try {
                                 if (!finalServerIs14OrUp) {
@@ -552,14 +536,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 currentSearchPage = (int) modifiedQueryMap.get("page");
                             }
 
-
-                            boolean shouldFilterManually = false;
-                            if (newUserItemList.size() == contactItems.size()) {
-                                shouldFilterManually = true;
-                            }
-
-                            contactItems = newUserItemList;
                             userHeaderItems = new HashMap<>();
+                            contactItems.addAll(newUserItemList);
 
                             Collections.sort(newUserItemList, (o1, o2) -> {
                                 String firstName;
@@ -591,13 +569,41 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 return firstName.compareToIgnoreCase(secondName);
                             });
 
+                            Collections.sort(contactItems, (o1, o2) -> {
+                                String firstName;
+                                String secondName;
 
-                            adapter.clearSelection();
-                            if (!shouldFilterManually) {
-                                adapter.updateDataSet(newUserItemList, false);
+
+                                if (o1 instanceof UserItem) {
+                                    firstName = ((UserItem) o1).getModel().getDisplayName();
+                                } else {
+                                    firstName = ((GenericTextHeaderItem) o1).getModel();
+                                }
+
+                                if (o2 instanceof UserItem) {
+                                    secondName = ((UserItem) o2).getModel().getDisplayName();
+                                } else {
+                                    secondName = ((GenericTextHeaderItem) o2).getModel();
+                                }
+
+                                if (o1 instanceof UserItem && o2 instanceof UserItem) {
+                                    if ("groups".equals(((UserItem) o1).getModel().getSource()) && "groups".equals(((UserItem) o2).getModel().getSource())) {
+                                        return firstName.compareToIgnoreCase(secondName);
+                                    } else if ("groups".equals(((UserItem) o1).getModel().getSource())) {
+                                        return -1;
+                                    } else if ("groups".equals(((UserItem) o2).getModel().getSource())) {
+                                        return 1;
+                                    }
+                                }
+
+                                return firstName.compareToIgnoreCase(secondName);
+                            });
+
+
+                            if (newUserItemList.size() > 0) {
+                                adapter.updateDataSet(newUserItemList);
                             } else {
                                 adapter.filterItems();
-                                adapter.onLoadMoreComplete(null);
                             }
 
                             if (swipeRefreshLayout != null) {
@@ -609,24 +615,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof HttpException) {
-                            HttpException exception = (HttpException) e;
-                            switch (exception.code()) {
-                                case 401:
-                                    getRouter().pushController((RouterTransaction.with(new WebViewLoginController(currentUser.getBaseUrl(),
-                                            true))
-                                            .pushChangeHandler(new VerticalChangeHandler())
-                                            .popChangeHandler(new VerticalChangeHandler())));
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            if (swipeRefreshLayout != null) {
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
+                        if (swipeRefreshLayout != null) {
+                            swipeRefreshLayout.setRefreshing(false);
                         }
-
                         dispose(contactsQueryDisposable);
 
                     }
@@ -704,15 +695,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
         adapter.onSaveInstanceState(outState);
         super.onSaveViewState(view, outState);
-        if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
-            outState.putString(KEY_SEARCH_QUERY, searchView.getQuery().toString());
-        }
     }
 
     @Override
     public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         super.onRestoreViewState(view, savedViewState);
-        searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
         if (adapter != null) {
             adapter.onRestoreInstanceState(savedViewState);
         }
@@ -726,20 +713,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (adapter.hasNewFilter(newText) || !TextUtils.isEmpty(searchQuery)) {
-
-            if (!TextUtils.isEmpty(searchQuery)) {
-                adapter.setFilter(searchQuery);
-                adapter.filterItems();
-                searchQuery = "";
-            } else {
-                adapter.setFilter(newText);
-                if (TextUtils.isEmpty(newText)) {
-                    adapter.filterItems();
-                } else {
-                    fetchData(true);
-                }
-            }
+        if (!newText.equals("") && adapter.hasNewFilter(newText)) {
+            Log.d("MARIO", "SETTING FILTER TO " + newText);
+            adapter.setFilter(newText);
+            fetchData(true);
+        } else if (newText.equals("")) {
+            Log.d("MARIO", "SETTING FILTER TO " + "CLEARING FILTER");
+            adapter.setFilter("");
+            adapter.updateDataSet(contactItems);
         }
 
         if (swipeRefreshLayout != null) {
@@ -898,23 +879,27 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             }
                         });
             } else {
-                adapter.toggleSelection(position);
+                Participant participant = ((UserItem) adapter.getItem(position)).getModel();
+                participant.setSelected(!participant.isSelected());
 
                 if (currentUser.hasSpreedCapabilityWithName("last-room-activity")
                         && !currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails") &&
                         "groups".equals(((UserItem) adapter.getItem(position)).getModel().getSource()) &&
+                        participant.isSelected() &&
                         adapter.getSelectedItemCount() > 1) {
-                    List<Integer> selectedPositions = adapter.getSelectedPositions();
-                    for (int i = 0; i < selectedPositions.size(); i++) {
-                        if (!selectedPositions.get(i).equals(position) && "groups".equals(((UserItem) adapter.getItem(selectedPositions.get(i))).getModel().getSource())) {
-                            adapter.toggleSelection(selectedPositions.get(i));
+                    List<UserItem> currentItems = adapter.getCurrentItems();
+                    Participant internalParticipant;
+                    for (int i = 0; i < currentItems.size(); i++) {
+                        internalParticipant = currentItems.get(i).getModel();
+                        if (internalParticipant.getUserId().equals(participant.getUserId()) &&
+                                "groups".equals(internalParticipant.getSource()) && internalParticipant.isSelected()) {
+                            internalParticipant.setSelected(false);
                         }
                     }
 
                 }
 
                 adapter.notifyDataSetChanged();
-
                 checkAndHandleDoneMenuItem();
             }
         }
@@ -937,17 +922,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         isPublicCall = !isPublicCall;
 
         if (isPublicCall) {
-            List<Integer> selectedPositions = adapter.getSelectedPositions();
-            for (int selectedPosition : selectedPositions) {
-                if (adapter.getItem(selectedPosition) instanceof UserItem) {
-                    UserItem userItem = (UserItem) adapter.getItem(selectedPosition);
-                    if ("groups".equals(userItem.getModel().getSource())) {
-                        adapter.toggleSelection(selectedPosition);
+            List<AbstractFlexibleItem> currentItems = adapter.getCurrentItems();
+            Participant internalParticipant;
+            for (int i = 0; i < currentItems.size(); i++) {
+                if (currentItems.get(i) instanceof UserItem) {
+                    internalParticipant = ((UserItem) currentItems.get(i)).getModel();
+                    if ("groups".equals(internalParticipant.getSource()) && internalParticipant.isSelected()) {
+                        internalParticipant.setSelected(false);
                     }
                 }
             }
-
-
         }
 
         for (int i = 0; i < adapter.getItemCount(); i++) {
@@ -978,11 +962,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     public void onLoadMore(int lastPosition, int currentPage) {
-        String query = "";
-
-        if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
-            query = searchView.getQuery().toString();
-        }
+        String query = (String) adapter.getFilter(String.class);
 
         if (!alreadyFetching && ((searchView != null && searchView.isIconified() && canFetchFurther)
                 || (!TextUtils.isEmpty(query) && canFetchSearchFurther))) {

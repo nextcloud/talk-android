@@ -66,7 +66,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     public boolean equals(Object o) {
         if (o instanceof UserItem) {
             UserItem inItem = (UserItem) o;
-            return participant.equals(inItem.getModel());
+            return participant.getUserId().equals(inItem.getModel().getUserId());
         }
         return false;
     }
@@ -106,8 +106,10 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
 
+        holder.simpleDraweeView.setController(null);
+
         if (holder.checkedImageView != null) {
-            if (adapter.isSelected(position)) {
+            if (participant.isSelected()) {
                 holder.checkedImageView.setVisibility(View.VISIBLE);
             } else {
                 holder.checkedImageView.setVisibility(View.GONE);
@@ -133,6 +135,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participant.getType())) {
                 // TODO: Show generated avatar for guests
             } else {
+
                 DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                         .setOldController(holder.simpleDraweeView.getController())
                         .setAutoPlayAnimations(true)
@@ -213,8 +216,10 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                         break;
                 }
 
-                holder.contactMentionId.setText(userType);
-                holder.contactMentionId.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.colorPrimary));
+                if (!holder.contactMentionId.getText().equals(userType)) {
+                    holder.contactMentionId.setText(userType);
+                    holder.contactMentionId.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.colorPrimary));
+                }
             }
         }
     }
@@ -222,7 +227,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     @Override
     public boolean filter(String constraint) {
         return participant.getDisplayName() != null &&
-                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getDisplayName().trim()).find();
+                (Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getDisplayName().trim()).find() ||
+                        Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getUserId().trim()).find());
     }
 
     @Override
