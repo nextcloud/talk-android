@@ -380,7 +380,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        searchItem.setVisible(contactItems.size() > 0);
         checkAndHandleDoneMenuItem();
         if (adapter.hasFilter()) {
             searchItem.expandActionView();
@@ -601,10 +600,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 adapter.onLoadMoreComplete(null);
                             }
 
-                            if (searchItem != null) {
-                                searchItem.setVisible(newUserItemList.size() > 0);
-                            }
-
                             if (swipeRefreshLayout != null) {
                                 swipeRefreshLayout.setRefreshing(false);
                             }
@@ -614,10 +609,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                     @Override
                     public void onError(Throwable e) {
-                        if (searchItem != null) {
-                            searchItem.setVisible(false);
-                        }
-
                         if (e instanceof HttpException) {
                             HttpException exception = (HttpException) e;
                             switch (exception.code()) {
