@@ -21,6 +21,7 @@
 package com.nextcloud.talk.models.json.participants;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.converters.ObjectParcelConverter;
@@ -57,6 +58,9 @@ public class Participant {
     @JsonField(name = "inCall")
     Object inCall;
     String source;
+
+    boolean selected;
+
 
     public ParticipantFlags getParticipantFlags() {
         ParticipantFlags participantFlags = ParticipantFlags.NOT_IN_CALL;
