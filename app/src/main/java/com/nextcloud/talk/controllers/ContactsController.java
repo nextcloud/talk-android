@@ -160,6 +160,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private MenuItem doneMenuItem;
 
+    private Set<String> selectedUserIds;
+    private Set<String> selectedGroupIds;
     public ContactsController() {
         super();
         setHasOptionsMenu(true);
@@ -171,6 +173,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (args.containsKey(BundleKeys.KEY_NEW_CONVERSATION)) {
             isNewConversationView = true;
         }
+
+        selectedGroupIds = new HashSet<>();
+        selectedUserIds = new HashSet<>();
     }
 
     @Override
@@ -227,32 +232,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     private void selectionDone() {
-        List abstractFlexibleItemList = adapter.getCurrentItems();
-
-        ArrayList<String> userIds = new ArrayList<>();
-        ArrayList<String> groupIds = new ArrayList<>();
-
-        UserItem userItem;
-        for (int i = 0; i < abstractFlexibleItemList.size(); i++) {
-            if (abstractFlexibleItemList.get(i) instanceof UserItem) {
-                userItem = (UserItem) abstractFlexibleItemList.get(i);
-                if ("groups".equals(userItem.getModel().getSource())) {
-                    groupIds.add(userItem.getModel().getUserId());
-                } else {
-                    userIds.add(userItem.getModel().getUserId());
-                }
-            }
-        }
-
-        if (!isPublicCall && (groupIds.size() + userIds.size() == 1)) {
+        if (!isPublicCall && (selectedGroupIds.size() + selectedUserIds.size() == 1)) {
             String userId;
             String roomType = "1";
 
-            if (groupIds.size() == 1) {
+            if (selectedGroupIds.size() == 1) {
                 roomType = "2";
-                userId = groupIds.get(0);
+                userId = selectedGroupIds.iterator().next();
             } else {
-                userId = userIds.get(0);
+                userId = selectedUserIds.iterator().next();
             }
 
             RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType,
@@ -315,9 +303,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 roomType = Conversation.ConversationType.ROOM_GROUP_CALL;
             }
 
+            ArrayList<String> userIdsArray = new ArrayList<>(selectedUserIds);
+            ArrayList<String> groupIdsArray = new ArrayList<>(selectedGroupIds);
+
+
             bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));
-            bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIds);
-            bundle.putStringArrayList(BundleKeys.KEY_INVITED_GROUP, groupIds);
+            bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIdsArray);
+            bundle.putStringArrayList(BundleKeys.KEY_INVITED_GROUP, groupIdsArray);
             bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 11);
             prepareAndShowBottomSheetWithBundle(bundle, true);
         }
@@ -714,11 +706,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     public boolean onQueryTextChange(String newText) {
         if (!newText.equals("") && adapter.hasNewFilter(newText)) {
-            Log.d("MARIO", "SETTING FILTER TO " + newText);
             adapter.setFilter(newText);
             fetchData(true);
         } else if (newText.equals("")) {
-            Log.d("MARIO", "SETTING FILTER TO " + "CLEARING FILTER");
             adapter.setFilter("");
             adapter.updateDataSet(contactItems);
         }
@@ -737,7 +727,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private void checkAndHandleDoneMenuItem() {
         if (adapter != null && doneMenuItem != null) {
-            if (adapter.getSelectedItemCount() > 0 || isPublicCall) {
+            if ((selectedGroupIds.size() + selectedUserIds.size() > 0) || isPublicCall) {
                 doneMenuItem.setVisible(true);
             } else {
                 doneMenuItem.setVisible(false);
@@ -882,6 +872,20 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 Participant participant = ((UserItem) adapter.getItem(position)).getModel();
                 participant.setSelected(!participant.isSelected());
 
+                if ("groups".equals(participant.getSource())) {
+                    if (participant.isSelected()) {
+                        selectedGroupIds.add(participant.getUserId());
+                    } else {
+                        selectedGroupIds.remove(participant.getUserId());
+                    }
+                } else {
+                    if (participant.isSelected()) {
+                        selectedUserIds.add(participant.getUserId());
+                    } else {
+                        selectedUserIds.remove(participant.getUserId());
+                    }
+                }
+
                 if (currentUser.hasSpreedCapabilityWithName("last-room-activity")
                         && !currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails") &&
                         "groups".equals(((UserItem) adapter.getItem(position)).getModel().getSource()) &&
@@ -894,6 +898,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         if (internalParticipant.getUserId().equals(participant.getUserId()) &&
                                 "groups".equals(internalParticipant.getSource()) && internalParticipant.isSelected()) {
                             internalParticipant.setSelected(false);
+                            selectedGroupIds.remove(internalParticipant.getUserId());
                         }
                     }
 
@@ -929,6 +934,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     internalParticipant = ((UserItem) currentItems.get(i)).getModel();
                     if ("groups".equals(internalParticipant.getSource()) && internalParticipant.isSelected()) {
                         internalParticipant.setSelected(false);
+                        selectedGroupIds.remove(internalParticipant.getUserId());
                     }
                 }
             }
