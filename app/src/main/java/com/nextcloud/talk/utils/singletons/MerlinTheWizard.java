@@ -34,7 +34,6 @@ import javax.inject.Inject;
 @AutoInjector(NextcloudTalkApplication.class)
 public class MerlinTheWizard {
     private static Merlin merlin;
-    private static MerlinsBeard merlinsBeard;
 
     private UserEntity currentUserEntity;
 
@@ -47,8 +46,14 @@ public class MerlinTheWizard {
     @Inject
     UserUtils userUtils;
 
+    private static boolean isConnectedToInternet;
+
     public MerlinTheWizard() {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+    }
+
+    public static boolean isConnectedToInternet() {
+        return isConnectedToInternet;
     }
 
     public void initMerlin() {
@@ -60,13 +65,12 @@ public class MerlinTheWizard {
     }
 
     public Merlin getMerlin() {
+        if (merlin == null) {
+            initMerlin();
+        }
+
         return merlin;
     }
-
-    public MerlinsBeard getMerlinsBeard() {
-        return merlinsBeard;
-    }
-
 
     private void setupMerlinForCurrentUserEntity() {
         Endpoint endpoint = Endpoint.from(currentUserEntity.getBaseUrl() + "/index.php/204");
@@ -81,12 +85,10 @@ public class MerlinTheWizard {
 
         merlin.bind();
 
-        merlinsBeard = new MerlinsBeard.Builder().withEndpoint(Endpoint.from(currentUserEntity.getBaseUrl() +
-                "/index.php/204")).withResponseCodeValidator(new ResponseCodeValidator.CaptivePortalResponseCodeValidator()).build(context);
-
         merlin.registerConnectable(new Connectable() {
             @Override
             public void onConnect() {
+                isConnectedToInternet = true;
                 eventBus.post(new NetworkEvent(NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED));
             }
         });
@@ -94,6 +96,7 @@ public class MerlinTheWizard {
         merlin.registerDisconnectable(new Disconnectable() {
             @Override
             public void onDisconnect() {
+                isConnectedToInternet = false;
                 eventBus.post(new NetworkEvent(NetworkEvent.NetworkConnectionEvent.NETWORK_DISCONNECTED));
             }
         });

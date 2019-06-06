@@ -36,6 +36,7 @@ import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.utils.LoggingUtils;
+import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
 import org.greenrobot.eventbus.EventBus;
 import org.webrtc.*;
 
@@ -53,7 +54,7 @@ public class MagicPeerConnectionWrapper {
     private PeerConnection peerConnection;
     private String sessionId;
     private String nick;
-    private MediaConstraints mediaConstraints;
+    private MediaConstraints sdpConstraints;
     private DataChannel magicDataChannel;
     private MagicSdpObserver magicSdpObserver;
     private MediaStream remoteMediaStream;
@@ -65,14 +66,17 @@ public class MagicPeerConnectionWrapper {
 
     private MediaStream localMediaStream;
     private boolean isMCUPublisher;
+    private boolean hasMCU;
     private String videoStreamType;
+
+    private int connectionAttempts = 0;
 
     @Inject
     Context context;
 
     public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                       List<PeerConnection.IceServer> iceServerList,
-                                      MediaConstraints mediaConstraints,
+                                      MediaConstraints sdpConstraints,
                                       String sessionId, String localSession, @Nullable MediaStream mediaStream,
                                       boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
 
@@ -80,15 +84,16 @@ public class MagicPeerConnectionWrapper {
 
         this.localMediaStream = mediaStream;
         this.videoStreamType = videoStreamType;
+        this.hasMCU = hasMCU;
 
         this.sessionId = sessionId;
-        this.mediaConstraints = mediaConstraints;
+        this.sdpConstraints = sdpConstraints;
 
         magicSdpObserver = new MagicSdpObserver();
         hasInitiated = sessionId.compareTo(localSession) < 0;
         this.isMCUPublisher = isMCUPublisher;
-
-        peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, mediaConstraints,
+        
+        peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, sdpConstraints,
                 new MagicPeerConnectionObserver());
 
         if (peerConnection != null) {
@@ -102,13 +107,13 @@ public class MagicPeerConnectionWrapper {
                 magicDataChannel = peerConnection.createDataChannel("status", init);
                 magicDataChannel.registerObserver(new MagicDataChannelObserver());
                 if (isMCUPublisher) {
-                    peerConnection.createOffer(magicSdpObserver, mediaConstraints);
+                    peerConnection.createOffer(magicSdpObserver, sdpConstraints);
                 } else if (hasMCU) {
                     HashMap<String, String> hashMap = new HashMap<>();
                     hashMap.put("sessionId", sessionId);
                     EventBus.getDefault().post(new WebSocketCommunicationEvent("peerReadyForRequestingOffer", hashMap));
                 } else if (hasInitiated) {
-                    peerConnection.createOffer(magicSdpObserver, mediaConstraints);
+                    peerConnection.createOffer(magicSdpObserver, sdpConstraints);
 
                 }
             }
@@ -287,6 +292,26 @@ public class MagicPeerConnectionWrapper {
         }
     }
 
+    private void restartIce() {
+        if (connectionAttempts <= 5) {
+            if (!hasMCU || isMCUPublisher) {
+                MediaConstraints.KeyValuePair iceRestartConstraint =
+                        new MediaConstraints.KeyValuePair("IceRestart", "true");
+
+                if (sdpConstraints.mandatory.contains(iceRestartConstraint)) {
+                    sdpConstraints.mandatory.add(iceRestartConstraint);
+                }
+
+                peerConnection.createOffer(magicSdpObserver, sdpConstraints);
+            } else {
+                // we have an MCU and this is not the publisher
+                // Do something if we have an MCU
+            }
+
+            connectionAttempts++;
+        }
+    }
+
     private class MagicPeerConnectionObserver implements PeerConnection.Observer {
         private final String TAG = "MagicPeerConnectionObserver";
 
@@ -300,6 +325,7 @@ public class MagicPeerConnectionWrapper {
                     "iceConnectionChangeTo: " + iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
 
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
+                connectionAttempts = 0;
                 /*EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CONNECTED, sessionId, null, null));*/
 
@@ -314,6 +340,11 @@ public class MagicPeerConnectionWrapper {
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.CLOSED)) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CLOSED, sessionId, null, null, videoStreamType));
+                connectionAttempts = 0;
+            } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
+                if (MerlinTheWizard.isConnectedToInternet() && connectionAttempts < 5) {
+                    restartIce();
+                }
             }
         }
 
@@ -413,7 +444,7 @@ public class MagicPeerConnectionWrapper {
         public void onSetSuccess() {
             if (peerConnection != null) {
                 if (peerConnection.getLocalDescription() == null) {
-                    peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
+                    peerConnection.createAnswer(magicSdpObserver, sdpConstraints);
                 }
 
                 if (peerConnection.getRemoteDescription() != null) {

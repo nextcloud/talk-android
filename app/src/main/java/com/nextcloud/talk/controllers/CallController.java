@@ -73,6 +73,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
+import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
 import com.nextcloud.talk.webrtc.*;
 import com.wooplr.spotlight.SpotlightView;
 import io.reactivex.Observable;
@@ -88,6 +89,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.parceler.Parcel;
 import org.webrtc.*;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
@@ -165,7 +167,7 @@ public class CallController extends BaseController {
     private VideoCapturer videoCapturer;
     private EglBase rootEglBase;
     private boolean leavingCall = false;
-    private boolean inCall = false;
+    private boolean connectedToCall = false;
     private Disposable signalingDisposable;
     private Disposable pingDisposable;
     private List<PeerConnection.IceServer> iceServers;
@@ -199,13 +201,22 @@ public class CallController extends BaseController {
     private SpotlightView spotlightView;
 
     private ExternalSignalingServer externalSignalingServer;
-    private MagicWebSocketInstance webSocketClient ;
+    private MagicWebSocketInstance webSocketClient;
     private WebSocketConnectionHelper webSocketConnectionHelper;
     private boolean hasMCU;
     private boolean hasExternalSignalingServer;
     private String conversationPassword;
 
     private PowerManagerUtils powerManagerUtils;
+
+    private Handler handler;
+
+    private CallStatus currentCallStatus;
+
+    @Parcel
+    public enum CallStatus {
+        CALLING, CALLING_TIMEOUT, ESTABLISHED, RECONNECTING, OFFLINE
+    }
 
     public CallController(Bundle args) {
         super(args);
@@ -227,6 +238,7 @@ public class CallController extends BaseController {
 
         isFromNotification = TextUtils.isEmpty(roomToken);
         powerManagerUtils = new PowerManagerUtils();
+        currentCallStatus = CallStatus.CALLING;
     }
 
     @Override
@@ -273,13 +285,9 @@ public class CallController extends BaseController {
 
         callControls.setZ(100.0f);
         basicInitialization();
+        initViews();
 
-        if (isFromNotification) {
-            handleFromNotification();
-        } else {
-            initViews();
-            checkPermissions();
-        }
+        initiateCall();
     }
 
     private void basicInitialization() {
@@ -357,7 +365,6 @@ public class CallController extends BaseController {
                             }
                         }
 
-                        initViews();
                         checkPermissions();
                     }
 
@@ -427,7 +434,7 @@ public class CallController extends BaseController {
                 }
             }
 
-            if (!inCall) {
+            if (!connectedToCall) {
                 fetchSignalingSettings();
             }
         } else if (getActivity() != null && EffortlessPermissions.somePermissionPermanentlyDenied(getActivity(),
@@ -466,7 +473,7 @@ public class CallController extends BaseController {
             microphoneControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
         }
 
-        if (!inCall) {
+        if (!connectedToCall) {
             fetchSignalingSettings();
         }
     }
@@ -484,7 +491,7 @@ public class CallController extends BaseController {
         if (getActivity() != null && (EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA) ||
                 EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_MICROPHONE))) {
             checkIfSomeAreApproved();
-        } else if (!inCall) {
+        } else if (!connectedToCall) {
             fetchSignalingSettings();
         }
     }
@@ -634,7 +641,7 @@ public class CallController extends BaseController {
                 toggleMedia(true, false);
             }
 
-            if (isVoiceOnlyCall && !inCall) {
+            if (isVoiceOnlyCall && !connectedToCall) {
                 fetchSignalingSettings();
             }
 
@@ -656,7 +663,7 @@ public class CallController extends BaseController {
 
     @OnClick(R.id.callControlHangupView)
     void onHangupClick() {
-        hangup(false);
+        hangup(true);
     }
 
     @OnClick(R.id.call_control_camera)
@@ -751,7 +758,7 @@ public class CallController extends BaseController {
             }
         }
 
-        if (inCall) {
+        if (connectedToCall) {
             if (!hasMCU) {
                 for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
                     magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
@@ -1056,7 +1063,8 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        inCall = true;
+                        connectedToCall = true;
+                        currentCallStatus = CallStatus.CALLING;
 
                         if (connectingView != null) {
                             connectingView.setVisibility(View.GONE);
@@ -1077,8 +1085,8 @@ public class CallController extends BaseController {
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                                    .takeWhile(observable -> inCall)
-                                    .retry(3, observable -> inCall)
+                                    .takeWhile(observable -> connectedToCall)
+                                    .retry(3, observable -> connectedToCall)
                                     .subscribe(new Observer<GenericOverall>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
@@ -1110,7 +1118,7 @@ public class CallController extends BaseController {
 
                         if (!conversationUser.hasSpreedCapabilityWithName("no-ping") && !TextUtils.isEmpty(roomId)) {
                             NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser, roomId);
-                        } else if (!TextUtils.isEmpty(roomToken)){
+                        } else if (!TextUtils.isEmpty(roomToken)) {
                             NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser, roomToken);
                         }
 
@@ -1119,8 +1127,8 @@ public class CallController extends BaseController {
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .repeatWhen(observable -> observable)
-                                    .takeWhile(observable -> inCall)
-                                    .retry(3, observable -> inCall)
+                                    .takeWhile(observable -> connectedToCall)
+                                    .retry(3, observable -> connectedToCall)
                                     .subscribe(new Observer<SignalingOverall>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
@@ -1177,11 +1185,24 @@ public class CallController extends BaseController {
         joinRoomAndCall();
     }
 
+    private void initiateCall() {
+        if (!TextUtils.isEmpty(roomToken)) {
+            checkPermissions();
+        } else {
+            handleFromNotification();
+        }
+    }
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
-                joinRoomAndCall();
+                if (!currentCallStatus.equals(CallStatus.RECONNECTING)) {
+                    if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
+                        initiateCall();
+                    } else {
+                        // do nothing, let's just continue
+                    }
+                }
                 break;
             case "roomJoined":
                 if (hasExternalSignalingServer) {
@@ -1300,104 +1321,105 @@ public class CallController extends BaseController {
         }
     }
 
-    private void hangup(boolean dueToNetworkChange) {
+    private void hangup(boolean shutDownView) {
 
         leavingCall = true;
-        inCall = false;
+        connectedToCall = false;
 
-        if (videoCapturer != null) {
-            try {
-                videoCapturer.stopCapture();
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Failed to stop capturing while hanging up");
+        if (shutDownView) {
+            if (videoCapturer != null) {
+                try {
+                    videoCapturer.stopCapture();
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Failed to stop capturing while hanging up");
+                }
+                videoCapturer.dispose();
+                videoCapturer = null;
             }
-            videoCapturer.dispose();
-            videoCapturer = null;
+
+            if (pipVideoView != null) {
+                pipVideoView.release();
+            }
+
+            if (audioSource != null) {
+                audioSource.dispose();
+                audioSource = null;
+            }
+
+            if (audioManager != null) {
+                audioManager.stop();
+                audioManager = null;
+            }
+
+            if (videoSource != null) {
+                videoSource = null;
+            }
+
+            if (peerConnectionFactory != null) {
+                peerConnectionFactory = null;
+            }
+
+            localMediaStream = null;
+            localAudioTrack = null;
+            localVideoTrack = null;
+
+
+            if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
+                WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(-1);
+            }
         }
 
         for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
             endPeerConnection(magicPeerConnectionWrapperList.get(i).getSessionId(), false);
-
         }
 
-        if (pipVideoView != null) {
-            pipVideoView.release();
-        }
-
-        if (audioSource != null) {
-            audioSource.dispose();
-            audioSource = null;
-        }
-
-        if (audioManager != null) {
-            audioManager.stop();
-            audioManager = null;
-        }
-
-        if (videoSource != null) {
-            videoSource = null;
-        }
-
-        if (peerConnectionFactory != null) {
-            peerConnectionFactory = null;
-        }
-
-        localMediaStream = null;
-        localAudioTrack = null;
-        localVideoTrack = null;
-
-
-        if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
-            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(-1);
-        }
-
-        if (!dueToNetworkChange) {
-            hangupNetworkCalls();
-        } else {
-            if (getActivity() != null) {
-                getActivity().finish();
-            }
-        }
+        hangupNetworkCalls(shutDownView);
     }
 
-    private void hangupNetworkCalls() {
-        ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+    private void hangupNetworkCalls(boolean shutDownView) {
+        if (MerlinTheWizard.isConnectedToInternet()) {
+            ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<GenericOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
-
-                    @Override
-                    public void onNext(GenericOverall genericOverall) {
-                        if (hasExternalSignalingServer) {
-                            webSocketClient.joinRoomWithRoomTokenAndSession("", callSession);
                         }
 
-                        if (isMultiSession) {
-                            if (getActivity() != null) {
-                                getActivity().finish();
+                        @Override
+                        public void onNext(GenericOverall genericOverall) {
+                            if (!TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
+                                webSocketClient.joinRoomWithRoomTokenAndSession("", callSession);
                             }
-                        } else {
-                            leaveRoom();
+
+                            if (isMultiSession) {
+                                if (shutDownView && getActivity() != null) {
+                                    getActivity().finish();
+                                } else if (!shutDownView && currentCallStatus.equals(CallStatus.RECONNECTING)) {
+                                    initiateCall();
+                                }
+                            } else {
+                                leaveRoom(shutDownView);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
+                        @Override
+                        public void onError(Throwable e) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onComplete() {
+                        @Override
+                        public void onComplete() {
 
-                    }
-                });
+                        }
+                    });
+        } else if (shutDownView && getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
-    private void leaveRoom() {
+    private void leaveRoom(boolean shutDownView) {
         ncApi.leaveRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1409,7 +1431,7 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        if (getActivity() != null) {
+                        if (shutDownView && getActivity() != null) {
                             getActivity().finish();
                         }
                     }
@@ -1431,7 +1453,7 @@ public class CallController extends BaseController {
             videoCapturer.startCapture(1280, 720, 30);
         }
     }
-    
+
     private void processUsersInRoom(List<HashMap<String, Object>> users) {
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSesssions = new HashSet<>();
@@ -1633,6 +1655,7 @@ public class CallController extends BaseController {
             pipVideoView.setLayoutParams(layoutParams);
         }
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
         if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
@@ -1647,7 +1670,7 @@ public class CallController extends BaseController {
                 boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                         .PeerConnectionEventType.SENSOR_FAR) && videoOn;
                 if (getActivity() != null && EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA) &&
-                        inCall && videoOn
+                        connectedToCall && videoOn
                         && enableVideo != localVideoTrack.enabled()) {
                     toggleMedia(enableVideo, true);
                 }
@@ -1678,7 +1701,7 @@ public class CallController extends BaseController {
                 int finalI = i;
                 Observable
                         .interval(1, TimeUnit.SECONDS)
-                        .takeWhile(observer -> inCall)
+                        .takeWhile(observer -> connectedToCall)
                         .observeOn(Schedulers.io())
                         .doOnNext(n -> magicPeerConnectionWrapperList.get(finalI).sendChannelData(dataChannelMessage));
                 break;
@@ -1796,14 +1819,23 @@ public class CallController extends BaseController {
             if (relativeLayout != null) {
                 SimpleDraweeView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
 
-                if (participantMap.containsKey(session) && avatarImageView.getDrawable() == null) {
+                String userId;
+
+                if (hasMCU) {
+                    userId = webSocketClient.getUserIdForSession(session);
+                } else {
+                    userId = participantMap.get(session).getUserId();
+                }
+
+                if (!TextUtils.isEmpty(userId)) {
 
                     if (getActivity() != null) {
+                        avatarImageView.setController(null);
+
                         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                                 .setOldController(avatarImageView.getController())
-                                .setAutoPlayAnimations(true)
                                 .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(baseUrl,
-                                        participantMap.get(session).getUserId(),
+                                        userId,
                                         R.dimen.avatar_size_big), null))
                                 .build();
                         avatarImageView.setController(draweeController);
@@ -1956,6 +1988,26 @@ public class CallController extends BaseController {
         @Override
         public void onClick(View v) {
             showCallControls();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(NetworkEvent networkEvent) {
+        if (networkEvent.getNetworkConnectionEvent().equals(NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED)) {
+            if (handler != null) {
+                handler.removeCallbacksAndMessages(null);
+            }
+
+            currentCallStatus = CallStatus.RECONNECTING;
+            hangupNetworkCalls(false);
+
+        } else if (networkEvent.getNetworkConnectionEvent().equals(NetworkEvent.NetworkConnectionEvent.NETWORK_DISCONNECTED)) {
+            if (handler != null) {
+                handler.removeCallbacksAndMessages(null);
+            }
+
+            currentCallStatus = CallStatus.OFFLINE;
+            hangup(false);
         }
     }
 }

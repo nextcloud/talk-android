@@ -30,15 +30,13 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.NetworkEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.*;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.MagicMap;
 import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
-import com.novoda.merlin.Endpoint;
-import com.novoda.merlin.MerlinsBeard;
-import com.novoda.merlin.ResponseCodeValidator;
 import okhttp3.*;
 import okio.ByteString;
 import org.greenrobot.eventbus.EventBus;
@@ -80,10 +78,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private int restartCount = 0;
     private boolean reconnecting = false;
 
-    private HashMap<String, String> displayNameHashMap;
-    private HashMap<String, String> userIdSesssionHashMap;
+    private HashMap<String, Participant> usersHashMap;
 
-    private MerlinTheWizard merlinTheWizard;
     private List<String> messagesQueue = new ArrayList<>();
 
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
@@ -93,11 +89,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
         this.conversationUser = conversationUser;
         this.webSocketTicket = webSocketTicket;
         this.webSocketConnectionHelper = new WebSocketConnectionHelper();
-        this.displayNameHashMap = new HashMap<>();
-        this.userIdSesssionHashMap = new HashMap<>();
+        this.usersHashMap = new HashMap<>();
         magicMap = new MagicMap();
 
-        merlinTheWizard = new MerlinTheWizard();
         connected = false;
         eventBus.register(this);
 
@@ -133,7 +127,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private void restartWebSocket() {
         reconnecting = true;
 
-        if (merlinTheWizard.getMerlinsBeard().hasInternetAccess()) {
+        if (MerlinTheWizard.isConnectedToInternet()) {
             Request request = new Request.Builder().url(connectionUrl).build();
             okHttpClient.newWebSocket(request, this);
             restartCount++;
@@ -155,6 +149,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         connected = true;
                         reconnecting = false;
                         restartCount = 0;
+                        String oldResumeId = resumeId;
                         HelloResponseOverallWebSocketMessage helloResponseWebSocketMessage = LoganSquare.parse(text, HelloResponseOverallWebSocketMessage.class);
                         resumeId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getResumeId();
                         sessionId = helloResponseWebSocketMessage.getHelloResponseWebSocketMessage().getSessionId();
@@ -165,7 +160,11 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         }
 
                         messagesQueue = new ArrayList<>();
-                        eventBus.post(new WebSocketCommunicationEvent("hello", null));
+                        HashMap<String, String> helloHasHap = new HashMap<>();
+                        if (!TextUtils.isEmpty(oldResumeId)) {
+                            helloHasHap.put("oldResumeId", oldResumeId);
+                        }
+                        eventBus.post(new WebSocketCommunicationEvent("hello", helloHasHap));
                         break;
                     case "error":
                         ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
@@ -187,8 +186,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                             joinRoomHashMap.put("roomToken", currentRoomToken);
                             eventBus.post(new WebSocketCommunicationEvent("roomJoined", joinRoomHashMap));
                         } else {
-                            userIdSesssionHashMap = new HashMap<>();
-                            displayNameHashMap = new HashMap<>();
+                            usersHashMap = new HashMap<>();
                         }
                         break;
                     case "event":
@@ -216,11 +214,14 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                     } else if (eventOverallWebSocketMessage.getEventMap().get("type").equals("join")) {
                                         List<HashMap<String, Object>> joinEventMap = (List<HashMap<String, Object>>) eventOverallWebSocketMessage.getEventMap().get("join");
                                         HashMap<String, Object> internalHashMap;
+                                        Participant participant;
                                         for (int i = 0; i < joinEventMap.size(); i++) {
                                             internalHashMap = joinEventMap.get(i);
                                             HashMap<String, Object> userMap = (HashMap<String, Object>) internalHashMap.get("user");
-                                            displayNameHashMap.put((String) internalHashMap.get("sessionid"), (String) userMap.get("displayname"));
-                                            userIdSesssionHashMap.put((String) internalHashMap.get("userid"), (String) internalHashMap.get("sessionid"));
+                                            participant = new Participant();
+                                            participant.setUserId((String) internalHashMap.get("userid"));
+                                            participant.setDisplayName((String) userMap.get("displayname"));
+                                            usersHashMap.put((String) internalHashMap.get("sessionid"), participant);
                                         }
                                     }
                                     break;
@@ -359,15 +360,29 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     public String getDisplayNameForSession(String session) {
-        if (displayNameHashMap.containsKey(session)) {
-            return displayNameHashMap.get(session);
+        if (usersHashMap.containsKey(session)) {
+            return usersHashMap.get(session).getDisplayName();
         }
 
         return NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_nick_guest);
     }
 
     public String getSessionForUserId(String userId) {
-        return userIdSesssionHashMap.get(userId);
+        for (String session : usersHashMap.keySet()) {
+            if (userId.equals(usersHashMap.get(session).getUserId())) {
+                return session;
+            }
+        }
+
+        return "";
+    }
+
+    public String getUserIdForSession(String session) {
+        if (usersHashMap.containsKey(session)) {
+            return usersHashMap.get(session).getUserId();
+        }
+
+        return "";
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -376,5 +391,4 @@ public class MagicWebSocketInstance extends WebSocketListener {
             restartWebSocket();
         }
     }
-
 }
