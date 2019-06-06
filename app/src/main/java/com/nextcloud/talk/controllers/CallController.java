@@ -166,8 +166,6 @@ public class CallController extends BaseController {
     private AudioTrack localAudioTrack;
     private VideoCapturer videoCapturer;
     private EglBase rootEglBase;
-    private boolean leavingCall = false;
-    private boolean connectedToCall = false;
     private Disposable signalingDisposable;
     private Disposable pingDisposable;
     private List<PeerConnection.IceServer> iceServers;
@@ -187,7 +185,6 @@ public class CallController extends BaseController {
     private boolean needsPing = true;
 
     private boolean isVoiceOnlyCall;
-    private boolean isFromNotification;
     private Handler callControlHandler = new Handler();
     private Handler cameraSwitchHandler = new Handler();
 
@@ -215,7 +212,7 @@ public class CallController extends BaseController {
 
     @Parcel
     public enum CallStatus {
-        CALLING, CALLING_TIMEOUT, ESTABLISHED, RECONNECTING, OFFLINE
+        CALLING, CALLING_TIMEOUT, ESTABLISHED, RECONNECTING, OFFLINE, LEAVING
     }
 
     public CallController(Bundle args) {
@@ -236,7 +233,6 @@ public class CallController extends BaseController {
             baseUrl = conversationUser.getBaseUrl();
         }
 
-        isFromNotification = TextUtils.isEmpty(roomToken);
         powerManagerUtils = new PowerManagerUtils();
         currentCallStatus = CallStatus.CALLING;
     }
@@ -434,7 +430,7 @@ public class CallController extends BaseController {
                 }
             }
 
-            if (!connectedToCall) {
+            if (!currentCallStatus.equals(CallStatus.ESTABLISHED)) {
                 fetchSignalingSettings();
             }
         } else if (getActivity() != null && EffortlessPermissions.somePermissionPermanentlyDenied(getActivity(),
@@ -473,7 +469,7 @@ public class CallController extends BaseController {
             microphoneControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
         }
 
-        if (!connectedToCall) {
+        if (!currentCallStatus.equals(CallStatus.ESTABLISHED)) {
             fetchSignalingSettings();
         }
     }
@@ -491,7 +487,7 @@ public class CallController extends BaseController {
         if (getActivity() != null && (EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA) ||
                 EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_MICROPHONE))) {
             checkIfSomeAreApproved();
-        } else if (!connectedToCall) {
+        } else if (!currentCallStatus.equals(CallStatus.ESTABLISHED)) {
             fetchSignalingSettings();
         }
     }
@@ -641,7 +637,7 @@ public class CallController extends BaseController {
                 toggleMedia(true, false);
             }
 
-            if (isVoiceOnlyCall && !connectedToCall) {
+            if (isVoiceOnlyCall && !currentCallStatus.equals(CallStatus.ESTABLISHED)) {
                 fetchSignalingSettings();
             }
 
@@ -663,6 +659,7 @@ public class CallController extends BaseController {
 
     @OnClick(R.id.callControlHangupView)
     void onHangupClick() {
+        currentCallStatus = CallStatus.LEAVING;
         hangup(true);
     }
 
@@ -758,7 +755,7 @@ public class CallController extends BaseController {
             }
         }
 
-        if (connectedToCall) {
+        if (currentCallStatus.equals(CallStatus.ESTABLISHED)) {
             if (!hasMCU) {
                 for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
                     magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
@@ -871,8 +868,6 @@ public class CallController extends BaseController {
     }
 
     private void fetchSignalingSettings() {
-        leavingCall = false;
-
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
                 .subscribeOn(Schedulers.io())
                 .retry(3)
@@ -1063,8 +1058,7 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        connectedToCall = true;
-                        currentCallStatus = CallStatus.CALLING;
+                        currentCallStatus = CallStatus.ESTABLISHED;
 
                         if (connectingView != null) {
                             connectingView.setVisibility(View.GONE);
@@ -1085,8 +1079,8 @@ public class CallController extends BaseController {
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                                    .takeWhile(observable -> connectedToCall)
-                                    .retry(3, observable -> connectedToCall)
+                                    .takeWhile(observable -> currentCallStatus.equals(CallStatus.ESTABLISHED))
+                                    .retry(3, observable -> currentCallStatus.equals(CallStatus.ESTABLISHED))
                                     .subscribe(new Observer<GenericOverall>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
@@ -1127,8 +1121,8 @@ public class CallController extends BaseController {
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .repeatWhen(observable -> observable)
-                                    .takeWhile(observable -> connectedToCall)
-                                    .retry(3, observable -> connectedToCall)
+                                    .takeWhile(observable -> currentCallStatus.equals(CallStatus.ESTABLISHED))
+                                    .retry(3, observable -> currentCallStatus.equals(CallStatus.ESTABLISHED))
                                     .subscribe(new Observer<SignalingOverall>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
@@ -1252,7 +1246,7 @@ public class CallController extends BaseController {
     private void receivedSignalingMessage(Signaling signaling) throws IOException {
         String messageType = signaling.getType();
 
-        if (leavingCall) {
+        if (!currentCallStatus.equals(CallStatus.ESTABLISHED)) {
             return;
         }
 
@@ -1322,11 +1316,9 @@ public class CallController extends BaseController {
     }
 
     private void hangup(boolean shutDownView) {
-
-        leavingCall = true;
-        connectedToCall = false;
-
+        dispose(null);
         if (shutDownView) {
+
             if (videoCapturer != null) {
                 try {
                     videoCapturer.stopCapture();
@@ -1488,7 +1480,7 @@ public class CallController extends BaseController {
         // Calculate sessions that join the call
         newSessions.removeAll(oldSesssions);
 
-        if (leavingCall) {
+        if (!currentCallStatus.equals(CallStatus.ESTABLISHED)) {
             return;
         }
 
@@ -1670,7 +1662,7 @@ public class CallController extends BaseController {
                 boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                         .PeerConnectionEventType.SENSOR_FAR) && videoOn;
                 if (getActivity() != null && EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA) &&
-                        connectedToCall && videoOn
+                        (currentCallStatus.equals(CallStatus.CALLING) || currentCallStatus.equals(CallStatus.ESTABLISHED)) && videoOn
                         && enableVideo != localVideoTrack.enabled()) {
                     toggleMedia(enableVideo, true);
                 }
@@ -1701,7 +1693,7 @@ public class CallController extends BaseController {
                 int finalI = i;
                 Observable
                         .interval(1, TimeUnit.SECONDS)
-                        .takeWhile(observer -> connectedToCall)
+                        .takeWhile(observer -> currentCallStatus.equals(CallStatus.ESTABLISHED))
                         .observeOn(Schedulers.io())
                         .doOnNext(n -> magicPeerConnectionWrapperList.get(finalI).sendChannelData(dataChannelMessage));
                 break;
