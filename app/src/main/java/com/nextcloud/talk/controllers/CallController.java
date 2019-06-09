@@ -26,9 +26,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -143,6 +147,12 @@ public class CallController extends BaseController {
     @BindView(R.id.conversationRelativeLayoutView)
     RelativeLayout conversationView;
 
+    @BindView(R.id.errorImageView)
+    ImageView errorImageView;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+
     @Inject
     NcApi ncApi;
     @Inject
@@ -210,9 +220,11 @@ public class CallController extends BaseController {
 
     private CallStatus currentCallStatus;
 
+    private MediaPlayer mediaPlayer;
+
     @Parcel
     public enum CallStatus {
-        CALLING, CALLING_TIMEOUT, ESTABLISHED, RECONNECTING, OFFLINE, LEAVING
+        CALLING, CALLING_TIMEOUT, ESTABLISHED, IN_CONVERSATION, RECONNECTING, OFFLINE, LEAVING
     }
 
     public CallController(Bundle args) {
@@ -234,7 +246,7 @@ public class CallController extends BaseController {
         }
 
         powerManagerUtils = new PowerManagerUtils();
-        currentCallStatus = CallStatus.CALLING;
+        setCallState(CallStatus.CALLING);
     }
 
     @Override
@@ -409,6 +421,10 @@ public class CallController extends BaseController {
 
     }
 
+    private boolean isConnectionEstablished() {
+        return (currentCallStatus.equals(CallStatus.ESTABLISHED) || currentCallStatus.equals(CallStatus.IN_CONVERSATION));
+    }
+
     @AfterPermissionGranted(100)
     private void onPermissionsGranted() {
         if (EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CALL)) {
@@ -430,7 +446,7 @@ public class CallController extends BaseController {
                 }
             }
 
-            if (!currentCallStatus.equals(CallStatus.ESTABLISHED)) {
+            if (!isConnectionEstablished()) {
                 fetchSignalingSettings();
             }
         } else if (getActivity() != null && EffortlessPermissions.somePermissionPermanentlyDenied(getActivity(),
@@ -469,7 +485,7 @@ public class CallController extends BaseController {
             microphoneControlButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
         }
 
-        if (!currentCallStatus.equals(CallStatus.ESTABLISHED)) {
+        if (!isConnectionEstablished()) {
             fetchSignalingSettings();
         }
     }
@@ -487,7 +503,7 @@ public class CallController extends BaseController {
         if (getActivity() != null && (EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA) ||
                 EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_MICROPHONE))) {
             checkIfSomeAreApproved();
-        } else if (!currentCallStatus.equals(CallStatus.ESTABLISHED)) {
+        } else if (!isConnectionEstablished()) {
             fetchSignalingSettings();
         }
     }
@@ -637,7 +653,7 @@ public class CallController extends BaseController {
                 toggleMedia(true, false);
             }
 
-            if (isVoiceOnlyCall && !currentCallStatus.equals(CallStatus.ESTABLISHED)) {
+            if (isVoiceOnlyCall && !isConnectionEstablished()) {
                 fetchSignalingSettings();
             }
 
@@ -659,7 +675,7 @@ public class CallController extends BaseController {
 
     @OnClick(R.id.callControlHangupView)
     void onHangupClick() {
-        currentCallStatus = CallStatus.LEAVING;
+        setCallState(CallStatus.LEAVING);
         hangup(true);
     }
 
@@ -755,7 +771,7 @@ public class CallController extends BaseController {
             }
         }
 
-        if (currentCallStatus.equals(CallStatus.ESTABLISHED)) {
+        if (isConnectionEstablished()) {
             if (!hasMCU) {
                 for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
                     magicPeerConnectionWrapperList.get(i).sendChannelData(new DataChannelMessage(message));
@@ -1058,19 +1074,7 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        currentCallStatus = CallStatus.ESTABLISHED;
-
-                        if (connectingView != null) {
-                            connectingView.setVisibility(View.GONE);
-                        }
-
-                        if (conversationView != null) {
-                            conversationView.setVisibility(View.VISIBLE);
-                        }
-
-                        if (!isPTTActive) {
-                            animateCallControls(false, 5000);
-                        }
+                        setCallState(CallStatus.ESTABLISHED);
 
                         ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
 
@@ -1079,8 +1083,8 @@ public class CallController extends BaseController {
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                                    .takeWhile(observable -> currentCallStatus.equals(CallStatus.ESTABLISHED))
-                                    .retry(3, observable -> currentCallStatus.equals(CallStatus.ESTABLISHED))
+                                    .takeWhile(observable -> isConnectionEstablished())
+                                    .retry(3, observable -> isConnectionEstablished())
                                     .subscribe(new Observer<GenericOverall>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
@@ -1121,8 +1125,8 @@ public class CallController extends BaseController {
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .repeatWhen(observable -> observable)
-                                    .takeWhile(observable -> currentCallStatus.equals(CallStatus.ESTABLISHED))
-                                    .retry(3, observable -> currentCallStatus.equals(CallStatus.ESTABLISHED))
+                                    .takeWhile(observable -> isConnectionEstablished())
+                                    .retry(3, observable -> isConnectionEstablished())
                                     .subscribe(new Observer<SignalingOverall>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
@@ -1246,7 +1250,7 @@ public class CallController extends BaseController {
     private void receivedSignalingMessage(Signaling signaling) throws IOException {
         String messageType = signaling.getType();
 
-        if (!currentCallStatus.equals(CallStatus.ESTABLISHED)) {
+        if (!isConnectionEstablished()) {
             return;
         }
 
@@ -1316,6 +1320,7 @@ public class CallController extends BaseController {
     }
 
     private void hangup(boolean shutDownView) {
+        stopCallingSound();
         dispose(null);
         if (shutDownView) {
 
@@ -1480,7 +1485,7 @@ public class CallController extends BaseController {
         // Calculate sessions that join the call
         newSessions.removeAll(oldSesssions);
 
-        if (!currentCallStatus.equals(CallStatus.ESTABLISHED)) {
+        if (!isConnectionEstablished()) {
             return;
         }
 
@@ -1492,6 +1497,10 @@ public class CallController extends BaseController {
 
         for (String sessionId : newSessions) {
             getPeerConnectionWrapperForSessionIdAndType(sessionId, "video", hasMCU && sessionId.equals(webSocketClient.getSessionId()));
+        }
+
+        if (newSessions.size() > 0 && !currentCallStatus.equals(CallStatus.IN_CONVERSATION)) {
+            setCallState(CallStatus.IN_CONVERSATION);
         }
 
         for (String sessionId : oldSesssions) {
@@ -1662,7 +1671,7 @@ public class CallController extends BaseController {
                 boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                         .PeerConnectionEventType.SENSOR_FAR) && videoOn;
                 if (getActivity() != null && EffortlessPermissions.hasPermissions(getActivity(), PERMISSIONS_CAMERA) &&
-                        (currentCallStatus.equals(CallStatus.CALLING) || currentCallStatus.equals(CallStatus.ESTABLISHED)) && videoOn
+                        (currentCallStatus.equals(CallStatus.CALLING) || isConnectionEstablished()) && videoOn
                         && enableVideo != localVideoTrack.enabled()) {
                     toggleMedia(enableVideo, true);
                 }
@@ -1693,7 +1702,7 @@ public class CallController extends BaseController {
                 int finalI = i;
                 Observable
                         .interval(1, TimeUnit.SECONDS)
-                        .takeWhile(observer -> currentCallStatus.equals(CallStatus.ESTABLISHED))
+                        .takeWhile(observer -> isConnectionEstablished())
                         .observeOn(Schedulers.io())
                         .doOnNext(n -> magicPeerConnectionWrapperList.get(finalI).sendChannelData(dataChannelMessage));
                 break;
@@ -1946,6 +1955,206 @@ public class CallController extends BaseController {
         }
     }
 
+    @OnClick(R.id.connectingRelativeLayoutView)
+    public void onConnectingViewClick() {
+        if (currentCallStatus.equals(CallStatus.CALLING_TIMEOUT)) {
+            setCallState(CallStatus.RECONNECTING);
+            hangupNetworkCalls(false);
+        }
+    }
+
+    private void setCallState(CallStatus callState) {
+        if (currentCallStatus == null || !currentCallStatus.equals(callState)) {
+            currentCallStatus = callState;
+            if (handler == null) {
+                handler = new Handler(Looper.getMainLooper());
+            } else {
+                handler.removeCallbacksAndMessages(null);
+            }
+
+            switch (callState) {
+                case CALLING:
+                    handler.post(() -> {
+                        playCallingSound();
+                        connectingTextView.setText(R.string.nc_connecting_call);
+                        if (connectingView.getVisibility() != View.VISIBLE) {
+                            connectingView.setVisibility(View.VISIBLE);
+                        }
+
+                        if (conversationView.getVisibility() != View.INVISIBLE) {
+                            conversationView.setVisibility(View.INVISIBLE);
+                        }
+
+                        if (progressBar.getVisibility() != View.VISIBLE) {
+                            progressBar.setVisibility(View.VISIBLE);
+                        }
+
+                        if (errorImageView.getVisibility() != View.GONE) {
+                            errorImageView.setVisibility(View.GONE);
+                        }
+                    });
+                    break;
+                case CALLING_TIMEOUT:
+                    handler.post(() -> {
+                        hangup(false);
+                        connectingTextView.setText(R.string.nc_call_timeout);
+                        if (connectingView.getVisibility() != View.VISIBLE) {
+                            connectingView.setVisibility(View.VISIBLE);
+                        }
+
+                        if (progressBar.getVisibility() != View.GONE) {
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                        if (conversationView.getVisibility() != View.INVISIBLE) {
+                            conversationView.setVisibility(View.INVISIBLE);
+                        }
+
+                        errorImageView.setImageResource(R.drawable.ic_av_timer_timer_24dp);
+
+                        if (errorImageView.getVisibility() != View.VISIBLE) {
+                            errorImageView.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    break;
+                case RECONNECTING:
+                    handler.post(() -> {
+                        playCallingSound();
+                        connectingTextView.setText(R.string.nc_call_reconnecting);
+                        if (connectingView.getVisibility() != View.VISIBLE) {
+                            connectingView.setVisibility(View.VISIBLE);
+                        }
+                        if (conversationView.getVisibility() != View.INVISIBLE) {
+                            conversationView.setVisibility(View.INVISIBLE);
+                        }
+                        if (progressBar.getVisibility() != View.VISIBLE) {
+                            progressBar.setVisibility(View.VISIBLE);
+                        }
+
+                        if (errorImageView.getVisibility() != View.GONE) {
+                            errorImageView.setVisibility(View.GONE);
+                        }
+                    });
+                    break;
+                case ESTABLISHED:
+                    handler.postDelayed(() -> setCallState(CallStatus.CALLING_TIMEOUT), 45000);
+                    handler.post(() -> {
+                        connectingTextView.setText(R.string.nc_calling);
+                        if (connectingTextView.getVisibility() != View.VISIBLE) {
+                            connectingView.setVisibility(View.VISIBLE);
+                        }
+
+                        if (progressBar.getVisibility() != View.VISIBLE) {
+                            progressBar.setVisibility(View.VISIBLE);
+                        }
+
+                        if (conversationView.getVisibility() != View.INVISIBLE) {
+                            conversationView.setVisibility(View.INVISIBLE);
+                        }
+
+                        if (errorImageView.getVisibility() != View.GONE) {
+                            errorImageView.setVisibility(View.GONE);
+                        }
+                    });
+                    break;
+                case IN_CONVERSATION:
+                    handler.post(() -> {
+                        stopCallingSound();
+
+                        if (!isPTTActive) {
+                            animateCallControls(false, 5000);
+                        }
+
+                        if (connectingView.getVisibility() != View.INVISIBLE) {
+                            connectingView.setVisibility(View.INVISIBLE);
+                        }
+
+                        if (progressBar.getVisibility() != View.GONE) {
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                        if (conversationView.getVisibility() != View.VISIBLE) {
+                            conversationView.setVisibility(View.VISIBLE);
+                        }
+
+                        if (errorImageView.getVisibility() != View.GONE) {
+                            errorImageView.setVisibility(View.GONE);
+                        }
+                    });
+                    break;
+                case OFFLINE:
+                    handler.post(() -> {
+                        stopCallingSound();
+                        connectingTextView.setText(R.string.nc_offline);
+
+                        if (connectingView.getVisibility() != View.VISIBLE) {
+                            connectingView.setVisibility(View.VISIBLE);
+                        }
+
+                        if (conversationView.getVisibility() != View.INVISIBLE) {
+                            conversationView.setVisibility(View.INVISIBLE);
+                        }
+
+                        if (progressBar.getVisibility() != View.GONE) {
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                        errorImageView.setImageResource(R.drawable.ic_signal_wifi_off_white_24dp);
+                        if (errorImageView.getVisibility() != View.VISIBLE) {
+                            errorImageView.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    break;
+                case LEAVING:
+                    handler.post(() -> {
+                        if (!isDestroyed() && !isBeingDestroyed()) {
+                            stopCallingSound();
+                            connectingTextView.setText(R.string.nc_leaving_call);
+                            connectingView.setVisibility(View.VISIBLE);
+                            conversationView.setVisibility(View.INVISIBLE);
+                            progressBar.setVisibility(View.VISIBLE);
+                            errorImageView.setVisibility(View.GONE);
+                        }
+                    });
+                    break;
+                default:
+            }
+        }
+    }
+
+    private void playCallingSound() {
+        stopCallingSound();
+        Uri ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/raw/librem_by_feandesign_call");
+        if (getActivity() != null) {
+            mediaPlayer = new MediaPlayer();
+            try {
+                mediaPlayer.setDataSource(Objects.requireNonNull(getActivity()), ringtoneUri);
+                mediaPlayer.setLooping(true);
+                AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes
+                        .CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION).build();
+                mediaPlayer.setAudioAttributes(audioAttributes);
+
+                mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
+
+                mediaPlayer.prepareAsync();
+
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to play sound");
+            }
+        }
+    }
+
+    private void stopCallingSound() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
@@ -1990,7 +2199,7 @@ public class CallController extends BaseController {
                 handler.removeCallbacksAndMessages(null);
             }
 
-            currentCallStatus = CallStatus.RECONNECTING;
+            setCallState(CallStatus.RECONNECTING);
             hangupNetworkCalls(false);
 
         } else if (networkEvent.getNetworkConnectionEvent().equals(NetworkEvent.NetworkConnectionEvent.NETWORK_DISCONNECTED)) {
@@ -1998,7 +2207,7 @@ public class CallController extends BaseController {
                 handler.removeCallbacksAndMessages(null);
             }
 
-            currentCallStatus = CallStatus.OFFLINE;
+            setCallState(CallStatus.OFFLINE);
             hangup(false);
         }
     }

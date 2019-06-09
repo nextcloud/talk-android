@@ -168,11 +168,16 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Connecting…</string>
+    <string name="nc_calling">Calling…</string>
     <string name="nc_incoming_call">Incoming call from</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_public_call">New public conversation</string>
     <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a
         specially crafted link.</string>
+    <string name="nc_call_timeout">No response in 45 seconds, tap to try again</string>
+    <string name="nc_call_reconnecting">Reconnecting…</string>
+    <string name="nc_offline">Currently offline, please check your connectivity</string>
+    <string name="nc_leaving_call">Leaving call…</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
@@ -266,4 +271,5 @@
     <string name="nc_file_browser_back">Back</string>
     <string name="nc_file_browser_refresh">Refresh</string>
     <string name="nc_last_modified">%1$s | Last modified: %2$s</string>
+
 </resources>
