@@ -157,7 +157,6 @@ slettet for %1$s.</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
     <string name="nc_public_call_explanation">Offentlige samtaler lader dig invitere folk udefra gennem et
 speciel lavet link.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s notifikationskanal</string>
     <string name="nc_notification_channel_calls">Opkalds notifikations kanal</string>

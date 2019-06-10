@@ -157,7 +157,6 @@
     <string name="nc_public_call">Nueva conversación pública</string>
     <string name="nc_public_call_explanation">Las conversaciones públicas te permiten invitar a gente del exterior a través de un
             enlace creado de forma especial. </string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s en el canal de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
@@ -249,4 +248,5 @@
     <string name="nc_file_browser_back">Volver</string>
     <string name="nc_file_browser_refresh">Volver a cargar</string>
     <string name="nc_last_modified">%1$s | Modificado por última vez: %2$s</string>
+
 </resources>

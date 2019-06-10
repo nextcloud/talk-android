@@ -128,7 +128,6 @@
     <string name="nc_nick_guest">Gjest</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
     <string name="nc_public_call_explanation">Offentlige samtaler lar deg invitere personer fra utsiden gjennom en spesialdesignet lenke.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s merknadskanal</string>
     <string name="nc_notification_channel_calls">Innringingsnotfikasjonskanal</string>

@@ -159,7 +159,6 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_public_call">Nova conversa pública</string>
     <string name="nc_public_call_explanation">As conversas públicas permítenlle convidar a outras persoas de fora
 mediante unha ligazón creada especialmente.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na canle de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Canle de notificación de chamadas</string>
@@ -251,4 +250,5 @@ móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_file_browser_back">Atrás</string>
     <string name="nc_file_browser_refresh">Actualizar</string>
     <string name="nc_last_modified">%1$s | Última modificación: %2$s</string>
+
 </resources>

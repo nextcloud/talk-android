@@ -156,7 +156,6 @@
     <string name="nc_nick_guest">ゲスト</string>
     <string name="nc_public_call">新規公開会話</string>
     <string name="nc_public_call_explanation">公開会話を使用すると、特別なリンクを介して外部からユーザーを招待できます。</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%2$s通知チャンネルの%1$s</string>
     <string name="nc_notification_channel_calls">通知チャネルを呼び出す</string>

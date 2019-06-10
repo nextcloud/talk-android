@@ -158,7 +158,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_public_call">Nieuw openbaar gesprek</string>
     <string name="nc_public_call_explanation">Met openbare gesprekken kun je mensen zonder account uitnodigen
 via een persoonlijke link.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
@@ -250,4 +249,5 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_file_browser_back">Terug</string>
     <string name="nc_file_browser_refresh">Verversen</string>
     <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
+
 </resources>

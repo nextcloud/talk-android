@@ -118,7 +118,6 @@
     <string name="nc_public_call">Tạo đàm thoại công khai mới</string>
     <string name="nc_public_call_explanation">Đàm thoại công khai cho phép bạn mời mọi người từ bên ngoài thông qua
       liên kết đặt biệt.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s từ %2$s thông báo kênh</string>
     <string name="nc_notification_channel_calls">Thông báo các kênh cuộc gọi</string>

@@ -138,7 +138,6 @@
     <string name="nc_public_call">Nov javni pogovor</string>
     <string name="nc_public_call_explanation">Javni pogovori omogočajo pogovor vsakogar, ki pozna ustvarjeno
         enkratno povezavo.</string>
-
     <string name="nc_notification_channel_calls">Kanal obvestil klicev</string>
     <string name="nc_notification_channel_messages">Kanal obvestil sporočil</string>
     <string name="nc_notification_channel_calls_description">Pokaži dohodne klice</string>

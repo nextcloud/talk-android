@@ -147,7 +147,6 @@
     <string name="nc_public_call">Nýtt opinbert samtal</string>
     <string name="nc_public_call_explanation">Opinber samtöl gera þér kleift að bjóða fólki utan kerfisins með
         sérstaklega útbúnum tenglum.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s á %2$s tilkynningarásinni</string>
     <string name="nc_notification_channel_calls">Rás fyrir tilkynningar um samtöl</string>

@@ -157,7 +157,6 @@ per %1$s.</string>
     <string name="nc_public_call">Nova conversa pública</string>
     <string name="nc_public_call_explanation">Les converses públiques us permeten convidar gent de fora a través d’un
 enllaç especialment dissenyat.</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s a %2$s canal de notificació </string>
     <string name="nc_notification_channel_calls">Canal de notificació de trucades</string>
@@ -246,4 +245,5 @@ mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</str
     <string name="nc_file_browser_back">Enrere</string>
     <string name="nc_file_browser_refresh">Actualitza</string>
     <string name="nc_last_modified">%1$s | Darrera modificació: %2$s</string>
+
 </resources>
