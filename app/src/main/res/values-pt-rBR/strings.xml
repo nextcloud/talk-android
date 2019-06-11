@@ -152,11 +152,17 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Conectando...</string>
+    <string name="nc_calling">Chamando...</string>
     <string name="nc_incoming_call">Chamada de</string>
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_public_call">Nova conversa pública</string>
     <string name="nc_public_call_explanation">Conversas públicas permitem que você convide pessoas de fora
        via um link especialmente criado.</string>
+    <string name="nc_call_timeout">45 segundos sem resposta, toque para retentar</string>
+    <string name="nc_call_reconnecting">Reconectando...</string>
+    <string name="nc_offline">Offline no momento, cheque sua conectividade</string>
+    <string name="nc_leaving_call">Desligando...</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas do canal de notificação</string>

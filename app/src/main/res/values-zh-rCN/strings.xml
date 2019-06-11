@@ -151,10 +151,16 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">正在连接...</string>
+    <string name="nc_calling">呼叫中 ...</string>
     <string name="nc_incoming_call">来电</string>
     <string name="nc_nick_guest">来宾</string>
     <string name="nc_public_call">新的公共会话</string>
     <string name="nc_public_call_explanation">公共会话让您能通过特殊制作的链接来邀请外部人员。</string>
+    <string name="nc_call_timeout">45秒内无响应，点击以重试</string>
+    <string name="nc_call_reconnecting">重新连接 ...</string>
+    <string name="nc_offline">当前离线，请检查您的连接</string>
+    <string name="nc_leaving_call">离开通话中 ...</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s在%2$s通知频道中</string>
     <string name="nc_notification_channel_calls">通话提醒频道</string>

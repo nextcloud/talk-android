@@ -151,11 +151,17 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Connexion…</string>
+    <string name="nc_calling">Appel en cours…</string>
     <string name="nc_incoming_call">Appel entrant de</string>
     <string name="nc_nick_guest">Invité</string>
     <string name="nc_public_call">Nouvelle conversation public</string>
     <string name="nc_public_call_explanation">Les conversations publiques vous permet d\'inviter des personnes extérieures
 grâce à un lien spécialement créé.</string>
+    <string name="nc_call_timeout">Aucune réponse depuis 45 secondes, appuyez pour essayer à nouveau</string>
+    <string name="nc_call_reconnecting">Reconnexion en cours…</string>
+    <string name="nc_offline">Actuellement hors-ligne, veuillez vérifier votre connexion</string>
+    <string name="nc_leaving_call">Fin d\'appel…</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">Canal de notification %1$s sur %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notification des appels</string>
