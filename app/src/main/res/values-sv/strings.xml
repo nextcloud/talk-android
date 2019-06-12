@@ -152,11 +152,17 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Ansluter...</string>
+    <string name="nc_calling">Ringer...</string>
     <string name="nc_incoming_call">Inkommande samtal från</string>
     <string name="nc_nick_guest">Gäst</string>
     <string name="nc_public_call">Ny publik konversation</string>
     <string name="nc_public_call_explanation">Offentliga konversationer låter dig bjuda in externa användare via en
         speciellt utformad länk.</string>
+    <string name="nc_call_timeout">Inget svar på 45 sekunder, tryck för att försöka igen</string>
+    <string name="nc_call_reconnecting">Återansluter...</string>
+    <string name="nc_offline">För närvarande offline, kontrollera din anslutning</string>
+    <string name="nc_leaving_call">Lämnar samtal...</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s aviseringskanal</string>
     <string name="nc_notification_channel_calls">Samtal aviseringskanal</string>
