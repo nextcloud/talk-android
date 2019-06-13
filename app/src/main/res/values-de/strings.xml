@@ -152,16 +152,16 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Verbinde…</string>
-    <string name="nc_calling">Rufe an...</string>
+    <string name="nc_calling">Rufe an…</string>
     <string name="nc_incoming_call">Eingehender Anruf von</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
     <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über 
  einen speziellen Link eingeladen werden.</string>
     <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicke um es erneut zu versuchen</string>
-    <string name="nc_call_reconnecting">Verbinde erneut...</string>
+    <string name="nc_call_reconnecting">Verbinde erneut…</string>
     <string name="nc_offline">Aktuell offline, bitte prüfen Sie die Verbindung</string>
-    <string name="nc_leaving_call">Verlasse Anruf...</string>
+    <string name="nc_leaving_call">Verlasse Anruf…</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s auf %2$s Benachrichtigungskanal</string>
