@@ -154,11 +154,17 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
 
     <!-- Call -->
     <string name="nc_connecting_call">Conectando…</string>
+    <string name="nc_calling">Chamando…</string>
     <string name="nc_incoming_call">Chamada entrante de</string>
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_public_call">Nova conversa pública</string>
     <string name="nc_public_call_explanation">As conversas públicas permítenlle convidar a outras persoas de fora
 mediante unha ligazón creada especialmente.</string>
+    <string name="nc_call_timeout">Se non hai resposta en 45 segundos, toque para tentalo de novo</string>
+    <string name="nc_call_reconnecting">Volvendo conectar…</string>
+    <string name="nc_offline">Non ten conexión, verifique a súa conectividade</string>
+    <string name="nc_leaving_call">Abandonando a chamada…</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na canle de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Canle de notificación de chamadas</string>
