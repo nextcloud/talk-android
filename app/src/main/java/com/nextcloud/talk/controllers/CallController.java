@@ -1175,7 +1175,7 @@ public class CallController extends BaseController {
 
     private void setupAndInitiateWebSocketsConnection() {
         webSocketConnectionHelper = new WebSocketConnectionHelper();
-        webSocketClient = webSocketConnectionHelper.getExternalSignalingInstanceForServer(
+        webSocketClient = WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
                 externalSignalingServer.getExternalSignalingServer(),
                 conversationUser, externalSignalingServer.getExternalSignalingTicket(),
                 TextUtils.isEmpty(credentials));
