@@ -77,7 +77,7 @@ public class MagicCallActivity extends BaseActivity {
 
         ButterKnife.bind(this);
         router = Conductor.attachRouter(this, container, savedInstanceState);
-        router.setPopsLastView(true);
+        router.setPopsLastView(false);
 
         if (!router.hasRootController()) {
             if (getIntent().getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {

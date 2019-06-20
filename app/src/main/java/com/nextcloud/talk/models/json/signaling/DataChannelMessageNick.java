@@ -26,22 +26,24 @@ import com.nextcloud.talk.models.json.converters.ObjectParcelConverter;
 
 import org.parceler.ParcelPropertyConverter;
 
+import java.util.HashMap;
+
 import lombok.Data;
 
 @Data
 @JsonObject
-public class DataChannelMessage {
+public class DataChannelMessageNick {
     @JsonField(name = "type")
     String type;
 
     @ParcelPropertyConverter(ObjectParcelConverter.class)
     @JsonField(name = "payload")
-    Object payload;
+    HashMap<String, String> payload;
 
-    public DataChannelMessage(String type) {
+    public DataChannelMessageNick(String type) {
         this.type = type;
     }
 
-    public DataChannelMessage() {
+    public DataChannelMessageNick() {
     }
 }

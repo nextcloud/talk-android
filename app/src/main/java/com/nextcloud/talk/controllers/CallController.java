@@ -40,6 +40,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +48,7 @@ import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
+
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -80,24 +82,30 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
 import com.nextcloud.talk.webrtc.*;
 import com.wooplr.spotlight.SpotlightView;
+
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BooleanSupplier;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied;
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
 import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
 import okhttp3.Cache;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcel;
 import org.webrtc.*;
+
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 import javax.inject.Inject;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -224,7 +232,7 @@ public class CallController extends BaseController {
 
     @Parcel
     public enum CallStatus {
-        CALLING, CALLING_TIMEOUT, ESTABLISHED, IN_CONVERSATION, RECONNECTING, OFFLINE, LEAVING
+        CALLING, CALLING_TIMEOUT, ESTABLISHED, IN_CONVERSATION, RECONNECTING, OFFLINE, LEAVING, PUBLISHER_FAILED
     }
 
     public CallController(Bundle args) {
@@ -1174,13 +1182,18 @@ public class CallController extends BaseController {
     }
 
     private void setupAndInitiateWebSocketsConnection() {
-        webSocketConnectionHelper = new WebSocketConnectionHelper();
-        webSocketClient = WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
-                externalSignalingServer.getExternalSignalingServer(),
-                conversationUser, externalSignalingServer.getExternalSignalingTicket(),
-                TextUtils.isEmpty(credentials));
+        if (webSocketConnectionHelper == null) {
+            webSocketConnectionHelper = new WebSocketConnectionHelper();
+        }
 
-        joinRoomAndCall();
+        if (webSocketClient == null) {
+            webSocketClient = WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                    externalSignalingServer.getExternalSignalingServer(),
+                    conversationUser, externalSignalingServer.getExternalSignalingTicket(),
+                    TextUtils.isEmpty(credentials));
+
+            joinRoomAndCall();
+        }
     }
 
     private void initiateCall() {
@@ -1190,22 +1203,23 @@ public class CallController extends BaseController {
             handleFromNotification();
         }
     }
+
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
-                if (!currentCallStatus.equals(CallStatus.RECONNECTING)) {
-                    if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
-                        initiateCall();
+                if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
+                    if (currentCallStatus.equals(CallStatus.RECONNECTING)) {
+                        hangup(false);
                     } else {
-                        // do nothing, let's just continue
+                        initiateCall();
                     }
+                } else {
+
                 }
                 break;
             case "roomJoined":
-                if (hasExternalSignalingServer) {
-                    startSendingNick();
-                }
+                startSendingNick();
 
                 if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
                     performCall();
@@ -1250,7 +1264,7 @@ public class CallController extends BaseController {
     private void receivedSignalingMessage(Signaling signaling) throws IOException {
         String messageType = signaling.getType();
 
-        if (!isConnectionEstablished()) {
+        if (!isConnectionEstablished() && !currentCallStatus.equals(CallStatus.CALLING)) {
             return;
         }
 
@@ -1393,7 +1407,7 @@ public class CallController extends BaseController {
                             if (isMultiSession) {
                                 if (shutDownView && getActivity() != null) {
                                     getActivity().finish();
-                                } else if (!shutDownView && currentCallStatus.equals(CallStatus.RECONNECTING)) {
+                                } else if (!shutDownView && (currentCallStatus.equals(CallStatus.RECONNECTING) || currentCallStatus.equals(CallStatus.PUBLISHER_FAILED))) {
                                     initiateCall();
                                 }
                             } else {
@@ -1485,7 +1499,7 @@ public class CallController extends BaseController {
         // Calculate sessions that join the call
         newSessions.removeAll(oldSesssions);
 
-        if (!isConnectionEstablished()) {
+        if (!isConnectionEstablished() && !currentCallStatus.equals(CallStatus.CALLING)) {
             return;
         }
 
@@ -1563,6 +1577,7 @@ public class CallController extends BaseController {
             if (hasMCU && publisher) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
                         iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, true, true, type);
+
             } else if (hasMCU) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
                         iceServers, sdpConstraints, sessionId, callSession, null, false, true, type);
@@ -1577,6 +1592,11 @@ public class CallController extends BaseController {
             }
 
             magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
+
+            if (publisher) {
+                startSendingNick();
+            }
+
             return magicPeerConnectionWrapper;
         }
     }
@@ -1687,11 +1707,16 @@ public class CallController extends BaseController {
                 .PeerConnectionEventType.AUDIO_CHANGE)) {
             gotAudioOrVideoChange(false, peerConnectionEvent.getSessionId() + "+" + peerConnectionEvent.getVideoStreamType(),
                     peerConnectionEvent.getChangeValue());
+        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED)) {
+            if (MerlinTheWizard.isConnectedToInternet()) {
+                currentCallStatus = CallStatus.RECONNECTING;
+                hangup(false);
+            }
         }
     }
 
     private void startSendingNick() {
-        DataChannelMessage dataChannelMessage = new DataChannelMessage();
+        DataChannelMessageNick dataChannelMessage = new DataChannelMessageNick();
         dataChannelMessage.setType("nickChanged");
         HashMap<String, String> nickChangedPayload = new HashMap<>();
         nickChangedPayload.put("userid", conversationUser.getUserId());
@@ -1702,9 +1727,14 @@ public class CallController extends BaseController {
                 int finalI = i;
                 Observable
                         .interval(1, TimeUnit.SECONDS)
-                        .takeWhile(observer -> isConnectionEstablished())
+                        .repeat()
                         .observeOn(Schedulers.io())
-                        .doOnNext(n -> magicPeerConnectionWrapperList.get(finalI).sendChannelData(dataChannelMessage));
+                        .doOnNext(new Consumer<Long>() {
+                            @Override
+                            public void accept(Long aLong) {
+                                magicPeerConnectionWrapperList.get(finalI).sendNickChannelData(dataChannelMessage);
+                            }
+                        }).subscribe();
                 break;
             }
 
@@ -2136,7 +2166,7 @@ public class CallController extends BaseController {
 
                 mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
 
-                mediaPlayer.prepareAsync();
+                //mediaPlayer.prepareAsync();
 
             } catch (IOException e) {
                 Log.e(TAG, "Failed to play sound");
@@ -2199,16 +2229,20 @@ public class CallController extends BaseController {
                 handler.removeCallbacksAndMessages(null);
             }
 
-            setCallState(CallStatus.RECONNECTING);
-            hangupNetworkCalls(false);
+            if (!hasMCU) {
+                setCallState(CallStatus.RECONNECTING);
+                hangupNetworkCalls(false);
+            }
 
         } else if (networkEvent.getNetworkConnectionEvent().equals(NetworkEvent.NetworkConnectionEvent.NETWORK_DISCONNECTED)) {
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null);
             }
 
-            setCallState(CallStatus.OFFLINE);
-            hangup(false);
+            if (!hasMCU) {
+                setCallState(CallStatus.OFFLINE);
+                hangup(false);
+            }
         }
     }
 }

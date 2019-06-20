@@ -117,11 +117,12 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     private void closeWebSocket(WebSocket webSocket) {
-        connected = false;
         webSocket.close(1000, null);
         webSocket.cancel();
-        messagesQueue = new ArrayList<>();
-        currentRoomToken = "";
+        if (webSocket == internalWebSocket) {
+            connected = false;
+            messagesQueue = new ArrayList<>();
+        }
     }
 
     private void restartWebSocket() {
@@ -136,8 +137,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
+        Log.d(TAG, "ReceivingBEFORE : " + webSocket.toString() + " " + text);
         if (webSocket == internalWebSocket) {
-            Log.d(TAG, "Receiving : " + text);
+            Log.d(TAG, "Receiving : " + webSocket.toString() + " " + text);
             LoggingUtils.writeLogEntryToFile(context,
                     "WebSocket " + webSocket.hashCode() + " receiving: " + text);
 
@@ -163,6 +165,12 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         HashMap<String, String> helloHasHap = new HashMap<>();
                         if (!TextUtils.isEmpty(oldResumeId)) {
                             helloHasHap.put("oldResumeId", oldResumeId);
+                        } else {
+                            currentRoomToken = "";
+                        }
+
+                        if (!TextUtils.isEmpty(currentRoomToken)) {
+                            helloHasHap.put("roomToken", currentRoomToken);
                         }
                         eventBus.post(new WebSocketCommunicationEvent("hello", helloHasHap));
                         break;
@@ -172,6 +180,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                             LoggingUtils.writeLogEntryToFile(context,
                                     "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired");
                             resumeId = "";
+                            currentRoomToken = "";
                             restartWebSocket();
                         } else if (("hello_expected").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
                             restartWebSocket();
@@ -182,11 +191,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         JoinedRoomOverallWebSocketMessage joinedRoomOverallWebSocketMessage = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage.class);
                         currentRoomToken = joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomId();
                         if (joinedRoomOverallWebSocketMessage.getRoomWebSocketMessage().getRoomPropertiesWebSocketMessage() != null && !TextUtils.isEmpty(currentRoomToken)) {
-                            HashMap<String, String> joinRoomHashMap = new HashMap<>();
-                            joinRoomHashMap.put("roomToken", currentRoomToken);
-                            eventBus.post(new WebSocketCommunicationEvent("roomJoined", joinRoomHashMap));
-                        } else {
-                            usersHashMap = new HashMap<>();
+                            sendRoomJoinedEvent();
                         }
                         break;
                     case "event":
@@ -264,6 +269,12 @@ public class MagicWebSocketInstance extends WebSocketListener {
         }
     }
 
+    private void sendRoomJoinedEvent() {
+        HashMap<String, String> joinRoomHashMap = new HashMap<>();
+        joinRoomHashMap.put("roomToken", currentRoomToken);
+        eventBus.post(new WebSocketCommunicationEvent("roomJoined", joinRoomHashMap));
+    }
+
     @Override
     public void onMessage(WebSocket webSocket, ByteString bytes) {
         Log.d(TAG, "Receiving bytes : " + bytes.hex());
@@ -272,6 +283,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     @Override
     public void onClosing(WebSocket webSocket, int code, String reason) {
         Log.d(TAG, "Closing : " + code + " / " + reason);
+        Log.d("MARIO", String.valueOf(webSocket.hashCode()));
         LoggingUtils.writeLogEntryToFile(context,
                 "WebSocket " + webSocket.hashCode() + " Closing: " + reason);
     }
@@ -282,7 +294,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         LoggingUtils.writeLogEntryToFile(context,
                 "WebSocket " + webSocket.hashCode() + " onFailure: " + t.getMessage());
         closeWebSocket(webSocket);
-        restartWebSocket();
     }
 
     public String getSessionId() {
@@ -299,7 +310,11 @@ public class MagicWebSocketInstance extends WebSocketListener {
             if (!connected || reconnecting) {
                 messagesQueue.add(message);
             } else {
-                internalWebSocket.send(message);
+                if (roomToken.equals(currentRoomToken)) {
+                    sendRoomJoinedEvent();
+                } else {
+                    internalWebSocket.send(message);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

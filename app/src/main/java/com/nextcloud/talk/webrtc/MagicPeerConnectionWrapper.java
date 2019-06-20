@@ -26,6 +26,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import autodagger.AutoInjector;
+
+import com.bluelinelabs.logansquare.ConverterUtils;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -34,6 +36,7 @@ import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.events.SessionDescriptionSendEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
@@ -70,6 +73,7 @@ public class MagicPeerConnectionWrapper {
     private String videoStreamType;
 
     private int connectionAttempts = 0;
+    private PeerConnection.IceConnectionState peerIceConnectionState;
 
     @Inject
     Context context;
@@ -163,6 +167,19 @@ public class MagicPeerConnectionWrapper {
         }
     }
 
+
+    public void sendNickChannelData(DataChannelMessageNick dataChannelMessage) {
+        ByteBuffer buffer;
+        if (magicDataChannel != null) {
+            try {
+                buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
+                magicDataChannel.send(new DataChannel.Buffer(buffer, false));
+            } catch (IOException e) {
+                Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage.toString());
+            }
+        }
+    }
+
     public void sendChannelData(DataChannelMessage dataChannelMessage) {
         ByteBuffer buffer;
         if (magicDataChannel != null) {
@@ -170,7 +187,7 @@ public class MagicPeerConnectionWrapper {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
                 magicDataChannel.send(new DataChannel.Buffer(buffer, false));
             } catch (IOException e) {
-                Log.d(TAG, "Failed to send channel data");
+                Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage.toString());
             }
         }
     }
@@ -321,9 +338,11 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
+            peerIceConnectionState = iceConnectionState;
             LoggingUtils.writeLogEntryToFile(context,
                     "iceConnectionChangeTo: " + iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
 
+            Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
                 connectionAttempts = 0;
                 /*EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
@@ -342,8 +361,11 @@ public class MagicPeerConnectionWrapper {
                         .PEER_CLOSED, sessionId, null, null, videoStreamType));
                 connectionAttempts = 0;
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
-                if (MerlinTheWizard.isConnectedToInternet() && connectionAttempts < 5) {
+                /*if (MerlinTheWizard.isConnectedToInternet() && connectionAttempts < 5) {
                     restartIce();
+                }*/
+                if (isMCUPublisher) {
+                    EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED, sessionId, null, null, null));
                 }
             }
         }
@@ -452,5 +474,9 @@ public class MagicPeerConnectionWrapper {
                 }
             }
         }
+    }
+
+    public PeerConnection.IceConnectionState getPeerIceConnectionState() {
+        return peerIceConnectionState;
     }
 }
