@@ -1191,9 +1191,9 @@ public class CallController extends BaseController {
                     externalSignalingServer.getExternalSignalingServer(),
                     conversationUser, externalSignalingServer.getExternalSignalingTicket(),
                     TextUtils.isEmpty(credentials));
-
-            joinRoomAndCall();
         }
+
+        joinRoomAndCall();
     }
 
     private void initiateCall() {
@@ -1215,7 +1215,6 @@ public class CallController extends BaseController {
                         initiateCall();
                     }
                 } else {
-
                 }
                 break;
             case "roomJoined":
@@ -1708,8 +1707,8 @@ public class CallController extends BaseController {
             gotAudioOrVideoChange(false, peerConnectionEvent.getSessionId() + "+" + peerConnectionEvent.getVideoStreamType(),
                     peerConnectionEvent.getChangeValue());
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED)) {
+            currentCallStatus = CallStatus.PUBLISHER_FAILED;
             if (MerlinTheWizard.isConnectedToInternet()) {
-                currentCallStatus = CallStatus.RECONNECTING;
                 hangup(false);
             }
         }
@@ -1728,7 +1727,7 @@ public class CallController extends BaseController {
                 magicPeerConnectionWrapper = magicPeerConnectionWrapperList.get(i);
                 Observable
                         .interval(1, TimeUnit.SECONDS)
-                        .repeatWhen() -> !isConnectionEstablished() || isBeingDestroyed() || isDestroyed() || !MerlinTheWizard.isConnectedToInternet())
+                        .repeatUntil(() -> (!isConnectionEstablished() || isBeingDestroyed() || isDestroyed() || !MerlinTheWizard.isConnectedToInternet()))
                         .observeOn(Schedulers.io())
                         .subscribe(new Observer<Long>() {
                             @Override
