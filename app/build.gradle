@@ -192,7 +192,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:1.18.6"
     implementation 'com.jakewharton:butterknife:10.1.0'
     kapt 'com.jakewharton:butterknife-compiler:10.1.0'
-    implementation 'com.github.HITGIF:TextFieldBoxes:1.4.3'
+    implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
     implementation 'org.webrtc:google-webrtc:1.0.23295'
