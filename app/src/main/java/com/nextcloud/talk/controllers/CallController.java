@@ -1722,19 +1722,35 @@ public class CallController extends BaseController {
         nickChangedPayload.put("userid", conversationUser.getUserId());
         nickChangedPayload.put("name", conversationUser.getDisplayName());
         dataChannelMessage.setPayload(nickChangedPayload);
+        final MagicPeerConnectionWrapper magicPeerConnectionWrapper;
         for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
             if (magicPeerConnectionWrapperList.get(i).isMCUPublisher()) {
-                int finalI = i;
+                magicPeerConnectionWrapper = magicPeerConnectionWrapperList.get(i);
                 Observable
                         .interval(1, TimeUnit.SECONDS)
-                        .repeat()
+                        .repeatWhen() -> !isConnectionEstablished() || isBeingDestroyed() || isDestroyed() || !MerlinTheWizard.isConnectedToInternet())
                         .observeOn(Schedulers.io())
-                        .doOnNext(new Consumer<Long>() {
+                        .subscribe(new Observer<Long>() {
                             @Override
-                            public void accept(Long aLong) {
-                                magicPeerConnectionWrapperList.get(finalI).sendNickChannelData(dataChannelMessage);
+                            public void onSubscribe(Disposable d) {
+
                             }
-                        }).subscribe();
+
+                            @Override
+                            public void onNext(Long aLong) {
+                                magicPeerConnectionWrapper.sendNickChannelData(dataChannelMessage);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
                 break;
             }
 

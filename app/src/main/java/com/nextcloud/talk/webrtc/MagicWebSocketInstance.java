@@ -137,7 +137,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
-        Log.d(TAG, "ReceivingBEFORE : " + webSocket.toString() + " " + text);
         if (webSocket == internalWebSocket) {
             Log.d(TAG, "Receiving : " + webSocket.toString() + " " + text);
             LoggingUtils.writeLogEntryToFile(context,
