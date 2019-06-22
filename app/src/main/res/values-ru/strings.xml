@@ -64,6 +64,7 @@
     <string name="nc_client_cert_setup">Установка клиентского сертификата</string>
     <string name="nc_client_cert_change">Изменение клиентского сертификата</string>
     <string name="nc_settings_remove">Удалить</string>
+    <string name="nc_settings_remove_confirmation">Пожалуйста, подтвердите удаление текущего аккаунта.</string>
     <string name="nc_settings_remove_account">Удалить учётную запись</string>
     <string name="nc_settings_add_account">Добавить учётную запись</string>
     <string name="nc_settings_wrong_account">Повторный вход может быть выполнен только в текущую учётную запись</string>
@@ -75,10 +76,18 @@
     <string name="nc_settings_other_notifications_ringtone">Групповые вызовы</string>
     <string name="nc_settings_no_ringtone">Нет звука</string>
     <string name="nc_settings_vibrate">Вибрация</string>
+    <string name="nc_settings_vibrate_desc">Телефон будет вибрировать, если он не отключен</string>
     <string name="nc_settings_privacy">Конфиденциальность</string>
     <string name="nc_settings_screen_lock_title">Блокировка экрана</string>
+    <string name="nc_settings_screen_lock_desc">Блокировка %1$s с помощью блокировки экрана Android или с помощью поддерживаемого биометрического метода</string>
     <string name="nc_settings_screen_lock_timeout_title">Блокировка экрана при бездействии</string>
+    <string name="nc_none">Пусто</string>
+    <string name="nc_settings_screen_security_title">Безопасность экрана</string>
+    <string name="nc_settings_screen_security_desc">Предотвращает сохранение скриншотов внутри приложения и в списке недавних приложений</string>
+    <string name="nc_settings_incognito_keyboard_title">Клавиатура инкогнито</string>
+    <string name="nc_settings_incognito_keyboard_desc">Указывает клавиатуре отключить персонализированное обучение (без гарантий)</string>
     <string name="nc_settings_link_previews_title">Отображать предпросмотр ссылки</string>
+    <string name="nc_settings_link_previews_desc">Позволяет предварительно просматривать контент по полученным ссылкам для поддерживаемых сервисов</string>
     <string name="nc_locked">Коснуться для разблокировки</string>
 
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
@@ -121,6 +130,9 @@
     <string name="nc_make_call_private">Сделать беседу личной</string>
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete">Удалить</string>
+    <string name="nc_delete_conversation_default">Пожалуйста, подтвердите удаление обсуждения.</string>
+    <string name="nc_delete_conversation_one2one">При удалении беседы, она будет также
+ удалена у %1$s.</string>
     <string name="nc_delete_conversation_more">При удалении беседы, она будет также удалена у других участников</string>
 
     <string name="nc_new_conversation">Новая беседа</string>
@@ -140,10 +152,16 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Соединение…</string>
+    <string name="nc_calling">Вызов...</string>
     <string name="nc_incoming_call">Входящий вызов от</string>
     <string name="nc_nick_guest">Гость</string>
     <string name="nc_public_call">Начать открытую беседу</string>
     <string name="nc_public_call_explanation">Открытые беседы позволяют приглашать участников при помощи специальной ссылки.</string>
+    <string name="nc_call_timeout">Нет ответа в течение 45 секунд, нажмите, чтобы повторить попытку</string>
+    <string name="nc_call_reconnecting">Переподключение...</string>
+    <string name="nc_offline">Нет подключения к сети, пожалуйста, проверьте ваше соединение</string>
+    <string name="nc_leaving_call">Завершение вызова...</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">канал уведомлений %1$s на %2$s</string>
     <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>
@@ -233,4 +251,6 @@
     <string name="nc_select_files">Выбрать файлы</string>
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_browser_refresh">Обновить</string>
-    </resources>
+    <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
+
+</resources>
