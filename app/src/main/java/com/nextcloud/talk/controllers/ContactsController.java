@@ -949,6 +949,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         }
 
+        checkAndHandleDoneMenuItem();
         adapter.notifyDataSetChanged();
     }
 
