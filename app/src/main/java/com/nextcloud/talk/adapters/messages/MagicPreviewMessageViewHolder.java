@@ -123,6 +123,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 } else {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
                     context.startActivity(browserIntent);
                 }
             });
@@ -133,6 +134,16 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             messageText.setText("Tenor");
             DisplayUtils.setClickableString("Tenor", "https://tenor.com", messageText);
         } else {
+            if (message.getMessageType().equals(ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE)) {
+                image.setOnClickListener(v -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getImageUrl()));
+                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+                    context.startActivity(browserIntent);
+                });
+            } else {
+                image.setOnClickListener(null);
+            }
             messageText.setText("");
         }
     }
