@@ -21,6 +21,7 @@
 package com.nextcloud.talk.utils;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
@@ -28,8 +29,10 @@ import android.content.Context;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import java.util.zip.CRC32;
 
@@ -79,26 +82,71 @@ public class NotificationUtils {
         }
     }
 
-    public static void cancelExistingNotifications(Context context, UserEntity conversationUser,
-                                                   String roomTokenOrId) {
+    public static void cancelAllNotificationsForAccount(Context context, UserEntity conversationUser) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && conversationUser.getId() != -1 &&
                 context != null) {
 
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            CRC32 crc32 = new CRC32();
-            String groupName = conversationUser.getId() + "@" + roomTokenOrId;
-            crc32.update(groupName.getBytes());
-            String crc32GroupString = Long.toString(crc32.getValue());
+            if (notificationManager != null) {
+                StatusBarNotification[] statusBarNotifications = notificationManager.getActiveNotifications();
+                Notification notification;
+                for (StatusBarNotification statusBarNotification : statusBarNotifications) {
+                    notification = statusBarNotification.getNotification();
+
+                    if (notification != null && !notification.extras.isEmpty()) {
+                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)) {
+                            notificationManager.cancel(statusBarNotification.getId());
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    public static void cancelExistingNotificationWithId(Context context, UserEntity conversationUser, long notificationId) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && conversationUser.getId() != -1 &&
+                context != null) {
+
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
             if (notificationManager != null) {
                 StatusBarNotification[] statusBarNotifications = notificationManager.getActiveNotifications();
+                Notification notification;
                 for (StatusBarNotification statusBarNotification : statusBarNotifications) {
+                    notification = statusBarNotification.getNotification();
 
-                    if (statusBarNotification.getNotification() != null &&
-                            !TextUtils.isEmpty(statusBarNotification.getNotification().getGroup())) {
-                        if (statusBarNotification.getNotification().getGroup().equals(crc32GroupString)) {
+                    if (notification != null && !notification.extras.isEmpty()) {
+                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
+                                notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
+                            notificationManager.cancel(statusBarNotification.getId());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void cancelExistingNotificationsForRoom(Context context, UserEntity conversationUser,
+                                                          String roomTokenOrId) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && conversationUser.getId() != -1 &&
+                context != null) {
+
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            if (notificationManager != null) {
+                StatusBarNotification[] statusBarNotifications = notificationManager.getActiveNotifications();
+                Notification notification;
+                for (StatusBarNotification statusBarNotification : statusBarNotifications) {
+                    notification = statusBarNotification.getNotification();
+
+                    if (notification != null && !notification.extras.isEmpty()) {
+                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
+                                roomTokenOrId.equals(statusBarNotification.getNotification().extras.getString(BundleKeys.KEY_ROOM_TOKEN))) {
                             notificationManager.cancel(statusBarNotification.getId());
                         }
                     }

@@ -87,8 +87,6 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BooleanSupplier;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied;
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
@@ -1123,9 +1121,9 @@ public class CallController extends BaseController {
                         }
 
                         if (!conversationUser.hasSpreedCapabilityWithName("no-ping") && !TextUtils.isEmpty(roomId)) {
-                            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser, roomId);
+                            NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
                         } else if (!TextUtils.isEmpty(roomToken)) {
-                            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser, roomToken);
+                            NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
                         }
 
                         if (!hasExternalSignalingServer) {

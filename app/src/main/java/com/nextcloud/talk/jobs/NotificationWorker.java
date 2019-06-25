@@ -258,14 +258,12 @@ public class NotificationWorker extends Worker {
                 }
         }
 
+        intent.setAction(Long.toString(System.currentTimeMillis()));
+
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
-                0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+                0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-
-
-        CRC32 crc32 = new CRC32();
-
         Uri uri = Uri.parse(signatureVerification.getUserEntity().getBaseUrl());
         String baseUrl = uri.getHost();
 
@@ -291,9 +289,12 @@ public class NotificationWorker extends Worker {
             notificationBuilder.setColor(context.getResources().getColor(R.color.colorPrimary));
         }
 
-        String groupName = signatureVerification.getUserEntity().getId() + "@" + decryptedPushMessage.getId();
-        crc32.update(groupName.getBytes());
-        notificationBuilder.setGroup(Long.toString(crc32.getValue()));
+        Bundle notificationInfo = new Bundle();
+        notificationInfo.putLong(BundleKeys.KEY_INTERNAL_USER_ID, signatureVerification.getUserEntity().getId());
+        // could be an ID or a TOKEN
+        notificationInfo.putString(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
+        notificationInfo.putLong(BundleKeys.KEY_NOTIFICATION_ID, decryptedPushMessage.getNotificationId());
+        notificationBuilder.setExtras(notificationInfo);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
@@ -326,9 +327,13 @@ public class NotificationWorker extends Worker {
 
         notificationBuilder.setContentIntent(pendingIntent);
 
-        String stringForCrc = decryptedPushMessage.getSubject() + " " + signatureVerification
-                .getUserEntity().getDisplayName() + " " + signatureVerification.getUserEntity
-                ().getBaseUrl() + System.currentTimeMillis();
+        String stringForCrc = String.valueOf(System.currentTimeMillis());
+
+        CRC32 crc32 = new CRC32();
+
+        String groupName = signatureVerification.getUserEntity().getId() + "@" + decryptedPushMessage.getId();
+        crc32.update(groupName.getBytes());
+        notificationBuilder.setGroup(Long.toString(crc32.getValue()));
 
         crc32 = new CRC32();
         crc32.update(stringForCrc.getBytes());
@@ -350,45 +355,43 @@ public class NotificationWorker extends Worker {
         }
 
 
-        if (notificationManager != null) {
-            notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
+        notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
 
-            if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
-                    DoNotDisturbUtils.shouldPlaySound()) {
-                AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
-                        (AudioAttributes.CONTENT_TYPE_SONIFICATION);
+        if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
+                DoNotDisturbUtils.shouldPlaySound()) {
+            AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
+                    (AudioAttributes.CONTENT_TYPE_SONIFICATION);
 
-                if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
-                    audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
-                } else {
-                    audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST);
-                }
-
-                MediaPlayer mediaPlayer = new MediaPlayer();
-                try {
-                    mediaPlayer.setDataSource(context, soundUri);
-                    mediaPlayer.setAudioAttributes(audioAttributesBuilder.build());
-
-                    mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
-                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-
-                    mediaPlayer.prepareAsync();
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to set data source");
-                }
-
+            if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
+                audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
+            } else {
+                audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST);
             }
 
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            try {
+                mediaPlayer.setDataSource(context, soundUri);
+                mediaPlayer.setAudioAttributes(audioAttributesBuilder.build());
 
-            if (DoNotDisturbUtils.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
-                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
+                mediaPlayer.setOnCompletionListener(MediaPlayer::release);
 
-                if (vibrator != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } else {
-                        vibrator.vibrate(500);
-                    }
+                mediaPlayer.prepareAsync();
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to set data source");
+            }
+
+        }
+
+
+        if (DoNotDisturbUtils.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
+            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
+            if (vibrator != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    vibrator.vibrate(500);
                 }
             }
         }
@@ -444,8 +447,7 @@ public class NotificationWorker extends Worker {
                             intent = new Intent(context, MainActivity.class);
                         }
 
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
                         if (!signatureVerification.getUserEntity().hasSpreedCapabilityWithName
                                 ("no-ping")) {

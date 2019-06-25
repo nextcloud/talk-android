@@ -566,9 +566,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void cancelNotificationsForCurrentConversation() {
         if (!conversationUser.hasSpreedCapabilityWithName("no-ping") && !TextUtils.isEmpty(roomId)) {
-            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser, roomId);
+            NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
         } else if (!TextUtils.isEmpty(roomToken)){
-            NotificationUtils.cancelExistingNotifications(getApplicationContext(), conversationUser, roomToken);
+            NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
         }
     }
 
