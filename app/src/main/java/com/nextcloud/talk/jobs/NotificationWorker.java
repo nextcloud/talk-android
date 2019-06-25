@@ -37,6 +37,7 @@ import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -44,6 +45,7 @@ import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
+
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
@@ -67,16 +69,20 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
+
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
+
 import org.parceler.Parcels;
+
 import retrofit2.Retrofit;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.inject.Inject;
+
 import java.io.IOException;
 import java.net.CookieManager;
 import java.security.InvalidKeyException;
@@ -424,69 +430,75 @@ public class NotificationWorker extends Worker {
                     decryptedPushMessage = LoganSquare.parse(new String(decryptedSubject),
                             DecryptedPushMessage.class);
 
-                    credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUsername(),
-                            signatureVerification.getUserEntity().getToken());
+                    if (decryptedPushMessage.isDelete()) {
+                        NotificationUtils.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), decryptedPushMessage.getNotificationId());
+                    } else if (decryptedPushMessage.isDeleteAll()) {
+                        NotificationUtils.cancelAllNotificationsForAccount(context, signatureVerification.getUserEntity());
+                    } else {
+                        credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUsername(),
+                                signatureVerification.getUserEntity().getToken());
 
-                    ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
-                            JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
+                        ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
+                                JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
-                    boolean hasChatSupport = signatureVerification.getUserEntity().
-                            hasSpreedCapabilityWithName("chat-v2");
+                        boolean hasChatSupport = signatureVerification.getUserEntity().
+                                hasSpreedCapabilityWithName("chat-v2");
 
-                    boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed");
+                        boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed");
 
-                    if (shouldShowNotification) {
-                        Intent intent;
-                        Bundle bundle = new Bundle();
+                        if (shouldShowNotification) {
+                            Intent intent;
+                            Bundle bundle = new Bundle();
 
 
-                        boolean startACall = decryptedPushMessage.getType().equals("call") || !hasChatSupport;
-                        if (startACall) {
-                            intent = new Intent(context, MagicCallActivity.class);
-                        } else {
-                            intent = new Intent(context, MainActivity.class);
+                            boolean startACall = decryptedPushMessage.getType().equals("call") || !hasChatSupport;
+                            if (startACall) {
+                                intent = new Intent(context, MagicCallActivity.class);
+                            } else {
+                                intent = new Intent(context, MainActivity.class);
+                            }
+
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                            if (!signatureVerification.getUserEntity().hasSpreedCapabilityWithName
+                                    ("no-ping")) {
+                                bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage.getId());
+                            } else {
+                                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
+                            }
+
+                            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, signatureVerification.getUserEntity());
+
+                            bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL,
+                                    startACall);
+
+                            intent.putExtras(bundle);
+
+                            switch (decryptedPushMessage.getType()) {
+                                case "call":
+                                    if (!bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
+                                        context.startActivity(intent);
+                                    } else {
+                                        showNotificationForCallWithNoPing(intent);
+                                    }
+                                    break;
+                                case "room":
+                                    if (bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
+                                        showNotificationForCallWithNoPing(intent);
+                                    }
+                                    break;
+                                case "chat":
+                                    if (decryptedPushMessage.getNotificationId() != Long.MIN_VALUE) {
+                                        showMessageNotificationWithObjectData(intent);
+                                    } else {
+                                        showNotification(intent);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+
                         }
-
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-                        if (!signatureVerification.getUserEntity().hasSpreedCapabilityWithName
-                                ("no-ping")) {
-                            bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage.getId());
-                        } else {
-                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
-                        }
-
-                        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, signatureVerification.getUserEntity());
-
-                        bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL,
-                                startACall);
-
-                        intent.putExtras(bundle);
-
-                        switch (decryptedPushMessage.getType()) {
-                            case "call":
-                                if (!bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
-                                    context.startActivity(intent);
-                                } else {
-                                    showNotificationForCallWithNoPing(intent);
-                                }
-                                break;
-                            case "room":
-                                if (bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
-                                    showNotificationForCallWithNoPing(intent);
-                                }
-                                break;
-                            case "chat":
-                                if (decryptedPushMessage.getNotificationId() != Long.MIN_VALUE) {
-                                    showMessageNotificationWithObjectData(intent);
-                                } else {
-                                    showNotification(intent);
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-
                     }
                 }
             } catch (NoSuchAlgorithmException e1) {

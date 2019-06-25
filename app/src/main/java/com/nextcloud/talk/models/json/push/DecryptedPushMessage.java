@@ -45,6 +45,12 @@ public class DecryptedPushMessage {
     @JsonField(name = "nid")
     long notificationId;
 
+    @JsonField(name = "delete")
+    boolean delete;
+
+    @JsonField(name = "delete-all")
+    boolean deleteAll;
+
     @JsonIgnore
     String text;
 }
