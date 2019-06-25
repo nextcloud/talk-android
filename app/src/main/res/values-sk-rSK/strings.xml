@@ -152,11 +152,14 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Pripája sa...</string>
+    <string name="nc_calling">Volá sa...</string>
     <string name="nc_incoming_call">Prichádzajúci hovor od</string>
     <string name="nc_nick_guest">Hosť</string>
     <string name="nc_public_call">Nový verejný rozhovor</string>
     <string name="nc_public_call_explanation">Verejné rozhovory Vám umožňujú pozvať ľudí z vonku cez špeciálne
  vytvorený odkaz.</string>
+    <string name="nc_call_timeout">Žiadna odpoveď počas 45 sekúnd, ťuknite a skúste znova</string>
+    <string name="nc_call_reconnecting">Opätovné pripájanie...</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na %2$s notifikačný kanál</string>
     <string name="nc_notification_channel_calls">Oznamovací kanál hovorov</string>
