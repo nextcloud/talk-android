@@ -29,8 +29,8 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@id/messageUserAvatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="8dp"
         app:roundAsCircle="true" />
