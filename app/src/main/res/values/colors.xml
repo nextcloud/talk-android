@@ -55,6 +55,12 @@
 
     <color name="fg_default">#000000</color>
     <color name="fg_inverse">#FFFFFF</color>
+    <color name="fg_mention_you">#C98879</color>
+    <color name="fg_mention_others">#37505D</color>
+
+    <color name="fg_mention_you_dark">#C98879</color>
+    <color name="fg_mention_others_dark">#4c96bd</color>
+
     <color name="bg_default">#FFFFFF</color>
     <color name="bg_alt">@color/white60</color>
     <color name="bg_system_bubble_dark">#444444</color>
