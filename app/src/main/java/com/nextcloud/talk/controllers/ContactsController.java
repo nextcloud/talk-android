@@ -70,6 +70,7 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -266,10 +267,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
                                 bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
                                         Parcels.wrap(roomOverall.getOcs().getData()));
-                                conversationIntent.putExtras(bundle);
-                                getRouter().replaceTopController((RouterTransaction.with(new ChatController(bundle))
-                                        .pushChangeHandler(new HorizontalChangeHandler())
-                                        .popChangeHandler(new HorizontalChangeHandler())));
+
+                                ConductorRemapping.remapChatController(getRouter(), currentUser.getId(),
+                                        roomOverall.getOcs().getData().getToken(), bundle, true);
                             } else {
                                 conversationIntent.putExtras(bundle);
                                 startActivity(conversationIntent);
@@ -848,9 +848,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
                                         bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
                                                 Parcels.wrap(roomOverall.getOcs().getData()));
-                                        getRouter().replaceTopController((RouterTransaction.with(new ChatController(bundle))
-                                                .pushChangeHandler(new HorizontalChangeHandler())
-                                                .popChangeHandler(new HorizontalChangeHandler())));
+
+                                        ConductorRemapping.remapChatController(getRouter(), currentUser.getId(),
+                                                roomOverall.getOcs().getData().getToken(), bundle, true);
                                     } else {
                                         startActivity(conversationIntent);
                                         new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);

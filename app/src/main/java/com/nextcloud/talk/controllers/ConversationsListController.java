@@ -81,6 +81,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.animations.SharedElementTransition;
@@ -626,9 +627,8 @@ public class ConversationsListController extends BaseController implements Searc
 
                 if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
                     bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation));
-                    getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler())));
+                    ConductorRemapping.remapChatController(getRouter(), currentUser.getId(),
+                            conversation.getToken(), bundle, false);
                 } else {
                     overridePushHandler(new NoOpControllerChangeHandler());
                     overridePopHandler(new NoOpControllerChangeHandler());

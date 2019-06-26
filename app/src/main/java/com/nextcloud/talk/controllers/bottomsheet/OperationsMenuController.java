@@ -60,6 +60,7 @@ import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -634,9 +635,8 @@ public class OperationsMenuController extends BaseController {
             conversationIntent.putExtras(bundle);
 
             if (getParentController() != null) {
-                getParentController().getRouter().replaceTopController(RouterTransaction.with(new ChatController(bundle))
-                        .pushChangeHandler(new HorizontalChangeHandler())
-                        .popChangeHandler(new HorizontalChangeHandler()));
+                ConductorRemapping.remapChatController(getParentController().getRouter(), conversationUser.getId(),
+                        conversation.getToken(), bundle, true);
             }
         } else {
             initiateCall();

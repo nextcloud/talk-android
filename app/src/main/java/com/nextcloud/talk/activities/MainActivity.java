@@ -26,12 +26,15 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.ViewGroup;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import com.bluelinelabs.conductor.Conductor;
+import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -40,9 +43,13 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.*;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
+import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+
+import java.util.List;
+
 import io.requery.Persistable;
 import io.requery.android.sqlcipher.SqlCipherDatabaseSource;
 import io.requery.reactivex.ReactiveEntityStore;
@@ -150,9 +157,9 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
                         .pushChangeHandler(new HorizontalChangeHandler())
                         .popChangeHandler(new HorizontalChangeHandler()));
             } else {
-                router.pushController(RouterTransaction.with(new ChatController(intent.getExtras()))
-                        .pushChangeHandler(new HorizontalChangeHandler())
-                        .popChangeHandler(new HorizontalChangeHandler()));
+                ConductorRemapping.remapChatController(router, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
+                        intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN), intent.getExtras(), false);
+                ;
             }
         }
     }

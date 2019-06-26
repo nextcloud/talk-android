@@ -1184,9 +1184,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
                                         Parcels.wrap(roomOverall.getOcs().getData()));
                                 conversationIntent.putExtras(bundle);
 
-                                getRouter().pushController((RouterTransaction.with(new ChatController(bundle))
-                                        .pushChangeHandler(new HorizontalChangeHandler())
-                                        .popChangeHandler(new HorizontalChangeHandler())));
+                                ConductorRemapping.remapChatController(getRouter(), conversationUser.getId(),
+                                        roomOverall.getOcs().getData().getToken(), bundle, false);
+
                             } else {
                                 conversationIntent.putExtras(bundle);
                                 startActivity(conversationIntent);
