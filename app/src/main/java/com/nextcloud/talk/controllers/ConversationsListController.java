@@ -28,6 +28,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.*;
@@ -108,6 +109,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
@@ -172,6 +174,8 @@ public class ConversationsListController extends BaseController implements Searc
     private LovelySaveStateHandler saveStateHandler;
 
     private Bundle conversationMenuBundle = null;
+
+    private Parcelable recyclerViewState;
 
     public ConversationsListController() {
         super();
@@ -372,6 +376,7 @@ public class ConversationsListController extends BaseController implements Searc
                                         ((CallItem) callItem).getModel().getLastPing()));
                     }
 
+                    recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                     adapter.updateDataSet(callItems, true);
 
                     if (searchItem != null) {
@@ -446,6 +451,13 @@ public class ConversationsListController extends BaseController implements Searc
 
         fastScroller.addOnScrollStateChangeListener(this);
         adapter.setFastScroller(fastScroller);
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(recyclerViewState);
+            }
+        });
 
         fastScroller.setBubbleTextCreator(position -> {
             String displayName;
