@@ -267,7 +267,7 @@ public class NotificationWorker extends Worker {
         intent.setAction(Long.toString(System.currentTimeMillis()));
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
-                0, intent, PendingIntent.FLAG_ONE_SHOT);
+                0, intent, 0);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         Uri uri = Uri.parse(signatureVerification.getUserEntity().getBaseUrl());
@@ -458,7 +458,7 @@ public class NotificationWorker extends Worker {
                                 intent = new Intent(context, MainActivity.class);
                             }
 
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
                             if (!signatureVerification.getUserEntity().hasSpreedCapabilityWithName
                                     ("no-ping")) {
