@@ -54,19 +54,26 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         super.onBind(message);
 
         Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        int normalColor, pressedColor, mentionYouColor, mentionOthersColor;
 
-        int normalColor = appPreferences.isDarkThemeEnabled() ? resources.getColor(R.color.bg_system_bubble_dark) :
-                                                                resources.getColor(R.color.white_two);
-        int pressedColor = normalColor;
+        if(appPreferences.isDarkThemeEnabled()) {
+            normalColor = resources.getColor(R.color.bg_system_bubble_dark);
+            mentionYouColor = resources.getColor(R.color.fg_mention_you_dark);
+            mentionOthersColor = resources.getColor(R.color.fg_mention_others_dark);
+        } else {
+            normalColor = resources.getColor(R.color.white_two);
+            mentionYouColor = resources.getColor(R.color.fg_mention_you);
+            mentionOthersColor = resources.getColor(R.color.fg_mention_others);
+        }
+        pressedColor = normalColor;
 
         Drawable bubbleDrawable = DisplayUtils.getMessageSelector(normalColor,
-                resources.getColor(R.color.transparent), pressedColor,
-                R.drawable.shape_grouped_incoming_message);
+                                resources.getColor(R.color.transparent), pressedColor,
+                                R.drawable.shape_grouped_incoming_message);
         ViewCompat.setBackground(bubble, bubbleDrawable);
 
         Spannable messageString = new SpannableString(message.getText());
 
-        Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
         if (message.getMessageParameters() != null && message.getMessageParameters().size() > 0) {
             for (String key : message.getMessageParameters().keySet()) {
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
@@ -74,9 +81,9 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
                 if (individualHashMap != null && (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call"))) {
 
                     if (individualHashMap.get("id").equals(message.getActiveUser().getUserId())) {
-                        color = context.getResources().getColor(R.color.nc_incoming_text_mention_you);
+                        color = mentionYouColor;
                     } else {
-                        color = context.getResources().getColor(R.color.nc_incoming_text_mention_others);
+                        color = mentionOthersColor;
                     }
 
                     messageString =
