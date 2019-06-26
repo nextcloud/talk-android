@@ -89,8 +89,7 @@
             android:layout_height="60dp"
             android:layout_above="@id/callControlsLinearLayoutView"
             android:layout_centerHorizontal="true"
-            android:tint="@color/nc_darkRed"
-            app:backgroundImage="@color/colorPrimary"
+            app:backgroundImage="@color/nc_darkRed"
             app:roundAsCircle="true"
             app:placeholderImage="@drawable/ic_call_end_white_24px" />
 
