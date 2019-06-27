@@ -54,7 +54,10 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         super.onBind(message);
 
         Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
-        int normalColor, pressedColor, mentionYouColor, mentionOthersColor;
+        int normalColor;
+        int pressedColor;
+        int mentionYouColor;
+        int mentionOthersColor;
 
         if(appPreferences.isDarkThemeEnabled()) {
             normalColor = resources.getColor(R.color.bg_system_bubble_dark);
