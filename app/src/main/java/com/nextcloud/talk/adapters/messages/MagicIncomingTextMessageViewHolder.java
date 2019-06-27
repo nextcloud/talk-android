@@ -45,6 +45,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.TextMatchers;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import javax.inject.Inject;
@@ -72,6 +73,9 @@ public class MagicIncomingTextMessageViewHolder
 
     @Inject
     Context context;
+
+    @Inject
+    AppPreferences appPreferences;
 
     private View itemView;
 
@@ -120,10 +124,14 @@ public class MagicIncomingTextMessageViewHolder
         } else {
             Resources resources = context.getResources();
 
+            int bg_bubble_color = appPreferences.isDarkThemeEnabled() ?
+                                resources.getColor(R.color.bg_message_list_incoming_bubble_dark2) :
+                                resources.getColor(R.color.bg_message_list_incoming_bubble);
+
             messageUserAvatarView.setVisibility(View.INVISIBLE);
-            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.white_two),
+            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(bg_bubble_color,
                     resources.getColor(R.color.transparent),
-                    resources.getColor(R.color.white_two), R.drawable.shape_grouped_incoming_message);
+                    bg_bubble_color, R.drawable.shape_grouped_incoming_message);
             ViewCompat.setBackground(bubble, bubbleDrawable);
             messageAuthor.setVisibility(View.GONE);
         }
