@@ -136,7 +136,6 @@ slettet for %1$s.</string>
     <string name="nc_delete_conversation_more">Hvis du sletter konversationen, vil den også blive slettet for alle andre deltagere.</string>
 
     <string name="nc_new_conversation">Ny samtale</string>
-    <string name="nc_join_via_link">Deltag via link</string>
     <string name="nc_join_via_web">Deltag via web</string>
     <string name="nc_add_to_favorites">Føj til favoritter</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>

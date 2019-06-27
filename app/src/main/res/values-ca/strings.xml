@@ -136,7 +136,6 @@ per %1$s.</string>
     <string name="nc_delete_conversation_more">Si suprimiu la conversa, també s’eliminarà per a tots els altres participants.</string>
 
     <string name="nc_new_conversation">Nova conversa</string>
-    <string name="nc_join_via_link">Uneix-te a través d’un enllaç</string>
     <string name="nc_join_via_web">Uneix-te-vos via web</string>
     <string name="nc_add_to_favorites">Afegeix a favorits</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>

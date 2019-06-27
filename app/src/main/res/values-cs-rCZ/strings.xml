@@ -136,7 +136,6 @@
     <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude smazána také pro všechny její ostatní účastníky.</string>
 
     <string name="nc_new_conversation">Nová konverzace</string>
-    <string name="nc_join_via_link">Připojit prostřednictvím odkazu</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
     <string name="nc_add_to_favorites">Přidat do oblíbených</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>

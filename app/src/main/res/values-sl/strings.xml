@@ -120,7 +120,6 @@
     <string name="nc_delete_call">Izbriši pogovor</string>
     <string name="nc_delete">Izbriši</string>
     <string name="nc_new_conversation">Nov pogovor</string>
-    <string name="nc_join_via_link">Pridruži se prek povezave</string>
     <string name="nc_join_via_web">Pridruži se prek spleta</string>
     <string name="nc_add_to_favorites">Dodaj med priljubljene</string>
     <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>

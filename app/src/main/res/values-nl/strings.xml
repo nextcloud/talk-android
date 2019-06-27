@@ -137,7 +137,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_delete_conversation_more">Als je het gesprek verwijderdt, wordt het ook verwijderd voor alle andere deelnemers.</string>
 
     <string name="nc_new_conversation">Nieuw gesprek</string>
-    <string name="nc_join_via_link">Deelnemen via link</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
     <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>

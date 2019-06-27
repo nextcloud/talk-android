@@ -136,7 +136,6 @@
     <string name="nc_delete_conversation_more">会話を削除すると、ほかの参加者も一緒に削除されます。</string>
 
     <string name="nc_new_conversation">新しい会話</string>
-    <string name="nc_join_via_link">リンク経由で参加</string>
     <string name="nc_join_via_web">ウェブ経由で参加</string>
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>

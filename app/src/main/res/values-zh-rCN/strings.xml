@@ -135,7 +135,6 @@
     <string name="nc_delete_conversation_more">如果您删除了此会话，它也将会从所有其他参与者处删除。</string>
 
     <string name="nc_new_conversation">新的会话</string>
-    <string name="nc_join_via_link">通过链接加入</string>
     <string name="nc_join_via_web">通过网页加入</string>
     <string name="nc_add_to_favorites">添加收藏</string>
     <string name="nc_remove_from_favorites">取消收藏</string>

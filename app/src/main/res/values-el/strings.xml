@@ -99,7 +99,6 @@
     <string name="nc_delete_call">Διαγραφή συνομιλίας</string>
     <string name="nc_delete">Διαγραφή</string>
     <string name="nc_new_conversation">Νέα συνομιλία</string>
-    <string name="nc_join_via_link">Συμμετοχή μέσω συνδέσμου</string>
     <string name="nc_join_via_web">Συμμετοχή μέσω ιστού</string>
     <string name="nc_add_to_favorites">Προσθήκη στα αγαπημένα</string>
     <string name="nc_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>

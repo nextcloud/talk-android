@@ -126,7 +126,6 @@
     <string name="nc_delete">Eyða</string>
     <string name="nc_delete_conversation_default">Endilega staðfestu að þú viljir fjarlægja þetta samtal.</string>
     <string name="nc_new_conversation">Nýtt samtal</string>
-    <string name="nc_join_via_link">Taka þátt í gegnum tengil</string>
     <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
     <string name="nc_add_to_favorites">Bæta í eftirlæti</string>
     <string name="nc_remove_from_favorites">Fjarlægja úr eftirlætum</string>
