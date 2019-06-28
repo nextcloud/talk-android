@@ -135,6 +135,7 @@
     <string name="nc_delete_conversation_more">Si vous supprimez la conversation, elle sera supprimée pour tous les participants.</string>
 
     <string name="nc_new_conversation">Nouvelle conversation</string>
+    <string name="nc_join_via_link">Joindre via un lien</string>
     <string name="nc_join_via_web">Joindre via le web</string>
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
