@@ -136,6 +136,7 @@
     <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de silinecek.</string>
 
     <string name="nc_new_conversation">Yeni görüşme</string>
+    <string name="nc_join_via_link">Bir bağlantı ile katıl</string>
     <string name="nc_join_via_web">Web üzerinden katıl</string>
     <string name="nc_add_to_favorites">Sık kullanılanlara ekle</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
