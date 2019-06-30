@@ -136,6 +136,7 @@
     <string name="nc_delete_conversation_more">Om du raderar konversationen, kommer den även att raderas för alla andra deltagare.</string>
 
     <string name="nc_new_conversation">Ny konversation</string>
+    <string name="nc_join_via_link">Gå med via länk</string>
     <string name="nc_join_via_web">Gå med via webb</string>
     <string name="nc_add_to_favorites">Lägg till som favorit</string>
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
