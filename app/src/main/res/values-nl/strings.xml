@@ -137,6 +137,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_delete_conversation_more">Als je het gesprek verwijderdt, wordt het ook verwijderd voor alle andere deelnemers.</string>
 
     <string name="nc_new_conversation">Nieuw gesprek</string>
+    <string name="nc_join_via_link">Deelnemen via een link</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
     <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
@@ -152,11 +153,17 @@ Kies er eentje van een provider.</string>
 
     <!-- Call -->
     <string name="nc_connecting_call">Verbinden...</string>
+    <string name="nc_calling">Oproepen...</string>
     <string name="nc_incoming_call">Inkomend gesprek van</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_public_call">Nieuw openbaar gesprek</string>
     <string name="nc_public_call_explanation">Met openbare gesprekken kun je mensen zonder account uitnodigen
 via een persoonlijke link.</string>
+    <string name="nc_call_timeout">Geen reactie binnen 45 seconden, tap om het opnieuw te proberen.</string>
+    <string name="nc_call_reconnecting">Opnieuw verbinden....</string>
+    <string name="nc_offline">Op dit moment offline, controleer je verbinding</string>
+    <string name="nc_leaving_call">Beëindigen verbinding...</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
