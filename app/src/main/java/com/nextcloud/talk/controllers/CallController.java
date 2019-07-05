@@ -886,6 +886,7 @@ public class CallController extends BaseController {
     @Override
     public void onDestroy() {
         onHangupClick();
+        powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.IDLE);
         super.onDestroy();
     }
 
