@@ -69,7 +69,7 @@ public class DatabaseStorageModule implements StorageModule {
         if (!key.equals("message_notification_level")) {
             arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, value, conversationToken);
         } else {
-            if (conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
+            if (conversationUser.hasSpreedFeatureCapability("notification-levels")) {
                 if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(value)) {
                     int intValue;
                     switch (value) {

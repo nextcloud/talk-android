@@ -26,7 +26,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -57,7 +56,6 @@ import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.postprocessors.BlurPostProcessor;
-import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
@@ -428,7 +426,7 @@ public class CallNotificationController extends BaseController {
                             }
 
                             if ((AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 || AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) &&
-                                    userBeingCalled.hasSpreedCapabilityWithName("no-ping")) {
+                                    userBeingCalled.hasSpreedFeatureCapability("no-ping")) {
                                 if (getActivity() != null) {
                                     Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
                                     new BlurPostProcessor(5, getActivity()).process(backgroundBitmap);

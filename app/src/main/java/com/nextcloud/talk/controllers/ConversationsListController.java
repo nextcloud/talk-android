@@ -24,7 +24,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,7 +59,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
-import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
@@ -246,7 +244,7 @@ public class ConversationsListController extends BaseController implements Searc
 
         if (currentUser != null) {
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
-            shouldUseLastMessageLayout = currentUser.hasSpreedCapabilityWithName("last-room-activity");
+            shouldUseLastMessageLayout = currentUser.hasSpreedFeatureCapability("last-room-activity");
             fetchData(false);
         }
     }
@@ -361,7 +359,7 @@ public class ConversationsListController extends BaseController implements Searc
                         }
                     }
 
-                    if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
+                    if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
                         Collections.sort(callItems, (o1, o2) -> {
                             Conversation conversation1 = ((ConversationItem) o1).getModel();
                             Conversation conversation2 = ((ConversationItem) o2).getModel();
@@ -637,7 +635,7 @@ public class ConversationsListController extends BaseController implements Searc
             } else {
                 currentUser = userUtils.getCurrentUser();
 
-                if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+                if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
                     bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation));
                     ConductorRemapping.remapChatController(getRouter(), currentUser.getId(),
                             conversation.getToken(), bundle, false);
@@ -656,7 +654,7 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     public void onItemLongClick(int position) {
-        if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
+        if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
             Object clickedItem = adapter.getItem(position);
             if (clickedItem != null) {
                 Conversation conversation;

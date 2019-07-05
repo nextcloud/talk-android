@@ -46,7 +46,6 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.controllers.ChatController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
@@ -269,12 +268,12 @@ public class OperationsMenuController extends BaseController {
                     }
 
                     if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) ||
-                            !currentUser.hasSpreedCapabilityWithName("empty-group-room")) {
+                            !currentUser.hasSpreedFeatureCapability("empty-group-room")) {
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
                                 "3", invite, conversationName);
                     } else {
                         String roomType = "2";
-                        if (!currentUser.hasSpreedCapabilityWithName("empty-group-room")) {
+                        if (!currentUser.hasSpreedFeatureCapability("empty-group-room")) {
                             isGroupCallWorkaround = true;
                             roomType = "3";
                         }
@@ -505,8 +504,8 @@ public class OperationsMenuController extends BaseController {
             localInvitedGroups.remove(0);
         }
 
-        if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 && currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails"))) {
-            if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails"))) {
+        if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
+            if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
                 for (int i = 0; i < localInvitedGroups.size(); i++) {
                     final String groupId = localInvitedGroups.get(i);
                     retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(currentUser.getBaseUrl(), conversation.getToken(),
@@ -585,7 +584,7 @@ public class OperationsMenuController extends BaseController {
                         });
             }
         } else {
-            if (!currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+            if (!currentUser.hasSpreedFeatureCapability("chat-v2")) {
                 showResultImage(true, false);
             } else {
                 initiateConversation(true, null);
@@ -602,7 +601,7 @@ public class OperationsMenuController extends BaseController {
             isGuestUser = true;
             hasChatCapability = capabilities != null && capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null && capabilities.getSpreedCapability().getFeatures().contains("chat-v2");
         } else {
-            hasChatCapability = currentUser.hasSpreedCapabilityWithName("chat-v2");
+            hasChatCapability = currentUser.hasSpreedFeatureCapability("chat-v2");
         }
 
 

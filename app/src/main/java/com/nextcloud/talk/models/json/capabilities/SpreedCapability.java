@@ -25,6 +25,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import lombok.Data;
 import org.parceler.Parcel;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Parcel
@@ -33,4 +34,7 @@ import java.util.List;
 public class SpreedCapability {
     @JsonField(name = "features")
     List<String> features;
+
+    @JsonField(name = "config")
+    HashMap<String, HashMap<String, String>> config;
 }

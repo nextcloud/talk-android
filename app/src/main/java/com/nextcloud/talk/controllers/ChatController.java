@@ -368,7 +368,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
 
         InputFilter[] filters = new InputFilter[1];
-        filters[0] = new InputFilter.LengthFilter(1000);
+        int lenghtFilter = conversationUser.getMessageMaxLength();
+
+
+        filters[0] = new InputFilter.LengthFilter(lenghtFilter);
         messageInput.setFilters(filters);
 
         messageInput.addTextChangedListener(new TextWatcher() {
@@ -379,8 +382,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 1000) {
-                    messageInput.setError(Objects.requireNonNull(getResources()).getString(R.string.nc_limit_hit));
+                if (s.length() >= lenghtFilter) {
+                    messageInput.setError(String.format(Objects.requireNonNull(getResources()).getString(R.string.nc_limit_hit), Integer.toString(lenghtFilter)));
                 } else {
                     messageInput.setError(null);
                 }
@@ -417,7 +420,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
-        if (!conversationUser.getUserId().equals("?") && conversationUser.hasSpreedCapabilityWithName("mention-flag") && getActivity() != null) {
+        if (!conversationUser.getUserId().equals("?") && conversationUser.hasSpreedFeatureCapability("mention-flag") && getActivity() != null) {
             getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> showConversationInfoScreen());
         }
 
@@ -557,7 +560,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         cancelNotificationsForCurrentConversation();
 
         if (inChat) {
-            if (wasDetached && conversationUser.hasSpreedCapabilityWithName("no-ping")) {
+            if (wasDetached && conversationUser.hasSpreedFeatureCapability("no-ping")) {
                 wasDetached = false;
                 joinRoomWithPassword();
             }
@@ -565,7 +568,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void cancelNotificationsForCurrentConversation() {
-        if (!conversationUser.hasSpreedCapabilityWithName("no-ping") && !TextUtils.isEmpty(roomId)) {
+        if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
             NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
         } else if (!TextUtils.isEmpty(roomToken)){
             NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
@@ -578,7 +581,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         ApplicationWideCurrentRoomHolder.getInstance().clear();
         eventBus.unregister(this);
 
-        if (conversationUser.hasSpreedCapabilityWithName("no-ping")
+        if (conversationUser.hasSpreedFeatureCapability("no-ping")
                 && getActivity() != null && !getActivity().isChangingConfigurations() && !isLeavingForConversation) {
             wasDetached = true;
             leaveRoom();
@@ -616,7 +619,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void startPing() {
-        if (!conversationUser.hasSpreedCapabilityWithName("no-ping")) {
+        if (!conversationUser.hasSpreedFeatureCapability("no-ping")) {
             ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(conversationUser.getBaseUrl(), roomToken))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -1058,7 +1061,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if (conversationUser.hasSpreedCapabilityWithName("read-only-rooms")) {
+        if (conversationUser.hasSpreedFeatureCapability("read-only-rooms")) {
             checkReadOnlyState();
         }
     }
@@ -1179,7 +1182,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                             bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
 
-                            if (conversationUser.hasSpreedCapabilityWithName("chat-v2")) {
+                            if (conversationUser.hasSpreedFeatureCapability("chat-v2")) {
                                 bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
                                         Parcels.wrap(roomOverall.getOcs().getData()));
                                 conversationIntent.putExtras(bundle);

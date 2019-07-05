@@ -400,7 +400,7 @@ public class ConversationInfoController extends BaseController {
 
                             loadConversationAvatar();
 
-                            if (conversationUser.hasSpreedCapabilityWithName("notification-levels")) {
+                            if (conversationUser.hasSpreedFeatureCapability("notification-levels")) {
                                 if (messageNotificationLevel != null) {
                                     messageNotificationLevel.setEnabled(true);
                                     messageNotificationLevel.setAlpha(1.0f);
@@ -457,7 +457,7 @@ public class ConversationInfoController extends BaseController {
         if (messageNotificationLevel != null) {
             if (conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
                 // hack to see if we get mentioned always or just on mention
-                if (conversationUser.hasSpreedCapabilityWithName("mention-flag")) {
+                if (conversationUser.hasSpreedFeatureCapability("mention-flag")) {
                     messageNotificationLevel.setValue("always");
                 } else {
                     messageNotificationLevel.setValue("mention");

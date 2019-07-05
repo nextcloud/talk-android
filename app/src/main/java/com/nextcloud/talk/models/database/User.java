@@ -30,6 +30,7 @@ import io.requery.Persistable;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
 
 @Entity
 public interface User extends Parcelable, Persistable, Serializable {
@@ -89,7 +90,7 @@ public interface User extends Parcelable, Persistable, Serializable {
         return false;
     }
 
-    default boolean hasSpreedCapabilityWithName(String capabilityName) {
+    default boolean hasSpreedFeatureCapability(String capabilityName) {
         if (getCapabilities() != null) {
             try {
                 Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
@@ -102,5 +103,29 @@ public interface User extends Parcelable, Persistable, Serializable {
             }
         }
         return false;
+    }
+
+    default int getMessageMaxLength() {
+        if (getCapabilities() != null) {
+            Capabilities capabilities = null;
+            try {
+                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                if (capabilities != null && capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getConfig() != null
+                        && capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
+                    HashMap<String, String> chatConfigHashMap = capabilities.getSpreedCapability().getConfig().get("chat");
+                    if (chatConfigHashMap != null && chatConfigHashMap.containsKey("max-length")) {
+                        int chatSize = Integer.parseInt(chatConfigHashMap.get("max-length"));
+                        if (chatSize > 0) {
+                            return chatSize;
+                        } else {
+                            return 1000;
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return 1000;
     }
 }

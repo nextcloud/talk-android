@@ -151,7 +151,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
             if (conversation.isFavorite()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_border_black_24dp, R.color.grey_600)));
-            } else if (currentUser.hasSpreedCapabilityWithName("favorites")) {
+            } else if (currentUser.hasSpreedFeatureCapability("favorites")) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites)
                         , 98, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_black_24dp, R.color.grey_600)));
             }

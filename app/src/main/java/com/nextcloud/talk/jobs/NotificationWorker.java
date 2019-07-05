@@ -442,7 +442,7 @@ public class NotificationWorker extends Worker {
                                 JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
                         boolean hasChatSupport = signatureVerification.getUserEntity().
-                                hasSpreedCapabilityWithName("chat-v2");
+                                hasSpreedFeatureCapability("chat-v2");
 
                         boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed");
 
@@ -460,7 +460,7 @@ public class NotificationWorker extends Worker {
 
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-                            if (!signatureVerification.getUserEntity().hasSpreedCapabilityWithName
+                            if (!signatureVerification.getUserEntity().hasSpreedFeatureCapability
                                     ("no-ping")) {
                                 bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage.getId());
                             } else {

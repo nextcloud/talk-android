@@ -45,7 +45,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.kennyc.bottomsheet.BottomSheet;
@@ -264,7 +263,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
                             bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
 
-                            if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+                            if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
                                 bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
                                         Parcels.wrap(roomOverall.getOcs().getData()));
 
@@ -383,7 +382,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         RetrofitBucket retrofitBucket;
         boolean serverIs14OrUp = false;
-        if (currentUser.hasSpreedCapabilityWithName("last-room-activity")) {
+        if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
             // a hack to see if we're on 14 or not
             retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser.getBaseUrl(), query);
             serverIs14OrUp = true;
@@ -845,7 +844,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
                                     conversationIntent.putExtras(bundle);
 
-                                    if (currentUser.hasSpreedCapabilityWithName("chat-v2")) {
+                                    if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
                                         bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
                                                 Parcels.wrap(roomOverall.getOcs().getData()));
 
@@ -886,8 +885,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     }
                 }
 
-                if (currentUser.hasSpreedCapabilityWithName("last-room-activity")
-                        && !currentUser.hasSpreedCapabilityWithName("invite-groups-and-mails") &&
+                if (currentUser.hasSpreedFeatureCapability("last-room-activity")
+                        && !currentUser.hasSpreedFeatureCapability("invite-groups-and-mails") &&
                         "groups".equals(((UserItem) adapter.getItem(position)).getModel().getSource()) &&
                         participant.isSelected() &&
                         adapter.getSelectedItemCount() > 1) {
