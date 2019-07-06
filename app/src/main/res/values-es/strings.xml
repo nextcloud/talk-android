@@ -136,6 +136,7 @@
     <string name="nc_delete_conversation_more">Si borras la conversación, también se borrará para los demás participantes.</string>
 
     <string name="nc_new_conversation">Nueva conversación</string>
+    <string name="nc_join_via_link">Unirse con un enlace</string>
     <string name="nc_join_via_web">Unirse vía web</string>
     <string name="nc_add_to_favorites">Añadir a favoritos</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
@@ -151,11 +152,16 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Conectando...</string>
+    <string name="nc_calling">Llamando...</string>
     <string name="nc_incoming_call">Llamada entrante de</string>
     <string name="nc_nick_guest">Invitado</string>
     <string name="nc_public_call">Nueva conversación pública</string>
     <string name="nc_public_call_explanation">Las conversaciones públicas te permiten invitar a gente del exterior a través de un
             enlace creado de forma especial. </string>
+    <string name="nc_call_timeout">No ha habido respuesta en 45 segundos, pulse para intentarlo de nuevo</string>
+    <string name="nc_call_reconnecting">Reconectando...</string>
+    <string name="nc_leaving_call">Terminando llamada...</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s en el canal de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Canal de notificación de llamadas</string>
@@ -228,8 +234,6 @@
     <string name="nc_conversations_empty">Únete a una conversación o empieza una nueva\n Di hola a tus amigos y colegas.</string>
     <string name="nc_hello">Hola</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">Se ha alcanzado el límite de 1000 caracteres</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_participants">Participantes</string>
 

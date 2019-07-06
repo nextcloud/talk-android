@@ -234,8 +234,6 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_conversations_empty">Rejoignez une conversation existante ou démarrez une nouvelle conversation\n. Echangez avec vos collègues ou amis !</string>
     <string name="nc_hello">Bonjour</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">Limite de 1000 caractères atteinte</string>
     <string name="nc_groups">Groupes</string>
     <string name="nc_participants">Participants</string>
 

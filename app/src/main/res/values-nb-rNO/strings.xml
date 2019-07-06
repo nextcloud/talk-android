@@ -199,8 +199,6 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_conversations_empty">Bli med i en samtale eller start en ny\n Si hei til dine venner og kolleger!</string>
     <string name="nc_hello">Hallo</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">Begrensning på 1000 tegn er nådd</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_participants">Deltakere</string>
 

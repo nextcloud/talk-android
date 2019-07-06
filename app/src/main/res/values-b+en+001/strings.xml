@@ -194,8 +194,6 @@
     <string name="nc_conversations_empty">Join a conversation or start a new one\n Say hi to your friends and colleagues!</string>
     <string name="nc_hello">Hello</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">1000 characters limit has been hit</string>
     <string name="nc_groups">Groups</string>
     <string name="nc_participants">Participants</string>
 

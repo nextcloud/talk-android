@@ -234,8 +234,6 @@
     <string name="nc_conversations_empty">Придружи се разговору или започни нови\n Поздравите Ваше пријатеље и колеге!</string>
     <string name="nc_hello">Здраво</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">Достигнут је лимит од 1000 карактера</string>
     <string name="nc_groups">Групе</string>
     <string name="nc_participants">Учесници</string>
 

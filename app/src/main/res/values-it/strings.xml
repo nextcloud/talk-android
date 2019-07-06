@@ -235,8 +235,6 @@
     <string name="nc_conversations_empty">Unisciti a una conversazione o avviane una nuova\nSaluta i tuoi amici e i tuoi colleghi!</string>
     <string name="nc_hello">Ciao</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">Il limite di 1000 caratteri è stato raggiunto</string>
     <string name="nc_groups">Gruppi</string>
     <string name="nc_participants">Partecipanti</string>
 

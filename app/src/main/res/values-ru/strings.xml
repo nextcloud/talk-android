@@ -233,8 +233,6 @@
     <string name="nc_conversations_empty">Присоединитесь к обсуждению или же начните новое\n Поприветствуйте своих друзей или коллег. </string>
     <string name="nc_hello">Привет</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">Достигнуто ограничение в 1000 знаков</string>
     <string name="nc_groups">Группы</string>
     <string name="nc_participants">Участники</string>
 

@@ -235,8 +235,6 @@
     <string name="nc_conversations_empty">Gå med i en konversation eller starta en ny\n Säg hej till dina vänner och kollegor!</string>
     <string name="nc_hello">Hej</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">Gränsen för 1000 tecken har uppnåtts</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_participants">Deltagare</string>
 

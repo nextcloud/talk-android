@@ -218,8 +218,6 @@
     <string name="nc_conversations_empty">Taktu þátt í samtali eða byrjaðu nýtt samtal\n Heilsaðu vinum þínum og vinnufélögum!</string>
     <string name="nc_hello">Halló</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">1000 stafa mörkum hefur verið náð</string>
     <string name="nc_groups">Hópar</string>
     <string name="nc_participants">Þátttakendur</string>
 

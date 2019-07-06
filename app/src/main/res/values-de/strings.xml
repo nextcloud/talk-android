@@ -235,8 +235,6 @@
     <string name="nc_conversations_empty">Treten Sie einer Unterhaltung bei oder starten Sie eine neue\n Sagen Sie Hallo zu Ihren Freunden und Kollegen!</string>
     <string name="nc_hello">Hallo</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">1000-Zeichen-Limit wurde erreicht</string>
     <string name="nc_groups">Gruppen</string>
     <string name="nc_participants">Teilnehmer</string>
 

@@ -236,8 +236,6 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_conversations_empty">Doe mee met een discussie, of start een nieuwe\n Zeg hallo tegen je vrienden en collega\'s! </string>
     <string name="nc_hello">Hallo</string>
 
-    <!-- Other -->
-    <string name="nc_limit_hit">Limiet van 1000 tekens bereikt</string>
     <string name="nc_groups">Groepen</string>
     <string name="nc_participants">Deelnemers</string>
 
