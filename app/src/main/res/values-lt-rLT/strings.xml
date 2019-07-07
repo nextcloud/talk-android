@@ -63,6 +63,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
 
+    <string name="nc_biometric_unlock">Atrakinti %1$s</string>
     <string name="nc_cancel">Atsisakyti</string>
 
     <string name="nc_username">Naudotojo vardas</string>
