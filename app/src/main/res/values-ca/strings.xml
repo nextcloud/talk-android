@@ -235,6 +235,8 @@ mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</str
     <string name="nc_conversations_empty">Afegiu-vos a una conversa on inicieu-ne una de nova\n Digueu hola als vostres amics i companys!</string>
     <string name="nc_hello">Hola</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">S\'ha arribat al límit de %s caràcters </string>
     <string name="nc_groups">Grups</string>
     <string name="nc_participants">Participants</string>
 

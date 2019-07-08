@@ -237,6 +237,8 @@ móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_conversations_empty">Únase a unha conversa ou inicie unha nova\n Saúde aos seus amigos e colegas!</string>
     <string name="nc_hello">Ola</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">Acadouse o límite de %s caracteres</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_participants">Participantes</string>
 

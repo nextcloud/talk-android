@@ -233,6 +233,8 @@
 向你的朋友和同事打个招呼吧</string>
     <string name="nc_hello">您好</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">已达到%s字符限制</string>
     <string name="nc_groups">群组</string>
     <string name="nc_participants">参与者</string>
 
