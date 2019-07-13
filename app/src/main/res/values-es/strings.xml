@@ -160,6 +160,7 @@
             enlace creado de forma especial. </string>
     <string name="nc_call_timeout">No ha habido respuesta en 45 segundos, pulse para intentarlo de nuevo</string>
     <string name="nc_call_reconnecting">Reconectando...</string>
+    <string name="nc_offline">Actualmente fuera de línea, por favor, compruebe los detalles de su conexión</string>
     <string name="nc_leaving_call">Terminando llamada...</string>
 
     <!-- Notification channels -->
@@ -234,6 +235,8 @@
     <string name="nc_conversations_empty">Únete a una conversación o empieza una nueva\n Di hola a tus amigos y colegas.</string>
     <string name="nc_hello">Hola</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">Se ha alcanzado el límite de %s carácteres</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_participants">Participantes</string>
 
