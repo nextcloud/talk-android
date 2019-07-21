@@ -36,6 +36,7 @@ import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.*;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.MagicMap;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
 import okhttp3.*;
 import okio.ByteString;
@@ -207,19 +208,23 @@ public class MagicWebSocketInstance extends WebSocketListener {
                             switch (target) {
                                 case "room":
                                     if (eventOverallWebSocketMessage.getEventMap().get("type").equals("message")) {
-                                        if (eventOverallWebSocketMessage.getEventMap().containsKey("data")) {
-                                            Map<String, Object> dataHashMap = (Map<String, Object>) eventOverallWebSocketMessage.getEventMap().get("data");
-                                            if (dataHashMap.containsKey("chat")) {
-                                                boolean shouldRefreshChat;
-                                                Map<String, Object> chatMap = (Map<String, Object>) dataHashMap.get("chat");
-                                                if (chatMap.containsKey("refresh")) {
-                                                    shouldRefreshChat = (boolean) chatMap.get("refresh");
-                                                    if (shouldRefreshChat) {
-                                                        HashMap<String, String> refreshChatHashMap = new HashMap<>();
-                                                        refreshChatHashMap.put("roomToken", (String) eventOverallWebSocketMessage.getEventMap().get("roomid"));
-                                                        eventBus.post(new WebSocketCommunicationEvent("refreshChat", refreshChatHashMap));
+                                            Map<String, Object> messageHashMap =
+                                                    (Map<String, Object>) eventOverallWebSocketMessage.getEventMap().get("message");
+                                            if (messageHashMap.containsKey("data")) {
+                                                Map<String, Object> dataHashMap = (Map<String, Object>) messageHashMap.get(
+                                                        "data");
+                                                if (dataHashMap.containsKey("chat")) {
+                                                    boolean shouldRefreshChat;
+                                                    Map<String, Object> chatMap = (Map<String, Object>) dataHashMap.get("chat");
+                                                    if (chatMap.containsKey("refresh")) {
+                                                        shouldRefreshChat = (boolean) chatMap.get("refresh");
+                                                        if (shouldRefreshChat) {
+                                                            HashMap<String, String> refreshChatHashMap = new HashMap<>();
+                                                            refreshChatHashMap.put(BundleKeys.KEY_ROOM_TOKEN, (String) messageHashMap.get("roomid"));
+                                                            refreshChatHashMap.put(BundleKeys.KEY_INTERNAL_USER_ID, Long.toString(conversationUser.getId()));
+                                                            eventBus.post(new WebSocketCommunicationEvent("refreshChat", refreshChatHashMap));
+                                                        }
                                                     }
-                                                }
                                             }
                                         }
                                     } else if (eventOverallWebSocketMessage.getEventMap().get("type").equals("join")) {

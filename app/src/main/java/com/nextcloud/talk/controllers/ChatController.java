@@ -37,7 +37,9 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -62,6 +64,7 @@ import com.nextcloud.talk.callbacks.MentionAutocompleteCallback;
 import com.nextcloud.talk.components.filebrowser.controllers.BrowserController;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.UserMentionClickEvent;
+import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.call.Call;
@@ -80,6 +83,8 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.utils.text.Spans;
+import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
+import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 import com.otaliastudios.autocomplete.Autocomplete;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
 import com.otaliastudios.autocomplete.AutocompletePresenter;
@@ -162,7 +167,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private String roomId;
     private boolean voiceOnly;
     private boolean isFirstMessagesProcessing = true;
-    private boolean isHelloClicked;
     private boolean isLeavingForConversation;
     private boolean isLinkPreviewAllowed;
     private boolean wasDetached;
@@ -175,6 +179,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private MenuItem conversationVideoMenuItem;
 
     private boolean readOnlyCheckPerformed;
+
+    private MagicWebSocketInstance magicWebSocketInstance;
 
     public ChatController(Bundle args) {
         super(args);
@@ -437,6 +443,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
     }
 
+
     private void checkReadOnlyState() {
         if (currentConversation != null && !readOnlyCheckPerformed) {
 
@@ -561,6 +568,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         if (inChat) {
             if (wasDetached && conversationUser.hasSpreedFeatureCapability("no-ping")) {
+                currentCall = null;
                 wasDetached = false;
                 joinRoomWithPassword();
             }
@@ -570,7 +578,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private void cancelNotificationsForCurrentConversation() {
         if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
             NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
-        } else if (!TextUtils.isEmpty(roomToken)){
+        } else if (!TextUtils.isEmpty(roomToken)) {
             NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
         }
     }
@@ -679,6 +687,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                                 pullChatMessages(1);
                             }
 
+                            setupWebsocket();
+                            if (magicWebSocketInstance != null) {
+                                magicWebSocketInstance.joinRoomWithRoomTokenAndSession(roomToken,
+                                        currentCall.getSessionId());
+                            }
                             if (startCallFromNotification != null && startCallFromNotification) {
                                 startCallFromNotification = false;
                                 startACall(voiceOnly);
@@ -698,6 +711,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
         } else {
             inChat = true;
             ApplicationWideCurrentRoomHolder.getInstance().setSession(currentCall.getSessionId());
+            if (magicWebSocketInstance != null) {
+                magicWebSocketInstance.joinRoomWithRoomTokenAndSession(roomToken,
+                        currentCall.getSessionId());
+            }
             startPing();
             if (isFirstMessagesProcessing) {
                 pullChatMessages(0);
@@ -813,13 +830,29 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 });
     }
 
+    private void setupWebsocket() {
+        if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.getId()) != null) {
+            magicWebSocketInstance = WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.getId());
+        } else {
+            magicWebSocketInstance = null;
+        }
+    }
+
     private void pullChatMessages(int lookIntoFuture) {
         if (!inChat) {
             return;
         }
 
-        if (!lookingIntoFuture && lookIntoFuture == 1) {
+        if (lookIntoFuture == 1 && magicWebSocketInstance != null) {
+            return;
+        }
+
+        if (!lookingIntoFuture && lookIntoFuture > 0) {
             lookingIntoFuture = true;
+        }
+
+        if (lookIntoFuture > 1) {
+            lookIntoFuture = 1;
         }
 
         Map<String, Integer> fieldMap = new HashMap<>();
@@ -827,7 +860,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         fieldMap.put("limit", 25);
 
         int lastKnown;
-        if (lookIntoFuture == 1) {
+        if (lookIntoFuture > 0) {
             lastKnown = globalLastKnownFutureMessageId;
         } else {
             lastKnown = globalLastKnownPastMessageId;
@@ -838,7 +871,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         if (!wasDetached) {
-            if (lookIntoFuture == 1) {
+            if (lookIntoFuture > 0) {
                 ncApi.pullChatMessages(credentials, ApiUtils.getUrlForChat(conversationUser.getBaseUrl(),
                         roomToken),
                         fieldMap)
@@ -1157,6 +1190,19 @@ public class ChatController extends BaseController implements MessagesListAdapte
         return false;
     }
 
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
+        switch (webSocketCommunicationEvent.getType()) {
+            case "refreshChat":
+                if (webSocketCommunicationEvent.getHashMap().get(BundleKeys.KEY_INTERNAL_USER_ID).equals(Long.toString(conversationUser.getId()))) {
+                    if (roomToken.equals(webSocketCommunicationEvent.getHashMap().get(BundleKeys.KEY_ROOM_TOKEN))) {
+                        pullChatMessages(2);
+                    }
+                }
+                break;
+            default:
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(UserMentionClickEvent userMentionClickEvent) {

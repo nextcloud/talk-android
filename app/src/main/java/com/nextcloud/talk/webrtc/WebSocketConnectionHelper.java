@@ -44,6 +44,14 @@ public class WebSocketConnectionHelper {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
     }
 
+    public static synchronized MagicWebSocketInstance getMagicWebSocketInstanceForUserId(long userId) {
+        if (userId != -1 && magicWebSocketInstanceMap.containsKey(userId)) {
+            return magicWebSocketInstanceMap.get(userId);
+        }
+
+        return null;
+    }
+
     public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket, boolean isGuest) {
         String generatedURL = url.replace("https://", "wss://").replace("http://", "ws://");
 

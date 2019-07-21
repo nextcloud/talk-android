@@ -21,7 +21,6 @@
 package com.nextcloud.talk.jobs;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.work.*;
@@ -93,43 +92,38 @@ public class SignalingSettingsWorker extends Worker {
                         @Override
                         public void onNext(SignalingSettingsOverall signalingSettingsOverall) {
                             ExternalSignalingServer externalSignalingServer;
-                            if (!TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer()) &&
-                                    !TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket())) {
-                                externalSignalingServer = new ExternalSignalingServer();
-                                externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
-                                externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
+                            externalSignalingServer = new ExternalSignalingServer();
+                            externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
+                            externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
 
-                                try {
-                                    userUtils.createOrUpdateUser(null, null, null, null, null,
-                                            null, null, finalUserEntity.getId(), null, null, LoganSquare.serialize(externalSignalingServer))
-                                            .subscribe(new Observer<UserEntity>() {
-                                                @Override
-                                                public void onSubscribe(Disposable d) {
+                            Log.d("MARIO", "MARIO");
+                            try {
+                                userUtils.createOrUpdateUser(null, null, null, null, null,
+                                        null, null, finalUserEntity.getId(), null, null, LoganSquare.serialize(externalSignalingServer))
+                                        .subscribe(new Observer<UserEntity>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
 
-                                                }
+                                            }
 
-                                                @Override
-                                                public void onNext(UserEntity userEntity) {
-                                                    eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, true));
-                                                }
+                                            @Override
+                                            public void onNext(UserEntity userEntity) {
+                                                eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, true));
+                                            }
 
-                                                @Override
-                                                public void onError(Throwable e) {
-                                                    eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, false));
-                                                }
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, false));
+                                            }
 
-                                                @Override
-                                                public void onComplete() {
+                                            @Override
+                                            public void onComplete() {
 
-                                                }
-                                            });
-                                } catch (IOException e) {
-                                    Log.e(TAG, "Failed to serialize external signaling server");
-                                }
-                            } else {
-                                eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, true));
+                                            }
+                                        });
+                            } catch (IOException e) {
+                                Log.e(TAG, "Failed to serialize external signaling server");
                             }
-
                         }
 
                         @Override
