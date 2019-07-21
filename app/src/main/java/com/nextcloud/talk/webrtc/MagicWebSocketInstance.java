@@ -123,9 +123,16 @@ public class MagicWebSocketInstance extends WebSocketListener {
             connected = false;
             messagesQueue = new ArrayList<>();
         }
+
+        restartWebSocket();
     }
 
-    private void restartWebSocket() {
+
+    public void clearResumeId() {
+        resumeId = "";
+    }
+
+    public void restartWebSocket() {
         reconnecting = true;
 
         if (MerlinTheWizard.isConnectedToInternet()) {
@@ -282,7 +289,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
     @Override
     public void onClosing(WebSocket webSocket, int code, String reason) {
         Log.d(TAG, "Closing : " + code + " / " + reason);
-        Log.d("MARIO", String.valueOf(webSocket.hashCode()));
         LoggingUtils.writeLogEntryToFile(context,
                 "WebSocket " + webSocket.hashCode() + " Closing: " + reason);
     }
@@ -369,7 +375,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
         }
     }
 
-    boolean isConnected() {
+    public boolean isConnected() {
         return connected;
     }
 

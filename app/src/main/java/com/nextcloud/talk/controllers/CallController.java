@@ -1190,6 +1190,10 @@ public class CallController extends BaseController {
                     externalSignalingServer.getExternalSignalingServer(),
                     conversationUser, externalSignalingServer.getExternalSignalingTicket(),
                     TextUtils.isEmpty(credentials));
+        } else {
+            if (webSocketClient.isConnected() && currentCallStatus.equals(CallStatus.PUBLISHER_FAILED)) {
+                webSocketClient.restartWebSocket();
+            }
         }
 
         joinRoomAndCall();
@@ -1707,6 +1711,7 @@ public class CallController extends BaseController {
                     peerConnectionEvent.getChangeValue());
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED)) {
             currentCallStatus = CallStatus.PUBLISHER_FAILED;
+            webSocketClient.clearResumeId();
             if (MerlinTheWizard.isConnectedToInternet()) {
                 hangup(false);
             }

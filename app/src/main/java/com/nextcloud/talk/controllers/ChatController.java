@@ -1157,6 +1157,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         return false;
     }
 
+
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(UserMentionClickEvent userMentionClickEvent) {
         if ((!currentConversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) || !currentConversation.getName().equals(userMentionClickEvent.getUserId()))) {
