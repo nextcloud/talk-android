@@ -103,6 +103,7 @@ public class MagicIncomingTextMessageViewHolder
                                 .getSharedApplication().getResources().getColor(R.color.nc_grey));
                 messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
             } else if (message.getActorType().equals("bots") && message.getActorId().equals("changelog")) {
+                messageUserAvatarView.setController(null);
                 Drawable[] layers = new Drawable[2];
                 layers[0] = context.getDrawable(R.drawable.ic_launcher_background);
                 layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground);
@@ -110,8 +111,8 @@ public class MagicIncomingTextMessageViewHolder
 
                 messageUserAvatarView.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
             } else if (message.getActorType().equals("bots")) {
-                TextDrawable drawable =
-                        TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">",
+                messageUserAvatarView.setController(null);
+                TextDrawable drawable = TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">",
                                 context.getResources().getColor(R.color.black));
                 messageUserAvatarView.setVisibility(View.VISIBLE);
                 messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
