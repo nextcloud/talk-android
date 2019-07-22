@@ -23,6 +23,8 @@ package com.nextcloud.talk.application;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import androidx.emoji.bundled.BundledEmojiCompatConfig;
+import androidx.emoji.text.EmojiCompat;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
@@ -53,7 +55,7 @@ import com.nextcloud.talk.utils.database.user.UserModule;
 import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.vanniktech.emoji.EmojiManager;
-import com.vanniktech.emoji.twitter.TwitterEmojiProvider;
+import com.vanniktech.emoji.googlecompat.GoogleCompatEmojiProvider;
 import okhttp3.OkHttpClient;
 import org.conscrypt.Conscrypt;
 import org.webrtc.PeerConnectionFactory;
@@ -159,7 +161,11 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         WorkManager.getInstance().enqueue(signalingSettingsWork);
         WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork", ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork);
 
-        EmojiManager.install(new TwitterEmojiProvider());
+        final EmojiCompat.Config config = new BundledEmojiCompatConfig(this);
+        config.setReplaceAll(true);
+        EmojiCompat emojiCompat = EmojiCompat.init(config);
+
+        EmojiManager.install(new GoogleCompatEmojiProvider(emojiCompat));
 
     }
 

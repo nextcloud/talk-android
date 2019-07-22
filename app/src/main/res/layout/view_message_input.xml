@@ -36,7 +36,7 @@
         android:layout_height="0dp"
         android:layout_toEndOf="@id/attachmentButton" />
 
-    <com.vanniktech.emoji.EmojiEditText
+    <EditText
         android:id="@id/messageInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -27,6 +27,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 import androidx.core.view.ViewCompat;
@@ -41,7 +42,6 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.TextMatchers;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
-import com.vanniktech.emoji.EmojiTextView;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ import java.util.Map;
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicOutcomingTextMessageViewHolder extends MessageHolders.OutcomingTextMessageViewHolder<ChatMessage> {
     @BindView(R.id.messageText)
-    EmojiTextView messageText;
+    TextView messageText;
 
     @BindView(R.id.messageTime)
     TextView messageTimeView;
@@ -85,7 +85,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
         FlexboxLayout.LayoutParams layoutParams = (FlexboxLayout.LayoutParams) messageTimeView.getLayoutParams();
         layoutParams.setWrapBefore(false);
 
-        float emojiSize = DisplayUtils.getDefaultEmojiFontSize(messageText);
+        float textSize = context.getResources().getDimension(R.dimen.chat_text_size);
 
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
@@ -122,7 +122,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
             }
 
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.getText())) {
-            emojiSize *= 2.5f;
+            textSize = (float) (textSize * 2.5);
             layoutParams.setWrapBefore(true);
             messageTimeView.setTextColor(context.getResources().getColor(R.color.warm_grey_four));
             itemView.setSelected(true);
@@ -141,7 +141,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
             ViewCompat.setBackground(bubble, bubbleDrawable);
         }
 
-        messageText.setEmojiSize((int) emojiSize, true);
+        messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         messageTimeView.setLayoutParams(layoutParams);
         messageText.setText(messageString);
     }

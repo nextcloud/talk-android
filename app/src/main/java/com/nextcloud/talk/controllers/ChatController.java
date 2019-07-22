@@ -38,6 +38,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
 import android.widget.AbsListView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
@@ -95,7 +96,6 @@ import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.stfalcon.chatkit.utils.DateFormatter;
-import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiImageView;
 import com.vanniktech.emoji.EmojiPopup;
 import com.vanniktech.emoji.emoji.Emoji;
@@ -139,7 +139,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @BindView(R.id.messageInputView)
     MessageInput messageInputView;
     @BindView(R.id.messageInput)
-    EmojiEditText messageInput;
+    EditText messageInput;
     @BindView(R.id.popupBubbleView)
     PopupBubble popupBubble;
     @BindView(R.id.progressBar)

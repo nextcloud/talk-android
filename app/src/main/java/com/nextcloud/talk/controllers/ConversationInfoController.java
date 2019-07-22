@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.Data;
@@ -61,7 +62,6 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferencestorage.DatabaseStorageModule;
-import com.vanniktech.emoji.EmojiTextView;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 import com.yarolegovich.mp.*;
@@ -94,7 +94,7 @@ public class ConversationInfoController extends BaseController {
     @BindView(R.id.avatar_image)
     SimpleDraweeView conversationAvatarImageView;
     @BindView(R.id.display_name_text)
-    EmojiTextView conversationDisplayName;
+    TextView conversationDisplayName;
     @BindView(R.id.participants_list_category)
     MaterialPreferenceCategory participantsListCategory;
     @BindView(R.id.recycler_view)

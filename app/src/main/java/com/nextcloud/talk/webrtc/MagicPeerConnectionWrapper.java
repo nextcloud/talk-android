@@ -26,8 +26,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import autodagger.AutoInjector;
-
-import com.bluelinelabs.logansquare.ConverterUtils;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -39,7 +37,6 @@ import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.utils.LoggingUtils;
-import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
 import org.greenrobot.eventbus.EventBus;
 import org.webrtc.*;
 

@@ -38,17 +38,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.*;
 import android.text.method.LinkMovementMethod;
-import android.text.style.*;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.*;
 import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.emoji.text.EmojiSpan;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
@@ -71,7 +74,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.UserMentionClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.text.Spans;
-import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiTextView;
 import org.greenrobot.eventbus.EventBus;
 
@@ -134,11 +136,6 @@ public class DisplayUtils {
 
     public static Drawable getRoundedBitmapDrawableFromVectorDrawableResource(Resources resources, int resource) {
         return new BitmapDrawable(getRoundedBitmapFromVectorDrawableResource(resources, resource));
-    }
-
-    public static float getDefaultEmojiFontSize(EmojiTextView emojiTextView) {
-        final Paint.FontMetrics fontMetrics = emojiTextView.getPaint().getFontMetrics();
-        return fontMetrics.descent - fontMetrics.ascent;
     }
 
     private static Bitmap getBitmap(Drawable drawable) {
@@ -238,9 +235,10 @@ public class DisplayUtils {
     public static Drawable getDrawableForMentionChipSpan(Context context, String id, String label,
                                                          UserEntity conversationUser, String type,
                                                          @XmlRes int chipResource,
-                                                         @Nullable EmojiEditText emojiEditText) {
+                                                         @Nullable EditText emojiEditText) {
         ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
         chip.setText(label);
+        chip.setEllipsize(TextUtils.TruncateAt.MIDDLE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Configuration config = context.getResources().getConfiguration();

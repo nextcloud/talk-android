@@ -23,7 +23,7 @@ package com.nextcloud.talk.callbacks;
 import android.content.Context;
 import android.text.Editable;
 import android.text.Spanned;
-import android.text.style.DynamicDrawableSpan;
+import android.widget.EditText;
 import com.facebook.widget.text.span.BetterImageSpan;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -32,18 +32,17 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.MagicCharPolicy;
 import com.nextcloud.talk.utils.text.Spans;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
-import com.vanniktech.emoji.EmojiEditText;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
     private Context context;
     private UserEntity conversationUser;
-    private EmojiEditText emojiEditText;
+    private EditText editText;
 
     public MentionAutocompleteCallback(Context context, UserEntity conversationUser,
-                                       EmojiEditText emojiEditText) {
+                                       EditText editText) {
         this.context = context;
         this.conversationUser = conversationUser;
-        this.emojiEditText = emojiEditText;
+        this.editText = editText;
     }
 
     @Override
@@ -57,7 +56,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         Spans.MentionChipSpan mentionChipSpan =
                 new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
                         item.getId(), item.getLabel(), conversationUser, item.getSource(),
-                        R.xml.chip_text_entry, emojiEditText),
+                        R.xml.chip_text_entry, editText),
                         BetterImageSpan.ALIGN_CENTER,
                         item.getId(), item.getLabel());
         editable.setSpan(mentionChipSpan, start, start + item.getLabel().length(),

@@ -65,7 +65,7 @@
                 android:background="@drawable/shape_favorite_bubble" />
         </FrameLayout>
 
-        <com.vanniktech.emoji.EmojiTextView
+        <TextView
             android:id="@id/dialogName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                 app:roundAsCircle="true"
                 tools:src="@drawable/ic_call_black_24dp" />
 
-            <com.vanniktech.emoji.EmojiTextView
+            <TextView
                 android:id="@id/dialogLastMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

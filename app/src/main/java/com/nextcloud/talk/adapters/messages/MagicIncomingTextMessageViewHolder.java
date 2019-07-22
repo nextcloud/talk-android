@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 import androidx.core.view.ViewCompat;
@@ -45,7 +46,6 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.TextMatchers;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
-import com.vanniktech.emoji.EmojiTextView;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -59,7 +59,7 @@ public class MagicIncomingTextMessageViewHolder
     TextView messageAuthor;
 
     @BindView(R.id.messageText)
-    EmojiTextView messageText;
+    TextView messageText;
 
     @BindView(R.id.messageUserAvatar)
     SimpleDraweeView messageUserAvatarView;
@@ -139,7 +139,7 @@ public class MagicIncomingTextMessageViewHolder
 
         Spannable messageString = new SpannableString(message.getText());
 
-        float emojiSize = DisplayUtils.getDefaultEmojiFontSize(messageText);
+        float textSize = context.getResources().getDimension(R.dimen.chat_text_size);
 
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
@@ -177,13 +177,13 @@ public class MagicIncomingTextMessageViewHolder
             }
 
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.getText())) {
-            emojiSize *= 2.5f;
+            textSize = (float) (textSize * 2.5);
             layoutParams.setWrapBefore(true);
             itemView.setSelected(true);
             messageAuthor.setVisibility(View.GONE);
         }
 
-        messageText.setEmojiSize((int) emojiSize, true);
+        messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         messageTimeView.setLayoutParams(layoutParams);
         messageText.setText(messageString);
     }

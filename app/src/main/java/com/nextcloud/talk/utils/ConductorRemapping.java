@@ -21,12 +21,10 @@
 package com.nextcloud.talk.utils;
 
 import android.os.Bundle;
-
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.controllers.ChatController;
-import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import java.util.List;
 

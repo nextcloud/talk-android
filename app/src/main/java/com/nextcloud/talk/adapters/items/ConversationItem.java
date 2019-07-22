@@ -280,13 +280,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         @BindView(R.id.dialogAvatar)
         SimpleDraweeView dialogAvatar;
         @BindView(R.id.dialogName)
-        EmojiTextView dialogName;
+        TextView dialogName;
         @BindView(R.id.dialogDate)
         TextView dialogDate;
         @BindView(R.id.dialogLastMessageUserAvatar)
         SimpleDraweeView dialogLastMessageUserAvatar;
         @BindView(R.id.dialogLastMessage)
-        EmojiTextView dialogLastMessage;
+        TextView dialogLastMessage;
         @BindView(R.id.dialogUnreadBubble)
         TextView dialogUnreadBubble;
         @BindView(R.id.passwordProtectedRoomImageView)
