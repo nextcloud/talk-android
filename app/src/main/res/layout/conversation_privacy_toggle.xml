@@ -22,14 +22,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/call_header_layout"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/rv_item_view_height"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/double_margin_between_elements"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/initial_relative_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/public_call_link"
