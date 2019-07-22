@@ -152,16 +152,16 @@ per %1$s.</string>
 
     <!-- Call -->
     <string name="nc_connecting_call">S\'està connectant...</string>
-    <string name="nc_calling">Trucant...</string>
+    <string name="nc_calling">S\'està trucant...</string>
     <string name="nc_incoming_call">Trucada entrant de</string>
     <string name="nc_nick_guest">Convidat</string>
     <string name="nc_public_call">Nova conversa pública</string>
     <string name="nc_public_call_explanation">Les converses públiques us permeten convidar gent de fora a través d’un
 enllaç especialment dissenyat.</string>
-    <string name="nc_call_timeout">En 45 segons no hi ha hagut resposta, feu un toc per tornar-ho a intentar</string>
-    <string name="nc_call_reconnecting">Reconnectant...</string>
+    <string name="nc_call_timeout">Han passat 45 segons i no hi ha hagut cap resposta, feu un toc per tornar-ho a provar</string>
+    <string name="nc_call_reconnecting">S\'està reconnectant...</string>
     <string name="nc_offline">Actualment fora de línia, comproveu la vostra connectivitat</string>
-    <string name="nc_leaving_call">Abandonant la trucada...</string>
+    <string name="nc_leaving_call">S\'està abandonant la trucada...</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s a %2$s canal de notificació </string>
@@ -191,7 +191,7 @@ mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</str
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Prem-i-parla</string>
-    <string name="nc_push_to_talk_desc">Amb el micròfon desactivat, mantingueu-lo pressionat per usar el Prem-i-parla</string>
+    <string name="nc_push_to_talk_desc">Amb el micròfon desactivat, feu clic a  &amp; i mantingueu-lo pressionat per usar el Prem-i-parla</string>
     <string name="nc_configure_cert_auth">Seleccioneu el certificat d’autenticació</string>
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
 
