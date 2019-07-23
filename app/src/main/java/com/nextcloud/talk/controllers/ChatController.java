@@ -167,6 +167,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private String roomId;
     private boolean voiceOnly;
     private boolean isFirstMessagesProcessing = true;
+    private boolean havePulledFutureBefore = false;
     private boolean isLeavingForConversation;
     private boolean isLinkPreviewAllowed;
     private boolean wasDetached;
@@ -681,6 +682,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             currentCall = callOverall.getOcs().getData();
                             ApplicationWideCurrentRoomHolder.getInstance().setSession(currentCall.getSessionId());
                             startPing();
+                            havePulledFutureBefore = false;
+
                             if (isFirstMessagesProcessing) {
                                 pullChatMessages(0);
                             } else {
@@ -739,6 +742,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     @Override
                     public void onNext(GenericOverall genericOverall) {
                         dispose();
+
+                        if (magicWebSocketInstance != null && currentCall != null) {
+                            magicWebSocketInstance.joinRoomWithRoomTokenAndSession("", currentCall.getSessionId());
+                        }
+
                         if (!isDestroyed() && !isBeingDestroyed() && !wasDetached) {
                             getRouter().popCurrentController();
                         }
@@ -843,16 +851,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
             return;
         }
 
-        if (lookIntoFuture == 1 && magicWebSocketInstance != null) {
+        if (havePulledFutureBefore && lookIntoFuture == 1 && magicWebSocketInstance != null ) {
             return;
         }
 
         if (!lookingIntoFuture && lookIntoFuture > 0) {
             lookingIntoFuture = true;
-        }
-
-        if (lookIntoFuture > 1) {
             lookIntoFuture = 1;
+            havePulledFutureBefore = true;
         }
 
         Map<String, Integer> fieldMap = new HashMap<>();
