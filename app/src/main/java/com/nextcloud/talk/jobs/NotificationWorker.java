@@ -452,7 +452,7 @@ public class NotificationWorker extends Worker {
                                 intent = new Intent(context, MainActivity.class);
                             }
 
-                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
                             if (!signatureVerification.getUserEntity().hasSpreedFeatureCapability
                                     ("no-ping")) {
