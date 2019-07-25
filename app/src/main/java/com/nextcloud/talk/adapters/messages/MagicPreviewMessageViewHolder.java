@@ -121,7 +121,6 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 } else {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
                     context.startActivity(browserIntent);
                 }
             });
