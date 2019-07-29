@@ -266,16 +266,20 @@ public interface AppPreferences {
     void unregisterScreenLockTimeoutListener(OnPreferenceValueChangedListener<String> listener);
 
     @KeyByResource(R.string.nc_settings_theme_key)
-    @DefaultValue(R.bool.value_false)
-    boolean isDarkThemeEnabled();
+    @DefaultValue(R.string.nc_default_theme)
+    String getTheme();
+
+    @KeyByResource(R.string.nc_settings_theme_key)
+    @RemoveMethod
+    void removeTheme();
 
     @KeyByResource(R.string.nc_settings_theme_key)
     @RegisterChangeListenerMethod
-    void registerThemeChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
+    void registerThemeChangeListener(OnPreferenceValueChangedListener<String> listener);
 
     @KeyByResource(R.string.nc_settings_theme_key)
     @UnregisterChangeListenerMethod
-    void unregisterThemeChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
+    void unregisterThemeChangeListener(OnPreferenceValueChangedListener<String> listener);
 
     @ClearMethod
     void clear();

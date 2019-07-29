@@ -61,7 +61,7 @@ import com.nextcloud.talk.models.json.rooms.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.preferencestorage.DatabaseStorageModule;
+import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 import com.yarolegovich.mp.*;

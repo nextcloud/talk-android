@@ -136,9 +136,6 @@ public class SettingsController extends BaseController {
     @BindView(R.id.settings_screen_lock_timeout)
     MaterialChoicePreference screenLockTimeoutChoicePreference;
 
-    @BindView(R.id.settings_theme)
-    MaterialSwitchPreference themeSwitchPreference;
-
     @BindView(R.id.message_text)
     TextView messageText;
     @Inject
@@ -159,7 +156,7 @@ public class SettingsController extends BaseController {
     private OnPreferenceValueChangedListener<Boolean> screenSecurityChangeListener;
     private OnPreferenceValueChangedListener<Boolean> screenLockChangeListener;
     private OnPreferenceValueChangedListener<String> screenLockTimeoutChangeListener;
-    private OnPreferenceValueChangedListener<Boolean> themeChangeListener;
+    private OnPreferenceValueChangedListener<String> themeChangeListener;
 
     private Disposable profileQueryDisposable;
     private Disposable dbQueryDisposable;
@@ -607,7 +604,6 @@ public class SettingsController extends BaseController {
                 messageView.setVisibility(View.GONE);
             }
         }
-        ((Checkable) themeSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.isDarkThemeEnabled());
     }
 
     private void loadAvatarImage() {
@@ -782,11 +778,10 @@ public class SettingsController extends BaseController {
         }
     }
 
-    private class ThemeChangeListener implements OnPreferenceValueChangedListener<Boolean> {
+    private class ThemeChangeListener implements OnPreferenceValueChangedListener<String> {
         @Override
-        public void onChanged(Boolean newValue) {
+        public void onChanged(String newValue) {
             NextcloudTalkApplication.setAppTheme(newValue);
-            getActivity().recreate();
         }
     }
 }

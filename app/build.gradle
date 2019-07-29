@@ -63,6 +63,14 @@ android {
             disable "ValidController"
             disable "ValidControllerChangeHandler"
         }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        parcelerStacktrace: "true"
+                ]
+            }
+        }
     }
 
     dexOptions {
@@ -134,9 +142,9 @@ configurations.all {
 
 dependencies {
     implementation fileTree(include: ['*'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'com.google.android.material:material:1.1.0-alpha07'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'com.google.android.material:material:1.1.0-alpha08'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation 'com.github.vanniktech:Emoji:0.6.0'
     implementation group: 'androidx.emoji', name: 'emoji-bundled', version: '1.0.0'
     implementation 'org.michaelevans.colorart:library:0.0.3'
@@ -235,12 +243,4 @@ dependencies {
     })
     findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
     findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
-}
-
-gradle.projectsEvaluated {
-    tasks.withType(JavaCompile) {
-        options.compilerArgs +=
-                ['-Adagger.floatingBindsMethods=enabled',
-                 '-AparcelerStacktrace',]
-    }
 }

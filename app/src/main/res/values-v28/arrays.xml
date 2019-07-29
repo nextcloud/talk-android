@@ -61,13 +61,13 @@
     </array>
 
     <array name="theme_descriptions">
-        <item>@string/nc_settings_theme_battery_saver</item>
+        <item>@string/nc_settings_theme_follow_system</item>
         <item>@string/nc_settings_theme_light</item>
         <item>@string/nc_settings_theme_dark</item>
     </array>
 
     <array name="theme_entry_values">
-        <item>@string/nc_settings_theme_battery_saver_key</item>
+        <item>@string/nc_settings_theme_follow_system_key</item>
         <item>@string/nc_settings_theme_light_key</item>
         <item>night_yes</item>
     </array>
