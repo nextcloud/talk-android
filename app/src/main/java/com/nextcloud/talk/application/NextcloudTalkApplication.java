@@ -145,7 +145,7 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
 
         componentApplication.inject(this);
 
-        setAppTheme(appPreferences.isDarkThemeEnabled());
+        setAppTheme(appPreferences.getTheme());
         super.onCreate();
 
         ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
@@ -200,11 +200,21 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
     //endregion
 
     //region Setters
-    public static void setAppTheme(Boolean darkTheme) {
-        if (darkTheme) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    public static void setAppTheme(String theme) {
+        switch (theme) {
+            case "night_no":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "night_yes":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case "battery_saver":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY);
+                break;
+            default:
+                // will be "follow_system" only for now
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+
         }
     }
     //endregion

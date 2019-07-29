@@ -124,7 +124,7 @@ public class MagicIncomingTextMessageViewHolder
         } else {
             Resources resources = context.getResources();
 
-            int bg_bubble_color = appPreferences.isDarkThemeEnabled() ?
+            int bg_bubble_color = DisplayUtils.isDarkModeActive(context) ?
                                 resources.getColor(R.color.bg_message_list_incoming_bubble_dark2) :
                                 resources.getColor(R.color.bg_message_list_incoming_bubble);
 

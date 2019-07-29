@@ -44,6 +44,9 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
     @Inject
     AppPreferences appPreferences;
 
+    @Inject
+    Context context;
+
     public MagicSystemMessageViewHolder(View itemView) {
         super(itemView);
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
@@ -59,7 +62,7 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         int mentionYouColor;
         int mentionOthersColor;
 
-        if(appPreferences.isDarkThemeEnabled()) {
+        if(DisplayUtils.isDarkModeActive(context)) {
             normalColor = resources.getColor(R.color.bg_system_bubble_dark);
             mentionYouColor = resources.getColor(R.color.fg_mention_you_dark);
             mentionOthersColor = resources.getColor(R.color.fg_mention_others_dark);
