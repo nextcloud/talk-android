@@ -173,8 +173,6 @@ public class ConversationsListController extends BaseController implements Searc
 
     private Bundle conversationMenuBundle = null;
 
-    private Parcelable recyclerViewState;
-
     public ConversationsListController() {
         super();
         setHasOptionsMenu(true);
@@ -374,7 +372,6 @@ public class ConversationsListController extends BaseController implements Searc
                                         ((CallItem) callItem).getModel().getLastPing()));
                     }
 
-                    recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                     adapter.updateDataSet(callItems, true);
 
                     if (searchItem != null) {
@@ -449,13 +446,6 @@ public class ConversationsListController extends BaseController implements Searc
 
         fastScroller.addOnScrollStateChangeListener(this);
         adapter.setFastScroller(fastScroller);
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                Objects.requireNonNull(recyclerView.getLayoutManager()).onRestoreInstanceState(recyclerViewState);
-            }
-        });
 
         fastScroller.setBubbleTextCreator(position -> {
             String displayName;
