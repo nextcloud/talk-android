@@ -166,7 +166,6 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         EmojiCompat emojiCompat = EmojiCompat.init(config);
 
         EmojiManager.install(new GoogleCompatEmojiProvider(emojiCompat));
-
     }
 
     @Override
