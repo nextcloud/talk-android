@@ -792,8 +792,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private void sendMessage(CharSequence message) {
 
         ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken),
-                message, conversationUser
-                        .getDisplayName())
+                message, conversationUser.getDisplayName())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
@@ -855,11 +854,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
             return;
         }
 
-        if (!lookingIntoFuture && lookIntoFuture > 0) {
+        if (!lookingIntoFuture) {
             lookingIntoFuture = true;
-            lookIntoFuture = 1;
             havePulledFutureBefore = true;
         }
+
+        lookIntoFuture = lookIntoFuture > 0 ? 1 : 0;
 
         Map<String, Integer> fieldMap = new HashMap<>();
         fieldMap.put("lookIntoFuture", lookIntoFuture);
