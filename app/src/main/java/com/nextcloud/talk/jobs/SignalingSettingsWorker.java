@@ -96,7 +96,6 @@ public class SignalingSettingsWorker extends Worker {
                             externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
                             externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
 
-                            Log.d("MARIO", "MARIO");
                             try {
                                 userUtils.createOrUpdateUser(null, null, null, null, null,
                                         null, null, finalUserEntity.getId(), null, null, LoganSquare.serialize(externalSignalingServer))
