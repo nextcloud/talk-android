@@ -27,7 +27,6 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.*;
@@ -107,7 +106,6 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
@@ -372,7 +370,7 @@ public class ConversationsListController extends BaseController implements Searc
                                         ((CallItem) callItem).getModel().getLastPing()));
                     }
 
-                    adapter.updateDataSet(callItems, true);
+                    adapter.updateDataSet(callItems, false);
 
                     if (searchItem != null) {
                         searchItem.setVisible(callItems.size() > 0);
