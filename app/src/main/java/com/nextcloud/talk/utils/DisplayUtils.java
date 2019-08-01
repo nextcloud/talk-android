@@ -74,7 +74,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.UserMentionClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.text.Spans;
-import com.vanniktech.emoji.EmojiTextView;
 import org.greenrobot.eventbus.EventBus;
 
 import javax.annotation.Nonnull;
