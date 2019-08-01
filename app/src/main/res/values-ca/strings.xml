@@ -120,7 +120,7 @@
     <string name="nc_start_conversation">Enceta una conversa</string>
     <string name="nc_configure_room">Configura la conversa</string>
     <string name="nc_leave">Surt de la conversa</string>
-    <string name="nc_rename">Reanomena la conversa</string>
+    <string name="nc_rename">Canvia el nom de la conversa</string>
     <string name="nc_set_password">Configura una contrasenya</string>
     <string name="nc_change_password">Canvia la contrasenya</string>
     <string name="nc_clear_password">Suprimeix la contrasenya</string>
