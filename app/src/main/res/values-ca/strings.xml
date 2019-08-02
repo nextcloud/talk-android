@@ -133,7 +133,7 @@
     <string name="nc_delete_conversation_default">Si us plau, confirmeu la vostra intenció de suprimir la conversa.</string>
     <string name="nc_delete_conversation_one2one">Si suprimiu la conversa, també serà suprimit
 per %1$s.</string>
-    <string name="nc_delete_conversation_more">Si suprimiu la conversa, també s’eliminarà per a tots els altres participants.</string>
+    <string name="nc_delete_conversation_more">Si suprimiu la conversa, també se suprimirà per a la resta de participants.</string>
 
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Unir-se amb un enllaç</string>

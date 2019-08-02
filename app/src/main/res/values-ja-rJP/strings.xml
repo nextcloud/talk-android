@@ -155,6 +155,8 @@
     <string name="nc_nick_guest">ゲスト</string>
     <string name="nc_public_call">新規公開会話</string>
     <string name="nc_public_call_explanation">公開会話を使用すると、特別なリンクを介して外部からユーザーを招待できます。</string>
+    <string name="nc_call_timeout">45秒以内に応答がありませんでした。タップして再試行してください</string>
+    <string name="nc_offline">現在オフラインです。接続を確認してください。</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%2$s通知チャンネルの%1$s</string>
     <string name="nc_notification_channel_calls">通知チャネルを呼び出す</string>
@@ -227,6 +229,8 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_conversations_empty">会話に参加するか、新しい会話を開始して友人や同僚に挨拶しましょう！</string>
     <string name="nc_hello">こんにちは</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">%s文字の制限に達しました</string>
     <string name="nc_groups">グループ</string>
     <string name="nc_participants">参加者</string>
 

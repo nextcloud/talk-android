@@ -136,6 +136,7 @@
     <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude smazána také pro všechny její ostatní účastníky.</string>
 
     <string name="nc_new_conversation">Nová konverzace</string>
+    <string name="nc_join_via_link">Připojit se s odkazem</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
     <string name="nc_add_to_favorites">Přidat do oblíbených</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
@@ -151,11 +152,15 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Připojování…</string>
+    <string name="nc_calling">Volání…</string>
     <string name="nc_incoming_call">Příchozí hovor od</string>
     <string name="nc_nick_guest">Host</string>
     <string name="nc_public_call">Nová veřejná konverzace</string>
     <string name="nc_public_call_explanation">Veřejné konverzace umožňují zvát osoby zvenčí prostřednictvím
         k tomu vytvořeného odkazu.</string>
+    <string name="nc_offline">Nyní bez připojení, zkontrolujte svou konektivitu</string>
+    <string name="nc_leaving_call">Opouštění hovoru…</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na %2$s kanálu upozornění</string>
     <string name="nc_notification_channel_calls">Kanál oznamování volání</string>
@@ -228,6 +233,8 @@
     <string name="nc_conversations_empty">Připojte se k rozhovoru nebo začněte nový\n Pozdravte své přátele a kolegy!</string>
     <string name="nc_hello">Ahoj</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">byl dosažen limit %s</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_participants">Účastníci</string>
 
@@ -244,4 +251,6 @@
     <string name="nc_select_files">Vyberte soubory</string>
     <string name="nc_file_browser_back">Zpět</string>
     <string name="nc_file_browser_refresh">Načíst znovu</string>
-    </resources>
+    <string name="nc_last_modified">%1$s | Naposledy upraveno: %2$s</string>
+
+</resources>
