@@ -22,6 +22,7 @@ package com.nextcloud.talk.controllers;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Build;
@@ -35,6 +36,7 @@ import android.view.ViewGroup;
 import android.webkit.*;
 import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoInjector;
@@ -53,6 +55,8 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
+
+import de.cotech.hw.fido.WebViewFidoBridge;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -112,6 +116,8 @@ public class WebViewLoginController extends BaseController {
 
     private boolean automatedLoginAttempted = false;
 
+    private WebViewFidoBridge webViewFidoBridge;
+
     public WebViewLoginController(String baseUrl, boolean isPasswordUpdate) {
         this.baseUrl = baseUrl;
         this.isPasswordUpdate = isPasswordUpdate;
@@ -169,6 +175,8 @@ public class WebViewLoginController extends BaseController {
         webView.clearHistory();
         WebView.clearClientCertPreferences(null);
 
+        webViewFidoBridge = WebViewFidoBridge.createInstanceForWebView((AppCompatActivity) getActivity(), webView);
+
         CookieSyncManager.createInstance(getActivity());
         android.webkit.CookieManager.getInstance().removeAllCookies(null);
 
@@ -177,6 +185,18 @@ public class WebViewLoginController extends BaseController {
 
         webView.setWebViewClient(new WebViewClient() {
             private boolean basePageLoaded;
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                webViewFidoBridge.delegateShouldInterceptRequest(view, request);
+                return super.shouldInterceptRequest(view, request);
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                webViewFidoBridge.delegateOnPageStarted(view, url, favicon);
+            }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
