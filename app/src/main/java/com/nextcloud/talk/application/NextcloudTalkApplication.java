@@ -37,6 +37,7 @@ import autodagger.AutoInjector;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils;
 import com.nextcloud.talk.dagger.modules.BusModule;
 import com.nextcloud.talk.dagger.modules.ContextModule;
@@ -56,6 +57,9 @@ import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.googlecompat.GoogleCompatEmojiProvider;
+
+import de.cotech.hw.SecurityKeyManager;
+import de.cotech.hw.SecurityKeyManagerConfig;
 import okhttp3.OkHttpClient;
 import org.conscrypt.Conscrypt;
 import org.webrtc.PeerConnectionFactory;
@@ -123,6 +127,12 @@ public class NextcloudTalkApplication extends MultiDexApplication implements Lif
         super.onCreate();
 
         sharedApplication = this;
+
+        SecurityKeyManager securityKeyManager = SecurityKeyManager.getInstance();
+        SecurityKeyManagerConfig securityKeyConfig = new SecurityKeyManagerConfig.Builder()
+                .setEnableDebugLogging(BuildConfig.DEBUG)
+                .build();
+        securityKeyManager.init(this, securityKeyConfig);
 
         initializeWebRtc();
         DisplayUtils.useCompatVectorIfNeeded();
