@@ -64,11 +64,6 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         super.onCreate(savedInstanceState);
-        if (appPreferences.getIsScreenLocked()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                SecurityUtils.createKey(appPreferences.getScreenLockTimeout());
-            }
-        }
     }
 
     @Override
@@ -78,6 +73,12 @@ public class BaseActivity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
+        if (appPreferences.getIsScreenLocked()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                SecurityUtils.createKey(appPreferences.getScreenLockTimeout());
+            }
         }
     }
 
