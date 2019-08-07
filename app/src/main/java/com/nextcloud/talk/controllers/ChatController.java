@@ -175,6 +175,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private CharSequence myFirstMessage;
 
+    private boolean waitingForFutureResponse = false;
+
     private MenuItem conversationInfoMenuItem;
     private MenuItem conversationVoiceCallMenuItem;
     private MenuItem conversationVideoMenuItem;
@@ -684,13 +686,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             startPing();
                             havePulledFutureBefore = false;
 
+                            setupWebsocket();
+
                             if (isFirstMessagesProcessing) {
                                 pullChatMessages(0);
                             } else {
                                 pullChatMessages(1);
                             }
 
-                            setupWebsocket();
                             if (magicWebSocketInstance != null) {
                                 magicWebSocketInstance.joinRoomWithRoomTokenAndSession(roomToken,
                                         currentCall.getSessionId());
@@ -854,7 +857,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
             return;
         }
 
-        if (!lookingIntoFuture) {
+        if (lookIntoFuture > 0) {
+            if (waitingForFutureResponse) {
+                return;
+            } else {
+                waitingForFutureResponse = true;
+            }
+
             lookingIntoFuture = true;
             havePulledFutureBefore = true;
         }
@@ -884,7 +893,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .takeWhile(observable -> inChat && !wasDetached)
-                        .retry(3, observable -> inChat && !wasDetached)
                         .subscribe(new Observer<Response>() {
                             @Override
                             public void onSubscribe(Disposable d) {
@@ -893,17 +901,21 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                             @Override
                             public void onNext(Response response) {
+                                waitingForFutureResponse = false;
                                 processMessages(response, true);
                             }
 
                             @Override
                             public void onError(Throwable e) {
+                                waitingForFutureResponse = false;
 
                             }
 
                             @Override
                             public void onComplete() {
-                                pullChatMessages(1);
+                                if (magicWebSocketInstance == null) {
+                                    pullChatMessages(1);
+                                }
                             }
                         });
 
