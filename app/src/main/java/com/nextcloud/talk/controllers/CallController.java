@@ -2179,7 +2179,7 @@ public class CallController extends BaseController {
 
                 mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
 
-                //mediaPlayer.prepareAsync();
+                mediaPlayer.prepareAsync();
 
             } catch (IOException e) {
                 Log.e(TAG, "Failed to play sound");
