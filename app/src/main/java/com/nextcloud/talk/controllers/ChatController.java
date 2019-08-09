@@ -461,9 +461,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
             } else {
                 messageInput.setHint("");
 
-                conversationVoiceCallMenuItem.getIcon().setAlpha(255);
-                conversationVideoMenuItem.getIcon().setAlpha(255);
+                if (conversationVoiceCallMenuItem != null) {
+                    conversationVoiceCallMenuItem.getIcon().setAlpha(255);
+                }
 
+                if (conversationVideoMenuItem != null) {
+                    conversationVideoMenuItem.getIcon().setAlpha(255);
+                }
+                
                 setChildrenState(messageInputView, true);
             }
         }
