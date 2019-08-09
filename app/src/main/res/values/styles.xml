@@ -44,7 +44,7 @@
     </style>
 
     <style name="ChipOutgoingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
-        <item name="android:textColor">@color/nc_outcoming_text_default</item>
+        <item name="android:textColor">@color/nc_incoming_text_default</item>
     </style>
 
     <style name="ChipMentionTextAppearance" parent="TextAppearance.MaterialComponents.Chip">

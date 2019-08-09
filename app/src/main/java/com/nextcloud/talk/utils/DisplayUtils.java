@@ -28,7 +28,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.BitmapDrawable;
@@ -250,7 +249,7 @@ public class DisplayUtils {
 
         if (!isCall) {
             if (chipResource == R.xml.chip_outgoing_others || chipResource == R.xml.chip_accent_background) {
-                drawable = R.drawable.white_circle;
+                drawable = R.drawable.mention_chip;
             } else {
                 drawable = R.drawable.accent_circle;
             }
