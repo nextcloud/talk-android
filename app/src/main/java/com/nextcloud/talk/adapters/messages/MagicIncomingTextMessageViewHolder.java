@@ -122,19 +122,20 @@ public class MagicIncomingTextMessageViewHolder
                 messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
             }
         } else {
-            Resources resources = context.getResources();
-
-            int bg_bubble_color = DisplayUtils.isDarkModeActive(context) ?
-                                resources.getColor(R.color.bg_message_list_incoming_bubble_dark2) :
-                                resources.getColor(R.color.bg_message_list_incoming_bubble);
 
             messageUserAvatarView.setVisibility(View.INVISIBLE);
-            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(bg_bubble_color,
-                    resources.getColor(R.color.transparent),
-                    bg_bubble_color, R.drawable.shape_grouped_incoming_message);
-            ViewCompat.setBackground(bubble, bubbleDrawable);
             messageAuthor.setVisibility(View.GONE);
         }
+
+        Resources resources = context.getResources();
+        int bg_bubble_color = DisplayUtils.isDarkModeActive(context) ?
+                resources.getColor(R.color.bg_message_list_incoming_bubble_dark2) :
+                resources.getColor(R.color.bg_message_list_incoming_bubble);
+
+        Drawable bubbleDrawable = DisplayUtils.getMessageSelector(bg_bubble_color,
+                resources.getColor(R.color.transparent),
+                bg_bubble_color, R.drawable.shape_grouped_incoming_message);
+        ViewCompat.setBackground(bubble, bubbleDrawable);
 
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
 

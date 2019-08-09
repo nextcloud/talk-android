@@ -22,7 +22,7 @@
 <chip xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:textAppearance="@style/ChipOutgoingTextAppearance"
-    app:chipStrokeColor="@color/white"
+    app:chipStrokeColor="@color/bg_default"
     app:chipBackgroundColor="@color/transparent"
     app:chipStrokeWidth="1dp"
     app:closeIconEnabled="false" />
