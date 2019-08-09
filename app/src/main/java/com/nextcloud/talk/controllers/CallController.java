@@ -2082,21 +2082,29 @@ public class CallController extends BaseController {
                 case ESTABLISHED:
                     handler.postDelayed(() -> setCallState(CallStatus.CALLING_TIMEOUT), 45000);
                     handler.post(() -> {
-                        connectingTextView.setText(R.string.nc_calling);
-                        if (connectingTextView.getVisibility() != View.VISIBLE) {
-                            connectingView.setVisibility(View.VISIBLE);
+                        if (connectingView != null) {
+                            connectingTextView.setText(R.string.nc_calling);
+                            if (connectingTextView.getVisibility() != View.VISIBLE) {
+                                connectingView.setVisibility(View.VISIBLE);
+                            }
                         }
 
-                        if (progressBar.getVisibility() != View.VISIBLE) {
-                            progressBar.setVisibility(View.VISIBLE);
+                        if (progressBar != null) {
+                            if (progressBar.getVisibility() != View.VISIBLE) {
+                                progressBar.setVisibility(View.VISIBLE);
+                            }
                         }
 
-                        if (conversationView.getVisibility() != View.INVISIBLE) {
-                            conversationView.setVisibility(View.INVISIBLE);
+                        if (conversationView != null) {
+                            if (conversationView.getVisibility() != View.INVISIBLE) {
+                                conversationView.setVisibility(View.INVISIBLE);
+                            }
                         }
 
-                        if (errorImageView.getVisibility() != View.GONE) {
-                            errorImageView.setVisibility(View.GONE);
+                        if (errorImageView != null) {
+                            if (errorImageView.getVisibility() != View.GONE) {
+                                errorImageView.setVisibility(View.GONE);
+                            }
                         }
                     });
                     break;
@@ -2108,43 +2116,61 @@ public class CallController extends BaseController {
                             animateCallControls(false, 5000);
                         }
 
-                        if (connectingView.getVisibility() != View.INVISIBLE) {
-                            connectingView.setVisibility(View.INVISIBLE);
+                        if (connectingView != null) {
+                            if (connectingView.getVisibility() != View.INVISIBLE) {
+                                connectingView.setVisibility(View.INVISIBLE);
+                            }
                         }
 
-                        if (progressBar.getVisibility() != View.GONE) {
-                            progressBar.setVisibility(View.GONE);
+                        if (progressBar != null) {
+                            if (progressBar.getVisibility() != View.GONE) {
+                                progressBar.setVisibility(View.GONE);
+                            }
                         }
 
-                        if (conversationView.getVisibility() != View.VISIBLE) {
-                            conversationView.setVisibility(View.VISIBLE);
+                        if (conversationView != null) {
+                            if (conversationView.getVisibility() != View.VISIBLE) {
+                                conversationView.setVisibility(View.VISIBLE);
+                            }
                         }
 
-                        if (errorImageView.getVisibility() != View.GONE) {
-                            errorImageView.setVisibility(View.GONE);
+                        if (errorImageView != null) {
+                            if (errorImageView.getVisibility() != View.GONE) {
+                                errorImageView.setVisibility(View.GONE);
+                            }
                         }
                     });
                     break;
                 case OFFLINE:
                     handler.post(() -> {
                         stopCallingSound();
-                        connectingTextView.setText(R.string.nc_offline);
 
-                        if (connectingView.getVisibility() != View.VISIBLE) {
-                            connectingView.setVisibility(View.VISIBLE);
+                        if (connectingTextView != null) {
+                            connectingTextView.setText(R.string.nc_offline);
+
+                            if (connectingView.getVisibility() != View.VISIBLE) {
+                                connectingView.setVisibility(View.VISIBLE);
+                            }
                         }
 
-                        if (conversationView.getVisibility() != View.INVISIBLE) {
-                            conversationView.setVisibility(View.INVISIBLE);
+
+                        if (conversationView != null) {
+                            if (conversationView.getVisibility() != View.INVISIBLE) {
+                                conversationView.setVisibility(View.INVISIBLE);
+                            }
                         }
 
-                        if (progressBar.getVisibility() != View.GONE) {
-                            progressBar.setVisibility(View.GONE);
+                        if (progressBar != null) {
+                            if (progressBar.getVisibility() != View.GONE) {
+                                progressBar.setVisibility(View.GONE);
+                            }
                         }
 
-                        errorImageView.setImageResource(R.drawable.ic_signal_wifi_off_white_24dp);
-                        if (errorImageView.getVisibility() != View.VISIBLE) {
-                            errorImageView.setVisibility(View.VISIBLE);
+                        if (errorImageView != null) {
+                            errorImageView.setImageResource(R.drawable.ic_signal_wifi_off_white_24dp);
+                            if (errorImageView.getVisibility() != View.VISIBLE) {
+                                errorImageView.setVisibility(View.VISIBLE);
+                            }
                         }
                     });
                     break;
