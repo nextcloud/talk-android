@@ -77,6 +77,13 @@
     <string name="nc_settings_no_ringtone">Inget ljud</string>
     <string name="nc_settings_vibrate">Vibrera</string>
     <string name="nc_settings_vibrate_desc">Din telefon kommer att vibrera om den inte tystas</string>
+    <string name="nc_settings_appearance">Utseende</string>
+    <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_theme_key">tema</string>
+    <string name="nc_settings_theme_follow_system">Använd systemets standard</string>
+    <string name="nc_settings_theme_battery_saver">Satt av batterisparare</string>
+    <string name="nc_settings_theme_light">Ljus</string>
+    <string name="nc_settings_theme_dark">Mörk</string>
     <string name="nc_settings_privacy">Integritet</string>
     <string name="nc_settings_screen_lock_title">Skärmlås</string>
     <string name="nc_settings_screen_lock_desc">Lås %1$s med Android skärmslås eller biometrisk metod</string>

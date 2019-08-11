@@ -77,6 +77,13 @@
     <string name="nc_settings_no_ringtone">Kein Ton</string>
     <string name="nc_settings_vibrate">Vibrieren</string>
     <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
+    <string name="nc_settings_appearance">Aussehen</string>
+    <string name="nc_settings_theme_title">Design</string>
+    <string name="nc_settings_theme_key">Design</string>
+    <string name="nc_settings_theme_follow_system">Systemstandard verwenden</string>
+    <string name="nc_settings_theme_battery_saver">Durch Energiesparmodus setzen</string>
+    <string name="nc_settings_theme_light">Hell</string>
+    <string name="nc_settings_theme_dark">Dunkel</string>
     <string name="nc_settings_privacy">Datenschutz</string>
     <string name="nc_settings_screen_lock_title">Bildschirmsperre</string>
     <string name="nc_settings_screen_lock_desc">Sperren Sie %1$s mit Android-Bildschirmsperre oder unterstützter biometrischer Methode. </string>

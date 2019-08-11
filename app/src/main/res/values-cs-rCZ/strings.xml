@@ -77,6 +77,12 @@
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
     <string name="nc_settings_vibrate">Vibrovat</string>
     <string name="nc_settings_vibrate_desc">Pokud není ztišený, telefon bude vibrovat</string>
+    <string name="nc_settings_appearance">Vzhled</string>
+    <string name="nc_settings_theme_title">Motiv vzhledu</string>
+    <string name="nc_settings_theme_key">motiv vzhledu</string>
+    <string name="nc_settings_theme_follow_system">Použít systémový výchozí</string>
+    <string name="nc_settings_theme_light">Světlý</string>
+    <string name="nc_settings_theme_dark">Tmavý</string>
     <string name="nc_settings_privacy">Soukromí</string>
     <string name="nc_settings_screen_lock_title">Zámek obrazovky</string>
     <string name="nc_settings_screen_lock_desc">Uzamknout %1$s pomocí zámku obrazovky Android nebo podporované biometrické metody</string>
