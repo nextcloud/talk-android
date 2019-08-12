@@ -26,6 +26,6 @@
         android:width="2dp"
         android:color="@color/white" />
     <size
-        android:width="24dp"
-        android:height="24dp" />
+        android:width="32dp"
+        android:height="32dp" />
 </shape>

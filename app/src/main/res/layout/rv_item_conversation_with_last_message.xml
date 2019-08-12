@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -129,7 +128,9 @@
                 android:lines="1"
                 android:textAlignment="center"
                 android:textColor="@color/conversation_unread_bubble"
-                tools:text="1" />
+                android:textSize="12sp"
+                tools:background="@drawable/bubble_circle_unread"
+                tools:text="99+" />
 
         </RelativeLayout>
 
