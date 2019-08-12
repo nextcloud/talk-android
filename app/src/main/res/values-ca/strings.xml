@@ -24,10 +24,10 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Adreça del servidor</string>
-    <string name="nc_server_not_installed">Si us plau acabeu la vostra instal·lació %1$s</string>
-    <string name="nc_server_db_upgrade_needed">Si us plau, actualitzeu la base de dades %1$s</string>
-    <string name="nc_server_maintenance">Si us plau porteu el vostre %1$s cap a manteniment</string>
-    <string name="nc_server_version">%1$s només funciona amb %2$s 13 i en amunt</string>
+    <string name="nc_server_not_installed">Si us plau, acabeu la vostra instal·lació %1$s</string>
+    <string name="nc_server_db_upgrade_needed">Si us plau, actualitzeu la vostra base de dades %1$s</string>
+    <string name="nc_server_maintenance">Si us plau, porteu el vostre %1$s cap a manteniment</string>
+    <string name="nc_server_version">%1$s només funciona amb %2$s 13 i endavant</string>
     <string name="nc_server_import_account_plain">Importa el compte</string>
     <string name="nc_server_import_accounts_plain">Importa els comptes</string>
     <string name="nc_server_import_account">importa el compte des de l\'aplicació %1$s</string>
@@ -48,7 +48,7 @@
     <string name="nc_search">Cerca</string>
 
     <string name="nc_certificate_dialog_title">Verifica el certificat</string>
-    <string name="nc_certificate_dialog_text">Us en refieu del certificat SSL desconegut fins ara, emès per %1$s per %2$s, vàlid de %3$s fins %4$s?</string>
+    <string name="nc_certificate_dialog_text">Us en refieu del certificat SSL desconegut fins ara, emès per %1$s per %2$s, vàlid del %3$s fins el %4$s?</string>
     <string name="nc_yes">Sí</string>
     <string name="nc_no">No</string>
     <string name="nc_certificate_error">La vostra configuració SSL ha impedit la connexió</string>
@@ -68,27 +68,34 @@
     <string name="nc_settings_remove_account">Suprimeix el compte</string>
     <string name="nc_settings_add_account">Afegeix un nou compte</string>
     <string name="nc_settings_wrong_account">Només el compte actual pot ser re-autoritzat</string>
-    <string name="nc_settings_no_talk_installed">L\'aplicació de conversa no està instal·lada al servidor amb el qual heu intentat autenticar-vos</string>
+    <string name="nc_settings_no_talk_installed">L\'aplicació Talk no està instal·lada al servidor amb el qual heu intentat autenticar-vos</string>
     <string name="nc_settings_account_updated">S\'ha actualitzat el vostre compte ja existent enlloc d’afegir-ne un de nou</string>
     <string name="nc_account_scheduled_for_deletion">El compte està planificat per ser suprimit i no es pot canviar</string>
     <string name="nc_settings_notification_sounds">So de les notificacions</string>
-    <string name="nc_settings_call_ringtone">Trucades individuals</string>
+    <string name="nc_settings_call_ringtone">Trucades Privades</string>
     <string name="nc_settings_other_notifications_ringtone">Un altre</string>
     <string name="nc_settings_no_ringtone">Sense so</string>
     <string name="nc_settings_vibrate">Vibra</string>
     <string name="nc_settings_vibrate_desc">El telèfon vibrarà si no està silenciat</string>
+    <string name="nc_settings_appearance">Aparença</string>
+    <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_theme_key">tema</string>
+    <string name="nc_settings_theme_follow_system">Fes servir el predeterminat del sistema</string>
+    <string name="nc_settings_theme_battery_saver">Configura l\'Estalvi de Bateria</string>
+    <string name="nc_settings_theme_light">Clar</string>
+    <string name="nc_settings_theme_dark">Fosc</string>
     <string name="nc_settings_privacy">Privadesa</string>
     <string name="nc_settings_screen_lock_title">Bloqueig de pantalla</string>
     <string name="nc_settings_screen_lock_desc">Bloca %1$s amb el bloqueig de pantalla d\'Android o mètode biomètric compatible </string>
-    <string name="nc_settings_screen_lock_timeout_title">Temps d’inactivitat de bloqueig de pantalla</string>
+    <string name="nc_settings_screen_lock_timeout_title">Temps d\'espera d’inactivitat de bloqueig de pantalla</string>
     <string name="nc_none">Cap</string>
     <string name="nc_settings_screen_security_title">Seguretat de la pantalla</string>
     <string name="nc_settings_screen_security_desc">Impedeix captures de pantalla a la llista recent i dins de l\'aplicació</string>
     <string name="nc_settings_incognito_keyboard_title">Teclat d\'incògnit</string>
-    <string name="nc_settings_incognito_keyboard_desc">Indica al teclat que inhabiliti l\'aprenentatge personalitzat (sense garanties)</string>
+    <string name="nc_settings_incognito_keyboard_desc">Indica al teclat que desactivi l\'aprenentatge personalitzat (sense garanties)</string>
     <string name="nc_settings_link_previews_title">Mostra les visualitzacions prèvies dels enllaços</string>
     <string name="nc_settings_link_previews_desc">Permet la visualització prèvia del contingut dels enllaços rebuts per als serveis compatibles</string>
-    <string name="nc_locked">Toca per desbloquejar</string>
+    <string name="nc_locked">Toca per desblocar</string>
 
     <string name="nc_screen_lock_timeout_30">30 segons</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
@@ -120,7 +127,7 @@
     <string name="nc_start_conversation">Enceta una conversa</string>
     <string name="nc_configure_room">Configura la conversa</string>
     <string name="nc_leave">Surt de la conversa</string>
-    <string name="nc_rename">Canvia el nom de la conversa</string>
+    <string name="nc_rename">Reanomena la conversa</string>
     <string name="nc_set_password">Configura una contrasenya</string>
     <string name="nc_change_password">Canvia la contrasenya</string>
     <string name="nc_clear_password">Suprimeix la contrasenya</string>
@@ -136,8 +143,8 @@ per %1$s.</string>
     <string name="nc_delete_conversation_more">Si suprimiu la conversa, també se suprimirà per a la resta de participants.</string>
 
     <string name="nc_new_conversation">Nova conversa</string>
-    <string name="nc_join_via_link">Unir-se amb un enllaç</string>
-    <string name="nc_join_via_web">Uneix-te-vos via web</string>
+    <string name="nc_join_via_link">Uniu-vos amb un enllaç</string>
+    <string name="nc_join_via_web">Uniu-vos via web</string>
     <string name="nc_add_to_favorites">Afegeix a favorits</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>
 
@@ -146,9 +153,9 @@ per %1$s.</string>
     <string name="nc_contacts_done">Fet</string>
 
     <!-- Permissions -->
-    <string name="nc_camera_permission_permanently_denied">Dóna permís a la Càmera dins de la Configuració per poder establir una connexió de vídeo.</string>
-    <string name="nc_microphone_permission_permanently_denied">Per habilitar la comunicació de veu, concediu el permís \"Micròfon\" a la configuració del sistema.</string>
-    <string name="nc_permissions_settings">Configuració lliure</string>
+    <string name="nc_camera_permission_permanently_denied">Per activar la comunicació per vídeo, si us plau doneu permís a la \"Càmera\" dins de la configuració del sistema.</string>
+    <string name="nc_microphone_permission_permanently_denied">Per activar la comunicació de veu, doneu permís al \"Micròfon\" dins de la configuració del sistema.</string>
+    <string name="nc_permissions_settings">Obre la configuració</string>
 
     <!-- Call -->
     <string name="nc_connecting_call">S\'està connectant...</string>
@@ -160,7 +167,7 @@ per %1$s.</string>
 enllaç especialment dissenyat.</string>
     <string name="nc_call_timeout">Han passat 45 segons i no hi ha hagut cap resposta, feu un toc per tornar-ho a provar</string>
     <string name="nc_call_reconnecting">S\'està reconnectant...</string>
-    <string name="nc_offline">Actualment fora de línia, comproveu la vostra connectivitat</string>
+    <string name="nc_offline">Actualment fora de línia, si us plau comproveu la vostra connectivitat</string>
     <string name="nc_leaving_call">S\'està abandonant la trucada...</string>
 
     <!-- Notification channels -->
@@ -177,22 +184,22 @@ enllaç especialment dissenyat.</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>
-    <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través del telèfon
-mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</string>
+    <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través de telèfons
+mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</string>
     <string name="nc_all_ok_operation">D\'acord, tot fet!</string>
     <string name="nc_ok">D\'acord</string>
     <string name="nc_call_name">Nom de la conversa</string>
     <string name="nc_proceed">Continua</string>
     <string name="nc_call_name_is_same">El nom que heu introduït és el mateix que l’actual</string>
     <string name="nc_wrong_link">L\'enllaç de la conversa no és vàlid</string>
-    <string name="nc_share_text">Afegeix-te a la conversa a %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_text">Afegiu-vos a la conversa a %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s invitació</string>
     <string name="nc_share_text_pass">\nContrasenya: %1$s</string>
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Prem-i-parla</string>
-    <string name="nc_push_to_talk_desc">Amb el micròfon desactivat, feu clic a  &amp; i mantingueu-lo pressionat per usar el Prem-i-parla</string>
-    <string name="nc_configure_cert_auth">Seleccioneu el certificat d’autenticació</string>
+    <string name="nc_push_to_talk_desc">Amb el micròfon desactivat, feu clic a &amp; i mantingueu-lo pressionat per fer servir el Prem-i-parla</string>
+    <string name="nc_configure_cert_auth">Selecciona el certificat d’autenticació</string>
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
 
     <!-- Chat -->
@@ -246,7 +253,7 @@ mòbil. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</str
     <string name="nc_guest">Convidat</string>
     <string name="nc_following_link">Usuari que segueix un enllaç públic</string>
 
-    <string name="nc_readonly_hint">Aquesta conversa està bloquejada</string>
+    <string name="nc_readonly_hint">Aquesta conversa està blocada</string>
 
     <!-- Browser component -->
     <string name="nc_file_browser">Navegador de fitxers\"</string>
