@@ -28,6 +28,7 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.util.Log;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -35,6 +36,7 @@ import com.nextcloud.talk.models.ImportAccount;
 import com.nextcloud.talk.models.database.UserEntity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AccountUtils {
@@ -108,12 +110,19 @@ public class AccountUtils {
             PackageInfo packageInfo =
                     pm.getPackageInfo(context.getString(R.string.nc_import_accounts_from), 0);
             if (packageInfo.versionCode >= 30060151) {
-                final AccountManager accMgr = AccountManager.get(context);
-                final Account[] accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type));
-                for (Account account : accounts) {
-                    if (account.name.equals(accountName)) {
-                        return true;
+                Signature[] ownSignatures = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
+                Signature[] filesAppSignatures = pm.getPackageInfo(context.getString(R.string.nc_import_accounts_from), PackageManager.GET_SIGNATURES).signatures;
+
+                if (Arrays.equals(ownSignatures, filesAppSignatures)) {
+                    final AccountManager accMgr = AccountManager.get(context);
+                    final Account[] accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type));
+                    for (Account account : accounts) {
+                        if (account.name.equals(accountName)) {
+                            return true;
+                        }
                     }
+                } else {
+                    return true;
                 }
             }
         } catch (PackageManager.NameNotFoundException appNotFoundException) {
