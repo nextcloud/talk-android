@@ -56,6 +56,7 @@ public class MagicWebRTCUtils {
         add("Redmi Note 4"); // Redmi Note 4
         add("SM-G900F"); // Samsung Galaxy S5
         add("g3_kt_kr"); // LG G3
+        add("GT-I9195L"); // Samsung Galaxy S4 Mini 4G LTE
         add("SM-G930F"); // Samsung Galaxy S7
         add("Xperia SP"); // Sony Xperia SP
         add("Nexus 6"); // Nexus 6
