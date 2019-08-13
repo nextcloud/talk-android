@@ -77,6 +77,13 @@
     <string name="nc_settings_no_ringtone">Ses yok</string>
     <string name="nc_settings_vibrate">Titreşim</string>
     <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
+    <string name="nc_settings_appearance">Görünüm</string>
+    <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_theme_key">tema</string>
+    <string name="nc_settings_theme_follow_system">Sistem varsayılanı kullanılsın</string>
+    <string name="nc_settings_theme_battery_saver">Pil Koruyucu Tarafından</string>
+    <string name="nc_settings_theme_light">Açık</string>
+    <string name="nc_settings_theme_dark">Koyu</string>
     <string name="nc_settings_privacy">Gizlilik</string>
     <string name="nc_settings_screen_lock_title">Ekran kilidi</string>
     <string name="nc_settings_screen_lock_desc">%1$s Android ekran kilidi ya da desteklenen biyometrik yöntem ile kilitlensin</string>
