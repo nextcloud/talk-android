@@ -269,7 +269,7 @@ public class PushUtils {
                                                     .getData().getPublicKey());
 
 
-                                            ncApi.registerDeviceForNotificationsWithProxy("",
+                                            ncApi.registerDeviceForNotificationsWithProxy(
                                                     ApiUtils.getUrlPushProxy(), proxyMap)
                                                     .subscribeOn(Schedulers.io())
                                                     .subscribe(new Observer<Void>() {
