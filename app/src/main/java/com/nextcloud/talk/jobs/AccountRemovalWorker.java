@@ -116,7 +116,7 @@ public class AccountRemovalWorker extends Worker {
                                                 finalPushConfigurationState.getDeviceIdentifierSignature());
 
                                         ncApi.unregisterDeviceForNotificationsWithProxy
-                                                (finalCredentials, ApiUtils.getUrlPushProxy(), queryMap)
+                                                ("", ApiUtils.getUrlPushProxy(), queryMap)
                                                 .subscribe(new Observer<Void>() {
                                                     @Override
                                                     public void onSubscribe(Disposable d) {
