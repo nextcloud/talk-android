@@ -232,8 +232,7 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<Void> registerDeviceForNotificationsWithProxy(@Header("Authorization") String authorization,
-                                                             @Url String url,
+    Observable<Void> registerDeviceForNotificationsWithProxy(@Url String url,
                                                              @FieldMap Map<String, String> fields);
 
 
@@ -244,8 +243,7 @@ public interface NcApi {
           - "userPublicKey": "{{userPublicKey}}"
     */
     @DELETE
-    Observable<Void> unregisterDeviceForNotificationsWithProxy(@Header("Authorization") String authorization,
-                                                               @Url String url,
+    Observable<Void> unregisterDeviceForNotificationsWithProxy(@Url String url,
                                                                @QueryMap Map<String, String> fields);
 
     @FormUrlEncoded
