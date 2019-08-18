@@ -24,9 +24,9 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">Serveradres</string>
-    <string name="nc_server_not_installed">Beëindig alsjeblieft je %1$s installatie</string>
-    <string name="nc_server_db_upgrade_needed">Werk alsjeblieft je %1$s database bij</string>
-    <string name="nc_server_maintenance">Haal alsjeblieft je %1$s uit de onderhoudsmodus</string>
+    <string name="nc_server_not_installed">Beëindig je %1$s installatie</string>
+    <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
+    <string name="nc_server_maintenance">Haal je %1$s uit de onderhoudsmodus</string>
     <string name="nc_server_version">%1$s werkt alleen met %2$s 13 en hoger</string>
     <string name="nc_server_import_account_plain">Importeer account</string>
     <string name="nc_server_import_accounts_plain">Importeer accounts</string>
@@ -52,7 +52,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nee</string>
-    <string name="nc_certificate_error">Je SSL-instellingen voorkomen verbinding</string>
+    <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
