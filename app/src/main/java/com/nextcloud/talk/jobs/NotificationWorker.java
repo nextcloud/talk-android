@@ -212,7 +212,7 @@ public class NotificationWorker extends Worker {
 
                     @Override
                     public void onError(Throwable e) {
-                        showNotification(intent);
+
                     }
 
                     @Override
