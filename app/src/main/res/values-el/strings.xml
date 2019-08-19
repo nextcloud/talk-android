@@ -58,8 +58,14 @@
     <string name="nc_settings_vibrate">Δόνηση</string>
     <string name="nc_settings_privacy">Ιδιωτικότητα</string>
     <string name="nc_settings_screen_lock_title">Κλείδωμα οθόνης</string>
+    <string name="nc_settings_screen_lock_timeout_title">Χρονικό όριο αδράνειας κλειδώματος οθόνης</string>
+    <string name="nc_none">κανένα</string>
     <string name="nc_settings_screen_security_title">Ασφάλεια οθόνης</string>
+    <string name="nc_settings_screen_security_desc">Αποτρέπει εικόνες στιγμιότυπων στην πρόσφατη λίστα και μέσα στην εφαρμογή</string>
+    <string name="nc_settings_incognito_keyboard_title">Πληκτρολόγιο ανώνυμης περιήγησης</string>
+    <string name="nc_settings_incognito_keyboard_desc">Ενημερώνει το πληκτρολόγιο για να απενεργοποιήσει την προσωπική μάθηση (χωρίς εγγυήσεις)</string>
     <string name="nc_settings_link_previews_title">Προβολή προεπισκόπησης συνδέσμων</string>
+    <string name="nc_settings_link_previews_desc">Επιτρέπει προεπισκοπήσεις περιεχομένου από ληφθέντες συνδέσμους για υποστηριζόμενες υπηρεσίες</string>
     <string name="nc_locked">Αγγίξτε για ξεκλείδωμα</string>
 
     <string name="nc_screen_lock_timeout_30">30 δευτερόλεπτα</string>
