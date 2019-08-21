@@ -22,16 +22,33 @@ package com.nextcloud.talk.services.firebase;
 
 import android.annotation.SuppressLint;
 
+import autodagger.AutoInjector;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.jobs.NotificationWorker;
+import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 
+import javax.inject.Inject;
+
+@AutoInjector(NextcloudTalkApplication.class)
 public class MagicFirebaseMessagingService extends FirebaseMessagingService {
+    @Inject
+    AppPreferences appPreferences;
+
+    @Override
+    public void onNewToken(String token) {
+        super.onNewToken(token);
+        appPreferences.setPushToken(token);
+        OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
+        WorkManager.getInstance().enqueue(pushRegistrationWork);
+    }
 
     @SuppressLint("LongLogTag")
     @Override
