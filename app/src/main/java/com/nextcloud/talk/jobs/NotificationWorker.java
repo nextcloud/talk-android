@@ -238,7 +238,7 @@ public class NotificationWorker extends Worker {
 
     private void showNotification(Intent intent) {
         int smallIcon;
-        Bitmap largeIcon = null;
+        Bitmap largeIcon;
         String category;
         int priority = Notification.PRIORITY_HIGH;
 
