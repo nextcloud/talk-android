@@ -130,6 +130,34 @@ public class NotificationUtils {
         }
     }
 
+    public static StatusBarNotification findNotificationForRoom(Context context,
+                                                       UserEntity conversationUser,
+                                                       String roomTokenOrId) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && conversationUser.getId() != -1 &&
+                context != null) {
+
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            if (notificationManager != null) {
+                StatusBarNotification[] statusBarNotifications = notificationManager.getActiveNotifications();
+                Notification notification;
+                for (StatusBarNotification statusBarNotification : statusBarNotifications) {
+                    notification = statusBarNotification.getNotification();
+
+                    if (notification != null && !notification.extras.isEmpty()) {
+                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
+                                roomTokenOrId.equals(statusBarNotification.getNotification().extras.getString(BundleKeys.KEY_ROOM_TOKEN))) {
+                            return statusBarNotification;
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static void cancelExistingNotificationsForRoom(Context context, UserEntity conversationUser,
                                                           String roomTokenOrId) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && conversationUser.getId() != -1 &&

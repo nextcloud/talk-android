@@ -34,17 +34,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.Person;
+import androidx.core.graphics.drawable.IconCompat;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.facebook.common.executors.UiThreadImmediateExecutorService;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
+import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.activities.MainActivity;
@@ -57,12 +70,10 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatUtils;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
+import com.nextcloud.talk.models.json.push.NotificationUser;
 import com.nextcloud.talk.models.json.rooms.Conversation;
 import com.nextcloud.talk.models.json.rooms.RoomOverall;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.DoNotDisturbUtils;
-import com.nextcloud.talk.utils.NotificationUtils;
-import com.nextcloud.talk.utils.PushUtils;
+import com.nextcloud.talk.utils.*;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -198,12 +209,16 @@ public class NotificationWorker extends Worker {
                             HashMap<String, String> callHashMap = subjectRichParameters.get("call");
                             HashMap<String, String> userHashMap = subjectRichParameters.get("user");
 
-                            if (callHashMap != null && callHashMap.size() > 0 && callHashMap.containsKey("call-type")) {
-                                conversationType = callHashMap.get("call-type");
+                            if (callHashMap != null && callHashMap.size() > 0 && callHashMap.containsKey("name")) {
+                                decryptedPushMessage.setSubject(callHashMap.get("name"));
+                            }
 
-                                if ("one2one".equals(conversationType)) {
-                                    decryptedPushMessage.setSubject(userHashMap.get("name"));
-                                }
+                            if (userHashMap != null && !userHashMap.isEmpty()) {
+                                NotificationUser notificationUser = new NotificationUser();
+                                notificationUser.setId(userHashMap.get("id"));
+                                notificationUser.setType(userHashMap.get("type"));
+                                notificationUser.setName(userHashMap.get("name"));
+                                decryptedPushMessage.setNotificationUser(notificationUser);
                             }
                         }
 
@@ -226,7 +241,6 @@ public class NotificationWorker extends Worker {
         Bitmap largeIcon = null;
         String category;
         int priority = Notification.PRIORITY_HIGH;
-        Uri soundUri;
 
         smallIcon = R.drawable.ic_logo;
 
@@ -263,7 +277,6 @@ public class NotificationWorker extends Worker {
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
                 0, intent, 0);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         Uri uri = Uri.parse(signatureVerification.getUserEntity().getBaseUrl());
         String baseUrl = uri.getHost();
 
@@ -327,7 +340,6 @@ public class NotificationWorker extends Worker {
 
         notificationBuilder.setContentIntent(pendingIntent);
 
-        String stringForCrc = String.valueOf(System.currentTimeMillis());
 
         CRC32 crc32 = new CRC32();
 
@@ -335,10 +347,101 @@ public class NotificationWorker extends Worker {
         crc32.update(groupName.getBytes());
         notificationBuilder.setGroup(Long.toString(crc32.getValue()));
 
+
+        // notificationId
         crc32 = new CRC32();
+        String stringForCrc = String.valueOf(System.currentTimeMillis());
         crc32.update(stringForCrc.getBytes());
 
+        StatusBarNotification activeStatusBarNotification =
+                NotificationUtils.findNotificationForRoom(context,
+                        signatureVerification.getUserEntity(), decryptedPushMessage.getId());
+
+        int notificationId;
+
+        if (activeStatusBarNotification != null) {
+            notificationId = activeStatusBarNotification.getId();
+        } else {
+            notificationId = (int) crc32.getValue();
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            NotificationCompat.MessagingStyle style = null;
+            if (activeStatusBarNotification != null) {
+                Notification activeNotification = activeStatusBarNotification.getNotification();
+                style = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(activeNotification);
+            }
+
+            Person.Builder person =
+                    new Person.Builder().setKey(signatureVerification.getUserEntity().getId() + "@" + decryptedPushMessage.getNotificationUser().getId()).setName(decryptedPushMessage.getNotificationUser().getName()).setBot(decryptedPushMessage.getNotificationUser().getType().equals("bot"));
+
+            notificationBuilder.setOnlyAlertOnce(true);
+
+            if (decryptedPushMessage.getNotificationUser().getType().equals("user")) {
+                ImageRequest imageRequest =
+                        DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(signatureVerification.getUserEntity().getBaseUrl(), decryptedPushMessage.getNotificationUser().getId(), R.dimen.avatar_size), null);
+                ImagePipeline imagePipeline = Fresco.getImagePipeline();
+                DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
+
+                NotificationCompat.MessagingStyle finalStyle = style;
+                dataSource.subscribe(
+                        new BaseBitmapDataSubscriber() {
+                            @Override
+                            protected void onNewResultImpl(Bitmap bitmap) {
+                                if (bitmap != null) {
+                                    new RoundAsCirclePostprocessor(true).process(bitmap);
+                                    person.setIcon(IconCompat.createWithBitmap(bitmap));
+                                    notificationBuilder.setStyle(getStyle(person.build(),
+                                            finalStyle));
+                                    sendNotificationWithId(notificationId, notificationBuilder.build());
+
+                                }
+                            }
+
+                            @Override
+                            protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+                                notificationBuilder.setStyle(getStyle(person.build(), finalStyle));
+                                sendNotificationWithId(notificationId, notificationBuilder.build());
+                            }
+                        },
+                        UiThreadImmediateExecutorService.getInstance());
+            } else {
+                notificationBuilder.setStyle(getStyle(person.build(), style));
+                sendNotificationWithId(notificationId, notificationBuilder.build());
+            }
+        } else {
+            sendNotificationWithId(notificationId, notificationBuilder.build());
+        }
+
+    }
+
+    private NotificationCompat.MessagingStyle getStyle(Person person, @Nullable NotificationCompat.MessagingStyle style) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            NotificationCompat.MessagingStyle newStyle =
+                    new NotificationCompat.MessagingStyle(person);
+
+            newStyle.setConversationTitle(decryptedPushMessage.getSubject());
+            newStyle.setGroupConversation(!conversationType.equals("one2one"));
+
+            if (style != null) {
+                style.getMessages().forEach(message -> newStyle.addMessage(new NotificationCompat.MessagingStyle.Message(message.getText(), message.getTimestamp(), message.getPerson())));
+            }
+
+            newStyle.addMessage(decryptedPushMessage.getText(), System.currentTimeMillis(), person);
+            return newStyle;
+        }
+
+        // we'll never come here
+        return style;
+    }
+
+    private void sendNotificationWithId(int notificationId, Notification notification) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(notificationId, notification);
+
         String ringtonePreferencesString;
+        Uri soundUri;
+
         ringtonePreferencesString = appPreferences.getMessageRingtoneUri();
         if (TextUtils.isEmpty(ringtonePreferencesString)) {
             soundUri = Uri.parse("android.resource://" + context.getPackageName() +
@@ -353,9 +456,6 @@ public class NotificationWorker extends Worker {
                         "/raw/librem_by_feandesign_message");
             }
         }
-
-
-        notificationManager.notify((int) crc32.getValue(), notificationBuilder.build());
 
         if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
                 DoNotDisturbUtils.shouldPlaySound()) {
@@ -380,7 +480,6 @@ public class NotificationWorker extends Worker {
             } catch (IOException e) {
                 Log.e(TAG, "Failed to set data source");
             }
-
         }
 
 
