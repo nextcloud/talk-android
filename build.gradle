@@ -2,7 +2,7 @@
 buildscript {
 
     ext {
-        kotlinVersion = '1.3.30'
+        kotlinVersion = '1.3.41'
     }
 
     repositories {
@@ -23,7 +23,7 @@ buildscript {
 
 configurations.all {
     // check for updates every build
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheChangingModulesFor 3600, 'seconds'
 }
 
 allprojects {
@@ -35,9 +35,6 @@ allprojects {
         }
         maven {
             url 'https://jitpack.io'
-        }
-        maven {
-            url  "https://dl.bintray.com/mdjanic/maven"
         }
         maven { url 'https://maven.google.com' }
     }

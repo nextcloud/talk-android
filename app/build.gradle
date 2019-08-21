@@ -155,7 +155,7 @@ dependencies {
     implementation ('com.gitlab.bitfireAT:dav4jvm:f2078bc846', {
         exclude group: 'org.ogce', module: 'xpp3'	// Android comes with its own XmlPullParser
     })
-    implementation 'org.conscrypt:conscrypt-android:2.1.0'
+    implementation 'org.conscrypt:conscrypt-android:2.2.1'
 
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
@@ -216,11 +216,11 @@ dependencies {
         exclude group: 'com.facebook.fresco'
     })
 
-    implementation 'com.mario.fresco:fresco:1.11.1-headers'
-    implementation 'com.mario.fresco:animated-webp:1.11.1-headers'
-    implementation 'com.mario.fresco:webpsupport:1.11.1-headers'
-    implementation 'com.mario.fresco:animated-gif:1.11.1-headers'
-    implementation "com.mario.fresco:imagepipeline-okhttp3:1.11.1-headers"
+    implementation 'com.github.mario.fresco:fresco:111'
+    implementation 'com.github.mario.fresco:animated-webp:111'
+    implementation 'com.github.mario.fresco:webpsupport:111'
+    implementation 'com.github.mario.fresco:animated-gif:111'
+    implementation 'com.github.mario.fresco:imagepipeline-okhttp3:111'
 
     implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
