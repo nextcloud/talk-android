@@ -118,7 +118,7 @@ public class NotificationWorker extends Worker {
     private DecryptedPushMessage decryptedPushMessage;
     private Context context;
     private SignatureVerification signatureVerification;
-    private String conversationType = "";
+    private String conversationType = "one2one";
 
     private String credentials;
 
@@ -161,7 +161,7 @@ public class NotificationWorker extends Worker {
                                 } else {
                                     conversationType = "public";
                                 }
-                                showNotification(intent);
+                                showMessageNotificationWithObjectData(intent);
                             }
                         }
 
@@ -203,14 +203,20 @@ public class NotificationWorker extends Worker {
                         HashMap<String, HashMap<String, String>> subjectRichParameters = notification
                                 .getSubjectRichParameters();
 
-                        if (subjectRichParameters != null && subjectRichParameters
-                                .size() > 0 && subjectRichParameters.containsKey("call")
-                                && subjectRichParameters.containsKey("user")) {
+                        if (subjectRichParameters != null && subjectRichParameters.size() > 0) {
                             HashMap<String, String> callHashMap = subjectRichParameters.get("call");
                             HashMap<String, String> userHashMap = subjectRichParameters.get("user");
 
                             if (callHashMap != null && callHashMap.size() > 0 && callHashMap.containsKey("name")) {
-                                decryptedPushMessage.setSubject(callHashMap.get("name"));
+                                if (notification.getObjectType().equals("chat")) {
+                                    decryptedPushMessage.setSubject(callHashMap.get("name"));
+                                } else {
+                                    decryptedPushMessage.setSubject(notification.getSubject());
+                                }
+
+                                if (callHashMap.containsKey("call-type")) {
+                                    conversationType = callHashMap.get("call-type");
+                                }
                             }
 
                             if (userHashMap != null && !userHashMap.isEmpty()) {
@@ -251,13 +257,6 @@ public class NotificationWorker extends Worker {
         }
 
         switch (conversationType) {
-            case "one2one":
-                if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
-                    largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_chat_black_24dp);
-                } else {
-                    largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_call_black_24dp);
-                }
-                break;
             case "group":
                 largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_people_group_black_24px);
                 break;
@@ -265,6 +264,7 @@ public class NotificationWorker extends Worker {
                 largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_link_black_24px);
                 break;
             default:
+                // assuming one2one
                 if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
                     largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_chat_black_24dp);
                 } else {
@@ -285,9 +285,9 @@ public class NotificationWorker extends Worker {
                 .setSmallIcon(smallIcon)
                 .setCategory(category)
                 .setPriority(priority)
+                .setSubText(baseUrl)
                 .setWhen(Calendar.getInstance().getTimeInMillis())
                 .setShowWhen(true)
-                .setSubText(baseUrl)
                 .setContentTitle(decryptedPushMessage.getSubject())
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
@@ -347,7 +347,6 @@ public class NotificationWorker extends Worker {
         crc32.update(groupName.getBytes());
         notificationBuilder.setGroup(Long.toString(crc32.getValue()));
 
-
         // notificationId
         crc32 = new CRC32();
         String stringForCrc = String.valueOf(System.currentTimeMillis());
@@ -365,7 +364,7 @@ public class NotificationWorker extends Worker {
             notificationId = (int) crc32.getValue();
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && decryptedPushMessage.getNotificationUser() != null && decryptedPushMessage.getType().equals("chat")) {
             NotificationCompat.MessagingStyle style = null;
             if (activeStatusBarNotification != null) {
                 Notification activeNotification = activeStatusBarNotification.getNotification();
