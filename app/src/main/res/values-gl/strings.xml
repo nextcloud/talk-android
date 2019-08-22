@@ -79,6 +79,13 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
     <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_vibrate_desc">O teléfono vibrará, a non ser que estea silenciado</string>
+    <string name="nc_settings_appearance">Aparencia</string>
+    <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_theme_key">tema</string>
+    <string name="nc_settings_theme_follow_system">Usar o redeterminado do sistema</string>
+    <string name="nc_settings_theme_battery_saver">Establecido polo aforrador de batería</string>
+    <string name="nc_settings_theme_light">Claro</string>
+    <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_privacy">Privacidade</string>
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
     <string name="nc_settings_screen_lock_desc">Bloquear %1$s co bloqueo de pantalla de Android ou co método biométrico compatíbel</string>

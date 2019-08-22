@@ -77,6 +77,13 @@
     <string name="nc_settings_no_ringtone">Нема звука</string>
     <string name="nc_settings_vibrate">Вибрирај</string>
     <string name="nc_settings_vibrate_desc">Телефон ће вибрирати осим ако није утишан</string>
+    <string name="nc_settings_appearance">Изглед</string>
+    <string name="nc_settings_theme_title">Тема</string>
+    <string name="nc_settings_theme_key">тема</string>
+    <string name="nc_settings_theme_follow_system">Користи системске подразумеване</string>
+    <string name="nc_settings_theme_battery_saver">Поставља штедња батерије</string>
+    <string name="nc_settings_theme_light">Светла</string>
+    <string name="nc_settings_theme_dark">Тамна</string>
     <string name="nc_settings_privacy">Приватност</string>
     <string name="nc_settings_screen_lock_title">Закључавање екрана</string>
     <string name="nc_settings_screen_lock_desc">Закључајте %1$s са Андроидовим екраном закључавања или подржаним биометријским методом</string>
