@@ -288,8 +288,7 @@ public class NotificationWorker extends Worker {
                 .setCategory(category)
                 .setPriority(priority)
                 .setSubText(baseUrl)
-                .setWhen(decryptedPushMessage.getTimestamp() != 0 ?
-                        decryptedPushMessage.getTimestamp() : System.currentTimeMillis())
+                .setWhen(decryptedPushMessage.getTimestamp())
                 .setShowWhen(true)
                 .setContentTitle(decryptedPushMessage.getSubject())
                 .setContentIntent(pendingIntent)
@@ -525,6 +524,7 @@ public class NotificationWorker extends Worker {
                     decryptedPushMessage = LoganSquare.parse(new String(decryptedSubject),
                             DecryptedPushMessage.class);
 
+                    decryptedPushMessage.setTimestamp(System.currentTimeMillis());
                     if (decryptedPushMessage.isDelete()) {
                         NotificationUtils.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), decryptedPushMessage.getNotificationId());
                     } else if (decryptedPushMessage.isDeleteAll()) {
