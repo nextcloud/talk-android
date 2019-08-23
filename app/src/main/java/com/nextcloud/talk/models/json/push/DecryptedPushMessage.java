@@ -56,4 +56,7 @@ public class DecryptedPushMessage {
 
     @JsonIgnore
     String text;
+
+    @JsonIgnore
+    long timestamp;
 }

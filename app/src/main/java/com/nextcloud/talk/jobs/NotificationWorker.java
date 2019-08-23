@@ -203,6 +203,8 @@ public class NotificationWorker extends Worker {
                         HashMap<String, HashMap<String, String>> subjectRichParameters = notification
                                 .getSubjectRichParameters();
 
+                        decryptedPushMessage.setTimestamp(notification.getDatetime().getTime();
+
                         if (subjectRichParameters != null && subjectRichParameters.size() > 0) {
                             HashMap<String, String> callHashMap = subjectRichParameters.get("call");
                             HashMap<String, String> userHashMap = subjectRichParameters.get("user");
@@ -286,7 +288,7 @@ public class NotificationWorker extends Worker {
                 .setCategory(category)
                 .setPriority(priority)
                 .setSubText(baseUrl)
-                .setWhen(Calendar.getInstance().getTimeInMillis())
+                .setWhen(decryptedPushMessage.getTimestamp())
                 .setShowWhen(true)
                 .setContentTitle(decryptedPushMessage.getSubject())
                 .setContentIntent(pendingIntent)
@@ -426,7 +428,7 @@ public class NotificationWorker extends Worker {
                 style.getMessages().forEach(message -> newStyle.addMessage(new NotificationCompat.MessagingStyle.Message(message.getText(), message.getTimestamp(), message.getPerson())));
             }
 
-            newStyle.addMessage(decryptedPushMessage.getText(), System.currentTimeMillis(), person);
+            newStyle.addMessage(decryptedPushMessage.getText(), decryptedPushMessage.getTimestamp(), person);
             return newStyle;
         }
 
