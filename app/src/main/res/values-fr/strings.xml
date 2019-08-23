@@ -81,6 +81,7 @@
     <string name="nc_settings_theme_title">Thème</string>
     <string name="nc_settings_theme_key">thème</string>
     <string name="nc_settings_theme_follow_system">Utiliser les paramètres du système</string>
+    <string name="nc_settings_theme_battery_saver">Défini par l\'économiseur de batterie</string>
     <string name="nc_settings_theme_light">Clair</string>
     <string name="nc_settings_theme_dark">Sombre</string>
     <string name="nc_settings_privacy">Vie privée</string>
