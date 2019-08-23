@@ -288,7 +288,8 @@ public class NotificationWorker extends Worker {
                 .setCategory(category)
                 .setPriority(priority)
                 .setSubText(baseUrl)
-                .setWhen(decryptedPushMessage.getTimestamp())
+                .setWhen(decryptedPushMessage.getTimestamp() != 0 ?
+                        decryptedPushMessage.getTimestamp() : System.currentTimeMillis())
                 .setShowWhen(true)
                 .setContentTitle(decryptedPushMessage.getSubject())
                 .setContentIntent(pendingIntent)
