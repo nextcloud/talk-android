@@ -37,7 +37,7 @@ import com.nextcloud.talk.models.json.websocket.*;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.MagicMap;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
+
 import okhttp3.*;
 import okio.ByteString;
 import org.greenrobot.eventbus.EventBus;
@@ -136,11 +136,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public void restartWebSocket() {
         reconnecting = true;
 
-        if (MerlinTheWizard.isConnectedToInternet()) {
             Request request = new Request.Builder().url(connectionUrl).build();
             okHttpClient.newWebSocket(request, this);
             restartCount++;
-        }
     }
 
     @Override

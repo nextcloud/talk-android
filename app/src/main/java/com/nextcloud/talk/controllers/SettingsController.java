@@ -66,7 +66,6 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
-import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 import com.yarolegovich.mp.*;
@@ -370,12 +369,6 @@ public class SettingsController extends BaseController {
 
     private void removeCurrentAccount() {
         boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser.getId());
-
-        if (otherUserExists) {
-            new MerlinTheWizard().initMerlin();
-        } else {
-            new MerlinTheWizard().getMerlin().unbind();
-        }
 
         OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
         WorkManager.getInstance().enqueue(accountRemovalWork);

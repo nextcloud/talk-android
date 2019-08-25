@@ -54,7 +54,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
-import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
+
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -268,7 +268,6 @@ public class AccountVerificationController extends BaseController {
                     @Override
                     public void onNext(UserEntity userEntity) {
                         internalAccountId = userEntity.getId();
-                        new MerlinTheWizard().initMerlin();
 
                         if (new ClosedInterfaceImpl().isGooglePlayServicesAvailable()) {
                             registerForPush();

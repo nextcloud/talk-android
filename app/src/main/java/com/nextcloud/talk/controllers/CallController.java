@@ -77,7 +77,6 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import com.nextcloud.talk.utils.singletons.MerlinTheWizard;
 import com.nextcloud.talk.webrtc.*;
 import com.wooplr.spotlight.SpotlightView;
 import io.reactivex.Observable;
@@ -1384,7 +1383,6 @@ public class CallController extends BaseController {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
-        if (MerlinTheWizard.isConnectedToInternet()) {
             ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -1421,9 +1419,6 @@ public class CallController extends BaseController {
 
                         }
                     });
-        } else if (shutDownView && getActivity() != null) {
-            getActivity().finish();
-        }
     }
 
     private void leaveRoom(boolean shutDownView) {
@@ -1706,9 +1701,7 @@ public class CallController extends BaseController {
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED)) {
             currentCallStatus = CallStatus.PUBLISHER_FAILED;
             webSocketClient.clearResumeId();
-            if (MerlinTheWizard.isConnectedToInternet()) {
-                hangup(false);
-            }
+            hangup(false);
         }
     }
 
@@ -1725,7 +1718,7 @@ public class CallController extends BaseController {
                 magicPeerConnectionWrapper = magicPeerConnectionWrapperList.get(i);
                 Observable
                         .interval(1, TimeUnit.SECONDS)
-                        .repeatUntil(() -> (!isConnectionEstablished() || isBeingDestroyed() || isDestroyed() || !MerlinTheWizard.isConnectedToInternet()))
+                        .repeatUntil(() -> (!isConnectionEstablished() || isBeingDestroyed() || isDestroyed()))
                         .observeOn(Schedulers.io())
                         .subscribe(new Observer<Long>() {
                             @Override
