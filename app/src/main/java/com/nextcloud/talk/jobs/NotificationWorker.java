@@ -93,7 +93,6 @@ import java.net.CookieManager;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.zip.CRC32;
 
@@ -113,7 +112,7 @@ public class NotificationWorker extends Worker {
     @Inject
     OkHttpClient okHttpClient;
 
-    NcApi ncApi;
+    private NcApi ncApi;
 
     private DecryptedPushMessage decryptedPushMessage;
     private Context context;
@@ -161,7 +160,11 @@ public class NotificationWorker extends Worker {
                                 } else {
                                     conversationType = "public";
                                 }
-                                showMessageNotificationWithObjectData(intent);
+                                if (decryptedPushMessage.getNotificationId() != Long.MIN_VALUE) {
+                                    showNotificationWithObjectData(intent);
+                                } else {
+                                    showNotification(intent);
+                                }
                             }
                         }
 
@@ -177,7 +180,7 @@ public class NotificationWorker extends Worker {
         }
     }
 
-    private void showMessageNotificationWithObjectData(Intent intent) {
+    private void showNotificationWithObjectData(Intent intent) {
         UserEntity userEntity = signatureVerification.getUserEntity();
         ncApi.getNotification(credentials, ApiUtils.getUrlForNotificationWithId(userEntity.getBaseUrl(),
                 Long.toString(decryptedPushMessage.getNotificationId())))
@@ -584,7 +587,7 @@ public class NotificationWorker extends Worker {
                                     break;
                                 case "chat":
                                     if (decryptedPushMessage.getNotificationId() != Long.MIN_VALUE) {
-                                        showMessageNotificationWithObjectData(intent);
+                                        showNotificationWithObjectData(intent);
                                     } else {
                                         showNotification(intent);
                                     }
