@@ -45,6 +45,7 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
+        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
         appPreferences.setPushToken(token);
         OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
         WorkManager.getInstance().enqueue(pushRegistrationWork);
