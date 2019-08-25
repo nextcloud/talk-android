@@ -203,7 +203,7 @@ public class NotificationWorker extends Worker {
                         HashMap<String, HashMap<String, String>> subjectRichParameters = notification
                                 .getSubjectRichParameters();
 
-                        decryptedPushMessage.setTimestamp(notification.getDatetime().getTime();
+                        decryptedPushMessage.setTimestamp(notification.getDatetime().getTime());
 
                         if (subjectRichParameters != null && subjectRichParameters.size() > 0) {
                             HashMap<String, String> callHashMap = subjectRichParameters.get("call");
