@@ -77,6 +77,13 @@
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
     <string name="nc_settings_vibrate">Vibrer</string>
     <string name="nc_settings_vibrate_desc">Telefonen vil vibrere undtagen hvis sat til lydløs</string>
+    <string name="nc_settings_appearance">Udseende</string>
+    <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_theme_key">tema</string>
+    <string name="nc_settings_theme_follow_system">Brug system default</string>
+    <string name="nc_settings_theme_battery_saver">Sat af batteri-spare funktion</string>
+    <string name="nc_settings_theme_light">Lys</string>
+    <string name="nc_settings_theme_dark">Mørk</string>
     <string name="nc_settings_privacy">Privatliv</string>
     <string name="nc_settings_screen_lock_title">Skærm lås</string>
     <string name="nc_settings_screen_lock_desc">Lås %1$s med Android Skærm lås en understøttet biometrisk metode</string>
@@ -136,6 +143,7 @@ slettet for %1$s.</string>
     <string name="nc_delete_conversation_more">Hvis du sletter konversationen, vil den også blive slettet for alle andre deltagere.</string>
 
     <string name="nc_new_conversation">Ny samtale</string>
+    <string name="nc_join_via_link">Deltag via link</string>
     <string name="nc_join_via_web">Deltag via web</string>
     <string name="nc_add_to_favorites">Føj til favoritter</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
@@ -151,11 +159,17 @@ slettet for %1$s.</string>
 
     <!-- Call -->
     <string name="nc_connecting_call">Forbinder…</string>
+    <string name="nc_calling">Ringer...</string>
     <string name="nc_incoming_call">Opkald fra</string>
     <string name="nc_nick_guest">Gæst</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
     <string name="nc_public_call_explanation">Offentlige samtaler lader dig invitere folk udefra gennem et
 speciel lavet link.</string>
+    <string name="nc_call_timeout">Intet respons i 45 sekunder, rør skærmen for at forsøge igen</string>
+    <string name="nc_call_reconnecting">Forbinder igen...</string>
+    <string name="nc_offline">For nuværende offline, venligst kontroller din forbindelse</string>
+    <string name="nc_leaving_call">Forlader opkald...</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s notifikationskanal</string>
     <string name="nc_notification_channel_calls">Opkalds notifikations kanal</string>
@@ -228,6 +242,8 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny\n Sig hej til dine venner og kollegaer.</string>
     <string name="nc_hello">Hej</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">%skarakterbegrænsning nået</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_participants">Deltagere</string>
 
@@ -237,4 +253,13 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_guest">Gæst</string>
     <string name="nc_following_link">Bruger følger et offentligt link</string>
 
-    </resources>
+    <string name="nc_readonly_hint">Denne samtale er låst</string>
+
+    <!-- Browser component -->
+    <string name="nc_file_browser">Fil browser\"</string>
+    <string name="nc_select_files">Vælg filer</string>
+    <string name="nc_file_browser_back">Tilbage</string>
+    <string name="nc_file_browser_refresh">Opdater</string>
+    <string name="nc_last_modified">%1$s| Sidst ændret: %2$s</string>
+
+</resources>
