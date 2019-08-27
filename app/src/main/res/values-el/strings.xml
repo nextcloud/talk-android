@@ -56,6 +56,7 @@
     <string name="nc_settings_other_notifications_ringtone">Άλλο</string>
     <string name="nc_settings_no_ringtone">Χωρίς ήχο</string>
     <string name="nc_settings_vibrate">Δόνηση</string>
+    <string name="nc_settings_theme_follow_system">Χρησιμοποιήστε το προεπιλεγμένο σύστημα</string>
     <string name="nc_settings_privacy">Ιδιωτικότητα</string>
     <string name="nc_settings_screen_lock_title">Κλείδωμα οθόνης</string>
     <string name="nc_settings_screen_lock_timeout_title">Χρονικό όριο αδράνειας κλειδώματος οθόνης</string>
