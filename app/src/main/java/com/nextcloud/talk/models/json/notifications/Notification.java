@@ -22,12 +22,16 @@ package com.nextcloud.talk.models.json.notifications;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+import com.nextcloud.talk.models.json.converters.LoganSquareJodaTimeConverter;
+
+import org.joda.time.DateTime;
 import org.parceler.Parcel;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 @Parcel
@@ -41,8 +45,8 @@ public class Notification {
     String app;
     @JsonField(name = "user")
     String user;
-    @JsonField(name = "datetime")
-    Date datetime;
+    @JsonField(name = "datetime", typeConverter = LoganSquareJodaTimeConverter.class)
+    DateTime datetime;
     @JsonField(name = "object_type")
     String objectType;
     @JsonField(name = "object_id")

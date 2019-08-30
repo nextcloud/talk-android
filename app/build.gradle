@@ -221,6 +221,7 @@ dependencies {
     implementation 'com.github.mario.fresco:webpsupport:111'
     implementation 'com.github.mario.fresco:animated-gif:111'
     implementation 'com.github.mario.fresco:imagepipeline-okhttp3:111'
+    implementation  group: 'joda-time', name: 'joda-time', version: '2.10.3'
 
     implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
