@@ -73,7 +73,7 @@
         android:layout_toEndOf="@id/frame_layout"
         android:orientation="vertical">
 
-        <TextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/name_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
             android:textAppearance="?android:attr/textAppearanceListItem"
             tools:text="Call item text" />
 
-        <TextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/secondary_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

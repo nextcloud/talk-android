@@ -40,6 +40,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
+import androidx.emoji.widget.EmojiTextView;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoInjector;
@@ -103,7 +104,7 @@ public class SettingsController extends BaseController {
     @BindView(R.id.avatar_image)
     SimpleDraweeView avatarImageView;
     @BindView(R.id.display_name_text)
-    TextView displayNameTextView;
+    EmojiTextView displayNameTextView;
     @BindView(R.id.base_url_text)
     TextView baseUrlTextView;
     @BindView(R.id.settings_call_sound)

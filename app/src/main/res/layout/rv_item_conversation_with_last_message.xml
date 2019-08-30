@@ -71,7 +71,7 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/dialogAvatarFrameLayout">
 
-            <TextView
+            <androidx.emoji.widget.EmojiTextView
                 android:id="@id/dialogLastMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
             android:maxLines="1"
             android:textColor="@color/conversation_date" />
 
-        <TextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@id/dialogName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

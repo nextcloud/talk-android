@@ -130,7 +130,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
         componentApplication.inject(this)
 
-        setAppTheme(appPreferences!!.theme)
+        setAppTheme(appPreferences.theme)
         super.onCreate()
 
         val imagePipelineConfig = ImagePipelineConfig.newBuilder(this)

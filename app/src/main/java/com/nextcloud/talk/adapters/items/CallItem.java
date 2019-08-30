@@ -27,6 +27,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.emoji.widget.EmojiTextView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -168,9 +171,9 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
     static class RoomItemViewHolder extends FlexibleViewHolder {
 
         @BindView(R.id.name_text)
-        public TextView roomDisplayName;
+        public EmojiTextView roomDisplayName;
         @BindView(R.id.secondary_text)
-        public TextView roomLastPing;
+        public EmojiTextView roomLastPing;
         @BindView(R.id.avatar_image)
         public SimpleDraweeView avatarImageView;
         @BindView(R.id.more_menu)

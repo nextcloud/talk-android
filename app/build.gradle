@@ -212,7 +212,7 @@ dependencies {
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
     implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'com.github.wooplr:Spotlight:1.3'
-    implementation('com.github.mario:chatkit:d63d61db95', {
+    implementation('com.github.mario:chatkit:3c6c60228b', {
         exclude group: 'com.facebook.fresco'
     })
 

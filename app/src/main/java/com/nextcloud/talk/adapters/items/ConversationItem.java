@@ -29,6 +29,9 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.emoji.widget.EmojiTextView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -279,13 +282,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         @BindView(R.id.dialogAvatar)
         SimpleDraweeView dialogAvatar;
         @BindView(R.id.dialogName)
-        TextView dialogName;
+        EmojiTextView dialogName;
         @BindView(R.id.dialogDate)
         TextView dialogDate;
         @BindView(R.id.dialogLastMessageUserAvatar)
         SimpleDraweeView dialogLastMessageUserAvatar;
         @BindView(R.id.dialogLastMessage)
-        TextView dialogLastMessage;
+        EmojiTextView dialogLastMessage;
         @BindView(R.id.dialogUnreadBubble)
         TextView dialogUnreadBubble;
         @BindView(R.id.passwordProtectedRoomImageView)

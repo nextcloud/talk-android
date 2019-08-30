@@ -49,6 +49,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.emoji.widget.EmojiEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -161,7 +162,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @BindView(R.id.messageInputView)
     MessageInput messageInputView;
     @BindView(R.id.messageInput)
-    EditText messageInput;
+    EmojiEditText messageInput;
     @BindView(R.id.popupBubbleView)
     PopupBubble popupBubble;
     @BindView(R.id.progressBar)

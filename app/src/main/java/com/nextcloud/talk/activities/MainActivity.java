@@ -36,6 +36,7 @@ import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.CallNotificationController;
@@ -58,7 +59,7 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
     private static final String TAG = "MainActivity";
 
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    MaterialToolbar toolbar;
     @BindView(R.id.controller_container)
     ViewGroup container;
 
