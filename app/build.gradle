@@ -39,7 +39,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         versionCode 109
-        versionName "7.0.01beta1"
+        versionName "7.0.0beta1"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
