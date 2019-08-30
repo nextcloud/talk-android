@@ -33,32 +33,32 @@ import org.parceler.ParcelPropertyConverter;
 @JsonObject
 public class Participant {
     @JsonField(name = "userId")
-    String userId;
+    public String userId;
 
     @JsonField(name = {"type", "participantType"}, typeConverter = EnumParticipantTypeConverter.class)
-    ParticipantType type;
+    public ParticipantType type;
 
     @JsonField(name = "name")
-    String name;
+    public String name;
 
     @JsonField(name = "displayName")
-    String displayName;
+    public String displayName;
 
     @JsonField(name = "lastPing")
-    long lastPing;
+    public long lastPing;
 
     @JsonField(name = "sessionId")
-    String sessionId;
+    public String sessionId;
 
     @JsonField(name = "roomId")
-    long roomId;
+    public long roomId;
 
     @ParcelPropertyConverter(ObjectParcelConverter.class)
     @JsonField(name = "inCall")
-    Object inCall;
-    String source;
+    public Object inCall;
+    public String source;
 
-    boolean selected;
+    public boolean selected;
 
 
     public ParticipantFlags getParticipantFlags() {

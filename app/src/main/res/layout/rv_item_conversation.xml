@@ -34,13 +34,6 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/margin_between_elements">
 
-        <com.facebook.drawee.view.SimpleDraweeView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/avatar_image"
-            android:layout_width="@dimen/small_item_height"
-            android:layout_height="@dimen/small_item_height"
-            android:layout_margin="@dimen/margin_between_elements"
-            app:roundAsCircle="true" />
-
         <ImageView
             android:id="@+id/password_protected_image_view"
             android:layout_width="10dp"
@@ -51,7 +44,25 @@
             android:src="@drawable/ic_lock_white_24px"
             android:visibility="visible" />
 
+        <com.facebook.drawee.view.SimpleDraweeView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/avatar_image"
+            android:layout_width="@dimen/small_item_height"
+            android:layout_height="@dimen/small_item_height"
+            android:layout_margin="@dimen/margin_between_elements"
+            app:roundAsCircle="true" />
+
     </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/more_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/margin_between_elements"
+        android:background="?android:attr/selectableItemBackground"
+        android:scaleType="center"
+        android:src="@drawable/ic_more_horiz_black_24dp" />
 
     <LinearLayout
         android:id="@+id/linear_layout"
@@ -80,16 +91,5 @@
             tools:text="A week ago" />
 
     </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/more_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/margin_between_elements"
-        android:background="?android:attr/selectableItemBackground"
-        android:scaleType="center"
-        android:src="@drawable/ic_more_horiz_black_24dp" />
 
 </RelativeLayout>

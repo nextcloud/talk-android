@@ -49,7 +49,7 @@ import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.LeaveConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -87,17 +87,17 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
     public CallMenuController(Bundle args) {
         super(args);
-        this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
-        if (args.containsKey(BundleKeys.KEY_MENU_TYPE)) {
-            this.menuType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_MENU_TYPE));
+        this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_MENU_TYPE())) {
+            this.menuType = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_MENU_TYPE()));
         }
     }
 
     public CallMenuController(Bundle args, @Nullable ConversationMenuInterface conversationMenuInterface) {
         super(args);
-        this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
-        if (args.containsKey(BundleKeys.KEY_MENU_TYPE)) {
-            this.menuType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_MENU_TYPE));
+        this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_MENU_TYPE())) {
+            this.menuType = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_MENU_TYPE()));
         }
         this.conversationMenuInterface = conversationMenuInterface;
     }
@@ -110,7 +110,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         prepareViews();
     }
 
@@ -218,7 +218,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     @Override
     public boolean onItemClick(View view, int position) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
 
         if (menuType.equals(MenuType.REGULAR)) {
             MenuItem menuItem = (MenuItem) adapter.getItem(position);
@@ -246,7 +246,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                         }
                         eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     } else {
-                        bundle.putInt(BundleKeys.KEY_OPERATION_CODE, tag);
+                        bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), tag);
                         if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
                             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
                             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
@@ -257,7 +257,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                                     .pushChangeHandler(new HorizontalChangeHandler())
                                     .popChangeHandler(new HorizontalChangeHandler()));
                         } else {
-                            bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(MenuType.SHARE));
+                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_MENU_TYPE(), Parcels.wrap(MenuType.SHARE));
                             getRouter().pushController(RouterTransaction.with(new CallMenuController(bundle, null))
                                     .pushChangeHandler(new HorizontalChangeHandler())
                                     .popChangeHandler(new HorizontalChangeHandler()));
@@ -277,10 +277,10 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                     eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     getActivity().startActivity(intent);
                 } else {
-                    bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 7);
-                    bundle.putParcelable(BundleKeys.KEY_SHARE_INTENT, Parcels.wrap(shareIntent));
-                    bundle.putString(BundleKeys.KEY_APP_ITEM_PACKAGE_NAME, appItem.getPackageName());
-                    bundle.putString(BundleKeys.KEY_APP_ITEM_NAME, appItem.getName());
+                    bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 7);
+                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_SHARE_INTENT(), Parcels.wrap(shareIntent));
+                    bundle.putString(BundleKeys.INSTANCE.getKEY_APP_ITEM_PACKAGE_NAME(), appItem.getPackageName());
+                    bundle.putString(BundleKeys.INSTANCE.getKEY_APP_ITEM_NAME(), appItem.getName());
                     getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler()));
@@ -294,8 +294,8 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private Data getWorkerData() {
         if (!TextUtils.isEmpty(conversation.getToken())) {
             Data.Builder data = new Data.Builder();
-            data.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
-            data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, currentUser.getId());
+            data.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
+            data.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), currentUser.getId());
             return data.build();
         }
 
@@ -305,8 +305,8 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     private Bundle getDeleteConversationBundle() {
         if (!TextUtils.isEmpty(conversation.getToken())) {
             Bundle bundle = new Bundle();
-            bundle.putLong(BundleKeys.KEY_INTERNAL_USER_ID, currentUser.getId());
-            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
+            bundle.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), currentUser.getId());
+            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
             return bundle;
         }
 

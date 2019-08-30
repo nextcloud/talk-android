@@ -77,7 +77,7 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
 
         setContentView(R.layout.activity_main);
 
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -92,7 +92,7 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
             hasDb = false;
         }
 
-        if (getIntent().hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+        if (getIntent().hasExtra(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL())) {
             if (!router.hasRootController()) {
                 router.setRoot(RouterTransaction.with(new ConversationsListController())
                         .pushChangeHandler(new HorizontalChangeHandler())
@@ -148,14 +148,14 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
+        if (intent.hasExtra(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL())) {
+            if (intent.getBooleanExtra(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL(), false)) {
                 router.pushController(RouterTransaction.with(new CallNotificationController(intent.getExtras()))
                         .pushChangeHandler(new HorizontalChangeHandler())
                         .popChangeHandler(new HorizontalChangeHandler()));
             } else {
-                ConductorRemapping.remapChatController(router, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
-                        intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN), intent.getExtras(), false);
+                ConductorRemapping.INSTANCE.remapChatController(router, intent.getLongExtra(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1),
+                        intent.getStringExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()), intent.getExtras(), false);
                 ;
             }
         }

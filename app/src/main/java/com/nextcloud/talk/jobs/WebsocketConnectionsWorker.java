@@ -55,7 +55,7 @@ public class WebsocketConnectionsWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         List<UserEntity> userEntityList = userUtils.getUsers();
         UserEntity userEntity;

@@ -23,35 +23,23 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <EditText
+        android:id="@id/messageInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/sendButtonSpace"
+        android:layout_toEndOf="@id/attachmentButtonSpace"
+        android:imeOptions="actionDone"
+        android:inputType="textAutoCorrect|textMultiLine|textCapSentences"
+        android:lineSpacingMultiplier="1.2" />
+
     <ImageButton
         android:id="@id/attachmentButton"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_centerVertical="true"
         android:scaleType="centerInside" />
-
-    <androidx.legacy.widget.Space
-        android:id="@id/attachmentButtonSpace"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_toEndOf="@id/attachmentButton" />
-
-    <EditText
-        android:id="@id/messageInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:lineSpacingMultiplier="1.2"
-        android:imeOptions="actionDone"
-        android:layout_toStartOf="@id/sendButtonSpace"
-        android:layout_toEndOf="@id/attachmentButtonSpace"
-        android:inputType="textAutoCorrect|textMultiLine|textCapSentences" />
-
-    <androidx.legacy.widget.Space
-        android:id="@id/sendButtonSpace"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_toStartOf="@id/smileyButton" />
 
     <ImageButton
         android:id="@+id/smileyButton"
@@ -68,9 +56,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:scaleType="centerInside"
-        android:padding="4dp"
+        android:layout_centerVertical="true"
         android:adjustViewBounds="true"
-        android:layout_centerVertical="true" />
+        android:padding="4dp"
+        android:scaleType="centerInside" />
+
+    <androidx.legacy.widget.Space
+        android:id="@id/attachmentButtonSpace"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_toEndOf="@id/attachmentButton" />
+
+    <androidx.legacy.widget.Space
+        android:id="@id/sendButtonSpace"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_toStartOf="@id/smileyButton" />
 
 </merge>

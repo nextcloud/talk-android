@@ -92,7 +92,7 @@ public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
 
         if (position == 0) {
             Spannable spannableString = new SpannableString(title);
-            spannableString.setSpan(new ForegroundColorSpan(NextcloudTalkApplication.getSharedApplication()
+            spannableString.setSpan(new ForegroundColorSpan(NextcloudTalkApplication.Companion.getSharedApplication()
                             .getResources().getColor(R.color.grey_600)), 0,
                     spannableString.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

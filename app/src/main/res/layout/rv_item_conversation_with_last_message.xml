@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -42,14 +41,6 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/margin_between_elements">
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@id/dialogAvatar"
-                android:layout_width="@dimen/small_item_height"
-                android:layout_height="@dimen/small_item_height"
-                android:contentDescription="@null"
-                app:roundAsCircle="true"
-                tools:src="@drawable/ic_call_black_24dp" />
-
             <ImageView
                 android:id="@+id/passwordProtectedRoomImageView"
                 android:layout_width="@dimen/margin_between_elements"
@@ -63,30 +54,15 @@
                 android:layout_height="@dimen/margin_between_elements"
                 android:layout_gravity="top|end"
                 android:background="@drawable/shape_favorite_bubble" />
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@id/dialogAvatar"
+                android:layout_width="@dimen/small_item_height"
+                android:layout_height="@dimen/small_item_height"
+                android:contentDescription="@null"
+                app:roundAsCircle="true"
+                tools:src="@drawable/ic_call_black_24dp" />
         </FrameLayout>
-
-        <TextView
-            android:id="@id/dialogName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/dialogAvatarFrameLayout"
-            android:layout_toStartOf="@id/dialogDate"
-            android:layout_toEndOf="@id/dialogAvatarFrameLayout"
-            android:ellipsize="end"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:textColor="@color/conversation_item_header"
-            android:textSize="16sp"
-            tools:text="Best conversation" />
-
-        <TextView
-            android:id="@id/dialogDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/conversation_date" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -94,15 +70,6 @@
             android:layout_below="@id/dialogName"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/dialogAvatarFrameLayout">
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@id/dialogLastMessageUserAvatar"
-                android:layout_width="@dimen/small_item_height"
-                android:layout_height="@dimen/small_item_height"
-                android:layout_marginEnd="8dp"
-                android:contentDescription="@null"
-                app:roundAsCircle="true"
-                tools:src="@drawable/ic_call_black_24dp" />
 
             <TextView
                 android:id="@id/dialogLastMessage"
@@ -126,14 +93,46 @@
                 android:layout_marginStart="8dp"
                 android:background="@drawable/bubble_circle_unread"
                 android:gravity="center"
-                android:textSize="12sp"
                 android:lines="1"
                 android:textAlignment="center"
                 android:textColor="@color/conversation_unread_bubble"
+                android:textSize="12sp"
                 tools:background="@drawable/bubble_circle_unread"
                 tools:text="99+" />
 
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@id/dialogLastMessageUserAvatar"
+                android:layout_width="@dimen/small_item_height"
+                android:layout_height="@dimen/small_item_height"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@null"
+                app:roundAsCircle="true"
+                tools:src="@drawable/ic_call_black_24dp" />
+
         </RelativeLayout>
+
+        <TextView
+            android:id="@id/dialogDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/conversation_date" />
+
+        <TextView
+            android:id="@id/dialogName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/dialogAvatarFrameLayout"
+            android:layout_toStartOf="@id/dialogDate"
+            android:layout_toEndOf="@id/dialogAvatarFrameLayout"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="@color/conversation_item_header"
+            android:textSize="16sp"
+            tools:text="Best conversation" />
 
     </RelativeLayout>
 </RelativeLayout>

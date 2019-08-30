@@ -41,7 +41,7 @@ public class WebSocketConnectionHelper {
 
 
     public WebSocketConnectionHelper() {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
     public static synchronized MagicWebSocketInstance getMagicWebSocketInstanceForUserId(long userId) {

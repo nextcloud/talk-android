@@ -74,15 +74,15 @@ public class PushUtils {
     private String proxyServer;
 
     public PushUtils() {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        keysFile = NextcloudTalkApplication.getSharedApplication().getDir("PushKeyStore", Context.MODE_PRIVATE);
+        keysFile = NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeyStore", Context.MODE_PRIVATE);
 
-        publicKeyFile = new File(NextcloudTalkApplication.getSharedApplication().getDir("PushKeystore",
+        publicKeyFile = new File(NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore",
                 Context.MODE_PRIVATE), "push_key.pub");
-        privateKeyFile = new File(NextcloudTalkApplication.getSharedApplication().getDir("PushKeystore",
+        privateKeyFile = new File(NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore",
                 Context.MODE_PRIVATE), "push_key.priv");
-        proxyServer = NextcloudTalkApplication.getSharedApplication().getResources().
+        proxyServer = NextcloudTalkApplication.Companion.getSharedApplication().getResources().
                 getString(R.string.nc_push_server_url);
     }
 

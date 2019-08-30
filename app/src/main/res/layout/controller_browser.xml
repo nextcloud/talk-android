@@ -26,13 +26,6 @@
     android:background="@color/bg_default"
     android:orientation="vertical">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/path_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="@color/bg_default"
-        app:menu="@menu/file_browser_path" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
@@ -40,6 +33,13 @@
         android:layout_above="@id/bottom_navigation"
         android:layout_below="@id/path_navigation"
         tools:listitem="@layout/rv_item_browser_file" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/path_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/bg_default"
+        app:menu="@menu/file_browser_path" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

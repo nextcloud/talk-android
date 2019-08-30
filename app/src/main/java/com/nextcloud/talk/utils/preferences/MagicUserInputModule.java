@@ -48,12 +48,12 @@ public class MagicUserInputModule extends StandardUserInputModule {
 
     public MagicUserInputModule(Context context) {
         super(context);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
     public MagicUserInputModule(Context context, List<String> keysWithIntegerInput) {
         super(context);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         this.keysWithIntegerInput = keysWithIntegerInput;
     }
 

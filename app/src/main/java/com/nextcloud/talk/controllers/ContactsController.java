@@ -64,8 +64,8 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall;
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser;
 import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.rooms.Conversation;
-import com.nextcloud.talk.models.json.rooms.RoomOverall;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -170,7 +170,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public ContactsController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
-        if (args.containsKey(BundleKeys.KEY_NEW_CONVERSATION)) {
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_NEW_CONVERSATION())) {
             isNewConversationView = true;
         }
 
@@ -196,7 +196,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         currentUser = userUtils.getCurrentUser();
 
@@ -259,15 +259,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         public void onNext(RoomOverall roomOverall) {
                             Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
                             Bundle bundle = new Bundle();
-                            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
-                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
-                            bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
+                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
+                            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
+                            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
 
                             if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                                bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
+                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
                                         Parcels.wrap(roomOverall.getOcs().getData()));
 
-                                ConductorRemapping.remapChatController(getRouter(), currentUser.getId(),
+                                ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
                                         roomOverall.getOcs().getData().getToken(), bundle, true);
                             } else {
                                 conversationIntent.putExtras(bundle);
@@ -306,10 +306,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             ArrayList<String> groupIdsArray = new ArrayList<>(selectedGroupIds);
 
 
-            bundle.putParcelable(BundleKeys.KEY_CONVERSATION_TYPE, Parcels.wrap(roomType));
-            bundle.putStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS, userIdsArray);
-            bundle.putStringArrayList(BundleKeys.KEY_INVITED_GROUP, groupIdsArray);
-            bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 11);
+            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_CONVERSATION_TYPE(), Parcels.wrap(roomType));
+            bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_PARTICIPANTS(), userIdsArray);
+            bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_GROUP(), groupIdsArray);
+            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 11);
             prepareAndShowBottomSheetWithBundle(bundle, true);
         }
     }
@@ -839,16 +839,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 if (getActivity() != null) {
                                     Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
                                     Bundle bundle = new Bundle();
-                                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
-                                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
-                                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
+                                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
+                                    bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
+                                    bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
                                     conversationIntent.putExtras(bundle);
 
                                     if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                                        bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
+                                        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
                                                 Parcels.wrap(roomOverall.getOcs().getData()));
 
-                                        ConductorRemapping.remapChatController(getRouter(), currentUser.getId(),
+                                        ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
                                                 roomOverall.getOcs().getData().getToken(), bundle, true);
                                     } else {
                                         startActivity(conversationIntent);
@@ -914,7 +914,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @OnClick(R.id.joinConversationViaLinkRelativeLayout)
     void joinConversationViaLink() {
         Bundle bundle = new Bundle();
-        bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 10);
+        bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 10);
 
         prepareAndShowBottomSheetWithBundle(bundle, true);
     }

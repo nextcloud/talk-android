@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.events;
 
-import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import lombok.Data;
 
 @Data

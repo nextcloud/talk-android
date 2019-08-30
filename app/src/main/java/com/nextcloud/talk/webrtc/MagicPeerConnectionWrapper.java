@@ -81,7 +81,7 @@ public class MagicPeerConnectionWrapper {
                                       String sessionId, String localSession, @Nullable MediaStream mediaStream,
                                       boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
 
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         this.localMediaStream = mediaStream;
         this.videoStreamType = videoStreamType;
@@ -205,7 +205,7 @@ public class MagicPeerConnectionWrapper {
         if (!TextUtils.isEmpty(nick)) {
             return nick;
         } else {
-            return NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_nick_guest);
+            return NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_nick_guest);
         }
     }
 
@@ -260,7 +260,7 @@ public class MagicPeerConnectionWrapper {
             data.get(bytes);
             String strData = new String(bytes);
             Log.d(TAG, "Got msg: " + strData + " over " + TAG + " " + sessionId);
-            LoggingUtils.writeLogEntryToFile(context,
+            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                     "Got msg: " + strData + " over " + peerConnection.hashCode() + " " + sessionId);
 
             try {
@@ -336,7 +336,7 @@ public class MagicPeerConnectionWrapper {
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
             peerIceConnectionState = iceConnectionState;
-            LoggingUtils.writeLogEntryToFile(context,
+            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                     "iceConnectionChangeTo: " + iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
 
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
@@ -428,7 +428,7 @@ public class MagicPeerConnectionWrapper {
         @Override
         public void onCreateFailure(String s) {
             Log.d(TAG, s);
-            LoggingUtils.writeLogEntryToFile(context,
+            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                     "SDPObserver createFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId);
 
         }
@@ -436,7 +436,7 @@ public class MagicPeerConnectionWrapper {
         @Override
         public void onSetFailure(String s) {
             Log.d(TAG, s);
-            LoggingUtils.writeLogEntryToFile(context,
+            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                     "SDPObserver setFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId);
         }
 

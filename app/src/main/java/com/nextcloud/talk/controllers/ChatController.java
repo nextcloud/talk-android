@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -36,17 +35,23 @@ import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
@@ -72,13 +77,19 @@ import com.nextcloud.talk.models.json.call.Call;
 import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.RoomOverall;
+import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.mention.Mention;
-import com.nextcloud.talk.models.json.rooms.Conversation;
-import com.nextcloud.talk.models.json.rooms.RoomOverall;
-import com.nextcloud.talk.models.json.rooms.RoomsOverall;
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter;
-import com.nextcloud.talk.utils.*;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.ConductorRemapping;
+import com.nextcloud.talk.utils.DateUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.KeyboardUtils;
+import com.nextcloud.talk.utils.MagicCharPolicy;
+import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -103,21 +114,32 @@ import com.vanniktech.emoji.listeners.OnEmojiClickListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener;
 import com.webianks.library.PopupBubble;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcels;
-import retrofit2.HttpException;
-import retrofit2.Response;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
+import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChatController extends BaseController implements MessagesListAdapter.OnLoadMoreListener,
@@ -146,6 +168,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
     ProgressBar loadingProgressBar;
     @BindView(R.id.smileyButton)
     ImageButton smileyButton;
+    @BindView(R.id.lobby_view)
+    RelativeLayout lobbyView;
+    @BindView(R.id.lobby_text_view)
+    TextView conversationLobbyText;
     private List<Disposable> disposableList = new ArrayList<>();
     private String conversationName;
     private String roomToken;
@@ -167,41 +193,39 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private String roomId;
     private boolean voiceOnly;
     private boolean isFirstMessagesProcessing = true;
-    private boolean havePulledFutureBefore = false;
     private boolean isLeavingForConversation;
     private boolean isLinkPreviewAllowed;
     private boolean wasDetached;
     private EmojiPopup emojiPopup;
 
     private CharSequence myFirstMessage;
-
-    private boolean waitingForFutureResponse = false;
+    private boolean checkingLobbyStatus;
 
     private MenuItem conversationInfoMenuItem;
     private MenuItem conversationVoiceCallMenuItem;
     private MenuItem conversationVideoMenuItem;
 
-    private boolean readOnlyCheckPerformed;
-
     private MagicWebSocketInstance magicWebSocketInstance;
+
+    private Handler lobbyTimerHandler;
 
     public ChatController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        this.conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY);
-        this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
-        this.roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "");
+        this.conversationUser = args.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());
+        this.roomId = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
+        this.roomToken = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), "");
 
-        if (args.containsKey(BundleKeys.KEY_ACTIVE_CONVERSATION)) {
-            this.currentConversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION));
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION())) {
+            this.currentConversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION()));
             if (currentConversation != null) {
                 conversationName = currentConversation.getDisplayName();
             }
         }
 
-        this.roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "");
+        this.roomPassword = args.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), "");
 
         if (conversationUser.getUserId().equals("?")) {
             credentials = null;
@@ -209,14 +233,19 @@ public class ChatController extends BaseController implements MessagesListAdapte
             credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
         }
 
-        if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL);
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL())) {
+            this.startCallFromNotification = args.getBoolean(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL());
         }
 
-        this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
+        this.voiceOnly = args.getBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
     }
 
     private void getRoomInfo() {
+        boolean shouldRepeat = conversationUser.hasSpreedFeatureCapability("webinary-lobby");
+        if (shouldRepeat) {
+            checkingLobbyStatus = true;
+        }
+
         ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser.getBaseUrl(), roomToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -228,12 +257,28 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(RoomOverall roomOverall) {
-                        currentConversation = roomOverall.getOcs().getData();
-                        conversationName = currentConversation.getDisplayName();
-                        setTitle();
+                        Conversation oldConversation = null;
 
-                        setupMentionAutocomplete();
-                        joinRoomWithPassword();
+                        if (currentConversation != null) {
+                            oldConversation = currentConversation;
+                        }
+
+                        currentConversation = roomOverall.getOcs().getData();
+
+                        if (oldConversation == null) {
+                            conversationName = currentConversation.getDisplayName();
+                            setTitle();
+                            setupMentionAutocomplete();
+                        }
+
+                        checkReadOnlyState();
+                        if (oldConversation == null || (!oldConversation.getLobbyState().equals(currentConversation.getLobbyState()) || !oldConversation.getLobbyTimer().equals(currentConversation.getLobbyTimer()))) {
+                            checkLobbyState(oldConversation != null && (!oldConversation.getLobbyState().equals(currentConversation.getLobbyState())));
+                        }
+
+                        if (oldConversation == null) {
+                            joinRoomWithPassword();
+                        }
 
                     }
 
@@ -244,7 +289,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onComplete() {
+                        if (shouldRepeat) {
+                            if (lobbyTimerHandler == null) {
+                                lobbyTimerHandler = new Handler();
+                            }
 
+                            lobbyTimerHandler.postDelayed(() -> getRoomInfo(), 5000);
+                        }
                     }
                 });
     }
@@ -265,6 +316,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             if (roomId.equals(conversation.getRoomId())) {
                                 roomToken = conversation.getToken();
                                 currentConversation = conversation;
+                                checkLobbyState(false);
+                                checkReadOnlyState();
                                 conversationName = conversation.getDisplayName();
                                 setTitle();
                                 break;
@@ -377,10 +430,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
 
         InputFilter[] filters = new InputFilter[1];
-        int lenghtFilter = conversationUser.getMessageMaxLength();
+        int lengthFilter = conversationUser.getMessageMaxLength();
 
 
-        filters[0] = new InputFilter.LengthFilter(lenghtFilter);
+        filters[0] = new InputFilter.LengthFilter(lengthFilter);
         messageInput.setFilters(filters);
 
         messageInput.addTextChangedListener(new TextWatcher() {
@@ -391,8 +444,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() >= lenghtFilter) {
-                    messageInput.setError(String.format(Objects.requireNonNull(getResources()).getString(R.string.nc_limit_hit), Integer.toString(lenghtFilter)));
+                if (s.length() >= lengthFilter) {
+                    messageInput.setError(String.format(Objects.requireNonNull(getResources()).getString(R.string.nc_limit_hit), Integer.toString(lengthFilter)));
                 } else {
                     messageInput.setError(null);
                 }
@@ -433,6 +486,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
             getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> showConversationInfoScreen());
         }
 
+        if (currentConversation != null) {
+            checkLobbyState(false);
+        }
+
         if (adapterWasNull) {
             // we're starting
             if (TextUtils.isEmpty(roomToken)) {
@@ -448,19 +505,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
 
     private void checkReadOnlyState() {
-        if (currentConversation != null && !readOnlyCheckPerformed) {
-
-            readOnlyCheckPerformed = true;
-            if (currentConversation.getConversationReadOnlyState() != null && currentConversation.getConversationReadOnlyState().equals(Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY)) {
-                messageInput.setHint(R.string.nc_readonly_hint);
+        if (currentConversation != null) {
+            if (currentConversation.shouldShowLobby(conversationUser) || (currentConversation.getConversationReadOnlyState() != null && currentConversation.getConversationReadOnlyState().equals(Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY))) {
 
                 conversationVoiceCallMenuItem.getIcon().setAlpha(99);
                 conversationVideoMenuItem.getIcon().setAlpha(99);
+                if (messageInputView != null) {
+                    messageInputView.setVisibility(View.GONE);
+                }
 
-                setChildrenState(messageInputView, false);
             } else {
-                messageInput.setHint("");
-
                 if (conversationVoiceCallMenuItem != null) {
                     conversationVoiceCallMenuItem.getIcon().setAlpha(255);
                 }
@@ -468,38 +522,57 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 if (conversationVideoMenuItem != null) {
                     conversationVideoMenuItem.getIcon().setAlpha(255);
                 }
-                
-                setChildrenState(messageInputView, true);
+
+                if (messageInputView != null) {
+                    if (currentConversation.shouldShowLobby(conversationUser)) {
+                        messageInputView.setVisibility(View.GONE);
+                    } else {
+                        messageInputView.setVisibility(View.VISIBLE);
+                    }
+                }
             }
         }
     }
 
-    private void setChildrenState(View view, boolean enabled) {
-        if (view.getId() != R.id.messageSendButton) {
-            view.setEnabled(enabled);
-        }
+    private void checkLobbyState(boolean lobbyStateChanged) {
+        if (currentConversation != null) {
 
-        if (enabled) {
-            view.setAlpha(1.0f);
-        } else {
-            view.setAlpha(0.38f);
-        }
+            if (!checkingLobbyStatus) {
+                getRoomInfo();
+            }
 
-        if (view instanceof ViewGroup) {
-            ViewGroup viewGroup = (ViewGroup) view;
-            for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                View child = viewGroup.getChildAt(i);
-                setChildrenState(child, enabled);
+            if (currentConversation.shouldShowLobby(conversationUser)) {
+                lobbyView.setVisibility(View.VISIBLE);
+                messagesListView.setVisibility(View.GONE);
+                messageInputView.setVisibility(View.GONE);
+                loadingProgressBar.setVisibility(View.GONE);
+
+                if (currentConversation.getLobbyTimer() != null && currentConversation.getLobbyTimer() != 0) {
+                    conversationLobbyText.setText(String.format(getResources().getString(R.string.nc_lobby_waiting_with_date), DateUtils.INSTANCE.getLocalDateStringFromTimestampForLobby(currentConversation.getLobbyTimer())));
+                } else {
+                    conversationLobbyText.setText(R.string.nc_lobby_waiting);
+                }
+            } else {
+                lobbyView.setVisibility(View.GONE);
+                messagesListView.setVisibility(View.VISIBLE);
+                messageInput.setVisibility(View.VISIBLE);
+                if (lobbyStateChanged) {
+                    loadingProgressBar.setVisibility(View.VISIBLE);
+                    if (isFirstMessagesProcessing) {
+                        pullChatMessages(0);
+                    } else {
+                        pullChatMessages(1);
+                    }
+                }
             }
         }
     }
-
 
     private void showBrowserScreen(BrowserController.BrowserType browserType) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap(browserType));
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(conversationUser));
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_BROWSER_TYPE(), Parcels.wrap(browserType));
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), Parcels.wrap(conversationUser));
+        bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomToken);
         getRouter().pushController((RouterTransaction.with(new BrowserController(bundle))
                 .pushChangeHandler(new VerticalChangeHandler())
                 .popChangeHandler(new VerticalChangeHandler())));
@@ -507,8 +580,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void showConversationInfoScreen() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser);
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), conversationUser);
+        bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomToken);
         getRouter().pushController((RouterTransaction.with(new ConversationInfoController(bundle))
                 .pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler())));
@@ -689,7 +762,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             currentCall = callOverall.getOcs().getData();
                             ApplicationWideCurrentRoomHolder.getInstance().setSession(currentCall.getSessionId());
                             startPing();
-                            havePulledFutureBefore = false;
+
+                            checkLobbyState(false);
 
                             setupWebsocket();
 
@@ -750,6 +824,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     @Override
                     public void onNext(GenericOverall genericOverall) {
                         dispose();
+
+                        checkingLobbyStatus = false;
+
+                        if (lobbyTimerHandler != null) {
+                            lobbyTimerHandler.removeCallbacksAndMessages(null);
+                        }
 
                         if (magicWebSocketInstance != null && currentCall != null) {
                             magicWebSocketInstance.joinRoomWithRoomTokenAndSession("", currentCall.getSessionId());
@@ -858,22 +938,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
             return;
         }
 
-        if (havePulledFutureBefore && lookIntoFuture == 1 && magicWebSocketInstance != null ) {
+        if (currentConversation.shouldShowLobby(conversationUser)) {
             return;
         }
 
         if (lookIntoFuture > 0) {
-            if (waitingForFutureResponse) {
-                return;
-            } else {
-                waitingForFutureResponse = true;
-            }
-
             lookingIntoFuture = true;
-            havePulledFutureBefore = true;
         }
-
-        lookIntoFuture = lookIntoFuture > 0 ? 1 : 0;
 
         Map<String, Integer> fieldMap = new HashMap<>();
         fieldMap.put("lookIntoFuture", lookIntoFuture);
@@ -906,19 +977,17 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                             @Override
                             public void onNext(Response response) {
-                                waitingForFutureResponse = false;
                                 processMessages(response, true);
                             }
 
                             @Override
                             public void onError(Throwable e) {
-                                waitingForFutureResponse = false;
 
                             }
 
                             @Override
                             public void onComplete() {
-                                if (magicWebSocketInstance == null) {
+                                if (currentConversation.shouldShowLobby(conversationUser)) {
                                     pullChatMessages(1);
                                 }
                             }
@@ -1116,7 +1185,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
-
         if (conversationUser.hasSpreedFeatureCapability("read-only-rooms")) {
             checkReadOnlyState();
         }
@@ -1167,14 +1235,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private Intent getIntentForCall(boolean isVoiceOnlyCall) {
         if (currentConversation != null) {
             Bundle bundle = new Bundle();
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken);
-            bundle.putString(BundleKeys.KEY_ROOM_ID, roomId);
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser);
-            bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword);
-            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser.getBaseUrl());
+            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomToken);
+            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomId);
+            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), conversationUser);
+            bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), roomPassword);
+            bundle.putString(BundleKeys.INSTANCE.getKEY_MODIFIED_BASE_URL(), conversationUser.getBaseUrl());
 
             if (isVoiceOnlyCall) {
-                bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true);
+                bundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), true);
             }
 
             if (getActivity() != null) {
@@ -1215,8 +1283,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
+        /*
         switch (webSocketCommunicationEvent.getType()) {
             case "refreshChat":
+
                 if (webSocketCommunicationEvent.getHashMap().get(BundleKeys.KEY_INTERNAL_USER_ID).equals(Long.toString(conversationUser.getId()))) {
                     if (roomToken.equals(webSocketCommunicationEvent.getHashMap().get(BundleKeys.KEY_ROOM_TOKEN))) {
                         pullChatMessages(2);
@@ -1224,7 +1294,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 }
                 break;
             default:
-        }
+        }*/
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -1248,16 +1318,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         public void onNext(RoomOverall roomOverall) {
                             Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
                             Bundle bundle = new Bundle();
-                            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser);
-                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken());
-                            bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId());
+                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), conversationUser);
+                            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
+                            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
 
                             if (conversationUser.hasSpreedFeatureCapability("chat-v2")) {
-                                bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
+                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
                                         Parcels.wrap(roomOverall.getOcs().getData()));
                                 conversationIntent.putExtras(bundle);
 
-                                ConductorRemapping.remapChatController(getRouter(), conversationUser.getId(),
+                                ConductorRemapping.INSTANCE.remapChatController(getRouter(), conversationUser.getId(),
                                         roomOverall.getOcs().getData().getToken(), bundle, false);
 
                             } else {

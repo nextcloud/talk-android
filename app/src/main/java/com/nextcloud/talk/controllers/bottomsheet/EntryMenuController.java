@@ -44,7 +44,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
-import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -85,18 +85,18 @@ public class EntryMenuController extends BaseController {
         super(args);
         originalBundle = args;
 
-        this.operationCode = args.getInt(BundleKeys.KEY_OPERATION_CODE);
-        if (args.containsKey(BundleKeys.KEY_ROOM)) {
-            this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        this.operationCode = args.getInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE());
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_ROOM())) {
+            this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
         }
 
-        if (args.containsKey(BundleKeys.KEY_SHARE_INTENT)) {
-            this.shareIntent = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_SHARE_INTENT));
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_SHARE_INTENT())) {
+            this.shareIntent = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_SHARE_INTENT()));
         }
 
-        this.name = args.getString(BundleKeys.KEY_APP_ITEM_NAME, "");
-        this.packageName = args.getString(BundleKeys.KEY_APP_ITEM_PACKAGE_NAME, "");
-        this.callUrl = args.getString(BundleKeys.KEY_CALL_URL, "");
+        this.name = args.getString(BundleKeys.INSTANCE.getKEY_APP_ITEM_NAME(), "");
+        this.packageName = args.getString(BundleKeys.INSTANCE.getKEY_APP_ITEM_PACKAGE_NAME(), "");
+        this.callUrl = args.getString(BundleKeys.INSTANCE.getKEY_CALL_URL(), "");
     }
 
     @Override
@@ -124,12 +124,12 @@ public class EntryMenuController extends BaseController {
         if (operationCode == 99) {
             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
-            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
-            bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
-            bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, editText.getText().toString());
-            bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
-            if (originalBundle.containsKey(BundleKeys.KEY_SERVER_CAPABILITIES)) {
-                bundle.putParcelable(BundleKeys.KEY_SERVER_CAPABILITIES, originalBundle.getParcelable(BundleKeys.KEY_SERVER_CAPABILITIES));
+            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
+            bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), callUrl);
+            bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), editText.getText().toString());
+            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), operationCode);
+            if (originalBundle.containsKey(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES())) {
+                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES(), originalBundle.getParcelable(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES()));
             }
 
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
@@ -143,8 +143,8 @@ public class EntryMenuController extends BaseController {
             } else {
                 conversation.setName(editText.getText().toString());
             }
-            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
-            bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
+            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
+            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), operationCode);
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
@@ -161,15 +161,15 @@ public class EntryMenuController extends BaseController {
         } else if (operationCode != 11) {
             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
-            bundle.putInt(BundleKeys.KEY_OPERATION_CODE, operationCode);
-            bundle.putString(BundleKeys.KEY_CALL_URL, editText.getText().toString());
+            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), operationCode);
+            bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), editText.getText().toString());
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
 
         } else if (operationCode == 11) {
             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
-            originalBundle.putString(BundleKeys.KEY_CONVERSATION_NAME, editText.getText().toString());
+            originalBundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), editText.getText().toString());
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(originalBundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
@@ -180,7 +180,7 @@ public class EntryMenuController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         if (conversation != null && operationCode == 2) {
             editText.setText(conversation.getName());

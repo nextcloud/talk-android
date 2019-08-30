@@ -63,15 +63,15 @@ public class DeleteConversationWorker extends Worker {
 
     public DeleteConversationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
     @NonNull
     @Override
     public Result doWork() {
         Data data = getInputData();
-        long operationUserId = data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1);
-        String conversationToken = data.getString(BundleKeys.KEY_ROOM_TOKEN);
+        long operationUserId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1);
+        String conversationToken = data.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());
         UserEntity operationUser = userUtils.getUserWithId(operationUserId);
 
         if (operationUser != null) {

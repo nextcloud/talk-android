@@ -96,7 +96,7 @@ public class NotificationUtils {
                     notification = statusBarNotification.getNotification();
 
                     if (notification != null && !notification.extras.isEmpty()) {
-                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)) {
+                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID())) {
                             notificationManager.cancel(statusBarNotification.getId());
                         }
                     }
@@ -120,8 +120,8 @@ public class NotificationUtils {
                     notification = statusBarNotification.getNotification();
 
                     if (notification != null && !notification.extras.isEmpty()) {
-                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
-                                notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
+                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()) &&
+                                notificationId == notification.extras.getLong(BundleKeys.INSTANCE.getKEY_NOTIFICATION_ID())) {
                             notificationManager.cancel(statusBarNotification.getId());
                         }
                     }
@@ -146,8 +146,8 @@ public class NotificationUtils {
                     notification = statusBarNotification.getNotification();
 
                     if (notification != null && !notification.extras.isEmpty()) {
-                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
-                                roomTokenOrId.equals(statusBarNotification.getNotification().extras.getString(BundleKeys.KEY_ROOM_TOKEN))) {
+                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()) &&
+                                roomTokenOrId.equals(statusBarNotification.getNotification().extras.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) {
                             return statusBarNotification;
                         }
                     }
@@ -173,8 +173,8 @@ public class NotificationUtils {
                     notification = statusBarNotification.getNotification();
 
                     if (notification != null && !notification.extras.isEmpty()) {
-                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
-                                roomTokenOrId.equals(statusBarNotification.getNotification().extras.getString(BundleKeys.KEY_ROOM_TOKEN))) {
+                        if (conversationUser.getId() == notification.extras.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()) &&
+                                roomTokenOrId.equals(statusBarNotification.getNotification().extras.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) {
                             notificationManager.cancel(statusBarNotification.getId());
                         }
                     }

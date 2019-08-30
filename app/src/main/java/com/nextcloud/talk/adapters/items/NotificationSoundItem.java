@@ -80,7 +80,7 @@ public class NotificationSoundItem extends AbstractFlexibleItem<NotificationSoun
             holder.checkedImageView.setVisibility(View.GONE);
         }
 
-        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
         holder.simpleDraweeView.getHierarchy().setBackgroundImage(new ColorDrawable(resources.getColor(R.color.colorPrimary)));
         if (position == 0) {
             holder.simpleDraweeView.getHierarchy().setImage(resources.getDrawable(R.drawable.ic_stop_white_24dp), 100,

@@ -63,8 +63,8 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
-import com.nextcloud.talk.models.json.rooms.Conversation;
-import com.nextcloud.talk.models.json.rooms.RoomsOverall;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.signaling.*;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
@@ -228,17 +228,17 @@ public class CallController extends BaseController {
 
     public CallController(Bundle args) {
         super(args);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
-        roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "");
-        conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY);
-        conversationPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "");
-        isVoiceOnlyCall = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
+        roomId = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
+        roomToken = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), "");
+        conversationUser = args.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());
+        conversationPassword = args.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), "");
+        isVoiceOnlyCall = args.getBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
 
         credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
 
-        baseUrl = args.getString(BundleKeys.KEY_MODIFIED_BASE_URL, "");
+        baseUrl = args.getString(BundleKeys.INSTANCE.getKEY_MODIFIED_BASE_URL(), "");
 
         if (TextUtils.isEmpty(baseUrl)) {
             baseUrl = conversationUser.getBaseUrl();

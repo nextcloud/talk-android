@@ -51,7 +51,7 @@ public class MagicKeyManager implements X509KeyManager {
         this.userUtils = userUtils;
         this.appPreferences = appPreferences;
 
-        context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+        context = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
     }
 
     @Override

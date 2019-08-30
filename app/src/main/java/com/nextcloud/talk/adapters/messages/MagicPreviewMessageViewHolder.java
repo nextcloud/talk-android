@@ -70,7 +70,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
     public MagicPreviewMessageViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
     @SuppressLint("SetTextI18n")
@@ -99,7 +99,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             messageText.setText(message.getSelectedIndividualHashMap().get("name"));
             DisplayUtils.setClickableString(message.getSelectedIndividualHashMap().get("name"), message.getSelectedIndividualHashMap().get("link"), messageText);
             if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
-                image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap().get("mimetype"))));
+                image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap().get("mimetype"))));
             } else {
                 fetchFileInformation("/" + message.getSelectedIndividualHashMap().get("path"), message.getActiveUser());
             }
@@ -109,14 +109,14 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 String accountString =
                         message.getActiveUser().getUsername() + "@" + message.getActiveUser().getBaseUrl().replace("https://", "").replace("http://", "");
 
-                if (AccountUtils.canWeOpenFilesApp(context, accountString)) {
+                if (AccountUtils.INSTANCE.canWeOpenFilesApp(context, accountString)) {
                     Intent filesAppIntent = new Intent(Intent.ACTION_VIEW, null);
                     final ComponentName componentName = new ComponentName(context.getString(R.string.nc_import_accounts_from), "com.owncloud.android.ui.activity.FileDisplayActivity");
                     filesAppIntent.setComponent(componentName);
                     filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     filesAppIntent.setPackage(context.getString(R.string.nc_import_accounts_from));
-                    filesAppIntent.putExtra(BundleKeys.KEY_ACCOUNT, accountString);
-                    filesAppIntent.putExtra(BundleKeys.KEY_FILE_ID, message.getSelectedIndividualHashMap().get("id"));
+                    filesAppIntent.putExtra(BundleKeys.INSTANCE.getKEY_ACCOUNT(), accountString);
+                    filesAppIntent.putExtra(BundleKeys.INSTANCE.getKEY_FILE_ID(), message.getSelectedIndividualHashMap().get("id"));
                     context.startActivity(filesAppIntent);
                 } else {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
@@ -163,7 +163,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                         if (davResponse.getData() != null) {
                             List<BrowserFile> browserFileList = (List<BrowserFile>) davResponse.getData();
                             if (!browserFileList.isEmpty()) {
-                                new Handler(context.getMainLooper()).post(() -> image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.getDrawableResourceIdForMimeType(browserFileList.get(0).getMimeType()))));
+                                new Handler(context.getMainLooper()).post(() -> image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(browserFileList.get(0).getMimeType()))));
                             }
                         }
                     }

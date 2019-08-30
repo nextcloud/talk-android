@@ -79,7 +79,7 @@ public class AccountRemovalWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         PushConfigurationState pushConfigurationState;
         String credentials;

@@ -18,15 +18,19 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.rooms;
+package com.nextcloud.talk.models.json.conversations;
 
 import android.content.res.Resources;
+
+import androidx.annotation.Nullable;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter;
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.converters.EnumReadOnlyConversationConverter;
@@ -79,11 +83,15 @@ public class Conversation {
     @JsonField(name = "lastMessage")
     public ChatMessage lastMessage;
     @JsonField(name = "objectType")
-    String objectType;
+    public String objectType;
     @JsonField(name = "notificationLevel", typeConverter = EnumNotificationLevelConverter.class)
-    NotificationLevel notificationLevel;
+    public NotificationLevel notificationLevel;
     @JsonField(name = "readOnly", typeConverter = EnumReadOnlyConversationConverter.class)
-    ConversationReadOnlyState conversationReadOnlyState;
+    public ConversationReadOnlyState conversationReadOnlyState;
+    @JsonField(name = "lobbyState", typeConverter = EnumLobbyStateConverter.class)
+    public LobbyState lobbyState;
+    @JsonField(name = "lobbyTimer")
+    public Long lobbyTimer;
 
 
     public boolean isPublic() {
@@ -97,7 +105,7 @@ public class Conversation {
 
 
     private boolean isLockedOneToOne(UserEntity conversationUser) {
-        return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && conversationUser.hasSpreedFeatureCapability("locked-one-to-one-rooms"));
+        return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && conversationUser.hasSpreedFeatureCapability("locked-one-to-one-conversations"));
     }
 
     public boolean canModerate(UserEntity conversationUser) {
@@ -105,6 +113,13 @@ public class Conversation {
                 || Participant.ParticipantType.MODERATOR.equals(participantType)) && !isLockedOneToOne(conversationUser));
     }
 
+    public boolean shouldShowLobby(UserEntity conversationUser) {
+        return getLobbyState().equals(LobbyState.LOBBY_STATE_MODERATORS_ONLY) && !canModerate(conversationUser);
+    }
+
+    public boolean isLobbyViewApplicable(UserEntity conversationUser) {
+        return !canModerate(conversationUser) && (getType() == ConversationType.ROOM_GROUP_CALL || getType() == ConversationType.ROOM_PUBLIC_CALL);
+    }
     public boolean isNameEditable(UserEntity conversationUser) {
         return (canModerate(conversationUser) && !ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
     }
@@ -115,7 +130,7 @@ public class Conversation {
     }
 
     public String getDeleteWarningMessage() {
-        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
         if (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             return String.format(resources.getString(R.string.nc_delete_conversation_one2one),
                     getDisplayName());
@@ -131,6 +146,11 @@ public class Conversation {
         ALWAYS,
         MENTION,
         NEVER
+    }
+
+    public enum LobbyState {
+        LOBBY_STATE_ALL_PARTICIPANTS,
+        LOBBY_STATE_MODERATORS_ONLY
     }
 
     public enum ConversationReadOnlyState {

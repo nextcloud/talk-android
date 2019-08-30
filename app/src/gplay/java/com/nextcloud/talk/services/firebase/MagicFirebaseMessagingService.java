@@ -45,7 +45,7 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         appPreferences.setPushToken(token);
         OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
         WorkManager.getInstance().enqueue(pushRegistrationWork);
@@ -60,8 +60,8 @@ public class MagicFirebaseMessagingService extends FirebaseMessagingService {
 
         if (remoteMessage.getData() != null) {
             Data messageData = new Data.Builder()
-                    .putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, remoteMessage.getData().get("subject"))
-                    .putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, remoteMessage.getData().get("signature"))
+                    .putString(BundleKeys.INSTANCE.getKEY_NOTIFICATION_SUBJECT(), remoteMessage.getData().get("subject"))
+                    .putString(BundleKeys.INSTANCE.getKEY_NOTIFICATION_SIGNATURE(), remoteMessage.getData().get("signature"))
                     .build();
 
             OneTimeWorkRequest pushNotificationWork = new OneTimeWorkRequest.Builder(NotificationWorker.class)

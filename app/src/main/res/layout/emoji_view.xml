@@ -22,11 +22,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/emojiViewPager"
+    <LinearLayout
+        android:id="@+id/emojiViewTab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/emojiViewDivider" />
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" />
 
     <View
         android:id="@+id/emojiViewDivider"
@@ -34,10 +35,9 @@
         android:layout_height="1dp"
         android:layout_above="@id/emojiViewTab" />
 
-    <LinearLayout
-        android:id="@+id/emojiViewTab"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/emojiViewPager"
         android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal" />
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/emojiViewDivider" />
 </RelativeLayout>

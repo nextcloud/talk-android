@@ -64,11 +64,11 @@ public class SignalingSettingsWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         Data data = getInputData();
 
-        long internalUserId = data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1);
+        long internalUserId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1);
 
         List<UserEntity> userEntityList = new ArrayList<>();
         UserEntity userEntity;

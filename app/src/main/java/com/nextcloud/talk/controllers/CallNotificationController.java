@@ -66,8 +66,8 @@ import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
-import com.nextcloud.talk.models.json.rooms.Conversation;
-import com.nextcloud.talk.models.json.rooms.RoomsOverall;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
@@ -143,11 +143,11 @@ public class CallNotificationController extends BaseController {
 
     public CallNotificationController(Bundle args) {
         super(args);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "");
-        this.currentConversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
-        this.userBeingCalled = args.getParcelable(BundleKeys.KEY_USER_ENTITY);
+        this.roomId = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
+        this.currentConversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
+        this.userBeingCalled = args.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());
 
         this.originalBundle = args;
         credentials = ApiUtils.getCredentials(userBeingCalled.getUsername(), userBeingCalled.getToken());
@@ -174,18 +174,18 @@ public class CallNotificationController extends BaseController {
 
     @OnClick(R.id.callAnswerCameraView)
     void answerWithCamera() {
-        originalBundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false);
+        originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
         proceedToCall();
     }
 
     @OnClick(R.id.callAnswerVoiceOnlyView)
     void answerVoiceOnly() {
-        originalBundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true);
+        originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), true);
         proceedToCall();
     }
 
     private void proceedToCall() {
-        originalBundle.putString(BundleKeys.KEY_ROOM_TOKEN, currentConversation.getToken());
+        originalBundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), currentConversation.getToken());
 
         getRouter().replaceTopController(RouterTransaction.with(new CallController(originalBundle))
                 .popChangeHandler(new HorizontalChangeHandler())
@@ -310,7 +310,7 @@ public class CallNotificationController extends BaseController {
             runAllThings();
         }
 
-        if (DoNotDisturbUtils.shouldPlaySound()) {
+        if (DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
             String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
             Uri ringtoneUri;
 
@@ -348,7 +348,7 @@ public class CallNotificationController extends BaseController {
             }
         }
 
-        if (DoNotDisturbUtils.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
+        if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
             vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
 
             if (vibrator != null) {

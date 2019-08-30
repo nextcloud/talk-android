@@ -21,7 +21,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
+
+    <include layout="@layout/lobby_view"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -36,6 +40,35 @@
         android:indeterminateTint="@color/colorPrimary"
         android:indeterminateTintMode="src_in"
         android:visibility="gone" />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/messageInputView"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/controller_chat_separator" />
+
+    <com.stfalcon.chatkit.messages.MessageInput
+        android:id="@+id/messageInputView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:inputType="textLongMessage|textAutoComplete"
+        android:maxLength="1000"
+        app:attachmentButtonDefaultBgColor="@color/colorPrimary"
+        app:attachmentButtonDefaultIconColor="@color/white"
+        app:attachmentButtonHeight="36dp"
+        app:attachmentButtonWidth="36dp"
+        app:inputButtonDefaultBgColor="@color/colorPrimary"
+        app:inputButtonHeight="36dp"
+        app:inputButtonMargin="8dp"
+        app:inputButtonWidth="36dp"
+        app:inputHint="@string/nc_hint_enter_a_message"
+        app:inputTextColor="@color/fg_default"
+        app:inputTextSize="16sp"
+        app:showAttachmentButton="true" />
 
     <com.stfalcon.chatkit.messages.MessagesList
         android:id="@+id/messagesListView"
@@ -82,34 +115,5 @@
         app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
         app:pb_text="@string/nc_new_messages"
         app:pb_textColor="@color/fg_inverse" />
-
-    <View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@+id/messageInputView"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/controller_chat_separator" />
-
-    <com.stfalcon.chatkit.messages.MessageInput
-        android:id="@+id/messageInputView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:inputType="textLongMessage|textAutoComplete"
-        android:maxLength="1000"
-        app:attachmentButtonDefaultBgColor="@color/colorPrimary"
-        app:attachmentButtonDefaultIconColor="@color/white"
-        app:attachmentButtonHeight="36dp"
-        app:attachmentButtonWidth="36dp"
-        app:inputButtonDefaultBgColor="@color/colorPrimary"
-        app:inputButtonHeight="36dp"
-        app:inputButtonMargin="8dp"
-        app:inputButtonWidth="36dp"
-        app:inputHint="@string/nc_hint_enter_a_message"
-        app:inputTextColor="@color/fg_default"
-        app:inputTextSize="16sp"
-        app:showAttachmentButton="true" />
 
 </RelativeLayout>

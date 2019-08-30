@@ -56,8 +56,8 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
-import com.nextcloud.talk.models.json.rooms.Conversation;
-import com.nextcloud.talk.models.json.rooms.RoomOverall;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -126,31 +126,31 @@ public class OperationsMenuController extends BaseController {
 
     public OperationsMenuController(Bundle args) {
         super(args);
-        this.operationCode = args.getInt(BundleKeys.KEY_OPERATION_CODE);
-        if (args.containsKey(BundleKeys.KEY_ROOM)) {
-            this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_ROOM));
+        this.operationCode = args.getInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE());
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_ROOM())) {
+            this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
         }
 
-        this.callPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "");
-        this.callUrl = args.getString(BundleKeys.KEY_CALL_URL, "");
+        this.callPassword = args.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), "");
+        this.callUrl = args.getString(BundleKeys.INSTANCE.getKEY_CALL_URL(), "");
 
-        if (args.containsKey(BundleKeys.KEY_INVITED_PARTICIPANTS)) {
-            this.invitedUsers = args.getStringArrayList(BundleKeys.KEY_INVITED_PARTICIPANTS);
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_INVITED_PARTICIPANTS())) {
+            this.invitedUsers = args.getStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_PARTICIPANTS());
         }
 
-        if (args.containsKey(BundleKeys.KEY_INVITED_GROUP)) {
-            this.invitedGroups = args.getStringArrayList(BundleKeys.KEY_INVITED_GROUP);
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_INVITED_GROUP())) {
+            this.invitedGroups = args.getStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_GROUP());
         }
 
-        if (args.containsKey(BundleKeys.KEY_CONVERSATION_TYPE)) {
-            this.conversationType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_CONVERSATION_TYPE));
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_CONVERSATION_TYPE())) {
+            this.conversationType = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_CONVERSATION_TYPE()));
         }
 
-        if (args.containsKey(BundleKeys.KEY_SERVER_CAPABILITIES)) {
-            this.serverCapabilities = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_SERVER_CAPABILITIES));
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES())) {
+            this.serverCapabilities = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES()));
         }
 
-        this.conversationName = args.getString(BundleKeys.KEY_CONVERSATION_NAME, "");
+        this.conversationName = args.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), "");
 
     }
 
@@ -162,7 +162,7 @@ public class OperationsMenuController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         processOperation();
     }
@@ -459,11 +459,11 @@ public class OperationsMenuController extends BaseController {
                                 eventBus.post(new BottomSheetLockEvent(true, 0,
                                         true, false));
                                 Bundle bundle = new Bundle();
-                                bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
-                                bundle.putString(BundleKeys.KEY_CALL_URL, callUrl);
-                                bundle.putParcelable(BundleKeys.KEY_SERVER_CAPABILITIES,
+                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
+                                bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), callUrl);
+                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES(),
                                         Parcels.wrap(capabilitiesOverall.getOcs().getData().getCapabilities()));
-                                bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
+                                bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
                                 getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
                                         .pushChangeHandler(new HorizontalChangeHandler())
                                         .popChangeHandler(new HorizontalChangeHandler()));
@@ -610,9 +610,9 @@ public class OperationsMenuController extends BaseController {
                     true, true, dismissView));
 
             Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
-            bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.getRoomId());
-            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversation.getDisplayName());
+            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
+            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
+            bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), conversation.getDisplayName());
             UserEntity conversationUser;
             if (isGuestUser) {
                 conversationUser = new UserEntity();
@@ -627,14 +627,14 @@ public class OperationsMenuController extends BaseController {
                 conversationUser = currentUser;
             }
 
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser);
-            bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation));
-            bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, callPassword);
+            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), conversationUser);
+            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
+            bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), callPassword);
 
             conversationIntent.putExtras(bundle);
 
             if (getParentController() != null) {
-                ConductorRemapping.remapChatController(getParentController().getRouter(), conversationUser.getId(),
+                ConductorRemapping.INSTANCE.remapChatController(getParentController().getRouter(), conversationUser.getId(),
                         conversation.getToken(), bundle, true);
             }
         } else {
@@ -646,12 +646,12 @@ public class OperationsMenuController extends BaseController {
     private void initiateCall() {
         eventBus.post(new BottomSheetLockEvent(true, 0, true, true));
         Bundle bundle = new Bundle();
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
+        bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
-            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl);
+            bundle.putString(BundleKeys.INSTANCE.getKEY_MODIFIED_BASE_URL(), baseUrl);
         }
-        bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(call));
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(call));
 
         if (getActivity() != null) {
 

@@ -71,8 +71,8 @@ import com.nextcloud.talk.models.json.chat.ChatUtils;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.push.NotificationUser;
-import com.nextcloud.talk.models.json.rooms.Conversation;
-import com.nextcloud.talk.models.json.rooms.RoomOverall;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.utils.*;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
@@ -132,13 +132,13 @@ public class NotificationWorker extends Worker {
         boolean muteCalls = false;
 
         if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(userEntity.getId(),
-                "mute_calls", intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN))) != null) {
+                "mute_calls", intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
             muteCalls = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
         }
 
         if (!muteCalls) {
             ncApi.getRoom(credentials, ApiUtils.getRoom(userEntity.getBaseUrl(),
-                    intent.getExtras().getString(BundleKeys.KEY_ROOM_TOKEN)))
+                    intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())))
                     .blockingSubscribe(new Observer<RoomOverall>() {
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -149,7 +149,7 @@ public class NotificationWorker extends Worker {
                         public void onNext(RoomOverall roomOverall) {
                             Conversation conversation = roomOverall.getOcs().getData();
 
-                            intent.putExtra(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
+                            intent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
                             if (conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) ||
                                     (!TextUtils.isEmpty(conversation.getObjectType()) && "share:password".equals
                                             (conversation.getObjectType()))) {
@@ -308,10 +308,10 @@ public class NotificationWorker extends Worker {
         }
 
         Bundle notificationInfo = new Bundle();
-        notificationInfo.putLong(BundleKeys.KEY_INTERNAL_USER_ID, signatureVerification.getUserEntity().getId());
+        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), signatureVerification.getUserEntity().getId());
         // could be an ID or a TOKEN
-        notificationInfo.putString(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
-        notificationInfo.putLong(BundleKeys.KEY_NOTIFICATION_ID, decryptedPushMessage.getNotificationId());
+        notificationInfo.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
+        notificationInfo.putLong(BundleKeys.INSTANCE.getKEY_NOTIFICATION_ID(), decryptedPushMessage.getNotificationId());
         notificationBuilder.setExtras(notificationInfo);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -462,7 +462,7 @@ public class NotificationWorker extends Worker {
         }
 
         if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
-                DoNotDisturbUtils.shouldPlaySound()) {
+                DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
             AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
                     (AudioAttributes.CONTENT_TYPE_SONIFICATION);
 
@@ -487,7 +487,7 @@ public class NotificationWorker extends Worker {
         }
 
 
-        if (DoNotDisturbUtils.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
+        if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
             if (vibrator != null) {
@@ -503,12 +503,12 @@ public class NotificationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         context = getApplicationContext();
         Data data = getInputData();
-        String subject = data.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT);
-        String signature = data.getString(BundleKeys.KEY_NOTIFICATION_SIGNATURE);
+        String subject = data.getString(BundleKeys.INSTANCE.getKEY_NOTIFICATION_SUBJECT());
+        String signature = data.getString(BundleKeys.INSTANCE.getKEY_NOTIFICATION_SIGNATURE());
 
         try {
             byte[] base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT);
@@ -560,28 +560,28 @@ public class NotificationWorker extends Worker {
 
                             if (!signatureVerification.getUserEntity().hasSpreedFeatureCapability
                                     ("no-ping")) {
-                                bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage.getId());
+                                bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), decryptedPushMessage.getId());
                             } else {
-                                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, decryptedPushMessage.getId());
+                                bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
                             }
 
-                            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, signatureVerification.getUserEntity());
+                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), signatureVerification.getUserEntity());
 
-                            bundle.putBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL,
+                            bundle.putBoolean(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL(),
                                     startACall);
 
                             intent.putExtras(bundle);
 
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
-                                    if (!bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
+                                    if (!bundle.containsKey(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())) {
                                         context.startActivity(intent);
                                     } else {
                                         showNotificationForCallWithNoPing(intent);
                                     }
                                     break;
                                 case "room":
-                                    if (bundle.containsKey(BundleKeys.KEY_ROOM_TOKEN)) {
+                                    if (bundle.containsKey(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())) {
                                         showNotificationForCallWithNoPing(intent);
                                     }
                                     break;

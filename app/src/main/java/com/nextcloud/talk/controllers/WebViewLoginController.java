@@ -149,7 +149,7 @@ public class WebViewLoginController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         if (getActivity() != null) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -364,9 +364,9 @@ public class WebViewLoginController extends BaseController {
 
             if (!isPasswordUpdate && finalMessageType == null) {
                 Bundle bundle = new Bundle();
-                bundle.putString(BundleKeys.KEY_USERNAME, loginData.getUsername());
-                bundle.putString(BundleKeys.KEY_TOKEN, loginData.getToken());
-                bundle.putString(BundleKeys.KEY_BASE_URL, loginData.getServerUrl());
+                bundle.putString(BundleKeys.INSTANCE.getKEY_USERNAME(), loginData.getUsername());
+                bundle.putString(BundleKeys.INSTANCE.getKEY_TOKEN(), loginData.getToken());
+                bundle.putString(BundleKeys.INSTANCE.getKEY_BASE_URL(), loginData.getServerUrl());
                 String protocol = "";
 
                 if (baseUrl.startsWith("http://")) {
@@ -376,7 +376,7 @@ public class WebViewLoginController extends BaseController {
                 }
 
                 if (!TextUtils.isEmpty(protocol)) {
-                    bundle.putString(BundleKeys.KEY_ORIGINAL_PROTOCOL, protocol);
+                    bundle.putString(BundleKeys.INSTANCE.getKEY_ORIGINAL_PROTOCOL(), protocol);
                 }
 
                 getRouter().pushController(RouterTransaction.with(new AccountVerificationController

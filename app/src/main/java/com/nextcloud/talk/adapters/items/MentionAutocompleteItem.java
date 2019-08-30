@@ -96,11 +96,11 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, displayName,
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
             if (holder.contactMentionId != null) {
                 FlexibleUtils.highlightText(holder.contactMentionId, "@" + objectId,
-                        String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                        String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
                                 .getResources().getColor(R.color.colorPrimary));
             }
         } else {
@@ -111,7 +111,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
         }
 
         if (source.equals("calls")) {
-            holder.simpleDraweeView.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedBitmapDrawableFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px));
+            holder.simpleDraweeView.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedBitmapDrawableFromVectorDrawableResource(NextcloudTalkApplication.Companion.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px));
         } else {
         holder.simpleDraweeView.setController(null);
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()

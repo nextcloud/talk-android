@@ -23,7 +23,7 @@ package com.nextcloud.talk.models.json.websocket;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
-import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import lombok.Data;
 import org.parceler.Parcel;
 

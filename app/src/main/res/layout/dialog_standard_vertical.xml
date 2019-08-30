@@ -27,8 +27,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/view_color_area" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -48,17 +46,10 @@
         </LinearLayout>
     </ScrollView>
 
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/ld_btn_yes"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
+    <Space
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:gravity="end|center_vertical"
-        android:paddingLeft="@dimen/ld_side_margin"
-        android:paddingRight="@dimen/ld_side_margin"
-        android:visibility="gone" />
+        android:layout_height="12dp" />
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/ld_btn_no"
@@ -82,9 +73,18 @@
         android:paddingRight="@dimen/ld_side_margin"
         android:visibility="gone" />
 
-    <Space
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/ld_btn_yes"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
-        android:layout_height="12dp" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:gravity="end|center_vertical"
+        android:paddingLeft="@dimen/ld_side_margin"
+        android:paddingRight="@dimen/ld_side_margin"
+        android:visibility="gone" />
+
+    <include layout="@layout/view_color_area" />
 
 
 </LinearLayout>

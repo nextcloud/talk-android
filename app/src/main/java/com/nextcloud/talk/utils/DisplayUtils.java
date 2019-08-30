@@ -96,7 +96,7 @@ public class DisplayUtils {
             public void onClick(@Nonnull View widget) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                NextcloudTalkApplication.getSharedApplication().getApplicationContext().startActivity(browserIntent);
+                NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext().startActivity(browserIntent);
             }
 
             @Override
@@ -344,7 +344,7 @@ public class DisplayUtils {
                 .matcher(spannableString);
 
 
-        int textSize = NextcloudTalkApplication.getSharedApplication().getResources().getDimensionPixelSize(R.dimen
+        int textSize = NextcloudTalkApplication.Companion.getSharedApplication().getResources().getDimensionPixelSize(R.dimen
                 .chat_text_size);
 
         int lastStartIndex = -1;
@@ -364,7 +364,7 @@ public class DisplayUtils {
     public static Drawable getMessageSelector(@ColorInt int normalColor, @ColorInt int selectedColor,
                                               @ColorInt int pressedColor, @DrawableRes int shape) {
 
-        Drawable vectorDrawable = ContextCompat.getDrawable(NextcloudTalkApplication.getSharedApplication()
+        Drawable vectorDrawable = ContextCompat.getDrawable(NextcloudTalkApplication.Companion.getSharedApplication()
                         .getApplicationContext(),
                 shape);
         Drawable drawable = DrawableCompat.wrap(vectorDrawable).mutate();

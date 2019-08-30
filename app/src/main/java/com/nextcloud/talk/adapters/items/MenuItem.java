@@ -51,7 +51,7 @@ public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> 
         this.tag = tag;
         this.icon = icon;
         padding = (int) DisplayUtils.convertDpToPixel(16,
-                NextcloudTalkApplication.getSharedApplication().getApplicationContext());
+                NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> 
     public void bindViewHolder(FlexibleAdapter adapter, MenuItem.MenuItemViewHolder holder, int position, List payloads) {
         if (position == 0) {
             Spannable spannableString = new SpannableString(title);
-            spannableString.setSpan(new ForegroundColorSpan(NextcloudTalkApplication.getSharedApplication()
+            spannableString.setSpan(new ForegroundColorSpan(NextcloudTalkApplication.Companion.getSharedApplication()
                             .getResources().getColor(R.color.grey_600)), 0,
                     spannableString.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

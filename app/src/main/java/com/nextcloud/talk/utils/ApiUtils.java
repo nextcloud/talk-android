@@ -42,6 +42,10 @@ public class ApiUtils {
         return userAgent + BuildConfig.VERSION_NAME;
     }
 
+    public static String getUrlForLobbyForConversation(String baseUrl, String token) {
+        return getRoom(baseUrl, token) + "/webinary/lobby";
+    }
+
     public static RetrofitBucket getRetrofitBucketForContactsSearch(String baseUrl, @Nullable String searchQuery) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
         retrofitBucket.setUrl(baseUrl + ocsApiVersion + "/apps/files_sharing/api/v1/sharees");
@@ -215,7 +219,7 @@ public class ApiUtils {
 
     public static String getUrlForAvatarWithName(String baseUrl, String name, @DimenRes int avatarSize) {
         avatarSize = Math.round(NextcloudTalkApplication
-                .getSharedApplication().getResources().getDimension(avatarSize));
+                .Companion.getSharedApplication().getResources().getDimension(avatarSize));
 
         return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize;
     }
@@ -236,7 +240,7 @@ public class ApiUtils {
     }
 
     public static String getUrlPushProxy() {
-        return NextcloudTalkApplication.getSharedApplication().
+        return NextcloudTalkApplication.Companion.getSharedApplication().
                 getApplicationContext().getResources().getString(R.string.nc_push_server_url) + "/devices";
     }
 

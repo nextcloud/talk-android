@@ -23,16 +23,19 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
-    <View
-        android:id="@+id/fast_scroller_bar"
-        android:layout_width="7dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:background="@color/transparent" />
-
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/fast_scroller_handle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:alpha="0.5"
+            android:contentDescription="@null"
+            android:paddingStart="6dp"
+            android:src="@drawable/fast_scroller_handle" />
 
         <TextView
             android:id="@+id/fast_scroller_bubble"
@@ -51,16 +54,13 @@
             tools:text="A"
             tools:visibility="visible" />
 
-        <ImageView
-            android:id="@+id/fast_scroller_handle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:alpha="0.5"
-            android:contentDescription="@null"
-            android:paddingStart="6dp"
-            android:src="@drawable/fast_scroller_handle" />
-
     </RelativeLayout>
+
+    <View
+        android:id="@+id/fast_scroller_bar"
+        android:layout_width="7dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@color/transparent" />
 
 </merge>

@@ -36,7 +36,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -99,7 +99,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
     public void bindViewHolder(final FlexibleAdapter adapter, RoomItemViewHolder holder, int position, List payloads) {
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.roomDisplayName, conversation.getDisplayName(),
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
         } else {
             holder.roomDisplayName.setText(conversation.getDisplayName());
@@ -118,7 +118,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
             holder.passwordProtectedImageView.setVisibility(View.GONE);
         }
 
-        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
         switch (conversation.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
                 holder.avatarImageView.setVisibility(View.VISIBLE);

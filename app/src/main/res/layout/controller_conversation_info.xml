@@ -58,13 +58,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.facebook.drawee.view.SimpleDraweeView
-                        android:id="@+id/avatar_image"
-                        android:layout_width="@dimen/avatar_size_big"
-                        android:layout_height="@dimen/avatar_size_big"
-                        android:layout_centerHorizontal="true"
-                        apc:roundAsCircle="true" />
-
                     <TextView
                         android:id="@+id/display_name_text"
                         android:layout_width="wrap_content"
@@ -73,6 +66,13 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/margin_between_elements"
                         android:textColor="@color/fg_default" />
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/avatar_image"
+                        android:layout_width="@dimen/avatar_size_big"
+                        android:layout_height="@dimen/avatar_size_big"
+                        android:layout_centerHorizontal="true"
+                        apc:roundAsCircle="true" />
 
                 </RelativeLayout>
             </com.yarolegovich.mp.MaterialPreferenceCategory>
@@ -85,7 +85,7 @@
                 android:visibility="gone">
 
                 <com.yarolegovich.mp.MaterialStandardPreference
-                    android:id="@+id/favoiteConversationAction"
+                    android:id="@+id/favoriteConversationAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     apc:mp_icon="@drawable/ic_star_black_24dp"
@@ -96,18 +96,11 @@
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
-            <include
-                layout="@layout/notification_settings_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/otherRoomOptions"
-                android:visibility="gone" />
-
             <com.yarolegovich.mp.MaterialPreferenceCategory
                 android:id="@+id/participants_list_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/notification_settings"
+                android:layout_below="@+id/webinar_settings"
                 android:visibility="gone"
                 apc:mpc_title="@string/nc_participants"
                 apc:mpc_title_color="@color/colorPrimary"
@@ -145,6 +138,20 @@
                     apc:mp_title="@string/nc_delete_call" />
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+            <include
+                layout="@layout/notification_settings_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/otherRoomOptions"
+                android:visibility="gone" />
+
+            <include
+                layout="@layout/webinar_info_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/notification_settings"
+                android:visibility="gone" />
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

@@ -18,10 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.interfaces;
+package com.nextcloud.talk.utils
 
-import android.os.Bundle;
+import java.text.DateFormat
+import java.util.*
 
-public interface ConversationMenuInterface {
-    void openLovelyDialogWithIdAndBundle(int dialogId, Bundle bundle);
+
+object DateUtils {
+    fun getLocalDateTimeStringFromTimestamp(timestamp: Long): String {
+        val cal = Calendar.getInstance()
+        val tz = cal.timeZone
+
+        /* date formatter in local timezone */
+        val format = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, Locale
+                .getDefault())
+        format.timeZone = tz
+
+        return format.format(Date(timestamp))
+    }
+
+    fun getLocalDateStringFromTimestampForLobby(timestamp: Long): String {
+        return getLocalDateTimeStringFromTimestamp(timestamp * 1000);
+    }
 }

@@ -63,7 +63,7 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
         this.browserFile = browserFile;
         this.activeUser = activeUser;
         this.selectionInterface = selectionInterface;
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
             holder.fileFavoriteImageView.setVisibility(View.GONE);
         }
 
-        holder.fileIconImageView.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.getDrawableResourceIdForMimeType(browserFile.getMimeType())));
+        holder.fileIconImageView.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(browserFile.getMimeType())));
 
         if (browserFile.isHasPreview()) {
             String path = ApiUtils.getUrlForFilePreviewWithRemotePath(activeUser.getBaseUrl(),
@@ -138,7 +138,7 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
         holder.filenameTextView.setText(browserFile.getDisplayName());
         holder.fileModifiedTextView.setText(String.format(context.getString(R.string.nc_last_modified),
                 Formatter.formatShortFileSize(context, browserFile.getSize()),
-                DateUtils.getLocalDateTimeStringFromTimestamp(context, browserFile.getModifiedTimestamp())));
+                DateUtils.INSTANCE.getLocalDateTimeStringFromTimestamp(browserFile.getModifiedTimestamp())));
         setSelected(selectionInterface.isPathSelected(browserFile.getPath()));
         holder.selectFileCheckbox.setChecked(isSelected());
 

@@ -56,11 +56,11 @@ public class ShareOperationWorker extends Worker {
 
     public ShareOperationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         Data data = workerParams.getInputData();
-        userId = data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, 0);
-        roomToken = data.getString(BundleKeys.KEY_ROOM_TOKEN);
-        Collections.addAll(filesArray, data.getStringArray(BundleKeys.KEY_FILE_PATHS));
+        userId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), 0);
+        roomToken = data.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());
+        Collections.addAll(filesArray, data.getStringArray(BundleKeys.INSTANCE.getKEY_FILE_PATHS()));
         operationsUser = userUtils.getUserWithId(userId);
         credentials = ApiUtils.getCredentials(operationsUser.getUsername(), operationsUser.getToken());
         baseUrl = operationsUser.getBaseUrl();

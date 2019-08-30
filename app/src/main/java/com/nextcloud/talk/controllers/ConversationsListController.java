@@ -77,7 +77,7 @@ import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -184,7 +184,7 @@ public class ConversationsListController extends BaseController implements Searc
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         if (getActionBar() != null) {
             getActionBar().show();
@@ -462,7 +462,7 @@ public class ConversationsListController extends BaseController implements Searc
 
     private void showNewConversationsScreen() {
         Bundle bundle = new Bundle();
-        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true);
+        bundle.putBoolean(BundleKeys.INSTANCE.getKEY_NEW_CONVERSATION(), true);
         getRouter().pushController((RouterTransaction.with(new ContactsController(bundle))
                 .pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler())));
@@ -556,8 +556,8 @@ public class ConversationsListController extends BaseController implements Searc
     public void onMessageEvent(MoreMenuClickEvent moreMenuClickEvent) {
         Bundle bundle = new Bundle();
         Conversation conversation = moreMenuClickEvent.getConversation();
-        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap(conversation));
-        bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap(CallMenuController.MenuType.REGULAR));
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_MENU_TYPE(), Parcels.wrap(CallMenuController.MenuType.REGULAR));
 
         prepareAndShowBottomSheetWithBundle(bundle, true);
     }
@@ -612,20 +612,20 @@ public class ConversationsListController extends BaseController implements Searc
 
 
             Bundle bundle = new Bundle();
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser);
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
-            bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.getRoomId());
+            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
+            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
+            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
 
             if (conversation.hasPassword && (conversation.participantType.equals(Participant.ParticipantType.GUEST) ||
                     conversation.participantType.equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
-                bundle.putInt(BundleKeys.KEY_OPERATION_CODE, 99);
+                bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
                 prepareAndShowBottomSheetWithBundle(bundle, false);
             } else {
                 currentUser = userUtils.getCurrentUser();
 
                 if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                    bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation));
-                    ConductorRemapping.remapChatController(getRouter(), currentUser.getId(),
+                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
+                    ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
                             conversation.getToken(), bundle, false);
                 } else {
                     overridePushHandler(new NoOpControllerChangeHandler());
@@ -674,10 +674,10 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     private void showDeleteConversationDialog(Bundle savedInstanceState) {
-        if (getActivity() != null && conversationMenuBundle != null && currentUser != null && conversationMenuBundle.getLong(BundleKeys.KEY_INTERNAL_USER_ID) == currentUser.getId()) {
+        if (getActivity() != null && conversationMenuBundle != null && currentUser != null && conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()) == currentUser.getId()) {
 
             Conversation conversation =
-                    Parcels.unwrap(conversationMenuBundle.getParcelable(BundleKeys.KEY_ROOM));
+                    Parcels.unwrap(conversationMenuBundle.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
 
             if (conversation != null) {
                 new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
@@ -691,9 +691,9 @@ public class ConversationsListController extends BaseController implements Searc
                             @Override
                             public void onClick(View v) {
                                 Data.Builder data = new Data.Builder();
-                                data.putLong(BundleKeys.KEY_INTERNAL_USER_ID,
-                                        conversationMenuBundle.getLong(BundleKeys.KEY_INTERNAL_USER_ID));
-                                data.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.getToken());
+                                data.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
+                                        conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()));
+                                data.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
                                 conversationMenuBundle = null;
                                 deleteConversation(data.build());
                             }

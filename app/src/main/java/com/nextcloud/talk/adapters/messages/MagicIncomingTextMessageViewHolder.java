@@ -82,7 +82,7 @@ public class MagicIncomingTextMessageViewHolder
     public MagicIncomingTextMessageViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         this.itemView = itemView;
     }
@@ -103,8 +103,8 @@ public class MagicIncomingTextMessageViewHolder
             messageUserAvatarView.setVisibility(View.VISIBLE);
             if (message.getActorType().equals("guests")) {
                 TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
-                        .endConfig().buildRound(String.valueOf(messageAuthor.getText().charAt(0)), NextcloudTalkApplication
-                                .getSharedApplication().getResources().getColor(R.color.nc_grey));
+                        .endConfig().buildRound(String.valueOf(messageAuthor.getText().charAt(0))
+                                , NextcloudTalkApplication.Companion.getSharedApplication().getResources().getColor(R.color.nc_grey));
                 messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
             } else if (message.getActorType().equals("bots") && message.getActorId().equals("changelog")) {
                 messageUserAvatarView.setController(null);
@@ -139,7 +139,7 @@ public class MagicIncomingTextMessageViewHolder
 
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
 
-        Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+        Context context = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
         itemView.setSelected(false);
         messageTimeView.setTextColor(context.getResources().getColor(R.color.warm_grey_four));
 

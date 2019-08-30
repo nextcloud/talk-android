@@ -49,7 +49,7 @@ public class PackageReplacedReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         if (intent != null && intent.getAction() != null &&
                 intent.getAction().equals("android.intent.action.MY_PACKAGE_REPLACED")) {

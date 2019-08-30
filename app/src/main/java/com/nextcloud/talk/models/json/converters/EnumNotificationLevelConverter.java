@@ -21,7 +21,7 @@
 package com.nextcloud.talk.models.json.converters;
 
 import com.bluelinelabs.logansquare.typeconverters.IntBasedTypeConverter;
-import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 
 public class EnumNotificationLevelConverter extends IntBasedTypeConverter<Conversation.NotificationLevel> {
     @Override

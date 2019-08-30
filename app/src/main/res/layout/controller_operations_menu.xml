@@ -23,18 +23,6 @@
     android:layout_height="wrap_content"
     android:background="@color/nc_white_color">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/colorPrimary"
-        android:indeterminateTintMode="src_in"
-        android:keepScreenOn="true" />
-
     <ImageView
         android:id="@+id/result_image_view"
         android:layout_width="48dp"
@@ -46,6 +34,18 @@
         android:layout_marginBottom="8dp"
         android:tintMode="src_in"
         android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTintMode="src_in"
+        android:keepScreenOn="true" />
 
     <TextView
         android:id="@+id/result_text_view"

@@ -137,7 +137,7 @@ public class SwitchAccountController extends BaseController {
         super(args);
         setHasOptionsMenu(true);
 
-        if (args.containsKey(BundleKeys.KEY_IS_ACCOUNT_IMPORT)) {
+        if (args.containsKey(BundleKeys.INSTANCE.getKEY_IS_ACCOUNT_IMPORT())) {
             isAccountImport = true;
         }
     }
@@ -161,7 +161,7 @@ public class SwitchAccountController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         swipeRefreshLayout.setEnabled(false);
 
         if (getActionBar() != null) {
@@ -198,9 +198,9 @@ public class SwitchAccountController extends BaseController {
             } else {
                 Account account;
                 ImportAccount importAccount;
-                for (Object accountObject : AccountUtils.findAccounts(userUtils.getUsers())) {
+                for (Object accountObject : AccountUtils.INSTANCE.findAccounts(userUtils.getUsers())) {
                     account = (Account) accountObject;
-                    importAccount = AccountUtils.getInformationFromAccount(account);
+                    importAccount = AccountUtils.INSTANCE.getInformationFromAccount(account);
 
                     participant = new Participant();
                     participant.setName(importAccount.getUsername());
@@ -230,12 +230,12 @@ public class SwitchAccountController extends BaseController {
     }
 
     private void reauthorizeFromImport(Account account) {
-        ImportAccount importAccount = AccountUtils.getInformationFromAccount(account);
+        ImportAccount importAccount = AccountUtils.INSTANCE.getInformationFromAccount(account);
         Bundle bundle = new Bundle();
-        bundle.putString(BundleKeys.KEY_BASE_URL, importAccount.getBaseUrl());
-        bundle.putString(BundleKeys.KEY_USERNAME, importAccount.getUsername());
-        bundle.putString(BundleKeys.KEY_TOKEN, importAccount.getToken());
-        bundle.putBoolean(BundleKeys.KEY_IS_ACCOUNT_IMPORT, true);
+        bundle.putString(BundleKeys.INSTANCE.getKEY_BASE_URL(), importAccount.getBaseUrl());
+        bundle.putString(BundleKeys.INSTANCE.getKEY_USERNAME(), importAccount.getUsername());
+        bundle.putString(BundleKeys.INSTANCE.getKEY_TOKEN(), importAccount.getToken());
+        bundle.putBoolean(BundleKeys.INSTANCE.getKEY_IS_ACCOUNT_IMPORT(), true);
         getRouter().pushController(RouterTransaction.with(new AccountVerificationController(bundle))
                 .pushChangeHandler(new HorizontalChangeHandler())
                 .popChangeHandler(new HorizontalChangeHandler()));

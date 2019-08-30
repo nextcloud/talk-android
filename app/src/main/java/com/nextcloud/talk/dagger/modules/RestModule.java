@@ -159,7 +159,7 @@ public class RestModule {
     Cache provideCache() {
         int cacheSize = 128 * 1024 * 1024; // 128 MB
 
-        return new Cache(NextcloudTalkApplication.getSharedApplication().getCacheDir(), cacheSize);
+        return new Cache(NextcloudTalkApplication.Companion.getSharedApplication().getCacheDir(), cacheSize);
     }
 
     @Singleton
@@ -216,7 +216,7 @@ public class RestModule {
         } else if (context.getResources().getBoolean(R.bool.nc_is_debug)) {
 
             HttpLoggingInterceptor.Logger fileLogger =
-                    s -> LoggingUtils.writeLogEntryToFile(context, s);
+                    s -> LoggingUtils.INSTANCE.writeLogEntryToFile(context, s);
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(fileLogger);
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             loggingInterceptor.redactHeader("Authorization");

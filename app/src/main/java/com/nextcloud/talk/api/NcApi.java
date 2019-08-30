@@ -31,8 +31,8 @@ import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
-import com.nextcloud.talk.models.json.rooms.RoomOverall;
-import com.nextcloud.talk.models.json.rooms.RoomsOverall;
+import com.nextcloud.talk.models.json.conversations.RoomOverall;
+import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
@@ -311,4 +311,11 @@ public interface NcApi {
                                        @Field("path") String remotePath,
                                        @Field("shareWith") String roomToken,
                                        @Field("shareType") String shareType);
+
+    @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> setLobbyForConversation(@Header("Authorization") String authorization,
+                                      @Url String url, @Field("state") Integer state,
+                                                       @Field("timer") Long timer);
+
 }

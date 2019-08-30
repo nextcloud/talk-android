@@ -84,7 +84,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     private List<String> messagesQueue = new ArrayList<>();
 
     MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl, String webSocketTicket) {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         this.connectionUrl = connectionUrl;
         this.conversationUser = conversationUser;
@@ -145,7 +145,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public void onMessage(WebSocket webSocket, String text) {
         if (webSocket == internalWebSocket) {
             Log.d(TAG, "Receiving : " + webSocket.toString() + " " + text);
-            LoggingUtils.writeLogEntryToFile(context,
+            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                     "WebSocket " + webSocket.hashCode() + " receiving: " + text);
 
             try {
@@ -182,7 +182,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                     case "error":
                         ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
                         if (("no_such_session").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
-                            LoggingUtils.writeLogEntryToFile(context,
+                            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                                     "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired");
                             resumeId = "";
                             currentRoomToken = "";
@@ -218,8 +218,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                                         shouldRefreshChat = (boolean) chatMap.get("refresh");
                                                         if (shouldRefreshChat) {
                                                             HashMap<String, String> refreshChatHashMap = new HashMap<>();
-                                                            refreshChatHashMap.put(BundleKeys.KEY_ROOM_TOKEN, (String) messageHashMap.get("roomid"));
-                                                            refreshChatHashMap.put(BundleKeys.KEY_INTERNAL_USER_ID, Long.toString(conversationUser.getId()));
+                                                            refreshChatHashMap.put(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), (String) messageHashMap.get("roomid"));
+                                                            refreshChatHashMap.put(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), Long.toString(conversationUser.getId()));
                                                             eventBus.post(new WebSocketCommunicationEvent("refreshChat", refreshChatHashMap));
                                                         }
                                                     }
@@ -271,7 +271,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         break;
                 }
             } catch (IOException e) {
-                LoggingUtils.writeLogEntryToFile(context,
+                LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                         "WebSocket " + webSocket.hashCode() + " IOException: " + e.getMessage());
                 Log.e(TAG, "Failed to recognize WebSocket message");
             }
@@ -292,14 +292,14 @@ public class MagicWebSocketInstance extends WebSocketListener {
     @Override
     public void onClosing(WebSocket webSocket, int code, String reason) {
         Log.d(TAG, "Closing : " + code + " / " + reason);
-        LoggingUtils.writeLogEntryToFile(context,
+        LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                 "WebSocket " + webSocket.hashCode() + " Closing: " + reason);
     }
 
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
         Log.d(TAG, "Error : " + t.getMessage());
-        LoggingUtils.writeLogEntryToFile(context,
+        LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                 "WebSocket " + webSocket.hashCode() + " onFailure: " + t.getMessage());
         closeWebSocket(webSocket);
     }
@@ -338,7 +338,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                 internalWebSocket.send(message);
             }
         } catch (IOException e) {
-            LoggingUtils.writeLogEntryToFile(context,
+            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                     "WebSocket sendCalLMessage: " + e.getMessage() + "\n" + ncMessageWrapper.toString());
             Log.e(TAG, "Failed to serialize signaling message");
         }
@@ -359,7 +359,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                 internalWebSocket.send(message);
             }
         } catch (IOException e) {
-            LoggingUtils.writeLogEntryToFile(context,
+            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                     "WebSocket requestOfferForSessionIdWithType: " + e.getMessage() + "\n" + sessionIdParam + " " + roomType);
             Log.e(TAG, "Failed to offer request");
         }
@@ -387,7 +387,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
             return usersHashMap.get(session).getDisplayName();
         }
 
-        return NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_nick_guest);
+        return NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_nick_guest);
     }
 
     public String getSessionForUserId(String userId) {

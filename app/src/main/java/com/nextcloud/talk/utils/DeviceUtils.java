@@ -42,7 +42,7 @@ public class DeviceUtils {
                     Method setApplicationAutoStartMethod = appOpsUtilsClass.getMethod("setApplicationAutoStart", Context
                             .class, String.class, Boolean.TYPE);
                     if (setApplicationAutoStartMethod != null) {
-                        Context applicationContext = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+                        Context applicationContext = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
                         setApplicationAutoStartMethod.invoke(appOpsUtilsClass, applicationContext, applicationContext
                                 .getPackageName(), Boolean.TRUE);
                     }
@@ -61,7 +61,7 @@ public class DeviceUtils {
                 @SuppressLint("PrivateApi") Class<?> protectAppControlClass = Class.forName("com.huawei.systemmanager.optimize.process" +
                         ".ProtectAppControl");
                 if (protectAppControlClass != null) {
-                    Context applicationContext = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+                    Context applicationContext = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
 
                     Method getInstanceMethod = protectAppControlClass.getMethod("getInstance", Context.class);
                     // ProtectAppControl instance

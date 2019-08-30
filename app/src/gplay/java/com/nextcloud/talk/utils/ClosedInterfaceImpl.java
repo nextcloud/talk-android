@@ -33,14 +33,15 @@ import com.nextcloud.talk.interfaces.ClosedInterface;
 public class ClosedInterfaceImpl implements ClosedInterface, ProviderInstallListener {
     @Override
     public void providerInstallerInstallIfNeededAsync() {
-        ProviderInstaller.installIfNeededAsync(NextcloudTalkApplication.getSharedApplication().getApplicationContext(),
+        ProviderInstaller.installIfNeededAsync(NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext(),
                 this);
     }
 
     @Override
     public boolean isGooglePlayServicesAvailable() {
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-        int code = api.isGooglePlayServicesAvailable(NextcloudTalkApplication.getSharedApplication().getApplicationContext());
+        int code =
+                api.isGooglePlayServicesAvailable(NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext());
         return code == ConnectionResult.SUCCESS;
     }
 

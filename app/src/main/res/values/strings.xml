@@ -282,4 +282,16 @@
     <string name="nc_file_browser_refresh">Refresh</string>
     <string name="nc_last_modified">%1$s | Last modified: %2$s</string>
 
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinar</string>
+    <string name="nc_lobby">Lobby</string>
+    <string name="nc_start_time">Start time</string>
+    <string name="nc_lobby_waiting">You are currently waiting in a lobby.</string>
+    <string name="nc_lobby_waiting_with_date">You are currently waiting in a lobby.\n This
+        meeting is scheduled for %1$s.</string>
+    <string name="nc_manual">Manual</string>
+    <string name="nc_at">at</string>
+
+
 </resources>

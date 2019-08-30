@@ -24,6 +24,15 @@
     android:layout_height="match_parent"
     android:background="@color/grey950">
 
+    <ImageView
+        android:id="@+id/errorImageView"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_above="@id/connectingTextView"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_signal_wifi_off_white_24dp"
+        android:visibility="gone" />
+
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="@dimen/item_height"
@@ -37,15 +46,6 @@
         android:indeterminate="true"
         android:indeterminateTint="@color/colorPrimary"
         android:indeterminateTintMode="src_in" />
-
-    <ImageView
-        android:id="@+id/errorImageView"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_above="@id/connectingTextView"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_signal_wifi_off_white_24dp"
-        android:visibility="gone" />
 
     <TextView
         android:id="@+id/connectingTextView"

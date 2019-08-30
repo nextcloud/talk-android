@@ -66,7 +66,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
     public MagicOutcomingTextMessageViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         this.itemView = itemView;
     }
@@ -128,7 +128,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
             itemView.setSelected(true);
         }
 
-        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
         if (message.isGrouped) {
             Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.colorPrimary),
                     resources.getColor(R.color.transparent),

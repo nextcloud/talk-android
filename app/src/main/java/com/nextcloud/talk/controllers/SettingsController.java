@@ -138,8 +138,6 @@ public class SettingsController extends BaseController {
     @BindView(R.id.message_text)
     TextView messageText;
     @Inject
-    EventBus eventBus;
-    @Inject
     AppPreferences appPreferences;
     @Inject
     NcApi ncApi;
@@ -176,7 +174,7 @@ public class SettingsController extends BaseController {
         setHasOptionsMenu(true);
 
         ViewCompat.setTransitionName(avatarImageView, "userAvatar.transitionTag");
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         getCurrentUser();
 
@@ -209,7 +207,7 @@ public class SettingsController extends BaseController {
             licenceButton.setVisibility(View.GONE);
         }
 
-        if (!DoNotDisturbUtils.hasVibrator()) {
+        if (!DoNotDisturbUtils.INSTANCE.hasVibrator()) {
             shouldVibrateSwitchPreference.setVisibility(View.GONE);
         }
 
@@ -251,7 +249,7 @@ public class SettingsController extends BaseController {
 
         settingsCallSound.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putBoolean(BundleKeys.KEY_ARE_CALL_SOUNDS, true);
+            bundle.putBoolean(BundleKeys.INSTANCE.getKEY_ARE_CALL_SOUNDS(), true);
             getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
@@ -259,7 +257,7 @@ public class SettingsController extends BaseController {
 
         settingsMessageSound.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putBoolean(BundleKeys.KEY_ARE_CALL_SOUNDS, false);
+            bundle.putBoolean(BundleKeys.INSTANCE.getKEY_ARE_CALL_SOUNDS(), false);
             getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
@@ -325,7 +323,7 @@ public class SettingsController extends BaseController {
     @OnClick(R.id.settings_version)
     void sendLogs() {
         if (getResources().getBoolean(R.bool.nc_is_debug)) {
-            LoggingUtils.sendMailWithAttachment(context);
+            LoggingUtils.INSTANCE.sendMailWithAttachment(context);
         }
     }
 
@@ -774,7 +772,7 @@ public class SettingsController extends BaseController {
     private class ThemeChangeListener implements OnPreferenceValueChangedListener<String> {
         @Override
         public void onChanged(String newValue) {
-            NextcloudTalkApplication.setAppTheme(newValue);
+            NextcloudTalkApplication.Companion.setAppTheme(newValue);
         }
     }
 }

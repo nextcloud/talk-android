@@ -64,7 +64,7 @@ public class MagicCallActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -80,7 +80,7 @@ public class MagicCallActivity extends BaseActivity {
         router.setPopsLastView(false);
 
         if (!router.hasRootController()) {
-            if (getIntent().getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
+            if (getIntent().getBooleanExtra(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL(), false)) {
                 router.setRoot(RouterTransaction.with(new CallNotificationController(getIntent().getExtras()))
                         .pushChangeHandler(new HorizontalChangeHandler())
                         .popChangeHandler(new HorizontalChangeHandler()));

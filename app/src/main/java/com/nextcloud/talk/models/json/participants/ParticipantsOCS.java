@@ -33,5 +33,5 @@ import java.util.List;
 @JsonObject
 public class ParticipantsOCS extends GenericOCS {
     @JsonField(name = "data")
-    List<Participant> data;
+    public List<Participant> data;
 }

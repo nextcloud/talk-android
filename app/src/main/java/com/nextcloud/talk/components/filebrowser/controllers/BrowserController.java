@@ -94,10 +94,10 @@ public class BrowserController extends BaseController implements ListingInterfac
     public BrowserController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
-        browserType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_BROWSER_TYPE));
-        activeUser = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY));
-        roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+        browserType = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_BROWSER_TYPE()));
+        activeUser = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY()));
+        roomToken = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());
 
         currentPath = "/";
         if (BrowserType.DAV_BROWSER.equals(browserType)) {
@@ -139,9 +139,9 @@ public class BrowserController extends BaseController implements ListingInterfac
                 iterator.remove();
                 if (paths.size() == 10 || !iterator.hasNext()) {
                     data = new Data.Builder()
-                            .putLong(BundleKeys.KEY_INTERNAL_USER_ID, activeUser.getId())
-                            .putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-                            .putStringArray(BundleKeys.KEY_FILE_PATHS, paths.toArray(new String[0]))
+                            .putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), activeUser.getId())
+                            .putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomToken)
+                            .putStringArray(BundleKeys.INSTANCE.getKEY_FILE_PATHS(), paths.toArray(new String[0]))
                             .build();
                     shareWorker = new OneTimeWorkRequest.Builder(ShareOperationWorker.class)
                             .setInputData(data)

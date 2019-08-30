@@ -118,14 +118,14 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getDisplayName(),
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
         } else {
             holder.contactDisplayName.setText(participant.getDisplayName());
 
             if (TextUtils.isEmpty(participant.getDisplayName()) &&
                     (participant.getType().equals(Participant.ParticipantType.GUEST) || participant.getType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
-                holder.contactDisplayName.setText(NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest));
+                holder.contactDisplayName.setText(NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest));
             }
         }
 
@@ -146,7 +146,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
             }
         } else if ("groups".equals(participant.getSource())) {
-            holder.simpleDraweeView.getHierarchy().setImage(new BitmapDrawable(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px)), 100, true);
+            holder.simpleDraweeView.getHierarchy().setImage(new BitmapDrawable(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.Companion.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px)), 100, true);
         }
 
         if (!isEnabled()) {
@@ -155,7 +155,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             holder.itemView.setAlpha(1.0f);
         }
 
-        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
 
         if (header == null) {
             Participant.ParticipantFlags participantFlags = participant.getParticipantFlags();
@@ -198,19 +198,19 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
                 switch (new EnumParticipantTypeConverter().convertToInt(participant.getType())) {
                     case 1:
-                        //userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_owner);
+                        //userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_owner);
                         //break;
                     case 2:
-                        userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_moderator);
+                        userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_moderator);
                         break;
                     case 3:
-                        userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_user);
+                        userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_user);
                         break;
                     case 4:
-                        userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest);
+                        userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
                         break;
                     case 5:
-                        userType = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_following_link);
+                        userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_following_link);
                         break;
                     default:
                         break;
@@ -218,7 +218,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
                 if (!holder.contactMentionId.getText().equals(userType)) {
                     holder.contactMentionId.setText(userType);
-                    holder.contactMentionId.setTextColor(NextcloudTalkApplication.getSharedApplication().getResources().getColor(R.color.colorPrimary));
+                    holder.contactMentionId.setTextColor(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getColor(R.color.colorPrimary));
                 }
             }
         }

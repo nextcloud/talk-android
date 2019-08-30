@@ -18,10 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.interfaces;
+package com.nextcloud.talk.interfaces
 
-public interface ClosedInterface {
-    void providerInstallerInstallIfNeededAsync();
+interface ClosedInterface {
 
-    boolean isGooglePlayServicesAvailable();
+    val isGooglePlayServicesAvailable: Boolean
+    fun providerInstallerInstallIfNeededAsync()
 }

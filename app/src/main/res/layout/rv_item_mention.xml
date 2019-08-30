@@ -58,8 +58,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textSize="16sp"
             android:textColor="@color/nc_incoming_text_default"
+            android:textSize="16sp"
             tools:text="Call item text" />
 
         <TextView
@@ -68,8 +68,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textSize="12sp"
             android:textColor="@color/warm_grey_four"
+            android:textSize="12sp"
             tools:text="A week ago" />
 
     </LinearLayout>

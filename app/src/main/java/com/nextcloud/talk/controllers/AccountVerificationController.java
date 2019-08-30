@@ -46,7 +46,7 @@ import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.jobs.SignalingSettingsWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.Status;
-import com.nextcloud.talk.models.json.rooms.RoomsOverall;
+import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
@@ -106,14 +106,14 @@ public class AccountVerificationController extends BaseController {
     public AccountVerificationController(Bundle args) {
         super(args);
         if (args != null) {
-            baseUrl = args.getString(BundleKeys.KEY_BASE_URL);
-            username = args.getString(BundleKeys.KEY_USERNAME);
-            token = args.getString(BundleKeys.KEY_TOKEN);
-            if (args.containsKey(BundleKeys.KEY_IS_ACCOUNT_IMPORT)) {
+            baseUrl = args.getString(BundleKeys.INSTANCE.getKEY_BASE_URL());
+            username = args.getString(BundleKeys.INSTANCE.getKEY_USERNAME());
+            token = args.getString(BundleKeys.INSTANCE.getKEY_TOKEN());
+            if (args.containsKey(BundleKeys.INSTANCE.getKEY_IS_ACCOUNT_IMPORT())) {
                 isAccountImport = true;
             }
-            if (args.containsKey(BundleKeys.KEY_ORIGINAL_PROTOCOL)) {
-                originalProtocol = args.getString(BundleKeys.KEY_ORIGINAL_PROTOCOL);
+            if (args.containsKey(BundleKeys.INSTANCE.getKEY_ORIGINAL_PROTOCOL())) {
+                originalProtocol = args.getString(BundleKeys.INSTANCE.getKEY_ORIGINAL_PROTOCOL());
             }
         }
     }
@@ -138,7 +138,7 @@ public class AccountVerificationController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         if (getActivity() != null) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -384,7 +384,7 @@ public class AccountVerificationController extends BaseController {
 
     private void fetchAndStoreCapabilities() {
         Data userData = new Data.Builder()
-                .putLong(BundleKeys.KEY_INTERNAL_USER_ID, internalAccountId)
+                .putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), internalAccountId)
                 .build();
 
         OneTimeWorkRequest pushNotificationWork = new OneTimeWorkRequest.Builder(CapabilitiesWorker.class)
@@ -395,7 +395,7 @@ public class AccountVerificationController extends BaseController {
 
     private void fetchAndStoreExternalSignalingSettings() {
         Data userData = new Data.Builder()
-                .putLong(BundleKeys.KEY_INTERNAL_USER_ID, internalAccountId)
+                .putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), internalAccountId)
                 .build();
 
         OneTimeWorkRequest signalingSettings = new OneTimeWorkRequest.Builder(SignalingSettingsWorker.class)

@@ -105,7 +105,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(),
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
         } else {
             holder.contactDisplayName.setText(participant.getName());
@@ -127,7 +127,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         } else {
             holder.avatarImageView.setVisibility(View.GONE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.linearLayout.getLayoutParams();
-            layoutParams.setMarginStart((int) NextcloudTalkApplication.getSharedApplication().getApplicationContext()
+            layoutParams.setMarginStart((int) NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext()
                     .getResources().getDimension(R.dimen.activity_horizontal_margin));
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
             holder.linearLayout.setLayoutParams(layoutParams);

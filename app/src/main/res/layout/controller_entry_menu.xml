@@ -24,15 +24,31 @@
     android:layout_height="wrap_content"
     android:background="@color/bg_bottom_sheet">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/ok_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_input_layout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="12dp"
+        android:alpha="0.7"
+        android:background="#0000"
+        android:enabled="false"
+        android:text="@string/nc_proceed"
+        android:textColor="@color/colorPrimary" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin"
         app:errorTextAppearance="@style/ErrorAppearance"
+        app:helperText=""
         app:passwordToggleDrawable="@drawable/asl_password_visibility"
-        app:passwordToggleTint="@color/grey_600"
-        app:helperText="">
+        app:passwordToggleTint="@color/grey_600">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_edit"
@@ -44,21 +60,5 @@
             android:textColor="@color/colorPrimary" />
 
     </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/ok_button"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/text_input_layout"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:alpha="0.7"
-        android:background="#0000"
-        android:enabled="false"
-        android:text="@string/nc_proceed"
-        android:textColor="@color/colorPrimary" />
 
 </RelativeLayout>

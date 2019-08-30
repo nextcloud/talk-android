@@ -18,17 +18,16 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.rooms;
+package com.nextcloud.talk.models.json.conversations;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.models.json.generic.GenericOCS;
 import lombok.Data;
-import org.parceler.Parcel;
 
 @Data
-@Parcel
 @JsonObject
-public class RoomsOverall {
-    @JsonField(name = "ocs")
-    RoomsOCS ocs;
+public class RoomOCS extends GenericOCS {
+    @JsonField(name = "data")
+    public Conversation data;
 }

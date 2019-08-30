@@ -111,7 +111,7 @@ public class ServerSelectionController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         if (getActivity() != null) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -134,7 +134,7 @@ public class ServerSelectionController extends BaseController {
         } else {
             if ((TextUtils.isEmpty(getResources
                     ().getString(R.string.nc_import_account_type)) ||
-                    AccountUtils.findAccounts(userUtils.getUsers()).size() == 0) &&
+                    AccountUtils.INSTANCE.findAccounts(userUtils.getUsers()).size() == 0) &&
                     userUtils.getUsers().size() == 0) {
 
                 providersTextView.setText(R.string.nc_get_from_provider);
@@ -143,20 +143,20 @@ public class ServerSelectionController extends BaseController {
                             .getString(R.string.nc_providers_url)));
                     startActivity(browserIntent);
                 });
-            } else if (AccountUtils.findAccounts(userUtils.getUsers()).size() > 0) {
-                if (!TextUtils.isEmpty(AccountUtils.getAppNameBasedOnPackage(getResources()
+            } else if (AccountUtils.INSTANCE.findAccounts(userUtils.getUsers()).size() > 0) {
+                if (!TextUtils.isEmpty(AccountUtils.INSTANCE.getAppNameBasedOnPackage(getResources()
                         .getString(R.string.nc_import_accounts_from)))) {
-                    if (AccountUtils.findAccounts(userUtils.getUsers()).size() > 1) {
+                    if (AccountUtils.INSTANCE.findAccounts(userUtils.getUsers()).size() > 1) {
                         providersTextView.setText(String.format(getResources().getString(R.string
-                                .nc_server_import_accounts), AccountUtils.getAppNameBasedOnPackage(getResources()
+                                .nc_server_import_accounts), AccountUtils.INSTANCE.getAppNameBasedOnPackage(getResources()
                                 .getString(R.string.nc_import_accounts_from))));
                     } else {
                         providersTextView.setText(String.format(getResources().getString(R.string
-                                .nc_server_import_account), AccountUtils.getAppNameBasedOnPackage(getResources()
+                                .nc_server_import_account), AccountUtils.INSTANCE.getAppNameBasedOnPackage(getResources()
                                 .getString(R.string.nc_import_accounts_from))));
                     }
                 } else {
-                    if (AccountUtils.findAccounts(userUtils.getUsers()).size() > 1) {
+                    if (AccountUtils.INSTANCE.findAccounts(userUtils.getUsers()).size() > 1) {
                         providersTextView.setText(getResources().getString(R.string.nc_server_import_accounts_plain));
                     } else {
                         providersTextView.setText(getResources().getString(R.string
@@ -166,7 +166,7 @@ public class ServerSelectionController extends BaseController {
 
                 providersTextView.setOnClickListener(view13 -> {
                     Bundle bundle = new Bundle();
-                    bundle.putBoolean(BundleKeys.KEY_IS_ACCOUNT_IMPORT, true);
+                    bundle.putBoolean(BundleKeys.INSTANCE.getKEY_IS_ACCOUNT_IMPORT(), true);
                     getRouter().pushController(RouterTransaction.with(
                             new SwitchAccountController(bundle))
                             .pushChangeHandler(new HorizontalChangeHandler())

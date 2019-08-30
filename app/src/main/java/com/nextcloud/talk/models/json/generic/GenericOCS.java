@@ -30,5 +30,5 @@ import org.parceler.Parcel;
 @JsonObject
 public class GenericOCS {
     @JsonField(name = "meta")
-    GenericMeta meta;
+    public GenericMeta meta;
 }

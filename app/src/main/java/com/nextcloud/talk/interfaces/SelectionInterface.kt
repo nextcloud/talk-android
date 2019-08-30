@@ -18,14 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.utils;
+package com.nextcloud.talk.interfaces
 
-import java.util.concurrent.ConcurrentHashMap;
+interface SelectionInterface {
+    fun toggleBrowserItemSelection(path: String)
 
-public class MagicMap extends ConcurrentHashMap<Integer, Object> {
-    public int add(Object element) {
-        int key = System.identityHashCode(element);
-        super.put(key, element);
-        return key;
-    }
+    fun isPathSelected(path: String): Boolean
 }

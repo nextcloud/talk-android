@@ -25,6 +25,12 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
+    <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
+        android:id="@+id/controller_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -36,14 +42,8 @@
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:contentInsetStart="24dp"
             app:contentInsetStartWithNavigation="0dp"
-            app:titleMarginStart="0dp"
-            app:popupTheme="@style/appActionBarPopupMenu" />
+            app:popupTheme="@style/appActionBarPopupMenu"
+            app:titleMarginStart="0dp" />
     </com.google.android.material.appbar.AppBarLayout>
-
-    <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
-        android:id="@+id/controller_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

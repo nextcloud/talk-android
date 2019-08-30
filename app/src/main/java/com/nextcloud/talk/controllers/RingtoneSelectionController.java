@@ -85,7 +85,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
     public RingtoneSelectionController(Bundle args) {
         super(args);
         setHasOptionsMenu(true);
-        this.callNotificationSounds = args.getBoolean(BundleKeys.KEY_ARE_CALL_SOUNDS, false);
+        this.callNotificationSounds = args.getBoolean(BundleKeys.INSTANCE.getKEY_ARE_CALL_SOUNDS(), false);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(abstractFlexibleItemList, getActivity(), false);

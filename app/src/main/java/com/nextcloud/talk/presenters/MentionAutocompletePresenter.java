@@ -62,7 +62,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
     public MentionAutocompletePresenter(Context context) {
         super(context);
         this.context = context;
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         currentUser = userUtils.getCurrentUser();
     }
 
@@ -70,7 +70,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         super(context);
         this.roomToken = roomToken;
         this.context = context;
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         currentUser = userUtils.getCurrentUser();
     }
 

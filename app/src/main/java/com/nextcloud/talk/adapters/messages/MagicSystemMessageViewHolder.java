@@ -49,14 +49,14 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
     public MagicSystemMessageViewHolder(View itemView) {
         super(itemView);
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
 
-        Resources resources = NextcloudTalkApplication.getSharedApplication().getResources();
+        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
         int normalColor;
         int pressedColor;
         int mentionYouColor;

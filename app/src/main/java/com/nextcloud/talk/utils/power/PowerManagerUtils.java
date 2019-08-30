@@ -51,7 +51,7 @@ public class PowerManagerUtils {
     private int orientation;
 
     public PowerManagerUtils() {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         fullLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "nctalk:fullwakelock");

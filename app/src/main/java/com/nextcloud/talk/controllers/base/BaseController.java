@@ -75,7 +75,7 @@ public abstract class BaseController extends ButterKnifeController {
     }
 
     private void cleanTempCertPreference() {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         List<String> temporaryClassNames = new ArrayList<>();
         temporaryClassNames.add(ServerSelectionController.class.getName());

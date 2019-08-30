@@ -40,13 +40,13 @@
         android:src="@drawable/ic_lock_white_24px" />
 
     <TextView
+        android:id="@+id/unlockTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/appLogo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/margin_between_elements"
         android:padding="16dp"
-        android:id="@+id/unlockTextView"
         android:text="@string/nc_locked"
         android:textAlignment="center"
         android:textColor="@color/white" />

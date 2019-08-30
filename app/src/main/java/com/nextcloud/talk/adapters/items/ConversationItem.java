@@ -39,7 +39,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
-import com.nextcloud.talk.models.json.rooms.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -94,14 +94,14 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ConversationItemViewHolder holder, int position, List<Object> payloads) {
-        Context context = NextcloudTalkApplication.getSharedApplication().getApplicationContext();
+        Context context = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
 
         holder.dialogAvatar.setController(null);
         holder.dialogLastMessageUserAvatar.setController(null);
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.dialogName, conversation.getDisplayName(),
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.getSharedApplication()
+                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
         } else {
             holder.dialogName.setText(conversation.getDisplayName());
@@ -156,7 +156,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         authorDisplayName = !TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName()) ?
                                 conversation.getLastMessage().getActorDisplayName() :
                                 "guests".equals(conversation.getLastMessage().getActorType()) ?
-                                        NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest) : "";
+                                        NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest) : "";
                         text = String.format(context.getString(R.string.nc_formatted_message),
                                 authorDisplayName,
                                 conversation.getLastMessage().getLastMessageDisplayText());
@@ -169,7 +169,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
                 if (conversation.getLastMessage().getActorType().equals("guests")) {
                     if (TextUtils.isEmpty(authorDisplayName)) {
-                        authorDisplayName = NextcloudTalkApplication.getSharedApplication().getString(R.string.nc_guest);
+                        authorDisplayName = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
                     }
                     holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
                     TextDrawable drawable = TextDrawable.builder().beginConfig().bold()

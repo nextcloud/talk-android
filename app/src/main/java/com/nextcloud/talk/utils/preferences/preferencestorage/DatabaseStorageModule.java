@@ -50,9 +50,11 @@ public class DatabaseStorageModule implements StorageModule {
     private String conversationToken;
     private long accountIdentifier;
 
+    private boolean lobbyValue;
+
     private String messageNotificationLevel;
     public DatabaseStorageModule(UserEntity conversationUser, String conversationToken) {
-        NextcloudTalkApplication.getSharedApplication().getComponentApplication().inject(this);
+        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         this.conversationUser = conversationUser;
         this.accountIdentifier = conversationUser.getId();
@@ -61,7 +63,11 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public void saveBoolean(String key, boolean value) {
-        arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, Boolean.toString(value), conversationToken);
+        if (!key.equals("conversation_lobby")) {
+            arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, Boolean.toString(value), conversationToken);
+        } else {
+            lobbyValue = value;
+        }
     }
 
     @Override
@@ -129,11 +135,15 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public boolean getBoolean(String key, boolean defaultVal) {
-        ArbitraryStorageEntity valueFromDb = arbitraryStorageUtils.getStorageSetting(accountIdentifier, key, conversationToken);
-        if (valueFromDb == null) {
-            return defaultVal;
+        if (key.equals("conversation_lobby")) {
+            return lobbyValue;
         } else {
-            return Boolean.parseBoolean(valueFromDb.getValue());
+            ArbitraryStorageEntity valueFromDb = arbitraryStorageUtils.getStorageSetting(accountIdentifier, key, conversationToken);
+            if (valueFromDb == null) {
+                return defaultVal;
+            } else {
+                return Boolean.parseBoolean(valueFromDb.getValue());
+            }
         }
     }
 
