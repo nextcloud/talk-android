@@ -262,4 +262,16 @@
     <string name="nc_file_browser_refresh">Uppdatera</string>
     <string name="nc_last_modified">%1$s | Senast ändrad: %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinar</string>
+    <string name="nc_lobby">Lobby</string>
+    <string name="nc_start_time">Starttid</string>
+    <string name="nc_lobby_waiting">Du väntar för närvarande i lobbyn.</string>
+    <string name="nc_lobby_waiting_with_date">Du väntar för närvarande i lobbyn.\n Detta
+        möte är planerat till %1$s.</string>
+    <string name="nc_manual">Manuell</string>
+    <string name="nc_at">på</string>
+
+
+</resources>

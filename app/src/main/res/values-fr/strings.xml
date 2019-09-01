@@ -261,4 +261,16 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_file_browser_refresh">Actualiser</string>
     <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinaire</string>
+    <string name="nc_lobby">Salle d\'attente</string>
+    <string name="nc_start_time">Heure de début</string>
+    <string name="nc_lobby_waiting">Vous attendez actuellement dans la salle d\'attente.</string>
+    <string name="nc_lobby_waiting_with_date">Vous attendez actuellement dans la salle d\'attente.\n
+Le démarrage de cette réunion est prévu à %1$s.</string>
+    <string name="nc_manual">Manuel</string>
+    <string name="nc_at">à</string>
+
+
+</resources>

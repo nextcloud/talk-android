@@ -262,4 +262,16 @@
     <string name="nc_file_browser_refresh">Yenile</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Web sunumu</string>
+    <string name="nc_lobby">Giriş</string>
+    <string name="nc_start_time">Başlangıç zamanı</string>
+    <string name="nc_lobby_waiting">Şu anda girişte bekliyorsunuz</string>
+    <string name="nc_lobby_waiting_with_date">Şu anda girişte bekliyorsunuz.\n Bu
+        görüşme %1$s zamanında başlayacak.</string>
+    <string name="nc_manual">Kılavuz</string>
+    <string name="nc_at">Zaman</string>
+
+
+</resources>

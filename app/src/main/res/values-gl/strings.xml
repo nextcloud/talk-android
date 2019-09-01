@@ -264,4 +264,16 @@ móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_file_browser_refresh">Actualizar</string>
     <string name="nc_last_modified">%1$s | Última modificación: %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Seminario web</string>
+    <string name="nc_lobby">Vestíbulo</string>
+    <string name="nc_start_time">Hora de comezo</string>
+    <string name="nc_lobby_waiting">Actualmente estás agardando no vestíbulo.</string>
+    <string name="nc_lobby_waiting_with_date">Actualmente estás agardando no vestíbulo.\n Esta
+        xuntanza está programada para %1$s.</string>
+    <string name="nc_manual">Manual</string>
+    <string name="nc_at">en</string>
+
+
+</resources>

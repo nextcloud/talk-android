@@ -262,4 +262,16 @@
     <string name="nc_file_browser_refresh">Aggiorna</string>
     <string name="nc_last_modified">%1$s | Ultima modifica: %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinar</string>
+    <string name="nc_lobby">Ingresso</string>
+    <string name="nc_start_time">Ora di inizio</string>
+    <string name="nc_lobby_waiting">Stai attualmente aspettando nell\'ingresso.</string>
+    <string name="nc_lobby_waiting_with_date">Stai attualmente aspettando nell\'ingresso.\nQuesto
+        riunione è pianificata per %1$s.</string>
+    <string name="nc_manual">Manuale</string>
+    <string name="nc_at">alle</string>
+
+
+</resources>
