@@ -33,6 +33,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 import androidx.core.view.ViewCompat;
+import androidx.emoji.widget.EmojiTextView;
+
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +49,7 @@ import com.nextcloud.talk.utils.TextMatchers;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.stfalcon.chatkit.messages.MessageHolders;
+import com.vanniktech.emoji.emoji.Emoji;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -57,10 +60,10 @@ public class MagicIncomingTextMessageViewHolder
         extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 
     @BindView(R.id.messageAuthor)
-    TextView messageAuthor;
+    EmojiTextView messageAuthor;
 
     @BindView(R.id.messageText)
-    TextView messageText;
+    EmojiTextView messageText;
 
     @BindView(R.id.messageUserAvatar)
     SimpleDraweeView messageUserAvatarView;

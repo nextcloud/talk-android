@@ -30,6 +30,9 @@ import android.net.Uri;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.emoji.widget.EmojiTextView;
+
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +62,7 @@ import java.util.concurrent.Callable;
 public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
 
     @BindView(R.id.messageText)
-    TextView messageText;
+    EmojiTextView messageText;
 
     @Inject
     Context context;

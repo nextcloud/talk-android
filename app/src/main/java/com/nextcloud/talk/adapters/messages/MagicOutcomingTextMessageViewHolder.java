@@ -31,6 +31,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 import androidx.core.view.ViewCompat;
+import androidx.emoji.widget.EmojiTextView;
+
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,7 +52,7 @@ import java.util.Map;
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicOutcomingTextMessageViewHolder extends MessageHolders.OutcomingTextMessageViewHolder<ChatMessage> {
     @BindView(R.id.messageText)
-    TextView messageText;
+    EmojiTextView messageText;
 
     @BindView(R.id.messageTime)
     TextView messageTimeView;

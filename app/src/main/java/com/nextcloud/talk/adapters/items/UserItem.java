@@ -25,7 +25,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.emoji.widget.EmojiTextView;
 
@@ -253,7 +252,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         public SimpleDraweeView simpleDraweeView;
         @Nullable
         @BindView(R.id.secondary_text)
-        public TextView contactMentionId;
+        public EmojiTextView contactMentionId;
         @Nullable
         @BindView(R.id.voiceOrSimpleCallImageView)
         ImageView voiceOrSimpleCallImageView;
