@@ -81,8 +81,12 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
     public void onBind(ChatMessage message) {
         super.onBind(message);
         if (userAvatar != null) {
-            if (message.isGrouped) {
-                userAvatar.setVisibility(View.INVISIBLE);
+            if (message.isGrouped || message.isOneToOneConversation()) {
+                if (message.isOneToOneConversation()) {
+                    userAvatar.setVisibility(View.GONE);
+                } else {
+                    userAvatar.setVisibility(View.INVISIBLE);
+                }
             } else {
                 userAvatar.setVisibility(View.VISIBLE);
 

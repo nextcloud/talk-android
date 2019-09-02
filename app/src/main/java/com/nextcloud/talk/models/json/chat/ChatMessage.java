@@ -45,6 +45,8 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     @JsonIgnore
     public boolean isGrouped;
     @JsonIgnore
+    public boolean isOneToOneConversation;
+    @JsonIgnore
     public UserEntity activeUser;
     @JsonIgnore
     public Map<String, String> selectedIndividualHashMap;

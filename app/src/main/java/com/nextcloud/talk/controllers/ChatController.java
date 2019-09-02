@@ -25,6 +25,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -48,6 +49,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.emoji.widget.EmojiEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,9 +58,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
+import com.facebook.common.executors.UiThreadImmediateExecutorService;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
@@ -129,6 +139,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import autodagger.AutoInjector;
@@ -265,6 +276,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                         currentConversation = roomOverall.getOcs().getData();
 
+                        loadAvatarForStatusBar();
+
                         conversationName = currentConversation.getDisplayName();
                         setTitle();
                         setupMentionAutocomplete();
@@ -312,6 +325,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             if (roomId.equals(conversation.getRoomId())) {
                                 roomToken = conversation.getToken();
                                 currentConversation = conversation;
+                                loadAvatarForStatusBar();
                                 checkLobbyState();
                                 checkReadOnlyState();
                                 conversationName = conversation.getDisplayName();
@@ -343,6 +357,36 @@ public class ChatController extends BaseController implements MessagesListAdapte
         return inflater.inflate(R.layout.controller_chat, container, false);
     }
 
+    private void loadAvatarForStatusBar() {
+        if (currentConversation != null && currentConversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) && getActivity() != null && conversationVoiceCallMenuItem != null) {
+            int avatarSize =
+                    (int) DisplayUtils.convertDpToPixel(conversationVoiceCallMenuItem.getIcon().getIntrinsicWidth(), getActivity());
+
+            ImageRequest imageRequest =
+                    DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(conversationUser.getBaseUrl(),
+                            currentConversation.getName(), avatarSize / 2), null);
+
+            ImagePipeline imagePipeline = Fresco.getImagePipeline();
+            DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
+
+            dataSource.subscribe(new BaseBitmapDataSubscriber() {
+                @Override
+                protected void onNewResultImpl(@Nullable Bitmap bitmap) {
+                    if (getActionBar() != null && bitmap != null && getResources() != null) {
+                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                        roundedBitmapDrawable.setCircular(true);
+                        roundedBitmapDrawable.setAntiAlias(true);
+                        getActionBar().setIcon(roundedBitmapDrawable);
+                    }
+                }
+
+                @Override
+                protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+                }
+            }, UiThreadImmediateExecutorService.getInstance());
+        }
+    }
+
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
@@ -351,7 +395,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         boolean adapterWasNull = false;
 
         if (adapter == null) {
-
             loadingProgressBar.setVisibility(View.VISIBLE);
 
             adapterWasNull = true;
@@ -483,6 +526,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         if (currentConversation != null) {
+            loadAvatarForStatusBar();
             checkLobbyState();
         }
 
@@ -689,6 +733,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         if (getActivity() != null) {
             getActivity().findViewById(R.id.toolbar).setOnClickListener(null);
+        }
+
+        if (getActionBar() != null) {
+            getActionBar().setIcon(null);
         }
 
         adapter = null;
@@ -1059,6 +1107,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
 
                     ChatMessage chatMessage = chatMessageList.get(i);
+                    chatMessage.setOneToOneConversation(currentConversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL));
                     chatMessage.setLinkPreviewAllowed(isLinkPreviewAllowed);
                     chatMessage.setActiveUser(conversationUser);
 
@@ -1112,6 +1161,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     if (adapter != null) {
                         chatMessage.setGrouped(adapter.isPreviousSameAuthor(chatMessage.getActorId(), -1) && (adapter.getSameAuthorLastMessagesCount(chatMessage.getActorId()) % 5) > 0);
+                        chatMessage.setOneToOneConversation(currentConversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL));
                         adapter.addToStart(chatMessage, shouldScroll);
                     }
 
@@ -1176,6 +1226,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
             conversationInfoMenuItem = menu.findItem(R.id.conversation_info);
             conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call);
             conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call);
+
+            loadAvatarForStatusBar();
         }
     }
 

@@ -102,7 +102,7 @@ public class MagicIncomingTextMessageViewHolder
             messageAuthor.setText(R.string.nc_nick_guest);
         }
 
-        if (!message.isGrouped) {
+        if (!message.isGrouped() && !message.isOneToOneConversation()) {
             messageUserAvatarView.setVisibility(View.VISIBLE);
             if (message.getActorType().equals("guests")) {
                 TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
@@ -125,8 +125,11 @@ public class MagicIncomingTextMessageViewHolder
                 messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
             }
         } else {
-
-            messageUserAvatarView.setVisibility(View.INVISIBLE);
+            if (message.isOneToOneConversation()) {
+                messageUserAvatarView.setVisibility(View.GONE);
+            } else {
+                messageUserAvatarView.setVisibility(View.INVISIBLE);
+            }
             messageAuthor.setVisibility(View.GONE);
         }
 
@@ -135,14 +138,19 @@ public class MagicIncomingTextMessageViewHolder
                 resources.getColor(R.color.bg_message_list_incoming_bubble_dark2) :
                 resources.getColor(R.color.bg_message_list_incoming_bubble);
 
+        int bubbleResource = R.drawable.shape_incoming_message;
+
+        if (message.isGrouped) {
+            bubbleResource = R.drawable.shape_grouped_incoming_message;
+        }
+
         Drawable bubbleDrawable = DisplayUtils.getMessageSelector(bg_bubble_color,
                 resources.getColor(R.color.transparent),
-                bg_bubble_color, R.drawable.shape_grouped_incoming_message);
+                bg_bubble_color, bubbleResource);
         ViewCompat.setBackground(bubble, bubbleDrawable);
 
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
 
-        Context context = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
         itemView.setSelected(false);
         messageTimeView.setTextColor(context.getResources().getColor(R.color.warm_grey_four));
 
