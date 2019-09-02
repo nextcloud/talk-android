@@ -926,6 +926,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         isPublicCall = !isPublicCall;
 
         if (isPublicCall) {
+            joinConversationViaLinkLayout.setVisibility(View.GONE);
+        } else {
+            joinConversationViaLinkLayout.setVisibility(View.VISIBLE);
+        }
+
+        if (isPublicCall) {
             List<AbstractFlexibleItem> currentItems = adapter.getCurrentItems();
             Participant internalParticipant;
             for (int i = 0; i < currentItems.size(); i++) {
