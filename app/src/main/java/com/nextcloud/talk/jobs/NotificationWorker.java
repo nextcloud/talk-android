@@ -38,6 +38,7 @@ import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -47,7 +48,7 @@ import androidx.core.graphics.drawable.IconCompat;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-import autodagger.AutoInjector;
+
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
@@ -68,26 +69,23 @@ import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatUtils;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.push.NotificationUser;
-import com.nextcloud.talk.models.json.conversations.Conversation;
-import com.nextcloud.talk.models.json.conversations.RoomOverall;
-import com.nextcloud.talk.utils.*;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.DoNotDisturbUtils;
+import com.nextcloud.talk.utils.NotificationUtils;
+import com.nextcloud.talk.utils.PushUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import okhttp3.JavaNetCookieJar;
-import okhttp3.OkHttpClient;
-import org.parceler.Parcels;
-import retrofit2.Retrofit;
 
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import javax.inject.Inject;
+import org.parceler.Parcels;
+
 import java.io.IOException;
 import java.net.CookieManager;
 import java.security.InvalidKeyException;
@@ -95,6 +93,17 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.zip.CRC32;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class NotificationWorker extends Worker {
@@ -120,6 +129,7 @@ public class NotificationWorker extends Worker {
     private String conversationType = "one2one";
 
     private String credentials;
+    private boolean muteCall = false;
 
     public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -129,55 +139,52 @@ public class NotificationWorker extends Worker {
         UserEntity userEntity = signatureVerification.getUserEntity();
 
         ArbitraryStorageEntity arbitraryStorageEntity;
-        boolean muteCalls = false;
 
         if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(userEntity.getId(),
                 "mute_calls", intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
-            muteCalls = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
+            muteCall = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
         }
 
-        if (!muteCalls) {
-            ncApi.getRoom(credentials, ApiUtils.getRoom(userEntity.getBaseUrl(),
-                    intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())))
-                    .blockingSubscribe(new Observer<RoomOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+        ncApi.getRoom(credentials, ApiUtils.getRoom(userEntity.getBaseUrl(),
+                intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())))
+                .blockingSubscribe(new Observer<RoomOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onNext(RoomOverall roomOverall) {
-                            Conversation conversation = roomOverall.getOcs().getData();
+                    @Override
+                    public void onNext(RoomOverall roomOverall) {
+                        Conversation conversation = roomOverall.getOcs().getData();
 
-                            intent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
-                            if (conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) ||
-                                    (!TextUtils.isEmpty(conversation.getObjectType()) && "share:password".equals
-                                            (conversation.getObjectType()))) {
-                                context.startActivity(intent);
+                        intent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
+                        if (conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) ||
+                                (!TextUtils.isEmpty(conversation.getObjectType()) && "share:password".equals
+                                        (conversation.getObjectType()))) {
+                            context.startActivity(intent);
+                        } else {
+                            if (conversation.getType().equals(Conversation.ConversationType.ROOM_GROUP_CALL)) {
+                                conversationType = "group";
                             } else {
-                                if (conversation.getType().equals(Conversation.ConversationType.ROOM_GROUP_CALL)) {
-                                    conversationType = "group";
-                                } else {
-                                    conversationType = "public";
-                                }
-                                if (decryptedPushMessage.getNotificationId() != Long.MIN_VALUE) {
-                                    showNotificationWithObjectData(intent);
-                                } else {
-                                    showNotification(intent);
-                                }
+                                conversationType = "public";
+                            }
+                            if (decryptedPushMessage.getNotificationId() != Long.MIN_VALUE) {
+                                showNotificationWithObjectData(intent);
+                            } else {
+                                showNotification(intent);
                             }
                         }
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-                        @Override
-                        public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-                        }
-                    });
-        }
+                    }
+                });
     }
 
     private void showNotificationWithObjectData(Intent intent) {
@@ -443,58 +450,60 @@ public class NotificationWorker extends Worker {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(notificationId, notification);
 
-        String ringtonePreferencesString;
-        Uri soundUri;
+        if (!muteCall) {
+            String ringtonePreferencesString;
+            Uri soundUri;
 
-        ringtonePreferencesString = appPreferences.getMessageRingtoneUri();
-        if (TextUtils.isEmpty(ringtonePreferencesString)) {
-            soundUri = Uri.parse("android.resource://" + context.getPackageName() +
-                    "/raw/librem_by_feandesign_message");
-        } else {
-            try {
-                RingtoneSettings ringtoneSettings = LoganSquare.parse
-                        (ringtonePreferencesString, RingtoneSettings.class);
-                soundUri = ringtoneSettings.getRingtoneUri();
-            } catch (IOException exception) {
+            ringtonePreferencesString = appPreferences.getMessageRingtoneUri();
+            if (TextUtils.isEmpty(ringtonePreferencesString)) {
                 soundUri = Uri.parse("android.resource://" + context.getPackageName() +
                         "/raw/librem_by_feandesign_message");
-            }
-        }
-
-        if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
-                DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
-            AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
-                    (AudioAttributes.CONTENT_TYPE_SONIFICATION);
-
-            if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
-                audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
             } else {
-                audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST);
+                try {
+                    RingtoneSettings ringtoneSettings = LoganSquare.parse
+                            (ringtonePreferencesString, RingtoneSettings.class);
+                    soundUri = ringtoneSettings.getRingtoneUri();
+                } catch (IOException exception) {
+                    soundUri = Uri.parse("android.resource://" + context.getPackageName() +
+                            "/raw/librem_by_feandesign_message");
+                }
             }
 
-            MediaPlayer mediaPlayer = new MediaPlayer();
-            try {
-                mediaPlayer.setDataSource(context, soundUri);
-                mediaPlayer.setAudioAttributes(audioAttributesBuilder.build());
+            if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
+                    DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
+                AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
+                        (AudioAttributes.CONTENT_TYPE_SONIFICATION);
 
-                mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
-                mediaPlayer.setOnCompletionListener(MediaPlayer::release);
-
-                mediaPlayer.prepareAsync();
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to set data source");
-            }
-        }
-
-
-        if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
-            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-
-            if (vibrator != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
+                    audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
                 } else {
-                    vibrator.vibrate(500);
+                    audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST);
+                }
+
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(context, soundUri);
+                    mediaPlayer.setAudioAttributes(audioAttributesBuilder.build());
+
+                    mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
+                    mediaPlayer.setOnCompletionListener(MediaPlayer::release);
+
+                    mediaPlayer.prepareAsync();
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to set data source");
+                }
+            }
+
+
+            if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
+                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
+                if (vibrator != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        vibrator.vibrate(500);
+                    }
                 }
             }
         }
