@@ -264,4 +264,16 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_file_browser_refresh">Verversen</string>
     <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinar</string>
+    <string name="nc_lobby">Lobby</string>
+    <string name="nc_start_time">Begintijd</string>
+    <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
+    <string name="nc_lobby_waiting_with_date">Je wacht nu in de lobby.\m Deze
+        vergadering is ingepland voor %1$s.</string>
+    <string name="nc_manual">Handmatig</string>
+    <string name="nc_at">om</string>
+
+
+</resources>
