@@ -42,7 +42,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -266,18 +265,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                         currentConversation = roomOverall.getOcs().getData();
 
-                        if (oldConversation == null) {
-                            conversationName = currentConversation.getDisplayName();
-                            setTitle();
-                            setupMentionAutocomplete();
-                        }
+                        conversationName = currentConversation.getDisplayName();
+                        setTitle();
+                        setupMentionAutocomplete();
 
                         checkReadOnlyState();
-                        if (oldConversation == null || (!oldConversation.getLobbyState().equals(currentConversation.getLobbyState()) || !oldConversation.getLobbyTimer().equals(currentConversation.getLobbyTimer()))) {
-                            checkLobbyState(oldConversation != null && (!oldConversation.getLobbyState().equals(currentConversation.getLobbyState())));
-                        }
+                        checkLobbyState();
 
-                        if (oldConversation == null) {
+                        if (oldConversation == null || oldConversation.getRoomId() == null) {
                             joinRoomWithPassword();
                         }
 
@@ -317,7 +312,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             if (roomId.equals(conversation.getRoomId())) {
                                 roomToken = conversation.getToken();
                                 currentConversation = conversation;
-                                checkLobbyState(false);
+                                checkLobbyState();
                                 checkReadOnlyState();
                                 conversationName = conversation.getDisplayName();
                                 setTitle();
@@ -488,7 +483,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         if (currentConversation != null) {
-            checkLobbyState(false);
+            checkLobbyState();
         }
 
         if (adapterWasNull) {
@@ -535,8 +530,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
     }
 
-    private void checkLobbyState(boolean lobbyStateChanged) {
-        if (currentConversation != null) {
+    private void checkLobbyState() {
+        if (currentConversation != null && currentConversation.isLobbyViewApplicable(conversationUser)) {
 
             if (!checkingLobbyStatus) {
                 getRoomInfo();
@@ -548,7 +543,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 messageInputView.setVisibility(View.GONE);
                 loadingProgressBar.setVisibility(View.GONE);
 
-                if (currentConversation.getLobbyTimer() != null && currentConversation.getLobbyTimer() != 0) {
+                if (currentConversation.getLobbyTimer() != null && currentConversation.getLobbyTimer() != 0L) {
                     conversationLobbyText.setText(String.format(getResources().getString(R.string.nc_lobby_waiting_with_date), DateUtils.INSTANCE.getLocalDateStringFromTimestampForLobby(currentConversation.getLobbyTimer())));
                 } else {
                     conversationLobbyText.setText(R.string.nc_lobby_waiting);
@@ -557,15 +552,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 lobbyView.setVisibility(View.GONE);
                 messagesListView.setVisibility(View.VISIBLE);
                 messageInput.setVisibility(View.VISIBLE);
-                if (lobbyStateChanged) {
-                    loadingProgressBar.setVisibility(View.VISIBLE);
-                    if (isFirstMessagesProcessing) {
-                        pullChatMessages(0);
-                    } else {
-                        pullChatMessages(1);
-                    }
+                if (isFirstMessagesProcessing) {
+                    pullChatMessages(0);
+                } else {
+                    pullChatMessages(1);
                 }
             }
+        } else {
+            lobbyView.setVisibility(View.GONE);
+            messagesListView.setVisibility(View.VISIBLE);
+            messageInput.setVisibility(View.VISIBLE);
         }
     }
 
@@ -764,7 +760,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             ApplicationWideCurrentRoomHolder.getInstance().setSession(currentCall.getSessionId());
                             startPing();
 
-                            checkLobbyState(false);
+                            checkLobbyState();
 
                             setupWebsocket();
 
@@ -988,7 +984,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                             @Override
                             public void onComplete() {
-                                if (currentConversation.shouldShowLobby(conversationUser)) {
+                                if (!currentConversation.shouldShowLobby(conversationUser)) {
                                     pullChatMessages(1);
                                 }
                             }

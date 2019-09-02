@@ -114,7 +114,7 @@ public class Conversation {
     }
 
     public boolean shouldShowLobby(UserEntity conversationUser) {
-        return getLobbyState().equals(LobbyState.LOBBY_STATE_MODERATORS_ONLY) && !canModerate(conversationUser);
+        return LobbyState.LOBBY_STATE_MODERATORS_ONLY.equals(getLobbyState()) && !canModerate(conversationUser);
     }
 
     public boolean isLobbyViewApplicable(UserEntity conversationUser) {

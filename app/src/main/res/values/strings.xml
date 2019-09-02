@@ -273,8 +273,6 @@
     <string name="nc_guest">Guest</string>
     <string name="nc_following_link">User following a public link</string>
 
-    <string name="nc_readonly_hint">This conversation is locked</string>
-
     <!-- Browser component -->
     <string name="nc_file_browser">File browser"</string>
     <string name="nc_select_files">Select files</string>
@@ -291,7 +289,4 @@
     <string name="nc_lobby_waiting_with_date">You are currently waiting in the lobby.\n This
         meeting is scheduled for %1$s.</string>
     <string name="nc_manual">Manual</string>
-    <string name="nc_at">at</string>
-
-
 </resources>
