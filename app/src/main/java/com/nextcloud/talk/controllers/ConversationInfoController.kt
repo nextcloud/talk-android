@@ -205,13 +205,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
 
             reconfigureLobbyTimerView()
 
-            val currentTimeCalendar = Calendar.getInstance()
-            if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
-                currentTimeCalendar.set(Calendar.MILLISECOND, (conversation!!.lobbyTimer * 1000).toInt())
-            }
-
             startTimeView.setOnClickListener {
                 MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                    val currentTimeCalendar = Calendar.getInstance()
+                    if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
+                        currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer * 1000
+                    }
+
                     dateTimePicker(minDateTime = Calendar.getInstance(), requireFutureDateTime =
                     true, currentDateTime = currentTimeCalendar, dateTimeCallback = { _,
                                                                                       dateTime ->
@@ -234,7 +234,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
         val isChecked = (conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked
 
         if (dateTime != null && isChecked) {
-            conversation!!.lobbyTimer = dateTime.timeInMillis / 1000
+            conversation!!.lobbyTimer = (dateTime.timeInMillis - (dateTime.time.seconds * 1000)) / 1000
         } else if (!isChecked) {
             conversation!!.lobbyTimer = 0
         }
@@ -534,8 +534,8 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
                             R.drawable.ic_link_white_24px))
             Conversation.ConversationType.ROOM_SYSTEM -> {
                 val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = context!!.getDrawable(R.drawable.ic_launcher_background)
-                layers[1] = context!!.getDrawable(R.drawable.ic_launcher_foreground)
+                layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
+                layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
                 conversationAvatarImageView.hierarchy.setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
             }
