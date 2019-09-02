@@ -130,6 +130,7 @@ public class NotificationWorker extends Worker {
 
     private String credentials;
     private boolean muteCall = false;
+    private boolean importantConversation = false;
 
     public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -144,6 +145,12 @@ public class NotificationWorker extends Worker {
                 "mute_calls", intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
             muteCall = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
         }
+
+        if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(userEntity.getId(),
+                "important_conversation", intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
+            importantConversation = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
+        }
+
 
         ncApi.getRoom(credentials, ApiUtils.getRoom(userEntity.getBaseUrl(),
                 intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())))
@@ -450,7 +457,8 @@ public class NotificationWorker extends Worker {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(notificationId, notification);
 
-        if (!muteCall) {
+
+        if (!notification.category.equals(Notification.CATEGORY_CALL) || !muteCall) {
             String ringtonePreferencesString;
             Uri soundUri;
 
@@ -469,8 +477,8 @@ public class NotificationWorker extends Worker {
                 }
             }
 
-            if (soundUri != null & !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
-                    DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
+            if (soundUri != null && !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
+                    (DoNotDisturbUtils.INSTANCE.shouldPlaySound() || importantConversation)) {
                 AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
                         (AudioAttributes.CONTENT_TYPE_SONIFICATION);
 
@@ -495,7 +503,7 @@ public class NotificationWorker extends Worker {
             }
 
 
-            if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
+            if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting()) || importantConversation) {
                 Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
                 if (vibrator != null) {

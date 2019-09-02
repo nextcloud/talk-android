@@ -422,7 +422,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
     }
 
     private fun fetchRoomInfo() {
-        ncApi!!.getRoom(credentials, ApiUtils.getRoom(conversationUser!!.baseUrl, conversationToken))
+        ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser!!.baseUrl, conversationToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<RoomOverall> {
