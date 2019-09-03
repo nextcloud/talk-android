@@ -358,7 +358,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void loadAvatarForStatusBar() {
-        if (currentConversation != null && currentConversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) && getActivity() != null && conversationVoiceCallMenuItem != null) {
+        if (currentConversation != null && currentConversation.getType() != null && currentConversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) && getActivity() != null && conversationVoiceCallMenuItem != null) {
             int avatarSize =
                     (int) DisplayUtils.convertDpToPixel(conversationVoiceCallMenuItem.getIcon().getIntrinsicWidth(), getActivity());
 
