@@ -171,8 +171,8 @@ public class OperationsMenuController extends BaseController {
         currentUser = userUtils.getCurrentUser();
         OperationsObserver operationsObserver = new OperationsObserver();
 
-        if (!TextUtils.isEmpty(callUrl)) {
-            conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1, callUrl.length());
+        if (!TextUtils.isEmpty(callUrl) && callUrl.contains("/call")) {
+            conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1);
             if (callUrl.contains("/index.php")) {
                 baseUrl = callUrl.substring(0, callUrl.indexOf("/index.php"));
             } else {

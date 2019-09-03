@@ -228,8 +228,8 @@ public class EntryMenuController extends BaseController {
                             proceedButton.setAlpha(1.0f);
                         }
                         textInputLayout.setErrorEnabled(false);
-                    } else if (editText.getText().toString().startsWith("http://") ||
-                            editText.getText().toString().startsWith("https://") &&
+                    } else if ((editText.getText().toString().startsWith("http://") ||
+                            editText.getText().toString().startsWith("https://")) &&
                                     editText.getText().toString().contains("/call/")) {
                         // operation code 10
                         if (!proceedButton.isEnabled()) {
