@@ -51,6 +51,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.emoji.text.EmojiCompat;
 import androidx.emoji.widget.EmojiEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -724,7 +725,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     @Override
     protected String getTitle() {
-        return conversationName;
+        return String.valueOf(EmojiCompat.get().process(conversationName));
     }
 
     @Override

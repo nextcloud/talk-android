@@ -30,8 +30,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
+import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -99,7 +99,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
     @BindView(R.id.avatar_image)
     lateinit var conversationAvatarImageView: SimpleDraweeView
     @BindView(R.id.display_name_text)
-    lateinit var conversationDisplayName: TextView
+    lateinit var conversationDisplayName: EmojiTextView
     @BindView(R.id.participants_list_category)
     lateinit var participantsListCategory: MaterialPreferenceCategory
     @BindView(R.id.recycler_view)
