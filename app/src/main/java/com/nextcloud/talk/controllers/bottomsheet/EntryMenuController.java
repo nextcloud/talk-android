@@ -48,6 +48,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.utils.EmojiTextInputEditText;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -71,7 +72,7 @@ public class EntryMenuController extends BaseController {
     Button proceedButton;
 
     @BindView(R.id.text_edit)
-    TextInputEditText editText;
+    EmojiTextInputEditText editText;
 
     @BindView(R.id.text_input_layout)
     TextInputLayout textInputLayout;
