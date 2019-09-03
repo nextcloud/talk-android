@@ -83,7 +83,7 @@ import javax.inject.Inject
 class ConversationInfoController(args: Bundle) : BaseController(args) {
 
     @BindView(R.id.notification_settings)
-    lateinit var materialPreferenceScreen: MaterialPreferenceScreen
+    lateinit var notificationsPreferenceScreen: MaterialPreferenceScreen
     @BindView(R.id.progressBar)
     lateinit var progressBar: ProgressBar
     @BindView(R.id.conversation_info_message_notifications)
@@ -124,6 +124,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
     private var roomDisposable: Disposable? = null
     private var participantsDisposable: Disposable? = null
 
+    private var databaseStorageModule: DatabaseStorageModule? = null
     private var conversation: Conversation? = null
 
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
@@ -165,6 +166,16 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
         return inflater.inflate(R.layout.controller_conversation_info, container, false)
     }
 
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        if (databaseStorageModule == null) {
+            databaseStorageModule = DatabaseStorageModule(conversationUser!!, conversationToken)
+        }
+
+        notificationsPreferenceScreen.setStorageModule(databaseStorageModule)
+        conversationInfoWebinar.setStorageModule(databaseStorageModule)
+    }
+
     override fun onViewBound(view: View) {
         super.onViewBound(view)
 
@@ -172,17 +183,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
             saveStateHandler = LovelySaveStateHandler()
         }
 
-        val databaseStorageModule = DatabaseStorageModule(conversationUser!!,
-                conversationToken)
-
-        materialPreferenceScreen.setStorageModule(databaseStorageModule)
-        conversationInfoWebinar.setStorageModule(databaseStorageModule)
-
         if (adapter == null) {
             fetchRoomInfo()
         } else {
             loadConversationAvatar()
-            materialPreferenceScreen.visibility = View.VISIBLE
+            notificationsPreferenceScreen.visibility = View.VISIBLE
             nameCategoryView.visibility = View.VISIBLE
             participantsListCategory.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
@@ -368,7 +373,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
     }
 
     private fun getListOfParticipants() {
-        ncApi!!.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(conversationUser!!.baseUrl, conversationToken))
+        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(conversationUser!!.baseUrl, conversationToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<ParticipantsOverall> {
@@ -464,30 +469,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
 
 
                             loadConversationAvatar()
+                            adjustNotificationLevelUI()
 
-                            if (conversationUser.hasSpreedFeatureCapability("notification-levels")) {
-                                messageNotificationLevel.isEnabled = true
-                                messageNotificationLevel.alpha = 1.0f
-
-                                if (conversation!!.notificationLevel != Conversation.NotificationLevel.DEFAULT) {
-                                    val stringValue: String = when (EnumNotificationLevelConverter().convertToInt(conversation!!.notificationLevel)) {
-                                        1 -> "always"
-                                        2 -> "mention"
-                                        3 -> "never"
-                                        else -> "mention"
-                                    }
-
-                                    messageNotificationLevel.value = stringValue
-                                } else {
-                                    setProperNotificationValue(conversation)
-                                }
-                            } else {
-                                messageNotificationLevel.isEnabled = false
-                                messageNotificationLevel.alpha = 0.38f
-                                setProperNotificationValue(conversation)
-                            }
-
-                            materialPreferenceScreen.visibility = View.VISIBLE
+                            notificationsPreferenceScreen.visibility = View.VISIBLE
                         }
                     }
 
@@ -499,6 +483,32 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
                         roomDisposable!!.dispose()
                     }
                 })
+    }
+
+    private fun adjustNotificationLevelUI() {
+        if (conversation != null) {
+            if (conversationUser != null && conversationUser.hasSpreedFeatureCapability("notification-levels")) {
+                messageNotificationLevel.isEnabled = true
+                messageNotificationLevel.alpha = 1.0f
+
+                if (conversation!!.notificationLevel != Conversation.NotificationLevel.DEFAULT) {
+                    val stringValue: String = when (EnumNotificationLevelConverter().convertToInt(conversation!!.notificationLevel)) {
+                        1 -> "always"
+                        2 -> "mention"
+                        3 -> "never"
+                        else -> "mention"
+                    }
+
+                    messageNotificationLevel.value = stringValue
+                } else {
+                    setProperNotificationValue(conversation)
+                }
+            } else {
+                messageNotificationLevel.isEnabled = false
+                messageNotificationLevel.alpha = 0.38f
+                setProperNotificationValue(conversation)
+            }
+        }
     }
 
     private fun setProperNotificationValue(conversation: Conversation?) {
