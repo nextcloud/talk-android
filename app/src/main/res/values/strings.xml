@@ -203,7 +203,7 @@
     <string name="nc_mute_calls_desc">Incoming calls will be silenced</string>
     <string name="nc_important_conversation">Important conversation</string>
     <string name="nc_important_conversation_desc">Notifications in this conversation will override
-        Do-Not-Disturb settings</string>
+        Do Not Disturb settings</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
