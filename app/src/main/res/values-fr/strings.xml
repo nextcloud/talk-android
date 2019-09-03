@@ -180,7 +180,6 @@ grâce à un lien spécialement créé.</string>
     <string name="nc_notify_me_mention">Notifier quand mentionné</string>
     <string name="nc_notify_me_never">Ne jamais notifier</string>
     <string name="nc_mute_calls">Rendre les appels silencieux</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile.
@@ -252,8 +251,6 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_guest">Invité</string>
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
 
-    <string name="nc_readonly_hint">Cette conversation est verrouillée</string>
-
     <!-- Browser component -->
     <string name="nc_file_browser">Explorateur de fichiers\"</string>
     <string name="nc_select_files">Sélectionner les fichiers</string>
@@ -270,7 +267,4 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_lobby_waiting_with_date">Vous attendez actuellement dans la salle d\'attente.\n
 Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_manual">Manuel</string>
-    <string name="nc_at">à</string>
-
-
 </resources>

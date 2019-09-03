@@ -152,7 +152,6 @@
     <string name="nc_notify_me_mention">Obvesti ob omembi</string>
     <string name="nc_notify_me_never">Nikoli ne obvesti</string>
     <string name="nc_mute_calls">Utišaj klice</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom prek mobilnih

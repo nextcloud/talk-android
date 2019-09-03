@@ -140,7 +140,6 @@
     <string name="nc_notify_me_always">總是通知</string>
     <string name="nc_notify_me_never">從不通知</string>
     <string name="nc_mute_calls">靜音來電</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>
     <string name="nc_all_ok_operation">完成</string>
@@ -184,8 +183,6 @@
     <string name="nc_owner">擁有者</string>
     <string name="nc_user">使用者</string>
     <string name="nc_guest">訪客</string>
-    <string name="nc_readonly_hint">本對話被鎖定</string>
-
     <string name="nc_select_files">選取檔案</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">重新整理</string>

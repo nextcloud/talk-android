@@ -181,7 +181,6 @@ speciel lavet link.</string>
     <string name="nc_notify_me_mention">Giv besked når du bliver omtalt</string>
     <string name="nc_notify_me_never">Giv aldrig besked</string>
     <string name="nc_mute_calls">Gør opkald lydløs</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noget gik galt, undskyld!</string>
     <string name="nc_failed_signaling_settings">Serveren understøtter ikke deltagelse i offentlige samtaler over mobil
@@ -252,8 +251,6 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_user">ruger</string>
     <string name="nc_guest">Gæst</string>
     <string name="nc_following_link">Bruger følger et offentligt link</string>
-
-    <string name="nc_readonly_hint">Denne samtale er låst</string>
 
     <!-- Browser component -->
     <string name="nc_file_browser">Fil browser\"</string>

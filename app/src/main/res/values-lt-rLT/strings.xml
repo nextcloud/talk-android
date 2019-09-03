@@ -154,8 +154,6 @@
     <string name="nc_moderator">Moderatorius</string>
     <string name="nc_user">Naudotojas</string>
     <string name="nc_guest">Svečias</string>
-    <string name="nc_readonly_hint">Šis pokalbis yra užrakintas.</string>
-
     <string name="nc_file_browser_back">Atgal</string>
     <string name="nc_file_browser_refresh">Įkelti iš naujo</string>
     </resources>

@@ -181,7 +181,6 @@
     <string name="nc_notify_me_mention">Notificar cuando eres mencionado</string>
     <string name="nc_notify_me_never">No notificar nunca</string>
     <string name="nc_mute_calls">Silenciar llamadas</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>
     <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas vía teléfonos móviles.
@@ -252,8 +251,6 @@
     <string name="nc_user">Usuario</string>
     <string name="nc_guest">Invitado</string>
     <string name="nc_following_link">Usuario que sigue un enlace público</string>
-
-    <string name="nc_readonly_hint">Esta conversación está bloqueada</string>
 
     <!-- Browser component -->
     <string name="nc_file_browser">Explorador de archivos\"</string>

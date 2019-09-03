@@ -157,7 +157,6 @@
     <string name="nc_notify_me_mention">Tilkynna þegar minnst er á</string>
     <string name="nc_notify_me_never">Aldrei tilkynna</string>
     <string name="nc_mute_calls">Þagga samtöl</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
     <string name="nc_failed_signaling_settings">Valinn þjónn styður ekki þáttöku í opinberum samtölum í gegnum farsíma.
@@ -226,7 +225,5 @@
     <string name="nc_user">Notandi</string>
     <string name="nc_guest">Gestur</string>
     <string name="nc_following_link">Notandi sem fylgdi almenningstengli</string>
-
-    <string name="nc_readonly_hint">Þetta samtal er læst</string>
 
     </resources>

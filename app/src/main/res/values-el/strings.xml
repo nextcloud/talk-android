@@ -170,6 +170,4 @@
     <string name="nc_moderator">Συντονιστής</string>
     <string name="nc_user">Χρήστης</string>
     <string name="nc_guest">Επισκέπτης</string>
-    <string name="nc_readonly_hint">Η συνομιλία είναι κλειδωμένη</string>
-
     </resources>

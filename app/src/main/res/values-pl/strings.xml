@@ -81,7 +81,7 @@
     <string name="nc_settings_theme_title">Motyw</string>
     <string name="nc_settings_theme_key">motyw</string>
     <string name="nc_settings_theme_follow_system">Użyj domyślnego systemu</string>
-    <string name="nc_settings_theme_battery_saver">Ustaw oszczędzanie baterii</string>
+    <string name="nc_settings_theme_battery_saver">Ustawiony według Oszczędzania Baterii</string>
     <string name="nc_settings_theme_light">Jasny</string>
     <string name="nc_settings_theme_dark">Ciemny</string>
     <string name="nc_settings_privacy">Prywatność</string>
@@ -181,7 +181,6 @@
     <string name="nc_notify_me_mention">Powiadom, gdy wspomniano</string>
     <string name="nc_notify_me_never">Nigdy nie powiadamiaj</string>
     <string name="nc_mute_calls">Wycisz połączenia</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Przepraszam, coś poszło nie tak!</string>
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe.
@@ -253,8 +252,6 @@
     <string name="nc_guest">Gość</string>
     <string name="nc_following_link">Użytkownik korzysta z łącza publicznego</string>
 
-    <string name="nc_readonly_hint">Ta rozmowa jest zablokowana</string>
-
     <!-- Browser component -->
     <string name="nc_file_browser">Przeglądarka plików\"</string>
     <string name="nc_select_files">Wybierz pliki</string>
@@ -262,4 +259,13 @@
     <string name="nc_file_browser_refresh">Odśwież</string>
     <string name="nc_last_modified">%1$s | Ostatnio zmodyfikowany: %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Seminarium online</string>
+    <string name="nc_lobby">Poczekalnia</string>
+    <string name="nc_start_time">Czas rozpoczęcia</string>
+    <string name="nc_lobby_waiting">Aktualnie czekasz w poczekalni.</string>
+    <string name="nc_lobby_waiting_with_date">Obecnie czekasz w poczekalni.\n To spotkanie
+         jest zaplanowane na %1$s.</string>
+    <string name="nc_manual">Ręczne</string>
+</resources>
