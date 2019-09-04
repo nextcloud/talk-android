@@ -105,7 +105,7 @@ public class Conversation {
 
 
     private boolean isLockedOneToOne(UserEntity conversationUser) {
-        return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && conversationUser.hasSpreedFeatureCapability("locked-one-to-one-conversations"));
+        return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && conversationUser.hasSpreedFeatureCapability("locked-one-to-one-rooms"));
     }
 
     public boolean canModerate(UserEntity conversationUser) {
