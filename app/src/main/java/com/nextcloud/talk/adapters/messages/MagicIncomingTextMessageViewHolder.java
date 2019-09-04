@@ -105,10 +105,7 @@ public class MagicIncomingTextMessageViewHolder
         if (!message.isGrouped() && !message.isOneToOneConversation()) {
             messageUserAvatarView.setVisibility(View.VISIBLE);
             if (message.getActorType().equals("guests")) {
-                TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
-                        .endConfig().buildRound(String.valueOf(messageAuthor.getText().charAt(0))
-                                , NextcloudTalkApplication.Companion.getSharedApplication().getResources().getColor(R.color.nc_grey));
-                messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
+                // do nothing, avatar is set
             } else if (message.getActorType().equals("bots") && message.getActorId().equals("changelog")) {
                 messageUserAvatarView.setController(null);
                 Drawable[] layers = new Drawable[2];

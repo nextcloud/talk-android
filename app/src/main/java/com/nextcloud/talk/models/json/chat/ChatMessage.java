@@ -212,6 +212,14 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
             public String getAvatar() {
                 if (getActorType().equals("users")) {
                     return ApiUtils.getUrlForAvatarWithName(getActiveUser().getBaseUrl(), actorId, R.dimen.avatar_size);
+                } else if (getActorType().equals("guests")) {
+                    String apiId =
+                            NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
+
+                    if (!TextUtils.isEmpty(getActorDisplayName())) {
+                        apiId = getActorDisplayName();
+                    }
+                    return ApiUtils.getUrlForAvatarWithNameForGuests(getActiveUser().getBaseUrl(), apiId, R.dimen.avatar_size);
                 } else {
                     return null;
                 }

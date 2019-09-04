@@ -175,10 +175,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         authorDisplayName = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
                     }
                     holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
-                    TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
-                            .endConfig().buildRound(String.valueOf(authorDisplayName.charAt(0)),
-                                    context.getResources().getColor(R.color.nc_grey));
-                    holder.dialogLastMessageUserAvatar.getHierarchy().setImage(drawable, 100, true);
+
+                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                            .setOldController(holder.dialogLastMessageUserAvatar.getController())
+                            .setAutoPlayAnimations(true)
+                            .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameForGuests(userEntity.getBaseUrl(), authorDisplayName, R.dimen.small_item_height), userEntity))
+                            .build();
+                    holder.dialogLastMessageUserAvatar.setController(draweeController);
                 } else if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())
                         || !conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
                     holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);

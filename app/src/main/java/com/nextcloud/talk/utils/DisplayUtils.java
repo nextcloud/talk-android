@@ -262,8 +262,11 @@ public class DisplayUtils {
         chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
 
         if (!isCall) {
-            ImageRequest imageRequest =
-                    getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big), null);
+            String url = ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big);
+            if ("guests".equals(type)) {
+                url = ApiUtils.getUrlForAvatarWithNameForGuests(conversationUser.getBaseUrl(), label, R.dimen.avatar_size_big);
+            }
+            ImageRequest imageRequest = getImageRequestForUrl(url, null);
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
             DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
 

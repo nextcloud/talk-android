@@ -40,6 +40,9 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
+
+import org.w3c.dom.Text;
+
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
@@ -122,20 +125,33 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getDisplayName(),
                     String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
-        } else {
-            holder.contactDisplayName.setText(participant.getDisplayName());
+        }
 
-            if (TextUtils.isEmpty(participant.getDisplayName()) &&
-                    (participant.getType().equals(Participant.ParticipantType.GUEST) || participant.getType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
-                holder.contactDisplayName.setText(NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest));
-            }
+        holder.contactDisplayName.setText(participant.getDisplayName());
+
+        if (TextUtils.isEmpty(participant.getDisplayName()) &&
+                (participant.getType().equals(Participant.ParticipantType.GUEST) || participant.getType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
+            holder.contactDisplayName.setText(NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest));
         }
 
         if (TextUtils.isEmpty(participant.getSource()) || participant.getSource().equals("users")) {
-
             if (Participant.ParticipantType.GUEST.equals(participant.getType()) ||
                     Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participant.getType())) {
-                // TODO: Show generated avatar for guests
+                String displayName = NextcloudTalkApplication.Companion.getSharedApplication()
+                        .getResources().getString(R.string.nc_guest);
+
+                if (!TextUtils.isEmpty(participant.getDisplayName())) {
+                    displayName = participant.getDisplayName();
+                }
+
+                DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                        .setOldController(holder.simpleDraweeView.getController())
+                        .setAutoPlayAnimations(true)
+                        .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameForGuests(userEntity.getBaseUrl(),
+                                displayName, R.dimen.avatar_size), null))
+                        .build();
+                holder.simpleDraweeView.setController(draweeController);
+
             } else {
 
                 DraweeController draweeController = Fresco.newDraweeControllerBuilder()
