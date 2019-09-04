@@ -273,7 +273,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         }
 
                         checkReadOnlyState();
-                        if (oldConversation == null || (!oldConversation.getLobbyState().equals(currentConversation.getLobbyState()) || !oldConversation.getLobbyTimer().equals(currentConversation.getLobbyTimer()))) {
+                        if (oldConversation == null || (oldConversation != null && oldConversation.getLobbyState() != null && !oldConversation.getLobbyState().equals(currentConversation.getLobbyState()) || (oldConversation.getLobbyTimer() != null && !oldConversation.getLobbyTimer().equals(currentConversation.getLobbyTimer())))) {
                             checkLobbyState(oldConversation != null && (!oldConversation.getLobbyState().equals(currentConversation.getLobbyState())));
                         }
 

@@ -114,7 +114,12 @@ public class Conversation {
     }
 
     public boolean shouldShowLobby(UserEntity conversationUser) {
-        return getLobbyState().equals(LobbyState.LOBBY_STATE_MODERATORS_ONLY) && !canModerate(conversationUser);
+        if (getLobbyState() != null) {
+            return getLobbyState().equals(LobbyState.LOBBY_STATE_MODERATORS_ONLY) && !canModerate(conversationUser);
+        }
+        else {
+            return false;
+        }
     }
 
     public boolean isLobbyViewApplicable(UserEntity conversationUser) {
