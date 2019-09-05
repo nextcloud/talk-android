@@ -413,7 +413,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             adapter = new MessagesListAdapter<>(conversationUser.getUserId(), messageHolders, new ImageLoader() {
                 @Override
-                public void loadImage(SimpleDraweeView imageView, String url) {
+                public void loadImage(SimpleDraweeView imageView, @androidx.annotation.Nullable String url, @androidx.annotation.Nullable Object payload) {
                     DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                             .setImageRequest(DisplayUtils.getImageRequestForUrl(url, conversationUser))
                             .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
