@@ -916,7 +916,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
         Spans.MentionChipSpan mentionSpan;
         for (int i = 0; i < mentionSpans.length; i++) {
             mentionSpan = mentionSpans[i];
-            editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@" + mentionSpan.getId());
+            String mentionId = mentionSpan.getId();
+            if (mentionId.contains(" ") || mentionId.startsWith("guest/")) {
+                mentionId = "\"" + mentionId + "\"";
+            }
+            editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@" + mentionId);
         }
 
         messageInput.setText("");

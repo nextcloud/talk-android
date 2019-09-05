@@ -45,6 +45,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.Person;
 import androidx.core.graphics.drawable.IconCompat;
+import androidx.emoji.text.EmojiCompat;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -83,6 +84,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
+import com.vanniktech.emoji.emoji.Emoji;
 
 import org.parceler.Parcels;
 
@@ -225,6 +227,7 @@ public class NotificationWorker extends Worker {
                         if (subjectRichParameters != null && subjectRichParameters.size() > 0) {
                             HashMap<String, String> callHashMap = subjectRichParameters.get("call");
                             HashMap<String, String> userHashMap = subjectRichParameters.get("user");
+                            HashMap<String, String> guestHashMap = subjectRichParameters.get("guest");
 
                             if (callHashMap != null && callHashMap.size() > 0 && callHashMap.containsKey("name")) {
                                 if (notification.getObjectType().equals("chat")) {
@@ -238,11 +241,16 @@ public class NotificationWorker extends Worker {
                                 }
                             }
 
+                            NotificationUser notificationUser = new NotificationUser();
                             if (userHashMap != null && !userHashMap.isEmpty()) {
-                                NotificationUser notificationUser = new NotificationUser();
                                 notificationUser.setId(userHashMap.get("id"));
                                 notificationUser.setType(userHashMap.get("type"));
                                 notificationUser.setName(userHashMap.get("name"));
+                                decryptedPushMessage.setNotificationUser(notificationUser);
+                            } else if (guestHashMap != null && !guestHashMap.isEmpty()) {
+                                notificationUser.setId(guestHashMap.get("id"));
+                                notificationUser.setType(guestHashMap.get("type"));
+                                notificationUser.setName(guestHashMap.get("name"));
                                 decryptedPushMessage.setNotificationUser(notificationUser);
                             }
                         }
@@ -307,12 +315,12 @@ public class NotificationWorker extends Worker {
                 .setSubText(baseUrl)
                 .setWhen(decryptedPushMessage.getTimestamp())
                 .setShowWhen(true)
-                .setContentTitle(decryptedPushMessage.getSubject())
+                .setContentTitle(EmojiCompat.get().process(decryptedPushMessage.getSubject()))
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
         if (!TextUtils.isEmpty(decryptedPushMessage.getText())) {
-            notificationBuilder.setContentText(decryptedPushMessage.getText());
+            notificationBuilder.setContentText(EmojiCompat.get().process(decryptedPushMessage.getText()));
         }
 
         if (Build.VERSION.SDK_INT >= 23) {
@@ -391,13 +399,21 @@ public class NotificationWorker extends Worker {
             }
 
             Person.Builder person =
-                    new Person.Builder().setKey(signatureVerification.getUserEntity().getId() + "@" + decryptedPushMessage.getNotificationUser().getId()).setName(decryptedPushMessage.getNotificationUser().getName()).setBot(decryptedPushMessage.getNotificationUser().getType().equals("bot"));
+                    new Person.Builder().setKey(signatureVerification.getUserEntity().getId() +
+                            "@" + decryptedPushMessage.getNotificationUser().getId()).setName(EmojiCompat.get().process(decryptedPushMessage.getNotificationUser().getName())).setBot(decryptedPushMessage.getNotificationUser().getType().equals("bot"));
 
             notificationBuilder.setOnlyAlertOnce(true);
 
-            if (decryptedPushMessage.getNotificationUser().getType().equals("user")) {
+            if (decryptedPushMessage.getNotificationUser().getType().equals("user") || decryptedPushMessage.getNotificationUser().getType().equals("guest")) {
+                String avatarUrl = ApiUtils.getUrlForAvatarWithName(signatureVerification.getUserEntity().getBaseUrl(), decryptedPushMessage.getNotificationUser().getId(), R.dimen.avatar_size);
+
+                if (decryptedPushMessage.getNotificationUser().getType().equals("guest")) {
+                    avatarUrl = ApiUtils.getUrlForAvatarWithNameForGuests(signatureVerification.getUserEntity().getBaseUrl(),
+                            decryptedPushMessage.getNotificationUser().getName(), R.dimen.avatar_size);
+                }
+
                 ImageRequest imageRequest =
-                        DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(signatureVerification.getUserEntity().getBaseUrl(), decryptedPushMessage.getNotificationUser().getId(), R.dimen.avatar_size), null);
+                        DisplayUtils.getImageRequestForUrl(avatarUrl, null);
                 ImagePipeline imagePipeline = Fresco.getImagePipeline();
                 DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
 
