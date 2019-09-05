@@ -185,6 +185,9 @@ mediante unha ligazón creada especialmente.</string>
     <string name="nc_mute_calls">Silenciar as chamadas</string>
     <string name="nc_mute_calls_desc">As chamadas entrantes serán silenciadas</string>
     <string name="nc_important_conversation">Conversa importante</string>
+    <string name="nc_important_conversation_desc">As notificacións nesta conversa serán anuladas
+        Axustes de «Non molestar»</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sentímolo, algo foi mal!</string>
     <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos

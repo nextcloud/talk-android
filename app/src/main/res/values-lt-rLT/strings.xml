@@ -48,6 +48,9 @@
     <string name="nc_settings_notification_sounds">Pranešimų garsai</string>
     <string name="nc_settings_vibrate">Vibruoti</string>
     <string name="nc_settings_vibrate_desc">Telefonas vibruos, nebent bus nutildytas</string>
+    <string name="nc_settings_appearance">Išvaizda</string>
+    <string name="nc_settings_theme_title">Apipavidalinimas</string>
+    <string name="nc_settings_theme_key">apipavidalinimas</string>
     <string name="nc_settings_privacy">Privatumas</string>
     <string name="nc_settings_screen_security_title">Ekrano saugumas</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klaviatūra</string>

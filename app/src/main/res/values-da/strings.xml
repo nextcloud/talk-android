@@ -181,6 +181,11 @@ speciel lavet link.</string>
     <string name="nc_notify_me_mention">Giv besked når du bliver omtalt</string>
     <string name="nc_notify_me_never">Giv aldrig besked</string>
     <string name="nc_mute_calls">Gør opkald lydløs</string>
+    <string name="nc_mute_calls_desc">Indkommende opkald uden ringning</string>
+    <string name="nc_important_conversation">Vigtig samtale</string>
+    <string name="nc_important_conversation_desc">notifikationer under denne samtale vil ignorere
+Forstyr ikke indstillinger</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noget gik galt, undskyld!</string>
     <string name="nc_failed_signaling_settings">Serveren understøtter ikke deltagelse i offentlige samtaler over mobil
@@ -259,4 +264,13 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_file_browser_refresh">Opdater</string>
     <string name="nc_last_modified">%1$s| Sidst ændret: %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinar</string>
+    <string name="nc_lobby">Lobby</string>
+    <string name="nc_start_time">Start tid</string>
+    <string name="nc_lobby_waiting">Du venter nu i lobbyen.</string>
+    <string name="nc_lobby_waiting_with_date">Du venter nu i lobbyen.\n Dette
+møde er planlagt til %1$s.</string>
+    <string name="nc_manual">Manuel</string>
+</resources>

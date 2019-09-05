@@ -183,6 +183,9 @@
     <string name="nc_mute_calls">Wycisz połączenia</string>
     <string name="nc_mute_calls_desc">Połączenia przychodzące zostaną wyciszone</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
+    <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie będą zastąpione na
+        \"Nie przeszkadzać\"</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Przepraszam, coś poszło nie tak!</string>
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe.

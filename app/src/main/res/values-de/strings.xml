@@ -183,6 +183,9 @@
     <string name="nc_mute_calls">Anrufe stummschalten</string>
     <string name="nc_mute_calls_desc">Eingehende Anrufe werden stummgeschaltet</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
+    <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben
+        die Nicht-Stören Einstellungen</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Schade, etwas ist schiefgelaufen!</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Unterhaltungen durch Mobiltelefone.

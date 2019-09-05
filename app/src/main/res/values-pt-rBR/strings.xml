@@ -183,6 +183,9 @@
     <string name="nc_mute_calls">Silenciar chamadas</string>
     <string name="nc_mute_calls_desc">Chamadas recebidas serão silenciadas</string>
     <string name="nc_important_conversation">Conversa importante</string>
+    <string name="nc_important_conversation_desc">As notificações nesta conversa substituirão
+        as configurações Não-Perturbe</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
     <string name="nc_failed_signaling_settings">O servidor de destino não suporta a participação em conversas públicas
