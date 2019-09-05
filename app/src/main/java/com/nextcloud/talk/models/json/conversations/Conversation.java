@@ -92,7 +92,8 @@ public class Conversation {
     public LobbyState lobbyState;
     @JsonField(name = "lobbyTimer")
     public Long lobbyTimer;
-
+    @JsonField(name = "lastReadMessage")
+    public int lastReadMessage;
 
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));

@@ -992,13 +992,20 @@ public class ChatController extends BaseController implements MessagesListAdapte
             return;
         }
 
+        Map<String, Integer> fieldMap = new HashMap<>();
+        fieldMap.put("includeLastKnown", 0);
+
         if (lookIntoFuture > 0) {
             lookingIntoFuture = true;
+        } else if (isFirstMessagesProcessing) {
+            globalLastKnownFutureMessageId = currentConversation.getLastReadMessage();
+            globalLastKnownPastMessageId = currentConversation.getLastReadMessage();
+            fieldMap.put("includeLastKnown", 1);
         }
 
-        Map<String, Integer> fieldMap = new HashMap<>();
         fieldMap.put("lookIntoFuture", lookIntoFuture);
-        fieldMap.put("limit", 25);
+        fieldMap.put("limit", 10);
+        fieldMap.put("setReadMarker", 1);
 
         int lastKnown;
         if (lookIntoFuture > 0) {
@@ -1007,9 +1014,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             lastKnown = globalLastKnownPastMessageId;
         }
 
-        if (lastKnown != -1) {
-            fieldMap.put("lastKnownMessageId", lastKnown);
-        }
+        fieldMap.put("lastKnownMessageId", lastKnown);
 
         if (!wasDetached) {
             if (lookIntoFuture > 0) {
