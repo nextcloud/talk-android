@@ -179,7 +179,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                             .setOldController(holder.dialogLastMessageUserAvatar.getController())
                             .setAutoPlayAnimations(true)
-                            .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameForGuests(userEntity.getBaseUrl(), authorDisplayName, R.dimen.small_item_height), userEntity))
+                            .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameForGuests(userEntity.getBaseUrl(), authorDisplayName, R.dimen.smaller_item_height), userEntity))
                             .build();
                     holder.dialogLastMessageUserAvatar.setController(draweeController);
                 } else if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())
@@ -190,7 +190,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                                 .setOldController(holder.dialogLastMessageUserAvatar.getController())
                                 .setAutoPlayAnimations(true)
-                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getLastMessage().getActorId(), R.dimen.small_item_height), userEntity))
+                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getLastMessage().getActorId(), R.dimen.smaller_item_height), userEntity))
                                 .build();
                         holder.dialogLastMessageUserAvatar.setController(draweeController);
                     } else {

@@ -23,7 +23,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
 
     <dimen name="item_height">72dp</dimen>
-    <dimen name="small_item_height">24dp</dimen>
+    <dimen name="small_item_height">48dp</dimen>
+    <dimen name="smaller_item_height">24dp</dimen>
     <dimen name="rv_item_view_height">48dp</dimen>
 
     <!-- Custom transition dimensions -->
