@@ -37,7 +37,7 @@
     <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier um Server-Anbieter zu finden</string>
 
     <!-- Account verification -->
-    <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
+    <string name="nc_push_disabled">Push-Benachrichtigungen deaktiviert</string>
     <string name="nc_capabilities_failed">Fehler beim Abfragen der Fähigkeiten. Abbruch</string>
     <string name="nc_external_server_failed">Konnte die Benachrichtigungseinstellungen nicht abrufen</string>
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden, Abbruch</string>
@@ -112,7 +112,7 @@
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Benutzername</string>
     <string name="nc_password">Passwort</string>
-    <string name="nc_conversation_link">Unterhaltungslink</string>
+    <string name="nc_conversation_link">Unterhaltungs-Link</string>
     <string name="nc_new_password">Neues Passwort</string>
     <string name="nc_wrong_password">Falsches Passwort</string>
     <string name="nc_about">Über</string>
@@ -132,7 +132,7 @@
     <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_clear_password">Passwort leeren</string>
     <string name="nc_share_link">Link teilen</string>
-    <string name="nc_share_link_via">Link teilen via</string>
+    <string name="nc_share_link_via">Link teilen über</string>
     <string name="nc_make_call_public">Unterhaltung öffentlich machen</string>
     <string name="nc_make_call_private">Unterhaltung privat machen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
@@ -195,7 +195,7 @@
     <string name="nc_call_name">Name der Unterhaltung</string>
     <string name="nc_proceed">Fortsetzen</string>
     <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>
-    <string name="nc_wrong_link">Unterhaltungslink ist ungültig</string>
+    <string name="nc_wrong_link">Unterhaltungs-Link ist ungültig</string>
     <string name="nc_share_text">Treten Sie der Unterhaltung %1$s/index.php/call/%2$s bei</string>
     <string name="nc_share_subject">%1$sEinladung </string>
     <string name="nc_share_text_pass">\nPasswort: %1$s</string>
