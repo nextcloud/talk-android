@@ -77,6 +77,7 @@
         android:layout_above="@+id/messageInputView"
         android:visibility="gone"
         app:dateHeaderTextSize="13sp"
+        android:paddingBottom="4dp"
         app:incomingBubblePaddingBottom="@dimen/message_bubble_corners_padding"
         app:incomingBubblePaddingLeft="@dimen/message_bubble_corners_padding"
         app:incomingBubblePaddingRight="@dimen/message_bubble_corners_padding"

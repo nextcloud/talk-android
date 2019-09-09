@@ -1003,8 +1003,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         fieldMap.put("limit", 10);
         fieldMap.put("setReadMarker", 1);
 
-        Log.d("MARIO lookIntoFuture", String.valueOf(lookIntoFuture));
-
         int lastKnown;
         if (lookIntoFuture > 0) {
             lastKnown = globalLastKnownFutureMessageId;
