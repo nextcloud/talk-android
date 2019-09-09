@@ -1000,7 +1000,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         fieldMap.put("lookIntoFuture", lookIntoFuture);
-        fieldMap.put("limit", 10);
+        fieldMap.put("limit", 100);
         fieldMap.put("setReadMarker", 1);
 
         int lastKnown;
