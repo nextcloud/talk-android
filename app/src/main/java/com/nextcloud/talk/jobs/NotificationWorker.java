@@ -343,21 +343,21 @@ public class NotificationWorker extends Worker {
                     groupName);*/
 
             if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
-                NotificationUtils.createNotificationChannel(context,
-                        NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V3, context.getResources()
+                NotificationUtils.INSTANCE.createNotificationChannel(context,
+                        NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3(), context.getResources()
                                 .getString(R.string.nc_notification_channel_messages), context.getResources()
                                 .getString(R.string.nc_notification_channel_messages), true,
                         NotificationManager.IMPORTANCE_HIGH);
 
-                notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V3);
+                notificationBuilder.setChannelId(NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3());
             } else {
-                NotificationUtils.createNotificationChannel(context,
-                        NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V3, context.getResources()
+                NotificationUtils.INSTANCE.createNotificationChannel(context,
+                        NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_CALLS_V3(), context.getResources()
                                 .getString(R.string.nc_notification_channel_calls), context.getResources()
                                 .getString(R.string.nc_notification_channel_calls_description), true,
                         NotificationManager.IMPORTANCE_HIGH);
 
-                notificationBuilder.setChannelId(NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V3);
+                notificationBuilder.setChannelId(NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_CALLS_V3());
             }
 
         } else {
@@ -380,7 +380,7 @@ public class NotificationWorker extends Worker {
         crc32.update(stringForCrc.getBytes());
 
         StatusBarNotification activeStatusBarNotification =
-                NotificationUtils.findNotificationForRoom(context,
+                NotificationUtils.INSTANCE.findNotificationForRoom(context,
                         signatureVerification.getUserEntity(), decryptedPushMessage.getId());
 
         int notificationId;
@@ -562,9 +562,9 @@ public class NotificationWorker extends Worker {
 
                     decryptedPushMessage.setTimestamp(System.currentTimeMillis());
                     if (decryptedPushMessage.isDelete()) {
-                        NotificationUtils.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), decryptedPushMessage.getNotificationId());
+                        NotificationUtils.INSTANCE.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), decryptedPushMessage.getNotificationId());
                     } else if (decryptedPushMessage.isDeleteAll()) {
-                        NotificationUtils.cancelAllNotificationsForAccount(context, signatureVerification.getUserEntity());
+                        NotificationUtils.INSTANCE.cancelAllNotificationsForAccount(context, signatureVerification.getUserEntity());
                     } else {
                         credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUsername(),
                                 signatureVerification.getUserEntity().getToken());

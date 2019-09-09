@@ -701,9 +701,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void cancelNotificationsForCurrentConversation() {
         if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
-            NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
+            NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
         } else if (!TextUtils.isEmpty(roomToken)) {
-            NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
+            NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
         }
     }
 
@@ -1160,7 +1160,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     unreadChatMessage.setTimestamp(chatMessageList.get(0).getTimestamp());
                     unreadChatMessage.setMessage(context.getString(R.string.nc_new_messages));
                     adapter.addToStart(unreadChatMessage, false);
-                    layoutManager.scrollToPosition(chatMessageList.size() - 1);
                 }
 
                 for (int i = 0; i < chatMessageList.size(); i++) {
@@ -1198,6 +1197,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         adapter.addToStart(chatMessage, shouldScroll);
                     }
 
+                }
+
+                if (shouldAddNewMessagesNotice && adapter != null) {
+                    layoutManager.scrollToPositionWithOffset(adapter.getMessagePositionByIdInReverse("-1"), messagesListView.getHeight() / 2);
                 }
 
                 String xChatLastGivenHeader;

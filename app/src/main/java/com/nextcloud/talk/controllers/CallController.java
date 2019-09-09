@@ -1118,9 +1118,9 @@ public class CallController extends BaseController {
                             }
 
                             if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
-                                NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
+                                NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
                             } else if (!TextUtils.isEmpty(roomToken)) {
-                                NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
+                                NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
                             }
 
                             if (!hasExternalSignalingServer) {
