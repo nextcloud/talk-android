@@ -593,16 +593,17 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 lobbyView.setVisibility(View.GONE);
                 messagesListView.setVisibility(View.VISIBLE);
                 messageInput.setVisibility(View.VISIBLE);
-                if (isFirstMessagesProcessing) {
-                    pullChatMessages(0);
-                } else {
-                    pullChatMessages(1);
-                }
             }
         } else {
             lobbyView.setVisibility(View.GONE);
             messagesListView.setVisibility(View.VISIBLE);
             messageInput.setVisibility(View.VISIBLE);
+        }
+
+        if (isFirstMessagesProcessing) {
+            pullChatMessages(0);
+        } else {
+            pullChatMessages(1);
         }
     }
 
@@ -813,15 +814,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             ApplicationWideCurrentRoomHolder.getInstance().setSession(currentCall.getSessionId());
                             startPing();
 
-                            checkLobbyState();
-
                             setupWebsocket();
-
-                            if (isFirstMessagesProcessing) {
-                                pullChatMessages(0);
-                            } else {
-                                pullChatMessages(1);
-                            }
+                            checkLobbyState();
 
                             if (magicWebSocketInstance != null) {
                                 magicWebSocketInstance.joinRoomWithRoomTokenAndSession(roomToken,
@@ -873,8 +867,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        dispose();
-
                         checkingLobbyStatus = false;
 
                         if (lobbyTimerHandler != null) {
@@ -1010,6 +1002,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
         fieldMap.put("lookIntoFuture", lookIntoFuture);
         fieldMap.put("limit", 10);
         fieldMap.put("setReadMarker", 1);
+
+        Log.d("MARIO lookIntoFuture", String.valueOf(lookIntoFuture));
 
         int lastKnown;
         if (lookIntoFuture > 0) {
