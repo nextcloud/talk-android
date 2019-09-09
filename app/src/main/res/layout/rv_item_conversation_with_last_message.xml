@@ -101,15 +101,6 @@
                 tools:background="@drawable/bubble_circle_unread"
                 tools:text="99+" />
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@id/dialogLastMessageUserAvatar"
-                android:layout_width="@dimen/smaller_item_height"
-                android:layout_height="@dimen/smaller_item_height"
-                android:layout_marginEnd="8dp"
-                android:contentDescription="@null"
-                app:roundAsCircle="true"
-                tools:src="@drawable/ic_call_black_24dp" />
-
         </RelativeLayout>
 
         <TextView

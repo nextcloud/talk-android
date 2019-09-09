@@ -100,7 +100,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         Context context = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
 
         holder.dialogAvatar.setController(null);
-        holder.dialogLastMessageUserAvatar.setController(null);
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.dialogName, conversation.getDisplayName(),
@@ -146,7 +145,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
 
             if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage()) || Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
-                holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
                 holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
                 String authorDisplayName = "";
@@ -169,47 +167,11 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 }
 
                 holder.dialogLastMessage.setText(text);
-
-                if (conversation.getLastMessage().getActorType().equals("guests")) {
-                    if (TextUtils.isEmpty(authorDisplayName)) {
-                        authorDisplayName = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
-                    }
-                    holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
-
-                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                            .setOldController(holder.dialogLastMessageUserAvatar.getController())
-                            .setAutoPlayAnimations(true)
-                            .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameForGuests(userEntity.getBaseUrl(), authorDisplayName, R.dimen.smaller_item_height), userEntity))
-                            .build();
-                    holder.dialogLastMessageUserAvatar.setController(draweeController);
-                } else if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())
-                        || !conversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) {
-                    holder.dialogLastMessageUserAvatar.setVisibility(View.VISIBLE);
-
-                    if (!"bots".equals(conversation.getLastMessage().getActorType())) {
-                        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                                .setOldController(holder.dialogLastMessageUserAvatar.getController())
-                                .setAutoPlayAnimations(true)
-                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getLastMessage().getActorId(), R.dimen.smaller_item_height), userEntity))
-                                .build();
-                        holder.dialogLastMessageUserAvatar.setController(draweeController);
-                    } else {
-                        TextDrawable drawable =
-                                TextDrawable.builder().beginConfig().bold().endConfig().buildRound(">", context.getResources().getColor(R.color.black));
-                        holder.dialogLastMessageUserAvatar.setImageDrawable(drawable);
-
-                    }
-                } else {
-                    holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
-                }
             }
-
         } else {
             holder.dialogDate.setVisibility(View.GONE);
-            holder.dialogLastMessageUserAvatar.setVisibility(View.GONE);
             holder.dialogLastMessage.setText(R.string.nc_no_messages_yet);
         }
-
 
         holder.dialogAvatar.setVisibility(View.VISIBLE);
 
@@ -288,8 +250,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         EmojiTextView dialogName;
         @BindView(R.id.dialogDate)
         TextView dialogDate;
-        @BindView(R.id.dialogLastMessageUserAvatar)
-        SimpleDraweeView dialogLastMessageUserAvatar;
         @BindView(R.id.dialogLastMessage)
         EmojiTextView dialogLastMessage;
         @BindView(R.id.dialogUnreadBubble)
