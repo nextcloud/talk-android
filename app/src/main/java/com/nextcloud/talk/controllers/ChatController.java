@@ -522,10 +522,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
-        if (!conversationUser.getUserId().equals("?") && conversationUser.hasSpreedFeatureCapability("mention-flag") && getActivity() != null) {
-            getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> showConversationInfoScreen());
-        }
-
         if (currentConversation != null) {
             loadAvatarForStatusBar();
             checkLobbyState();
@@ -652,6 +648,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
         super.onAttach(view);
         eventBus.register(this);
 
+        if (!conversationUser.getUserId().equals("?") && conversationUser.hasSpreedFeatureCapability("mention-flag") && getActivity() != null) {
+            getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> showConversationInfoScreen());
+        }
+
         isLeavingForConversation = false;
         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomId);
@@ -711,6 +711,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
         super.onDetach(view);
         ApplicationWideCurrentRoomHolder.getInstance().clear();
         eventBus.unregister(this);
+
+        if (getActivity() != null) {
+            getActivity().findViewById(R.id.toolbar).setOnClickListener(null);
+        }
 
         if (conversationUser.hasSpreedFeatureCapability("no-ping")
                 && getActivity() != null && !getActivity().isChangingConfigurations() && !isLeavingForConversation) {
