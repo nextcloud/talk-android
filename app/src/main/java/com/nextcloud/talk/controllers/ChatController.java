@@ -522,7 +522,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
-        if (currentConversation != null) {
+        if (currentConversation.getRoomId() != null) {
             loadAvatarForStatusBar();
             checkLobbyState();
         }
@@ -598,12 +598,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
             lobbyView.setVisibility(View.GONE);
             messagesListView.setVisibility(View.VISIBLE);
             messageInput.setVisibility(View.VISIBLE);
-        }
-
-        if (isFirstMessagesProcessing) {
-            pullChatMessages(0);
-        } else {
-            pullChatMessages(1);
         }
     }
 
@@ -816,6 +810,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                             setupWebsocket();
                             checkLobbyState();
+
+                            if (isFirstMessagesProcessing) {
+                                pullChatMessages(0);
+                            } else {
+                                pullChatMessages(1);
+                            }
 
                             if (magicWebSocketInstance != null) {
                                 magicWebSocketInstance.joinRoomWithRoomTokenAndSession(roomToken,
