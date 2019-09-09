@@ -992,7 +992,13 @@ public class ChatController extends BaseController implements MessagesListAdapte
         fieldMap.put("includeLastKnown", 0);
 
         if (lookIntoFuture > 0) {
+            int timeout = 30;
+            if (!lookingIntoFuture ) {
+                timeout = 0;
+            }
+
             lookingIntoFuture = true;
+            fieldMap.put("timeout", timeout);
         } else if (isFirstMessagesProcessing) {
             globalLastKnownFutureMessageId = currentConversation.getLastReadMessage();
             globalLastKnownPastMessageId = currentConversation.getLastReadMessage();
