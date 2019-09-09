@@ -75,6 +75,7 @@ import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder;
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder;
 import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder;
 import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder;
+import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback;
@@ -158,6 +159,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
         MessagesListAdapter.Formatter<Date>, MessagesListAdapter.OnMessageLongClickListener, MessageHolders.ContentChecker {
     private static final String TAG = "ChatController";
     private static final byte CONTENT_TYPE_SYSTEM_MESSAGE = 1;
+    private static final byte CONTENT_TYPE_UNREAD_NOTICE_MESSAGE = 2;
+
     @Inject
     NcApi ncApi;
     @Inject
@@ -411,6 +414,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     R.layout.item_system_message, MagicSystemMessageViewHolder.class, R.layout.item_system_message,
                     this);
 
+            messageHolders.registerContentType(CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
+                    MagicUnreadNoticeMessageViewHolder.class, R.layout.item_date_header,
+                    MagicUnreadNoticeMessageViewHolder.class, R.layout.item_date_header, this);
+
             adapter = new MessagesListAdapter<>(conversationUser.getUserId(), messageHolders, new ImageLoader() {
                 @Override
                 public void loadImage(SimpleDraweeView imageView, @androidx.annotation.Nullable String url, @androidx.annotation.Nullable Object payload) {
@@ -426,7 +433,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
         } else {
             messagesListView.setVisibility(View.VISIBLE);
         }
-
 
         messagesListView.setAdapter(adapter);
         adapter.setLoadMoreListener(this);
@@ -991,12 +997,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
         Map<String, Integer> fieldMap = new HashMap<>();
         fieldMap.put("includeLastKnown", 0);
 
-        if (lookIntoFuture > 0) {
-            int timeout = 30;
-            if (!lookingIntoFuture ) {
-                timeout = 0;
-            }
+        int timeout = 30;
+        if (!lookingIntoFuture ) {
+            timeout = 0;
+        }
 
+        if (lookIntoFuture > 0) {
             lookingIntoFuture = true;
             fieldMap.put("timeout", timeout);
         } else if (isFirstMessagesProcessing) {
@@ -1020,6 +1026,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         if (!wasDetached) {
             if (lookIntoFuture > 0) {
+                int finalTimeout = timeout;
                 ncApi.pullChatMessages(credentials, ApiUtils.getUrlForChat(conversationUser.getBaseUrl(),
                         roomToken),
                         fieldMap)
@@ -1034,7 +1041,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                             @Override
                             public void onNext(Response response) {
-                                processMessages(response, true);
+                                processMessages(response, true, finalTimeout);
                             }
 
                             @Override
@@ -1065,7 +1072,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                             @Override
                             public void onNext(Response response) {
-                                processMessages(response, false);
+                                processMessages(response, false, 0);
                             }
 
                             @Override
@@ -1082,7 +1089,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
     }
 
-    private void processMessages(Response response, boolean isFromTheFuture) {
+    private void processMessages(Response response, boolean isFromTheFuture, int timeout) {
         if (response.code() == 200) {
             ChatOverall chatOverall = (ChatOverall) response.body();
             List<ChatMessage> chatMessageList = chatOverall.getOcs().getData();
@@ -1143,6 +1150,19 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                 ChatMessage chatMessage;
 
+                boolean shouldAddNewMessagesNotice =
+                        timeout == 0 && adapter.getItemCount() > 0 && chatMessageList.size() > 0;
+
+                if (shouldAddNewMessagesNotice) {
+                    ChatMessage unreadChatMessage = new ChatMessage();
+                    unreadChatMessage.setJsonMessageId(-1);
+                    unreadChatMessage.setActorId("-1");
+                    unreadChatMessage.setTimestamp(chatMessageList.get(0).getTimestamp());
+                    unreadChatMessage.setMessage(context.getString(R.string.nc_new_messages));
+                    adapter.addToStart(unreadChatMessage, false);
+                    layoutManager.scrollToPosition(chatMessageList.size() - 1);
+                }
+
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessage = chatMessageList.get(i);
 
@@ -1157,10 +1177,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         }
                     }
 
-                    boolean shouldScroll = layoutManager.findFirstVisibleItemPosition() == 0 ||
+                    boolean shouldScroll =
+                            !shouldAddNewMessagesNotice && layoutManager.findFirstVisibleItemPosition() == 0 ||
                             (adapter != null && adapter.getItemCount() == 0);
 
-                    if (!shouldScroll && popupBubble != null) {
+                    if (!shouldAddNewMessagesNotice && !shouldScroll && popupBubble != null) {
                         if (!popupBubble.isShown()) {
                             newMessagesCount = 1;
                             popupBubble.show();
@@ -1337,6 +1358,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
         switch (type) {
             case CONTENT_TYPE_SYSTEM_MESSAGE:
                 return !TextUtils.isEmpty(message.getSystemMessage());
+            case CONTENT_TYPE_UNREAD_NOTICE_MESSAGE:
+                return message.getId().equals("-1");
         }
 
         return false;
