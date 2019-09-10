@@ -36,10 +36,12 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoComponent
 import autodagger.AutoInjector
+import com.bluelinelabs.logansquare.LoganSquare
 import com.facebook.cache.disk.DiskCacheConfig
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.nextcloud.talk.BuildConfig
+import com.nextcloud.talk.R
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
@@ -49,19 +51,19 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
-import com.nextcloud.talk.utils.ClosedInterfaceImpl
-import com.nextcloud.talk.utils.DeviceUtils
-import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache
+import com.nextcloud.talk.models.ExternalSignalingServer
+import com.nextcloud.talk.utils.*
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
 import com.nextcloud.talk.utils.database.user.UserModule
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.preferences.BaseUrlPreferences
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.googlecompat.GoogleCompatEmojiProvider
 
 import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
+import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
 import org.webrtc.PeerConnectionFactory
@@ -72,6 +74,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import java.security.Security
 import java.util.concurrent.TimeUnit
+import com.nextcloud.talk.utils.database.user.UserUtils as UserUtils1
 
 @AutoComponent(modules = [BusModule::class, ContextModule::class, DatabaseModule::class, RestModule::class, UserModule::class, ArbitraryStorageModule::class])
 @Singleton
@@ -86,9 +89,15 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
+    @Inject
+    lateinit var baseUrlPreferences: BaseUrlPreferences
+
     @Inject
     lateinit var okHttpClient: OkHttpClient
     //endregion
+
+
 
     //region private methods
     private fun initializeWebRtc() {
@@ -192,26 +201,76 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         MultiDex.install(this)
     }
 
+    @Inject
+    lateinit var userUtils: com.nextcloud.talk.utils.database.user.UserUtils;
+    //region Setters
+    fun getServerURL() : String? {
+
+        var serverURL: String? =baseUrlPreferences.baseUrl
+        if(serverURL==null||serverURL .equals(""))
+        {
+            serverURL= sharedApplication?.getString(R.string.nc_server_url_testing);
+        }
+        return serverURL;
+    }
+
+    //region Setters
+    fun setServerURL(serverURL: String)
+    {
+        var baseURL:String = "";
+        baseURL= sharedApplication?.getString(R.string.nc_server_url_testing)!!;
+        when (serverURL) {
+            sharedApplication?.getString(R.string.nc_Production) ->baseURL= sharedApplication?.getString(R.string.nc_server_url_Production)!!;
+            sharedApplication?.getString(R.string.nc_testing) -> baseURL= sharedApplication?.getString(R.string.nc_server_url_testing)!!;
+            sharedApplication?.getString(R.string.nc_staging)  ->baseURL= sharedApplication?.getString(R.string.nc_server_url_staging)!!;
+                // will be "follow_system" only for now
+        }
+
+        baseUrlPreferences.baseUrl=baseURL;
+    }
+
+
+
     companion object {
         private val TAG = NextcloudTalkApplication::class.java.simpleName
         //region Singleton
         //endregion
-
+        lateinit var userUtils1: com.nextcloud.talk.utils.database.user.UserUtils;
         var sharedApplication: NextcloudTalkApplication? = null
-            protected set
+            protected set;
         //endregion
+
 
         //region Setters
         fun setAppTheme(theme: String) {
-            when (theme) {
+            /*when (theme) {
                 "night_no" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 "night_yes" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 "battery_saver" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
                 else ->
                     // will be "follow_system" only for now
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
+            }*/
+
+                    // will be "follow_system" only for now
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
         }
+
+        fun setAppServerURL(serverURL: String) {
+            when (serverURL) {
+                sharedApplication?.getString(R.string.nc_Production) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                sharedApplication?.getString(R.string.nc_testing) -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                sharedApplication?.getString(R.string.nc_staging)  -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
+                else ->
+                    // will be "follow_system" only for now
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+
+            // will be "follow_system" only for now
+
+        }
+
     }
     //endregion
 }

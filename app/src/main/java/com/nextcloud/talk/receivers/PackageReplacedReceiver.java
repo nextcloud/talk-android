@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.receivers;
+package com.nextcloud.talk.Receivers;
 
 import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;

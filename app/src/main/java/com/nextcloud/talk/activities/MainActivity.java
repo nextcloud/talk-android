@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
@@ -75,20 +76,21 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d("TAG:","Befor SetConentView");
         setContentView(R.layout.activity_main);
 
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-
+        Log.d("TAG:","After setSupportActionBar");
         router = Conductor.attachRouter(this, container, savedInstanceState);
 
         boolean hasDb = true;
 
         try {
             sqlCipherDatabaseSource.getWritableDatabase();
+            Log.d("TAG:","After Database");
         } catch (Exception exception) {
             hasDb = false;
         }
@@ -118,6 +120,7 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
 
             }
         }
+        Log.d("TAG:","After setting controller");
     }
 
     @Override

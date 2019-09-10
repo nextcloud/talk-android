@@ -24,6 +24,8 @@ import android.text.TextUtils;
 import androidx.annotation.Nullable;
 import com.nextcloud.talk.models.database.User;
 import com.nextcloud.talk.models.database.UserEntity;
+
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -84,8 +86,21 @@ public class UserUtils {
         return (UserEntity) findUserQueryResult.firstOrNull();
     }
 
+
+
     public Completable deleteUser(long internalId) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)).limit(1).get();
+
+        UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
+
+        return dataStore.delete(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    public Completable deleteAllUser() {
+        Result findUserQueryResult = dataStore.select(User.class).get();
 
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
 
@@ -266,5 +281,27 @@ public class UserUtils {
                 .toObservable()
                 .subscribeOn(Schedulers.io());
     }
+
+    public Observable<UserEntity> updateServerURL(UserEntity userEntity) {
+        Result findUserQueryResult;
+
+            findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(userEntity.getId())).get();
+
+
+        UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
+
+        if (user == null) {
+            user = new UserEntity();
+            user.setBaseUrl(userEntity.getBaseUrl());
+
+            user.setCurrent(true);
+
+        }
+
+        return dataStore.upsert(user)
+                .toObservable()
+                .subscribeOn(Schedulers.io());
+    }
+
 
 }

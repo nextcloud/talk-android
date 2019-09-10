@@ -121,6 +121,9 @@ public class ServerSelectionController extends BaseController {
             getActionBar().hide();
         }
 
+        checkIfServerUrlExists();
+
+
         textFieldBoxes.getEndIconImageButton().setBackgroundDrawable(getResources().getDrawable(R.drawable
                 .ic_arrow_forward_white_24px));
         textFieldBoxes.getEndIconImageButton().setAlpha(0.5f);
@@ -209,6 +212,22 @@ public class ServerSelectionController extends BaseController {
         });
     }
 
+    private void checkIfServerUrlExists()
+    {
+//        String serverUrl =ApiUtils.getServerUrl() + ApiUtils.getUrlPostfixForStatus();
+        String serverUrl = NextcloudTalkApplication.Companion.getSharedApplication().getServerURL() + ApiUtils.getUrlPostfixForStatus();
+        if(!TextUtils.isEmpty(serverUrl))
+        {
+            progressBar.setVisibility(View.VISIBLE);
+            textFieldBoxes.setVisibility(View.INVISIBLE);
+            if (serverUrl.startsWith("http://") || serverUrl.startsWith("https://")) {
+                checkServer(serverUrl, false);
+            } else {
+                checkServer(serverUrl, true);
+            }
+        }
+    }
+
     private void toggleProceedButton(boolean show) {
         textFieldBoxes.getEndIconImageButton().setEnabled(show);
 
@@ -250,19 +269,21 @@ public class ServerSelectionController extends BaseController {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(status -> {
                     String productName = getResources().getString(R.string.nc_server_product_name);
-
+                    progressBar.setVisibility(View.INVISIBLE);
                     String versionString = status.getVersion().substring(0, status.getVersion().indexOf("."));
                     int version = Integer.parseInt(versionString);
                     if (status.isInstalled() && !status.isMaintenance() &&
                             !status.isNeedsUpgrade() &&
                             version >= 13) {
 
-                        getRouter().pushController(RouterTransaction.with(
+                        getRouter().replaceTopController(RouterTransaction.with(
                                 new WebViewLoginController(queryUrl.replace("/status.php", ""),
                                         false))
                                 .pushChangeHandler(new HorizontalChangeHandler())
                                 .popChangeHandler(new HorizontalChangeHandler()));
                     } else if (!status.isInstalled()) {
+
+                        textFieldBoxes.setVisibility(View.VISIBLE);
                         textFieldBoxes.setError(String.format(
                                 getResources().getString(R.string.nc_server_not_installed), productName),
                                 true);
@@ -287,11 +308,12 @@ public class ServerSelectionController extends BaseController {
                     }
 
                 }, throwable -> {
+                    textFieldBoxes.setVisibility(View.VISIBLE);
                     if (checkForcedHttps) {
                         checkServer(queryUrl.replace("https://", "http://"), false);
                     } else {
                         if (throwable.getLocalizedMessage() != null) {
-                            textFieldBoxes.setError(throwable.getLocalizedMessage(), true);
+                            textFieldBoxes.setError(throwable.getLocalizedMessage().toString(), false);
                         } else if (throwable.getCause() instanceof CertificateException) {
                             textFieldBoxes.setError(getResources().getString(R.string.nc_certificate_error),
                                     false);
@@ -302,6 +324,7 @@ public class ServerSelectionController extends BaseController {
                         }
 
                         progressBar.setVisibility(View.INVISIBLE);
+                        textFieldBoxes.setVisibility(View.VISIBLE);
                         if (providersTextView.getVisibility() != View.INVISIBLE) {
                             providersTextView.setVisibility(View.VISIBLE);
                             certTextView.setVisibility(View.VISIBLE);
@@ -312,6 +335,7 @@ public class ServerSelectionController extends BaseController {
                     }
                 }, () -> {
                     progressBar.setVisibility(View.INVISIBLE);
+                    textFieldBoxes.setVisibility(View.VISIBLE);
                     if (providersTextView.getVisibility() != View.INVISIBLE) {
                         providersTextView.setVisibility(View.VISIBLE);
                         certTextView.setVisibility(View.VISIBLE);

@@ -281,6 +281,16 @@ public interface AppPreferences {
     @UnregisterChangeListenerMethod
     void unregisterThemeChangeListener(OnPreferenceValueChangedListener<String> listener);
 
+    @KeyByResource(R.string.nc_settings_server_url_key)
+    @RegisterChangeListenerMethod
+    void registerServerURlChangeListener(OnPreferenceValueChangedListener<String> listener);
+
+    @KeyByString("base_url")
+    String getServerUrl();
+
+    @KeyByString("base_url")
+    String setServerUrl(String server_url);
+
     @ClearMethod
     void clear();
 }

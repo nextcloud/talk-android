@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.security.KeyChain;
 import android.text.TextUtils;
 import android.util.Log;
@@ -59,6 +60,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
+import com.nextcloud.talk.jobs.AllAccountRemovalWorker;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.*;
@@ -155,6 +157,7 @@ public class SettingsController extends BaseController {
     private OnPreferenceValueChangedListener<Boolean> screenLockChangeListener;
     private OnPreferenceValueChangedListener<String> screenLockTimeoutChangeListener;
     private OnPreferenceValueChangedListener<String> themeChangeListener;
+    private OnPreferenceValueChangedListener<String> serverUrlChangeListener;
 
     private Disposable profileQueryDisposable;
     private Disposable dbQueryDisposable;
@@ -189,6 +192,7 @@ public class SettingsController extends BaseController {
         appPreferences.registerScreenLockListener(screenLockChangeListener = new ScreenLockListener());
         appPreferences.registerScreenLockTimeoutListener(screenLockTimeoutChangeListener = new ScreenLockTimeoutListener());
         appPreferences.registerThemeChangeListener(themeChangeListener = new ThemeChangeListener());
+        appPreferences.registerServerURlChangeListener(serverUrlChangeListener = new ServerURLChangeListener());
 
         List<String> listWithIntFields = new ArrayList<>();
         listWithIntFields.add("proxy_port");
@@ -381,6 +385,29 @@ public class SettingsController extends BaseController {
                     .pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
         }
+    }
+
+    private void removeAllUsers() {
+        boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser.getId());
+
+        OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AllAccountRemovalWorker.class).build();
+        WorkManager.getInstance().enqueue(accountRemovalWork);
+
+        /*if (otherUserExists && getView() != null) {
+            onViewBound(getView());
+            onAttach(getView());
+        } else if (!otherUserExists) {*/
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getRouter().setRoot(RouterTransaction.with(
+                        new ServerSelectionController())
+                        .pushChangeHandler(new VerticalChangeHandler())
+                        .popChangeHandler(new VerticalChangeHandler()));
+            }
+        },1500);
+
+
     }
 
     @Override
@@ -775,5 +802,14 @@ public class SettingsController extends BaseController {
         public void onChanged(String newValue) {
             NextcloudTalkApplication.Companion.setAppTheme(newValue);
         }
+    }
+
+    private class ServerURLChangeListener implements OnPreferenceValueChangedListener<String> {
+        @Override
+        public void onChanged(String newValue) {
+
+            removeAllUsers();
+            NextcloudTalkApplication.Companion.getSharedApplication().setServerURL(newValue);
+    }
     }
 }

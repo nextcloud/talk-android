@@ -24,9 +24,10 @@ import android.content.res.Resources;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.models.database.UserEntity;
+
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter;
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter;

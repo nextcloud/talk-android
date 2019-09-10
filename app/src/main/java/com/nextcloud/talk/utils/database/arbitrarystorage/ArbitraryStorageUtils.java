@@ -65,4 +65,11 @@ public class ArbitraryStorageUtils {
         return deleteResult.single().toObservable()
                 .subscribeOn(Schedulers.io());
     }
+
+    public Observable deleteAllEntriesForAllAccount(long accountIdentifier) {
+        ReactiveScalar<Integer> deleteResult = dataStore.delete(ArbitraryStorage.class).get();
+
+        return deleteResult.single().toObservable()
+                .subscribeOn(Schedulers.io());
+    }
 }

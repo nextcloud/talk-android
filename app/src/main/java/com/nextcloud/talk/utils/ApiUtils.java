@@ -255,4 +255,9 @@ public class ApiUtils {
     public static String getUrlForReadOnlyState(String baseUrl, String roomToken) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + roomToken + "/read-only";
     }
+
+    public static String getServerUrl() {
+        return NextcloudTalkApplication.Companion.getSharedApplication().
+                getApplicationContext().getResources().getString(R.string.nc_server_url_Production);
+    }
 }

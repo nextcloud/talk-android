@@ -50,9 +50,11 @@ import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.utils.PreferenceHelper;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.preferences.BaseUrlPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 
@@ -96,6 +98,8 @@ public class WebViewLoginController extends BaseController {
     @Inject
     CookieManager cookieManager;
 
+    @Inject
+     BaseUrlPreferences baseUrlPreferences;
 
     @BindView(R.id.webview)
     WebView webView;
@@ -322,7 +326,8 @@ public class WebViewLoginController extends BaseController {
                 super.onReceivedError(view, errorCode, description, failingUrl);
             }
         });
-
+        PreferenceHelper.setSharedPreferenceString(getApplicationContext(), PreferenceHelper.BASE_URL,baseUrl);
+        baseUrlPreferences.setBaseUrl(baseUrl);
         webView.loadUrl(baseUrl + "/index.php/login/flow", headers);
     }
 

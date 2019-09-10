@@ -22,9 +22,14 @@ package com.nextcloud.talk.dagger.modules;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+
+
 import com.nextcloud.talk.R;
+
 import com.nextcloud.talk.models.database.Models;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.preferences.BaseUrlPreferences;
+
 import dagger.Module;
 import dagger.Provides;
 import io.requery.Persistable;
@@ -60,5 +65,11 @@ public class DatabaseModule {
     @Singleton
     public AppPreferences providePreferences(@NonNull final Context poContext) {
         return StoreBox.create(poContext, AppPreferences.class);
+    }
+
+    @Provides
+    @Singleton
+    public BaseUrlPreferences baseURLPreferences(@NonNull final Context poContext) {
+        return StoreBox.create(poContext, BaseUrlPreferences.class);
     }
 }
