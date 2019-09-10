@@ -32,6 +32,15 @@
         apc:mpc_title="@string/nc_notification_settings"
         apc:mpc_title_color="@color/colorPrimary">
 
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/conversation_info_priority_conversation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="false"
+            apc:mp_key="important_conversation"
+            apc:mp_title="@string/nc_important_conversation"
+            apc:mp_summary="@string/nc_important_conversation_desc"/>
+
         <com.yarolegovich.mp.MaterialChoicePreference
             android:id="@+id/conversation_info_message_notifications"
             android:layout_width="match_parent"
@@ -48,7 +57,8 @@
             android:layout_height="wrap_content"
             apc:mp_default_value="false"
             apc:mp_key="mute_calls"
-            apc:mp_title="@string/nc_mute_calls" />
+            apc:mp_title="@string/nc_mute_calls"
+            apc:mp_summary="@string/nc_mute_calls_desc"/>
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 

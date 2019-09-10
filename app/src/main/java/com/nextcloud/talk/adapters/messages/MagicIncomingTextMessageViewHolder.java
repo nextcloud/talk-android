@@ -33,6 +33,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 import androidx.core.view.ViewCompat;
+import androidx.emoji.widget.EmojiTextView;
+
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +49,7 @@ import com.nextcloud.talk.utils.TextMatchers;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.stfalcon.chatkit.messages.MessageHolders;
+import com.vanniktech.emoji.emoji.Emoji;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -57,10 +60,10 @@ public class MagicIncomingTextMessageViewHolder
         extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 
     @BindView(R.id.messageAuthor)
-    TextView messageAuthor;
+    EmojiTextView messageAuthor;
 
     @BindView(R.id.messageText)
-    TextView messageText;
+    EmojiTextView messageText;
 
     @BindView(R.id.messageUserAvatar)
     SimpleDraweeView messageUserAvatarView;
@@ -99,13 +102,10 @@ public class MagicIncomingTextMessageViewHolder
             messageAuthor.setText(R.string.nc_nick_guest);
         }
 
-        if (!message.isGrouped) {
+        if (!message.isGrouped() && !message.isOneToOneConversation()) {
             messageUserAvatarView.setVisibility(View.VISIBLE);
             if (message.getActorType().equals("guests")) {
-                TextDrawable drawable = TextDrawable.builder().beginConfig().bold()
-                        .endConfig().buildRound(String.valueOf(messageAuthor.getText().charAt(0))
-                                , NextcloudTalkApplication.Companion.getSharedApplication().getResources().getColor(R.color.nc_grey));
-                messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
+                // do nothing, avatar is set
             } else if (message.getActorType().equals("bots") && message.getActorId().equals("changelog")) {
                 messageUserAvatarView.setController(null);
                 Drawable[] layers = new Drawable[2];
@@ -122,8 +122,11 @@ public class MagicIncomingTextMessageViewHolder
                 messageUserAvatarView.getHierarchy().setPlaceholderImage(drawable);
             }
         } else {
-
-            messageUserAvatarView.setVisibility(View.INVISIBLE);
+            if (message.isOneToOneConversation()) {
+                messageUserAvatarView.setVisibility(View.GONE);
+            } else {
+                messageUserAvatarView.setVisibility(View.INVISIBLE);
+            }
             messageAuthor.setVisibility(View.GONE);
         }
 
@@ -132,14 +135,19 @@ public class MagicIncomingTextMessageViewHolder
                 resources.getColor(R.color.bg_message_list_incoming_bubble_dark2) :
                 resources.getColor(R.color.bg_message_list_incoming_bubble);
 
+        int bubbleResource = R.drawable.shape_incoming_message;
+
+        if (message.isGrouped) {
+            bubbleResource = R.drawable.shape_grouped_incoming_message;
+        }
+
         Drawable bubbleDrawable = DisplayUtils.getMessageSelector(bg_bubble_color,
                 resources.getColor(R.color.transparent),
-                bg_bubble_color, R.drawable.shape_grouped_incoming_message);
+                bg_bubble_color, bubbleResource);
         ViewCompat.setBackground(bubble, bubbleDrawable);
 
         HashMap<String, HashMap<String, String>> messageParameters = message.getMessageParameters();
 
-        Context context = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
         itemView.setSelected(false);
         messageTimeView.setTextColor(context.getResources().getColor(R.color.warm_grey_four));
 

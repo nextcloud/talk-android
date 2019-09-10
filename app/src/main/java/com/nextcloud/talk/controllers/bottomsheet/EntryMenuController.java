@@ -22,6 +22,7 @@ package com.nextcloud.talk.controllers.bottomsheet;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -32,6 +33,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import autodagger.AutoInjector;
 import butterknife.BindView;
@@ -45,10 +48,18 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.utils.EmojiTextInputEditText;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
+import com.vanniktech.emoji.EmojiImageView;
+import com.vanniktech.emoji.EmojiPopup;
+import com.vanniktech.emoji.emoji.Emoji;
+import com.vanniktech.emoji.listeners.OnEmojiClickListener;
+import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
+import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener;
+
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
@@ -61,10 +72,13 @@ public class EntryMenuController extends BaseController {
     Button proceedButton;
 
     @BindView(R.id.text_edit)
-    TextInputEditText editText;
+    EmojiTextInputEditText editText;
 
     @BindView(R.id.text_input_layout)
     TextInputLayout textInputLayout;
+
+    @BindView(R.id.smileyButton)
+    ImageView smileyButton;
 
     @Inject
     EventBus eventBus;
@@ -78,6 +92,9 @@ public class EntryMenuController extends BaseController {
     private String packageName;
     private String name;
     private String callUrl;
+
+    private EmojiPopup emojiPopup;
+
 
     private Bundle originalBundle;
 
@@ -102,6 +119,11 @@ public class EntryMenuController extends BaseController {
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_entry_menu, container, false);
+    }
+
+    @OnClick(R.id.smileyButton)
+    void onSmileyClick() {
+        emojiPopup.toggle();
     }
 
     @Override
@@ -228,8 +250,8 @@ public class EntryMenuController extends BaseController {
                             proceedButton.setAlpha(1.0f);
                         }
                         textInputLayout.setErrorEnabled(false);
-                    } else if (editText.getText().toString().startsWith("http://") ||
-                            editText.getText().toString().startsWith("https://") &&
+                    } else if ((editText.getText().toString().startsWith("http://") ||
+                            editText.getText().toString().startsWith("https://")) &&
                                     editText.getText().toString().contains("/call/")) {
                         // operation code 10
                         if (!proceedButton.isEnabled()) {
@@ -260,6 +282,30 @@ public class EntryMenuController extends BaseController {
             case 2:
                 labelText = getResources().getString(R.string.nc_call_name);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                smileyButton.setVisibility(View.VISIBLE);
+                emojiPopup = EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener(new OnEmojiPopupShownListener() {
+                    @Override
+                    public void onEmojiPopupShown() {
+                        if (getResources() != null) {
+                            smileyButton.setColorFilter(getResources().getColor(R.color.colorPrimary),
+                                    PorterDuff.Mode.SRC_IN);
+                        }
+                    }
+                }).setOnEmojiPopupDismissListener(new OnEmojiPopupDismissListener() {
+                    @Override
+                    public void onEmojiPopupDismiss() {
+                        if (smileyButton != null) {
+                            smileyButton.setColorFilter(getResources().getColor(R.color.emoji_icons),
+                                    PorterDuff.Mode.SRC_IN);
+                        }
+                    }
+                }).setOnEmojiClickListener(new OnEmojiClickListener() {
+                    @Override
+                    public void onEmojiClick(@NonNull EmojiImageView emoji, @NonNull Emoji imageView) {
+                        editText.getEditableText().append(" ");
+                    }
+                }).build(editText);
+
                 break;
             case 4:
                 labelText = getResources().getString(R.string.nc_new_password);

@@ -48,6 +48,9 @@
     <string name="nc_settings_notification_sounds">Pranešimų garsai</string>
     <string name="nc_settings_vibrate">Vibruoti</string>
     <string name="nc_settings_vibrate_desc">Telefonas vibruos, nebent bus nutildytas</string>
+    <string name="nc_settings_appearance">Išvaizda</string>
+    <string name="nc_settings_theme_title">Apipavidalinimas</string>
+    <string name="nc_settings_theme_key">apipavidalinimas</string>
     <string name="nc_settings_privacy">Privatumas</string>
     <string name="nc_settings_screen_security_title">Ekrano saugumas</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klaviatūra</string>
@@ -154,8 +157,6 @@
     <string name="nc_moderator">Moderatorius</string>
     <string name="nc_user">Naudotojas</string>
     <string name="nc_guest">Svečias</string>
-    <string name="nc_readonly_hint">Šis pokalbis yra užrakintas.</string>
-
     <string name="nc_file_browser_back">Atgal</string>
     <string name="nc_file_browser_refresh">Įkelti iš naujo</string>
     </resources>

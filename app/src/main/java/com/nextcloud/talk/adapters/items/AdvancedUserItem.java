@@ -24,6 +24,8 @@ import android.accounts.Account;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.Nullable;
+import androidx.emoji.widget.EmojiTextView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -144,7 +146,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
     static class UserItemViewHolder extends FlexibleViewHolder {
 
         @BindView(R.id.name_text)
-        public TextView contactDisplayName;
+        public EmojiTextView contactDisplayName;
         @BindView(R.id.secondary_text)
         public TextView serverUrl;
         @BindView(R.id.avatar_image)

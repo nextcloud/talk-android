@@ -181,7 +181,6 @@
     <string name="nc_notify_me_mention">Обавести на помињањe</string>
     <string name="nc_notify_me_never">Никад не обавештавај</string>
     <string name="nc_mute_calls">Искључи тон позива</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
     <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним собама преко мобилног телефона.
@@ -252,8 +251,6 @@
     <string name="nc_user">Корисник</string>
     <string name="nc_guest">Гост</string>
     <string name="nc_following_link">Корисник који је пратио јавну везу</string>
-
-    <string name="nc_readonly_hint">Разговор је закључан</string>
 
     <!-- Browser component -->
     <string name="nc_file_browser">Прегледач фајлова\"</string>

@@ -38,7 +38,7 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
-        <TextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

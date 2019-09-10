@@ -25,6 +25,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -42,7 +43,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -266,18 +266,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                         currentConversation = roomOverall.getOcs().getData();
 
-                        if (oldConversation == null) {
-                            conversationName = currentConversation.getDisplayName();
-                            setTitle();
-                            setupMentionAutocomplete();
-                        }
+                        loadAvatarForStatusBar();
+
+                        conversationName = currentConversation.getDisplayName();
+                        setTitle();
+                        setupMentionAutocomplete();
 
                         checkReadOnlyState();
-                        if (oldConversation == null || (oldConversation != null && oldConversation.getLobbyState() != null && !oldConversation.getLobbyState().equals(currentConversation.getLobbyState()) || (oldConversation.getLobbyTimer() != null && !oldConversation.getLobbyTimer().equals(currentConversation.getLobbyTimer())))) {
-                            checkLobbyState(oldConversation != null && (!oldConversation.getLobbyState().equals(currentConversation.getLobbyState())));
-                        }
+                        checkLobbyState();
 
-                        if (oldConversation == null) {
+                        if (oldConversation == null || oldConversation.getRoomId() == null) {
                             joinRoomWithPassword();
                         }
 

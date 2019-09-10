@@ -181,6 +181,10 @@
     <string name="nc_notify_me_mention">Meddela när omnämnd</string>
     <string name="nc_notify_me_never">Meddela aldrig</string>
     <string name="nc_mute_calls">Tysta alla samtal</string>
+    <string name="nc_mute_calls_desc">Inkommande samtal tystas</string>
+    <string name="nc_important_conversation">Viktigt samtal</string>
+    <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta
+        Stör inte-inställningar</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>
@@ -253,8 +257,6 @@
     <string name="nc_guest">Gäst</string>
     <string name="nc_following_link">Användare följer en offentlig länk</string>
 
-    <string name="nc_readonly_hint">Denna konversation är låst</string>
-
     <!-- Browser component -->
     <string name="nc_file_browser">Filhanterare\"</string>
     <string name="nc_select_files">Välj filer</string>
@@ -271,7 +273,4 @@
     <string name="nc_lobby_waiting_with_date">Du väntar för närvarande i lobbyn.\n Detta
         möte är planerat till %1$s.</string>
     <string name="nc_manual">Manuell</string>
-    <string name="nc_at">på</string>
-
-
 </resources>

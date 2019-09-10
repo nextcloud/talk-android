@@ -150,7 +150,6 @@
     <string name="nc_notify_me_mention">언급 시 알림</string>
     <string name="nc_notify_me_never">알림 끄기</string>
     <string name="nc_mute_calls">전화 무음</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">죄송합니다, 무언가 잘못되었습니다!</string>
     <string name="nc_all_ok_operation">모두 완료되었습니다!</string>

@@ -132,7 +132,6 @@
     <string name="nc_notify_me_mention">Notificar quando mencionado</string>
     <string name="nc_notify_me_never">Nunca notificar</string>
     <string name="nc_mute_calls">Silenciar chamadas</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, ocorreu algo de errado!</string>
     <string name="nc_all_ok_operation">Ok, tudo concluído!</string>
@@ -173,8 +172,6 @@
     <string name="nc_user">Utilizador</string>
     <string name="nc_guest">Convidado</string>
     <string name="nc_following_link">Utilizador a seguir uma hiperligação pública</string>
-
-    <string name="nc_readonly_hint">Esta conversação está bloqueada</string>
 
     <!-- Browser component -->
     <string name="nc_file_browser">Navegador de ficheiro\"</string>

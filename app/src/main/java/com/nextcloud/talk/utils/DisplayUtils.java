@@ -35,7 +35,11 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.text.*;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ClickableSpan;
@@ -47,10 +51,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import androidx.annotation.*;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.XmlRes;
 import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.emoji.text.EmojiCompat;
+import androidx.emoji.text.EmojiSpan;
+import androidx.emoji.text.TypefaceEmojiSpan;
+
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
@@ -73,17 +86,23 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.UserMentionClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.text.Spans;
+import com.vanniktech.emoji.EmojiManager;
+import com.vanniktech.emoji.EmojiRange;
+import com.vanniktech.emoji.EmojiUtils;
+
 import org.greenrobot.eventbus.EventBus;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class DisplayUtils {
 
@@ -148,8 +167,7 @@ public class DisplayUtils {
     public static ImageRequest getImageRequestForUrl(String url, @Nullable UserEntity userEntity) {
         Map<String, String> headers = new HashMap<>();
         if (userEntity != null && url.startsWith(userEntity.getBaseUrl()) && url.contains("index.php/core/preview?fileId=")) {
-            headers.put("Authorization", ApiUtils.getCredentials(userEntity.getUsername(),
-                    userEntity.getToken()));
+            headers.put("Authorization", ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()));
         }
 
         return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
@@ -230,12 +248,12 @@ public class DisplayUtils {
     }
 
 
-    public static Drawable getDrawableForMentionChipSpan(Context context, String id, String label,
+    public static Drawable getDrawableForMentionChipSpan(Context context, String id, CharSequence label,
                                                          UserEntity conversationUser, String type,
                                                          @XmlRes int chipResource,
                                                          @Nullable EditText emojiEditText) {
         ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
-        chip.setText(label);
+        chip.setText(EmojiCompat.get().process(label));
         chip.setEllipsize(TextUtils.TruncateAt.MIDDLE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -262,8 +280,11 @@ public class DisplayUtils {
         chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
 
         if (!isCall) {
-            ImageRequest imageRequest =
-                    getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big), null);
+            String url = ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big);
+            if ("guests".equals(type) || "guest".equals(type)) {
+                url = ApiUtils.getUrlForAvatarWithNameForGuests(conversationUser.getBaseUrl(), String.valueOf(label), R.dimen.avatar_size_big);
+            }
+            ImageRequest imageRequest = getImageRequestForUrl(url, null);
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
             DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
 

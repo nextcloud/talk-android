@@ -24,6 +24,9 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.Spanned;
 import android.widget.EditText;
+
+import androidx.emoji.text.EmojiCompat;
+
 import com.facebook.widget.text.span.BetterImageSpan;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -32,6 +35,8 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.MagicCharPolicy;
 import com.nextcloud.talk.utils.text.Spans;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
+import com.vanniktech.emoji.EmojiRange;
+import com.vanniktech.emoji.EmojiUtils;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
     private Context context;
@@ -52,15 +57,21 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         int start = range[0];
         int end = range[1];
         String replacement = item.getLabel();
-        editable.replace(start, end, replacement + " ");
+
+        StringBuilder replacementStringBuilder = new StringBuilder(item.getLabel());
+        for(EmojiRange emojiRange : EmojiUtils.emojis(replacement)) {
+            replacementStringBuilder.delete(emojiRange.start, emojiRange.end);
+        }
+
+        editable.replace(start, end, replacementStringBuilder.toString() + " ");
         Spans.MentionChipSpan mentionChipSpan =
                 new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
                         item.getId(), item.getLabel(), conversationUser, item.getSource(),
                         R.xml.chip_text_entry, editText),
                         BetterImageSpan.ALIGN_CENTER,
                         item.getId(), item.getLabel());
-        editable.setSpan(mentionChipSpan, start, start + item.getLabel().length(),
-                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        editable.setSpan(mentionChipSpan, start, start + replacementStringBuilder.toString().length(),
+                Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         return true;
     }
 
