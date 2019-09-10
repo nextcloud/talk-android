@@ -180,7 +180,11 @@ grâce à un lien spécialement créé.</string>
     <string name="nc_notify_me_mention">Notifier quand mentionné</string>
     <string name="nc_notify_me_never">Ne jamais notifier</string>
     <string name="nc_mute_calls">Rendre les appels silencieux</string>
+    <string name="nc_mute_calls_desc">Les appels entrants seront réduits au silence</string>
     <string name="nc_important_conversation">Conversation importante</string>
+    <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent 
+       sur les paramètres Ne Pas Déranger</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile.
