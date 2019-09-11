@@ -29,10 +29,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toolbar;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -44,8 +51,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-import autodagger.AutoInjector;
-import butterknife.BindView;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat;
@@ -59,12 +65,14 @@ import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.items.CallItem;
 import com.nextcloud.talk.adapters.items.ConversationItem;
+import com.nextcloud.talk.adapters.items.MeetingItems;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -76,9 +84,9 @@ import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.meetings.MeetingsReponse;
 import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -89,6 +97,21 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
+
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+import butterknife.BindView;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
@@ -96,20 +119,10 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.parceler.Parcels;
 import retrofit2.HttpException;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 @AutoInjector(NextcloudTalkApplication.class)
-public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
+public class MeetingsListController extends BaseController implements SearchView.OnQueryTextListener,
         FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, FastScroller
                 .OnScrollStateChangeListener, ConversationMenuInterface {
 
@@ -158,7 +171,8 @@ public class ConversationsListController extends BaseController implements Searc
     private MenuItem searchItem;
     private SearchView searchView;
     private String searchQuery;
-
+    MaterialToolbar toolbar;
+    float toolbarElevation =0;
     private View view;
     private boolean shouldUseLastMessageLayout;
 
@@ -172,7 +186,7 @@ public class ConversationsListController extends BaseController implements Searc
 
     private Bundle conversationMenuBundle = null;
 
-    public ConversationsListController() {
+    public MeetingsListController() {
         super();
         setHasOptionsMenu(true);
     }
@@ -189,6 +203,8 @@ public class ConversationsListController extends BaseController implements Searc
 
         if (getActionBar() != null) {
             getActionBar().show();
+            toolbarElevation=getActionBar().getElevation();
+            getActionBar().setElevation(0);
         }
 
         if (saveStateHandler == null) {
@@ -244,6 +260,7 @@ public class ConversationsListController extends BaseController implements Searc
             shouldUseLastMessageLayout = currentUser.hasSpreedFeatureCapability("last-room-activity");
             fetchData(false);
         }
+
     }
 
     @Override
@@ -309,7 +326,7 @@ public class ConversationsListController extends BaseController implements Searc
         loadUserAvatar(menuItem);
     }
 
-    private void fetchData(boolean fromBottomSheet) {
+    private void fetchRoomData(boolean fromBottomSheet) {
         dispose(null);
 
         isRefreshing = true;
@@ -426,6 +443,107 @@ public class ConversationsListController extends BaseController implements Searc
 
     }
 
+    private void fetchData(boolean fromBottomSheet) {
+        dispose(null);
+
+        isRefreshing = true;
+
+        callItems = new ArrayList<>();
+
+        roomsQueryDisposable = ncApi.getAllMeetings(credentials, ApiUtils.getUrlForGetMeetings(currentUser.getBaseUrl()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(meetingsReponses -> {
+
+                    if (adapterWasNull) {
+                        adapterWasNull = false;
+                        progressBarView.setVisibility(View.GONE);
+                    }
+
+                    if (meetingsReponses.size() > 0) {
+                        if (emptyLayoutView.getVisibility() != View.GONE) {
+                            emptyLayoutView.setVisibility(View.GONE);
+                        }
+
+                        if (swipeRefreshLayout.getVisibility() != View.VISIBLE) {
+                            swipeRefreshLayout.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        if (emptyLayoutView.getVisibility() != View.VISIBLE) {
+                            emptyLayoutView.setVisibility(View.VISIBLE);
+                        }
+
+                        if (swipeRefreshLayout.getVisibility() != View.GONE) {
+                            swipeRefreshLayout.setVisibility(View.GONE);
+                        }
+                    }
+
+                    MeetingsReponse meeting;
+                    for (int i = 0; i < meetingsReponses.size(); i++) {
+                        meeting = meetingsReponses.get(i);
+
+                            MeetingItems conversationItem = new MeetingItems(meeting, currentUser);
+                            callItems.add(conversationItem);
+
+                    }
+
+
+
+                    adapter.updateDataSet(callItems, false);
+
+                    if (searchItem != null) {
+                        searchItem.setVisible(callItems.size() > 0);
+                    }
+
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                }, throwable -> {
+                    if (searchItem != null) {
+                        searchItem.setVisible(false);
+                    }
+
+                    if (throwable instanceof HttpException) {
+                        HttpException exception = (HttpException) throwable;
+                        switch (exception.code()) {
+                            case 401:
+                                if (getParentController() != null &&
+                                        getParentController().getRouter() != null) {
+                                    getParentController().getRouter().pushController((RouterTransaction.with
+                                            (new WebViewLoginController(currentUser.getBaseUrl(),
+                                                    true))
+                                            .pushChangeHandler(new VerticalChangeHandler())
+                                            .popChangeHandler(new VerticalChangeHandler())));
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                    dispose(roomsQueryDisposable);
+                }, () -> {
+                    dispose(roomsQueryDisposable);
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    if (fromBottomSheet) {
+                        new Handler().postDelayed(() -> {
+                            bottomSheet.setCancelable(true);
+                            if (bottomSheet.isShowing()) {
+                                bottomSheet.cancel();
+                            }
+                        }, 2500);
+                    }
+
+                    isRefreshing = false;
+                });
+
+    }
 
     private void prepareViews() {
         SmoothScrollLinearLayoutManager layoutManager =
@@ -507,6 +625,9 @@ public class ConversationsListController extends BaseController implements Searc
     public void onDestroy() {
         super.onDestroy();
         dispose(null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActionBar().setElevation(toolbarElevation);
+        }
     }
 
     @Override
@@ -602,7 +723,7 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     public boolean onItemClick(View view, int position) {
-        Object clickedItem = adapter.getItem(position);
+        /*Object clickedItem = adapter.getItem(position);
         if (clickedItem != null && getActivity() != null) {
             Conversation conversation;
             if (shouldUseLastMessageLayout) {
@@ -636,7 +757,7 @@ public class ConversationsListController extends BaseController implements Searc
                     startActivity(callIntent);
                 }
             }
-        }
+        }*/
 
         return true;
     }

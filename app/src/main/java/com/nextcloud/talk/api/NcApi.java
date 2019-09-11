@@ -26,6 +26,7 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.generic.Status;
+import com.nextcloud.talk.models.json.meetings.MeetingsReponse;
 import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
@@ -70,6 +71,10 @@ public interface NcApi {
      */
     @GET
     Observable<RoomsOverall> getRooms(@Header("Authorization") String authorization, @Url String url);
+
+    @GET
+    Observable<List<MeetingsReponse>> getAllMeetings(@Header("Authorization") String authorization, @Url String url);
+
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken

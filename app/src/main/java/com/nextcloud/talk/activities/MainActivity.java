@@ -43,6 +43,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.CallNotificationController;
 import com.nextcloud.talk.controllers.ConversationsListController;
 import com.nextcloud.talk.controllers.LockedController;
+import com.nextcloud.talk.controllers.MeetingsListController;
+import com.nextcloud.talk.controllers.MeetingsPagerController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
 import com.nextcloud.talk.utils.ConductorRemapping;
@@ -97,7 +99,11 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
 
         if (getIntent().hasExtra(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL())) {
             if (!router.hasRootController()) {
-                router.setRoot(RouterTransaction.with(new ConversationsListController())
+                /*router.setRoot(RouterTransaction.with(new ConversationsListController())
+                        .pushChangeHandler(new HorizontalChangeHandler())
+                        .popChangeHandler(new HorizontalChangeHandler()));
+*/
+                router.setRoot(RouterTransaction.with(new MeetingsPagerController())
                         .pushChangeHandler(new HorizontalChangeHandler())
                         .popChangeHandler(new HorizontalChangeHandler()));
             }
@@ -105,7 +111,10 @@ public final class MainActivity extends BaseActivity implements ActionBarProvide
         } else if (!router.hasRootController()) {
             if (hasDb) {
                 if (userUtils.anyUserExists()) {
-                    router.setRoot(RouterTransaction.with(new ConversationsListController())
+                /*    router.setRoot(RouterTransaction.with(new ConversationsListController())
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler()));*/
+                    router.setRoot(RouterTransaction.with(new MeetingsPagerController())
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler()));
                 } else {

@@ -35,6 +35,7 @@ import java.util.Map;
 public class ApiUtils {
     private static String ocsApiVersion = "/ocs/v2.php";
     private static String spreedApiVersion = "/apps/spreed/api/v1";
+    private static String spreedMeetingsApiVersion = "/apps/spreedcom-meetingmanager/api/v1";
 
     private static String userAgent = "Mozilla/5.0 (Android) Nextcloud-Talk v";
 
@@ -109,6 +110,9 @@ public class ApiUtils {
 
     public static String getUrlForGetRooms(String baseUrl) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room";
+    }
+    public static String getUrlForGetMeetings(String baseUrl) {
+        return baseUrl + ocsApiVersion + spreedMeetingsApiVersion + "/getallmeetings";
     }
 
     public static String getRoom(String baseUrl, String token) {
