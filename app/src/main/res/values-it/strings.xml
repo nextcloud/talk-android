@@ -181,6 +181,11 @@
     <string name="nc_notify_me_mention">Notifica su menzione</string>
     <string name="nc_notify_me_never">Non notificare mai</string>
     <string name="nc_mute_calls">Silenzia le chiamate</string>
+    <string name="nc_mute_calls_desc">Le chiamate in ingresso saranno silenziate</string>
+    <string name="nc_important_conversation">Conversazione importante</string>
+    <string name="nc_important_conversation_desc">Le notifiche in questa conversazione saranno ignorate
+         Impostazioni Non disturbare</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Spiacenti, qualcosa non ha funzionato!</string>
     <string name="nc_failed_signaling_settings">Il server di destinazione non supporta la partecipazione a stanze pubbliche tramite cellulare
