@@ -264,11 +264,37 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
 
                             if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
-                                        Parcels.wrap(roomOverall.getOcs().getData()));
+                                ncApi.getRoom(credentials,
+                                        ApiUtils.getRoom(currentUser.getBaseUrl(),
+                                                roomOverall.getOcs().getData().getToken()))
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Observer<RoomOverall>() {
 
-                                ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                        roomOverall.getOcs().getData().getToken(), bundle, true);
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+
+                                            }
+
+                                            @Override
+                                            public void onNext(RoomOverall roomOverall) {
+                                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
+                                                        Parcels.wrap(roomOverall.getOcs().getData()));
+
+                                                ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                        roomOverall.getOcs().getData().getToken(), bundle, true);
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+
+                                            }
+
+                                            @Override
+                                            public void onComplete() {
+
+                                            }
+                                        });
                             } else {
                                 conversationIntent.putExtras(bundle);
                                 startActivity(conversationIntent);
@@ -924,6 +950,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     void toggleCallHeader() {
         toggleNewCallHeaderVisibility(isPublicCall);
         isPublicCall = !isPublicCall;
+
+        if (isPublicCall) {
+            joinConversationViaLinkLayout.setVisibility(View.GONE);
+        } else {
+            joinConversationViaLinkLayout.setVisibility(View.VISIBLE);
+        }
 
         if (isPublicCall) {
             List<AbstractFlexibleItem> currentItems = adapter.getCurrentItems();

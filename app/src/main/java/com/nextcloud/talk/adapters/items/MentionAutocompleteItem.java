@@ -22,6 +22,7 @@ package com.nextcloud.talk.adapters.items;
 
 import android.annotation.SuppressLint;
 import android.view.View;
+
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
@@ -29,14 +30,15 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
+
+import java.util.List;
+import java.util.regex.Pattern;
+
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
-
-import java.util.List;
-import java.util.regex.Pattern;
 
 public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder>
         implements IFilterable<String> {
@@ -113,12 +115,20 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
         if (source.equals("calls")) {
             holder.simpleDraweeView.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedBitmapDrawableFromVectorDrawableResource(NextcloudTalkApplication.Companion.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px));
         } else {
-        holder.simpleDraweeView.setController(null);
+            String avatarId = objectId;
+            String avatarUrl = ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
+                    avatarId, R.dimen.avatar_size_big);
+
+            if (source.equals("guests")) {
+                avatarId = displayName;
+                avatarUrl = ApiUtils.getUrlForAvatarWithNameForGuests(currentUser.getBaseUrl(), avatarId, R.dimen.avatar_size_big);
+            }
+
+            holder.simpleDraweeView.setController(null);
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                     .setOldController(holder.simpleDraweeView.getController())
                     .setAutoPlayAnimations(true)
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
-                            objectId, R.dimen.avatar_size_big), null))
+                    .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarUrl, null))
                     .build();
             holder.simpleDraweeView.setController(draweeController);
         }

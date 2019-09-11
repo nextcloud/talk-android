@@ -878,7 +878,9 @@ public class CallController extends BaseController {
 
     @Override
     public void onDestroy() {
-        onHangupClick();
+        if (!currentCallStatus.equals(CallStatus.LEAVING)) {
+            onHangupClick();
+        }
         powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.IDLE);
         super.onDestroy();
     }
@@ -1074,91 +1076,93 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        setCallState(CallStatus.ESTABLISHED);
+                        if (!currentCallStatus.equals(CallStatus.LEAVING)) {
+                            setCallState(CallStatus.ESTABLISHED);
 
-                        ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
+                            ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
 
-                        if (needsPing) {
-                            ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                                    .takeWhile(observable -> isConnectionEstablished())
-                                    .retry(3, observable -> isConnectionEstablished())
-                                    .subscribe(new Observer<GenericOverall>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-                                            pingDisposable = d;
-                                        }
+                            if (needsPing) {
+                                ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
+                                        .takeWhile(observable -> isConnectionEstablished())
+                                        .retry(3, observable -> isConnectionEstablished())
+                                        .subscribe(new Observer<GenericOverall>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                                pingDisposable = d;
+                                            }
 
-                                        @Override
-                                        public void onNext(GenericOverall genericOverall) {
+                                            @Override
+                                            public void onNext(GenericOverall genericOverall) {
 
-                                        }
+                                            }
 
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            dispose(pingDisposable);
-                                        }
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                dispose(pingDisposable);
+                                            }
 
-                                        @Override
-                                        public void onComplete() {
-                                            dispose(pingDisposable);
-                                        }
-                                    });
-                        }
+                                            @Override
+                                            public void onComplete() {
+                                                dispose(pingDisposable);
+                                            }
+                                        });
+                            }
 
-                        // Start pulling signaling messages
-                        String urlToken = null;
-                        if (isMultiSession) {
-                            urlToken = roomToken;
-                        }
+                            // Start pulling signaling messages
+                            String urlToken = null;
+                            if (isMultiSession) {
+                                urlToken = roomToken;
+                            }
 
-                        if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
-                            NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
-                        } else if (!TextUtils.isEmpty(roomToken)) {
-                            NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
-                        }
+                            if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
+                                NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
+                            } else if (!TextUtils.isEmpty(roomToken)) {
+                                NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
+                            }
 
-                        if (!hasExternalSignalingServer) {
-                            ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .repeatWhen(observable -> observable)
-                                    .takeWhile(observable -> isConnectionEstablished())
-                                    .retry(3, observable -> isConnectionEstablished())
-                                    .subscribe(new Observer<SignalingOverall>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-                                            signalingDisposable = d;
-                                        }
+                            if (!hasExternalSignalingServer) {
+                                ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .repeatWhen(observable -> observable)
+                                        .takeWhile(observable -> isConnectionEstablished())
+                                        .retry(3, observable -> isConnectionEstablished())
+                                        .subscribe(new Observer<SignalingOverall>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+                                                signalingDisposable = d;
+                                            }
 
-                                        @Override
-                                        public void onNext(SignalingOverall signalingOverall) {
-                                            if (signalingOverall.getOcs().getSignalings() != null) {
-                                                for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
-                                                    try {
-                                                        receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
-                                                    } catch (IOException e) {
-                                                        Log.e(TAG, "Failed to process received signaling" +
-                                                                " message");
+                                            @Override
+                                            public void onNext(SignalingOverall signalingOverall) {
+                                                if (signalingOverall.getOcs().getSignalings() != null) {
+                                                    for (int i = 0; i < signalingOverall.getOcs().getSignalings().size(); i++) {
+                                                        try {
+                                                            receivedSignalingMessage(signalingOverall.getOcs().getSignalings().get(i));
+                                                        } catch (IOException e) {
+                                                            Log.e(TAG, "Failed to process received signaling" +
+                                                                    " message");
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            dispose(signalingDisposable);
-                                        }
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                dispose(signalingDisposable);
+                                            }
 
-                                        @Override
-                                        public void onComplete() {
-                                            dispose(signalingDisposable);
-                                        }
-                                    });
+                                            @Override
+                                            public void onComplete() {
+                                                dispose(signalingDisposable);
+                                            }
+                                        });
 
 
+                            }
                         }
                     }
 
@@ -1331,6 +1335,7 @@ public class CallController extends BaseController {
     private void hangup(boolean shutDownView) {
         stopCallingSound();
         dispose(null);
+
         if (shutDownView) {
 
             if (videoCapturer != null) {
@@ -2261,20 +2266,20 @@ public class CallController extends BaseController {
                 handler.removeCallbacksAndMessages(null);
             }
 
-            if (!hasMCU) {
+            /*if (!hasMCU) {
                 setCallState(CallStatus.RECONNECTING);
                 hangupNetworkCalls(false);
-            }
+            }*/
 
         } else if (networkEvent.getNetworkConnectionEvent().equals(NetworkEvent.NetworkConnectionEvent.NETWORK_DISCONNECTED)) {
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null);
             }
 
-            if (!hasMCU) {
+           /* if (!hasMCU) {
                 setCallState(CallStatus.OFFLINE);
                 hangup(false);
-            }
+            }*/
         }
     }
 }

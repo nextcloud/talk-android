@@ -30,8 +30,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
+import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -83,7 +83,7 @@ import javax.inject.Inject
 class ConversationInfoController(args: Bundle) : BaseController(args) {
 
     @BindView(R.id.notification_settings)
-    lateinit var materialPreferenceScreen: MaterialPreferenceScreen
+    lateinit var notificationsPreferenceScreen: MaterialPreferenceScreen
     @BindView(R.id.progressBar)
     lateinit var progressBar: ProgressBar
     @BindView(R.id.conversation_info_message_notifications)
@@ -99,7 +99,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
     @BindView(R.id.avatar_image)
     lateinit var conversationAvatarImageView: SimpleDraweeView
     @BindView(R.id.display_name_text)
-    lateinit var conversationDisplayName: TextView
+    lateinit var conversationDisplayName: EmojiTextView
     @BindView(R.id.participants_list_category)
     lateinit var participantsListCategory: MaterialPreferenceCategory
     @BindView(R.id.recycler_view)
@@ -124,6 +124,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
     private var roomDisposable: Disposable? = null
     private var participantsDisposable: Disposable? = null
 
+    private var databaseStorageModule: DatabaseStorageModule? = null
     private var conversation: Conversation? = null
 
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
@@ -165,6 +166,16 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
         return inflater.inflate(R.layout.controller_conversation_info, container, false)
     }
 
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        if (databaseStorageModule == null) {
+            databaseStorageModule = DatabaseStorageModule(conversationUser!!, conversationToken)
+        }
+
+        notificationsPreferenceScreen.setStorageModule(databaseStorageModule)
+        conversationInfoWebinar.setStorageModule(databaseStorageModule)
+    }
+
     override fun onViewBound(view: View) {
         super.onViewBound(view)
 
@@ -172,17 +183,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
             saveStateHandler = LovelySaveStateHandler()
         }
 
-        val databaseStorageModule = DatabaseStorageModule(conversationUser!!,
-                conversationToken)
-
-        materialPreferenceScreen.setStorageModule(databaseStorageModule)
-        conversationInfoWebinar.setStorageModule(databaseStorageModule)
-
         if (adapter == null) {
             fetchRoomInfo()
         } else {
             loadConversationAvatar()
-            materialPreferenceScreen.visibility = View.VISIBLE
+            notificationsPreferenceScreen.visibility = View.VISIBLE
             nameCategoryView.visibility = View.VISIBLE
             participantsListCategory.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
@@ -205,13 +210,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
 
             reconfigureLobbyTimerView()
 
-            val currentTimeCalendar = Calendar.getInstance()
-            if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
-                currentTimeCalendar.set(Calendar.MILLISECOND, (conversation!!.lobbyTimer * 1000).toInt())
-            }
-
             startTimeView.setOnClickListener {
                 MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                    val currentTimeCalendar = Calendar.getInstance()
+                    if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
+                        currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer * 1000
+                    }
+
                     dateTimePicker(minDateTime = Calendar.getInstance(), requireFutureDateTime =
                     true, currentDateTime = currentTimeCalendar, dateTimeCallback = { _,
                                                                                       dateTime ->
@@ -234,7 +239,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
         val isChecked = (conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked
 
         if (dateTime != null && isChecked) {
-            conversation!!.lobbyTimer = dateTime.timeInMillis / 1000
+            conversation!!.lobbyTimer = (dateTime.timeInMillis - (dateTime.time.seconds * 1000)) / 1000
         } else if (!isChecked) {
             conversation!!.lobbyTimer = 0
         }
@@ -368,7 +373,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
     }
 
     private fun getListOfParticipants() {
-        ncApi!!.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(conversationUser!!.baseUrl, conversationToken))
+        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(conversationUser!!.baseUrl, conversationToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<ParticipantsOverall> {
@@ -422,7 +427,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
     }
 
     private fun fetchRoomInfo() {
-        ncApi!!.getRoom(credentials, ApiUtils.getRoom(conversationUser!!.baseUrl, conversationToken))
+        ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser!!.baseUrl, conversationToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<RoomOverall> {
@@ -464,30 +469,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
 
 
                             loadConversationAvatar()
+                            adjustNotificationLevelUI()
 
-                            if (conversationUser.hasSpreedFeatureCapability("notification-levels")) {
-                                messageNotificationLevel.isEnabled = true
-                                messageNotificationLevel.alpha = 1.0f
-
-                                if (conversation!!.notificationLevel != Conversation.NotificationLevel.DEFAULT) {
-                                    val stringValue: String = when (EnumNotificationLevelConverter().convertToInt(conversation!!.notificationLevel)) {
-                                        1 -> "always"
-                                        2 -> "mention"
-                                        3 -> "never"
-                                        else -> "mention"
-                                    }
-
-                                    messageNotificationLevel.value = stringValue
-                                } else {
-                                    setProperNotificationValue(conversation)
-                                }
-                            } else {
-                                messageNotificationLevel.isEnabled = false
-                                messageNotificationLevel.alpha = 0.38f
-                                setProperNotificationValue(conversation)
-                            }
-
-                            materialPreferenceScreen.visibility = View.VISIBLE
+                            notificationsPreferenceScreen.visibility = View.VISIBLE
                         }
                     }
 
@@ -499,6 +483,32 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
                         roomDisposable!!.dispose()
                     }
                 })
+    }
+
+    private fun adjustNotificationLevelUI() {
+        if (conversation != null) {
+            if (conversationUser != null && conversationUser.hasSpreedFeatureCapability("notification-levels")) {
+                messageNotificationLevel.isEnabled = true
+                messageNotificationLevel.alpha = 1.0f
+
+                if (conversation!!.notificationLevel != Conversation.NotificationLevel.DEFAULT) {
+                    val stringValue: String = when (EnumNotificationLevelConverter().convertToInt(conversation!!.notificationLevel)) {
+                        1 -> "always"
+                        2 -> "mention"
+                        3 -> "never"
+                        else -> "mention"
+                    }
+
+                    messageNotificationLevel.value = stringValue
+                } else {
+                    setProperNotificationValue(conversation)
+                }
+            } else {
+                messageNotificationLevel.isEnabled = false
+                messageNotificationLevel.alpha = 0.38f
+                setProperNotificationValue(conversation)
+            }
+        }
     }
 
     private fun setProperNotificationValue(conversation: Conversation?) {
@@ -534,8 +544,8 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
                             R.drawable.ic_link_white_24px))
             Conversation.ConversationType.ROOM_SYSTEM -> {
                 val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = context!!.getDrawable(R.drawable.ic_launcher_background)
-                layers[1] = context!!.getDrawable(R.drawable.ic_launcher_foreground)
+                layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
+                layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
                 conversationAvatarImageView.hierarchy.setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
             }

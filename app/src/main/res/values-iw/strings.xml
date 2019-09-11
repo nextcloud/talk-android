@@ -142,7 +142,6 @@
     <string name="nc_notify_me_mention">להודיע כשהזכירו אותי</string>
     <string name="nc_notify_me_never">לא להודיע אף פעם</string>
     <string name="nc_mute_calls">השתקת שיחות</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">משהו השתבש, עמך הסליחה!</string>
     <string name="nc_all_ok_operation">סבבה, הכול בוצע!</string>

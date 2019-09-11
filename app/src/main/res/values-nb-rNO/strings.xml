@@ -138,7 +138,6 @@
     <string name="nc_notify_me_mention">Varsle når nevnt</string>
     <string name="nc_notify_me_never">Aldri varsle</string>
     <string name="nc_mute_calls">Slå av samtaler</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
     <string name="nc_failed_signaling_settings">Målserveren støtter ikke å bli med i offentlige samtaler via mobil

@@ -93,7 +93,8 @@ public class Conversation {
     public LobbyState lobbyState;
     @JsonField(name = "lobbyTimer")
     public Long lobbyTimer;
-
+    @JsonField(name = "lastReadMessage")
+    public int lastReadMessage;
 
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
@@ -106,7 +107,7 @@ public class Conversation {
 
 
     private boolean isLockedOneToOne(UserEntity conversationUser) {
-        return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && conversationUser.hasSpreedFeatureCapability("locked-one-to-one-conversations"));
+        return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && conversationUser.hasSpreedFeatureCapability("locked-one-to-one-rooms"));
     }
 
     public boolean canModerate(UserEntity conversationUser) {
@@ -115,12 +116,7 @@ public class Conversation {
     }
 
     public boolean shouldShowLobby(UserEntity conversationUser) {
-        if (getLobbyState() != null) {
-            return getLobbyState().equals(LobbyState.LOBBY_STATE_MODERATORS_ONLY) && !canModerate(conversationUser);
-        }
-        else {
-            return false;
-        }
+        return LobbyState.LOBBY_STATE_MODERATORS_ONLY.equals(getLobbyState()) && !canModerate(conversationUser);
     }
 
     public boolean isLobbyViewApplicable(UserEntity conversationUser) {

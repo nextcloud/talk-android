@@ -77,6 +77,13 @@
     <string name="nc_settings_no_ringtone">Нет звука</string>
     <string name="nc_settings_vibrate">Вибрация</string>
     <string name="nc_settings_vibrate_desc">Телефон будет вибрировать, если он не отключен</string>
+    <string name="nc_settings_appearance">Внешний вид</string>
+    <string name="nc_settings_theme_title">Стиль оформления</string>
+    <string name="nc_settings_theme_key">стиль оформления</string>
+    <string name="nc_settings_theme_follow_system">Использовать системные настройки по-умолчанию</string>
+    <string name="nc_settings_theme_battery_saver">Установлено режимом сохранения батареи</string>
+    <string name="nc_settings_theme_light">Светлая</string>
+    <string name="nc_settings_theme_dark">Тёмная</string>
     <string name="nc_settings_privacy">Конфиденциальность</string>
     <string name="nc_settings_screen_lock_title">Блокировка экрана</string>
     <string name="nc_settings_screen_lock_desc">Блокировка %1$s с помощью блокировки экрана Android или с помощью поддерживаемого биометрического метода</string>
@@ -173,7 +180,6 @@
     <string name="nc_notify_me_mention">Уведомлять при упоминании</string>
     <string name="nc_notify_me_never">Не уведомлять</string>
     <string name="nc_mute_calls">Не уведомлять о вызовах</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
     <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте войти присоединиться к беседе используя браузер на ПК.</string>
@@ -244,8 +250,6 @@
     <string name="nc_guest">Гость</string>
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
 
-    <string name="nc_readonly_hint">Беседа заблокировна</string>
-
     <!-- Browser component -->
     <string name="nc_file_browser">Файловый менеджер\"</string>
     <string name="nc_select_files">Выбрать файлы</string>
@@ -253,4 +257,10 @@
     <string name="nc_file_browser_refresh">Обновить</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
 
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Вебинар</string>
+    <string name="nc_lobby">Вестибюль</string>
+    <string name="nc_start_time">Время начала</string>
+    <string name="nc_lobby_waiting">В данный момент Вы ожидаете в вестибюле.</string>
     </resources>

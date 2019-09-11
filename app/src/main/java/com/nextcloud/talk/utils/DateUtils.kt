@@ -32,7 +32,7 @@ object DateUtils {
         val tz = cal.timeZone
 
         /* date formatter in local timezone */
-        val format = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.MEDIUM, Locale
+        val format = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT, Locale
                 .getDefault())
         format.timeZone = tz
 

@@ -179,7 +179,6 @@
     <string name="nc_notify_me_mention">当被提及时提醒</string>
     <string name="nc_notify_me_never">从不提醒</string>
     <string name="nc_mute_calls">通话静音</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
     <string name="nc_failed_signaling_settings">目标服务器不支持通过手机加入到公开会话中。您可以尝试通过浏览器加入会话。</string>
@@ -250,8 +249,6 @@
     <string name="nc_user">用户</string>
     <string name="nc_guest">访客</string>
     <string name="nc_following_link">使用公共链接的用户</string>
-
-    <string name="nc_readonly_hint">此会话已被锁定</string>
 
     <!-- Browser component -->
     <string name="nc_file_browser">文件浏览器\"</string>

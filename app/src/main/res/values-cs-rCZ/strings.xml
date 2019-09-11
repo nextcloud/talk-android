@@ -178,7 +178,6 @@
     <string name="nc_notify_me_mention">Upozornit při zmínění</string>
     <string name="nc_notify_me_never">Nikdy neoznamovat</string>
     <string name="nc_mute_calls">Ztišit hovory</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
     <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování veřejných konverzací prostřednictvím mobilních
@@ -249,8 +248,6 @@
     <string name="nc_user">Uživatel</string>
     <string name="nc_guest">Host</string>
     <string name="nc_following_link">Uživatel následující veřejný odkaz</string>
-
-    <string name="nc_readonly_hint">Tato konverzace je uzamčena.</string>
 
     <!-- Browser component -->
     <string name="nc_file_browser">Procházení souborů\"</string>

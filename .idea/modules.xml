@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/talk-android.iml" filepath="$PROJECT_DIR$/talk-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/talk-android-app.iml" filepath="$PROJECT_DIR$/app/talk-android-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/work-talk-android.iml" filepath="$PROJECT_DIR$/work-talk-android.iml" />
     </modules>
   </component>
 </project>

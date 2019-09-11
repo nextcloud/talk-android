@@ -228,6 +228,14 @@ public class ApiUtils {
         return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize;
     }
 
+    public static String getUrlForAvatarWithNameForGuests(String baseUrl, String name,
+                                                  @DimenRes int avatarSize) {
+        avatarSize = Math.round(NextcloudTalkApplication
+                .Companion.getSharedApplication().getResources().getDimension(avatarSize));
+
+        return baseUrl + "/index.php/avatar/guest/" + Uri.encode(name) + "/" + avatarSize;
+    }
+
     public static String getUrlForPassword(String baseUrl, String token) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/password";
     }

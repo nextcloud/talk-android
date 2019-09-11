@@ -181,6 +181,10 @@
     <string name="nc_notify_me_mention">Notificar quando mencionado</string>
     <string name="nc_notify_me_never">Nunca notificar</string>
     <string name="nc_mute_calls">Silenciar chamadas</string>
+    <string name="nc_mute_calls_desc">Chamadas recebidas serão silenciadas</string>
+    <string name="nc_important_conversation">Conversa importante</string>
+    <string name="nc_important_conversation_desc">As notificações nesta conversa substituirão
+        as configurações Não-Perturbe</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
@@ -253,8 +257,6 @@
     <string name="nc_guest">Convidado</string>
     <string name="nc_following_link">Usuário seguindo um link público</string>
 
-    <string name="nc_readonly_hint">Esta conversa está bloqueada</string>
-
     <!-- Browser component -->
     <string name="nc_file_browser">Navegador de arquivos\"</string>
     <string name="nc_select_files">Selecionar arquivos</string>
@@ -271,7 +273,4 @@
     <string name="nc_lobby_waiting_with_date">Você está esperando no lobby.\n esta
         reunião está marcada para %1$s.</string>
     <string name="nc_manual">Manual</string>
-    <string name="nc_at">às</string>
-
-
 </resources>

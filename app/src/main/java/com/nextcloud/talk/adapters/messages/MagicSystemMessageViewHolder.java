@@ -98,6 +98,7 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
                 }
             }
         }
+
         text.setText(messageString);
     }
 }

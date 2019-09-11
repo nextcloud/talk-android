@@ -38,7 +38,7 @@
         android:tint="@color/colorPrimary"
         android:visibility="gone" />
 
-    <EmojiTextView
+    <androidx.emoji.widget.EmojiTextView
         android:id="@+id/name_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

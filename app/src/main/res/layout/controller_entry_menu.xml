@@ -44,13 +44,17 @@
         android:id="@+id/text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/smileyButton"
         app:errorTextAppearance="@style/ErrorAppearance"
         app:helperText=""
         app:passwordToggleDrawable="@drawable/asl_password_visibility"
         app:passwordToggleTint="@color/grey_600">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.nextcloud.talk.utils.EmojiTextInputEditText
             android:id="@+id/text_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,5 +64,17 @@
             android:textColor="@color/colorPrimary" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/smileyButton"
+        android:layout_width="36dp"
+        android:visibility="gone"
+        android:layout_height="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_alignBottom="@id/text_input_layout"
+        android:layout_alignParentEnd="true"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_insert_emoticon_black_24dp"
+        android:tint="@color/emoji_icons" />
 
 </RelativeLayout>

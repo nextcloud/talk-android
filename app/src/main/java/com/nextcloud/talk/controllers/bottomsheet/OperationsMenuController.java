@@ -171,8 +171,8 @@ public class OperationsMenuController extends BaseController {
         currentUser = userUtils.getCurrentUser();
         OperationsObserver operationsObserver = new OperationsObserver();
 
-        if (!TextUtils.isEmpty(callUrl)) {
-            conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1, callUrl.length());
+        if (!TextUtils.isEmpty(callUrl) && callUrl.contains("/call")) {
+            conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1);
             if (callUrl.contains("/index.php")) {
                 baseUrl = callUrl.substring(0, callUrl.indexOf("/index.php"));
             } else {
@@ -296,11 +296,39 @@ public class OperationsMenuController extends BaseController {
                                 @Override
                                 public void onNext(RoomOverall roomOverall) {
                                     conversation = roomOverall.getOcs().getData();
-                                    if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
-                                        performGroupCallWorkaround(credentials);
-                                    } else {
-                                        inviteUsersToAConversation();
-                                    }
+
+                                    ncApi.getRoom(credentials,
+                                            ApiUtils.getRoom(currentUser.getBaseUrl(), conversation.getToken()))
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(new Observer<RoomOverall>() {
+                                                @Override
+                                                public void onSubscribe(Disposable d) {
+
+                                                }
+
+                                                @Override
+                                                public void onNext(RoomOverall roomOverall) {
+                                                    conversation = roomOverall.getOcs().getData();
+                                                    if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
+                                                        performGroupCallWorkaround(credentials);
+                                                    } else {
+                                                        inviteUsersToAConversation();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onError(Throwable e) {
+                                                    showResultImage(false, false);
+                                                    dispose();
+                                                }
+
+                                                @Override
+                                                public void onComplete() {
+
+                                                }
+                                            });
+
                                 }
 
                                 @Override

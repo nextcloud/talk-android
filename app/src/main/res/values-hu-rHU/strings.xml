@@ -135,7 +135,6 @@
     <string name="nc_notify_me_always">Mindig értesíts</string>
     <string name="nc_notify_me_never">Sose értesíts</string>
     <string name="nc_mute_calls">Hívások némítása</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba adódott!</string>
     <string name="nc_failed_signaling_settings">A célszerver nem támogatja a nyilvános beszélgetéseket mobiltelefonon keresztül. Próbálkozzon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
