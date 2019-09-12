@@ -39,6 +39,13 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/colorPrimary</item>
+        <item name="android:background">@color/bg_meeting_item_background</item>
+        <item name="android:selectableItemBackground">@color/bg_meeting_item_background</item>
+
+    </style>
+
     <style name="ChipIncomingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textColor">@color/nc_incoming_text_default</item>
     </style>
@@ -67,4 +74,25 @@
         <item name="android:textColor">@color/fg_default</item>
     </style>
 
+    <style name="textViewMain">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="textViewSmall"  parent="textViewMain">
+        <item name="android:textSize">@dimen/font_small</item>
+    </style>
+
+    <style name="textViewMedium"  parent="textViewMain" >
+        <item name="android:textSize">@dimen/font_medium</item>
+    </style>
+    <style name="textViewBig"  parent="textViewMain">
+        <item name="android:textSize">@dimen/font_big</item>
+    </style>
+
+
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="sp_12">12sp</dimen>
+    <dimen name="font_small">12sp</dimen>
 </resources>

@@ -23,11 +23,14 @@ package com.nextcloud.talk.models.json.websocket;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.parceler.Parcel;
 
 @Data
 @Parcel
 @JsonObject
+@EqualsAndHashCode(callSuper=false)
 public class ErrorOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "error")
     ErrorWebSocketMessage errorWebSocketMessage;

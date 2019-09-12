@@ -18,7 +18,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.activities
+package com.nextcloud.talk.activities;
 
 import android.app.KeyguardManager
 import android.content.Context
@@ -37,11 +37,9 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.appbar.MaterialToolbar
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.CallNotificationController
-import com.nextcloud.talk.controllers.ConversationsListController
-import com.nextcloud.talk.controllers.LockedController
-import com.nextcloud.talk.controllers.ServerSelectionController
+import com.nextcloud.talk.controllers.*
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.SecurityUtils
@@ -91,7 +89,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (!router!!.hasRootController()) {
-                router!!.setRoot(RouterTransaction.with(ConversationsListController())
+                router!!.setRoot(RouterTransaction.with(MeetingsPagerController())
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler()))
             }
@@ -99,7 +97,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         } else if (!router!!.hasRootController()) {
             if (hasDb) {
                 if (userUtils.anyUserExists()) {
-                    router!!.setRoot(RouterTransaction.with(ConversationsListController())
+                    router!!.setRoot(RouterTransaction.with(MeetingsPagerController())
                             .pushChangeHandler(HorizontalChangeHandler())
                             .popChangeHandler(HorizontalChangeHandler()))
                 } else {

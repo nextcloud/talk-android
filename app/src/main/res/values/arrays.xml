@@ -72,4 +72,10 @@
         <item>night_yes</item>
     </array>
 
+    <array name="theme_change_server">
+        <item>@string/nc_Production</item>
+        <item>@string/nc_staging</item>
+        <item>@string/nc_testing</item>
+    </array>
+
 </resources>

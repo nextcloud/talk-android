@@ -24,6 +24,8 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.parceler.Parcel;
 
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.List;
 @Parcel
 @Data
 @JsonObject
+@EqualsAndHashCode(callSuper=false)
 public class ParticipantsOCS extends GenericOCS {
     @JsonField(name = "data")
     public List<Participant> data;

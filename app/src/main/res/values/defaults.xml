@@ -20,5 +20,7 @@
   -->
 
 <resources>
-    <string name="nc_default_theme">@string/nc_settings_theme_battery_saver_key</string>
+<!--    <string name="nc_default_theme">@string/nc_settings_theme_battery_saver_key</string>-->
+    <string name="nc_default_theme">@string/nc_settings_theme_dark</string>
+    <string name="nc_default_url">@string/nc_testing</string>
 </resources>

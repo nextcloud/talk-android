@@ -52,6 +52,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ROOM_PUBLIC_CALL;
+
 public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements IFilterable<String> {
 
     private Conversation conversation;

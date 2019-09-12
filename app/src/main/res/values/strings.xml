@@ -73,6 +73,8 @@
     <string name="nc_settings_remove_confirmation">Please confirm your intent to remove the current account.</string>
     <string name="nc_settings_remove_account">Remove account</string>
     <string name="nc_settings_add_account">Add a new account</string>
+
+    <string name="nc_settings_change_account">Change account</string>
     <string name="nc_settings_wrong_account">Only current account can be reauthorized</string>
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>
     <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
@@ -90,7 +92,9 @@
 
     <string name="nc_settings_appearance">Appearance</string>
     <string name="nc_settings_theme_title">Theme</string>
+    <string name="nc_settings_server_url_title">Change Server URL</string>
     <string name="nc_settings_theme_key">theme</string>
+    <string name="nc_settings_server_url_key">serverurl</string>
     <string name="nc_settings_theme_battery_saver_key" translatable="false">battery_saver</string>
     <string name="nc_settings_theme_follow_system_key" translatable="false">follow_system</string>
     <string name="nc_settings_theme_light_key" translatable="false">night_no</string>
@@ -293,4 +297,12 @@
     <string name="nc_lobby_waiting_with_date">You are currently waiting in the lobby.\n This
         meeting is scheduled for %1$s.</string>
     <string name="nc_manual">Manual</string>
+    <string name="nc_at">at</string>
+    <string name="str_private">Private</string>
+    <string name="str_public">Public</string>
+    <string name="str_meeting_id">Meeting ID:</string>
+    <string name="lbl_meeting_details">Meeting Details</string>
+    <string name="lbl_join_meeting">Join Meeting</string>
+
+
 </resources>

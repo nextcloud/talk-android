@@ -24,11 +24,13 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 @Data
 @JsonObject
+@EqualsAndHashCode(callSuper=false)
 public class SignalingOCS extends GenericOCS {
     @JsonField(name = "data")
     List<Signaling> signalings;

@@ -29,10 +29,10 @@ if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") || taskReq
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "com.nextcloud.talk2"
+        applicationId "com.nextspreed"
         versionName version
         minSdkVersion 21
         targetSdkVersion 28
@@ -92,6 +92,7 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/rxjava.properties'
+        exclude('org/apache/commons/codec/language/bm/*.txt')
     }
 
     compileOptions {
@@ -138,7 +139,6 @@ configurations.all {
     exclude group: 'com.google.firebase', module: 'firebase-analytics'
     exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
 }
-
 
 dependencies {
     implementation fileTree(include: ['*'], dir: 'libs')
@@ -250,4 +250,10 @@ dependencies {
     })
     findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
     findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
+
+    compile 'org.mnode.ical4j:ical4j:1.0.5'
+    compile 'backport-util-concurrent:backport-util-concurrent:3.1'
+    compile 'commons-codec:commons-codec:1.8'
+    compile 'commons-lang:commons-lang:2.6'
+
 }

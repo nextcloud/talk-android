@@ -493,7 +493,7 @@ public class AccountVerificationController extends BaseController {
 
                     } else {
                         if (userUtils.anyUserExists()) {
-                            getRouter().setRoot(RouterTransaction.with(new ConversationsListController())
+                            getRouter().setRoot(RouterTransaction.with(new MeetingsPagerController())
                                     .pushChangeHandler(new HorizontalChangeHandler())
                                     .popChangeHandler(new HorizontalChangeHandler()));
                         } else {

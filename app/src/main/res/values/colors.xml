@@ -20,9 +20,14 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#0082C9</color>
+    <!--<color name="colorPrimary">#0082C9</color>
     <color name="colorPrimaryDark">#006AA3</color>
-    <color name="colorAccent">#007CC2</color>
+    <color name="colorAccent">#007CC2</color>-->
+
+    <color name="colorPrimary">#00b4d0</color>
+    <color name="colorPrimaryDark">#00b4d0</color>
+    <color name="colorAccent">#00b4d0</color>
+
 
     <!-- Text color of sent messages -->
     <color name="nc_outcoming_text_default">#FFFFFF</color>
@@ -48,6 +53,7 @@
     <color name="controller_call_incomingCallTextView">#E9FFFFFF</color>
     <color name="grey950">#111111</color>
 
+
     <!-- Emoji list in chat window -->
     <color name="emoji_background">#eceff1</color>
     <color name="emoji_icons">#61000000</color>
@@ -71,4 +77,9 @@
 
     <!-- "Conversation Info" window -->
     <color name="bg_controller_conv_info">@color/bg_default</color>
+    <color name="bg_meeting_title">#007a8c</color>
+    <color name="bg_meeting_item_background">#555555</color>
+    <color name="nc_meeting_tab_normal">#666666</color>
+    <color name="bg_theme_green">#23ce6b</color>
+
 </resources>

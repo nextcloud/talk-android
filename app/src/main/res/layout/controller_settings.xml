@@ -109,6 +109,19 @@
                 android:layout_below="@id/settings_remove_account"
                 apc:mp_title="@string/nc_settings_add_account" />
 
+            <com.yarolegovich.mp.MaterialChoicePreference
+                android:id="@+id/settings_server_urls"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/settings_add_account"
+                apc:mp_default_value="@string/nc_default_url"
+                apc:mp_entry_descriptions="@array/theme_change_server"
+                apc:mp_entry_values="@array/theme_change_server"
+                apc:mp_key="@string/nc_settings_server_url_key"
+                apc:mp_show_value="onBottom"
+                apc:mp_title="@string/nc_settings_server_url_title" />
+
+
         </RelativeLayout>
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
@@ -117,6 +130,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
+        android:visibility="gone"
         apc:mpc_title="@string/nc_settings_appearance"
         apc:mpc_title_color="@color/colorPrimary">
 

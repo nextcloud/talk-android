@@ -49,6 +49,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.emoji.widget.EmojiEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -265,15 +266,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         }
 
                         currentConversation = roomOverall.getOcs().getData();
-
-                        loadAvatarForStatusBar();
+                          //MAulik
+//                        loadAvatarForStatusBar();
 
                         conversationName = currentConversation.getDisplayName();
                         setTitle();
                         setupMentionAutocomplete();
 
                         checkReadOnlyState();
-                        checkLobbyState();
+                        checkLobbyState(false);
 
                         if (oldConversation == null || oldConversation.getRoomId() == null) {
                             joinRoomWithPassword();
@@ -372,7 +373,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             adapter = new MessagesListAdapter<>(conversationUser.getUserId(), messageHolders, new ImageLoader() {
                 @Override
-                public void loadImage(SimpleDraweeView imageView, String url) {
+                public void loadImage(SimpleDraweeView imageView, @Nullable String url, @Nullable Object payload) {
                     DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                             .setImageRequest(DisplayUtils.getImageRequestForUrl(url, conversationUser))
                             .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
@@ -381,6 +382,17 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             .build();
                     imageView.setController(draweeController);
                 }
+/*
+                @Override
+                public void loadImage(SimpleDraweeView imageView, String url) {
+                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                            .setImageRequest(DisplayUtils.getImageRequestForUrl(url, conversationUser))
+                            .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
+                            .setOldController(imageView.getController())
+                            .setAutoPlayAnimations(true)
+                            .build();
+                    imageView.setController(draweeController);
+                }*/
             });
         } else {
             messagesListView.setVisibility(View.VISIBLE);
@@ -656,11 +668,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void cancelNotificationsForCurrentConversation() {
-        if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
+        //Maulik
+       /* if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
             NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
         } else if (!TextUtils.isEmpty(roomToken)) {
             NotificationUtils.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
-        }
+        }*/
     }
 
     @Override

@@ -23,6 +23,8 @@ package com.nextcloud.talk.models.json.websocket;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.parceler.Parcel;
 
 import java.util.HashMap;
@@ -30,6 +32,7 @@ import java.util.HashMap;
 @Data
 @Parcel
 @JsonObject
+@EqualsAndHashCode(callSuper=false)
 public class EventOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "type")
     String type;

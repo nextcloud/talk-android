@@ -24,10 +24,12 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import com.facebook.widget.text.span.BetterImageSpan;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 public class Spans {
 
     @Data
+    @EqualsAndHashCode(callSuper=false)
     public static class MentionChipSpan extends BetterImageSpan {
         String id;
         CharSequence label;

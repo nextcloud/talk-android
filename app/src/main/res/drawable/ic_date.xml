@@ -1,0 +1,29 @@
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="1850dp"
+    android:height="1850dp"
+    android:viewportWidth="1850"
+    android:viewportHeight="1850">
+  <path
+      android:pathData="M219.12,1681.86L507.12,1681.86L507.12,1393.86L219.12,1393.86l0,288zM571.12,1681.86L891.12,1681.86L891.12,1393.86L571.12,1393.86L571.12,1681.86zM219.12,1329.86L507.12,1329.86L507.12,1009.86L219.12,1009.86L219.12,1329.86zM571.12,1329.86L891.12,1329.86L891.12,1009.86L571.12,1009.86L571.12,1329.86zM219.12,945.86L507.12,945.86L507.12,657.86L219.12,657.86L219.12,945.86zM955.12,1681.86l320,-0L1275.12,1393.86L955.12,1393.86L955.12,1681.86zM571.12,945.86L891.12,945.86L891.12,657.86L571.12,657.86L571.12,945.86zM1339.12,1681.86l288,-0L1627.12,1393.86L1339.12,1393.86L1339.12,1681.86zM955.12,1329.86l320,-0L1275.12,1009.86L955.12,1009.86L955.12,1329.86zM603.12,465.86l0,-288q0,-13 -9.5,-22.5 -9.5,-9.5 -22.5,-9.5l-64,-0q-13,-0 -22.5,9.5Q475.12,164.86 475.12,177.86l0,288q0,13 9.5,22.5 9.5,9.5 22.5,9.5l64,-0q13,-0 22.5,-9.5 9.5,-9.5 9.5,-22.5zM1339.12,1329.86l288,-0L1627.12,1009.86L1339.12,1009.86L1339.12,1329.86zM955.12,945.86l320,-0L1275.12,657.86L955.12,657.86L955.12,945.86zM1339.12,945.86l288,-0L1627.12,657.86L1339.12,657.86L1339.12,945.86zM1371.12,465.86l0,-288q0,-13 -9.5,-22.5 -9.5,-9.5 -22.5,-9.5l-64,-0q-13,-0 -22.5,9.5 -9.5,9.5 -9.5,22.5l0,288q0,13 9.5,22.5 9.5,9.5 22.5,9.5l64,-0q13,-0 22.5,-9.5 9.5,-9.5 9.5,-22.5zM1755.12,401.86L1755.12,1681.86q0,52 -38,90 -38,38 -90,38L219.12,1809.86q-52,-0 -90,-38 -38,-38 -38,-90l0,-1280q0,-52 38,-90 38,-38 90,-38l128,-0l0,-96q0,-66 47,-113 47,-47 113,-47l64,-0q66,-0 113,47 47,47 47,113l0,96l384,-0l0,-96q0,-66 47,-113 47,-47 113,-47l64,-0q66,-0 113,47 47,47 47,113l0,96l128,-0q52,-0 90,38 38,38 38,90z"
+      android:fillColor="@color/bg_theme_green"/>
+</vector>

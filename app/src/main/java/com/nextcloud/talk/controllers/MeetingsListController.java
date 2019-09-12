@@ -121,6 +121,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
 
+import static com.nextcloud.talk.events.EventStatus.EventType.CONVERSATION_UPDATE;
+
 @AutoInjector(NextcloudTalkApplication.class)
 public class MeetingsListController extends BaseController implements SearchView.OnQueryTextListener,
         FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, FastScroller

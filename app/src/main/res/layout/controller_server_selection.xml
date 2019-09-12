@@ -33,14 +33,14 @@
         android:layout_marginTop="92dp"
         android:layout_marginBottom="36dp"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/ic_logo" />
+        app:srcCompat="@drawable/ic_logo_icon" />
 
     <!-- Server selection window should be ignorant of theme colour
         thus colors are set statically -->
     <ProgressBar
         android:id="@+id/progress_bar"
-        android:layout_width="@dimen/small_item_height"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_width="@dimen/item_height"
+        android:layout_height="@dimen/item_height"
         android:layout_below="@id/text_field_boxes"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -51,6 +51,19 @@
         android:indeterminateTintMode="src_in"
         android:keepScreenOn="true"
         android:visibility="invisible" />
+
+    <!--<ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/item_height"
+        android:layout_height="@dimen/item_height"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTintMode="src_in" />-->
 
     <TextView
         android:id="@+id/helper_text_view"

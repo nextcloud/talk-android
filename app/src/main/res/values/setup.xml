@@ -25,8 +25,16 @@
     <string name="nc_talk_login_scheme" translatable="false">nc</string>
     <bool name="nc_is_debug">false</bool>
 
-    <string name="nc_app_name">Nextcloud Talk</string>
+    <string name="nc_app_name">Spreed Talk</string>
     <string name="nc_server_product_name">Nextcloud</string>
+
+    <string name="nc_server_url_Production">https://next.spreed.eu</string>
+    <string name="nc_server_url_testing">https://next.spreedqq.eu</string>
+    <string name="nc_server_url_staging">https://next.spreedwwqq.eu</string>
+
+    <string name="nc_Production">Production Server URL</string>
+    <string name="nc_testing">Testing Server URL</string>
+    <string name="nc_staging">Staging Server URL</string>
 
     <string name="nc_push_server_url" translatable="false">https://push-notifications.nextcloud.com</string>
 

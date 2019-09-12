@@ -84,7 +84,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import com.vanniktech.emoji.emoji.Emoji;
 
 import org.parceler.Parcels;
 
@@ -342,6 +341,8 @@ public class NotificationWorker extends Worker {
                     Long.toString(crc32.getValue()),
                     groupName);*/
 
+            //Maulik
+            /*
             if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
                 NotificationUtils.INSTANCE.createNotificationChannel(context,
                         NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3(), context.getResources()
@@ -358,7 +359,7 @@ public class NotificationWorker extends Worker {
                         NotificationManager.IMPORTANCE_HIGH);
 
                 notificationBuilder.setChannelId(NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_CALLS_V3());
-            }
+            }*/
 
         } else {
             // red color for the lights

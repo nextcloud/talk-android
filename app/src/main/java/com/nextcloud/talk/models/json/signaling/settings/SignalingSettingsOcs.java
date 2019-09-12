@@ -24,9 +24,12 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 
 @Data
 @JsonObject
+@EqualsAndHashCode(callSuper=false)
 public class SignalingSettingsOcs extends GenericOCS {
     @JsonField(name = "data")
     Settings settings;

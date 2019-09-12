@@ -23,11 +23,14 @@ package com.nextcloud.talk.models.json.websocket;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.parceler.Parcel;
 
 @Data
 @JsonObject
 @Parcel
+@EqualsAndHashCode(callSuper=false)
 public class RoomOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "room")
     RoomWebSocketMessage roomWebSocketMessage;
