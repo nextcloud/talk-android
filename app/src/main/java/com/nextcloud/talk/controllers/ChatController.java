@@ -998,13 +998,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
         fieldMap.put("includeLastKnown", 0);
 
         int timeout = 30;
-        if (!lookingIntoFuture ) {
+        if (lookIntoFuture == 0) {
             timeout = 0;
         }
 
+        fieldMap.put("timeout", timeout);
+
         if (lookIntoFuture > 0) {
             lookingIntoFuture = true;
-            fieldMap.put("timeout", timeout);
         } else if (isFirstMessagesProcessing) {
             globalLastKnownFutureMessageId = currentConversation.getLastReadMessage();
             globalLastKnownPastMessageId = currentConversation.getLastReadMessage();
@@ -1024,6 +1025,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         fieldMap.put("lastKnownMessageId", lastKnown);
 
+        Log.d("MARIO-PUSH", lastKnown + " " + lookIntoFuture);
         if (!wasDetached) {
             if (lookIntoFuture > 0) {
                 int finalTimeout = timeout;
@@ -1051,9 +1053,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                             @Override
                             public void onComplete() {
-                                if (!currentConversation.shouldShowLobby(conversationUser)) {
-                                    pullChatMessages(1);
-                                }
+
                             }
                         });
 
@@ -1090,22 +1090,26 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void processMessages(Response response, boolean isFromTheFuture, int timeout) {
-        if (response.code() == 200) {
+        String xChatLastGivenHeader;
+        if (response.headers().size() > 0 && !TextUtils.isEmpty((xChatLastGivenHeader = response.headers().get("X-Chat-Last-Given")))) {
 
-            String xChatLastGivenHeader;
-            if (response.headers().size() > 0 && !TextUtils.isEmpty((xChatLastGivenHeader = response.headers().get
-                    ("X-Chat-Last-Given")))) {
-                if (xChatLastGivenHeader != null) {
-                    if (isFromTheFuture) {
-                        globalLastKnownFutureMessageId = Integer.parseInt(xChatLastGivenHeader);
-                    } else {
-                        globalLastKnownPastMessageId = Integer.parseInt(xChatLastGivenHeader);
-                    }
+            int header = Integer.parseInt(xChatLastGivenHeader);
+            if (header > 0) {
+                if (isFromTheFuture) {
+                    globalLastKnownFutureMessageId = header;
+                } else {
+                    globalLastKnownPastMessageId = header;
                 }
             }
+        }
+
+        Log.d("MARIO-PUSH PROCESSING", String.valueOf(isFromTheFuture));
+        if (response.code() == 200) {
 
             ChatOverall chatOverall = (ChatOverall) response.body();
             List<ChatMessage> chatMessageList = chatOverall.getOcs().getData();
+
+            boolean wasFirstMessageProcessing = isFirstMessagesProcessing;
 
             if (isFirstMessagesProcessing) {
                 cancelNotificationsForCurrentConversation();
@@ -1124,6 +1128,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
             int countGroupedMessages = 0;
             if (!isFromTheFuture) {
 
+                Log.d("MARIO-PUSH", "ADDING MESSAGES TO PAST " +  chatMessageList.size());
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     if (chatMessageList.size() > i + 1) {
                         if (TextUtils.isEmpty(chatMessageList.get(i).getSystemMessage()) &&
@@ -1142,6 +1147,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     chatMessage.setOneToOneConversation(currentConversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL));
                     chatMessage.setLinkPreviewAllowed(isLinkPreviewAllowed);
                     chatMessage.setActiveUser(conversationUser);
+                }
+
+                if (wasFirstMessageProcessing) {
+                    globalLastKnownFutureMessageId = chatMessageList.get(0).getJsonMessageId();
                 }
 
                 if (adapter != null) {
@@ -1165,6 +1174,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 }
 
                 boolean isThereANewNotice = shouldAddNewMessagesNotice || adapter.getMessagePositionByIdInReverse("-1") != -1;
+
+                Log.d("MARIO-PUSH", "ADDING MESSAGES TO FUTURE " +  chatMessageList.size());
 
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessage = chatMessageList.get(i);
@@ -1209,20 +1220,20 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             }
 
-            if (!lookingIntoFuture && inChat) {
+            if (inChat) {
                 pullChatMessages(1);
             }
         } else if (response.code() == 304 && !isFromTheFuture) {
-            if (isFirstMessagesProcessing) {
-                cancelNotificationsForCurrentConversation();
+                if (isFirstMessagesProcessing) {
+                    cancelNotificationsForCurrentConversation();
 
-                isFirstMessagesProcessing = false;
-                if (loadingProgressBar != null) {
-                    loadingProgressBar.setVisibility(View.GONE);
+                    isFirstMessagesProcessing = false;
+                    if (loadingProgressBar != null) {
+                        loadingProgressBar.setVisibility(View.GONE);
+                    }
                 }
-            }
 
-            historyRead = true;
+                historyRead = true;
 
             if (!lookingIntoFuture && inChat) {
                 pullChatMessages(1);
