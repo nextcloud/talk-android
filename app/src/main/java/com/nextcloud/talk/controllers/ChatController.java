@@ -1164,6 +1164,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     adapter.addToStart(unreadChatMessage, false);
                 }
 
+                boolean isThereANewNotice = shouldAddNewMessagesNotice || adapter.getMessagePositionByIdInReverse("-1") != -1;
+
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessage = chatMessageList.get(i);
 
@@ -1179,7 +1181,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
 
                     boolean shouldScroll =
-                            !shouldAddNewMessagesNotice && layoutManager.findFirstVisibleItemPosition() == 0 ||
+                            !isThereANewNotice && !shouldAddNewMessagesNotice && layoutManager.findFirstVisibleItemPosition() == 0 ||
                             (adapter != null && adapter.getItemCount() == 0);
 
                     if (!shouldAddNewMessagesNotice && !shouldScroll && popupBubble != null) {
