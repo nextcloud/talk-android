@@ -1091,6 +1091,19 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void processMessages(Response response, boolean isFromTheFuture, int timeout) {
         if (response.code() == 200) {
+
+            String xChatLastGivenHeader;
+            if (response.headers().size() > 0 && !TextUtils.isEmpty((xChatLastGivenHeader = response.headers().get
+                    ("X-Chat-Last-Given")))) {
+                if (xChatLastGivenHeader != null) {
+                    if (isFromTheFuture) {
+                        globalLastKnownFutureMessageId = Integer.parseInt(xChatLastGivenHeader);
+                    } else {
+                        globalLastKnownPastMessageId = Integer.parseInt(xChatLastGivenHeader);
+                    }
+                }
+            }
+
             ChatOverall chatOverall = (ChatOverall) response.body();
             List<ChatMessage> chatMessageList = chatOverall.getOcs().getData();
 
@@ -1129,17 +1142,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     chatMessage.setOneToOneConversation(currentConversation.getType().equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL));
                     chatMessage.setLinkPreviewAllowed(isLinkPreviewAllowed);
                     chatMessage.setActiveUser(conversationUser);
-
-                    if (globalLastKnownPastMessageId == -1 || chatMessageList.get(i).getJsonMessageId() <
-                            globalLastKnownPastMessageId) {
-                        globalLastKnownPastMessageId = chatMessageList.get(i).getJsonMessageId();
-                    }
-
-                    if (globalLastKnownFutureMessageId == -1) {
-                        if (chatMessageList.get(i).getJsonMessageId() > globalLastKnownFutureMessageId) {
-                            globalLastKnownFutureMessageId = chatMessageList.get(i).getJsonMessageId();
-                        }
-                    }
                 }
 
                 if (adapter != null) {
@@ -1203,13 +1205,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     layoutManager.scrollToPositionWithOffset(adapter.getMessagePositionByIdInReverse("-1"), messagesListView.getHeight() / 2);
                 }
 
-                String xChatLastGivenHeader;
-                if (response.headers().size() > 0 && !TextUtils.isEmpty((xChatLastGivenHeader = response.headers().get
-                        ("X-Chat-Last-Given")))) {
-                    if (xChatLastGivenHeader != null) {
-                        globalLastKnownFutureMessageId = Integer.parseInt(xChatLastGivenHeader);
-                    }
-                }
             }
 
             if (!lookingIntoFuture && inChat) {
