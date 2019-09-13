@@ -528,7 +528,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         messageInputView.getButton().setContentDescription(getResources()
                 .getString(R.string.nc_description_send_message_button));
 
-        if (currentConversation.getRoomId() != null) {
+        if (currentConversation != null && currentConversation.getRoomId() != null) {
             loadAvatarForStatusBar();
             checkLobbyState();
         }

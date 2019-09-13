@@ -615,7 +615,7 @@ public class NotificationWorker extends Worker {
                                     break;
                                 case "room":
                                     if (bundle.containsKey(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())) {
-                                        showNotificationForCallWithNoPing(intent);
+                                        showNotificationWithObjectData(intent);
                                     }
                                     break;
                                 case "chat":
