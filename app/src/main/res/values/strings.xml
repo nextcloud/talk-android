@@ -232,7 +232,7 @@
     <string name="nc_conversation_menu_voice_call">Voice call</string>
     <string name="nc_conversation_menu_video_call">Video call</string>
     <string name="nc_conversation_menu_conversation_info">Conversation info</string>
-    <string name="nc_new_messages">New messages</string>
+    <string name="nc_new_messages">Unread messages</string>
     <string name="nc_no_messages_yet">No messages yet</string>
     <string name="nc_sent_a_link" formatted="true">%1$s sent a link.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sent a GIF.</string>
