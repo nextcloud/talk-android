@@ -131,7 +131,6 @@
     <string name="nc_date_header_yesterday">Dje</string>
     <string name="nc_date_header_today">Sot</string>
     <string name="nc_conversation_menu_video_call">Thirrje me Video</string>
-    <string name="nc_new_messages">Mesazh i ri</string>
     <string name="nc_no_messages_yet">Ska mesazhe akoma</string>
     <string name="nc_endless_disabled">Ska më artikuj për t\'u ngarkuar (u arrit maksimumi).</string>
     <string name="nc_endless_cancel">U anullua nga përdoruesi.</string>

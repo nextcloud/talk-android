@@ -208,7 +208,6 @@
     <string name="nc_conversation_menu_voice_call">Аудио позив</string>
     <string name="nc_conversation_menu_video_call">Видео позив</string>
     <string name="nc_conversation_menu_conversation_info">Информације о разговору</string>
-    <string name="nc_new_messages">Нове поруке</string>
     <string name="nc_no_messages_yet">Још нема порука</string>
     <string name="nc_sent_a_link" formatted="true">%1$s је послао везу.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s је послао GIF.</string>

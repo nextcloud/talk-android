@@ -142,7 +142,6 @@
     <string name="nc_conversation_menu_voice_call">Κλήση ήχου</string>
     <string name="nc_conversation_menu_video_call">Κλήση βίντεο</string>
     <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>
-    <string name="nc_new_messages">Νέα μηνύματα</string>
     <string name="nc_no_messages_yet">Κανένα μήνυμα ακόμα</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Στείλατε σύνδεσμο.</string>
     <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Στείλατε εικόνα GIF.</string>

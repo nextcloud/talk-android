@@ -183,6 +183,9 @@
     <string name="nc_mute_calls">Silenciar llamadas</string>
     <string name="nc_mute_calls_desc">Las llamadas entrantes serán silenciadas</string>
     <string name="nc_important_conversation">Conversación importante</string>
+    <string name="nc_important_conversation_desc">Las notificaciones en esta conversación no tendrán en cuenta
+          la configuración de No Molestar</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>
     <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas vía teléfonos móviles.
@@ -210,7 +213,6 @@
     <string name="nc_conversation_menu_voice_call">Llamada de voz</string>
     <string name="nc_conversation_menu_video_call">Llamada de vídeo</string>
     <string name="nc_conversation_menu_conversation_info">Información de la conversación</string>
-    <string name="nc_new_messages">Mensajes nuevos</string>
     <string name="nc_no_messages_yet">Aún no hay mensajes</string>
     <string name="nc_sent_a_link" formatted="true">%1$s ha enviado un enlace.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ha enviado un GIF.</string>
@@ -264,6 +266,10 @@
     <!-- Lobby -->
 
     <string name="nc_webinar">Webinar</string>
+    <string name="nc_lobby">Recibidor</string>
     <string name="nc_start_time">Hora de inicio</string>
+    <string name="nc_lobby_waiting">Ahora estás esperando en el recibidor.</string>
+    <string name="nc_lobby_waiting_with_date">Ahora estás esperando en el recibidor.\n Esta
+        reunión está planificada para %1$s.</string>
     <string name="nc_manual">Manual</string>
 </resources>

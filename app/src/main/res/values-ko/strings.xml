@@ -164,7 +164,6 @@
     <string name="nc_conversation_menu_voice_call">음성 통화</string>
     <string name="nc_conversation_menu_video_call">영상 통화</string>
     <string name="nc_conversation_menu_conversation_info">대화 정보</string>
-    <string name="nc_new_messages">새 메시지</string>
     <string name="nc_no_messages_yet">아직 메시지 없음</string>
     <string name="nc_sent_a_link" formatted="true">%1$s이(가) 링크를 보냈습니다.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s이(가) GIF를 보냈습니다.</string>

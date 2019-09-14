@@ -77,6 +77,11 @@
     <string name="nc_settings_no_ringtone">音無し</string>
     <string name="nc_settings_vibrate">振動</string>
     <string name="nc_settings_vibrate_desc">消音でない場合に振動させます</string>
+    <string name="nc_settings_theme_title">テーマ</string>
+    <string name="nc_settings_theme_key">テーマ</string>
+    <string name="nc_settings_theme_follow_system">既定の設定を使用する</string>
+    <string name="nc_settings_theme_light">ライト</string>
+    <string name="nc_settings_theme_dark">ダーク</string>
     <string name="nc_settings_privacy">プライバシー</string>
     <string name="nc_settings_screen_lock_title">スクリーンロック</string>
     <string name="nc_settings_screen_lock_desc">%1$sをアンドロイドスクリーンロックかサポートされている生体認証でロックします。</string>
@@ -151,11 +156,13 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">接続中</string>
+    <string name="nc_calling">接続中</string>
     <string name="nc_incoming_call">着信コール</string>
     <string name="nc_nick_guest">ゲスト</string>
     <string name="nc_public_call">新規公開会話</string>
     <string name="nc_public_call_explanation">公開会話を使用すると、特別なリンクを介して外部からユーザーを招待できます。</string>
     <string name="nc_call_timeout">45秒以内に応答がありませんでした。タップして再試行してください</string>
+    <string name="nc_call_reconnecting">再接続中...</string>
     <string name="nc_offline">現在オフラインです。接続を確認してください。</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%2$s通知チャンネルの%1$s</string>
@@ -168,6 +175,7 @@
     <string name="nc_notify_me_mention">言及したときに通知する</string>
     <string name="nc_notify_me_never">決して通知しない</string>
     <string name="nc_mute_calls">通話をミュートする</string>
+    <string name="nc_important_conversation">重要な会議</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
     <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。
@@ -195,7 +203,6 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_conversation_menu_voice_call">音声通話</string>
     <string name="nc_conversation_menu_video_call">ビデオ通話</string>
     <string name="nc_conversation_menu_conversation_info">会話情報</string>
-    <string name="nc_new_messages">新規メッセージ</string>
     <string name="nc_no_messages_yet">メッセージはまだありません</string>
     <string name="nc_sent_a_link" formatted="true">%1$sがリンクを送信しました。</string>
     <string name="nc_sent_a_gif" formatted="true">%1$sがGIFを送信しました。</string>
@@ -244,4 +251,11 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_select_files">ファイルの選択</string>
     <string name="nc_file_browser_back">戻る</string>
     <string name="nc_file_browser_refresh">更新</string>
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">ウェビナー</string>
+    <string name="nc_lobby">ロビー</string>
+    <string name="nc_start_time">開始時刻</string>
+    <string name="nc_lobby_waiting">現在ロビーで待機中</string>
+    <string name="nc_manual">手動</string>
+</resources>

@@ -154,7 +154,6 @@
     <string name="nc_conversation_menu_voice_call">Chamada de voz</string>
     <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>
     <string name="nc_conversation_menu_conversation_info">Informação da conversação</string>
-    <string name="nc_new_messages">Novas mensagens</string>
     <string name="nc_no_messages_yet">Ainda sem mensagens</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Eu: %1$s</string>

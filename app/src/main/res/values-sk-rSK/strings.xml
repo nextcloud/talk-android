@@ -81,6 +81,7 @@
     <string name="nc_settings_theme_title">Vzhľad</string>
     <string name="nc_settings_theme_key">vzhľad</string>
     <string name="nc_settings_theme_follow_system">Použiť systémové nastavenia</string>
+    <string name="nc_settings_theme_battery_saver">Nastavené pomocou Šetriča batérie</string>
     <string name="nc_settings_theme_light">Svetlý</string>
     <string name="nc_settings_theme_dark">Tmavý</string>
     <string name="nc_settings_privacy">Súkromie</string>
@@ -180,6 +181,11 @@
     <string name="nc_notify_me_mention">Notifikuj pri spomenutí</string>
     <string name="nc_notify_me_never">Nikdy nenotifikuj</string>
     <string name="nc_mute_calls">Stíš hovory</string>
+    <string name="nc_mute_calls_desc">Príchadzajúce hovory budú stíšené</string>
+    <string name="nc_important_conversation">Dôležitý rozhovor</string>
+    <string name="nc_important_conversation_desc">Oznámenia v tomto rozhovore sa prepíšu
+        nastavením Nerušiť</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa nepodarilo!</string>
     <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil 
@@ -207,7 +213,6 @@
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
     <string name="nc_conversation_menu_video_call">Video hovor</string>
     <string name="nc_conversation_menu_conversation_info">Informácia o rozhovore</string>
-    <string name="nc_new_messages">Nové správy</string>
     <string name="nc_no_messages_yet">Ešte žiadne správy</string>
     <string name="nc_sent_a_link" formatted="true">%1$s poslal(a) odkaz.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s poslal(a)  GIF.</string>
@@ -258,4 +263,13 @@
     <string name="nc_file_browser_refresh">Obnoviť</string>
     <string name="nc_last_modified">%1$s | Posledná úprava: %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinár</string>
+    <string name="nc_lobby">Miestnosť</string>
+    <string name="nc_start_time">Čas začiatku</string>
+    <string name="nc_lobby_waiting">Momentálne čakáte v miestnosti.</string>
+    <string name="nc_lobby_waiting_with_date">Momentálne čakáte v miestnosti.\n Toto
+       stretnutie je naplánované na %1$s.</string>
+    <string name="nc_manual">Príručka</string>
+</resources>

@@ -213,7 +213,6 @@
     <string name="nc_conversation_menu_voice_call">Sesli görüşme</string>
     <string name="nc_conversation_menu_video_call">Görüntülü görüşme</string>
     <string name="nc_conversation_menu_conversation_info">Görüşme bilgileri</string>
-    <string name="nc_new_messages">Yeni iletiler</string>
     <string name="nc_no_messages_yet">Henüz bir ileti yok</string>
     <string name="nc_sent_a_link" formatted="true">%1$s bir bağlantı gönderdi.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s bir GIF gönderdi.</string>

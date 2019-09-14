@@ -208,7 +208,6 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_conversation_menu_voice_call">Trucada de veu</string>
     <string name="nc_conversation_menu_video_call">Trucada de vídeo </string>
     <string name="nc_conversation_menu_conversation_info">Informació de la conversa</string>
-    <string name="nc_new_messages">Nous missatges</string>
     <string name="nc_no_messages_yet">No hi ha cap missatge encara</string>
     <string name="nc_sent_a_link" formatted="true">%1$s ha enviat un enllaç.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ha enviat un GIF.</string>

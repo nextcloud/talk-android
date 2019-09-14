@@ -153,7 +153,6 @@
     <string name="nc_date_header_today">今天</string>
     <string name="nc_conversation_menu_voice_call">語音通話</string>
     <string name="nc_conversation_menu_video_call">視訊通話</string>
-    <string name="nc_new_messages">新訊息</string>
     <string name="nc_no_messages_yet">目前無任何訊息</string>
     <string name="nc_sent_a_link" formatted="true">%1$s 傳送一個連結</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s 傳送一個 GIF.</string>

@@ -124,7 +124,6 @@
     <string name="nc_conversation_menu_voice_call">Balso skambutis</string>
     <string name="nc_conversation_menu_video_call">Vaizdo skambutis</string>
     <string name="nc_conversation_menu_conversation_info">Pokalbio informacija</string>
-    <string name="nc_new_messages">Naujos žinutės</string>
     <string name="nc_no_messages_yet">Kol kas žinučių nėra</string>
     <string name="nc_sent_a_link" formatted="true">%1$s išsiuntė nuorodą.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s išsiuntė GIF paveikslą.</string>

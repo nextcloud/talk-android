@@ -124,7 +124,6 @@
     <string name="nc_conversation_menu_voice_call">Äänipuhelu</string>
     <string name="nc_conversation_menu_video_call">Videopuhelu</string>
     <string name="nc_conversation_menu_conversation_info">Keskustelun tiedot</string>
-    <string name="nc_new_messages">Uudet viestit</string>
     <string name="nc_no_messages_yet">Ei viestejä vielä</string>
     <string name="nc_sent_a_link" formatted="true">%1$s lähetti linkin.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s lähetti GIF-kuvan.</string>

@@ -215,7 +215,6 @@ móbeis. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_conversation_menu_voice_call">Chamada de voz</string>
     <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>
     <string name="nc_conversation_menu_conversation_info">Información da conversa</string>
-    <string name="nc_new_messages">Novas mensaxes</string>
     <string name="nc_no_messages_yet">Aínda non hai mensaxes</string>
     <string name="nc_sent_a_link" formatted="true">%1$s enviou unha ligazón.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou un GIF.</string>

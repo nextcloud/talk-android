@@ -165,7 +165,6 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_conversation_menu_voice_call">Samtale</string>
     <string name="nc_conversation_menu_video_call">Videosamtale</string>
     <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
-    <string name="nc_new_messages">Ny melding</string>
     <string name="nc_no_messages_yet">Ingen meldiner enda</string>
     <string name="nc_sent_a_link" formatted="true">%1$s sendte en lenke.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sendte en GIF.</string>
