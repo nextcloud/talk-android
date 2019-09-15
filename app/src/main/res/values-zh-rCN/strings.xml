@@ -210,6 +210,7 @@
     <string name="nc_conversation_menu_voice_call">语音通话</string>
     <string name="nc_conversation_menu_video_call">视频通话</string>
     <string name="nc_conversation_menu_conversation_info">会话信息</string>
+    <string name="nc_new_messages">未读消息</string>
     <string name="nc_no_messages_yet">没有新消息</string>
     <string name="nc_sent_a_link" formatted="true">%1$s发送一个链接</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s发送一个GIF图</string>
