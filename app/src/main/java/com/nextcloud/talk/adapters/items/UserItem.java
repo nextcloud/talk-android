@@ -60,6 +60,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     private Participant participant;
     private UserEntity userEntity;
     private GenericTextHeaderItem header;
+    public boolean isOnline = true;
 
     public UserItem(Participant participant, UserEntity userEntity, GenericTextHeaderItem genericTextHeaderItem) {
         this.participant = participant;
@@ -167,7 +168,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             holder.simpleDraweeView.getHierarchy().setImage(new BitmapDrawable(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.Companion.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px)), 100, true);
         }
 
-        if (!isEnabled()) {
+        if (!isOnline) {
             holder.itemView.setAlpha(0.38f);
         } else {
             holder.itemView.setAlpha(1.0f);

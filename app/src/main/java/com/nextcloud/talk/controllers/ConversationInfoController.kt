@@ -30,6 +30,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +44,8 @@ import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.datetime.dateTimePicker
+import com.afollestad.materialdialogs.list.listItems
+import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
@@ -51,6 +54,8 @@ import com.nextcloud.talk.adapters.items.UserItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.events.BottomSheetLockEvent
+import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.database.UserEntity
@@ -65,6 +70,7 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
+import com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
 import com.yarolegovich.lovelydialog.LovelyStandardDialog
 import com.yarolegovich.mp.*
@@ -75,12 +81,15 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import javax.inject.Inject
 
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ConversationInfoController(args: Bundle) : BaseController(args) {
+class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleAdapter.OnItemClickListener {
 
     @BindView(R.id.notification_settings)
     lateinit var notificationsPreferenceScreen: MaterialPreferenceScreen
@@ -101,7 +110,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
     @BindView(R.id.display_name_text)
     lateinit var conversationDisplayName: EmojiTextView
     @BindView(R.id.participants_list_category)
-    lateinit var participantsListCategory: MaterialPreferenceCategory
+    lateinit var participantsListCategory: MaterialPreferenceCategoryWithRightLink
     @BindView(R.id.recycler_view)
     lateinit var recyclerView: RecyclerView
     @BindView(R.id.deleteConversationAction)
@@ -112,11 +121,15 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
     lateinit var ownOptionsCategory: MaterialPreferenceCategory
     @BindView(R.id.muteCalls)
     lateinit var muteCalls: MaterialSwitchPreference
+    @BindView(R.id.mpc_action)
+    lateinit var actionTextView: TextView;
 
     @set:Inject
     lateinit var ncApi: NcApi
     @set:Inject
     lateinit var context: Context
+    @set:Inject
+    lateinit var eventBus: EventBus
 
     private val conversationToken: String?
     private val conversationUser: UserEntity?
@@ -168,12 +181,16 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
 
     override fun onAttach(view: View) {
         super.onAttach(view)
+        eventBus.register(this)
+
         if (databaseStorageModule == null) {
             databaseStorageModule = DatabaseStorageModule(conversationUser!!, conversationToken)
         }
 
         notificationsPreferenceScreen.setStorageModule(databaseStorageModule)
         conversationInfoWebinar.setStorageModule(databaseStorageModule)
+
+        fetchRoomInfo()
     }
 
     override fun onViewBound(view: View) {
@@ -181,20 +198,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
 
         if (saveStateHandler == null) {
             saveStateHandler = LovelySaveStateHandler()
-        }
-
-        if (adapter == null) {
-            fetchRoomInfo()
-        } else {
-            loadConversationAvatar()
-            notificationsPreferenceScreen.visibility = View.VISIBLE
-            nameCategoryView.visibility = View.VISIBLE
-            participantsListCategory.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
-            conversationDisplayName.text = conversation!!.displayName
-
-            setupWebinaryView()
-            setupAdapter()
         }
     }
 
@@ -292,6 +295,15 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(eventStatus: EventStatus) {
+        getListOfParticipants()
+    }
+
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        eventBus.unregister(this)
+    }
 
     private fun showDeleteConversationDialog(savedInstanceState: Bundle?) {
         if (activity != null) {
@@ -334,6 +346,26 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
             recyclerView.layoutManager = layoutManager
             recyclerView.setHasFixedSize(true)
             recyclerView.adapter = adapter
+
+            adapter!!.addListener(this)
+            actionTextView.setOnClickListener {
+                val bundle = Bundle()
+                val existingParticipantsId = arrayListOf<String>()
+
+                recyclerViewItems.forEach {
+                    val userItem = it as UserItem
+                    existingParticipantsId.add(userItem.model.userId)
+                }
+
+                bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true);
+                bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
+                bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
+
+                getRouter().pushController((RouterTransaction.with(ContactsController(bundle))
+                        .pushChangeHandler(HorizontalChangeHandler())
+                        .popChangeHandler(HorizontalChangeHandler())));
+
+            }
         }
     }
 
@@ -347,11 +379,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
         for (i in participants.indices) {
             participant = participants[i]
             userItem = UserItem(participant, conversationUser, null)
-            userItem.isEnabled = participant.sessionId != "0"
+            userItem.isOnline = !participant.sessionId.equals("0")
             if (!TextUtils.isEmpty(participant.userId) && participant.userId == conversationUser!!.userId) {
                 ownUserItem = userItem
-                userItem.model.sessionId = "-1"
-                userItem.isEnabled = true
+                ownUserItem.model.sessionId = "-1"
+                ownUserItem.isOnline = true
             } else {
                 recyclerViewItems.add(userItem)
             }
@@ -365,7 +397,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
         setupAdapter()
 
         participantsListCategory.visibility = View.VISIBLE
-        adapter!!.notifyDataSetChanged()
+        adapter!!.updateDataSet(recyclerViewItems)
     }
 
     override fun getTitle(): String? {
@@ -553,6 +585,75 @@ class ConversationInfoController(args: Bundle) : BaseController(args) {
             else -> {
             }
         }
+    }
+
+    override fun onItemClick(view: View?, position: Int): Boolean {
+        val userItem = adapter?.getItem(position) as UserItem
+        val participant = userItem.model
+
+        if (participant.userId != conversationUser!!.userId) {
+            val items = mutableListOf(
+                    context.getString(R.string.nc_promote),
+                    context.getString(R.string.nc_demote),
+                    context.getString(R.string.nc_remove_participant)
+            )
+
+            if (participant.type == Participant.ParticipantType.MODERATOR) {
+                items.removeAt(0)
+            } else if (participant.type == Participant.ParticipantType.USER) {
+                items.removeAt(1)
+            }
+
+            if (!conversation!!.canModerate(conversationUser)) {
+                items.removeAt(1);
+            }
+
+            MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                cornerRadius(res = R.dimen.corner_radius)
+                title(text = participant.displayName)
+                listItems(items = items) { dialog, index, text ->
+
+                    if (index == 0) {
+                        if (participant.type == Participant.ParticipantType.MODERATOR) {
+                            ncApi.demoteModeratorToUser(credentials, ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token), participant.userId)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe {
+                                        getListOfParticipants()
+                                    }
+                        } else if (participant.type == Participant.ParticipantType.USER) {
+                            ncApi.promoteUserToModerator(credentials, ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token), participant.userId)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe {
+                                        getListOfParticipants()
+                                    }
+                        }
+                    } else if (index == 1) {
+                        if (participant.type == Participant.ParticipantType.GUEST ||
+                                participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK) {
+                            ncApi.removeParticipantFromConversation(credentials, ApiUtils.getUrlForRemovingParticipantFromConversation(conversationUser.baseUrl, conversation!!.token, true), participant.sessionId)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe {
+                                        getListOfParticipants()
+                                    }
+
+                        } else {
+                            ncApi.removeParticipantFromConversation(credentials, ApiUtils.getUrlForRemovingParticipantFromConversation(conversationUser.baseUrl, conversation!!.token, false), participant.userId)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe {
+                                        getListOfParticipants()
+                                        // get participants again
+                                    }
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     companion object {

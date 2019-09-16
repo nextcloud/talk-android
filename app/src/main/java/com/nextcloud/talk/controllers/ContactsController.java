@@ -29,21 +29,18 @@ import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.MenuItemCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
-import butterknife.Optional;
+
+import com.afollestad.materialdialogs.LayoutMode;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -59,13 +56,15 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.jobs.AddParticipantsToConversation;
+import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall;
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser;
-import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.sharees.Sharee;
 import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -74,6 +73,36 @@ import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.MenuItemCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.Optional;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.SelectableAdapter;
@@ -85,13 +114,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.parceler.Parcels;
-
-import javax.inject.Inject;
-import java.util.*;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ContactsController extends BaseController implements SearchView.OnQueryTextListener,
@@ -162,6 +184,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private Set<String> selectedUserIds;
     private Set<String> selectedGroupIds;
+    private List<String> existingParticipants;
+    private boolean isAddingParticipantsView;
+    private String conversationToken;
+
     public ContactsController() {
         super();
         setHasOptionsMenu(true);
@@ -172,6 +198,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         setHasOptionsMenu(true);
         if (args.containsKey(BundleKeys.INSTANCE.getKEY_NEW_CONVERSATION())) {
             isNewConversationView = true;
+            existingParticipants = new ArrayList<>();
+        } else if (args.containsKey(BundleKeys.INSTANCE.getKEY_ADD_PARTICIPANTS())) {
+            isAddingParticipantsView = true;
+            conversationToken = args.getString(BundleKeys.INSTANCE.getKEY_TOKEN());
+
+            existingParticipants = new ArrayList<>();
+
+            if (args.containsKey(BundleKeys.INSTANCE.getKEY_EXISTING_PARTICIPANTS())) {
+                existingParticipants = args.getStringArrayList(BundleKeys.INSTANCE.getKEY_EXISTING_PARTICIPANTS());
+            }
         }
 
         selectedGroupIds = new HashSet<>();
@@ -191,6 +227,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (isNewConversationView) {
             toggleNewCallHeaderVisibility(!isPublicCall);
         }
+
+        if (isAddingParticipantsView) {
+            joinConversationViaLinkLayout.setVisibility(View.GONE);
+            conversationPrivacyToogleLayout.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -232,111 +274,128 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     private void selectionDone() {
-        if (!isPublicCall && (selectedGroupIds.size() + selectedUserIds.size() == 1)) {
-            String userId;
-            String roomType = "1";
+        if (!isAddingParticipantsView) {
+            if (!isPublicCall && (selectedGroupIds.size() + selectedUserIds.size() == 1)) {
+                String userId;
+                String roomType = "1";
 
-            if (selectedGroupIds.size() == 1) {
-                roomType = "2";
-                userId = selectedGroupIds.iterator().next();
-            } else {
-                userId = selectedUserIds.iterator().next();
-            }
+                if (selectedGroupIds.size() == 1) {
+                    roomType = "2";
+                    userId = selectedGroupIds.iterator().next();
+                } else {
+                    userId = selectedUserIds.iterator().next();
+                }
 
-            RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType,
-                    userId, null);
-            ncApi.createRoom(credentials,
-                    retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<RoomOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType,
+                        userId, null);
+                ncApi.createRoom(credentials,
+                        retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<RoomOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
-                        }
-
-                        @Override
-                        public void onNext(RoomOverall roomOverall) {
-                            Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
-                            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
-                            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
-
-                            if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                                ncApi.getRoom(credentials,
-                                        ApiUtils.getRoom(currentUser.getBaseUrl(),
-                                                roomOverall.getOcs().getData().getToken()))
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Observer<RoomOverall>() {
-
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
-
-                                            }
-
-                                            @Override
-                                            public void onNext(RoomOverall roomOverall) {
-                                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
-                                                        Parcels.wrap(roomOverall.getOcs().getData()));
-
-                                                ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                                        roomOverall.getOcs().getData().getToken(), bundle, true);
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-
-                                            }
-
-                                            @Override
-                                            public void onComplete() {
-
-                                            }
-                                        });
-                            } else {
-                                conversationIntent.putExtras(bundle);
-                                startActivity(conversationIntent);
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (!isDestroyed() && !isBeingDestroyed()) {
-                                            getRouter().popCurrentController();
-                                        }
-                                    }
-                                }, 100);
                             }
-                        }
 
-                        @Override
-                        public void onError(Throwable e) {
+                            @Override
+                            public void onNext(RoomOverall roomOverall) {
+                                Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
+                                bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
+                                bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
 
-                        }
+                                if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
+                                    ncApi.getRoom(credentials,
+                                            ApiUtils.getRoom(currentUser.getBaseUrl(),
+                                                    roomOverall.getOcs().getData().getToken()))
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(new Observer<RoomOverall>() {
 
-                        @Override
-                        public void onComplete() {
-                        }
-                    });
-        } else {
+                                                @Override
+                                                public void onSubscribe(Disposable d) {
 
-            Bundle bundle = new Bundle();
-            Conversation.ConversationType roomType;
-            if (isPublicCall) {
-                roomType = Conversation.ConversationType.ROOM_PUBLIC_CALL;
+                                                }
+
+                                                @Override
+                                                public void onNext(RoomOverall roomOverall) {
+                                                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
+                                                            Parcels.wrap(roomOverall.getOcs().getData()));
+
+                                                    ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                            roomOverall.getOcs().getData().getToken(), bundle, true);
+                                                }
+
+                                                @Override
+                                                public void onError(Throwable e) {
+
+                                                }
+
+                                                @Override
+                                                public void onComplete() {
+
+                                                }
+                                            });
+                                } else {
+                                    conversationIntent.putExtras(bundle);
+                                    startActivity(conversationIntent);
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isDestroyed() && !isBeingDestroyed()) {
+                                                getRouter().popCurrentController();
+                                            }
+                                        }
+                                    }, 100);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+                            }
+                        });
             } else {
-                roomType = Conversation.ConversationType.ROOM_GROUP_CALL;
+
+                Bundle bundle = new Bundle();
+                Conversation.ConversationType roomType;
+                if (isPublicCall) {
+                    roomType = Conversation.ConversationType.ROOM_PUBLIC_CALL;
+                } else {
+                    roomType = Conversation.ConversationType.ROOM_GROUP_CALL;
+                }
+
+                ArrayList<String> userIdsArray = new ArrayList<>(selectedUserIds);
+                ArrayList<String> groupIdsArray = new ArrayList<>(selectedGroupIds);
+
+
+                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_CONVERSATION_TYPE(), Parcels.wrap(roomType));
+                bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_PARTICIPANTS(), userIdsArray);
+                bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_GROUP(), groupIdsArray);
+                bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 11);
+                prepareAndShowBottomSheetWithBundle(bundle, true);
             }
+        } else {
+            String[] userIdsArray = selectedUserIds.toArray(new String[selectedUserIds.size()]);
+            String[] groupIdsArray = selectedGroupIds.toArray(new String[selectedGroupIds.size()]);
 
-            ArrayList<String> userIdsArray = new ArrayList<>(selectedUserIds);
-            ArrayList<String> groupIdsArray = new ArrayList<>(selectedGroupIds);
+            Data.Builder data = new Data.Builder();
+            data.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), currentUser.getId());
+            data.putString(BundleKeys.INSTANCE.getKEY_TOKEN(), conversationToken);
+            data.putStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_USERS(), userIdsArray);
+            data.putStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS(), groupIdsArray);
 
+            OneTimeWorkRequest addParticipantsToConversationWorker =
+                    new OneTimeWorkRequest.Builder(AddParticipantsToConversation.class).setInputData(data.build()).build();
+            WorkManager.getInstance().enqueue(addParticipantsToConversationWorker);
 
-            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_CONVERSATION_TYPE(), Parcels.wrap(roomType));
-            bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_PARTICIPANTS(), userIdsArray);
-            bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_GROUP(), groupIdsArray);
-            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 11);
-            prepareAndShowBottomSheetWithBundle(bundle, true);
+            getRouter().popCurrentController();
         }
     }
 
@@ -479,7 +538,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     }
 
                                     for (Sharee sharee : shareeHashSet) {
-                                        if (!sharee.getValue().getShareWith().equals(currentUser.getUserId())) {
+                                        if (!sharee.getValue().getShareWith().equals(currentUser.getUserId()) && !existingParticipants.contains(sharee.getValue().getShareWith())) {
                                             participant = new Participant();
                                             participant.setDisplayName(sharee.getLabel());
                                             String headerTitle;
@@ -510,7 +569,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     autocompleteUsersHashSet.addAll(autocompleteOverall.getOcs().getData());
 
                                     for (AutocompleteUser autocompleteUser : autocompleteUsersHashSet) {
-                                        if (!autocompleteUser.getId().equals(currentUser.getUserId())) {
+                                        if (!autocompleteUser.getId().equals(currentUser.getUserId()) && !existingParticipants.contains(autocompleteUser.getId())) {
                                             participant = new Participant();
                                             participant.setUserId(autocompleteUser.getId());
                                             participant.setDisplayName(autocompleteUser.getLabel());
@@ -764,7 +823,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     protected String getTitle() {
-        if (!isNewConversationView) {
+        if (!isNewConversationView && !isAddingParticipantsView) {
             return getResources().getString(R.string.nc_app_name);
         } else {
             return getResources().getString(R.string.nc_select_contacts);
@@ -840,7 +899,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     public boolean onItemClick(View view, int position) {
         if (adapter.getItem(position) instanceof UserItem) {
-            if (!isNewConversationView) {
+            if (!isNewConversationView && !isAddingParticipantsView) {
                 UserItem userItem = (UserItem) adapter.getItem(position);
                 String roomType = "1";
 

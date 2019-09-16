@@ -73,6 +73,7 @@
     <string name="nc_settings_remove_confirmation">Please confirm your intent to remove the current account.</string>
     <string name="nc_settings_remove_account">Remove account</string>
     <string name="nc_settings_add_account">Add a new account</string>
+    <string name="nc_add">Add</string>
     <string name="nc_settings_wrong_account">Only current account can be reauthorized</string>
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>
     <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
@@ -224,6 +225,11 @@
     <string name="nc_push_to_talk_desc">With microphone disabled, click&amp;hold to use Push-to-talk</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Demote from moderator</string>
+    <string name="nc_promote">Promote to moderator</string>
+    <string name="nc_remove_participant">Remove participant</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message…</string>

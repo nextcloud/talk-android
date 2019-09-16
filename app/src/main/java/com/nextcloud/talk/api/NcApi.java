@@ -113,6 +113,16 @@ public interface NcApi {
                                                      @QueryMap Map<String, String> options);
 
 
+    // also used for removing a guest from a conversation
+    @DELETE
+    Observable<GenericOverall> removeParticipantFromConversation(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
+
+    @POST
+    Observable<GenericOverall> promoteUserToModerator(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
+
+    @DELETE
+    Observable<GenericOverall> demoteModeratorToUser(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
+
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/participants/self
      */

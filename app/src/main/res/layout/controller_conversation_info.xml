@@ -96,13 +96,14 @@
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
-            <com.yarolegovich.mp.MaterialPreferenceCategory
+            <com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink
                 android:id="@+id/participants_list_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/webinar_settings"
                 android:visibility="gone"
                 apc:mpc_title="@string/nc_participants"
+                apc:mpc_action="@string/nc_add"
                 apc:mpc_title_color="@color/colorPrimary"
                 tools:ignore="UnknownIdInLayout">
 
@@ -112,7 +113,7 @@
                     android:layout_height="wrap_content"
                     tools:listitem="@layout/rv_item_contact" />
 
-            </com.yarolegovich.mp.MaterialPreferenceCategory>
+            </com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink>
 
             <com.yarolegovich.mp.MaterialPreferenceCategory
                 android:id="@+id/ownOptions"

@@ -43,4 +43,5 @@
     <dimen name="maximum_file_preview_size">192dp</dimen>
 
     <dimen name="large_preview_dimension">80dp</dimen>
+    <dimen name="corner_radius">16dp</dimen>
 </resources>

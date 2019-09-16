@@ -46,6 +46,16 @@ public class ApiUtils {
         return getRoom(baseUrl, token) + "/webinary/lobby";
     }
 
+    public static String getUrlForRemovingParticipantFromConversation(String baseUrl, String roomToken, boolean isGuest) {
+        String url = getUrlForParticipants(baseUrl, roomToken);
+
+        if (isGuest) {
+            url += "/guests";
+        }
+
+        return url;
+    }
+
     public static RetrofitBucket getRetrofitBucketForContactsSearch(String baseUrl, @Nullable String searchQuery) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
         retrofitBucket.setUrl(baseUrl + ocsApiVersion + "/apps/files_sharing/api/v1/sharees");
@@ -198,6 +208,10 @@ public class ApiUtils {
         } else {
             return signalingUrl + "/" + token;
         }
+    }
+
+    public static String getUrlForModerators(String baseUrl, String roomToken) {
+        return getRoom(baseUrl, roomToken) + "/moderators";
     }
 
     public static String getUrlForSignalingSettings(String baseUrl) {
