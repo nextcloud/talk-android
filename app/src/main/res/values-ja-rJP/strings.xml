@@ -77,9 +77,11 @@
     <string name="nc_settings_no_ringtone">音無し</string>
     <string name="nc_settings_vibrate">振動</string>
     <string name="nc_settings_vibrate_desc">消音でない場合に振動させます</string>
+    <string name="nc_settings_appearance">表示</string>
     <string name="nc_settings_theme_title">テーマ</string>
     <string name="nc_settings_theme_key">テーマ</string>
     <string name="nc_settings_theme_follow_system">既定の設定を使用する</string>
+    <string name="nc_settings_theme_battery_saver">バッテリーの使用を節約する</string>
     <string name="nc_settings_theme_light">ライト</string>
     <string name="nc_settings_theme_dark">ダーク</string>
     <string name="nc_settings_privacy">プライバシー</string>
@@ -141,6 +143,7 @@
     <string name="nc_delete_conversation_more">会話を削除すると、ほかの参加者も一緒に削除されます。</string>
 
     <string name="nc_new_conversation">新しい会話</string>
+    <string name="nc_join_via_link">トークに参加する</string>
     <string name="nc_join_via_web">ウェブ経由で参加</string>
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
@@ -164,6 +167,8 @@
     <string name="nc_call_timeout">45秒以内に応答がありませんでした。タップして再試行してください</string>
     <string name="nc_call_reconnecting">再接続中...</string>
     <string name="nc_offline">現在オフラインです。接続を確認してください。</string>
+    <string name="nc_leaving_call">通話を終了する</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%2$s通知チャンネルの%1$s</string>
     <string name="nc_notification_channel_calls">通知チャネルを呼び出す</string>
@@ -175,6 +180,7 @@
     <string name="nc_notify_me_mention">言及したときに通知する</string>
     <string name="nc_notify_me_never">決して通知しない</string>
     <string name="nc_mute_calls">通話をミュートする</string>
+    <string name="nc_mute_calls_desc">着信音を消す</string>
     <string name="nc_important_conversation">重要な会議</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
@@ -203,6 +209,7 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_conversation_menu_voice_call">音声通話</string>
     <string name="nc_conversation_menu_video_call">ビデオ通話</string>
     <string name="nc_conversation_menu_conversation_info">会話情報</string>
+    <string name="nc_new_messages">未読のメッセージ</string>
     <string name="nc_no_messages_yet">メッセージはまだありません</string>
     <string name="nc_sent_a_link" formatted="true">%1$sがリンクを送信しました。</string>
     <string name="nc_sent_a_gif" formatted="true">%1$sがGIFを送信しました。</string>
@@ -251,6 +258,8 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_select_files">ファイルの選択</string>
     <string name="nc_file_browser_back">戻る</string>
     <string name="nc_file_browser_refresh">更新</string>
+    <string name="nc_last_modified">%1$s最終更新:%2$s</string>
+
     <!-- Lobby -->
 
     <string name="nc_webinar">ウェビナー</string>
