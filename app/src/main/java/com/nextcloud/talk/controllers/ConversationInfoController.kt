@@ -54,6 +54,9 @@ import com.nextcloud.talk.adapters.items.UserItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
+import com.nextcloud.talk.controllers.bottomsheet.items.ListItemWithImage
+import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.events.BottomSheetLockEvent
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.DeleteConversationWorker
@@ -593,9 +596,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
         if (participant.userId != conversationUser!!.userId) {
             val items = mutableListOf(
-                    context.getString(R.string.nc_promote),
-                    context.getString(R.string.nc_demote),
-                    context.getString(R.string.nc_remove_participant)
+                    BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_promote)),
+                    BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_demote)),
+                    BasicListItemWithImage(R.drawable.ic_delete_grey600_24dp, context.getString(R.string.nc_remove_participant))
             )
 
             if (participant.type == Participant.ParticipantType.MODERATOR) {
@@ -610,8 +613,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
             MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
                 cornerRadius(res = R.dimen.corner_radius)
+
                 title(text = participant.displayName)
-                listItems(items = items) { dialog, index, text ->
+                listItemsWithImage(items = items) { dialog, index, _ ->
 
                     if (index == 0) {
                         if (participant.type == Participant.ParticipantType.MODERATOR) {
