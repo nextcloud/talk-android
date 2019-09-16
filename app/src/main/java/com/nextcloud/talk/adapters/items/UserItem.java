@@ -23,6 +23,7 @@ package com.nextcloud.talk.adapters.items;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -46,6 +47,7 @@ import org.w3c.dom.Text;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
+import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
@@ -122,6 +124,20 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
         }
 
+        if (!isOnline) {
+            if (holder.contactMentionId != null) {
+                holder.contactMentionId.setAlpha(0.38f);
+            }
+            holder.contactDisplayName.setAlpha(0.38f);
+            holder.simpleDraweeView.setAlpha(0.38f);
+        } else {
+            if (holder.contactMentionId != null) {
+                holder.contactMentionId.setAlpha(1.0f);
+            }
+            holder.contactDisplayName.setAlpha(1.0f);
+            holder.simpleDraweeView.setAlpha(1.0f);
+        }
+
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getDisplayName(),
                     String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
@@ -166,12 +182,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
         } else if ("groups".equals(participant.getSource())) {
             holder.simpleDraweeView.getHierarchy().setImage(new BitmapDrawable(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.Companion.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px)), 100, true);
-        }
-
-        if (!isOnline) {
-            holder.itemView.setAlpha(0.38f);
-        } else {
-            holder.itemView.setAlpha(1.0f);
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
