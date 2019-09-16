@@ -23,14 +23,9 @@ package com.nextcloud.talk.adapters.items;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import androidx.emoji.widget.EmojiTextView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -42,19 +37,20 @@ import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
-import org.w3c.dom.Text;
+import java.util.List;
+import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
+import androidx.emoji.widget.EmojiTextView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
-import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.regex.Pattern;
 
 public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements
         ISectionable<UserItem.UserItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
