@@ -67,6 +67,7 @@
     <string name="nc_settings_remove_confirmation">Conferma la tua intenzione di rimuovere l\'account attuale.</string>
     <string name="nc_settings_remove_account">Rimuovi account</string>
     <string name="nc_settings_add_account">Aggiungi un nuovo account</string>
+    <string name="nc_add">Aggiungi</string>
     <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
     <string name="nc_settings_no_talk_installed">L\'applicazione Talk non è installata sul server sul quale hai provato ad autenticarti</string>
     <string name="nc_settings_account_updated">Il tuo account preesistente è stato aggiornato, invece di aggiungerne un nuovo</string>
@@ -205,6 +206,11 @@
     <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utillizzare Premi per parlare</string>
     <string name="nc_configure_cert_auth">Seleziona certificato di autenticazione</string>
     <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Declassa da moderatore</string>
+    <string name="nc_promote">Promuovi a moderatore</string>
+    <string name="nc_remove_participant">Rimuovi partecipante</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Digita un messaggio</string>

@@ -67,6 +67,7 @@
     <string name="nc_settings_remove_confirmation">Bekräfta att du vill radera aktuellt konto.</string>
     <string name="nc_settings_remove_account">Ta bort konto</string>
     <string name="nc_settings_add_account">Lägg till ett nytt konto</string>
+    <string name="nc_add">Lägg till</string>
     <string name="nc_settings_wrong_account">Bara nuvarande konto kan återautentiseras</string>
     <string name="nc_settings_no_talk_installed">Talk-appen är inte installerad på den server som du försöker autentisera mot</string>
     <string name="nc_settings_account_updated">Ditt redan befintliga konto uppdaterades, istället för att lägga till ett nytt</string>
@@ -205,6 +206,11 @@
     <string name="nc_push_to_talk_desc">Med mikrofon inaktiverad klickar du på &amp;vänta för att använda Push-to-talk</string>
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
     <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Degradera från moderator</string>
+    <string name="nc_promote">Befordra till moderator</string>
+    <string name="nc_remove_participant">Ta bort deltagare</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Skriv ett meddelande…</string>
