@@ -181,6 +181,11 @@ enllaç especialment dissenyat.</string>
     <string name="nc_notify_me_mention">Notifica només quan s\'esmenti</string>
     <string name="nc_notify_me_never">No notifiquis mai</string>
     <string name="nc_mute_calls">Silencia les trucades</string>
+    <string name="nc_mute_calls_desc">Les trucades entrants se silenciaran.</string>
+    <string name="nc_important_conversation">Conversa important</string>
+    <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran
+        els paràmetres de no destorbar.</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>
     <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través de telèfons
@@ -208,6 +213,7 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_conversation_menu_voice_call">Trucada de veu</string>
     <string name="nc_conversation_menu_video_call">Trucada de vídeo </string>
     <string name="nc_conversation_menu_conversation_info">Informació de la conversa</string>
+    <string name="nc_new_messages">Missatges sense llegir</string>
     <string name="nc_no_messages_yet">No hi ha cap missatge encara</string>
     <string name="nc_sent_a_link" formatted="true">%1$s ha enviat un enllaç.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ha enviat un GIF.</string>
@@ -258,4 +264,13 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_file_browser_refresh">Actualitza</string>
     <string name="nc_last_modified">%1$s | Darrera modificació: %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinar</string>
+    <string name="nc_lobby">Vestíbul</string>
+    <string name="nc_start_time">Hora d\'inici</string>
+    <string name="nc_lobby_waiting">Esteu esperant al vestíbul.</string>
+    <string name="nc_lobby_waiting_with_date">Actualment esteu esperant al vestíbul.\n Aquesta
+trobada està prevista per a les %1$s.</string>
+    <string name="nc_manual">Manual</string>
+</resources>

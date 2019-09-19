@@ -67,6 +67,7 @@
     <string name="nc_settings_remove_confirmation">Bekræft venligst din hensigt til at fjerne den aktuelle konto.</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
     <string name="nc_settings_add_account">Tilføj en konto</string>
+    <string name="nc_add">Tilføj</string>
     <string name="nc_settings_wrong_account">Kun nuværende konto kan gen autoriseres</string>
     <string name="nc_settings_no_talk_installed">Talk appen er ikke installeret på serveren du prøver at blive godkendt på</string>
     <string name="nc_settings_account_updated">Vi har opdateret din eksisterende konto i stedet for at tilføje en ny</string>
@@ -206,6 +207,11 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_configure_cert_auth">Vælg godkendelsescertifikat</string>
     <string name="nc_change_cert_auth">Skift godkendelsescertifikat</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Degrader fra moderator</string>
+    <string name="nc_promote">Forfrem til moderator</string>
+    <string name="nc_remove_participant">Fjern deltager</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Skriv en besked…</string>
     <string name="nc_date_header_yesterday">I går</string>
@@ -213,6 +219,7 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_conversation_menu_voice_call">Stemmeopkald</string>
     <string name="nc_conversation_menu_video_call">Videoopkald</string>
     <string name="nc_conversation_menu_conversation_info">Samtaleinfo</string>
+    <string name="nc_new_messages">Ulæste beskedder</string>
     <string name="nc_no_messages_yet">Ingen beskeder endnu</string>
     <string name="nc_sent_a_link" formatted="true">%1$s sendte et link.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sendte en GIF.</string>
