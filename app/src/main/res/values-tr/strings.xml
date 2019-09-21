@@ -67,6 +67,7 @@
     <string name="nc_settings_remove_confirmation">Lütfen geçerli hesabı silmek istediğinizi onaylayın.</string>
     <string name="nc_settings_remove_account">Hesabı sil</string>
     <string name="nc_settings_add_account">Hesap ekle</string>
+    <string name="nc_add">Ekle</string>
     <string name="nc_settings_wrong_account">Yalnız geçerli hesaba yeniden izin verilebilir</string>
     <string name="nc_settings_no_talk_installed">Kimlik doğrulaması yapmak istediğiniz sunucu üzerinde Talk uygulaması kurulu değil</string>
     <string name="nc_settings_account_updated">Zaten bir hesabınız bulunduğundan yeni hesap eklenmesi yerine geçerli hesap güncellendi</string>
@@ -205,6 +206,11 @@
     <string name="nc_push_to_talk_desc">Mikrofon devre dışı iken, Bas-konuş üzerine tıklayıp basılı tutun</string>
     <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Sorumluluktan çıkar</string>
+    <string name="nc_promote">Sorumlu olarak ata</string>
+    <string name="nc_remove_participant">Katılımcıyı çıkar</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
