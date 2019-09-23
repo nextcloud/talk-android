@@ -1103,7 +1103,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
             }
         }
 
-        Log.d("MARIO-PUSH PROCESSING", String.valueOf(isFromTheFuture));
         if (response.code() == 200) {
 
             ChatOverall chatOverall = (ChatOverall) response.body();
@@ -1128,7 +1127,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
             int countGroupedMessages = 0;
             if (!isFromTheFuture) {
 
-                Log.d("MARIO-PUSH", "ADDING MESSAGES TO PAST " +  chatMessageList.size());
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     if (chatMessageList.size() > i + 1) {
                         if (TextUtils.isEmpty(chatMessageList.get(i).getSystemMessage()) &&
@@ -1174,8 +1172,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
                 }
 
                 boolean isThereANewNotice = shouldAddNewMessagesNotice || adapter.getMessagePositionByIdInReverse("-1") != -1;
-
-                Log.d("MARIO-PUSH", "ADDING MESSAGES TO FUTURE " +  chatMessageList.size());
 
                 for (int i = 0; i < chatMessageList.size(); i++) {
                     chatMessage = chatMessageList.get(i);
