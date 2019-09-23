@@ -73,7 +73,4 @@
 
     <color name="nc_author_text">@color/colorPrimary</color>
     <color name="bg_bottom_sheet">#46ffffff</color>
-
-    <!-- "Conversation Info" window -->
-    <color name="bg_controller_conv_info">@color/bg_default</color>
 </resources>

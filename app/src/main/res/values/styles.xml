@@ -28,7 +28,7 @@
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:panelFullBackground">@color/colorPrimary</item>
         <item name="android:itemBackground">@color/nc_outcoming_text_default</item>
-        <item name="android:textColor">@color/fg_default</item>
+        <item name="android:textColor">@color/nc_incoming_text_default</item>
         <item name="android:popupMenuStyle">@style/appActionBarPopupMenu</item>
         <item name="actionOverflowMenuStyle">@style/appActionBarPopupMenu</item>
         <item name="actionBarStyle">@style/appActionBarStyle</item>
@@ -37,6 +37,10 @@
     <style name="ErrorAppearance" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/nc_darkRed</item>
         <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ListItem" parent="BottomSheet.ListItem.TextAppearance">
+        <item name="android:textColor">@color/nc_incoming_text_default</item>
     </style>
 
     <style name="ChipIncomingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">

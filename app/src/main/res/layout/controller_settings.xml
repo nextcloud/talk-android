@@ -53,7 +53,7 @@
                 android:layout_below="@id/avatar_image"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/margin_between_elements"
-                android:textColor="@color/fg_default" />
+                android:textColor="@color/nc_incoming_text_default" />
 
             <TextView
                 android:id="@+id/base_url_text"
@@ -62,7 +62,7 @@
                 android:layout_below="@id/display_name_text"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="4dp"
-                android:textColor="@color/fg_default" />
+                android:textColor="@color/nc_incoming_text_default" />
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/avatar_image"

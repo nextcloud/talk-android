@@ -46,7 +46,7 @@
         android:layout_toStartOf="@id/checkedImageView"
         android:layout_toEndOf="@id/simple_drawee_view"
         android:ellipsize="end"
-        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textAppearance="@style/ListItem"
         tools:text="Contact item text" />
 
     <com.facebook.drawee.view.SimpleDraweeView

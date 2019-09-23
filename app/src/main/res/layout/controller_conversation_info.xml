@@ -23,7 +23,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_controller_conv_info"
     android:orientation="vertical">
 
     <ProgressBar
@@ -64,8 +63,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/avatar_image"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/margin_between_elements"
-                        android:textColor="@color/fg_default" />
+                        android:layout_marginTop="@dimen/margin_between_elements" />
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/avatar_image"
