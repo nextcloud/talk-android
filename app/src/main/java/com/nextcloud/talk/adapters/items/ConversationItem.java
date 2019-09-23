@@ -61,10 +61,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
     private Conversation conversation;
     private UserEntity userEntity;
+    private Context context;
 
-    public ConversationItem(Conversation conversation, UserEntity userEntity) {
+    public ConversationItem(Conversation conversation, UserEntity userEntity,
+                            Context activityContext) {
         this.conversation = conversation;
         this.userEntity = userEntity;
+        this.context = activityContext;
     }
 
     @Override
@@ -97,8 +100,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ConversationItemViewHolder holder, int position, List<Object> payloads) {
-        Context context = NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
-
+        Context appContext =
+                NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
         holder.dialogAvatar.setController(null);
 
         if (adapter.hasFilter()) {
@@ -152,13 +155,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 String text;
                 if (conversation.getLastMessage().getMessageType().equals(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE)) {
                     if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())) {
-                        text = String.format(context.getString(R.string.nc_formatted_message_you), conversation.getLastMessage().getLastMessageDisplayText());
+                        text = String.format(appContext.getString(R.string.nc_formatted_message_you),
+                                conversation.getLastMessage().getLastMessageDisplayText());
                     } else {
                         authorDisplayName = !TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName()) ?
                                 conversation.getLastMessage().getActorDisplayName() :
-                                "guests".equals(conversation.getLastMessage().getActorType()) ?
-                                        NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest) : "";
-                        text = String.format(context.getString(R.string.nc_formatted_message),
+                                "guests".equals(conversation.getLastMessage().getActorType()) ? appContext.getString(R.string.nc_guest) : "";
+                        text = String.format(appContext.getString(R.string.nc_formatted_message),
                                 authorDisplayName,
                                 conversation.getLastMessage().getLastMessageDisplayText());
                     }
@@ -222,14 +225,12 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     }
                     break;
                 case ROOM_GROUP_CALL:
-                    holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
-                            .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
-                                    R.drawable.ic_people_group_white_24px)), 100, true);
+                        holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(context.getResources(), R.drawable.ic_people_group_white_24px)), 100, true);
                     break;
                 case ROOM_PUBLIC_CALL:
-                    holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
-                            .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
-                                    R.drawable.ic_link_white_24px)), 100, true);
+                        holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
+                                .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
+                                        R.drawable.ic_link_white_24px)), 100, true);
                     break;
                 default:
                     holder.dialogAvatar.setVisibility(View.GONE);

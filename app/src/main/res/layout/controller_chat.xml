@@ -66,7 +66,7 @@
         app:inputButtonMargin="8dp"
         app:inputButtonWidth="36dp"
         app:inputHint="@string/nc_hint_enter_a_message"
-        app:inputTextColor="@color/fg_default"
+        app:inputTextColor="@color/nc_incoming_text_default"
         app:inputTextSize="16sp"
         app:showAttachmentButton="true" />
 

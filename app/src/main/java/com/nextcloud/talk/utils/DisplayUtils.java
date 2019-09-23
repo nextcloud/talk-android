@@ -61,8 +61,6 @@ import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.emoji.text.EmojiCompat;
-import androidx.emoji.text.EmojiSpan;
-import androidx.emoji.text.TypefaceEmojiSpan;
 
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
@@ -85,10 +83,8 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.UserMentionClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.text.Spans;
-import com.vanniktech.emoji.EmojiManager;
-import com.vanniktech.emoji.EmojiRange;
-import com.vanniktech.emoji.EmojiUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -96,7 +92,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -266,7 +261,7 @@ public class DisplayUtils {
         boolean isCall = "call".equals(type) || "calls".equals(type);
 
         if (!isCall) {
-            if (chipResource == R.xml.chip_outgoing_others || chipResource == R.xml.chip_accent_background) {
+            if (chipResource == R.xml.chip_you) {
                 drawable = R.drawable.mention_chip;
             } else {
                 drawable = R.drawable.accent_circle;
@@ -402,7 +397,11 @@ public class DisplayUtils {
         return drawable;
     }
 
-    public static boolean isDarkModeActive(Context context) {
+    public static boolean isDarkModeActive(Context context, AppPreferences prefs) {
+        if (prefs.getTheme().equals("night_yes")) {
+            return true;
+        }
+
         int currentNightMode =
                 context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         switch (currentNightMode) {

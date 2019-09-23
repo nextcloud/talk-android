@@ -347,8 +347,11 @@ public class ConversationsListController extends BaseController implements Searc
                     for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
                         conversation = roomsOverall.getOcs().getData().get(i);
                         if (shouldUseLastMessageLayout) {
-                            ConversationItem conversationItem = new ConversationItem(conversation, currentUser);
-                            callItems.add(conversationItem);
+                            if (getActivity() != null) {
+                                ConversationItem conversationItem = new ConversationItem(conversation
+                                        , currentUser, getActivity());
+                                callItems.add(conversationItem);
+                            }
                         } else {
                             CallItem callItem = new CallItem(conversation, currentUser);
                             callItems.add(callItem);

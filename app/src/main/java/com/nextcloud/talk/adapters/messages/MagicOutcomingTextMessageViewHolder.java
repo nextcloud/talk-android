@@ -94,25 +94,14 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
                 if (individualHashMap != null) {
                     if (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call")) {
-                        if (!individualHashMap.get("id").equals(message.getActiveUser().getUserId())) {
-                            messageString =
-                                    DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
-                                            messageString,
-                                            individualHashMap.get("id"),
-                                            individualHashMap.get("name"),
-                                            individualHashMap.get("type"),
-                                            userUtils.getUserById(message.getActiveUser().getUserId()),
-                                            R.xml.chip_outgoing_others);
-                        } else {
-                            messageString =
-                                    DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
-                                            messageString,
-                                            individualHashMap.get("id"),
-                                            individualHashMap.get("name"),
-                                            individualHashMap.get("type"),
-                                            userUtils.getUserById(message.getActiveUser().getUserId()),
-                                            R.xml.chip_outgoing_own_mention);
-                        }
+                        messageString =
+                                DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
+                                        messageString,
+                                        individualHashMap.get("id"),
+                                        individualHashMap.get("name"),
+                                        individualHashMap.get("type"),
+                                        userUtils.getUserById(message.getActiveUser().getUserId()),
+                                        R.xml.chip_others);
                     } else if (individualHashMap.get("type").equals("file")) {
                         itemView.setOnClickListener(v -> {
                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap.get("link")));
@@ -132,14 +121,15 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
         if (message.isGrouped) {
-            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.colorPrimary),
+            Drawable bubbleDrawable =
+                    DisplayUtils.getMessageSelector(resources.getColor(R.color.bg_message_list_outcoming_bubble),
                     resources.getColor(R.color.transparent),
-                    resources.getColor(R.color.colorPrimary), R.drawable.shape_grouped_outcoming_message);
+                    resources.getColor(R.color.bg_message_list_outcoming_bubble), R.drawable.shape_grouped_outcoming_message);
             ViewCompat.setBackground(bubble, bubbleDrawable);
         } else {
-            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.colorPrimary),
+            Drawable bubbleDrawable = DisplayUtils.getMessageSelector(resources.getColor(R.color.bg_message_list_outcoming_bubble),
                     resources.getColor(R.color.transparent),
-                    resources.getColor(R.color.colorPrimary), R.drawable.shape_outcoming_message);
+                    resources.getColor(R.color.bg_message_list_outcoming_bubble), R.drawable.shape_outcoming_message);
             ViewCompat.setBackground(bubble, bubbleDrawable);
         }
 

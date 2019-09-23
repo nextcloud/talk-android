@@ -130,10 +130,9 @@ public class MagicIncomingTextMessageViewHolder
             messageAuthor.setVisibility(View.GONE);
         }
 
-        Resources resources = context.getResources();
-        int bg_bubble_color = DisplayUtils.isDarkModeActive(context) ?
-                resources.getColor(R.color.bg_message_list_incoming_bubble_dark2) :
-                resources.getColor(R.color.bg_message_list_incoming_bubble);
+        Resources resources = itemView.getResources();
+
+        int bg_bubble_color = resources.getColor(R.color.bg_message_list_incoming_bubble);
 
         int bubbleResource = R.drawable.shape_incoming_message;
 
@@ -171,7 +170,7 @@ public class MagicIncomingTextMessageViewHolder
                                             individualHashMap.get("name"),
                                             individualHashMap.get("type"),
                                             userUtils.getUserById(message.getActiveUser().getUserId()),
-                                            R.xml.chip_accent_background);
+                                            R.xml.chip_you);
                         } else {
                             messageString =
                                     DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
@@ -180,7 +179,7 @@ public class MagicIncomingTextMessageViewHolder
                                             individualHashMap.get("name"),
                                             individualHashMap.get("type"),
                                             userUtils.getUserById(message.getActiveUser().getUserId()),
-                                            R.xml.chip_incoming_others);
+                                            R.xml.chip_others);
                         }
 
                     } else if (individualHashMap.get("type").equals("file")) {

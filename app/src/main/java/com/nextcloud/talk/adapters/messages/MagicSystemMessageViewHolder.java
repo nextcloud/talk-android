@@ -56,22 +56,14 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
     public void onBind(ChatMessage message) {
         super.onBind(message);
 
-        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
-        int normalColor;
+        Resources resources = itemView.getResources();
+        int normalColor = resources.getColor(R.color.bg_message_list_incoming_bubble);
         int pressedColor;
-        int mentionYouColor;
-        int mentionOthersColor;
+        int mentionColor;
 
-        if(DisplayUtils.isDarkModeActive(context)) {
-            normalColor = resources.getColor(R.color.bg_system_bubble_dark);
-            mentionYouColor = resources.getColor(R.color.fg_mention_you_dark);
-            mentionOthersColor = resources.getColor(R.color.fg_mention_others_dark);
-        } else {
-            normalColor = resources.getColor(R.color.white_two);
-            mentionYouColor = resources.getColor(R.color.fg_mention_you);
-            mentionOthersColor = resources.getColor(R.color.fg_mention_others);
-        }
+
         pressedColor = normalColor;
+        mentionColor = resources.getColor(R.color.nc_author_text);
 
         Drawable bubbleDrawable = DisplayUtils.getMessageSelector(normalColor,
                                 resources.getColor(R.color.transparent), pressedColor,
@@ -83,18 +75,8 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         if (message.getMessageParameters() != null && message.getMessageParameters().size() > 0) {
             for (String key : message.getMessageParameters().keySet()) {
                 Map<String, String> individualHashMap = message.getMessageParameters().get(key);
-                int color;
                 if (individualHashMap != null && (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call"))) {
-
-                    if (individualHashMap.get("id").equals(message.getActiveUser().getUserId())) {
-                        color = mentionYouColor;
-                    } else {
-                        color = mentionOthersColor;
-                    }
-
-                    messageString =
-                            DisplayUtils.searchAndColor(messageString,
-                                    "@" + individualHashMap.get("name"), color);
+                    messageString = DisplayUtils.searchAndColor(messageString, "@" + individualHashMap.get("name"), mentionColor);
                 }
             }
         }

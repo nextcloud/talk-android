@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textColor="@color/nc_incoming_text_default"
+            android:textColor="@color/nc_author_text"
             android:textSize="16sp"
             tools:text="Call item text" />
 
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textColor="@color/warm_grey_four"
+            android:textColor="@color/nc_incoming_text_default"
             android:textSize="12sp"
             tools:text="A week ago" />
 
