@@ -585,7 +585,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
             }
 
             if (currentConversation.shouldShowLobby(conversationUser)) {
-                lobbyView.setVisibility(View.VISIBLE);
+                if (lobbyView != null) {
+                    lobbyView.setVisibility(View.VISIBLE);
+                }
                 messagesListView.setVisibility(View.GONE);
                 messageInputView.setVisibility(View.GONE);
                 loadingProgressBar.setVisibility(View.GONE);
@@ -596,12 +598,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     conversationLobbyText.setText(R.string.nc_lobby_waiting);
                 }
             } else {
-                lobbyView.setVisibility(View.GONE);
+                if (lobbyView != null) {
+                    lobbyView.setVisibility(View.GONE);
+                }
                 messagesListView.setVisibility(View.VISIBLE);
                 messageInput.setVisibility(View.VISIBLE);
             }
         } else {
-            lobbyView.setVisibility(View.GONE);
+            if (lobbyView != null) {
+                lobbyView.setVisibility(View.GONE);
+            }
             messagesListView.setVisibility(View.VISIBLE);
             messageInput.setVisibility(View.VISIBLE);
         }
