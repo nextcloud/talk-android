@@ -68,7 +68,7 @@
     <style name="appActionBarPopupMenu" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
         <item name="android:colorPrimary">@color/fg_inverse</item>
         <item name="android:background">@color/bg_alt</item>
-        <item name="android:textColor">@color/fg_default</item>
+        <item name="android:textColor">@color/nc_incoming_text_default</item>
     </style>
 
 </resources>
