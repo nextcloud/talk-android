@@ -55,22 +55,17 @@
 
     <color name="fg_default">#000000</color>
     <color name="fg_inverse">#FFFFFF</color>
-    <color name="fg_mention_you">#C98879</color>
-    <color name="fg_mention_others">#37505D</color>
-
-    <color name="fg_mention_you_dark">#C98879</color>
-    <color name="fg_mention_others_dark">#4c96bd</color>
 
     <color name="bg_default">#FFFFFF</color>
     <color name="bg_alt">@color/white60</color>
-    <color name="nc_chip_mention_you_background">@color/colorAccent</color>
-    <color name="nc_chip_mention_others_background">#6F6F6F</color>
+    <color name="nc_chip_mention_you_background">#0083C9</color>
+    <color name="nc_chip_mention_others_background">@color/white</color>
     <color name="bg_dark_mention_chips">#333333</color>
 
 
-    <color name="bg_message_list_incoming_bubble">#D5D5D5</color>
-    <color name="bg_message_list_outcoming_bubble">#003F62</color>
+    <color name="bg_message_list_incoming_bubble">#EFEFEF</color>
+    <color name="bg_message_list_outcoming_bubble">@color/colorPrimary</color>
 
-    <color name="nc_author_text">@color/colorPrimary</color>
+    <color name="nc_author_text">#65A7CA</color>
     <color name="bg_bottom_sheet">#46ffffff</color>
 </resources>
