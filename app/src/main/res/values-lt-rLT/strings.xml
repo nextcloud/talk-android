@@ -45,6 +45,7 @@
     <string name="nc_settings_remove_confirmation">Patvirtinkite savo ketinimą pašalinti esamą paskyrą.</string>
     <string name="nc_settings_remove_account">Šalinti paskyrą</string>
     <string name="nc_settings_add_account">Pridėti naują paskyrą</string>
+    <string name="nc_add">Pridėti</string>
     <string name="nc_settings_notification_sounds">Pranešimų garsai</string>
     <string name="nc_settings_vibrate">Vibruoti</string>
     <string name="nc_settings_vibrate_desc">Telefonas vibruos, nebent bus nutildytas</string>
