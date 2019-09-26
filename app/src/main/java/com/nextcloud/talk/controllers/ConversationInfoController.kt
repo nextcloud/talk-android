@@ -23,7 +23,6 @@ package com.nextcloud.talk.controllers
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
-import android.opengl.Visibility
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -45,7 +44,6 @@ import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.datetime.dateTimePicker
-import com.afollestad.materialdialogs.list.listItems
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -56,9 +54,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
-import com.nextcloud.talk.controllers.bottomsheet.items.ListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
-import com.nextcloud.talk.events.BottomSheetLockEvent
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
