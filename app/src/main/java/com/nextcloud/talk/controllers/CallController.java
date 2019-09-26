@@ -58,8 +58,8 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.*;
 import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
+import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
@@ -1026,15 +1026,15 @@ public class CallController extends BaseController {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
-                .subscribe(new Observer<CallOverall>() {
+                .subscribe(new Observer<RoomOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(CallOverall callOverall) {
-                        callSession = callOverall.getOcs().getData().getSessionId();
+                    public void onNext(RoomOverall roomOverall) {
+                        callSession = roomOverall.getOcs().getData().getSessionId();
                         ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);

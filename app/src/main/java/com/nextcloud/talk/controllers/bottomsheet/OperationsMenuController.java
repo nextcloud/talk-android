@@ -35,10 +35,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import autodagger.AutoInjector;
-import butterknife.BindView;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -50,31 +50,34 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.call.Call;
-import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.Capabilities;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
-import com.nextcloud.talk.models.json.generic.GenericOverall;
-import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
+
+import org.greenrobot.eventbus.EventBus;
+import org.parceler.Parcels;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+import butterknife.BindView;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import org.greenrobot.eventbus.EventBus;
-import org.parceler.Parcels;
 import retrofit2.HttpException;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.ArrayList;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class OperationsMenuController extends BaseController {
@@ -111,7 +114,6 @@ public class OperationsMenuController extends BaseController {
     private String callUrl;
 
     private String baseUrl;
-    private Call call;
     private String conversationToken;
 
     private Disposable disposable;
@@ -679,7 +681,7 @@ public class OperationsMenuController extends BaseController {
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
             bundle.putString(BundleKeys.INSTANCE.getKEY_MODIFIED_BASE_URL(), baseUrl);
         }
-        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(call));
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
 
         if (getActivity() != null) {
 
@@ -710,8 +712,8 @@ public class OperationsMenuController extends BaseController {
             if (operationCode != 99) {
                 showResultImage(true, false);
             } else {
-                CallOverall callOverall = (CallOverall) o;
-                call = callOverall.getOcs().getData();
+                RoomOverall roomOverall = (RoomOverall) o;
+                conversation = roomOverall.getOcs().getData();
                 initiateConversation(true, serverCapabilities);
             }
         }

@@ -21,7 +21,6 @@
 package com.nextcloud.talk.api;
 
 import androidx.annotation.Nullable;
-import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
@@ -153,8 +152,7 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<CallOverall> joinRoom(@Nullable @Header("Authorization") String authorization, @Url String url,
-                                     @Nullable @Field("password") String password);
+    Observable<RoomOverall> joinRoom(@Nullable @Header("Authorization") String authorization, @Url String url, @Nullable @Field("password") String password);
 
     @DELETE
     Observable<GenericOverall> leaveRoom(@Nullable @Header("Authorization") String authorization, @Url String url);

@@ -85,8 +85,6 @@ import com.nextcloud.talk.events.UserMentionClickEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.call.Call;
-import com.nextcloud.talk.models.json.call.CallOverall;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.conversations.Conversation;
@@ -188,14 +186,12 @@ public class ChatController extends BaseController implements MessagesListAdapte
     @BindView(R.id.lobby_text_view)
     TextView conversationLobbyText;
     private List<Disposable> disposableList = new ArrayList<>();
-    private String conversationName;
     private String roomToken;
     private UserEntity conversationUser;
     private String roomPassword;
     private String credentials;
     private Conversation currentConversation;
-    private Call currentCall;
-    private boolean inChat = false;
+    private boolean inConversation = false;
     private boolean historyRead = false;
     private int globalLastKnownFutureMessageId = -1;
     private int globalLastKnownPastMessageId = -1;
@@ -223,6 +219,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     private MagicWebSocketInstance magicWebSocketInstance;
 
     private Handler lobbyTimerHandler;
+    private boolean roomJoined;
 
     public ChatController(Bundle args) {
         super(args);
@@ -235,9 +232,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         if (args.containsKey(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION())) {
             this.currentConversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION()));
-            if (currentConversation != null) {
-                conversationName = currentConversation.getDisplayName();
-            }
         }
 
         this.roomPassword = args.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), "");
@@ -272,24 +266,16 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                     @Override
                     public void onNext(RoomOverall roomOverall) {
-                        Conversation oldConversation = null;
-
-                        if (currentConversation != null) {
-                            oldConversation = currentConversation;
-                        }
-
                         currentConversation = roomOverall.getOcs().getData();
 
                         loadAvatarForStatusBar();
 
-                        conversationName = currentConversation.getDisplayName();
                         setTitle();
                         setupMentionAutocomplete();
-
                         checkReadOnlyState();
                         checkLobbyState();
 
-                        if (oldConversation == null || oldConversation.getRoomId() == null) {
+                        if (!inConversation) {
                             joinRoomWithPassword();
                         }
 
@@ -329,18 +315,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             if (roomId.equals(conversation.getRoomId())) {
                                 roomToken = conversation.getToken();
                                 currentConversation = conversation;
-                                loadAvatarForStatusBar();
-                                checkLobbyState();
-                                checkReadOnlyState();
-                                conversationName = conversation.getDisplayName();
                                 setTitle();
+                                getRoomInfo();
                                 break;
                             }
-                        }
-
-                        if (!TextUtils.isEmpty(roomToken)) {
-                            setupMentionAutocomplete();
-                            joinRoomWithPassword();
                         }
                     }
 
@@ -531,17 +509,15 @@ public class ChatController extends BaseController implements MessagesListAdapte
         if (currentConversation != null && currentConversation.getRoomId() != null) {
             loadAvatarForStatusBar();
             checkLobbyState();
+            setTitle();
         }
 
         if (adapterWasNull) {
             // we're starting
             if (TextUtils.isEmpty(roomToken)) {
                 handleFromNotification();
-            } else if (TextUtils.isEmpty(conversationName)) {
-                getRoomInfo();
             } else {
-                setupMentionAutocomplete();
-                joinRoomWithPassword();
+                getRoomInfo();
             }
         }
     }
@@ -696,9 +672,9 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         cancelNotificationsForCurrentConversation();
 
-        if (inChat) {
+        if (inConversation) {
             if (wasDetached && conversationUser.hasSpreedFeatureCapability("no-ping")) {
-                currentCall = null;
+                currentConversation.setSessionId("0");
                 wasDetached = false;
                 joinRoomWithPassword();
             }
@@ -736,7 +712,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     @Override
     protected String getTitle() {
-        return String.valueOf(EmojiCompat.get().process(conversationName));
+        return String.valueOf(EmojiCompat.get().process(currentConversation.getDisplayName()));
     }
 
     @Override
@@ -752,7 +728,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
         }
 
         adapter = null;
-        inChat = false;
+        inConversation = false;
     }
 
     private void dispose() {
@@ -770,8 +746,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                    .takeWhile(observable -> inChat)
-                    .retry(3, observable -> inChat)
+                    .takeWhile(observable -> inConversation)
+                    .retry(3, observable -> inConversation)
                     .subscribe(new Observer<GenericOverall>() {
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -801,23 +777,24 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     private void joinRoomWithPassword() {
 
-        if (currentCall == null) {
+        if (currentConversation == null || TextUtils.isEmpty(currentConversation.getSessionId()) || currentConversation.getSessionId().equals("0")) {
             ncApi.joinRoom(credentials,
                     ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser.getBaseUrl(), roomToken), roomPassword)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
-                    .subscribe(new Observer<CallOverall>() {
+                    .subscribe(new Observer<RoomOverall>() {
                         @Override
                         public void onSubscribe(Disposable d) {
                             disposableList.add(d);
                         }
 
                         @Override
-                        public void onNext(CallOverall callOverall) {
-                            inChat = true;
-                            currentCall = callOverall.getOcs().getData();
-                            ApplicationWideCurrentRoomHolder.getInstance().setSession(currentCall.getSessionId());
+                        public void onNext(RoomOverall roomOverall) {
+                            inConversation = true;
+                            currentConversation = roomOverall.getOcs().getData();
+                            setTitle();
+                            ApplicationWideCurrentRoomHolder.getInstance().setSession(currentConversation.getSessionId());
                             startPing();
 
                             setupWebsocket();
@@ -830,8 +807,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             }
 
                             if (magicWebSocketInstance != null) {
-                                magicWebSocketInstance.joinRoomWithRoomTokenAndSession(roomToken,
-                                        currentCall.getSessionId());
+                                magicWebSocketInstance.joinRoomWithRoomTokenAndSession(roomToken, currentConversation.getSessionId());
                             }
                             if (startCallFromNotification != null && startCallFromNotification) {
                                 startCallFromNotification = false;
@@ -850,11 +826,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         }
                     });
         } else {
-            inChat = true;
-            ApplicationWideCurrentRoomHolder.getInstance().setSession(currentCall.getSessionId());
+            inConversation = true;
+            ApplicationWideCurrentRoomHolder.getInstance().setSession(currentConversation.getSessionId());
             if (magicWebSocketInstance != null) {
                 magicWebSocketInstance.joinRoomWithRoomTokenAndSession(roomToken,
-                        currentCall.getSessionId());
+                        currentConversation.getSessionId());
             }
             startPing();
             if (isFirstMessagesProcessing) {
@@ -885,8 +861,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                             lobbyTimerHandler.removeCallbacksAndMessages(null);
                         }
 
-                        if (magicWebSocketInstance != null && currentCall != null) {
-                            magicWebSocketInstance.joinRoomWithRoomTokenAndSession("", currentCall.getSessionId());
+                        if (magicWebSocketInstance != null && currentConversation != null) {
+                            magicWebSocketInstance.joinRoomWithRoomTokenAndSession("", currentConversation.getSessionId());
                         }
 
                         if (!isDestroyed() && !isBeingDestroyed() && !wasDetached) {
@@ -992,7 +968,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
     }
 
     private void pullChatMessages(int lookIntoFuture) {
-        if (!inChat) {
+        if (!inConversation) {
             return;
         }
 
@@ -1031,7 +1007,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         fieldMap.put("lastKnownMessageId", lastKnown);
 
-        Log.d("MARIO-PUSH", lastKnown + " " + lookIntoFuture);
         if (!wasDetached) {
             if (lookIntoFuture > 0) {
                 int finalTimeout = timeout;
@@ -1040,7 +1015,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         fieldMap)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .takeWhile(observable -> inChat && !wasDetached)
+                        .takeWhile(observable -> inConversation && !wasDetached)
                         .subscribe(new Observer<Response>() {
                             @Override
                             public void onSubscribe(Disposable d) {
@@ -1068,8 +1043,8 @@ public class ChatController extends BaseController implements MessagesListAdapte
                         ApiUtils.getUrlForChat(conversationUser.getBaseUrl(), roomToken), fieldMap)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .retry(3, observable -> inChat && !wasDetached)
-                        .takeWhile(observable -> inChat && !wasDetached)
+                        .retry(3, observable -> inConversation && !wasDetached)
+                        .takeWhile(observable -> inConversation && !wasDetached)
                         .subscribe(new Observer<Response>() {
                             @Override
                             public void onSubscribe(Disposable d) {
@@ -1222,7 +1197,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
             }
 
-            if (inChat) {
+            if (inConversation) {
                 pullChatMessages(1);
             }
         } else if (response.code() == 304 && !isFromTheFuture) {
@@ -1237,7 +1212,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
                 historyRead = true;
 
-            if (!lookingIntoFuture && inChat) {
+            if (!lookingIntoFuture && inConversation) {
                 pullChatMessages(1);
             }
         }
@@ -1245,7 +1220,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     @Override
     public void onLoadMore(int page, int totalItemsCount) {
-        if (!historyRead && inChat) {
+        if (!historyRead && inConversation) {
             pullChatMessages(0);
         }
     }
