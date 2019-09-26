@@ -23,6 +23,7 @@ package com.nextcloud.talk.controllers
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import android.opengl.Visibility
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -202,6 +203,8 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         if (saveStateHandler == null) {
             saveStateHandler = LovelySaveStateHandler()
         }
+
+        actionTextView.visibility = View.GONE
     }
 
     private fun setupWebinaryView() {
@@ -472,6 +475,14 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
                     override fun onNext(roomOverall: RoomOverall) {
                         conversation = roomOverall.ocs.data
+
+                        val conversationCopy = conversation
+
+                        if (conversationCopy!!.canModerate(conversationUser)) {
+                            actionTextView.visibility = View.VISIBLE
+                        } else {
+                            actionTextView.visibility = View.GONE
+                        }
 
                         if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
                             ownOptionsCategory.visibility = View.VISIBLE
