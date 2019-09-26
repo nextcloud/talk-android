@@ -594,63 +594,68 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         val userItem = adapter?.getItem(position) as UserItem
         val participant = userItem.model
 
+
         if (participant.userId != conversationUser!!.userId) {
-            val items = mutableListOf(
+            var items = mutableListOf(
                     BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_promote)),
                     BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_demote)),
-                    BasicListItemWithImage(R.drawable.ic_delete_grey600_24dp, context.getString(R.string.nc_remove_participant))
+                    BasicListItemWithImage(R.drawable.ic_delete_grey600_24dp,
+                            context.getString(R.string.nc_remove_participant))
             )
 
-            if (participant.type == Participant.ParticipantType.MODERATOR) {
-                items.removeAt(0)
-            } else if (participant.type == Participant.ParticipantType.USER) {
-                items.removeAt(1)
-            }
-
             if (!conversation!!.canModerate(conversationUser)) {
-                items.removeAt(1);
+                items = mutableListOf()
+            } else {
+                if (participant.type == Participant.ParticipantType.MODERATOR || participant.type == Participant.ParticipantType.OWNER) {
+                    items.removeAt(0)
+                } else if (participant.type == Participant.ParticipantType.USER) {
+                    items.removeAt(1)
+                }
             }
 
-            MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
-                cornerRadius(res = R.dimen.corner_radius)
 
-                title(text = participant.displayName)
-                listItemsWithImage(items = items) { dialog, index, _ ->
+            if (items.isNotEmpty()) {
+                MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                    cornerRadius(res = R.dimen.corner_radius)
 
-                    if (index == 0) {
-                        if (participant.type == Participant.ParticipantType.MODERATOR) {
-                            ncApi.demoteModeratorToUser(credentials, ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token), participant.userId)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                    }
-                        } else if (participant.type == Participant.ParticipantType.USER) {
-                            ncApi.promoteUserToModerator(credentials, ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token), participant.userId)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                    }
-                        }
-                    } else if (index == 1) {
-                        if (participant.type == Participant.ParticipantType.GUEST ||
-                                participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK) {
-                            ncApi.removeParticipantFromConversation(credentials, ApiUtils.getUrlForRemovingParticipantFromConversation(conversationUser.baseUrl, conversation!!.token, true), participant.sessionId)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                    }
+                    title(text = participant.displayName)
+                    listItemsWithImage(items = items) { dialog, index, _ ->
 
-                        } else {
-                            ncApi.removeParticipantFromConversation(credentials, ApiUtils.getUrlForRemovingParticipantFromConversation(conversationUser.baseUrl, conversation!!.token, false), participant.userId)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                        // get participants again
-                                    }
+                        if (index == 0) {
+                            if (participant.type == Participant.ParticipantType.MODERATOR) {
+                                ncApi.demoteModeratorToUser(credentials, ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token), participant.userId)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe {
+                                            getListOfParticipants()
+                                        }
+                            } else if (participant.type == Participant.ParticipantType.USER) {
+                                ncApi.promoteUserToModerator(credentials, ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token), participant.userId)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe {
+                                            getListOfParticipants()
+                                        }
+                            }
+                        } else if (index == 1) {
+                            if (participant.type == Participant.ParticipantType.GUEST ||
+                                    participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK) {
+                                ncApi.removeParticipantFromConversation(credentials, ApiUtils.getUrlForRemovingParticipantFromConversation(conversationUser.baseUrl, conversation!!.token, true), participant.sessionId)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe {
+                                            getListOfParticipants()
+                                        }
+
+                            } else {
+                                ncApi.removeParticipantFromConversation(credentials, ApiUtils.getUrlForRemovingParticipantFromConversation(conversationUser.baseUrl, conversation!!.token, false), participant.userId)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe {
+                                            getListOfParticipants()
+                                            // get participants again
+                                        }
+                            }
                         }
                     }
                 }
