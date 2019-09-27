@@ -30,5 +30,5 @@ import org.parceler.Parcel;
 @JsonObject
 public class ChatOverall {
     @JsonField(name = "ocs")
-    ChatOCS ocs;
+    public ChatOCS ocs;
 }

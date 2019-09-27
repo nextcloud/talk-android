@@ -32,5 +32,5 @@ import java.util.List;
 @JsonObject
 public class ChatOCS extends GenericOCS {
     @JsonField(name = "data")
-    List<ChatMessage> data;
+    public List<ChatMessage> data;
 }
