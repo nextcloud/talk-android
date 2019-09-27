@@ -673,9 +673,14 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         if (inConversation) {
             if (wasDetached && conversationUser.hasSpreedFeatureCapability("no-ping")) {
-                currentConversation.setSessionId("0");
-                wasDetached = false;
-                joinRoomWithPassword();
+                if (currentConversation != null) {
+                    currentConversation.setSessionId("0");
+                    wasDetached = false;
+                    joinRoomWithPassword();
+                } else {
+                    wasDetached = false;
+                    getRoomInfo();
+                }
             }
         }
     }
