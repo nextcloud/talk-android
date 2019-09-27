@@ -508,7 +508,6 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
         if (currentConversation != null && currentConversation.getRoomId() != null) {
             loadAvatarForStatusBar();
-            checkLobbyState();
             setTitle();
         }
 
@@ -712,7 +711,11 @@ public class ChatController extends BaseController implements MessagesListAdapte
 
     @Override
     protected String getTitle() {
-        return String.valueOf(EmojiCompat.get().process(currentConversation.getDisplayName()));
+        if (currentConversation != null) {
+            return String.valueOf(EmojiCompat.get().process(currentConversation.getDisplayName()));
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -1160,6 +1163,10 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     chatMessage.setActiveUser(conversationUser);
                     chatMessage.setLinkPreviewAllowed(isLinkPreviewAllowed);
 
+                    if (chatMessage.getJsonMessageId() > globalLastKnownFutureMessageId) {
+                        globalLastKnownFutureMessageId = chatMessage.getJsonMessageId();
+                    }
+
                     // if credentials are empty, we're acting as a guest
                     if (TextUtils.isEmpty(credentials) && myFirstMessage != null && !TextUtils.isEmpty(myFirstMessage.toString())) {
                         if (chatMessage.getActorType().equals("guests")) {
@@ -1169,7 +1176,7 @@ public class ChatController extends BaseController implements MessagesListAdapte
                     }
 
                     boolean shouldScroll =
-                            !isThereANewNotice && !shouldAddNewMessagesNotice && layoutManager.findFirstVisibleItemPosition() == 0 ||
+                            !isThereANewNotice && layoutManager.findFirstVisibleItemPosition() == 0 ||
                             (adapter != null && adapter.getItemCount() == 0);
 
                     if (!shouldAddNewMessagesNotice && !shouldScroll && popupBubble != null) {
