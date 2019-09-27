@@ -27,6 +27,6 @@ import java.util.Map;
 @Parcel
 @Data
 public class RetrofitBucket {
-    String url;
-    Map<String, String> queryMap;
+    public String url;
+    public Map<String, String> queryMap;
 }

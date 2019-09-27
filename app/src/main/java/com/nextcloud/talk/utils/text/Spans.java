@@ -29,8 +29,8 @@ public class Spans {
 
     @Data
     public static class MentionChipSpan extends BetterImageSpan {
-        String id;
-        CharSequence label;
+        public String id;
+        public CharSequence label;
 
         public MentionChipSpan(@NonNull Drawable drawable, int verticalAlignment, String id, CharSequence label) {
             super(drawable, verticalAlignment);

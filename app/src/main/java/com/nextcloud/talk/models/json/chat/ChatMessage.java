@@ -56,26 +56,26 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
             MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
             MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
     @JsonField(name = "id")
-    int jsonMessageId;
+    public int jsonMessageId;
     @JsonField(name = "token")
-    String token;
+    public String token;
     // guests or users
     @JsonField(name = "actorType")
-    String actorType;
+    public String actorType;
     @JsonField(name = "actorId")
-    String actorId;
+    public String actorId;
     // send when crafting a message
     @JsonField(name = "actorDisplayName")
-    String actorDisplayName;
+    public String actorDisplayName;
     @JsonField(name = "timestamp")
-    long timestamp;
+    public long timestamp;
     // send when crafting a message, max 1000 lines
     @JsonField(name = "message")
-    String message;
+    public String message;
     @JsonField(name = "messageParameters")
-    HashMap<String, HashMap<String, String>> messageParameters;
+    public HashMap<String, HashMap<String, String>> messageParameters;
     @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
-    SystemMessageType systemMessageType;
+    public SystemMessageType systemMessageType;
 
     private boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {
