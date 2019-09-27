@@ -616,7 +616,11 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     override fun getTitle(): String? {
-        return EmojiCompat.get().process(currentConversation!!.displayName).toString()
+        if (currentConversation != null) {
+            return EmojiCompat.get().process(currentConversation!!.displayName).toString()
+        } else {
+            return ""
+        }
     }
 
     public override fun onDestroy() {
