@@ -203,7 +203,7 @@
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Naciśnij i mów</string>
-    <string name="nc_push_to_talk_desc">Gdy mikrofon jest wyłączony, kliknij&amp;i przytrzymaj, aby użyć funkcji \"Naciśnij i mów\"</string>
+    <string name="nc_push_to_talk_desc">Gdy mikrofon jest wyłączony, kliknij i przytrzymaj, aby użyć funkcji \"Naciśnij i mów\"</string>
     <string name="nc_configure_cert_auth">Wybierz certyfikat uwierzytelnienia</string>
     <string name="nc_change_cert_auth">Zmień certyfikat uwierzytelnienia</string>
 
