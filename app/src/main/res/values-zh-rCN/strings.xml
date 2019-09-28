@@ -204,6 +204,9 @@
     <string name="nc_configure_cert_auth">选择验证证书</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">取消主持人资格</string>
+    <string name="nc_promote">提升为主持人</string>
     <string name="nc_remove_participant">远程参与者</string>
 
     <!-- Chat -->

@@ -67,6 +67,7 @@
     <string name="nc_settings_remove_confirmation">Potvrďte, že chcete odebrat stávající účet.</string>
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
+    <string name="nc_add">Přidat</string>
     <string name="nc_settings_wrong_account">Reautorizován může být pouze aktuální účet</string>
     <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
     <string name="nc_settings_account_updated">Váš už existující účet byl aktualizován, namísto přidání nového</string>
@@ -81,6 +82,7 @@
     <string name="nc_settings_theme_title">Motiv vzhledu</string>
     <string name="nc_settings_theme_key">motiv vzhledu</string>
     <string name="nc_settings_theme_follow_system">Použít systémový výchozí</string>
+    <string name="nc_settings_theme_battery_saver">Nastaveno úsporou akumulátoru</string>
     <string name="nc_settings_theme_light">Světlý</string>
     <string name="nc_settings_theme_dark">Tmavý</string>
     <string name="nc_settings_privacy">Soukromí</string>
@@ -178,6 +180,8 @@
     <string name="nc_notify_me_mention">Upozornit při zmínění</string>
     <string name="nc_notify_me_never">Nikdy neoznamovat</string>
     <string name="nc_mute_calls">Ztišit hovory</string>
+    <string name="nc_mute_calls_desc">Příchozí hovory budou umlčeny</string>
+    <string name="nc_important_conversation">Důležitá konverzace</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
     <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování veřejných konverzací prostřednictvím mobilních
@@ -197,6 +201,11 @@
     <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte &amp; držte pro použití vysílačky</string>
     <string name="nc_configure_cert_auth">Vyberte ověřovací certifikát</string>
     <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování totožnosti</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Odebrat oprávnění moderátora</string>
+    <string name="nc_promote">Povýšit na moderátora</string>
+    <string name="nc_remove_participant">Odebrat účastníka</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Zadejte zprávu…</string>
@@ -256,4 +265,5 @@
     <string name="nc_file_browser_refresh">Načíst znovu</string>
     <string name="nc_last_modified">%1$s | Naposledy upraveno: %2$s</string>
 
+    <string name="nc_start_time">Čas zahájení</string>
     </resources>
