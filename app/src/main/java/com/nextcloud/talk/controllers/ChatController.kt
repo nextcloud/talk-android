@@ -229,7 +229,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
                         override fun onNext(roomOverall: RoomOverall) {
                             currentConversation = roomOverall.ocs.data
-
                             loadAvatarForStatusBar()
 
                             setTitle()
@@ -904,8 +903,8 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         fieldMap["includeLastKnown"] = 0
 
         var timeout = 30
-        if (lookIntoFuture == 0 || !lookingIntoFuture) {
-            timeout = 0
+        if (!lookingIntoFuture) {
+            timeout = 0;
         }
 
         fieldMap["timeout"] = timeout
@@ -917,8 +916,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 globalLastKnownFutureMessageId = currentConversation!!.lastReadMessage
                 globalLastKnownPastMessageId = currentConversation!!.lastReadMessage
                 fieldMap["includeLastKnown"] = 1
-            } else {
-                return;
             }
         }
 
@@ -938,9 +935,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         if (!wasDetached) {
             if (lookIntoFuture > 0) {
                 val finalTimeout = timeout
-                ncApi?.pullChatMessages(credentials, ApiUtils.getUrlForChat(conversationUser?.baseUrl,
-                        roomToken),
-                        fieldMap)
+                ncApi?.pullChatMessages(credentials, ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap)
                         ?.subscribeOn(Schedulers.io())
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.takeWhile { observable -> inConversation && !wasDetached }
@@ -950,7 +945,11 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                             }
 
                             override fun onNext(response: Response<*>) {
-                                processMessages(response, true, finalTimeout)
+                                if (response.code() == 304) {
+                                    pullChatMessages(1)
+                                } else {
+                                    processMessages(response, true, finalTimeout)
+                                }
                             }
 
                             override fun onError(e: Throwable) {
