@@ -136,41 +136,41 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     lateinit var lobbyView: RelativeLayout
     @BindView(R.id.lobby_text_view)
     lateinit var conversationLobbyText: TextView
-    private val disposableList = ArrayList<Disposable>()
-    private var roomToken: String? = null
-    private val conversationUser: UserEntity?
-    private val roomPassword: String
-    private var credentials: String? = null
-    private var currentConversation: Conversation? = null
-    private var inConversation = false
-    private var historyRead = false
-    private var globalLastKnownFutureMessageId = -1
-    private var globalLastKnownPastMessageId = -1
-    private var adapter: MessagesListAdapter<ChatMessage>? = null
-    private var mentionAutocomplete: Autocomplete<*>? = null
-    private var layoutManager: LinearLayoutManager? = null
-    private var lookingIntoFuture = false
-    private var newMessagesCount = 0
-    private var startCallFromNotification: Boolean? = null
-    private val roomId: String
-    private val voiceOnly: Boolean
-    private var isFirstMessagesProcessing = true
-    private var isLeavingForConversation: Boolean = false
-    private var isLinkPreviewAllowed: Boolean = false
-    private var wasDetached: Boolean = false
-    private var emojiPopup: EmojiPopup? = null
+    val disposableList = ArrayList<Disposable>()
+    var roomToken: String? = null
+    val conversationUser: UserEntity?
+    val roomPassword: String
+    var credentials: String? = null
+    var currentConversation: Conversation? = null
+    var inConversation = false
+    var historyRead = false
+    var globalLastKnownFutureMessageId = -1
+    var globalLastKnownPastMessageId = -1
+    var adapter: MessagesListAdapter<ChatMessage>? = null
+    var mentionAutocomplete: Autocomplete<*>? = null
+    var layoutManager: LinearLayoutManager? = null
+    var lookingIntoFuture = false
+    var newMessagesCount = 0
+    var startCallFromNotification: Boolean? = null
+    val roomId: String
+    val voiceOnly: Boolean
+    var isFirstMessagesProcessing = true
+    var isLeavingForConversation: Boolean = false
+    var isLinkPreviewAllowed: Boolean = false
+    var wasDetached: Boolean = false
+    var emojiPopup: EmojiPopup? = null
 
-    private var myFirstMessage: CharSequence? = null
-    private var checkingLobbyStatus: Boolean = false
+    var myFirstMessage: CharSequence? = null
+    var checkingLobbyStatus: Boolean = false
 
-    private var conversationInfoMenuItem: MenuItem? = null
-    private var conversationVoiceCallMenuItem: MenuItem? = null
-    private var conversationVideoMenuItem: MenuItem? = null
+    var conversationInfoMenuItem: MenuItem? = null
+    var conversationVoiceCallMenuItem: MenuItem? = null
+    var conversationVideoMenuItem: MenuItem? = null
 
-    private var magicWebSocketInstance: MagicWebSocketInstance? = null
+    var magicWebSocketInstance: MagicWebSocketInstance? = null
 
-    private var lobbyTimerHandler: Handler? = null
-    private val roomJoined: Boolean = false
+    var lobbyTimerHandler: Handler? = null
+    val roomJoined: Boolean = false
 
     init {
         setHasOptionsMenu(true)
@@ -691,8 +691,8 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
                         override fun onNext(roomOverall: RoomOverall) {
                             inConversation = true
-                            currentConversation = roomOverall.ocs.data
-                            setTitle()
+                            currentConversation!!.sessionId = roomOverall.ocs.data.sessionId
+
                             ApplicationWideCurrentRoomHolder.getInstance().session =
                                     currentConversation!!.sessionId
                             startPing()
