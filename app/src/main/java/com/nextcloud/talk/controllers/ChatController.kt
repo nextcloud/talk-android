@@ -111,31 +111,44 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 .OnMessageLongClickListener<IMessage>, MessageHolders.ContentChecker<IMessage> {
 
     @Inject
-    lateinit var ncApi: NcApi
+    @JvmField
+    var ncApi: NcApi? = null
     @Inject
-    lateinit var userUtils: UserUtils
+    @JvmField
+    var userUtils: UserUtils? = null
     @Inject
-    lateinit var appPreferences: AppPreferences
+    @JvmField
+    var appPreferences: AppPreferences? = null
     @Inject
-    lateinit var context: Context
+    @JvmField
+    var context: Context? = null
     @Inject
-    lateinit var eventBus: EventBus
+    @JvmField
+    var eventBus: EventBus? = null
     @BindView(R.id.messagesListView)
-    lateinit var messagesListView: MessagesList
+    @JvmField
+    var messagesListView: MessagesList? = null
     @BindView(R.id.messageInputView)
-    lateinit var messageInputView: MessageInput
+    @JvmField
+    var messageInputView: MessageInput? = null
     @BindView(R.id.messageInput)
-    lateinit var messageInput: EmojiEditText
+    @JvmField
+    var messageInput: EmojiEditText? = null
     @BindView(R.id.popupBubbleView)
-    lateinit var popupBubble: PopupBubble
+    @JvmField
+    var popupBubble: PopupBubble? = null
     @BindView(R.id.progressBar)
-    lateinit var loadingProgressBar: ProgressBar
+    @JvmField
+    var loadingProgressBar: ProgressBar? = null
     @BindView(R.id.smileyButton)
-    lateinit var smileyButton: ImageButton
+    @JvmField
+    var smileyButton: ImageButton? = null
     @BindView(R.id.lobby_view)
-    lateinit var lobbyView: RelativeLayout
+    @JvmField
+    var lobbyView: RelativeLayout? = null
     @BindView(R.id.lobby_text_view)
-    lateinit var conversationLobbyText: TextView
+    @JvmField
+    var conversationLobbyText: TextView? = null
     val disposableList = ArrayList<Disposable>()
     var roomToken: String? = null
     val conversationUser: UserEntity?
@@ -186,7 +199,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
         this.roomPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
 
-        if (conversationUser!!.userId == "?") {
+        if (conversationUser?.userId == "?") {
             credentials = null
         } else {
             credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
@@ -200,56 +213,56 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun getRoomInfo() {
-        val shouldRepeat = conversationUser!!.hasSpreedFeatureCapability("webinary-lobby")
+        val shouldRepeat = conversationUser?.hasSpreedFeatureCapability("webinary-lobby") ?: false
         if (shouldRepeat) {
             checkingLobbyStatus = true
         }
 
-        ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser.baseUrl, roomToken))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<RoomOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        disposableList.add(d)
-                    }
 
-                    override fun onNext(roomOverall: RoomOverall) {
-                        currentConversation = roomOverall.ocs.data
-
-                        loadAvatarForStatusBar()
-
-                        setTitle()
-                        setupMentionAutocomplete()
-                        checkReadOnlyState()
-                        checkLobbyState()
-
-                        if (!inConversation) {
-                            joinRoomWithPassword()
+        if (conversationUser != null) {
+            ncApi?.getRoom(credentials, ApiUtils.getRoom(conversationUser.baseUrl, roomToken))?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(object : Observer<RoomOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                            disposableList.add(d)
                         }
 
-                    }
+                        override fun onNext(roomOverall: RoomOverall) {
+                            currentConversation = roomOverall.ocs.data
 
-                    override fun onError(e: Throwable) {
+                            loadAvatarForStatusBar()
 
-                    }
+                            setTitle()
+                            setupMentionAutocomplete()
+                            checkReadOnlyState()
+                            checkLobbyState()
 
-                    override fun onComplete() {
-                        if (shouldRepeat) {
-                            if (lobbyTimerHandler == null) {
-                                lobbyTimerHandler = Handler()
+                            if (!inConversation) {
+                                joinRoomWithPassword()
                             }
 
-                            lobbyTimerHandler!!.postDelayed({ getRoomInfo() }, 5000)
                         }
-                    }
-                })
+
+                        override fun onError(e: Throwable) {
+
+                        }
+
+                        override fun onComplete() {
+                            if (shouldRepeat) {
+                                if (lobbyTimerHandler == null) {
+                                    lobbyTimerHandler = Handler()
+                                }
+
+                                lobbyTimerHandler?.postDelayed({ getRoomInfo() }, 5000)
+                            }
+                        }
+                    })
+        }
     }
 
     private fun handleFromNotification() {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(conversationUser!!.baseUrl))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<RoomsOverall> {
+        ncApi?.getRooms(credentials, ApiUtils.getUrlForGetRooms(conversationUser?.baseUrl))
+                ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe(object : Observer<RoomsOverall> {
                     override fun onSubscribe(d: Disposable) {
                         disposableList.add(d)
                     }
@@ -281,13 +294,14 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun loadAvatarForStatusBar() {
-        if (currentConversation != null && currentConversation!!.type != null &&
-                currentConversation!!.type == Conversation.ConversationType
+        if (currentConversation != null && currentConversation?.type != null &&
+                currentConversation?.type == Conversation.ConversationType
                         .ROOM_TYPE_ONE_TO_ONE_CALL && activity != null && conversationVoiceCallMenuItem != null) {
-            val avatarSize = DisplayUtils.convertDpToPixel(conversationVoiceCallMenuItem!!.icon.intrinsicWidth.toFloat(), activity!!).toInt()
+            val avatarSize = DisplayUtils.convertDpToPixel(conversationVoiceCallMenuItem?.icon!!
+                    .intrinsicWidth.toFloat(), activity).toInt()
 
-            val imageRequest = DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(conversationUser!!.baseUrl,
-                    currentConversation!!.name, avatarSize / 2), null)
+            val imageRequest = DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(conversationUser?.baseUrl,
+                    currentConversation?.name, avatarSize / 2), null)
 
             val imagePipeline = Fresco.getImagePipeline()
             val dataSource = imagePipeline.fetchDecodedImage(imageRequest, null)
@@ -298,7 +312,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources!!, bitmap)
                         roundedBitmapDrawable.isCircular = true
                         roundedBitmapDrawable.setAntiAlias(true)
-                        actionBar!!.setIcon(roundedBitmapDrawable)
+                        actionBar?.setIcon(roundedBitmapDrawable)
                     }
                 }
 
@@ -310,11 +324,11 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     override fun onViewBound(view: View) {
         super.onViewBound(view)
 
-        actionBar!!.show()
+        actionBar?.show()
         var adapterWasNull = false
 
         if (adapter == null) {
-            loadingProgressBar!!.visibility = View.VISIBLE
+            loadingProgressBar?.visibility = View.VISIBLE
 
             adapterWasNull = true
 
@@ -333,7 +347,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     MagicUnreadNoticeMessageViewHolder::class.java, R.layout.item_date_header,
                     MagicUnreadNoticeMessageViewHolder::class.java, R.layout.item_date_header, this)
 
-            adapter = MessagesListAdapter(conversationUser!!.userId, messageHolders, ImageLoader { imageView, url, payload ->
+            adapter = MessagesListAdapter(conversationUser?.userId, messageHolders, ImageLoader { imageView, url, payload ->
                 val draweeController = Fresco.newDraweeControllerBuilder()
                         .setImageRequest(DisplayUtils.getImageRequestForUrl(url, conversationUser))
                         .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
@@ -343,19 +357,19 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 imageView.controller = draweeController
             })
         } else {
-            messagesListView.visibility = View.VISIBLE
+            messagesListView?.visibility = View.VISIBLE
         }
 
-        messagesListView.setAdapter(adapter)
-        adapter!!.setLoadMoreListener(this)
-        adapter!!.setDateHeadersFormatter { format(it) }
-        adapter!!.setOnMessageLongClickListener { onMessageLongClick(it) }
+        messagesListView?.setAdapter(adapter)
+        adapter?.setLoadMoreListener(this)
+        adapter?.setDateHeadersFormatter { format(it) }
+        adapter?.setOnMessageLongClickListener { onMessageLongClick(it) }
 
-        layoutManager = messagesListView.layoutManager as LinearLayoutManager?
+        layoutManager = messagesListView?.layoutManager as LinearLayoutManager?
 
-        popupBubble.setRecyclerView(messagesListView)
+        popupBubble?.setRecyclerView(messagesListView)
 
-        popupBubble.setPopupBubbleListener { context ->
+        popupBubble?.setPopupBubbleListener { context ->
             if (newMessagesCount != 0) {
                 val scrollPosition: Int
                 if (newMessagesCount - 1 < 0) {
@@ -363,21 +377,22 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 } else {
                     scrollPosition = newMessagesCount - 1
                 }
-                Handler().postDelayed({ messagesListView.smoothScrollToPosition(scrollPosition) }, 200)
+                Handler().postDelayed({ messagesListView?.smoothScrollToPosition(scrollPosition) }, 200)
             }
         }
 
-        messagesListView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        messagesListView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if (newMessagesCount != 0) {
-                        if (layoutManager!!.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
+                    if (newMessagesCount != 0 && layoutManager != null) {
+                        if (layoutManager!!.findFirstCompletelyVisibleItemPosition() <
+                                newMessagesCount) {
                             newMessagesCount = 0
 
-                            if (popupBubble.isShown) {
-                                popupBubble.hide()
+                            if (popupBubble != null && popupBubble!!.isShown) {
+                                popupBubble?.hide()
                             }
                         }
                     }
@@ -387,34 +402,37 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
 
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = conversationUser!!.messageMaxLength
+        val lengthFilter = conversationUser?.messageMaxLength ?: 1000
 
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
-        messageInput.filters = filters
+        messageInput?.filters = filters
 
-        messageInput.addTextChangedListener(object : TextWatcher {
+        messageInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.length >= lengthFilter) {
-                    messageInput.error = String.format(Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit), Integer.toString(lengthFilter))
+                    messageInput?.error = String.format(Objects.requireNonNull<Resources>
+                    (resources).getString(R.string.nc_limit_hit), Integer.toString(lengthFilter))
                 } else {
-                    messageInput.error = null
+                    messageInput?.error = null
                 }
 
-                val editable = messageInput.editableText
-                val mentionSpans = editable.getSpans(0, messageInput.length(),
-                        Spans.MentionChipSpan::class.java)
-                var mentionSpan: Spans.MentionChipSpan
-                for (i in mentionSpans.indices) {
-                    mentionSpan = mentionSpans[i]
-                    if (start >= editable.getSpanStart(mentionSpan) && start < editable.getSpanEnd(mentionSpan)) {
-                        if (editable.subSequence(editable.getSpanStart(mentionSpan),
-                                        editable.getSpanEnd(mentionSpan)).toString().trim { it <= ' ' } != mentionSpan.label) {
-                            editable.removeSpan(mentionSpan)
+                val editable = messageInput?.editableText
+                if (editable != null && messageInput != null) {
+                    val mentionSpans = editable.getSpans(0, messageInput!!.length(),
+                            Spans.MentionChipSpan::class.java)
+                    var mentionSpan: Spans.MentionChipSpan
+                    for (i in mentionSpans.indices) {
+                        mentionSpan = mentionSpans[i]
+                        if (start >= editable.getSpanStart(mentionSpan) && start < editable.getSpanEnd(mentionSpan)) {
+                            if (editable.subSequence(editable.getSpanStart(mentionSpan),
+                                            editable.getSpanEnd(mentionSpan)).toString().trim { it <= ' ' } != mentionSpan.label) {
+                                editable.removeSpan(mentionSpan)
+                            }
                         }
                     }
                 }
@@ -425,13 +443,17 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             }
         })
 
-        messageInputView.setAttachmentsListener { showBrowserScreen(BrowserController.BrowserType.DAV_BROWSER) }
+        messageInputView?.setAttachmentsListener {
+            showBrowserScreen(BrowserController
+                    .BrowserType.DAV_BROWSER)
+        }
 
-        messageInputView.button.setOnClickListener { v -> submitMessage() }
-        messageInputView.button.contentDescription = resources!!
-                .getString(R.string.nc_description_send_message_button)
+        messageInputView?.button?.setOnClickListener { v -> submitMessage() }
 
-        if (currentConversation != null && currentConversation!!.roomId != null) {
+        messageInputView?.button?.contentDescription = resources?.getString(R.string
+                .nc_description_send_message_button)
+
+        if (currentConversation != null && currentConversation?.roomId != null) {
             loadAvatarForStatusBar()
             checkLobbyState()
             setTitle()
@@ -450,62 +472,60 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     private fun checkReadOnlyState() {
         if (currentConversation != null) {
-            if (currentConversation!!.shouldShowLobby(conversationUser) || currentConversation!!
-                            .conversationReadOnlyState != null && currentConversation!!.conversationReadOnlyState
-                    == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY) {
+            if (currentConversation?.shouldShowLobby(conversationUser)?: false || currentConversation?.conversationReadOnlyState != null && currentConversation?.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY) {
 
-                conversationVoiceCallMenuItem!!.icon.alpha = 99
-                conversationVideoMenuItem!!.icon.alpha = 99
-                messageInputView.visibility = View.GONE
+                conversationVoiceCallMenuItem?.icon?.alpha = 99
+                conversationVideoMenuItem?.icon?.alpha = 99
+                messageInputView?.visibility = View.GONE
 
             } else {
                 if (conversationVoiceCallMenuItem != null) {
-                    conversationVoiceCallMenuItem!!.icon.alpha = 255
+                    conversationVoiceCallMenuItem?.icon?.alpha = 255
                 }
 
                 if (conversationVideoMenuItem != null) {
-                    conversationVideoMenuItem!!.icon.alpha = 255
+                    conversationVideoMenuItem?.icon?.alpha = 255
                 }
 
-                if (currentConversation!!.shouldShowLobby(conversationUser)) {
-                    messageInputView.visibility = View.GONE
+                if (currentConversation != null && currentConversation!!.shouldShowLobby
+                        (conversationUser)) {
+                    messageInputView?.visibility = View.GONE
                 } else {
-                    messageInputView.visibility = View.VISIBLE
+                    messageInputView?.visibility = View.VISIBLE
                 }
             }
         }
     }
 
     private fun checkLobbyState() {
-        if (currentConversation != null && currentConversation!!.isLobbyViewApplicable(conversationUser)) {
+        if (currentConversation != null && currentConversation?.isLobbyViewApplicable(conversationUser) ?: false) {
 
             if (!checkingLobbyStatus) {
                 getRoomInfo()
             }
 
-            if (currentConversation!!.shouldShowLobby(conversationUser)) {
-                lobbyView.visibility = View.VISIBLE
-                messagesListView.visibility = View.GONE
-                messageInputView.visibility = View.GONE
-                loadingProgressBar.visibility = View.GONE
+            if (currentConversation?.shouldShowLobby(conversationUser) ?: false) {
+                lobbyView?.visibility = View.VISIBLE
+                messagesListView?.visibility = View.GONE
+                messageInputView?.visibility = View.GONE
+                loadingProgressBar?.visibility = View.GONE
 
-                if (currentConversation!!.lobbyTimer != null && currentConversation!!.lobbyTimer !=
+                if (currentConversation?.lobbyTimer != null && currentConversation?.lobbyTimer !=
                         0L) {
-                    conversationLobbyText.text = String.format(resources!!.getString(R.string
-                            .nc_lobby_waiting_with_date), DateUtils
-                            .getLocalDateStringFromTimestampForLobby(currentConversation!!.lobbyTimer!!))
+                    conversationLobbyText?.text = String.format(resources!!.getString(R.string.nc_lobby_waiting_with_date), DateUtils.getLocalDateStringFromTimestampForLobby(currentConversation?.lobbyTimer
+                            ?: 0))
                 } else {
-                    conversationLobbyText.setText(R.string.nc_lobby_waiting)
+                    conversationLobbyText?.setText(R.string.nc_lobby_waiting)
                 }
             } else {
-                lobbyView.visibility = View.GONE
-                messagesListView.visibility = View.VISIBLE
-                messageInput.visibility = View.VISIBLE
+                lobbyView?.visibility = View.GONE
+                messagesListView?.visibility = View.VISIBLE
+                messageInput?.visibility = View.VISIBLE
             }
         } else {
-            lobbyView.visibility = View.GONE
-            messagesListView.visibility = View.VISIBLE
-            messageInput.visibility = View.VISIBLE
+            lobbyView?.visibility = View.GONE
+            messagesListView?.visibility = View.VISIBLE
+            messageInput?.visibility = View.VISIBLE
         }
     }
 
@@ -548,10 +568,12 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        eventBus!!.register(this)
+        eventBus?.register(this)
 
-        if (conversationUser!!.userId != "?" && conversationUser.hasSpreedFeatureCapability("mention-flag") && activity != null) {
-            activity!!.findViewById<View>(R.id.toolbar).setOnClickListener { v -> showConversationInfoScreen() }
+        if (conversationUser?.userId != "?" && conversationUser?.hasSpreedFeatureCapability("mention-flag") ?: false && activity != null) {
+            activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v ->
+                showConversationInfoScreen()
+            }
         }
 
         isLeavingForConversation = false
@@ -560,27 +582,28 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         ApplicationWideCurrentRoomHolder.getInstance().isInCall = false
         ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
-        isLinkPreviewAllowed = appPreferences.areLinkPreviewsAllowed
+        isLinkPreviewAllowed = appPreferences?.areLinkPreviewsAllowed ?: false
 
-        emojiPopup = EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener {
+        emojiPopup = messageInput?.let {
+            EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener {
             if (resources != null) {
-                smileyButton.setColorFilter(resources!!.getColor(R.color.colorPrimary),
-                        PorterDuff.Mode.SRC_IN)
+                smileyButton?.setColorFilter(resources!!.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
             }
         }.setOnEmojiPopupDismissListener {
-            smileyButton.setColorFilter(resources!!.getColor(R.color.emoji_icons),
+            smileyButton?.setColorFilter(resources!!.getColor(R.color.emoji_icons),
                     PorterDuff.Mode.SRC_IN)
-        }.setOnEmojiClickListener { emoji, imageView -> messageInput.editableText.append(" ") }.build(messageInput)
+        }.setOnEmojiClickListener { emoji, imageView -> messageInput?.editableText?.append(" ") }.build(it)
+        }
 
         if (activity != null) {
-            KeyboardUtils(activity!!, getView(), false)
+            KeyboardUtils(activity, getView(), false)
         }
 
         cancelNotificationsForCurrentConversation()
 
         if (inConversation) {
-            if (wasDetached && conversationUser.hasSpreedFeatureCapability("no-ping")) {
-                currentConversation!!.sessionId = "0"
+            if (wasDetached && conversationUser?.hasSpreedFeatureCapability("no-ping") ?: false) {
+                currentConversation?.sessionId = "0"
                 wasDetached = false
                 joinRoomWithPassword()
             }
@@ -588,35 +611,39 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun cancelNotificationsForCurrentConversation() {
-        if (!conversationUser!!.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
-            NotificationUtils.cancelExistingNotificationsForRoom(applicationContext, conversationUser, roomId)
-        } else if (!TextUtils.isEmpty(roomToken)) {
-            NotificationUtils.cancelExistingNotificationsForRoom(applicationContext, conversationUser, roomToken!!)
+        if (conversationUser != null) {
+            if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
+                NotificationUtils.cancelExistingNotificationsForRoom(applicationContext,
+                        conversationUser, roomId)
+            } else if (!TextUtils.isEmpty(roomToken)) {
+                NotificationUtils.cancelExistingNotificationsForRoom(applicationContext,
+                        conversationUser, roomToken!!)
+            }
         }
     }
 
     override fun onDetach(view: View) {
         super.onDetach(view)
         ApplicationWideCurrentRoomHolder.getInstance().clear()
-        eventBus.unregister(this)
+        eventBus?.unregister(this)
 
         if (activity != null) {
-            activity!!.findViewById<View>(R.id.toolbar).setOnClickListener(null)
+            activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
         }
 
-        if (conversationUser!!.hasSpreedFeatureCapability("no-ping")
-                && activity != null && !activity!!.isChangingConfigurations && !isLeavingForConversation) {
+        if (conversationUser != null && conversationUser?.hasSpreedFeatureCapability("no-ping")
+                && activity != null && !activity?.isChangingConfigurations!! && !isLeavingForConversation) {
             wasDetached = true
             leaveRoom()
         }
 
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
-            mentionAutocomplete!!.dismissPopup()
+            mentionAutocomplete?.dismissPopup()
         }
     }
 
     override fun getTitle(): String? {
-        if (currentConversation != null && currentConversation!!.displayName != null) {
+        if (currentConversation != null && currentConversation?.displayName != null) {
             return EmojiCompat.get().process(currentConversation!!.displayName).toString()
         } else {
             return ""
@@ -627,11 +654,11 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         super.onDestroy()
 
         if (activity != null) {
-            activity!!.findViewById<View>(R.id.toolbar).setOnClickListener(null)
+            activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
         }
 
         if (actionBar != null) {
-            actionBar!!.setIcon(null)
+            actionBar?.setIcon(null)
         }
 
         adapter = null
@@ -647,14 +674,15 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun startPing() {
-        if (!conversationUser!!.hasSpreedFeatureCapability("no-ping")) {
-            ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(conversationUser.baseUrl, roomToken))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .repeatWhen { observable -> observable.delay(5000, TimeUnit.MILLISECONDS) }
-                    .takeWhile { observable -> inConversation }
-                    .retry(3) { observable -> inConversation }
-                    .subscribe(object : Observer<GenericOverall> {
+        if (conversationUser != null && !conversationUser.hasSpreedFeatureCapability("no-ping")) {
+            ncApi?.pingCall(credentials, ApiUtils.getUrlForCallPing(conversationUser.baseUrl,
+                    roomToken))
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.repeatWhen { observable -> observable.delay(5000, TimeUnit.MILLISECONDS) }
+                    ?.takeWhile { observable -> inConversation }
+                    ?.retry(3) { observable -> inConversation }
+                    ?.subscribe(object : Observer<GenericOverall> {
                         override fun onSubscribe(d: Disposable) {
                             disposableList.add(d)
                         }
@@ -672,29 +700,29 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     @OnClick(R.id.smileyButton)
     internal fun onSmileyClick() {
-        emojiPopup!!.toggle()
+        emojiPopup?.toggle()
     }
 
     private fun joinRoomWithPassword() {
 
-        if (currentConversation == null || TextUtils.isEmpty(currentConversation!!.sessionId) ||
-                currentConversation!!.sessionId == "0") {
-            ncApi.joinRoom(credentials,
-                    ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser!!.baseUrl, roomToken), roomPassword)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .retry(3)
-                    .subscribe(object : Observer<RoomOverall> {
+        if (currentConversation == null || TextUtils.isEmpty(currentConversation?.sessionId) ||
+                currentConversation?.sessionId == "0") {
+            ncApi?.joinRoom(credentials,
+                    ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl, roomToken), roomPassword)
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.retry(3)
+                    ?.subscribe(object : Observer<RoomOverall> {
                         override fun onSubscribe(d: Disposable) {
                             disposableList.add(d)
                         }
 
                         override fun onNext(roomOverall: RoomOverall) {
                             inConversation = true
-                            currentConversation!!.sessionId = roomOverall.ocs.data.sessionId
+                            currentConversation?.sessionId = roomOverall.ocs.data.sessionId
 
                             ApplicationWideCurrentRoomHolder.getInstance().session =
-                                    currentConversation!!.sessionId
+                                    currentConversation?.sessionId
                             startPing()
 
                             setupWebsocket()
@@ -707,9 +735,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                             }
 
                             if (magicWebSocketInstance != null) {
-                                magicWebSocketInstance!!.joinRoomWithRoomTokenAndSession(roomToken, currentConversation!!.sessionId)
+                                magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(roomToken, currentConversation?.sessionId)
                             }
-                            if (startCallFromNotification != null && startCallFromNotification!!) {
+                            if (startCallFromNotification != null && startCallFromNotification ?: false) {
                                 startCallFromNotification = false
                                 startACall(voiceOnly)
                             }
@@ -725,10 +753,10 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     })
         } else {
             inConversation = true
-            ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation!!.sessionId
+            ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation?.sessionId
             if (magicWebSocketInstance != null) {
-                magicWebSocketInstance!!.joinRoomWithRoomTokenAndSession(roomToken,
-                        currentConversation!!.sessionId)
+                magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(roomToken,
+                        currentConversation?.sessionId)
             }
             startPing()
             if (isFirstMessagesProcessing) {
@@ -740,12 +768,12 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun leaveRoom() {
-        ncApi.leaveRoom(credentials,
-                ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser!!.baseUrl,
+        ncApi?.leaveRoom(credentials,
+                ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl,
                         roomToken))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<GenericOverall> {
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<GenericOverall> {
                     override fun onSubscribe(d: Disposable) {
                         disposableList.add(d)
                     }
@@ -754,12 +782,12 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         checkingLobbyStatus = false
 
                         if (lobbyTimerHandler != null) {
-                            lobbyTimerHandler!!.removeCallbacksAndMessages(null)
+                            lobbyTimerHandler?.removeCallbacksAndMessages(null)
                         }
 
                         if (magicWebSocketInstance != null && currentConversation != null) {
-                            magicWebSocketInstance!!.joinRoomWithRoomTokenAndSession("",
-                                    currentConversation!!.sessionId)
+                            magicWebSocketInstance?.joinRoomWithRoomTokenAndSession("",
+                                    currentConversation?.sessionId)
                         }
 
                         if (!isDestroyed && !isBeingDestroyed && !wasDetached) {
@@ -777,9 +805,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     private fun setSenderId() {
         try {
-            val senderId = adapter!!.javaClass.getDeclaredField("senderId")
-            senderId.isAccessible = true
-            senderId.set(adapter, conversationUser!!.userId)
+            val senderId = adapter?.javaClass?.getDeclaredField("senderId")
+            senderId?.isAccessible = true
+            senderId?.set(adapter, conversationUser?.userId)
         } catch (e: NoSuchFieldException) {
             Log.w(TAG, "Failed to set sender id")
         } catch (e: IllegalAccessException) {
@@ -789,70 +817,77 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun submitMessage() {
-        val editable = messageInput.editableText
-        val mentionSpans = editable.getSpans(0, editable.length,
-                Spans.MentionChipSpan::class.java)
-        var mentionSpan: Spans.MentionChipSpan
-        for (i in mentionSpans.indices) {
-            mentionSpan = mentionSpans[i]
-            var mentionId = mentionSpan.id
-            if (mentionId.contains(" ") || mentionId.startsWith("guest/")) {
-                mentionId = "\"" + mentionId + "\""
+        if (messageInput != null) {
+            val editable = messageInput!!.editableText
+            val mentionSpans = editable.getSpans(0, editable.length,
+                    Spans.MentionChipSpan::class.java)
+            var mentionSpan: Spans.MentionChipSpan
+            for (i in mentionSpans.indices) {
+                mentionSpan = mentionSpans[i]
+                var mentionId = mentionSpan.id
+                if (mentionId.contains(" ") || mentionId.startsWith("guest/")) {
+                    mentionId = "\"" + mentionId + "\""
+                }
+                editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@$mentionId")
             }
-            editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@$mentionId")
-        }
 
-        messageInput.setText("")
-        sendMessage(editable)
+            messageInput?.setText("")
+            sendMessage(editable)
+        }
     }
 
     private fun sendMessage(message: CharSequence) {
 
-        ncApi.sendChatMessage(credentials, ApiUtils.getUrlForChat(conversationUser!!.baseUrl, roomToken),
-                message, conversationUser.displayName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
+        if (conversationUser != null) {
+            ncApi?.sendChatMessage(credentials, ApiUtils.getUrlForChat(conversationUser?.baseUrl,
+                    roomToken),
+                    message, conversationUser.displayName)
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(object : Observer<GenericOverall> {
+                        override fun onSubscribe(d: Disposable) {
 
-                    }
-
-                    override fun onNext(genericOverall: GenericOverall) {
-                        myFirstMessage = message
-
-                        if (popupBubble.isShown) {
-                            popupBubble.hide()
                         }
 
-                        messagesListView.smoothScrollToPosition(0)
-                    }
+                        override fun onNext(genericOverall: GenericOverall) {
+                            myFirstMessage = message
 
-                    override fun onError(e: Throwable) {
-                        if (e is HttpException) {
-                            val code = e.code()
-                            if (Integer.toString(code).startsWith("2")) {
-                                myFirstMessage = message
+                            if (popupBubble?.isShown ?: false) {
+                                popupBubble?.hide()
+                            }
 
-                                if (popupBubble.isShown) {
-                                    popupBubble.hide()
+                            messagesListView?.smoothScrollToPosition(0)
+                        }
+
+                        override fun onError(e: Throwable) {
+                            if (e is HttpException) {
+                                val code = e.code()
+                                if (Integer.toString(code).startsWith("2")) {
+                                    myFirstMessage = message
+
+                                    if (popupBubble?.isShown ?: false) {
+                                        popupBubble?.hide()
+                                    }
+
+                                    messagesListView?.smoothScrollToPosition(0)
                                 }
-
-                                messagesListView.smoothScrollToPosition(0)
                             }
                         }
-                    }
 
-                    override fun onComplete() {
+                        override fun onComplete() {
 
-                    }
-                })
+                        }
+                    })
+        }
     }
 
     private fun setupWebsocket() {
-        if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser!!.id) != null) {
-            magicWebSocketInstance = WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id)
-        } else {
-            magicWebSocketInstance = null
+        if (conversationUser != null) {
+            if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id) != null) {
+                magicWebSocketInstance = WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id)
+            } else {
+                magicWebSocketInstance = null
+            }
         }
     }
 
@@ -861,7 +896,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             return
         }
 
-        if (currentConversation!!.shouldShowLobby(conversationUser)) {
+        if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser)) {
             return
         }
 
@@ -878,9 +913,13 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         if (lookIntoFuture > 0) {
             lookingIntoFuture = true
         } else if (isFirstMessagesProcessing) {
-            globalLastKnownFutureMessageId = currentConversation!!.lastReadMessage
-            globalLastKnownPastMessageId = currentConversation!!.lastReadMessage
-            fieldMap["includeLastKnown"] = 1
+            if (currentConversation != null) {
+                globalLastKnownFutureMessageId = currentConversation!!.lastReadMessage
+                globalLastKnownPastMessageId = currentConversation!!.lastReadMessage
+                fieldMap["includeLastKnown"] = 1
+            } else {
+                return;
+            }
         }
 
         fieldMap["lookIntoFuture"] = lookIntoFuture
@@ -899,13 +938,13 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         if (!wasDetached) {
             if (lookIntoFuture > 0) {
                 val finalTimeout = timeout
-                ncApi.pullChatMessages(credentials, ApiUtils.getUrlForChat(conversationUser!!.baseUrl,
+                ncApi?.pullChatMessages(credentials, ApiUtils.getUrlForChat(conversationUser?.baseUrl,
                         roomToken),
                         fieldMap)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .takeWhile { observable -> inConversation && !wasDetached }
-                        .subscribe(object : Observer<Response<*>> {
+                        ?.subscribeOn(Schedulers.io())
+                        ?.observeOn(AndroidSchedulers.mainThread())
+                        ?.takeWhile { observable -> inConversation && !wasDetached }
+                        ?.subscribe(object : Observer<Response<*>> {
                             override fun onSubscribe(d: Disposable) {
                                 disposableList.add(d)
                             }
@@ -924,13 +963,13 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         })
 
             } else {
-                ncApi.pullChatMessages(credentials,
-                        ApiUtils.getUrlForChat(conversationUser!!.baseUrl, roomToken), fieldMap)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .retry(3) { observable -> inConversation && !wasDetached }
-                        .takeWhile { observable -> inConversation && !wasDetached }
-                        .subscribe(object : Observer<Response<*>> {
+                ncApi?.pullChatMessages(credentials,
+                        ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap)
+                        ?.subscribeOn(Schedulers.io())
+                        ?.observeOn(AndroidSchedulers.mainThread())
+                        ?.retry(3) { observable -> inConversation && !wasDetached }
+                        ?.takeWhile { observable -> inConversation && !wasDetached }
+                        ?.subscribe(object : Observer<Response<*>> {
                             override fun onSubscribe(d: Disposable) {
                                 disposableList.add(d)
                             }
@@ -968,7 +1007,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         if (response.code() == 200) {
 
             val chatOverall = response.body() as ChatOverall?
-            val chatMessageList = chatOverall!!.ocs.data
+            val chatMessageList = chatOverall?.ocs!!.data
 
             val wasFirstMessageProcessing = isFirstMessagesProcessing
 
@@ -976,9 +1015,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 cancelNotificationsForCurrentConversation()
 
                 isFirstMessagesProcessing = false
-                loadingProgressBar.visibility = View.GONE
+                loadingProgressBar?.visibility = View.GONE
 
-                messagesListView.visibility = View.VISIBLE
+                messagesListView?.visibility = View.VISIBLE
 
             }
 
@@ -1000,7 +1039,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     }
 
                     val chatMessage = chatMessageList[i]
-                    chatMessage.isOneToOneConversation = currentConversation!!.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                    chatMessage.isOneToOneConversation = currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
                     chatMessage.isLinkPreviewAllowed = isLinkPreviewAllowed
                     chatMessage.activeUser = conversationUser
 
@@ -1011,25 +1050,25 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 }
 
                 if (adapter != null) {
-                    adapter!!.addToEnd(chatMessageList, false)
+                    adapter?.addToEnd(chatMessageList, false)
                 }
 
             } else {
 
                 var chatMessage: ChatMessage
 
-                val shouldAddNewMessagesNotice = timeout == 0 && adapter!!.itemCount > 0 && chatMessageList.size > 0
+                val shouldAddNewMessagesNotice = timeout == 0 && adapter?.itemCount ?: 0 > 0 && chatMessageList.size > 0
 
                 if (shouldAddNewMessagesNotice) {
                     val unreadChatMessage = ChatMessage()
                     unreadChatMessage.jsonMessageId = -1
                     unreadChatMessage.actorId = "-1"
                     unreadChatMessage.timestamp = chatMessageList[0].timestamp
-                    unreadChatMessage.message = context!!.getString(R.string.nc_new_messages)
-                    adapter!!.addToStart(unreadChatMessage, false)
+                    unreadChatMessage.message = context?.getString(R.string.nc_new_messages)
+                    adapter?.addToStart(unreadChatMessage, false)
                 }
 
-                val isThereANewNotice = shouldAddNewMessagesNotice || adapter!!.getMessagePositionByIdInReverse("-1") != -1
+                val isThereANewNotice = shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
 
                 for (i in chatMessageList.indices) {
                     chatMessage = chatMessageList[i]
@@ -1038,20 +1077,20 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     chatMessage.isLinkPreviewAllowed = isLinkPreviewAllowed
 
                     // if credentials are empty, we're acting as a guest
-                    if (TextUtils.isEmpty(credentials) && myFirstMessage != null && !TextUtils.isEmpty(myFirstMessage!!.toString())) {
+                    if (TextUtils.isEmpty(credentials) && myFirstMessage != null && !TextUtils.isEmpty(myFirstMessage?.toString())) {
                         if (chatMessage.actorType == "guests") {
-                            conversationUser!!.userId = chatMessage.actorId
+                            conversationUser?.userId = chatMessage.actorId
                             setSenderId()
                         }
                     }
 
-                    val shouldScroll = !isThereANewNotice && !shouldAddNewMessagesNotice && layoutManager!!.findFirstVisibleItemPosition() == 0 || adapter != null && adapter!!.itemCount == 0
+                    val shouldScroll = !isThereANewNotice && !shouldAddNewMessagesNotice && layoutManager?.findFirstVisibleItemPosition() == 0 || adapter != null && adapter?.itemCount == 0
 
-                    if (!shouldAddNewMessagesNotice && !shouldScroll) {
-                        if (!popupBubble.isShown) {
+                    if (!shouldAddNewMessagesNotice && !shouldScroll && popupBubble != null) {
+                        if (!popupBubble!!.isShown) {
                             newMessagesCount = 1
-                            popupBubble.show()
-                        } else if (popupBubble.isShown) {
+                            popupBubble?.show()
+                        } else if (popupBubble!!.isShown) {
                             newMessagesCount++
                         }
                     } else {
@@ -1059,15 +1098,16 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     }
 
                     if (adapter != null) {
-                        chatMessage.isGrouped = (adapter!!.isPreviousSameAuthor(chatMessage.actorId, -1) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) % 5 > 0)
-                        chatMessage.isOneToOneConversation = (currentConversation!!.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
-                        adapter!!.addToStart(chatMessage, shouldScroll)
+                        chatMessage.isGrouped = (adapter!!.isPreviousSameAuthor(chatMessage
+                        .actorId, -1) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) % 5 > 0)
+                        chatMessage.isOneToOneConversation = (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
+                        adapter?.addToStart(chatMessage, shouldScroll)
                     }
 
                 }
 
-                if (shouldAddNewMessagesNotice && adapter != null) {
-                    layoutManager!!.scrollToPositionWithOffset(adapter!!.getMessagePositionByIdInReverse("-1"), messagesListView.height / 2)
+                if (shouldAddNewMessagesNotice && adapter != null && messagesListView != null) {
+                    layoutManager?.scrollToPositionWithOffset(adapter!!.getMessagePositionByIdInReverse("-1"), messagesListView!!.height / 2)
                 }
 
             }
@@ -1080,7 +1120,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 cancelNotificationsForCurrentConversation()
 
                 isFirstMessagesProcessing = false
-                loadingProgressBar.visibility = View.GONE
+                loadingProgressBar?.visibility = View.GONE
             }
 
             historyRead = true
@@ -1111,7 +1151,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_conversation, menu)
-        if (conversationUser!!.userId == "?") {
+        if (conversationUser?.userId == "?") {
             menu.removeItem(R.id.conversation_info)
         } else {
             conversationInfoMenuItem = menu.findItem(R.id.conversation_info)
@@ -1124,8 +1164,10 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        if (conversationUser!!.hasSpreedFeatureCapability("read-only-rooms")) {
-            checkReadOnlyState()
+        conversationUser?.let {
+            if (it.hasSpreedFeatureCapability("read-only-rooms")) {
+                checkReadOnlyState()
+            }
         }
     }
 
@@ -1137,14 +1179,14 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 return true
             }
             R.id.conversation_video_call -> {
-                if (conversationVideoMenuItem!!.icon.alpha == 255) {
+                if (conversationVideoMenuItem?.icon?.alpha == 255) {
                     startACall(false)
                     return true
                 }
                 return false
             }
             R.id.conversation_voice_call -> {
-                if (conversationVoiceCallMenuItem!!.icon.alpha == 255) {
+                if (conversationVoiceCallMenuItem?.icon?.alpha == 255) {
                     startACall(true)
                     return true
                 }
@@ -1180,7 +1222,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             bundle.putString(BundleKeys.KEY_ROOM_ID, roomId)
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
-            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser!!.baseUrl)
+            bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl)
 
             if (isVoiceOnlyCall) {
                 bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true)
@@ -1201,9 +1243,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     override fun onMessageLongClick(message: IMessage) {
         if (activity != null) {
-            val clipboardManager = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val clipboardManager = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
             val clipData = android.content.ClipData.newPlainText(
-                    resources!!.getString(R.string.nc_app_name), message.text)
+                    resources?.getString(R.string.nc_app_name), message.text)
             clipboardManager.primaryClip = clipData
         }
     }
@@ -1235,17 +1277,17 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(userMentionClickEvent: UserMentionClickEvent) {
-        if (currentConversation!!.type != Conversation.ConversationType
-                        .ROOM_TYPE_ONE_TO_ONE_CALL || currentConversation!!.name !=
+        if (currentConversation?.type != Conversation.ConversationType
+                        .ROOM_TYPE_ONE_TO_ONE_CALL || currentConversation?.name !=
                 userMentionClickEvent.userId) {
-            val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(conversationUser!!.baseUrl, "1",
+            val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(conversationUser?.baseUrl, "1",
                     userMentionClickEvent.userId, null)
 
-            ncApi.createRoom(credentials,
+            ncApi?.createRoom(credentials,
                     retrofitBucket.url, retrofitBucket.queryMap)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<RoomOverall> {
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(object : Observer<RoomOverall> {
                         override fun onSubscribe(d: Disposable) {
 
                         }
@@ -1257,6 +1299,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
                             bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs.data.roomId)
 
+                            if (conversationUser != null) {
                             if (conversationUser.hasSpreedFeatureCapability("chat-v2")) {
                                 bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
                                         Parcels.wrap(roomOverall.ocs.data))
@@ -1264,6 +1307,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
                                 ConductorRemapping.remapChatController(router, conversationUser.id,
                                         roomOverall.ocs.data.token, bundle, false)
+                            }
 
                             } else {
                                 conversationIntent.putExtras(bundle)
