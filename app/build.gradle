@@ -38,8 +38,8 @@ android {
         targetSdkVersion 28
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode 116
-        versionName "7.0.2"
+        versionCode 117
+        versionName "7.0.3"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
@@ -199,8 +199,8 @@ dependencies {
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor "org.projectlombok:lombok:1.18.8"
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    kapt 'com.jakewharton:butterknife-compiler:10.1.0'
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    kapt 'com.jakewharton:butterknife-compiler:10.2.0'
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
