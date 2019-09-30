@@ -1006,7 +1006,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
                 }
 
-                if (isFirstMessagesProcessing) {
+                if (wasFirstMessageProcessing && chatMessageList.size > 0) {
                     globalLastKnownFutureMessageId = chatMessageList[0].jsonMessageId
                 }
 
