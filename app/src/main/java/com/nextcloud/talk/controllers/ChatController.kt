@@ -869,7 +869,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         fieldMap["includeLastKnown"] = 0
 
         var timeout = 30
-        if (lookIntoFuture == 0) {
+        if (lookIntoFuture == 0 || !lookingIntoFuture) {
             timeout = 0
         }
 
