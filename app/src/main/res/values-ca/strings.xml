@@ -67,6 +67,7 @@
     <string name="nc_settings_remove_confirmation">Si us plau, confirmeu la vostra intenció de suprimir el compte actual.</string>
     <string name="nc_settings_remove_account">Suprimeix el compte</string>
     <string name="nc_settings_add_account">Afegeix un nou compte</string>
+    <string name="nc_add">Afegeix</string>
     <string name="nc_settings_wrong_account">Només el compte actual pot ser re-autoritzat</string>
     <string name="nc_settings_no_talk_installed">L\'aplicació Talk no està instal·lada al servidor amb el qual heu intentat autenticar-vos</string>
     <string name="nc_settings_account_updated">S\'ha actualitzat el vostre compte ja existent enlloc d’afegir-ne un de nou</string>
@@ -205,6 +206,11 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_push_to_talk_desc">Amb el micròfon desactivat, feu clic a &amp; i mantingueu-lo pressionat per fer servir el Prem-i-parla</string>
     <string name="nc_configure_cert_auth">Selecciona el certificat d’autenticació</string>
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Deposat des del moderador</string>
+    <string name="nc_promote">Promou a moderador</string>
+    <string name="nc_remove_participant">Suprimeix el participant</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Introduïu un missatge...</string>
