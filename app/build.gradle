@@ -143,7 +143,7 @@ configurations.all {
 
 dependencies {
     implementation fileTree(include: ['*'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0-alpha10'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation 'com.github.vanniktech:Emoji:0.6.0'
@@ -159,10 +159,10 @@ dependencies {
     implementation 'org.conscrypt:conscrypt-android:2.2.1'
 
 
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 
-    implementation 'androidx.biometric:biometric:1.0.0-beta01'
-    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+    implementation 'androidx.biometric:biometric:1.0.0-beta02'
+    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
