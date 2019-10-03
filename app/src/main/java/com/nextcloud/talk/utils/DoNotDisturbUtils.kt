@@ -28,6 +28,37 @@ import android.os.Vibrator
 import com.nextcloud.talk.application.NextcloudTalkApplication
 
 object DoNotDisturbUtils {
+    fun isDnDActive() : Boolean {
+        val context = NextcloudTalkApplication.sharedApplication?.applicationContext
+
+        val notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (notificationManager.currentInterruptionFilter == NotificationManager
+                            .INTERRUPTION_FILTER_NONE || notificationManager
+                            .currentInterruptionFilter == NotificationManager
+                            .INTERRUPTION_FILTER_ALARMS || notificationManager
+                            .currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) {
+                return true
+            }
+        }
+
+        return false
+
+    }
+
+    fun isInDoNotDisturbWithPriority(): Boolean {
+        val context = NextcloudTalkApplication.sharedApplication?.applicationContext
+
+        val notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (notificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) {
+                return true
+            }
+        }
+
+        return false
+    }
+
     fun shouldPlaySound(): Boolean {
         val context = NextcloudTalkApplication.sharedApplication?.applicationContext
 

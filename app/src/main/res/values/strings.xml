@@ -201,10 +201,9 @@
     <string name="nc_notify_me_mention">Notify when mentioned</string>
     <string name="nc_notify_me_never">Never notify</string>
     <string name="nc_mute_calls">Mute calls</string>
-    <string name="nc_mute_calls_desc">Incoming calls will be silenced</string>
+    <string name="nc_mute_calls_desc">Incoming calls will be ignored</string>
     <string name="nc_important_conversation">Important conversation</string>
-    <string name="nc_important_conversation_desc">Notifications in this conversation will override
-        Do Not Disturb settings</string>
+    <string name="nc_important_conversation_desc">Calls and message notifications will be shown even while in Do not disturb mode (follows system "Allow priority interruptions only" configuration)</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
@@ -298,5 +297,5 @@
     <string name="nc_lobby_waiting">You are currently waiting in the lobby.</string>
     <string name="nc_lobby_waiting_with_date">You are currently waiting in the lobby.\n This
         meeting is scheduled for %1$s.</string>
-    <string name="nc_manual">Manual</string>
+    <string name="nc_manual">Not set</string>
 </resources>

@@ -84,7 +84,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import com.vanniktech.emoji.emoji.Emoji;
 
 import org.parceler.Parcels;
 
@@ -153,6 +152,12 @@ public class NotificationWorker extends Worker {
             importantConversation = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
         }
 
+
+        if (DoNotDisturbUtils.INSTANCE.isDnDActive()) {
+            if (!DoNotDisturbUtils.INSTANCE.isInDoNotDisturbWithPriority() || !importantConversation || muteCall) {
+                return;
+            }
+        }
 
         ncApi.getRoom(credentials, ApiUtils.getRoom(userEntity.getBaseUrl(),
                 intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())))
@@ -474,7 +479,7 @@ public class NotificationWorker extends Worker {
         notificationManager.notify(notificationId, notification);
 
 
-        if (!notification.category.equals(Notification.CATEGORY_CALL) || !muteCall) {
+        if (!notification.category.equals(Notification.CATEGORY_CALL)) {
             String ringtonePreferencesString;
             Uri soundUri;
 
