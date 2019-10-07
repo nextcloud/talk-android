@@ -131,7 +131,6 @@ public class CallNotificationController extends BaseController {
     @BindView(R.id.incomingTextRelativeLayout)
     RelativeLayout incomingTextRelativeLayout;
 
-    private List<Disposable> disposablesList = new ArrayList<>();
     private Bundle originalBundle;
     private String roomId;
     private UserEntity userBeingCalled;
@@ -204,7 +203,6 @@ public class CallNotificationController extends BaseController {
                 .subscribe(new Observer<ParticipantsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        disposablesList.add(d);
                     }
 
                     @Override
@@ -254,7 +252,6 @@ public class CallNotificationController extends BaseController {
                 .subscribe(new Observer<RoomsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        disposablesList.add(d);
                     }
 
                     @Override
@@ -490,17 +487,7 @@ public class CallNotificationController extends BaseController {
             handler.removeCallbacksAndMessages(null);
             handler = null;
         }
-        dispose();
         endMediaAndVibratorNotifications();
         super.onDestroy();
-    }
-
-    private void dispose() {
-        Disposable disposable;
-        for (int i = 0; i < disposablesList.size(); i++) {
-            if (!(disposable = disposablesList.get(i)).isDisposed()) {
-                disposable.dispose();
-            }
-        }
     }
 }
