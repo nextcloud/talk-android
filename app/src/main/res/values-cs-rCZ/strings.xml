@@ -180,7 +180,6 @@
     <string name="nc_notify_me_mention">Upozornit při zmínění</string>
     <string name="nc_notify_me_never">Nikdy neoznamovat</string>
     <string name="nc_mute_calls">Ztišit hovory</string>
-    <string name="nc_mute_calls_desc">Příchozí hovory budou umlčeny</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>

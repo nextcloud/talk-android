@@ -182,11 +182,7 @@
     <string name="nc_notify_me_mention">Notificar cuando eres mencionado</string>
     <string name="nc_notify_me_never">No notificar nunca</string>
     <string name="nc_mute_calls">Silenciar llamadas</string>
-    <string name="nc_mute_calls_desc">Las llamadas entrantes serán silenciadas</string>
     <string name="nc_important_conversation">Conversación importante</string>
-    <string name="nc_important_conversation_desc">Las notificaciones en esta conversación no tendrán en cuenta
-          la configuración de No Molestar</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>
     <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas vía teléfonos móviles.
@@ -278,5 +274,4 @@
     <string name="nc_lobby_waiting">Ahora estás esperando en el recibidor.</string>
     <string name="nc_lobby_waiting_with_date">Ahora estás esperando en el recibidor.\n Esta
         reunión está planificada para %1$s.</string>
-    <string name="nc_manual">Manual</string>
-</resources>
+    </resources>

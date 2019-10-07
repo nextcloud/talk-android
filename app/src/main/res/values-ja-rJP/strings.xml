@@ -180,7 +180,6 @@
     <string name="nc_notify_me_mention">言及したときに通知する</string>
     <string name="nc_notify_me_never">決して通知しない</string>
     <string name="nc_mute_calls">通話をミュートする</string>
-    <string name="nc_mute_calls_desc">着信音を消す</string>
     <string name="nc_important_conversation">重要な会議</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
@@ -266,5 +265,4 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_lobby">ロビー</string>
     <string name="nc_start_time">開始時刻</string>
     <string name="nc_lobby_waiting">現在ロビーで待機中</string>
-    <string name="nc_manual">手動</string>
-</resources>
+    </resources>

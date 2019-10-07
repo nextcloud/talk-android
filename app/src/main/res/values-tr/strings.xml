@@ -182,11 +182,7 @@
     <string name="nc_notify_me_mention">Anmalar bildirilsin</string>
     <string name="nc_notify_me_never">Asla bildirilmesin</string>
     <string name="nc_mute_calls">Bildirimleri kapat</string>
-    <string name="nc_mute_calls_desc">Gelen çağrılar sessize alınacak</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
-    <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler
-        Rahatsız Etmeyin ayarlarını değiştirecek</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
     <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı
@@ -278,5 +274,4 @@
     <string name="nc_lobby_waiting">Şu anda girişte bekliyorsunuz</string>
     <string name="nc_lobby_waiting_with_date">Şu anda girişte bekliyorsunuz.\n Bu
         görüşme %1$s zamanında başlayacak.</string>
-    <string name="nc_manual">Kılavuz</string>
-</resources>
+    </resources>

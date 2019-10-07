@@ -180,11 +180,7 @@
     <string name="nc_notify_me_mention">当被提及时提醒</string>
     <string name="nc_notify_me_never">从不提醒</string>
     <string name="nc_mute_calls">通话静音</string>
-    <string name="nc_mute_calls_desc">拨入通话将被静音</string>
     <string name="nc_important_conversation">重要会话</string>
-    <string name="nc_important_conversation_desc">此会话中的通知将覆盖
-免打扰设置</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
     <string name="nc_failed_signaling_settings">目标服务器不支持通过手机加入到公开会话中。您可以尝试通过浏览器加入会话。</string>
@@ -276,5 +272,4 @@
     <string name="nc_lobby_waiting">您当前正在休息室等待。</string>
     <string name="nc_lobby_waiting_with_date">您当前正在休息室等待。\n此
 会议预定于%1$s开始。</string>
-    <string name="nc_manual">手册</string>
-</resources>
+    </resources>

@@ -181,11 +181,7 @@
     <string name="nc_notify_me_mention">Notifikuj pri spomenutí</string>
     <string name="nc_notify_me_never">Nikdy nenotifikuj</string>
     <string name="nc_mute_calls">Stíš hovory</string>
-    <string name="nc_mute_calls_desc">Príchadzajúce hovory budú stíšené</string>
     <string name="nc_important_conversation">Dôležitý rozhovor</string>
-    <string name="nc_important_conversation_desc">Oznámenia v tomto rozhovore sa prepíšu
-        nastavením Nerušiť</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa nepodarilo!</string>
     <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil 
@@ -271,5 +267,4 @@
     <string name="nc_lobby_waiting">Momentálne čakáte v miestnosti.</string>
     <string name="nc_lobby_waiting_with_date">Momentálne čakáte v miestnosti.\n Toto
        stretnutie je naplánované na %1$s.</string>
-    <string name="nc_manual">Príručka</string>
-</resources>
+    </resources>

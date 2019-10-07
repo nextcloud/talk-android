@@ -183,11 +183,7 @@ via een persoonlijke link.</string>
     <string name="nc_notify_me_mention">Waarschuwen bij vermelding</string>
     <string name="nc_notify_me_never">Nooit waarschuwen</string>
     <string name="nc_mute_calls">Gesprekken dempen</string>
-    <string name="nc_mute_calls_desc">Inkomende gesprekken worden gedempt</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
-    <string name="nc_important_conversation_desc">Meldingen in dit gesprek vervangen
-        niet storen instellingen</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons.
@@ -280,5 +276,4 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
     <string name="nc_lobby_waiting_with_date">Je wacht nu in de lobby.\m Deze
         vergadering is ingepland voor %1$s.</string>
-    <string name="nc_manual">Handmatig</string>
-</resources>
+    </resources>

@@ -182,11 +182,7 @@
     <string name="nc_notify_me_mention">Powiadom, gdy wspomniano</string>
     <string name="nc_notify_me_never">Nigdy nie powiadamiaj</string>
     <string name="nc_mute_calls">Wycisz połączenia</string>
-    <string name="nc_mute_calls_desc">Połączenia przychodzące zostaną wyciszone</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
-    <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują
-        ustawienia \"Nie przeszkadzać\"</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Przepraszam, coś poszło nie tak!</string>
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe.
@@ -278,5 +274,4 @@
     <string name="nc_lobby_waiting">Aktualnie czekasz w poczekalni.</string>
     <string name="nc_lobby_waiting_with_date">Obecnie czekasz w poczekalni.\n To spotkanie
          jest zaplanowane na %1$s.</string>
-    <string name="nc_manual">Ręczne</string>
-</resources>
+    </resources>

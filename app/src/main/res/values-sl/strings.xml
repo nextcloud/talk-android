@@ -67,6 +67,7 @@
     <string name="nc_settings_remove_confirmation">Potrdite zahtevo za odstranitev trenutnega računa.</string>
     <string name="nc_settings_remove_account">Odstrani račun</string>
     <string name="nc_settings_add_account">Dodaj račun</string>
+    <string name="nc_add">Dodaj</string>
     <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
     <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>
     <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
@@ -149,11 +150,13 @@
     <string name="nc_notification_channel_calls">Kanal obvestil klicev</string>
     <string name="nc_notification_channel_messages">Kanal obvestil sporočil</string>
     <string name="nc_notification_channel_calls_description">Pokaži dohodne klice</string>
+    <string name="nc_notification_settings">Nastavitve obveščanja</string>
     <string name="nc_plain_old_messages">Sporočila</string>
     <string name="nc_notify_me_always">Vedno obvesti</string>
     <string name="nc_notify_me_mention">Obvesti ob omembi</string>
     <string name="nc_notify_me_never">Nikoli ne obvesti</string>
     <string name="nc_mute_calls">Utišaj klice</string>
+    <string name="nc_important_conversation">Pomemben pogovor</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom prek mobilnih
@@ -173,6 +176,8 @@
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
 
+    <string name="nc_remove_participant">Odstrani udeležence</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Vpis sporočila ...</string>
     <string name="nc_date_header_yesterday">Včeraj</string>
@@ -180,6 +185,7 @@
     <string name="nc_conversation_menu_voice_call">Glasovni klic</string>
     <string name="nc_conversation_menu_video_call">Video klic</string>
     <string name="nc_conversation_menu_conversation_info">Podrobnosti pogovora</string>
+    <string name="nc_new_messages">Neprebrana sporočila</string>
     <string name="nc_no_messages_yet">Ni še sporočil</string>
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Ni več predmetov za nalaganje. Osvežite seznam in poskusite znova.</string>

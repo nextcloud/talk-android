@@ -180,11 +180,7 @@
     <string name="nc_notify_me_mention">Értesítsen, ha megemlítik Önt</string>
     <string name="nc_notify_me_never">Sose értesítsen</string>
     <string name="nc_mute_calls">Hívások némítása</string>
-    <string name="nc_mute_calls_desc">A bejövő hívások némítva lesznek</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
-    <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a
-        Ne zavarjanak beállításokat</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
     <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
@@ -270,5 +266,4 @@
     <string name="nc_lobby_waiting">Jelenleg a váróban van.</string>
     <string name="nc_lobby_waiting_with_date">Jelenleg a váróban van.\n A találkozó
         ekkorra van ütemezve: %1$s.</string>
-    <string name="nc_manual">Kézi</string>
-</resources>
+    </resources>
