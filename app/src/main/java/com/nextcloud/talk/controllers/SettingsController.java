@@ -67,6 +67,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
+import com.uber.autodispose.AutoDispose;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 import com.yarolegovich.mp.*;
@@ -155,9 +156,6 @@ public class SettingsController extends BaseController {
     private OnPreferenceValueChangedListener<Boolean> screenLockChangeListener;
     private OnPreferenceValueChangedListener<String> screenLockTimeoutChangeListener;
     private OnPreferenceValueChangedListener<String> themeChangeListener;
-
-    private Disposable profileQueryDisposable;
-    private Disposable dbQueryDisposable;
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
@@ -391,7 +389,6 @@ public class SettingsController extends BaseController {
             getActionBar().show();
         }
 
-        dispose(null);
         getCurrentUser();
 
         if (!TextUtils.isEmpty(currentUser.getClientCertificate())) {
@@ -500,10 +497,11 @@ public class SettingsController extends BaseController {
 
             loadAvatarImage();
 
-            profileQueryDisposable = ncApi.getUserProfile(credentials,
+            ncApi.getUserProfile(credentials,
                     ApiUtils.getUrlForUserProfile(currentUser.getBaseUrl()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .as(AutoDispose.autoDisposable(scopeProvider))
                     .subscribe(userProfileOverall -> {
 
                         String displayName = null;
@@ -520,23 +518,22 @@ public class SettingsController extends BaseController {
 
                         if ((!TextUtils.isEmpty(displayName) && !displayName.equals(currentUser.getDisplayName()))) {
 
-                            dbQueryDisposable = userUtils.createOrUpdateUser(null,
+                            userUtils.createOrUpdateUser(null,
                                     null,
                                     null, displayName, null, null,
                                     null, currentUser.getId(), null, null, null)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
+                                    .as(AutoDispose.autoDisposable(scopeProvider))
                                     .subscribe(userEntityResult -> {
                                                 displayNameTextView.setText(userEntityResult.getDisplayName());
                                             },
                                             throwable -> {
-                                                dispose(dbQueryDisposable);
-                                            }, () -> dispose(dbQueryDisposable));
+                                            }, () -> Log.d(TAG, ""));
 
                         }
                     }, throwable -> {
-                        dispose(profileQueryDisposable);
-                    }, () -> dispose(profileQueryDisposable));
+                    }, () -> Log.d(TAG, ""));
 
 
             removeAccountButton.addPreferenceClickListener(view1 -> {
@@ -658,27 +655,6 @@ public class SettingsController extends BaseController {
         appPreferences.removeProxyPassword();
         settingsScreen.findViewById(R.id.settings_proxy_username_edit).setVisibility(View.GONE);
         settingsScreen.findViewById(R.id.settings_proxy_password_edit).setVisibility(View.GONE);
-    }
-
-    private void dispose(@Nullable Disposable disposable) {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        } else if (disposable == null) {
-
-            if (profileQueryDisposable != null && !profileQueryDisposable.isDisposed()) {
-                profileQueryDisposable.dispose();
-                profileQueryDisposable = null;
-            } else if (profileQueryDisposable != null) {
-                profileQueryDisposable = null;
-            }
-
-            if (dbQueryDisposable != null && !dbQueryDisposable.isDisposed()) {
-                dbQueryDisposable.dispose();
-                dbQueryDisposable = null;
-            } else if (dbQueryDisposable != null) {
-                dbQueryDisposable = null;
-            }
-        }
     }
 
     @Override

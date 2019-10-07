@@ -89,6 +89,7 @@ import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
+import com.uber.autodispose.AutoDispose
 import com.vanniktech.emoji.EmojiPopup
 import com.webianks.library.PopupBubble
 import io.reactivex.Observer
@@ -149,7 +150,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     @BindView(R.id.lobby_text_view)
     @JvmField
     var conversationLobbyText: TextView? = null
-    val disposableList = ArrayList<Disposable>()
     var roomToken: String? = null
     val conversationUser: UserEntity?
     val roomPassword: String
@@ -222,9 +222,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         if (conversationUser != null) {
             ncApi?.getRoom(credentials, ApiUtils.getRoom(conversationUser.baseUrl, roomToken))?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.`as`(AutoDispose.autoDisposable(scopeProvider))
                     ?.subscribe(object : Observer<RoomOverall> {
                         override fun onSubscribe(d: Disposable) {
-                            disposableList.add(d)
                         }
 
                         override fun onNext(roomOverall: RoomOverall) {
@@ -261,9 +261,10 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     private fun handleFromNotification() {
         ncApi?.getRooms(credentials, ApiUtils.getUrlForGetRooms(conversationUser?.baseUrl))
-                ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.subscribe(object : Observer<RoomsOverall> {
+                ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
+                ?.`as`(AutoDispose.autoDisposable(scopeProvider))
+                ?.subscribe(object : Observer<RoomsOverall> {
                     override fun onSubscribe(d: Disposable) {
-                        disposableList.add(d)
                     }
 
                     override fun onNext(roomsOverall: RoomsOverall) {
@@ -664,14 +665,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         inConversation = false
     }
 
-    private fun dispose() {
-        for (disposable in disposableList) {
-            if (!disposable.isDisposed()) {
-                disposable.dispose()
-            }
-        }
-    }
-
     private fun startPing() {
         if (conversationUser != null && !conversationUser.hasSpreedFeatureCapability("no-ping")) {
             ncApi?.pingCall(credentials, ApiUtils.getUrlForCallPing(conversationUser.baseUrl,
@@ -681,9 +674,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     ?.repeatWhen { observable -> observable.delay(5000, TimeUnit.MILLISECONDS) }
                     ?.takeWhile { observable -> inConversation }
                     ?.retry(3) { observable -> inConversation }
+                    ?.`as`(AutoDispose.autoDisposable(scopeProvider))
                     ?.subscribe(object : Observer<GenericOverall> {
                         override fun onSubscribe(d: Disposable) {
-                            disposableList.add(d)
                         }
 
                         override fun onNext(genericOverall: GenericOverall) {
@@ -711,9 +704,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.retry(3)
+                    ?.`as`(AutoDispose.autoDisposable(scopeProvider))
                     ?.subscribe(object : Observer<RoomOverall> {
                         override fun onSubscribe(d: Disposable) {
-                            disposableList.add(d)
                         }
 
                         override fun onNext(roomOverall: RoomOverall) {
@@ -772,9 +765,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         roomToken))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
+                ?.`as`(AutoDispose.autoDisposable(scopeProvider))
                 ?.subscribe(object : Observer<GenericOverall> {
                     override fun onSubscribe(d: Disposable) {
-                        disposableList.add(d)
                     }
 
                     override fun onNext(genericOverall: GenericOverall) {
@@ -797,7 +790,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     override fun onError(e: Throwable) {}
 
                     override fun onComplete() {
-                        dispose()
                     }
                 })
     }
@@ -843,6 +835,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     message, conversationUser.displayName)
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.`as`(AutoDispose.autoDisposable(scopeProvider))
                     ?.subscribe(object : Observer<GenericOverall> {
                         override fun onSubscribe(d: Disposable) {
 
@@ -939,9 +932,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         ?.subscribeOn(Schedulers.io())
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.takeWhile { observable -> inConversation && !wasDetached }
+                        ?.`as`(AutoDispose.autoDisposable(scopeProvider))
                         ?.subscribe(object : Observer<Response<*>> {
                             override fun onSubscribe(d: Disposable) {
-                                disposableList.add(d)
                             }
 
                             override fun onNext(response: Response<*>) {
@@ -968,9 +961,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.retry(3) { observable -> inConversation && !wasDetached }
                         ?.takeWhile { observable -> inConversation && !wasDetached }
+                        ?.`as`(AutoDispose.autoDisposable(scopeProvider))
                         ?.subscribe(object : Observer<Response<*>> {
                             override fun onSubscribe(d: Disposable) {
-                                disposableList.add(d)
                             }
 
                             override fun onNext(response: Response<*>) {
@@ -1286,6 +1279,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     retrofitBucket.url, retrofitBucket.queryMap)
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.`as`(AutoDispose.autoDisposable(scopeProvider))
                     ?.subscribe(object : Observer<RoomOverall> {
                         override fun onSubscribe(d: Disposable) {
 

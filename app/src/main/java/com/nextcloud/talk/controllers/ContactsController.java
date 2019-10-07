@@ -70,6 +70,7 @@ import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.uber.autodispose.AutoDispose;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -154,8 +155,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     NcApi ncApi;
     private String credentials;
     private UserEntity currentUser;
-    private Disposable contactsQueryDisposable;
-    private Disposable cacheQueryDisposable;
     private FlexibleAdapter adapter;
     private List<AbstractFlexibleItem> contactItems;
     private BottomSheet bottomSheet;
@@ -289,6 +288,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .as(AutoDispose.autoDisposable(scopeProvider))
                         .subscribe(new Observer<RoomOverall>() {
                             @Override
                             public void onSubscribe(Disposable d) {
@@ -309,6 +309,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                                     roomOverall.getOcs().getData().getToken()))
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
+                                            .as(AutoDispose.autoDisposable(scopeProvider))
                                             .subscribe(new Observer<RoomOverall>() {
 
                                                 @Override
@@ -452,8 +453,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     private void fetchData(boolean startFromScratch) {
-        dispose(null);
-
         alreadyFetching = true;
         Set<Sharee> shareeHashSet = new HashSet<>();
         Set<AutocompleteUser> autocompleteUsersHashSet = new HashSet<>();
@@ -507,10 +506,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
+                .as(AutoDispose.autoDisposable(scopeProvider))
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        contactsQueryDisposable = d;
                     }
 
                     @Override
@@ -691,7 +690,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         if (swipeRefreshLayout != null) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
-                        dispose(contactsQueryDisposable);
 
                     }
 
@@ -700,7 +698,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         if (swipeRefreshLayout != null) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
-                        dispose(contactsQueryDisposable);
                         alreadyFetching = false;
 
                         disengageProgressBar();
@@ -746,24 +743,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
     }
 
-    private void dispose(@Nullable Disposable disposable) {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        } else if (disposable == null) {
-
-            if (contactsQueryDisposable != null && !contactsQueryDisposable.isDisposed()) {
-                contactsQueryDisposable.dispose();
-                contactsQueryDisposable = null;
-            }
-
-            if (cacheQueryDisposable != null && !cacheQueryDisposable.isDisposed()) {
-                cacheQueryDisposable.dispose();
-                cacheQueryDisposable = null;
-            }
-        }
-    }
-
-
     @Override
     public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
         adapter.onSaveInstanceState(outState);
@@ -776,12 +755,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (adapter != null) {
             adapter.onRestoreInstanceState(savedViewState);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        dispose(null);
     }
 
     @Override
@@ -910,6 +883,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
+                        .as(AutoDispose.autoDisposable(scopeProvider))
                         .subscribe(new Observer<RoomOverall>() {
                             @Override
                             public void onSubscribe(Disposable d) {

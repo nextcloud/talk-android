@@ -55,6 +55,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
+import com.uber.autodispose.AutoDispose;
 
 import de.cotech.hw.fido.WebViewFidoBridge;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -390,6 +391,7 @@ public class WebViewLoginController extends BaseController {
                                 null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias(), null)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
+                                .as(AutoDispose.autoDisposable(scopeProvider))
                                 .subscribe(userEntity -> {
                                             if (finalMessageType != null) {
                                                 ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);

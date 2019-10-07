@@ -33,6 +33,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import autodagger.AutoInjector;
 import com.bluelinelabs.conductor.Controller;
+import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.AccountVerificationController;
 import com.nextcloud.talk.controllers.ServerSelectionController;
@@ -40,6 +41,7 @@ import com.nextcloud.talk.controllers.SwitchAccountController;
 import com.nextcloud.talk.controllers.WebViewLoginController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.uber.autodispose.lifecycle.LifecycleScopeProvider;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -49,6 +51,9 @@ import java.util.List;
 public abstract class BaseController extends ButterKnifeController {
 
     private static final String TAG = "BaseController";
+
+    public final LifecycleScopeProvider scopeProvider = ControllerScopeProvider.from(this);
+
     @Inject
     AppPreferences appPreferences;
     @Inject

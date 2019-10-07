@@ -23,6 +23,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'findbugs'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'realm-android'
 
 def taskRequest = getGradle().getStartParameter().getTaskRequests().toString()
 if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") || taskRequest.contains("lint")) {
@@ -169,8 +170,11 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation "io.reactivex.rxjava2:rxjava:2.2.11"
 
-    implementation 'com.bluelinelabs:conductor:2.1.5'
-    implementation 'com.bluelinelabs:conductor-support:2.1.5'
+    implementation 'com.bluelinelabs:conductor:3.0.0-rc1'
+    implementation 'com.bluelinelabs:conductor-support:3.0.0-rc1'
+    implementation 'com.bluelinelabs:conductor-archlifecycle:3.0.0-rc1'
+    implementation 'com.bluelinelabs:conductor-rxlifecycle2:3.0.0-rc1'
+    implementation 'com.bluelinelabs:conductor-autodispose:3.0.0-rc1'
 
     implementation 'com.squareup.okhttp3:okhttp:3.14.2'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.14.2'
@@ -251,4 +255,5 @@ dependencies {
     })
     findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
     findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 }

@@ -47,6 +47,8 @@ import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.AccountUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.uber.autodispose.AutoDispose;
+
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -97,6 +99,7 @@ public class SwitchAccountController extends BaseController {
                 userUtils.createOrUpdateUser(null,
                         null, null, null,
                         null, true, null, userEntity.getId(), null, null, null)
+                        .as(AutoDispose.autoDisposable(scopeProvider))
                         .subscribe(new Observer<UserEntity>() {
                             @Override
                             public void onSubscribe(Disposable d) {

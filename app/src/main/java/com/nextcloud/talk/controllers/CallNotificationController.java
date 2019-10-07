@@ -74,6 +74,8 @@ import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
+import com.uber.autodispose.AutoDispose;
+
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -198,6 +200,7 @@ public class CallNotificationController extends BaseController {
                 .subscribeOn(Schedulers.io())
                 .takeWhile(observable -> !leavingScreen)
                 .retry(3)
+                .as(AutoDispose.autoDisposable(scopeProvider))
                 .subscribe(new Observer<ParticipantsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -247,6 +250,7 @@ public class CallNotificationController extends BaseController {
                 .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(AutoDispose.autoDisposable(scopeProvider))
                 .subscribe(new Observer<RoomsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {

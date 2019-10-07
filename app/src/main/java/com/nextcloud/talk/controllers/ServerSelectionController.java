@@ -35,10 +35,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
@@ -51,14 +50,19 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
+import com.uber.autodispose.AutoDispose;
+
+import java.security.cert.CertificateException;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
-
-import javax.inject.Inject;
-import java.security.cert.CertificateException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ServerSelectionController extends BaseController {
@@ -84,8 +88,6 @@ public class ServerSelectionController extends BaseController {
 
     @Inject
     AppPreferences appPreferences;
-
-    private Disposable statusQueryDisposable;
 
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
@@ -220,8 +222,6 @@ public class ServerSelectionController extends BaseController {
     }
 
     private void checkServerAndProceed() {
-        dispose();
-
         String url = serverEntry.getText().toString().trim();
 
         serverEntry.setEnabled(false);
@@ -245,9 +245,10 @@ public class ServerSelectionController extends BaseController {
     }
 
     private void checkServer(String queryUrl, boolean checkForcedHttps) {
-        statusQueryDisposable = ncApi.getServerStatus(queryUrl)
+        ncApi.getServerStatus(queryUrl)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(AutoDispose.autoDisposable(scopeProvider))
                 .subscribe(status -> {
                     String productName = getResources().getString(R.string.nc_server_product_name);
 
@@ -307,8 +308,6 @@ public class ServerSelectionController extends BaseController {
                             certTextView.setVisibility(View.VISIBLE);
                         }
                         toggleProceedButton(false);
-
-                        dispose();
                     }
                 }, () -> {
                     progressBar.setVisibility(View.INVISIBLE);
@@ -316,7 +315,6 @@ public class ServerSelectionController extends BaseController {
                         providersTextView.setVisibility(View.VISIBLE);
                         certTextView.setVisibility(View.VISIBLE);
                     }
-                    dispose();
                 });
     }
 
@@ -366,20 +364,4 @@ public class ServerSelectionController extends BaseController {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        dispose();
-    }
-
-    private void dispose() {
-        if (statusQueryDisposable != null && !statusQueryDisposable.isDisposed()) {
-            statusQueryDisposable.dispose();
-        }
-
-        statusQueryDisposable = null;
-    }
-
-
 }

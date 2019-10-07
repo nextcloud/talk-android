@@ -29,12 +29,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -44,8 +49,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-import autodagger.AutoInjector;
-import butterknife.BindView;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat;
@@ -76,8 +80,8 @@ import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -86,26 +90,31 @@ import com.nextcloud.talk.utils.animations.SharedElementTransition;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.uber.autodispose.AutoDispose;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
-import eu.davidea.fastscroller.FastScroller;
-import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcels;
-import retrofit2.HttpException;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import eu.davidea.fastscroller.FastScroller;
+import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
@@ -149,7 +158,6 @@ public class ConversationsListController extends BaseController implements Searc
     FloatingActionButton floatingActionButton;
 
     private UserEntity currentUser;
-    private Disposable roomsQueryDisposable;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
     private List<AbstractFlexibleItem> callItems = new ArrayList<>();
 
@@ -309,15 +317,14 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     private void fetchData(boolean fromBottomSheet) {
-        dispose(null);
-
         isRefreshing = true;
 
         callItems = new ArrayList<>();
 
-        roomsQueryDisposable = ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(currentUser.getBaseUrl()))
+        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(currentUser.getBaseUrl()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(AutoDispose.autoDisposable(scopeProvider))
                 .subscribe(roomsOverall -> {
 
                     if (adapterWasNull) {
@@ -408,9 +415,7 @@ public class ConversationsListController extends BaseController implements Searc
                     if (swipeRefreshLayout != null) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                    dispose(roomsQueryDisposable);
                 }, () -> {
-                    dispose(roomsQueryDisposable);
                     if (swipeRefreshLayout != null) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -471,18 +476,6 @@ public class ConversationsListController extends BaseController implements Searc
                 .popChangeHandler(new HorizontalChangeHandler())));
     }
 
-    private void dispose(@Nullable Disposable disposable) {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-            disposable = null;
-        } else if (disposable == null &&
-                roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed()) {
-            roomsQueryDisposable.dispose();
-            roomsQueryDisposable = null;
-
-        }
-    }
-
     @Override
     public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
         saveStateHandler.saveInstanceState(outState);
@@ -503,12 +496,6 @@ public class ConversationsListController extends BaseController implements Searc
             //Each dialog knows how to restore its state
             showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        dispose(null);
     }
 
     @Override

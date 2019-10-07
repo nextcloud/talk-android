@@ -54,6 +54,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
+import com.uber.autodispose.AutoDispose;
 
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
@@ -94,8 +95,6 @@ public class AccountVerificationController extends BaseController {
     TextView progressText;
 
     private long internalAccountId = -1;
-
-    private List<Disposable> disposables = new ArrayList<>();
 
     private String baseUrl;
     private String username;
@@ -179,10 +178,10 @@ public class AccountVerificationController extends BaseController {
         ncApi.getServerStatus(queryUrl)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(AutoDispose.autoDisposable(scopeProvider))
                 .subscribe(new Observer<Status>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        disposables.add(d);
                     }
 
                     @Override
@@ -222,10 +221,10 @@ public class AccountVerificationController extends BaseController {
     private void findServerTalkApp(String credentials) {
         ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
                 .subscribeOn(Schedulers.io())
+                .as(AutoDispose.autoDisposable(scopeProvider))
                 .subscribe(new Observer<RoomsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        disposables.add(d);
                     }
 
                     @Override
@@ -259,10 +258,10 @@ public class AccountVerificationController extends BaseController {
                 userId, null, null,
                 appPreferences.getTemporaryClientCertAlias(), null)
                 .subscribeOn(Schedulers.io())
+                .as(AutoDispose.autoDisposable(scopeProvider))
                 .subscribe(new Observer<UserEntity>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        disposables.add(d);
                     }
 
                     @Override
@@ -299,10 +298,10 @@ public class AccountVerificationController extends BaseController {
         ncApi.getUserProfile(credentials,
                 ApiUtils.getUrlForUserProfile(baseUrl))
                 .subscribeOn(Schedulers.io())
+                .as(AutoDispose.autoDisposable(scopeProvider))
                 .subscribe(new Observer<UserProfileOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        disposables.add(d);
                     }
 
                     @Override
@@ -427,26 +426,12 @@ public class AccountVerificationController extends BaseController {
     }
 
 
-    private void dispose() {
-        for (int i = 0; i < disposables.size(); i++) {
-            if (!disposables.get(i).isDisposed()) {
-                disposables.get(i).dispose();
-            }
-        }
-    }
-
     @Override
     protected void onDestroyView(@NonNull View view) {
         super.onDestroyView(view);
         if (getActivity() != null) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        dispose();
-        super.onDestroy();
     }
 
     private void abortVerification() {
