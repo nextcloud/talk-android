@@ -182,7 +182,10 @@
     <string name="nc_notify_me_mention">Benachrichtigung bei Erwähnung</string>
     <string name="nc_notify_me_never">Nie benachrichtigen</string>
     <string name="nc_mute_calls">Anrufe stummschalten</string>
+    <string name="nc_mute_calls_desc">Eingehende Anrufe werden ignoriert</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
+    <string name="nc_important_conversation_desc">Anrufe und Nachrichtenbenachrichtigungen werden auch im Nicht-Stören-Modus angezeigt (Entsprechend der Systemeinstellung \"Nur vorrangige Benachrichtigungen zulassen\").</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Schade, etwas ist schiefgelaufen!</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Unterhaltungen durch Mobiltelefone.
@@ -274,4 +277,5 @@
     <string name="nc_lobby_waiting">Sie warten aktuell in der Lobby.</string>
     <string name="nc_lobby_waiting_with_date">Sie warten aktuell in der Lobby.\n Dieses
 Meeting ist für %1$s geplant.</string>
-    </resources>
+    <string name="nc_manual">Nicht eingestellt</string>
+</resources>

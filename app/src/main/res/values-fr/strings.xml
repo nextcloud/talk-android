@@ -181,7 +181,10 @@ grâce à un lien spécialement créé.</string>
     <string name="nc_notify_me_mention">Notifier quand mentionné</string>
     <string name="nc_notify_me_never">Ne jamais notifier</string>
     <string name="nc_mute_calls">Rendre les appels silencieux</string>
+    <string name="nc_mute_calls_desc">Les appels entrants seront ignorés</string>
     <string name="nc_important_conversation">Conversation importante</string>
+    <string name="nc_important_conversation_desc">Les notifications d\'appel et de message seront affichées même en mode Ne pas déranger (selon les paramètres systèmes \"Autoriser les interruptions prioritaires\")</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile.
@@ -273,4 +276,5 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_lobby_waiting">Vous attendez actuellement dans la salle d\'attente.</string>
     <string name="nc_lobby_waiting_with_date">Vous attendez actuellement dans la salle d\'attente.\n
 Le démarrage de cette réunion est prévu à %1$s.</string>
-    </resources>
+    <string name="nc_manual">Non défini</string>
+</resources>

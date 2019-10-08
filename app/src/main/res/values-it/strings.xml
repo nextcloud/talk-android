@@ -182,7 +182,10 @@
     <string name="nc_notify_me_mention">Notifica su menzione</string>
     <string name="nc_notify_me_never">Non notificare mai</string>
     <string name="nc_mute_calls">Silenzia le chiamate</string>
+    <string name="nc_mute_calls_desc">Le chiamate in ingresso saranno ignorate</string>
     <string name="nc_important_conversation">Conversazione importante</string>
+    <string name="nc_important_conversation_desc">Le notifiche di chiamate e messaggi saranno mostrate anche in modalità Non disturbare (segue la configurazione di sistema \"Consenti solo interruzioni con priorità\")</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Spiacenti, qualcosa non ha funzionato!</string>
     <string name="nc_failed_signaling_settings">Il server di destinazione non supporta la partecipazione a stanze pubbliche tramite cellulare
@@ -274,4 +277,5 @@
     <string name="nc_lobby_waiting">Stai attualmente aspettando nell\'ingresso.</string>
     <string name="nc_lobby_waiting_with_date">Stai attualmente aspettando nell\'ingresso.\nQuesto
         riunione è pianificata per %1$s.</string>
-    </resources>
+    <string name="nc_manual">Non impostato</string>
+</resources>

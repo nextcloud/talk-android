@@ -182,7 +182,10 @@ enllaç especialment dissenyat.</string>
     <string name="nc_notify_me_mention">Notifica només quan s\'esmenti</string>
     <string name="nc_notify_me_never">No notifiquis mai</string>
     <string name="nc_mute_calls">Silencia les trucades</string>
+    <string name="nc_mute_calls_desc">Les trucades entrants s\'ignoraran.</string>
     <string name="nc_important_conversation">Conversa important</string>
+    <string name="nc_important_conversation_desc">Les trucades i notificacions de missatges es mostraran fins i tot en el mode de No molesteu (segueix la configuració del sistema \"Permet només les interrupcions de prioritat\").</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>
     <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través de telèfons
@@ -274,4 +277,5 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_lobby_waiting">Esteu esperant al vestíbul.</string>
     <string name="nc_lobby_waiting_with_date">Actualment esteu esperant al vestíbul.\n Aquesta
 trobada està prevista per a les %1$s.</string>
-    </resources>
+    <string name="nc_manual">No establert</string>
+</resources>
