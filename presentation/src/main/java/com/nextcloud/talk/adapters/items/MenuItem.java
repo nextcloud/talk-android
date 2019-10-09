@@ -22,7 +22,6 @@
 
 package com.nextcloud.talk.adapters.items;
 
-
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -37,7 +36,6 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
-
 import java.util.List;
 
 public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> {

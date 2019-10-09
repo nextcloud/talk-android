@@ -32,7 +32,6 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.core.view.ViewCompat;
 import androidx.emoji.widget.EmojiTextView;
-
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,10 +43,9 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.TextMatchers;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.stfalcon.chatkit.messages.MessageHolders;
-
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicOutcomingTextMessageViewHolder extends MessageHolders.OutcomingTextMessageViewHolder<ChatMessage> {
@@ -120,7 +118,7 @@ public class MagicOutcomingTextMessageViewHolder extends MessageHolders.Outcomin
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
-        if (message.getIsGrouped()) {
+        if (message.isGrouped) {
             Drawable bubbleDrawable =
                     DisplayUtils.getMessageSelector(resources.getColor(R.color.bg_message_list_outcoming_bubble),
                     resources.getColor(R.color.transparent),

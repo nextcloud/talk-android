@@ -32,7 +32,6 @@ import eu.medsea.mimeutil.MimeUtil;
 import eu.medsea.mimeutil.detector.ExtensionMimeDetector;
 import eu.medsea.mimeutil.detector.MagicMimeMimeDetector;
 import eu.medsea.mimeutil.detector.OpendesktopMimeDetector;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;

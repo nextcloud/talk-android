@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.jobs;
 
-
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
@@ -31,12 +30,12 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.data.models.json.generic.GenericOverall;
-import com.nextcloud.data.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -44,15 +43,14 @@ import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import okhttp3.JavaNetCookieJar;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-
-import javax.inject.Inject;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.util.HashMap;
 import java.util.zip.CRC32;
+import javax.inject.Inject;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class AccountRemovalWorker extends Worker {

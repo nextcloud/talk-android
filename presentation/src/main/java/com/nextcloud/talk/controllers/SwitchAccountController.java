@@ -37,28 +37,26 @@ import autodagger.AutoInjector;
 import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.nextcloud.talk.models.ImportAccount;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.data.models.ImportAccount;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.data.models.json.participants.Participant;
 import com.nextcloud.talk.utils.AccountUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.uber.autodispose.AutoDispose;
-
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-
-import javax.inject.Inject;
 import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class SwitchAccountController extends BaseController {

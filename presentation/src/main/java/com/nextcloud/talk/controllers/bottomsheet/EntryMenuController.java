@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import autodagger.AutoInjector;
 import butterknife.BindView;
@@ -46,7 +45,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
-import com.nextcloud.data.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.EmojiTextInputEditText;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -58,11 +57,9 @@ import com.vanniktech.emoji.emoji.Emoji;
 import com.vanniktech.emoji.listeners.OnEmojiClickListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener;
-
+import javax.inject.Inject;
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
-
-import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class EntryMenuController extends BaseController {

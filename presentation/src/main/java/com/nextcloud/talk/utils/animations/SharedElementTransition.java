@@ -21,13 +21,17 @@
 package com.nextcloud.talk.utils.animations;
 
 import android.os.Bundle;
-import android.transition.*;
+import android.transition.ChangeBounds;
+import android.transition.ChangeClipBounds;
+import android.transition.ChangeTransform;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionSet;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.bluelinelabs.conductor.changehandler.SharedElementTransitionChangeHandler;
-
 import java.util.ArrayList;
 import java.util.List;
 

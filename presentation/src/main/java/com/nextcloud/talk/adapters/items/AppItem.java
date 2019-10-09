@@ -36,7 +36,6 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
-
 import java.util.List;
 
 public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {

@@ -23,7 +23,12 @@ package com.nextcloud.talk.components.filebrowser.controllers;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.Data;
@@ -52,13 +57,17 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.inject.Inject;
 import okhttp3.OkHttpClient;
 import org.parceler.Parcel;
 import org.parceler.Parcels;
-
-import javax.inject.Inject;
-import java.io.File;
-import java.util.*;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class BrowserController extends BaseController implements ListingInterface,

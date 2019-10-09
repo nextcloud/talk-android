@@ -32,7 +32,6 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import autodagger.AutoInjector;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-
 import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)

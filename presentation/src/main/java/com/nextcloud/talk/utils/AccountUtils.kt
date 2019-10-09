@@ -28,11 +28,12 @@ import android.accounts.AccountManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
+import com.nextcloud.talk.models.ImportAccount
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.data.models.ImportAccount
 import com.nextcloud.talk.models.database.UserEntity
-import java.util.*
+import java.util.ArrayList
+import java.util.Arrays
 
 object AccountUtils {
 

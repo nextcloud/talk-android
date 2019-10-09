@@ -23,20 +23,19 @@ package com.nextcloud.talk.utils.preferences.preferencestorage;
 import android.os.Bundle;
 import android.text.TextUtils;
 import autodagger.AutoInjector;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.data.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.yarolegovich.mp.io.StorageModule;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import javax.inject.Inject;
 import java.util.Set;
+import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class DatabaseStorageModule implements StorageModule {

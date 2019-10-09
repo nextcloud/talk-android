@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
       <module fileurl="file://$PROJECT_DIR$/presentation/presentation.iml" filepath="$PROJECT_DIR$/presentation/presentation.iml" />
       <module fileurl="file://$PROJECT_DIR$/talk-android.iml" filepath="$PROJECT_DIR$/talk-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/presentation/talk-android-presentation.iml" filepath="$PROJECT_DIR$/presentation/talk-android-presentation.iml" />
     </modules>
   </component>
 </project>

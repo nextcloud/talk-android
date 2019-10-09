@@ -21,7 +21,6 @@
 package com.nextcloud.talk.models.json.conversations;
 
 import android.content.res.Resources;
-
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
@@ -34,12 +33,9 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.converters.EnumReadOnlyConversationConverter;
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
-
-import org.parceler.Parcel;
-
 import java.util.HashMap;
-
 import lombok.Data;
+import org.parceler.Parcel;
 
 @Parcel
 @Data

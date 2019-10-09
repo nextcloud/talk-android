@@ -42,12 +42,11 @@ import android.os.Build;
 import android.util.Log;
 import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
-import org.greenrobot.eventbus.EventBus;
-import org.webrtc.ThreadUtils;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.greenrobot.eventbus.EventBus;
+import org.webrtc.ThreadUtils;
 
 /**
  * MagicAudioManager manages all audio related parts of the AppRTC demo.

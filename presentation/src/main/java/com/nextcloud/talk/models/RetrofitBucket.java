@@ -19,10 +19,9 @@
  */
 package com.nextcloud.talk.models;
 
+import java.util.Map;
 import lombok.Data;
 import org.parceler.Parcel;
-
-import java.util.Map;
 
 @Parcel
 @Data

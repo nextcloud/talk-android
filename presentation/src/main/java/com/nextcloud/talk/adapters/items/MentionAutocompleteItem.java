@@ -22,7 +22,6 @@ package com.nextcloud.talk.adapters.items;
 
 import android.annotation.SuppressLint;
 import android.view.View;
-
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
@@ -30,15 +29,13 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-
-import java.util.List;
-import java.util.regex.Pattern;
-
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder>
         implements IFilterable<String> {

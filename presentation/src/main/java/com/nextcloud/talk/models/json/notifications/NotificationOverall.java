@@ -18,20 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.domain
+package com.nextcloud.talk.models.json.notifications;
 
-import org.junit.Test
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import lombok.Data;
 
-import org.junit.Assert.*
-
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-class ExampleUnitTest {
-    @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
-    }
+@Data
+@JsonObject
+public class NotificationOverall {
+  @JsonField(name = "ocs")
+  NotificationOCS ocs;
 }

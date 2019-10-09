@@ -29,9 +29,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.view.View;
-
 import androidx.emoji.widget.EmojiTextView;
-
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,11 +49,10 @@ import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
-
-import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.inject.Inject;
+import okhttp3.OkHttpClient;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
@@ -80,8 +77,8 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
     public void onBind(ChatMessage message) {
         super.onBind(message);
         if (userAvatar != null) {
-            if (message.getIsGrouped() || message.isOneToOneConversation()) {
-                if (message.isOneToOneConversation()) {
+            if (message.isGrouped || message.isOneToOneConversation) {
+                if (message.isOneToOneConversation) {
                     userAvatar.setVisibility(View.GONE);
                 } else {
                     userAvatar.setVisibility(View.INVISIBLE);

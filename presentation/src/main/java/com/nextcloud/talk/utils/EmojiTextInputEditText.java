@@ -24,9 +24,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-
 import androidx.emoji.widget.EmojiEditTextHelper;
-
 import com.google.android.material.textfield.TextInputEditText;
 
 public class EmojiTextInputEditText extends TextInputEditText {

@@ -24,7 +24,6 @@ import android.text.Spannable;
 import android.text.Spanned;
 import androidx.annotation.Nullable;
 import com.otaliastudios.autocomplete.AutocompletePolicy;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

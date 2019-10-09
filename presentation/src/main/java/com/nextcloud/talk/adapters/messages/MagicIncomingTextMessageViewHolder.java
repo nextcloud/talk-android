@@ -34,7 +34,6 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.core.view.ViewCompat;
 import androidx.emoji.widget.EmojiTextView;
-
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,10 +48,9 @@ import com.nextcloud.talk.utils.TextMatchers;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.stfalcon.chatkit.messages.MessageHolders;
-
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicIncomingTextMessageViewHolder
@@ -135,7 +133,7 @@ public class MagicIncomingTextMessageViewHolder
 
         int bubbleResource = R.drawable.shape_incoming_message;
 
-        if (message.getIsGrouped()) {
+        if (message.isGrouped) {
             bubbleResource = R.drawable.shape_grouped_incoming_message;
         }
 

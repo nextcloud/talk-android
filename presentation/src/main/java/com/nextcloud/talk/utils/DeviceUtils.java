@@ -25,7 +25,6 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

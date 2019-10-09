@@ -21,27 +21,36 @@
 package com.nextcloud.talk.api;
 
 import androidx.annotation.Nullable;
-import com.nextcloud.data.models.json.capabilities.CapabilitiesOverall;
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
-import com.nextcloud.data.models.json.generic.GenericOverall;
-import com.nextcloud.data.models.json.generic.Status;
-import com.nextcloud.data.models.json.mention.MentionOverall;
-import com.nextcloud.data.models.json.notifications.NotificationOverall;
-import com.nextcloud.data.models.json.participants.AddParticipantOverall;
-import com.nextcloud.data.models.json.participants.ParticipantsOverall;
-import com.nextcloud.data.models.json.push.PushRegistrationOverall;
-import com.nextcloud.data.models.json.conversations.RoomOverall;
-import com.nextcloud.data.models.json.conversations.RoomsOverall;
-import com.nextcloud.data.models.json.signaling.SignalingOverall;
-import com.nextcloud.data.models.json.signaling.settings.SignalingSettingsOverall;
-import com.nextcloud.data.models.json.userprofile.UserProfileOverall;
+import com.nextcloud.talk.models.json.conversations.RoomOverall;
+import com.nextcloud.talk.models.json.conversations.RoomsOverall;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.generic.Status;
+import com.nextcloud.talk.models.json.mention.MentionOverall;
+import com.nextcloud.talk.models.json.notifications.NotificationOverall;
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
+import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
+import com.nextcloud.talk.models.json.signaling.SignalingOverall;
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import io.reactivex.Observable;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
-import retrofit2.http.*;
-
 import java.util.List;
 import java.util.Map;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+import retrofit2.http.DELETE;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 
 public interface NcApi {
 

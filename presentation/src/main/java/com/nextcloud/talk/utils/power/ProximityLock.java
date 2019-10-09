@@ -24,7 +24,6 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.PowerManager;
 import androidx.annotation.RequiresApi;
-
 import java.util.Optional;
 
 class ProximityLock {

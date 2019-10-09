@@ -22,15 +22,14 @@ package com.nextcloud.talk.utils;
 import android.net.Uri;
 import android.text.TextUtils;
 import androidx.annotation.DimenRes;
+import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.data.models.RetrofitBucket;
-import okhttp3.Credentials;
-
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
+import okhttp3.Credentials;
 
 public class ApiUtils {
     private static String ocsApiVersion = "/ocs/v2.php";

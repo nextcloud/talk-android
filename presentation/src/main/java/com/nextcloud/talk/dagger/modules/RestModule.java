@@ -41,15 +41,6 @@ import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.*;
-import okhttp3.internal.tls.OkHostnameVerifier;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-
-import javax.inject.Singleton;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.X509KeyManager;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.InetSocketAddress;
@@ -60,6 +51,23 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
+import javax.inject.Singleton;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.X509KeyManager;
+import okhttp3.Authenticator;
+import okhttp3.Cache;
+import okhttp3.Credentials;
+import okhttp3.Dispatcher;
+import okhttp3.Interceptor;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.Route;
+import okhttp3.internal.tls.OkHostnameVerifier;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 @Module(includes = DatabaseModule.class)
 public class RestModule {

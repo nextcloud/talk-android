@@ -28,14 +28,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import com.nextcloud.talk.R;
-import com.yarolegovich.mp.util.Utils;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import com.nextcloud.talk.R;
+import com.yarolegovich.mp.util.Utils;
 
 public class MaterialPreferenceCategoryWithRightLink extends CardView {
 

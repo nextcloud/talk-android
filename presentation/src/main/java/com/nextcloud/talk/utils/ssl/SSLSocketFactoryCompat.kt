@@ -13,8 +13,12 @@ import java.io.IOException
 import java.net.InetAddress
 import java.net.Socket
 import java.security.GeneralSecurityException
-import java.util.*
-import javax.net.ssl.*
+import java.util.LinkedList
+import javax.net.ssl.KeyManager
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocket
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.X509TrustManager
 
 class SSLSocketFactoryCompat(keyManager: KeyManager?,
                              trustManager: X509TrustManager) : SSLSocketFactory() {

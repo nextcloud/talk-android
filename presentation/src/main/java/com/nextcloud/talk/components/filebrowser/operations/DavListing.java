@@ -29,9 +29,8 @@ import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
-
 import java.util.concurrent.Callable;
+import okhttp3.OkHttpClient;
 
 public class DavListing extends ListingAbstractClass {
     private DavResponse davResponse = new DavResponse();

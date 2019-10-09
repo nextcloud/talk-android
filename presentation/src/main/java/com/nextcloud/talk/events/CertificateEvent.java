@@ -23,7 +23,6 @@ package com.nextcloud.talk.events;
 import android.webkit.SslErrorHandler;
 import androidx.annotation.Nullable;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
-
 import java.security.cert.X509Certificate;
 
 public class CertificateEvent {

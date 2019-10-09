@@ -33,9 +33,8 @@ import io.requery.reactivex.ReactiveEntityStore;
 import io.requery.reactivex.ReactiveSupport;
 import io.requery.sql.Configuration;
 import io.requery.sql.EntityDataStore;
-import net.orange_box.storebox.StoreBox;
-
 import javax.inject.Singleton;
+import net.orange_box.storebox.StoreBox;
 
 @Module
 public class DatabaseModule {

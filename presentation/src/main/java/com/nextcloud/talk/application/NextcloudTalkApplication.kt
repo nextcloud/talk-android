@@ -23,10 +23,9 @@ package com.nextcloud.talk.application
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.emoji.bundled.BundledEmojiCompatConfig
 import androidx.emoji.text.EmojiCompat
-
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LifecycleObserver
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
@@ -59,7 +58,6 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.googlecompat.GoogleCompatEmojiProvider
-
 import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
 import okhttp3.OkHttpClient
@@ -67,11 +65,10 @@ import org.conscrypt.Conscrypt
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.voiceengine.WebRtcAudioManager
 import org.webrtc.voiceengine.WebRtcAudioUtils
-
-import javax.inject.Inject
-import javax.inject.Singleton
 import java.security.Security
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @AutoComponent(modules = [BusModule::class, ContextModule::class, DatabaseModule::class, RestModule::class, UserModule::class, ArbitraryStorageModule::class])
 @Singleton

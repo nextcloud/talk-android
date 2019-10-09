@@ -31,7 +31,6 @@ import io.reactivex.schedulers.Schedulers;
 import io.requery.Persistable;
 import io.requery.query.Result;
 import io.requery.reactivex.ReactiveEntityStore;
-
 import java.util.List;
 
 public class UserUtils {

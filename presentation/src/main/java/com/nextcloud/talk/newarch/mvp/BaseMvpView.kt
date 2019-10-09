@@ -18,9 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.mvp
+package com.nextcloud.talk.newarch.conversationsList.mvp
 
-interface MvpPresenter {
-    fun stop()
-    fun destroy()
+import android.view.View
+import androidx.annotation.LayoutRes
+import autodagger.AutoInjector
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.controllers.base.BaseController
+
+@AutoInjector(NextcloudTalkApplication::class)
+abstract class BaseView : BaseController() {
+
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        getPresenter().stop()
+    }
+
+    override fun onDestroy() {
+        getPresenter().destroy()
+        super.onDestroy()
+    }
+
+    @LayoutRes
+    protected abstract fun getLayoutId(): Int
+
+    protected abstract fun getPresenter(): MvpPresenter
 }

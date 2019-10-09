@@ -30,26 +30,34 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.NetworkEvent;
 import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.data.models.json.participants.Participant;
-import com.nextcloud.data.models.json.signaling.NCMessageWrapper;
-import com.nextcloud.data.models.json.signaling.NCSignalingMessage;
-import com.nextcloud.data.models.json.websocket.*;
+import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.MagicMap;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-
-import okhttp3.*;
-import okio.ByteString;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
+import okio.ByteString;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicWebSocketInstance extends WebSocketListener {

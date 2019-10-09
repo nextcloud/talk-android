@@ -19,16 +19,12 @@
 
 package com.nextcloud.talk.models.json.converters;
 
-
 import android.util.Log;
-
 import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-
-import org.joda.time.DateTime;
-
 import java.io.IOException;
+import org.joda.time.DateTime;
 
 public class LoganSquareJodaTimeConverter implements TypeConverter<DateTime> {
 

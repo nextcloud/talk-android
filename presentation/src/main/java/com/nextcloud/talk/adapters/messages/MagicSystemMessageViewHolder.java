@@ -27,16 +27,15 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.View;
 import androidx.core.view.ViewCompat;
+import autodagger.AutoInjector;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.stfalcon.chatkit.messages.MessageHolders;
-
 import java.util.Map;
 import javax.inject.Inject;
-import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {

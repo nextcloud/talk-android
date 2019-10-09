@@ -33,10 +33,9 @@ import autodagger.AutoInjector;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.yarolegovich.mp.io.StandardUserInputModule;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicUserInputModule extends StandardUserInputModule {

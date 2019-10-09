@@ -23,15 +23,11 @@ package com.nextcloud.talk.models.json.notifications;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.LoganSquareJodaTimeConverter;
-
-import org.joda.time.DateTime;
-import org.parceler.Parcel;
-
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
 import lombok.Data;
+import org.joda.time.DateTime;
+import org.parceler.Parcel;
 
 @Data
 @Parcel

@@ -22,12 +22,11 @@ package com.nextcloud.talk.models.database;
 import android.os.Parcelable;
 import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.data.models.json.capabilities.Capabilities;
+import com.nextcloud.talk.models.json.capabilities.Capabilities;
 import io.requery.Entity;
 import io.requery.Generated;
 import io.requery.Key;
 import io.requery.Persistable;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;

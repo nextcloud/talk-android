@@ -21,7 +21,13 @@
 package com.nextcloud.talk.utils.preferences;
 
 import com.nextcloud.talk.R;
-import net.orange_box.storebox.annotations.method.*;
+import net.orange_box.storebox.annotations.method.ClearMethod;
+import net.orange_box.storebox.annotations.method.DefaultValue;
+import net.orange_box.storebox.annotations.method.KeyByResource;
+import net.orange_box.storebox.annotations.method.KeyByString;
+import net.orange_box.storebox.annotations.method.RegisterChangeListenerMethod;
+import net.orange_box.storebox.annotations.method.RemoveMethod;
+import net.orange_box.storebox.annotations.method.UnregisterChangeListenerMethod;
 import net.orange_box.storebox.annotations.option.SaveOption;
 import net.orange_box.storebox.enums.SaveMode;
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;

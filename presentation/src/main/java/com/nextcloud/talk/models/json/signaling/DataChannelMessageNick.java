@@ -23,10 +23,9 @@ package com.nextcloud.talk.models.json.signaling;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.ObjectParcelConverter;
+import java.util.HashMap;
 import lombok.Data;
 import org.parceler.ParcelPropertyConverter;
-
-import java.util.HashMap;
 
 @Data
 @JsonObject

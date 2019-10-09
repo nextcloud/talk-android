@@ -28,14 +28,13 @@ import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.dagger.modules.RestModule;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ReadFilesystemOperation {
     private final OkHttpClient okHttpClient;

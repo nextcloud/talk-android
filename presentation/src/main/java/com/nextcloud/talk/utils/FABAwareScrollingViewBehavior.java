@@ -22,7 +22,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.List;
 
 public class FABAwareScrollingViewBehavior extends AppBarLayout.ScrollingViewBehavior {

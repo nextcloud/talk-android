@@ -36,6 +36,9 @@ import autodagger.AutoInjector;
 import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.nextcloud.talk.models.json.conversations.RoomsOverall;
+import com.nextcloud.talk.models.json.generic.Status;
+import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -45,9 +48,6 @@ import com.nextcloud.talk.jobs.CapabilitiesWorker;
 import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.jobs.SignalingSettingsWorker;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.data.models.json.generic.Status;
-import com.nextcloud.data.models.json.conversations.RoomsOverall;
-import com.nextcloud.data.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -55,18 +55,16 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.uber.autodispose.AutoDispose;
-
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import java.net.CookieManager;
+import javax.inject.Inject;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import javax.inject.Inject;
-import java.net.CookieManager;
 
 
 @AutoInjector(NextcloudTalkApplication.class)

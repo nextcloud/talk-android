@@ -30,7 +30,6 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractHeaderItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
-
 import java.util.List;
 
 public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderItem.HeaderViewHolder> {

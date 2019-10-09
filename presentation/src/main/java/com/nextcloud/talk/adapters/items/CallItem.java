@@ -26,9 +26,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
 import androidx.emoji.widget.EmojiTextView;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -38,7 +36,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.data.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -46,10 +44,9 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.List;
 import java.util.regex.Pattern;
+import org.greenrobot.eventbus.EventBus;
 
 public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements IFilterable<String> {
 
@@ -114,7 +111,7 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
                     System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
         }
 
-        if (conversation.getHasPassword()) {
+        if (conversation.hasPassword) {
             holder.passwordProtectedImageView.setVisibility(View.VISIBLE);
         } else {
             holder.passwordProtectedImageView.setVisibility(View.GONE);

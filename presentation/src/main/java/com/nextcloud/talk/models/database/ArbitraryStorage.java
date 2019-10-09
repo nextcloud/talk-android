@@ -24,7 +24,6 @@ import android.os.Parcelable;
 import io.requery.Entity;
 import io.requery.Key;
 import io.requery.Persistable;
-
 import java.io.Serializable;
 
 @Entity

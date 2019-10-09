@@ -20,7 +20,6 @@ package com.nextcloud.talk.controllers.base;
 
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,10 +41,9 @@ import com.nextcloud.talk.controllers.WebViewLoginController;
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public abstract class BaseController extends ButterKnifeController {

@@ -20,12 +20,10 @@
 
 package com.nextcloud.talk.receivers
 
-import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
@@ -34,7 +32,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
-
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)

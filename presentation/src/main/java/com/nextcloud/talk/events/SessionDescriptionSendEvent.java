@@ -21,7 +21,7 @@
 package com.nextcloud.talk.events;
 
 import androidx.annotation.Nullable;
-import com.nextcloud.data.models.json.signaling.NCIceCandidate;
+import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import lombok.Data;
 import org.webrtc.SessionDescription;
 

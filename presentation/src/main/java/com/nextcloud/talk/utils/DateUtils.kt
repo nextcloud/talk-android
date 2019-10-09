@@ -21,8 +21,9 @@
 package com.nextcloud.talk.utils
 
 import java.text.DateFormat
-import java.util.*
-
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 object DateUtils {
     fun getLocalDateTimeStringFromTimestamp(timestamp: Long): String {

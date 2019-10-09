@@ -29,12 +29,15 @@ import at.bitfire.dav4android.property.GetContentType;
 import at.bitfire.dav4android.property.GetLastModified;
 import at.bitfire.dav4android.property.ResourceType;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.components.filebrowser.models.properties.*;
-import lombok.Data;
-import org.parceler.Parcel;
-
+import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted;
+import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
 import java.io.File;
 import java.util.List;
+import lombok.Data;
+import org.parceler.Parcel;
 
 @Data
 @JsonObject

@@ -33,8 +33,12 @@ package com.nextcloud.talk.webrtc;
 
 import android.os.Build;
 import android.util.Log;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

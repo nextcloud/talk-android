@@ -21,26 +21,22 @@
 package com.nextcloud.talk.jobs;
 
 import android.content.Context;
-
-import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.events.EventStatus;
-import com.nextcloud.data.models.RetrofitBucket;
-import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.database.user.UserUtils;
-
-import org.greenrobot.eventbus.EventBus;
-
-import javax.inject.Inject;
-
 import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
+import com.nextcloud.talk.models.RetrofitBucket;
+import com.nextcloud.talk.api.NcApi;
+import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.events.EventStatus;
+import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.bundle.BundleKeys;
+import com.nextcloud.talk.utils.database.user.UserUtils;
 import io.reactivex.schedulers.Schedulers;
+import javax.inject.Inject;
+import org.greenrobot.eventbus.EventBus;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class AddParticipantsToConversation extends Worker {

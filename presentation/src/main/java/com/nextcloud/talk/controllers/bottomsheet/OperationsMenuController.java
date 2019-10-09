@@ -35,48 +35,42 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import autodagger.AutoInjector;
+import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.nextcloud.talk.models.RetrofitBucket;
+import com.nextcloud.talk.models.json.capabilities.Capabilities;
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.RoomOverall;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
-import com.nextcloud.data.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.data.models.json.capabilities.Capabilities;
-import com.nextcloud.data.models.json.capabilities.CapabilitiesOverall;
-import com.nextcloud.data.models.json.conversations.Conversation;
-import com.nextcloud.data.models.json.conversations.RoomOverall;
-import com.nextcloud.data.models.json.generic.GenericOverall;
-import com.nextcloud.data.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
-
-import org.greenrobot.eventbus.EventBus;
-import org.parceler.Parcels;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
-import javax.inject.Inject;
-
-import autodagger.AutoInjector;
-import butterknife.BindView;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.inject.Inject;
+import org.greenrobot.eventbus.EventBus;
+import org.parceler.Parcels;
 import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)

@@ -28,26 +28,25 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.data.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import okhttp3.JavaNetCookieJar;
-import okhttp3.OkHttpClient;
-import org.greenrobot.eventbus.EventBus;
-import retrofit2.Retrofit;
-
-import javax.inject.Inject;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import org.greenrobot.eventbus.EventBus;
+import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CapabilitiesWorker extends Worker {

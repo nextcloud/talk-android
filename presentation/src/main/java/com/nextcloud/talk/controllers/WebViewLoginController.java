@@ -33,7 +33,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.*;
+import android.webkit.ClientCertRequest;
+import android.webkit.CookieSyncManager;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,12 +50,12 @@ import autodagger.AutoInjector;
 import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.jobs.PushRegistrationWorker;
-import com.nextcloud.data.models.LoginData;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -56,16 +63,12 @@ import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import com.uber.autodispose.AutoDispose;
-
 import de.cotech.hw.fido.WebViewFidoBridge;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.requery.Persistable;
 import io.requery.reactivex.ReactiveEntityStore;
-import org.greenrobot.eventbus.EventBus;
-
-import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.net.CookieManager;
 import java.net.URLDecoder;
@@ -75,6 +78,8 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import javax.inject.Inject;
+import org.greenrobot.eventbus.EventBus;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebViewLoginController extends BaseController {

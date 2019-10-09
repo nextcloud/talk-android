@@ -33,10 +33,13 @@ import com.nextcloud.talk.utils.TextMatchers;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 import com.stfalcon.chatkit.commons.models.MessageContentType;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.Data;
 import org.parceler.Parcel;
-
-import java.util.*;
 
 @Parcel
 @Data

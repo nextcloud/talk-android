@@ -18,25 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.mvp
+package com.nextcloud.talk.newarch.conversationsList
 
-import io.reactivex.disposables.CompositeDisposable
+import com.nextcloud.talk.models.json.conversations.Conversation
 
-abstract class BasePresenter<V : BaseView> : MvpPresenter {
-
-    protected val disposables: CompositeDisposable = CompositeDisposable()
-    protected var view: V? = null
-        private set
-
-    fun start(view: V) {
-        this.view = view
+class ConversationsListContract {
+    interface View {
+        fun onLoadConversationsSuccess(conversations: List<Conversation>)
+        fun onLoadConversationsFailure(throwable: Throwable)
     }
 
-    override fun stop() {
-        this.view = null
-    }
-
-    override fun destroy() {
-        disposables.clear()
+    interface Presenter {
+        fun loadConversations()
     }
 }

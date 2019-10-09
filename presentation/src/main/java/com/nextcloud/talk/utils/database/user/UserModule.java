@@ -26,7 +26,6 @@ import dagger.Module;
 import dagger.Provides;
 import io.requery.Persistable;
 import io.requery.reactivex.ReactiveEntityStore;
-
 import javax.inject.Inject;
 
 @Module(includes = DatabaseModule.class)

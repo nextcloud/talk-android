@@ -18,30 +18,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.mvp
+package com.nextcloud.talk.newarch.conversationsList.mvp
 
-import android.content.Context
-import android.view.View
-import androidx.annotation.LayoutRes
-import autodagger.AutoInjector
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.BaseController
+import io.reactivex.disposables.CompositeDisposable
 
-@AutoInjector(NextcloudTalkApplication::class)
-abstract class BaseView : BaseController() {
+abstract class BasePresenter<V : BaseView> : MvpPresenter {
 
-    override fun onDetach(view: View) {
-        super.onDetach(view)
-        getPresenter().stop()
+    protected val disposables: CompositeDisposable = CompositeDisposable()
+    protected var view: V? = null
+        private set
+
+    fun start(view: V) {
+        this.view = view
     }
 
-    override fun onDestroy() {
-        getPresenter().destroy()
-        super.onDestroy()
+    override fun stop() {
+        this.view = null
     }
 
-    @LayoutRes
-    protected abstract fun getLayoutId(): Int
-
-    protected abstract fun getPresenter(): MvpPresenter
+    override fun destroy() {
+        disposables.clear()
+    }
 }

@@ -38,7 +38,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -49,7 +48,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-
+import autodagger.AutoInjector;
+import butterknife.BindView;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat;
@@ -65,6 +65,8 @@ import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.items.CallItem;
@@ -80,8 +82,6 @@ import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.data.models.json.conversations.Conversation;
-import com.nextcloud.data.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -93,27 +93,21 @@ import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.uber.autodispose.AutoDispose;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
-
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.parceler.Parcels;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import autodagger.AutoInjector;
-import butterknife.BindView;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.inject.Inject;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.parceler.Parcels;
 import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -600,13 +594,12 @@ public class ConversationsListController extends BaseController implements Searc
                 conversation = ((CallItem) clickedItem).getModel();
             }
 
-
             Bundle bundle = new Bundle();
             bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
             bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
             bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
 
-            if (conversation.getHasPassword() && (conversation.getParticipantType().equals(Participant.ParticipantType.GUEST) ||
+            if (conversation.hasPassword && (conversation.getParticipantType().equals(Participant.ParticipantType.GUEST) ||
                     conversation.getParticipantType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
                 bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
                 prepareAndShowBottomSheetWithBundle(bundle, false);

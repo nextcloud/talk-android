@@ -35,8 +35,17 @@ import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AbsListView
+import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.widget.EmojiEditText
@@ -54,9 +63,18 @@ import com.facebook.datasource.DataSource
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.RoomsOverall
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
-import com.nextcloud.talk.adapters.messages.*
+import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
+import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
+import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
+import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder
+import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
@@ -67,13 +85,14 @@ import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
-import com.nextcloud.data.models.json.conversations.Conversation
-import com.nextcloud.data.models.json.conversations.RoomOverall
-import com.nextcloud.data.models.json.conversations.RoomsOverall
-import com.nextcloud.data.models.json.generic.GenericOverall
-import com.nextcloud.data.models.json.mention.Mention
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
-import com.nextcloud.talk.utils.*
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ConductorRemapping
+import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.KeyboardUtils
+import com.nextcloud.talk.utils.MagicCharPolicy
+import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -102,7 +121,9 @@ import org.greenrobot.eventbus.ThreadMode
 import org.parceler.Parcels
 import retrofit2.HttpException
 import retrofit2.Response
-import java.util.*
+import java.util.Date
+import java.util.HashMap
+import java.util.Objects
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -202,7 +223,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
         if (conversationUser?.userId == "?") {
             credentials = null
         } else {
-            credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
+            credentials = ApiUtils.getCredentials(conversationUser?.username, conversationUser?.token)
         }
 
         if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
@@ -765,7 +786,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                         roomToken))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.`as`(AutoDispose.autoDisposable(scopeProvider))
                 ?.subscribe(object : Observer<GenericOverall> {
                     override fun onSubscribe(d: Disposable) {
                     }
@@ -1238,7 +1258,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
             val clipboardManager = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
             val clipData = android.content.ClipData.newPlainText(
                     resources?.getString(R.string.nc_app_name), message.text)
-            clipboardManager.primaryClip = clipData
+            clipboardManager.setPrimaryClip(clipData)
         }
     }
 

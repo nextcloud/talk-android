@@ -48,6 +48,12 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.UserItem
 import com.nextcloud.talk.api.NcApi
@@ -59,12 +65,6 @@ import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.data.models.json.conversations.Conversation
-import com.nextcloud.data.models.json.conversations.RoomOverall
-import com.nextcloud.data.models.json.converters.EnumNotificationLevelConverter
-import com.nextcloud.data.models.json.generic.GenericOverall
-import com.nextcloud.data.models.json.participants.Participant
-import com.nextcloud.data.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -73,7 +73,11 @@ import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageMod
 import com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
 import com.yarolegovich.lovelydialog.LovelyStandardDialog
-import com.yarolegovich.mp.*
+import com.yarolegovich.mp.MaterialChoicePreference
+import com.yarolegovich.mp.MaterialPreferenceCategory
+import com.yarolegovich.mp.MaterialPreferenceScreen
+import com.yarolegovich.mp.MaterialStandardPreference
+import com.yarolegovich.mp.MaterialSwitchPreference
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -84,9 +88,9 @@ import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.*
+import java.util.ArrayList
+import java.util.Calendar
 import javax.inject.Inject
-
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapter.OnItemClickListener {

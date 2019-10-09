@@ -33,9 +33,8 @@ import androidx.annotation.Nullable;
 import com.kennyc.bottomsheet.adapters.AppAdapter;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.data.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

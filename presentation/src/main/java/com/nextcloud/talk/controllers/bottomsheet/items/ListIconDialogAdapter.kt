@@ -23,7 +23,6 @@ package com.nextcloud.talk.controllers.bottomsheet.items
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -34,7 +33,6 @@ import com.afollestad.materialdialogs.internal.rtl.RtlTextView
 import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.utils.MDUtil.inflate
 import com.afollestad.materialdialogs.utils.MDUtil.maybeSetTextColor
-import com.google.android.material.textview.MaterialTextView
 import com.nextcloud.talk.R
 
 private const val KEY_ACTIVATED_INDEX = "activated_index"

@@ -46,9 +46,8 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
-
-import javax.inject.Inject;
 import java.util.List;
+import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHolder> implements IFilterable<String> {

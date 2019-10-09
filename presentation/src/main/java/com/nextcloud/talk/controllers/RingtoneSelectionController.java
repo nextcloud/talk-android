@@ -40,22 +40,21 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.NotificationSoundItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.data.models.RingtoneSettings;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.SelectableAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
-
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class RingtoneSelectionController extends BaseController implements FlexibleAdapter.OnItemClickListener {
