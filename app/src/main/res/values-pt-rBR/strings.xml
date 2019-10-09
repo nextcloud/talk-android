@@ -182,7 +182,10 @@
     <string name="nc_notify_me_mention">Notificar quando mencionado</string>
     <string name="nc_notify_me_never">Nunca notificar</string>
     <string name="nc_mute_calls">Silenciar chamadas</string>
+    <string name="nc_mute_calls_desc">Chamadas serão ignoradas</string>
     <string name="nc_important_conversation">Conversa importante</string>
+    <string name="nc_important_conversation_desc">Chamadas e notificações de mensagens serão exibidas mesmo no modo Não perturbe (Obedece a configuração do sistema \"Permitir apenas interrupções prioritárias\")</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
     <string name="nc_failed_signaling_settings">O servidor de destino não suporta a participação em conversas públicas
@@ -274,4 +277,5 @@
     <string name="nc_lobby_waiting">Você está esperando no lobby no momento.</string>
     <string name="nc_lobby_waiting_with_date">Você está esperando no lobby.\n esta
         reunião está marcada para %1$s.</string>
-    </resources>
+    <string name="nc_manual">Não definido</string>
+</resources>
