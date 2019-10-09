@@ -18,4 +18,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include ':presentation', ':data', ':domain'
+package com.nextcloud.talk.adapters.messages;
+
+import android.view.View;
+
+import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.stfalcon.chatkit.messages.MessageHolders;
+
+public class MagicUnreadNoticeMessageViewHolder extends MessageHolders.SystemMessageViewHolder<ChatMessage> {
+
+    public MagicUnreadNoticeMessageViewHolder(View itemView) {
+        super(itemView);
+    }
+
+    public MagicUnreadNoticeMessageViewHolder(View itemView, Object payload) {
+        super(itemView, payload);
+    }
+
+    @Override
+    public void viewDetached() {
+        messagesListAdapter.deleteById("-1");
+    }
+
+    @Override
+    public void viewAttached() {
+    }
+
+    @Override
+    public void viewRecycled() {
+
+    }
+}

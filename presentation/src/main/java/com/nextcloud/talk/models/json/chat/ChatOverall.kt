@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,4 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include ':presentation', ':data', ':domain'
+package com.nextcloud.talk.models.json.chat
+
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+
+import org.parceler.Parcel
+
+
+@Parcel
+@JsonObject
+class ChatOverall {
+    @JsonField(name = ["ocs"])
+    var ocs: ChatOCS? = null
+}

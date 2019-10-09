@@ -18,4 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include ':presentation', ':data', ':domain'
+package com.nextcloud.talk.features.conversationsList
+
+import com.nextcloud.data.models.json.conversations.Conversation
+
+class ConversationsListContract {
+    interface View {
+        fun onLoadConversationsSuccess(conversations: List<Conversation>)
+        fun onLoadConversationsFailure(throwable: Throwable)
+    }
+
+    interface Presenter {
+        fun loadConversations()
+    }
+}

@@ -18,4 +18,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include ':presentation', ':data', ':domain'
+package com.nextcloud.talk.mvp
+
+import android.content.Context
+import android.view.View
+import androidx.annotation.LayoutRes
+import autodagger.AutoInjector
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.controllers.base.BaseController
+
+@AutoInjector(NextcloudTalkApplication::class)
+abstract class BaseView : BaseController() {
+
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        getPresenter().stop()
+    }
+
+    override fun onDestroy() {
+        getPresenter().destroy()
+        super.onDestroy()
+    }
+
+    @LayoutRes
+    protected abstract fun getLayoutId(): Int
+
+    protected abstract fun getPresenter(): MvpPresenter
+}

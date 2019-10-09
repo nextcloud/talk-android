@@ -18,4 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include ':presentation', ':data', ':domain'
+package com.nextcloud.talk.mvp
+
+interface MvpPresenter {
+    fun stop()
+    fun destroy()
+}
