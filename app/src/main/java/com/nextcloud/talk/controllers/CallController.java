@@ -192,8 +192,6 @@ public class CallController extends BaseController {
     @Inject
     NcApi ncApi;
     @Inject
-    EventBus eventBus;
-    @Inject
     UserUtils userUtils;
     @Inject
     AppPreferences appPreferences;
@@ -2257,18 +2255,6 @@ public class CallController extends BaseController {
             mediaPlayer.release();
             mediaPlayer = null;
         }
-    }
-
-    @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-        eventBus.register(this);
-    }
-
-    @Override
-    protected void onDetach(@NonNull View view) {
-        super.onDetach(view);
-        eventBus.unregister(this);
     }
 
     private class MicrophoneButtonTouchListener implements View.OnTouchListener {

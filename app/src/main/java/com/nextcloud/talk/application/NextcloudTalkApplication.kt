@@ -20,6 +20,7 @@
  */
 package com.nextcloud.talk.application
 
+import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.util.Log
@@ -48,6 +49,9 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
+import com.nextcloud.talk.newarch.di.module.CommunicationModule
+import com.nextcloud.talk.newarch.di.module.NetworkModule
+import com.nextcloud.talk.newarch.di.module.StorageModule
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -62,6 +66,9 @@ import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
 import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.voiceengine.WebRtcAudioManager
 import org.webrtc.voiceengine.WebRtcAudioUtils
@@ -73,7 +80,7 @@ import javax.inject.Singleton
 @AutoComponent(modules = [BusModule::class, ContextModule::class, DatabaseModule::class, RestModule::class, UserModule::class, ArbitraryStorageModule::class])
 @Singleton
 @AutoInjector(NextcloudTalkApplication::class)
-class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
+class NextcloudTalkApplication : Application(), LifecycleObserver {
     //region Fields (components)
     lateinit var componentApplication: NextcloudTalkApplicationComponent
         private set
@@ -182,6 +189,12 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
                 .userModule(UserModule())
                 .arbitraryStorageModule(ArbitraryStorageModule())
                 .build()
+
+        startKoin {
+            androidContext(this@NextcloudTalkApplication)
+            androidLogger()
+            modules(listOf(CommunicationModule, StorageModule, NetworkModule))
+        }
     }
 
     override fun attachBaseContext(base: Context) {

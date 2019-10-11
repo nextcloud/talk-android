@@ -200,7 +200,7 @@ public class CallNotificationController extends BaseController {
                 .subscribeOn(Schedulers.io())
                 .takeWhile(observable -> !leavingScreen)
                 .retry(3)
-                .as(AutoDispose.autoDisposable(scopeProvider))
+                .as(AutoDispose.autoDisposable(getScopeProvider()))
                 .subscribe(new Observer<ParticipantsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -249,7 +249,7 @@ public class CallNotificationController extends BaseController {
                 .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
-                .as(AutoDispose.autoDisposable(scopeProvider))
+                .as(AutoDispose.autoDisposable(getScopeProvider()))
                 .subscribe(new Observer<RoomsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -388,19 +388,6 @@ public class CallNotificationController extends BaseController {
         layoutParams.width = dimen;
         layoutParams.height = dimen;
         avatarImageView.setLayoutParams(layoutParams);
-    }
-
-    @Override
-    protected void onDetach(@NonNull View view) {
-        super.onDetach(view);
-        eventBus.unregister(this);
-    }
-
-    @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-        eventBus.register(this);
-
     }
 
     private void loadAvatar() {

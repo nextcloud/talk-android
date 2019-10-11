@@ -36,7 +36,7 @@ import java.util.List;
 public class UserUtils {
     private ReactiveEntityStore<Persistable> dataStore;
 
-    UserUtils(ReactiveEntityStore<Persistable> dataStore) {
+    public UserUtils(ReactiveEntityStore<Persistable> dataStore) {
         this.dataStore = dataStore;
     }
 

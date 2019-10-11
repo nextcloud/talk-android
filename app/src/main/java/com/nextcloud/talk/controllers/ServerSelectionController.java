@@ -243,7 +243,7 @@ public class ServerSelectionController extends BaseController {
         ncApi.getServerStatus(queryUrl)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .as(AutoDispose.autoDisposable(scopeProvider))
+                .as(AutoDispose.autoDisposable(getScopeProvider()))
                 .subscribe(status -> {
                     String productName = getResources().getString(R.string.nc_server_product_name);
 

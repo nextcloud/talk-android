@@ -130,10 +130,6 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
 
     @set:Inject
     lateinit var ncApi: NcApi
-    @set:Inject
-    lateinit var context: Context
-    @set:Inject
-    lateinit var eventBus: EventBus
 
     private val conversationToken: String?
     private val conversationUser: UserEntity?
@@ -185,7 +181,6 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        eventBus.register(this)
 
         if (databaseStorageModule == null) {
             databaseStorageModule = DatabaseStorageModule(conversationUser!!, conversationToken)
@@ -304,11 +299,6 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(eventStatus: EventStatus) {
         getListOfParticipants()
-    }
-
-    override fun onDetach(view: View) {
-        super.onDetach(view)
-        eventBus.unregister(this)
     }
 
     private fun showDeleteConversationDialog(savedInstanceState: Bundle?) {

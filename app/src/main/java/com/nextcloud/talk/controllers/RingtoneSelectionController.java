@@ -225,7 +225,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
     }
 
     @Override
-    protected String getTitle() {
+    public String getTitle() {
         return getResources().getString(R.string.nc_settings_notification_sounds);
     }
 

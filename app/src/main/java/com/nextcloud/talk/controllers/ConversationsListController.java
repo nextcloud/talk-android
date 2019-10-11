@@ -236,8 +236,6 @@ public class ConversationsListController extends BaseController implements Searc
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        eventBus.register(this);
-
         currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
@@ -247,11 +245,6 @@ public class ConversationsListController extends BaseController implements Searc
         }
     }
 
-    @Override
-    protected void onDetach(@NonNull View view) {
-        super.onDetach(view);
-        eventBus.unregister(this);
-    }
 
     private void initSearchView() {
         if (getActivity() != null) {
@@ -318,7 +311,7 @@ public class ConversationsListController extends BaseController implements Searc
         ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(currentUser.getBaseUrl()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .as(AutoDispose.autoDisposable(scopeProvider))
+                .as(AutoDispose.autoDisposable(getScopeProvider()))
                 .subscribe(roomsOverall -> {
 
                     if (adapterWasNull) {
@@ -574,7 +567,7 @@ public class ConversationsListController extends BaseController implements Searc
 
 
     @Override
-    protected String getTitle() {
+    public String getTitle() {
         return getResources().getString(R.string.nc_app_name);
     }
 

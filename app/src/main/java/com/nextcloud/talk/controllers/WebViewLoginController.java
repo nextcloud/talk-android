@@ -392,7 +392,7 @@ public class WebViewLoginController extends BaseController {
                                 null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias(), null)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .as(AutoDispose.autoDisposable(scopeProvider))
+                                .as(AutoDispose.autoDisposable(getScopeProvider()))
                                 .subscribe(userEntity -> {
                                             if (finalMessageType != null) {
                                                 ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);

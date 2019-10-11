@@ -510,7 +510,7 @@ public class SettingsController extends BaseController {
                     ApiUtils.getUrlForUserProfile(currentUser.getBaseUrl()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .as(AutoDispose.autoDisposable(scopeProvider))
+                    .as(AutoDispose.autoDisposable(getScopeProvider()))
                     .subscribe(userProfileOverall -> {
 
                         String displayName = null;
@@ -533,7 +533,7 @@ public class SettingsController extends BaseController {
                                     null, currentUser.getId(), null, null, null)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .as(AutoDispose.autoDisposable(scopeProvider))
+                                    .as(AutoDispose.autoDisposable(getScopeProvider()))
                                     .subscribe(userEntityResult -> {
                                                 displayNameTextView.setText(userEntityResult.getDisplayName());
                                             },
@@ -667,7 +667,7 @@ public class SettingsController extends BaseController {
     }
 
     @Override
-    protected String getTitle() {
+    public String getTitle() {
         return getResources().getString(R.string.nc_settings);
     }
 

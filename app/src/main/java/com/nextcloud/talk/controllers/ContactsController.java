@@ -213,7 +213,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        eventBus.register(this);
 
         if (isNewConversationView) {
             toggleNewCallHeaderVisibility(!isPublicCall);
@@ -283,7 +282,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .as(AutoDispose.autoDisposable(scopeProvider))
+                        .as(AutoDispose.autoDisposable(getScopeProvider()))
                         .subscribe(new Observer<RoomOverall>() {
                             @Override
                             public void onSubscribe(Disposable d) {
@@ -304,7 +303,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                                     roomOverall.getOcs().getData().getToken()))
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
-                                            .as(AutoDispose.autoDisposable(scopeProvider))
+                                            .as(AutoDispose.autoDisposable(getScopeProvider()))
                                             .subscribe(new Observer<RoomOverall>() {
 
                                                 @Override
@@ -501,7 +500,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
-                .as(AutoDispose.autoDisposable(scopeProvider))
+                .as(AutoDispose.autoDisposable(getScopeProvider()))
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -787,7 +786,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
-    protected String getTitle() {
+    public String getTitle() {
         if (!isNewConversationView && !isAddingParticipantsView) {
             return getResources().getString(R.string.nc_app_name);
         } else {
@@ -856,12 +855,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
-    protected void onDetach(@NonNull View view) {
-        super.onDetach(view);
-        eventBus.unregister(this);
-    }
-
-    @Override
     public boolean onItemClick(View view, int position) {
         if (adapter.getItem(position) instanceof UserItem) {
             if (!isNewConversationView && !isAddingParticipantsView) {
@@ -878,7 +871,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .as(AutoDispose.autoDisposable(scopeProvider))
+                        .as(AutoDispose.autoDisposable(getScopeProvider()))
                         .subscribe(new Observer<RoomOverall>() {
                             @Override
                             public void onSubscribe(Disposable d) {

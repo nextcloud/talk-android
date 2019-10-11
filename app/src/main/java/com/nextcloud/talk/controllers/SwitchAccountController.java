@@ -97,7 +97,7 @@ public class SwitchAccountController extends BaseController {
                 userUtils.createOrUpdateUser(null,
                         null, null, null,
                         null, true, null, userEntity.getId(), null, null, null)
-                        .as(AutoDispose.autoDisposable(scopeProvider))
+                        .as(AutoDispose.autoDisposable(getScopeProvider()))
                         .subscribe(new Observer<UserEntity>() {
                             @Override
                             public void onSubscribe(Disposable d) {
@@ -243,7 +243,7 @@ public class SwitchAccountController extends BaseController {
     }
 
     @Override
-    protected String getTitle() {
+    public String getTitle() {
         return getResources().getString(R.string.nc_select_an_account);
     }
 }

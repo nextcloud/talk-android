@@ -196,7 +196,7 @@ public class BrowserController extends BaseController implements ListingInterfac
     }
 
     @Override
-    protected String getTitle() {
+    public String getTitle() {
         return currentPath;
     }
 

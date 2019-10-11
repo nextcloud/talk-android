@@ -43,6 +43,7 @@ import dagger.Provides;
 import io.reactivex.schedulers.Schedulers;
 import java.io.IOException;
 import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.security.KeyStore;
@@ -159,14 +160,15 @@ public class RestModule {
     @Singleton
     @Provides
     CookieManager provideCookieManager() {
-        return new CookieManager();
+        CookieManager cookieManager = new CookieManager();
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_NONE);
+        return cookieManager;
     }
 
     @Singleton
     @Provides
     Cache provideCache() {
         int cacheSize = 128 * 1024 * 1024; // 128 MB
-
         return new Cache(NextcloudTalkApplication.Companion.getSharedApplication().getCacheDir(), cacheSize);
     }
 
