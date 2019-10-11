@@ -48,6 +48,9 @@ android {
         renderscriptSupportModeEnabled true
 
         productFlavors {
+            dev {
+                resConfigs "en", "xxxhdpi"
+            }
             // used for f-droid
             generic
             gplay
@@ -82,6 +85,8 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
+            splits.abi.enable = false
+            splits.density.enable = false
         }
 
         release {

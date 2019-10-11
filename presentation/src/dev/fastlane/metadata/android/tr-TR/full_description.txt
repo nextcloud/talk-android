@@ -1,0 +1,27 @@
+Birebir ya da grup ile ses ya da görüntü çağrıları yapmak, web konferansları oluşturmak ve sohbet iletileri göndermek için Nextcloud Talk uygulamasını kullanabilisiniz. Tüm bilgiler tamamen şifrelenmiş olarak sizin sunucunuz üzerinden iletilerek olabilecek en yüksek gizlilik düzeyi sağlanır.
+
+Nextcloud Talk uygulamasının kullanımı kolaydır ve herhangi bir ücret ödemeniz gerekmez!
+
+Nextcloud Talk şu özellikleri destekler:
+* HD (H.265) ses ve görüntü çağrıları
+* Grup ve birebir çağrılar
+* Webinar ve herkese açık web toplantıları
+* Bireysel ve grup sohbetleri
+* Kolay ekran paylaşımı
+* Android ve iOS uygulamaları
+* Mobil çağrı ve anında sohbet bildirimleri
+* Nextcloud Files ve Nextcloud Groupware ile bütünleşme
+* Kendi veri merkezinizde, %100 açık kaynaklı
+* Uçtan uca şifrelenmiş çağrılar
+* Milyonlarca kullanıcıya göre
+* SIP geçidi üzerinden telefon ile arama
+
+Nextcloud Talk uygulamasının kullanılabilmesi için Nextcloud Talk sunucusu gereklidir. Nextcloud verilerinizin kontrolunu yeniden size veren, size özel, kendi sunucularınızda barındırabileceğiniz bir dosya eşitleme ve iletişim platformudur. Evinizde, hizmet sağlayıcınızda ya da kurumunuzda bulunan bir sunucu üzerinde kullanarak, belgelerinize, takvimlerinize, kişilerinize, e-postalarınıza ve diğer verilerinize erişmenizi sağlar. Verilerinizi farklı Nextcloud sunucuları kullanan kişiler ile paylaşarak dosyalar üzerinde birlikte çalışabilirsiniz. Nextcloud tamamen açık kaynaklı olduğundan özelliklerini gereksinimlerinize göre genişletebilir, geliştirilmesine katkıda bulunabilir ya da vaatlerimizin doğruluğunu görebilirsiniz.
+
+
+Dünya üzerinde milyonlarca kullanıcı ev ya da iş yerlerinde günlük işlemleri için Nextcloud kullanıyor. Kurumsal kullanıcılar Nextcloud GmbH tarafından sunulan destek hizmetleri ile tamamen kendi BT bölümlerinin denetimindeki kurumsal üretim ve iş birliği platformu için eksiksiz destek alıyorlar. 
+
+
+Ayrıntılı bilgi almak için https://nextcloud.com/talk
+
+Nextcloud web sitesi https://nextcloud.com
