@@ -23,7 +23,7 @@
     <item>
         <shape
             android:shape="oval">
-            <solid android:color="@color/bg_default"/>
+            <solid android:color="@color/bg_message_list_incoming_bubble"/>
         </shape>
     </item>
     <item android:drawable="@drawable/ic_mic_grey_600_24dp"/>

@@ -384,7 +384,7 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
 
         for (i in participants.indices) {
             participant = participants[i]
-            userItem = UserItem(participant, conversationUser, null)
+            userItem = UserItem(participant, conversationUser, null, activity)
             userItem.isOnline = !participant.sessionId.equals("0")
             if (!TextUtils.isEmpty(participant.userId) && participant.userId == conversationUser!!.userId) {
                 ownUserItem = userItem

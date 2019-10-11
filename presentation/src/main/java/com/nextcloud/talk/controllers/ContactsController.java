@@ -545,7 +545,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                             participant.setUserId(sharee.getValue().getShareWith());
 
                                             UserItem newContactItem = new UserItem(participant, currentUser,
-                                                    userHeaderItems.get(headerTitle));
+                                                    userHeaderItems.get(headerTitle), getActivity());
 
                                             if (!contactItems.contains(newContactItem)) {
                                                 newUserItemList.add(newContactItem);
@@ -582,7 +582,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
 
                                             UserItem newContactItem = new UserItem(participant, currentUser,
-                                                    userHeaderItems.get(headerTitle));
+                                                    userHeaderItems.get(headerTitle), getActivity());
 
                                             if (!contactItems.contains(newContactItem)) {
                                                 newUserItemList.add(newContactItem);

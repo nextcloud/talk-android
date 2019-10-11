@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
@@ -54,12 +55,15 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     private Participant participant;
     private UserEntity userEntity;
     private GenericTextHeaderItem header;
+    private Context activityContext;
     public boolean isOnline = true;
 
-    public UserItem(Participant participant, UserEntity userEntity, GenericTextHeaderItem genericTextHeaderItem) {
+    public UserItem(Participant participant, UserEntity userEntity,
+        GenericTextHeaderItem genericTextHeaderItem, Context activityContext) {
         this.participant = participant;
         this.userEntity = userEntity;
         this.header = genericTextHeaderItem;
+        this.activityContext = activityContext;
     }
 
     @Override
@@ -132,8 +136,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getDisplayName(),
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
-                            .getResources().getColor(R.color.colorPrimary));
+                    String.valueOf(adapter.getFilter(String.class)), activityContext.getResources().getColor(R.color.colorPrimary));
         }
 
         holder.contactDisplayName.setText(participant.getDisplayName());
@@ -146,8 +149,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         if (TextUtils.isEmpty(participant.getSource()) || participant.getSource().equals("users")) {
             if (Participant.ParticipantType.GUEST.equals(participant.getType()) ||
                     Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participant.getType())) {
-                String displayName = NextcloudTalkApplication.Companion.getSharedApplication()
-                        .getResources().getString(R.string.nc_guest);
+                String displayName = NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_guest);
 
                 if (!TextUtils.isEmpty(participant.getDisplayName())) {
                     displayName = participant.getDisplayName();
@@ -173,10 +175,10 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
             }
         } else if ("groups".equals(participant.getSource())) {
-            holder.simpleDraweeView.getHierarchy().setImage(new BitmapDrawable(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.Companion.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px)), 100, true);
+            holder.simpleDraweeView.getHierarchy().setImage(new BitmapDrawable(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(activityContext.getResources(), R.drawable.ic_people_group_white_24px)), 100, true);
         }
 
-        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
+        Resources resources = activityContext.getResources();
 
         if (header == null) {
             Participant.ParticipantFlags participantFlags = participant.getParticipantFlags();
@@ -184,7 +186,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 case NOT_IN_CALL:
                     holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
                     holder.videoCallImageView.setVisibility(View.GONE);
-                    break;
+                    //break;
                 case IN_CALL:
                     holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
                     holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
@@ -239,7 +241,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
                 if (!holder.contactMentionId.getText().equals(userType)) {
                     holder.contactMentionId.setText(userType);
-                    holder.contactMentionId.setTextColor(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getColor(R.color.colorPrimary));
+                    holder.contactMentionId.setTextColor(activityContext.getResources().getColor(R.color.colorPrimary));
                 }
             }
         }

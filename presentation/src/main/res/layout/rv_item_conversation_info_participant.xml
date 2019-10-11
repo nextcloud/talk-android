@@ -32,13 +32,21 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin">
 
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/simple_drawee_view"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            app:roundAsCircle="true"
+            tools:background="@tools:sample/avatars[1]"
+            />
+
         <ImageView
             android:id="@+id/voiceOrSimpleCallImageView"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_gravity="bottom|end"
             android:background="@drawable/shape_lock_bubble"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/videoCallImageView"
@@ -46,13 +54,8 @@
             android:layout_height="12dp"
             android:layout_gravity="top|end"
             android:background="@drawable/shape_favorite_bubble"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/simple_drawee_view"
-            android:layout_width="@dimen/avatar_size"
-            android:layout_height="@dimen/avatar_size"
-            app:roundAsCircle="true" />
 
     </FrameLayout>
 
