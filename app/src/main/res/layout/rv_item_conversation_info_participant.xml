@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+§<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
@@ -46,7 +46,7 @@
             android:layout_height="12dp"
             android:layout_gravity="bottom|end"
             android:background="@drawable/shape_lock_bubble"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/videoCallImageView"
@@ -54,8 +54,7 @@
             android:layout_height="12dp"
             android:layout_gravity="top|end"
             android:background="@drawable/shape_favorite_bubble"
-            android:visibility="visible" />
-
+            android:visibility="gone" />
 
     </FrameLayout>
 
