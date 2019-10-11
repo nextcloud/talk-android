@@ -186,7 +186,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 case NOT_IN_CALL:
                     holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
                     holder.videoCallImageView.setVisibility(View.GONE);
-                    //break;
+                    break;
                 case IN_CALL:
                     holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
                     holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
