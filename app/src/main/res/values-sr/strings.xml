@@ -67,6 +67,7 @@
     <string name="nc_settings_remove_confirmation">Потврдите да желите да уклоните тренутни налог.</string>
     <string name="nc_settings_remove_account">Уклони налог</string>
     <string name="nc_settings_add_account">Додај нови налог</string>
+    <string name="nc_add">Додај</string>
     <string name="nc_settings_wrong_account">Само тренутни налог се може поново ауторизовати</string>
     <string name="nc_settings_no_talk_installed">Апликација Ћаскања није инсталирана на серверу на који се пријављујете</string>
     <string name="nc_settings_account_updated">Ваш постојећи налог је ажуриран, уместо што је додат нови налог</string>
@@ -181,6 +182,10 @@
     <string name="nc_notify_me_mention">Обавести на помињањe</string>
     <string name="nc_notify_me_never">Никад не обавештавај</string>
     <string name="nc_mute_calls">Искључи тон позива</string>
+    <string name="nc_mute_calls_desc">Долазни позиви ће бити игнорисани</string>
+    <string name="nc_important_conversation">Битан разговор</string>
+    <string name="nc_important_conversation_desc">Позиви и обавештења о порукама ће бити приказани чак и у „Не узнемиравај“ режиму (прати се системско подешавање „Дозволи само битна прекидања“)</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
     <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним собама преко мобилног телефона.
@@ -201,6 +206,11 @@
     <string name="nc_configure_cert_auth">Одабери сертификат за пријаву</string>
     <string name="nc_change_cert_auth">Измени сертификат за пријаву</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Скини улогу модератора</string>
+    <string name="nc_promote">Унапреди у модератора</string>
+    <string name="nc_remove_participant">Уклони учесника</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Унесите поруку…</string>
     <string name="nc_date_header_yesterday">Јуче</string>
@@ -208,6 +218,7 @@
     <string name="nc_conversation_menu_voice_call">Аудио позив</string>
     <string name="nc_conversation_menu_video_call">Видео позив</string>
     <string name="nc_conversation_menu_conversation_info">Информације о разговору</string>
+    <string name="nc_new_messages">Непрочитане поруке</string>
     <string name="nc_no_messages_yet">Још нема порука</string>
     <string name="nc_sent_a_link" formatted="true">%1$s је послао везу.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s је послао GIF.</string>
@@ -258,4 +269,13 @@
     <string name="nc_file_browser_refresh">Освежи</string>
     <string name="nc_last_modified">%1$s | Последње измењено: %2$s</string>
 
-    </resources>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Вебинар</string>
+    <string name="nc_lobby">Лоби</string>
+    <string name="nc_start_time">Време почетка</string>
+    <string name="nc_lobby_waiting">Тренутно чекате у лобију.</string>
+    <string name="nc_lobby_waiting_with_date">Тренутно чекате у лобију.\nОвај
+        састанак је заказан за %1$s.</string>
+    <string name="nc_manual">Није постављено</string>
+</resources>
