@@ -60,21 +60,22 @@
     <string name="nc_settings_proxy_port_title">Порт прокси-сервера</string>
     <string name="nc_settings_use_credentials_title">Использовать учётные данные</string>
     <string name="nc_settings_switch_account">Переключение учётных записей</string>
-    <string name="nc_settings_reauthorize">Выйти и снова войти в систему</string>
+    <string name="nc_settings_reauthorize">Повторный вход в систему</string>
     <string name="nc_client_cert_setup">Установка клиентского сертификата</string>
     <string name="nc_client_cert_change">Изменение клиентского сертификата</string>
     <string name="nc_settings_remove">Удалить</string>
     <string name="nc_settings_remove_confirmation">Пожалуйста, подтвердите удаление текущего аккаунта.</string>
     <string name="nc_settings_remove_account">Удалить учётную запись</string>
     <string name="nc_settings_add_account">Добавить учётную запись</string>
+    <string name="nc_add">Добавить</string>
     <string name="nc_settings_wrong_account">Повторный вход может быть выполнен только в текущую учётную запись</string>
     <string name="nc_settings_no_talk_installed">На сервере, к которому вы пытаетесь подключиться, приложение «Talk» не установлено.</string>
     <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>
     <string name="nc_account_scheduled_for_deletion">Учётная запись запланирована к удалению и не может быть использована</string>
-    <string name="nc_settings_notification_sounds">Звук уведомления</string>
+    <string name="nc_settings_notification_sounds">Звуковые уведомления</string>
     <string name="nc_settings_call_ringtone">Звонки</string>
     <string name="nc_settings_other_notifications_ringtone">Групповые вызовы</string>
-    <string name="nc_settings_no_ringtone">Нет звука</string>
+    <string name="nc_settings_no_ringtone">Без звука</string>
     <string name="nc_settings_vibrate">Вибрация</string>
     <string name="nc_settings_vibrate_desc">Телефон будет вибрировать, если он не отключен</string>
     <string name="nc_settings_appearance">Внешний вид</string>
@@ -86,8 +87,8 @@
     <string name="nc_settings_theme_dark">Тёмная</string>
     <string name="nc_settings_privacy">Конфиденциальность</string>
     <string name="nc_settings_screen_lock_title">Блокировка экрана</string>
-    <string name="nc_settings_screen_lock_desc">Блокировка %1$s с помощью блокировки экрана Android или с помощью поддерживаемого биометрического метода</string>
-    <string name="nc_settings_screen_lock_timeout_title">Блокировка экрана при бездействии</string>
+    <string name="nc_settings_screen_lock_desc">Защищать %1$s с помощью системой блокировки  Android или поддерживаемого биометрического метода</string>
+    <string name="nc_settings_screen_lock_timeout_title">Задержка блокирования экрана при бездействии</string>
     <string name="nc_none">Пусто</string>
     <string name="nc_settings_screen_security_title">Безопасность экрана</string>
     <string name="nc_settings_screen_security_desc">Предотвращает сохранение скриншотов внутри приложения и в списке недавних приложений</string>
@@ -95,7 +96,7 @@
     <string name="nc_settings_incognito_keyboard_desc">Указывает клавиатуре отключить персонализированное обучение (без гарантий)</string>
     <string name="nc_settings_link_previews_title">Отображать предпросмотр ссылки</string>
     <string name="nc_settings_link_previews_desc">Позволяет предварительно просматривать контент по полученным ссылкам для поддерживаемых сервисов</string>
-    <string name="nc_locked">Коснуться для разблокировки</string>
+    <string name="nc_locked">Коснитесь для разблокирования</string>
 
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_60">1 минута</string>
@@ -180,6 +181,8 @@
     <string name="nc_notify_me_mention">Уведомлять при упоминании</string>
     <string name="nc_notify_me_never">Не уведомлять</string>
     <string name="nc_mute_calls">Не уведомлять о вызовах</string>
+    <string name="nc_mute_calls_desc">Входящие вызовы будут проигнорированы</string>
+    <string name="nc_important_conversation">Важное обсуждение</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
     <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте войти присоединиться к беседе используя браузер на ПК.</string>
@@ -259,7 +262,9 @@
     <!-- Lobby -->
 
     <string name="nc_webinar">Вебинар</string>
-    <string name="nc_lobby">Вестибюль</string>
+    <string name="nc_lobby">Лобби</string>
     <string name="nc_start_time">Время начала</string>
     <string name="nc_lobby_waiting">В данный момент Вы ожидаете в вестибюле.</string>
-    </resources>
+    <string name="nc_lobby_waiting_with_date">В данный момент вы ожидаете начала встречи, запланированной на %1$s.</string>
+    <string name="nc_manual">Не задано</string>
+</resources>
