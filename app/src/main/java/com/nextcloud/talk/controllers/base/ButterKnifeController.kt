@@ -33,11 +33,11 @@ abstract class ButterKnifeController : Controller {
 
     protected var unbinder: Unbinder? = null
 
-    constructor() {}
+    constructor()
 
-    constructor(args: Bundle) : super(args) {}
+  constructor(args: Bundle) : super(args)
 
-    protected abstract fun inflateView(inflater: LayoutInflater, container: ViewGroup): View
+  protected abstract fun inflateView(inflater: LayoutInflater, container: ViewGroup): View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         val view = inflateView(inflater, container)

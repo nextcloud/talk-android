@@ -31,6 +31,6 @@ class ConversationListViewModelFactory constructor(
 ): ViewModelProvider.Factory {
 
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-    return ConversationsListViewModel(conversationsUseCase, userUtils) as T;
+    return ConversationsListViewModel(conversationsUseCase, userUtils) as T
   }
 }

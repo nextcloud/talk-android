@@ -324,9 +324,7 @@ public class MagicAudioManager {
         Log.d(TAG, "AudioManager stopped");
     }
 
-    ;
-
-    /**
+  /**
      * Changes selection of the currently active audio device.
      */
     private void setAudioDeviceInternal(AudioDevice device) {
@@ -635,7 +633,7 @@ public class MagicAudioManager {
     /**
      * Selected audio device change event.
      */
-    public static interface AudioManagerEvents {
+    public interface AudioManagerEvents {
         // Callback fired once audio device is changed or list of available audio devices changed.
         void onAudioDeviceChanged(
                 AudioDevice selectedAudioDevice, Set<AudioDevice> availableAudioDevices);

@@ -135,14 +135,14 @@ fun createOkHttpClient(
 
   httpClient.addInterceptor(NetworkUtils.HeadersInterceptor())
 
-  if (BuildConfig.DEBUG && !context.getResources().getBoolean(R.bool.nc_is_debug)) {
+  if (BuildConfig.DEBUG && !context.resources.getBoolean(R.bool.nc_is_debug)) {
     val loggingInterceptor = HttpLoggingInterceptor()
     loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
     loggingInterceptor.redactHeader("Authorization")
     loggingInterceptor.redactHeader("Proxy-Authorization")
     loggingInterceptor.redactHeader("Cookie")
     httpClient.addInterceptor(loggingInterceptor)
-  } else if (context.getResources().getBoolean(R.bool.nc_is_debug)) {
+  } else if (context.resources.getBoolean(R.bool.nc_is_debug)) {
 
     val fileLogger = HttpLoggingInterceptor(object : Logger {
       override fun log(message: String) {
@@ -171,7 +171,7 @@ fun createRetrofit(okHttpClient: OkHttpClient): Retrofit {
 }
 
 fun createTrustManager(): MagicTrustManager {
-  return MagicTrustManager();
+  return MagicTrustManager()
 }
 
 fun createSslSocketFactory(magicKeyManager: MagicKeyManager, magicTrustManager:

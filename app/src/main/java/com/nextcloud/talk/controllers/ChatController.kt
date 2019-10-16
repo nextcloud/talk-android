@@ -539,7 +539,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     if (currentConversation != null) {
       if (currentConversation?.shouldShowLobby(
               conversationUser
-          ) ?: false || currentConversation?.conversationReadOnlyState != null && currentConversation?.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
+          ) == true || currentConversation?.conversationReadOnlyState != null && currentConversation?.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
       ) {
 
         conversationVoiceCallMenuItem?.icon?.alpha = 99
@@ -569,14 +569,14 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
   private fun checkLobbyState() {
     if (currentConversation != null && currentConversation?.isLobbyViewApplicable(
             conversationUser
-        ) ?: false
+        ) == true
     ) {
 
       if (!checkingLobbyStatus) {
         getRoomInfo()
       }
 
-      if (currentConversation?.shouldShowLobby(conversationUser) ?: false) {
+      if (currentConversation?.shouldShowLobby(conversationUser) == true) {
         lobbyView?.visibility = View.VISIBLE
         messagesListView?.visibility = View.GONE
         messageInputView?.visibility = View.GONE
@@ -658,7 +658,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
     if (conversationUser?.userId != "?" && conversationUser?.hasSpreedFeatureCapability(
             "mention-flag"
-        ) ?: false && activity != null
+        ) == true && activity != null
     ) {
       activity?.findViewById<View>(R.id.toolbar)
           ?.setOnClickListener { v ->
@@ -676,7 +676,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     ApplicationWideCurrentRoomHolder.getInstance()
         .userInRoom = conversationUser
 
-    isLinkPreviewAllowed = appPreferences?.areLinkPreviewsAllowed ?: false
+    isLinkPreviewAllowed = appPreferences.areLinkPreviewsAllowed
 
     emojiPopup = messageInput?.let {
       EmojiPopup.Builder.fromRootView(view)
@@ -704,7 +704,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     cancelNotificationsForCurrentConversation()
 
     if (inConversation) {
-      if (wasDetached && conversationUser?.hasSpreedFeatureCapability("no-ping") ?: false) {
+      if (wasDetached && conversationUser?.hasSpreedFeatureCapability("no-ping") == true) {
         currentConversation?.sessionId = "0"
         wasDetached = false
         joinRoomWithPassword()
@@ -738,7 +738,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
           ?.setOnClickListener(null)
     }
 
-    if (conversationUser != null && conversationUser?.hasSpreedFeatureCapability("no-ping")
+    if (conversationUser != null && conversationUser.hasSpreedFeatureCapability("no-ping")
         && activity != null && !activity?.isChangingConfigurations!! && !isLeavingForConversation
     ) {
       wasDetached = true
@@ -853,7 +853,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                     roomToken, currentConversation?.sessionId
                 )
               }
-              if (startCallFromNotification != null && startCallFromNotification ?: false) {
+              if (startCallFromNotification != null && startCallFromNotification == true) {
                 startCallFromNotification = false
                 startACall(voiceOnly)
               }
@@ -968,7 +968,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     if (conversationUser != null) {
       ncApi?.sendChatMessage(
           credentials, ApiUtils.getUrlForChat(
-          conversationUser?.baseUrl,
+          conversationUser.baseUrl,
           roomToken
       ),
           message, conversationUser.displayName
@@ -984,7 +984,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
             override fun onNext(genericOverall: GenericOverall) {
               myFirstMessage = message
 
-              if (popupBubble?.isShown ?: false) {
+              if (popupBubble?.isShown == true) {
                 popupBubble?.hide()
               }
 
@@ -997,7 +997,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                 if (Integer.toString(code).startsWith("2")) {
                   myFirstMessage = message
 
-                  if (popupBubble?.isShown ?: false) {
+                  if (popupBubble?.isShown == true) {
                     popupBubble?.hide()
                   }
 
@@ -1041,7 +1041,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
     var timeout = 30
     if (!lookingIntoFuture) {
-      timeout = 0;
+      timeout = 0
     }
 
     fieldMap["timeout"] = timeout
@@ -1179,7 +1179,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                     chatMessageList[i + 1].createdAt
                 )
             ) {
-              chatMessageList[i].isGrouped = true;
+              chatMessageList[i].isGrouped = true
               countGroupedMessages++
             } else {
               countGroupedMessages = 0
@@ -1214,7 +1214,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
           unreadChatMessage.jsonMessageId = -1
           unreadChatMessage.actorId = "-1"
           unreadChatMessage.timestamp = chatMessageList[0].timestamp
-          unreadChatMessage.message = context?.getString(R.string.nc_new_messages)
+          unreadChatMessage.message = context.getString(R.string.nc_new_messages)
           adapter?.addToStart(unreadChatMessage, false)
         }
 

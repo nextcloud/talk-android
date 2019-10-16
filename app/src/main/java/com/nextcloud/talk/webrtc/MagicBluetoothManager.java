@@ -105,9 +105,7 @@ public class MagicBluetoothManager {
         return bluetoothState;
     }
 
-    ;
-
-    /**
+  /**
      * Activates components required to detect Bluetooth devices and to enable
      * BT SCO (audio is routed via BT SCO) for the headset profile. The end
      * viewState will be HEADSET_UNAVAILABLE but a viewState machine has started which

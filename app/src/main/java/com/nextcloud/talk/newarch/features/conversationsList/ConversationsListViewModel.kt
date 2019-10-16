@@ -44,7 +44,7 @@ class ConversationsListViewModel constructor(
   val viewState = MutableLiveData<ViewState>(LOADING)
   var messageData : String? = null
   val searchQuery = MutableLiveData<String>()
-  lateinit var currentUser: UserEntity
+  var currentUser: UserEntity = userUtils.currentUser
 
   fun loadConversations() {
     currentUser = userUtils.currentUser
@@ -72,7 +72,7 @@ class ConversationsListViewModel constructor(
       }
 
       override fun onError(errorModel: ErrorModel?) {
-        messageData = errorModel?.message
+        messageData = errorModel?.getErrorMessage()
         viewState.value = FAILED
       }
 

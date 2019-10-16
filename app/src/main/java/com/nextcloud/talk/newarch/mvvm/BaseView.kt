@@ -55,7 +55,7 @@ abstract class BaseView : BaseController(), LifecycleOwner, ViewModelStoreOwner 
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModelStore.clear();
+        viewModelStore.clear()
     }
 
     override fun getLifecycle(): Lifecycle {

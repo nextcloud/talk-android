@@ -55,7 +55,7 @@ class PackageReplacedReceiver : BroadcastReceiver() {
                             .NOTIFICATION_SERVICE) as NotificationManager
 
                     if (notificationManager != null) {
-                        if (!appPreferences!!.isNotificationChannelUpgradedToV2) {
+                        if (!appPreferences.isNotificationChannelUpgradedToV2) {
                             for (notificationChannelGroup in notificationManager
                                     .notificationChannelGroups) {
                                 notificationManager.deleteNotificationChannelGroup(notificationChannelGroup.id)
@@ -64,13 +64,13 @@ class PackageReplacedReceiver : BroadcastReceiver() {
                             notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS)
                             notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES)
 
-                            appPreferences!!.setNotificationChannelIsUpgradedToV2(true)
+                            appPreferences.setNotificationChannelIsUpgradedToV2(true)
                         }
 
-                        if (!appPreferences!!.isNotificationChannelUpgradedToV3 && packageInfo.versionCode > 51) {
+                        if (!appPreferences.isNotificationChannelUpgradedToV3 && packageInfo.versionCode > 51) {
                             notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2)
                             notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2)
-                            appPreferences!!.setNotificationChannelIsUpgradedToV3(true)
+                            appPreferences.setNotificationChannelIsUpgradedToV3(true)
                         }
                     }
 

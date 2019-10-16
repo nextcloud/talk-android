@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 @Entity
 public interface User extends Parcelable, Persistable, Serializable {
-    static final String TAG = "UserEntity";
+    String TAG = "UserEntity";
 
     @Key
     @Generated

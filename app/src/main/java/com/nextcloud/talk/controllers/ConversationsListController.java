@@ -139,9 +139,6 @@ public class ConversationsListController extends BaseController implements Searc
     @BindView(R.id.swipeRefreshLayoutView)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    @BindView(R.id.progressBar)
-    ProgressBar progressBarView;
-
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
 
@@ -196,7 +193,7 @@ public class ConversationsListController extends BaseController implements Searc
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(callItems, getActivity(), true);
         } else {
-            progressBarView.setVisibility(View.GONE);
+            //progressBarView.setVisibility(View.GONE);
         }
 
         adapter.addListener(this);
@@ -313,7 +310,7 @@ public class ConversationsListController extends BaseController implements Searc
 
                     if (adapterWasNull) {
                         adapterWasNull = false;
-                        progressBarView.setVisibility(View.GONE);
+                        //progressBarView.setVisibility(View.GONE);
                     }
 
                     /*if (roomsOverall.getOcs().getData().size() > 0) {

@@ -39,6 +39,6 @@ object DateUtils {
     }
 
     fun getLocalDateStringFromTimestampForLobby(timestamp: Long): String {
-        return getLocalDateTimeStringFromTimestamp(timestamp * 1000);
+        return getLocalDateTimeStringFromTimestamp(timestamp * 1000)
     }
 }

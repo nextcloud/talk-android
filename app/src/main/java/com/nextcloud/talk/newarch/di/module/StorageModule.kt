@@ -58,5 +58,5 @@ fun createDataStore(sqlCipherDatabaseSource: SqlCipherDatabaseSource): ReactiveE
 }
 
 fun createUserUtils(dataStore : ReactiveEntityStore<Persistable>) : UserUtils {
-  return UserUtils(dataStore);
+  return UserUtils(dataStore)
 }

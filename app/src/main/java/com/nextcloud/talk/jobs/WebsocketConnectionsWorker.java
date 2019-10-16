@@ -67,7 +67,7 @@ public class WebsocketConnectionsWorker extends Worker {
                     externalSignalingServer = LoganSquare.parse(userEntity.getExternalSignalingServer(), ExternalSignalingServer.class);
                     if (!TextUtils.isEmpty(externalSignalingServer.getExternalSignalingServer()) &&
                             !TextUtils.isEmpty(externalSignalingServer.getExternalSignalingTicket())) {
-                        webSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                        WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
                                 externalSignalingServer.getExternalSignalingServer(),
                                 userEntity, externalSignalingServer.getExternalSignalingTicket(),
                                 false);

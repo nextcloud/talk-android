@@ -28,6 +28,7 @@ import okhttp3.ResponseBody
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /**
  * This class trace exceptions(api call or parse data or connection errors) &

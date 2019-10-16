@@ -219,7 +219,7 @@ public class DisplayUtils {
                 constructor.setAccessible(true);
                 Object vdcInflateDelegate = constructor.newInstance();
 
-                Class<?> args[] = {String.class, inflateDelegateClass};
+                Class<?>[] args = { String.class, inflateDelegateClass };
                 Method addDelegate = AppCompatDrawableManager.class.getDeclaredMethod("addDelegate", args);
                 addDelegate.setAccessible(true);
                 addDelegate.invoke(drawableManager, "vector", vdcInflateDelegate);

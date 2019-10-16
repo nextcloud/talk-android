@@ -25,7 +25,6 @@ import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 
 abstract class UseCase<Type, in Params>(private val apiErrorHandler: ApiErrorHandler?) where Type : Any {
 
@@ -40,12 +39,13 @@ abstract class UseCase<Type, in Params>(private val apiErrorHandler: ApiErrorHan
   ) {
     val backgroundJob = scope.async { run(params) }
     scope.launch {
-      backgroundJob.await().let {
-        try {
-          onResult.onSuccess(it)
-        } catch (e: HttpException) {
-          onResult.onError(apiErrorHandler?.traceErrorException(e))
-        }
+      try {
+        backgroundJob.await()
+            .let {
+              onResult.onSuccess(it)
+            }
+      } catch (e: Exception) {
+        onResult.onError(apiErrorHandler?.traceErrorException(e))
       }
     }
   }

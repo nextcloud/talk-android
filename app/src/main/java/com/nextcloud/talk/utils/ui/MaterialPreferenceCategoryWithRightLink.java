@@ -88,8 +88,8 @@ public class MaterialPreferenceCategoryWithRightLink extends CardView {
 
         setRadius(0);
 
-        container = (ViewGroup) findViewById(R.id.mpc_container);
-        title = (TextView) findViewById(R.id.mpc_title);
+        container = findViewById(R.id.mpc_container);
+        title = findViewById(R.id.mpc_title);
         action = findViewById(R.id.mpc_action);
 
         if (!TextUtils.isEmpty(titleText)) {

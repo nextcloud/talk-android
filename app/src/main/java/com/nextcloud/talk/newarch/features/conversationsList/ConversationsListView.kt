@@ -86,7 +86,7 @@ import org.koin.android.ext.android.inject
 import org.parceler.Parcels
 import java.util.ArrayList
 
-class ConversationsListView() : BaseView(), OnQueryTextListener,
+class ConversationsListView : BaseView(), OnQueryTextListener,
     OnItemClickListener, OnItemLongClickListener {
 
   lateinit var viewModel: ConversationsListViewModel
@@ -145,14 +145,14 @@ class ConversationsListView() : BaseView(), OnQueryTextListener,
   private fun initSearchView() {
     val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
     searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-    searchView!!.setMaxWidth(Integer.MAX_VALUE)
-    searchView!!.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER)
+    searchView!!.maxWidth = Integer.MAX_VALUE
+    searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
     var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
       imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
     }
-    searchView!!.setImeOptions(imeOptions)
-    searchView!!.setQueryHint(resources!!.getString(R.string.nc_search))
+    searchView!!.imeOptions = imeOptions
+    searchView!!.queryHint = resources?.getString(R.string.nc_search)
     searchView!!.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
 
     searchView!!.setOnQueryTextListener(this)
@@ -197,7 +197,7 @@ class ConversationsListView() : BaseView(), OnQueryTextListener,
           }
           LOADED_EMPTY, FAILED -> {
             view?.loadingStateView?.visibility = View.GONE
-            view?.dataStateView?.visibility = View.VISIBLE
+            view?.dataStateView?.visibility = View.GONE
             view?.floatingActionButton?.visibility = View.GONE
             searchItem?.isVisible = false
 
@@ -306,7 +306,7 @@ class ConversationsListView() : BaseView(), OnQueryTextListener,
         SmoothScrollLinearLayoutManager(view.context), recyclerViewAdapter
     )
 
-    recyclerViewAdapter.setFastScroller(view.fast_scroller)
+    recyclerViewAdapter.fastScroller = view.fast_scroller
     recyclerViewAdapter.mItemClickListener = this
     recyclerViewAdapter.mItemLongClickListener = this
 
@@ -349,7 +349,7 @@ class ConversationsListView() : BaseView(), OnQueryTextListener,
       bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.roomId)
       bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
       ConductorRemapping.remapChatController(
-          router, viewModel.currentUser.getId(), conversation.token,
+          router, viewModel.currentUser.id, conversation.token,
           bundle, false
       )
     }

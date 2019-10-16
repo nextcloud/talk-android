@@ -124,7 +124,7 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
     @BindView(R.id.muteCalls)
     lateinit var muteCalls: MaterialSwitchPreference
     @BindView(R.id.mpc_action)
-    lateinit var actionTextView: TextView;
+    lateinit var actionTextView: TextView
 
     @set:Inject
     lateinit var ncApi: NcApi
@@ -309,9 +309,10 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
         if (activity != null) {
             LovelyStandardDialog(activity, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
                     .setTopColorRes(R.color.nc_darkRed)
-                    .setIcon(DisplayUtils.getTintedDrawable(context!!.resources,
+                    .setIcon(DisplayUtils.getTintedDrawable(
+                        context.resources,
                             R.drawable.ic_delete_black_24dp, R.color.bg_default))
-                    .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
+                    .setPositiveButtonColor(context.resources.getColor(R.color.nc_darkRed))
                     .setTitle(R.string.nc_delete_call)
                     .setMessage(conversation!!.deleteWarningMessage)
                     .setPositiveButton(R.string.nc_delete) { deleteConversation() }
@@ -357,13 +358,13 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
                     existingParticipantsId.add(userItem.model.userId)
                 }
 
-                bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true);
+                bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true)
                 bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
                 bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
 
-                getRouter().pushController((RouterTransaction.with(ContactsController(bundle))
+                router.pushController((RouterTransaction.with(ContactsController(bundle))
                         .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler())));
+                        .popChangeHandler(HorizontalChangeHandler())))
 
             }
         }
@@ -667,7 +668,7 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
             }
         }
 
-        return true;
+        return true
     }
 
     companion object {
