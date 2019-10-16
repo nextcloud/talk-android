@@ -43,6 +43,7 @@ import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListView
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -91,7 +92,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (!router!!.hasRootController()) {
-                router!!.setRoot(RouterTransaction.with(ConversationsListController())
+                router!!.setRoot(RouterTransaction.with(ConversationsListView())
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler()))
             }
@@ -99,7 +100,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         } else if (!router!!.hasRootController()) {
             if (hasDb) {
                 if (userUtils.anyUserExists()) {
-                    router!!.setRoot(RouterTransaction.with(ConversationsListController())
+                    router!!.setRoot(RouterTransaction.with(ConversationsListView())
                             .pushChangeHandler(HorizontalChangeHandler())
                             .popChangeHandler(HorizontalChangeHandler()))
                 } else {

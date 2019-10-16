@@ -24,5 +24,5 @@ import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 
 interface NextcloudTalkRepository {
-  suspend fun getConversations(user: UserEntity): List<Conversation>
+  suspend fun getConversationsForUser(user: UserEntity): List<Conversation>
 }

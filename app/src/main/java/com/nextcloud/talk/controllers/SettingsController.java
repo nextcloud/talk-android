@@ -346,7 +346,7 @@ public class SettingsController extends BaseController {
         super.onRestoreViewState(view, savedViewState);
         if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
             //Dialog won't be restarted automatically, so we need to call this method.
-            //Each dialog knows how to restore its state
+            //Each dialog knows how to restore its viewState
             showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState);
         }
     }

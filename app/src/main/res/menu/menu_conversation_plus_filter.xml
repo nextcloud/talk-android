@@ -27,6 +27,7 @@
 	      android:title="@string/nc_search"
 	      android:icon="@drawable/ic_search_white_24dp"
 	      app:showAsAction="collapseActionView|always"
+				android:visible="false"
 	      android:animateLayoutChanges="true"
 	      app:actionViewClass="androidx.appcompat.widget.SearchView"
         />

@@ -128,7 +128,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     AppPreferences appPreferences;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
     @BindView(R.id.swipe_refresh_layout)
@@ -211,8 +211,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     }
 
     @Override
+    protected void onDetach(@NonNull View view) {
+        eventBus.unregister(this);
+        super.onDetach(view);
+    }
+
+    @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
+        eventBus.register(this);
 
         if (isNewConversationView) {
             toggleNewCallHeaderVisibility(!isPublicCall);

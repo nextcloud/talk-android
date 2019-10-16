@@ -25,7 +25,7 @@
     android:background="@color/nc_white_color">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:listitem="@layout/rv_item_conversation" />

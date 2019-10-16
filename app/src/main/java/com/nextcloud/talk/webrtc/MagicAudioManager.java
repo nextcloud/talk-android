@@ -125,7 +125,7 @@ public class MagicAudioManager {
         // Tablet devices (e.g. Nexus 7) does not support proximity sensors.
         // Note that, the sensor will not be active until start() has been called.
         proximitySensor = MagicProximitySensor.create(context, new Runnable() {
-            // This method will be called each time a state change is detected.
+            // This method will be called each time a viewState change is detected.
             // Example: user holds his hand over the device (closer than ~5 cm),
             // or removes his hand from the device.
             public void run() {
@@ -160,7 +160,7 @@ public class MagicAudioManager {
     }
 
     /**
-     * This method is called when the proximity sensor reports a state change,
+     * This method is called when the proximity sensor reports a viewState change,
      * e.g. from "NEAR to FAR" or from "FAR to NEAR".
      */
     private void onProximitySensorChangedState() {
@@ -205,7 +205,7 @@ public class MagicAudioManager {
         this.audioManagerEvents = audioManagerEvents;
         amState = AudioManagerState.RUNNING;
 
-        // Store current audio state so we can restore it when stop() is called.
+        // Store current audio viewState so we can restore it when stop() is called.
         savedAudioMode = audioManager.getMode();
         savedIsSpeakerPhoneOn = audioManager.isSpeakerphoneOn();
         savedIsMicrophoneMute = audioManager.isMicrophoneMute();
@@ -294,7 +294,7 @@ public class MagicAudioManager {
         Log.d(TAG, "stop");
         ThreadUtils.checkIsOnMainThread();
         if (amState != AudioManagerState.RUNNING) {
-            Log.e(TAG, "Trying to stop AudioManager in incorrect state: " + amState);
+            Log.e(TAG, "Trying to stop AudioManager in incorrect viewState: " + amState);
             return;
         }
         amState = AudioManagerState.UNINITIALIZED;
@@ -434,7 +434,7 @@ public class MagicAudioManager {
     }
 
     /**
-     * Sets the microphone mute state.
+     * Sets the microphone mute viewState.
      */
     private void setMicrophoneMute(boolean on) {
         boolean wasMuted = audioManager.isMicrophoneMute();
@@ -445,7 +445,7 @@ public class MagicAudioManager {
     }
 
     /**
-     * Gets the current earpiece state.
+     * Gets the current earpiece viewState.
      */
     private boolean hasEarpiece() {
         return magicContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
@@ -480,21 +480,21 @@ public class MagicAudioManager {
 
     /**
      * Updates list of possible audio devices and make new device selection.
-     * TODO(henrika): add unit test to verify all state transitions.
+     * TODO(henrika): add unit test to verify all viewState transitions.
      */
     public void updateAudioDeviceState() {
         ThreadUtils.checkIsOnMainThread();
         Log.d(TAG, "--- updateAudioDeviceState: "
                 + "wired headset=" + hasWiredHeadset + ", "
-                + "BT state=" + bluetoothManager.getState());
+                + "BT viewState=" + bluetoothManager.getState());
         Log.d(TAG, "Device status: "
                 + "available=" + audioDevices + ", "
                 + "selected=" + selectedAudioDevice + ", "
                 + "user selected=" + userSelectedAudioDevice);
 
-        // Check if any Bluetooth headset is connected. The internal BT state will
+        // Check if any Bluetooth headset is connected. The internal BT viewState will
         // change accordingly.
-        // TODO(henrika): perhaps wrap required state into BT manager.
+        // TODO(henrika): perhaps wrap required viewState into BT manager.
         if (bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_AVAILABLE
                 || bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_UNAVAILABLE
                 || bluetoothManager.getState() == MagicBluetoothManager.State.SCO_DISCONNECTING) {
@@ -521,7 +521,7 @@ public class MagicAudioManager {
                 newAudioDevices.add(AudioDevice.EARPIECE);
             }
         }
-        // Store state which is set to true if the device list has changed.
+        // Store viewState which is set to true if the device list has changed.
         boolean audioDeviceSetUpdated = !audioDevices.equals(newAudioDevices);
         // Update the existing audio device set.
         audioDevices = newAudioDevices;
@@ -562,7 +562,7 @@ public class MagicAudioManager {
                 || bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTED) {
             Log.d(TAG, "Need BT audio: start=" + needBluetoothAudioStart + ", "
                     + "stop=" + needBluetoothAudioStop + ", "
-                    + "BT state=" + bluetoothManager.getState());
+                    + "BT viewState=" + bluetoothManager.getState());
         }
 
         // Start or stop Bluetooth SCO connection given states set earlier.
@@ -624,7 +624,7 @@ public class MagicAudioManager {
     }
 
     /**
-     * AudioManager state.
+     * AudioManager viewState.
      */
     public enum AudioManagerState {
         UNINITIALIZED,
@@ -649,7 +649,7 @@ public class MagicAudioManager {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            int state = intent.getIntExtra("state", STATE_UNPLUGGED);
+            int state = intent.getIntExtra("viewState", STATE_UNPLUGGED);
             // int microphone = intent.getIntExtra("microphone", HAS_NO_MIC);
             // String name = intent.getStringExtra("name");
             hasWiredHeadset = (state == STATE_PLUGGED);

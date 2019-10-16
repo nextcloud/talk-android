@@ -98,7 +98,7 @@ public class MagicBluetoothManager {
     }
 
     /**
-     * Returns the internal state.
+     * Returns the internal viewState.
      */
     public State getState() {
         ThreadUtils.checkIsOnMainThread();
@@ -110,14 +110,14 @@ public class MagicBluetoothManager {
     /**
      * Activates components required to detect Bluetooth devices and to enable
      * BT SCO (audio is routed via BT SCO) for the headset profile. The end
-     * state will be HEADSET_UNAVAILABLE but a state machine has started which
-     * will start a state change sequence where the final outcome depends on
+     * viewState will be HEADSET_UNAVAILABLE but a viewState machine has started which
+     * will start a viewState change sequence where the final outcome depends on
      * if/when the BT headset is enabled.
-     * Example of state change sequence when start() is called while BT device
+     * Example of viewState change sequence when start() is called while BT device
      * is connected and enabled:
      * UNINITIALIZED --> HEADSET_UNAVAILABLE --> HEADSET_AVAILABLE -->
      * SCO_CONNECTING --> SCO_CONNECTED <==> audio is now routed via BT SCO.
-     * Note that the MagicAudioManager is also involved in driving this state
+     * Note that the MagicAudioManager is also involved in driving this viewState
      * change.
      */
     public void start() {
@@ -128,7 +128,7 @@ public class MagicBluetoothManager {
             return;
         }
         if (bluetoothState != State.UNINITIALIZED) {
-            Log.w(TAG, "Invalid BT state");
+            Log.w(TAG, "Invalid BT viewState");
             return;
         }
         bluetoothHeadset = null;
@@ -155,16 +155,16 @@ public class MagicBluetoothManager {
         }
         // Register receivers for BluetoothHeadset change notifications.
         IntentFilter bluetoothHeadsetFilter = new IntentFilter();
-        // Register receiver for change in connection state of the Headset profile.
+        // Register receiver for change in connection viewState of the Headset profile.
         bluetoothHeadsetFilter.addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED);
-        // Register receiver for change in audio connection state of the Headset profile.
+        // Register receiver for change in audio connection viewState of the Headset profile.
         bluetoothHeadsetFilter.addAction(BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED);
         registerReceiver(bluetoothHeadsetReceiver, bluetoothHeadsetFilter);
-        Log.d(TAG, "HEADSET profile state: "
+        Log.d(TAG, "HEADSET profile viewState: "
                 + stateToString(bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET)));
         Log.d(TAG, "Bluetooth proxy for headset profile has started");
         bluetoothState = State.HEADSET_UNAVAILABLE;
-        Log.d(TAG, "start done: BT state=" + bluetoothState);
+        Log.d(TAG, "start done: BT viewState=" + bluetoothState);
     }
 
     /**
@@ -172,7 +172,7 @@ public class MagicBluetoothManager {
      */
     public void stop() {
         ThreadUtils.checkIsOnMainThread();
-        Log.d(TAG, "stop: BT state=" + bluetoothState);
+        Log.d(TAG, "stop: BT viewState=" + bluetoothState);
         if (bluetoothAdapter == null) {
             return;
         }
@@ -191,7 +191,7 @@ public class MagicBluetoothManager {
         bluetoothAdapter = null;
         bluetoothDevice = null;
         bluetoothState = State.UNINITIALIZED;
-        Log.d(TAG, "stop done: BT state=" + bluetoothState);
+        Log.d(TAG, "stop done: BT viewState=" + bluetoothState);
     }
 
     /**
@@ -209,7 +209,7 @@ public class MagicBluetoothManager {
      */
     public boolean startScoAudio() {
         ThreadUtils.checkIsOnMainThread();
-        Log.d(TAG, "startSco: BT state=" + bluetoothState + ", "
+        Log.d(TAG, "startSco: BT viewState=" + bluetoothState + ", "
                 + "attempts: " + scoConnectionAttempts + ", "
                 + "SCO is on: " + isScoOn());
         if (scoConnectionAttempts >= MAX_SCO_CONNECTION_ATTEMPTS) {
@@ -224,13 +224,13 @@ public class MagicBluetoothManager {
         Log.d(TAG, "Starting Bluetooth SCO and waits for ACTION_AUDIO_STATE_CHANGED...");
         // The SCO connection establishment can take several seconds, hence we cannot rely on the
         // connection to be available when the method returns but instead register to receive the
-        // intent ACTION_SCO_AUDIO_STATE_UPDATED and wait for the state to be SCO_AUDIO_STATE_CONNECTED.
+        // intent ACTION_SCO_AUDIO_STATE_UPDATED and wait for the viewState to be SCO_AUDIO_STATE_CONNECTED.
         bluetoothState = State.SCO_CONNECTING;
         audioManager.startBluetoothSco();
         audioManager.setBluetoothScoOn(true);
         scoConnectionAttempts++;
         startTimer();
-        Log.d(TAG, "startScoAudio done: BT state=" + bluetoothState + ", "
+        Log.d(TAG, "startScoAudio done: BT viewState=" + bluetoothState + ", "
                 + "SCO is on: " + isScoOn());
         return true;
     }
@@ -240,7 +240,7 @@ public class MagicBluetoothManager {
      */
     public void stopScoAudio() {
         ThreadUtils.checkIsOnMainThread();
-        Log.d(TAG, "stopScoAudio: BT state=" + bluetoothState + ", "
+        Log.d(TAG, "stopScoAudio: BT viewState=" + bluetoothState + ", "
                 + "SCO is on: " + isScoOn());
         if (bluetoothState != State.SCO_CONNECTING && bluetoothState != State.SCO_CONNECTED) {
             return;
@@ -249,14 +249,14 @@ public class MagicBluetoothManager {
         audioManager.stopBluetoothSco();
         audioManager.setBluetoothScoOn(false);
         bluetoothState = State.SCO_DISCONNECTING;
-        Log.d(TAG, "stopScoAudio done: BT state=" + bluetoothState + ", "
+        Log.d(TAG, "stopScoAudio done: BT viewState=" + bluetoothState + ", "
                 + "SCO is on: " + isScoOn());
     }
 
     /**
      * Use the BluetoothHeadset proxy object (controls the Bluetooth Headset
      * Service via IPC) to update the list of connected devices for the HEADSET
-     * profile. The internal state will change to HEADSET_UNAVAILABLE or to
+     * profile. The internal viewState will change to HEADSET_UNAVAILABLE or to
      * HEADSET_AVAILABLE and |bluetoothDevice| will be mapped to the connected
      * device if available.
      */
@@ -266,7 +266,7 @@ public class MagicBluetoothManager {
         }
         Log.d(TAG, "updateDevice");
         // Get connected devices for the headset profile. Returns the set of
-        // devices which are in state STATE_CONNECTED. The BluetoothDevice class
+        // devices which are in viewState STATE_CONNECTED. The BluetoothDevice class
         // is just a thin wrapper for a Bluetooth hardware address.
         List<BluetoothDevice> devices = bluetoothHeadset.getConnectedDevices();
         if (devices.isEmpty()) {
@@ -279,10 +279,10 @@ public class MagicBluetoothManager {
             bluetoothState = State.HEADSET_AVAILABLE;
             Log.d(TAG, "Connected bluetooth headset: "
                     + "name=" + bluetoothDevice.getName() + ", "
-                    + "state=" + stateToString(bluetoothHeadset.getConnectionState(bluetoothDevice))
+                    + "viewState=" + stateToString(bluetoothHeadset.getConnectionState(bluetoothDevice))
                     + ", SCO audio=" + bluetoothHeadset.isAudioConnected(bluetoothDevice));
         }
-        Log.d(TAG, "updateDevice done: BT state=" + bluetoothState);
+        Log.d(TAG, "updateDevice done: BT viewState=" + bluetoothState);
     }
 
     /**
@@ -311,13 +311,13 @@ public class MagicBluetoothManager {
     }
 
     /**
-     * Logs the state of the local Bluetooth adapter.
+     * Logs the viewState of the local Bluetooth adapter.
      */
     @SuppressLint("HardwareIds")
     protected void logBluetoothAdapterInfo(BluetoothAdapter localAdapter) {
         Log.d(TAG, "BluetoothAdapter: "
                 + "enabled=" + localAdapter.isEnabled() + ", "
-                + "state=" + stateToString(localAdapter.getState()) + ", "
+                + "viewState=" + stateToString(localAdapter.getState()) + ", "
                 + "name=" + localAdapter.getName() + ", "
                 + "address=" + localAdapter.getAddress());
         // Log the set of BluetoothDevice objects that are bonded (paired) to the local adapter.
@@ -366,7 +366,7 @@ public class MagicBluetoothManager {
         if (bluetoothState == State.UNINITIALIZED || bluetoothHeadset == null) {
             return;
         }
-        Log.d(TAG, "bluetoothTimeout: BT state=" + bluetoothState + ", "
+        Log.d(TAG, "bluetoothTimeout: BT viewState=" + bluetoothState + ", "
                 + "attempts: " + scoConnectionAttempts + ", "
                 + "SCO is on: " + isScoOn());
         if (bluetoothState != State.SCO_CONNECTING) {
@@ -385,7 +385,7 @@ public class MagicBluetoothManager {
             }
         }
         if (scoConnected) {
-            // We thought BT had timed out, but it's actually on; updating state.
+            // We thought BT had timed out, but it's actually on; updating viewState.
             bluetoothState = State.SCO_CONNECTED;
             scoConnectionAttempts = 0;
         } else {
@@ -394,7 +394,7 @@ public class MagicBluetoothManager {
             stopScoAudio();
         }
         updateAudioDeviceState();
-        Log.d(TAG, "bluetoothTimeout done: BT state=" + bluetoothState);
+        Log.d(TAG, "bluetoothTimeout done: BT viewState=" + bluetoothState);
     }
 
     /**
@@ -434,7 +434,7 @@ public class MagicBluetoothManager {
         }
     }
 
-    // Bluetooth connection state.
+    // Bluetooth connection viewState.
     public enum State {
         // Bluetooth is not available; no adapter or Bluetooth is off.
         UNINITIALIZED,
@@ -461,17 +461,17 @@ public class MagicBluetoothManager {
     private class BluetoothServiceListener implements BluetoothProfile.ServiceListener {
         @Override
         // Called to notify the client when the proxy object has been connected to the service.
-        // Once we have the profile proxy object, we can use it to monitor the state of the
+        // Once we have the profile proxy object, we can use it to monitor the viewState of the
         // connection and perform other operations that are relevant to the headset profile.
         public void onServiceConnected(int profile, BluetoothProfile proxy) {
             if (profile != BluetoothProfile.HEADSET || bluetoothState == State.UNINITIALIZED) {
                 return;
             }
-            Log.d(TAG, "BluetoothServiceListener.onServiceConnected: BT state=" + bluetoothState);
+            Log.d(TAG, "BluetoothServiceListener.onServiceConnected: BT viewState=" + bluetoothState);
             // Android only supports one connected Bluetooth Headset at a time.
             bluetoothHeadset = (BluetoothHeadset) proxy;
             updateAudioDeviceState();
-            Log.d(TAG, "onServiceConnected done: BT state=" + bluetoothState);
+            Log.d(TAG, "onServiceConnected done: BT viewState=" + bluetoothState);
         }
 
         @Override
@@ -480,18 +480,18 @@ public class MagicBluetoothManager {
             if (profile != BluetoothProfile.HEADSET || bluetoothState == State.UNINITIALIZED) {
                 return;
             }
-            Log.d(TAG, "BluetoothServiceListener.onServiceDisconnected: BT state=" + bluetoothState);
+            Log.d(TAG, "BluetoothServiceListener.onServiceDisconnected: BT viewState=" + bluetoothState);
             stopScoAudio();
             bluetoothHeadset = null;
             bluetoothDevice = null;
             bluetoothState = State.HEADSET_UNAVAILABLE;
             updateAudioDeviceState();
-            Log.d(TAG, "onServiceDisconnected done: BT state=" + bluetoothState);
+            Log.d(TAG, "onServiceDisconnected done: BT viewState=" + bluetoothState);
         }
     }
 
     // Intent broadcast receiver which handles changes in Bluetooth device availability.
-    // Detects headset changes and Bluetooth SCO state changes.
+    // Detects headset changes and Bluetooth SCO viewState changes.
     private class BluetoothHeadsetBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -499,7 +499,7 @@ public class MagicBluetoothManager {
                 return;
             }
             final String action = intent.getAction();
-            // Change in connection state of the Headset profile. Note that the
+            // Change in connection viewState of the Headset profile. Note that the
             // change does not tell us anything about whether we're streaming
             // audio to BT over SCO. Typically received when user turns on a BT
             // headset while audio is active using another audio device.
@@ -510,7 +510,7 @@ public class MagicBluetoothManager {
                         + "a=ACTION_CONNECTION_STATE_CHANGED, "
                         + "s=" + stateToString(state) + ", "
                         + "sb=" + isInitialStickyBroadcast() + ", "
-                        + "BT state: " + bluetoothState);
+                        + "BT viewState: " + bluetoothState);
                 if (state == BluetoothHeadset.STATE_CONNECTED) {
                     scoConnectionAttempts = 0;
                     updateAudioDeviceState();
@@ -523,7 +523,7 @@ public class MagicBluetoothManager {
                     stopScoAudio();
                     updateAudioDeviceState();
                 }
-                // Change in the audio (SCO) connection state of the Headset profile.
+                // Change in the audio (SCO) connection viewState of the Headset profile.
                 // Typically received after call to startScoAudio() has finalized.
             } else if (action.equals(BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(
@@ -532,7 +532,7 @@ public class MagicBluetoothManager {
                         + "a=ACTION_AUDIO_STATE_CHANGED, "
                         + "s=" + stateToString(state) + ", "
                         + "sb=" + isInitialStickyBroadcast() + ", "
-                        + "BT state: " + bluetoothState);
+                        + "BT viewState: " + bluetoothState);
                 if (state == BluetoothHeadset.STATE_AUDIO_CONNECTED) {
                     cancelTimer();
                     if (bluetoothState == State.SCO_CONNECTING) {
@@ -541,7 +541,7 @@ public class MagicBluetoothManager {
                         scoConnectionAttempts = 0;
                         updateAudioDeviceState();
                     } else {
-                        Log.w(TAG, "Unexpected state BluetoothHeadset.STATE_AUDIO_CONNECTED");
+                        Log.w(TAG, "Unexpected viewState BluetoothHeadset.STATE_AUDIO_CONNECTED");
                     }
                 } else if (state == BluetoothHeadset.STATE_AUDIO_CONNECTING) {
                     Log.d(TAG, "+++ Bluetooth audio SCO is now connecting...");
@@ -554,7 +554,7 @@ public class MagicBluetoothManager {
                     updateAudioDeviceState();
                 }
             }
-            Log.d(TAG, "onReceive done: BT state=" + bluetoothState);
+            Log.d(TAG, "onReceive done: BT viewState=" + bluetoothState);
         }
     }
 }

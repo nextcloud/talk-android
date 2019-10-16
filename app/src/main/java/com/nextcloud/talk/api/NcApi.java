@@ -319,7 +319,7 @@ public interface NcApi {
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> setReadOnlyState(@Header("Authorization") String authorization, @Url String url, @Field("state") int state);
+    Observable<GenericOverall> setReadOnlyState(@Header("Authorization") String authorization, @Url String url, @Field("viewState") int state);
 
 
     @FormUrlEncoded
@@ -332,7 +332,7 @@ public interface NcApi {
     @FormUrlEncoded
     @PUT
     Observable<GenericOverall> setLobbyForConversation(@Header("Authorization") String authorization,
-                                      @Url String url, @Field("state") Integer state,
+                                      @Url String url, @Field("viewState") Integer state,
                                                        @Field("timer") Long timer);
 
 }

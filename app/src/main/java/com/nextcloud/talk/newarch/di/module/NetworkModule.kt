@@ -50,6 +50,7 @@ import okhttp3.OkHttpClient
 import okhttp3.internal.tls.OkHostnameVerifier
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Logger
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -70,8 +71,16 @@ import javax.net.ssl.X509KeyManager
 val NetworkModule = module {
   single { createService(get()) }
   single { createRetrofit(get()) }
+  single { createProxy(get()) }
+  single { createTrustManager() }
+  single { createCookieManager() }
+  single { createDispatcher() }
+  single { createKeyManager(get(), get()) }
+  single { createSslSocketFactory(get(), get()) }
+  single { createCache(androidApplication() as NextcloudTalkApplication) }
   single { createOkHttpClient(androidContext(), get(), get(), get(), get(), get(), get(), get()) }
-  factory { createGetConversationsUseCase(get(), get()) }
+
+  single { createNextcloudTalkRepository(get()) }
 }
 
 fun createCookieManager(): CookieManager {
@@ -242,9 +251,3 @@ fun createNextcloudTalkRepository(apiService: ApiService): NextcloudTalkReposito
   return NextcloudTalkRepositoryImpl(apiService)
 }
 
-fun createGetConversationsUseCase(
-  nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler
-): GetConversationsUseCase {
-  return GetConversationsUseCase(nextcloudTalkRepository, apiErrorHandler)
-}

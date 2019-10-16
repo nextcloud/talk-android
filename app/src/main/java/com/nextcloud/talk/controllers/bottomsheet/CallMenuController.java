@@ -67,7 +67,7 @@ import org.parceler.Parcels;
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallMenuController extends BaseController
     implements FlexibleAdapter.OnItemClickListener {
-  @BindView(R.id.recycler_view)
+  @BindView(R.id.recyclerView)
   RecyclerView recyclerView;
 
   @Inject

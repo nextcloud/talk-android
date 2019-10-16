@@ -20,27 +20,29 @@
 
 package com.nextcloud.talk.newarch.conversationsList.mvp
 
-import android.view.View
-import androidx.annotation.LayoutRes
-import autodagger.AutoInjector
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.BaseController
+import androidx.lifecycle.ViewModel
+import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 
-@AutoInjector(NextcloudTalkApplication::class)
-abstract class BaseView : BaseController() {
+abstract class BaseViewModel<V : BaseView> : ViewModel() {
 
-    override fun onDetach(view: View) {
-        super.onDetach(view)
-        getPresenter().stop()
-    }
+  protected val disposables: CompositeDisposable = CompositeDisposable()
 
-    override fun onDestroy() {
-        getPresenter().destroy()
-        super.onDestroy()
-    }
+  val backgroundAndUIScope = CoroutineScope(
+      Job() + Dispatchers.Main
+  )
 
-    @LayoutRes
-    protected abstract fun getLayoutId(): Int
+  val backgroundScope = CoroutineScope(
+      Job()
+  )
 
-    protected abstract fun getPresenter(): MvpPresenter
+  override fun onCleared() {
+    super.onCleared()
+    disposables.clear()
+    backgroundAndUIScope.cancel()
+    backgroundScope.cancel()
+  }
 }

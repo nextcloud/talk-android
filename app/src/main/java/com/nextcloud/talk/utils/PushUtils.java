@@ -128,7 +128,7 @@ public class PushUtils {
         } catch (NoSuchAlgorithmException e) {
             Log.d(TAG, "No such algorithm");
         } catch (IOException e) {
-            Log.d(TAG, "Error while trying to parse push configuration state");
+            Log.d(TAG, "Error while trying to parse push configuration viewState");
         } catch (InvalidKeyException e) {
             Log.d(TAG, "Invalid key while trying to verify");
         } catch (SignatureException e) {

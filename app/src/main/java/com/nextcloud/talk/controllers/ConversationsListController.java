@@ -133,7 +133,7 @@ public class ConversationsListController extends BaseController implements Searc
     @Inject
     AppPreferences appPreferences;
 
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
     @BindView(R.id.swipeRefreshLayoutView)
@@ -480,7 +480,7 @@ public class ConversationsListController extends BaseController implements Searc
         searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
         if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
             //Dialog won't be restarted automatically, so we need to call this method.
-            //Each dialog knows how to restore its state
+            //Each dialog knows how to restore its viewState
             showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState);
         }
     }

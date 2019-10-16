@@ -197,6 +197,8 @@ public class CallController extends BaseController {
     AppPreferences appPreferences;
     @Inject
     Cache cache;
+    @Inject
+    EventBus eventBus;
 
     private PeerConnectionFactory peerConnectionFactory;
     private MediaConstraints audioConstraints;
@@ -1237,6 +1239,18 @@ public class CallController extends BaseController {
         } else {
             handleFromNotification();
         }
+    }
+
+    @Override
+    protected void onDetach(@NonNull View view) {
+        eventBus.unregister(this);
+        super.onDetach(view);
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+        eventBus.register(this);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

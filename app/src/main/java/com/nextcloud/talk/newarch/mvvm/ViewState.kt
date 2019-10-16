@@ -18,17 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.conversationsList
+package com.nextcloud.talk.newarch.mvvm
 
-import com.nextcloud.talk.models.json.conversations.Conversation
-
-class ConversationsListContract {
-    interface View {
-        fun onLoadConversationsSuccess(conversations: List<Conversation>)
-        fun onLoadConversationsFailure(throwable: Throwable)
-    }
-
-    interface Presenter {
-        fun loadConversations()
-    }
+enum class ViewState {
+  LOADING,
+  LOADED,
+  FAILED
 }

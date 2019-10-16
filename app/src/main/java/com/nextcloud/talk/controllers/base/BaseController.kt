@@ -21,10 +21,11 @@
  */
 package com.nextcloud.talk.controllers.base
 
+import android.content.ComponentCallbacks
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -44,16 +45,11 @@ import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import org.greenrobot.eventbus.EventBus
-import org.koin.core.Koin
-import org.koin.core.KoinComponent
-import org.koin.core.inject
-import org.koin.core.qualifier.named
-import org.koin.core.scope.Scope
+import org.koin.android.ext.android.inject
 import java.util.ArrayList
-import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-abstract class BaseController : ButterKnifeController(), KoinComponent {
+abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
   val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
 
@@ -74,10 +70,6 @@ abstract class BaseController : ButterKnifeController(), KoinComponent {
 
       return actionBarProvider?.supportActionBar
     }
-
-  override fun getKoin(): Koin {
-    return super.getKoin()
-  }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     when (item.itemId) {
@@ -112,7 +104,6 @@ abstract class BaseController : ButterKnifeController(), KoinComponent {
 
   override fun onAttach(view: View) {
     super.onAttach(view)
-    eventBus.register(this)
 
     setTitle()
     if (actionBar != null) {
@@ -121,7 +112,6 @@ abstract class BaseController : ButterKnifeController(), KoinComponent {
   }
 
   override fun onDetach(view: View) {
-    eventBus.unregister(this)
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(view.windowToken, 0)
     super.onDetach(view)
@@ -157,6 +147,12 @@ abstract class BaseController : ButterKnifeController(), KoinComponent {
         disableKeyboardPersonalisedLearning(view)
       }
     }
+  }
+
+  override fun onLowMemory() {
+  }
+
+  override fun onConfigurationChanged(newConfig: Configuration) {
   }
 
   companion object {

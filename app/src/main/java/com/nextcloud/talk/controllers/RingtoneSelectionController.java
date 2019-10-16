@@ -61,7 +61,7 @@ public class RingtoneSelectionController extends BaseController implements Flexi
 
     private static final String TAG = "RingtoneSelectionController";
 
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
     @BindView(R.id.swipe_refresh_layout)

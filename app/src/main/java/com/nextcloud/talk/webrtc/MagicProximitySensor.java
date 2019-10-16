@@ -100,7 +100,7 @@ public class MagicProximitySensor implements SensorEventListener {
     }
 
     /**
-     * Getter for last reported state. Set to true if "near" is reported.
+     * Getter for last reported viewState. Set to true if "near" is reported.
      */
     boolean sensorReportsNearState() {
         threadChecker.checkIsOnValidThread();
@@ -124,15 +124,15 @@ public class MagicProximitySensor implements SensorEventListener {
             // avoid blocking.
             float distanceInCentimeters = event.values[0];
             if (distanceInCentimeters < proximitySensor.getMaximumRange()) {
-                Log.d(TAG, "Proximity sensor => NEAR state");
+                Log.d(TAG, "Proximity sensor => NEAR viewState");
                 lastStateReportIsNear = true;
             } else {
-                Log.d(TAG, "Proximity sensor => FAR state");
+                Log.d(TAG, "Proximity sensor => FAR viewState");
                 lastStateReportIsNear = false;
             }
 
-            // Report about new state to listening client. Client can then call
-            // sensorReportsNearState() to query the current state (NEAR or FAR).
+            // Report about new viewState to listening client. Client can then call
+            // sensorReportsNearState() to query the current viewState (NEAR or FAR).
             if (onSensorStateListener != null) {
                 onSensorStateListener.run();
             }

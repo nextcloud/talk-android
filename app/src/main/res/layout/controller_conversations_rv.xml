@@ -75,7 +75,7 @@
             android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:listitem="@layout/rv_item_conversation" />
@@ -90,6 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:visibility="gone"
         app:srcCompat="@drawable/ic_add_white_24px" />
 
     <include layout="@layout/fast_scroller" />

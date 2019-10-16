@@ -84,6 +84,9 @@ public class AccountVerificationController extends BaseController {
     @Inject
     AppPreferences appPreferences;
 
+    @Inject
+    EventBus eventBus;
+
     @BindView(R.id.progress_text)
     TextView progressText;
 
@@ -113,6 +116,18 @@ public class AccountVerificationController extends BaseController {
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_account_verification, container, false);
+    }
+
+    @Override
+    protected void onDetach(@NonNull View view) {
+        eventBus.unregister(this);
+        super.onDetach(view);
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+        eventBus.register(this);
     }
 
     @Override

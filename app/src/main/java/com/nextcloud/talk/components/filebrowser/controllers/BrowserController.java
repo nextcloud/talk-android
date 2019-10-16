@@ -75,7 +75,7 @@ public class BrowserController extends BaseController implements ListingInterfac
     private final Set<String> selectedPaths;
     @Inject
     UserUtils userUtils;
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;

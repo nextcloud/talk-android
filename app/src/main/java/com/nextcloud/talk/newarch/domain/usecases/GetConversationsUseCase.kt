@@ -31,6 +31,6 @@ class GetConversationsUseCase constructor(
 ) : UseCase<List<Conversation>, Any?>(apiErrorHandler) {
 
   override suspend fun run(params: Any?): List<Conversation> {
-    return nextcloudTalkRepository.getConversations(user);
+    return nextcloudTalkRepository.getConversationsForUser(user);
   }
 }

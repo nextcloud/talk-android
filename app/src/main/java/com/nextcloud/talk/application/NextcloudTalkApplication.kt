@@ -52,6 +52,7 @@ import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.newarch.di.module.CommunicationModule
 import com.nextcloud.talk.newarch.di.module.NetworkModule
 import com.nextcloud.talk.newarch.di.module.StorageModule
+import com.nextcloud.talk.newarch.features.conversationsList.di.module.ConversationsListModule
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -193,7 +194,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         startKoin {
             androidContext(this@NextcloudTalkApplication)
             androidLogger()
-            modules(listOf(CommunicationModule, StorageModule, NetworkModule))
+            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule))
         }
     }
 

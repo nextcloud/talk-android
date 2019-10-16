@@ -60,7 +60,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     private Context context;
 
     public ConversationItem(Conversation conversation, UserEntity userEntity,
-                            Context activityContext) {
+        Context activityContext) {
         this.conversation = conversation;
         this.userEntity = userEntity;
         this.context = activityContext;
@@ -98,6 +98,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ConversationItemViewHolder holder, int position, List<Object> payloads) {
         Context appContext =
                 NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
+
         holder.dialogAvatar.setController(null);
 
         if (adapter.hasFilter()) {

@@ -654,6 +654,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
   override fun onAttach(view: View) {
     super.onAttach(view)
+    eventBus.register(this)
 
     if (conversationUser?.userId != "?" && conversationUser?.hasSpreedFeatureCapability(
             "mention-flag"
@@ -728,7 +729,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
   }
 
   override fun onDetach(view: View) {
-    super.onDetach(view)
+    eventBus.unregister(this)
     ApplicationWideCurrentRoomHolder.getInstance()
         .clear()
 
@@ -747,6 +748,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
       mentionAutocomplete?.dismissPopup()
     }
+
+    super.onDetach(view)
   }
 
   override fun getTitle(): String? {

@@ -18,25 +18,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.conversationsList.mvp
+package com.nextcloud.talk.newarch.mvvm.ext
 
-import io.reactivex.disposables.CompositeDisposable
+import androidx.recyclerview.widget.RecyclerView
 
-abstract class BasePresenter<V : BaseView> : MvpPresenter {
-
-    protected val disposables: CompositeDisposable = CompositeDisposable()
-    protected var view: V? = null
-        private set
-
-    fun start(view: V) {
-        this.view = view
-    }
-
-    override fun stop() {
-        this.view = null
-    }
-
-    override fun destroy() {
-        disposables.clear()
-    }
+fun RecyclerView.initRecyclerView(
+  layoutManager: RecyclerView.LayoutManager,
+  adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
+  hasFixedSize: Boolean = true
+) {
+  this.layoutManager = layoutManager
+  this.adapter = adapter
+  setHasFixedSize(hasFixedSize)
 }

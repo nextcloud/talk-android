@@ -64,7 +64,7 @@ public class SwitchAccountController extends BaseController {
     @Inject
     UserUtils userUtils;
 
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
     @Inject

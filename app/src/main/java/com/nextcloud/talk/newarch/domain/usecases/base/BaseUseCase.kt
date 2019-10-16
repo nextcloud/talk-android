@@ -31,6 +31,7 @@ abstract class UseCase<Type, in Params>(private val apiErrorHandler: ApiErrorHan
 
   abstract suspend fun run(params: Params? = null): Type
   lateinit var user: UserEntity
+  fun isUserInitialized() = ::user.isInitialized
 
   fun invoke(
     scope: CoroutineScope,

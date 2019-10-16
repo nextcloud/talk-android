@@ -31,7 +31,7 @@ import com.bluelinelabs.conductor.Controller
 
 abstract class ButterKnifeController : Controller {
 
-    private var unbinder: Unbinder? = null
+    protected var unbinder: Unbinder? = null
 
     constructor() {}
 

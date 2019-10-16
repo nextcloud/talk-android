@@ -160,6 +160,18 @@ public class CallNotificationController extends BaseController {
         return inflater.inflate(R.layout.controller_call_notification, container, false);
     }
 
+    @Override
+    protected void onDetach(@NonNull View view) {
+        eventBus.unregister(this);
+        super.onDetach(view);
+    }
+
+    @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+        eventBus.register(this);
+    }
+
     private void showAnswerControls() {
         callAnswerCameraView.setVisibility(View.VISIBLE);
         callAnswerVoiceOnlyView.setVisibility(View.VISIBLE);

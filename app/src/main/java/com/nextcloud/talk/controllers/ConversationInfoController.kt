@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.controllers
 
-import android.content.Context
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
@@ -85,7 +85,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.ArrayList
@@ -94,7 +93,6 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapter.OnItemClickListener {
-
     @BindView(R.id.notification_settings)
     lateinit var notificationsPreferenceScreen: MaterialPreferenceScreen
     @BindView(R.id.progressBar)
@@ -115,7 +113,7 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
     lateinit var conversationDisplayName: EmojiTextView
     @BindView(R.id.participants_list_category)
     lateinit var participantsListCategory: MaterialPreferenceCategoryWithRightLink
-    @BindView(R.id.recycler_view)
+    @BindView(R.id.recyclerView)
     lateinit var recyclerView: RecyclerView
     @BindView(R.id.deleteConversationAction)
     lateinit var deleteConversationAction: MaterialStandardPreference
@@ -179,8 +177,14 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
         return inflater.inflate(R.layout.controller_conversation_info, container, false)
     }
 
+    override fun onDetach(view: View) {
+        eventBus.unregister(this)
+        super.onDetach(view)
+    }
+
     override fun onAttach(view: View) {
         super.onAttach(view)
+        eventBus.register(this)
 
         if (databaseStorageModule == null) {
             databaseStorageModule = DatabaseStorageModule(conversationUser!!, conversationToken)
@@ -327,7 +331,7 @@ class ConversationInfoController(args: Bundle) : BaseController(), FlexibleAdapt
         super.onRestoreViewState(view, savedViewState)
         if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
             //Dialog won't be restarted automatically, so we need to call this method.
-            //Each dialog knows how to restore its state
+            //Each dialog knows how to restore its viewState
             showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState)
         }
     }

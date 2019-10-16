@@ -18,9 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.conversationsList.mvp
+package com.nextcloud.talk.newarch.features.conversationsList
 
-interface MvpPresenter {
-    fun stop()
-    fun destroy()
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
+import com.nextcloud.talk.utils.database.user.UserUtils
+
+class ConversationListViewModelFactory constructor(
+  private val conversationsUseCase: GetConversationsUseCase,
+  private val userUtils: UserUtils
+): ViewModelProvider.Factory {
+
+  override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    return ConversationsListViewModel(conversationsUseCase, userUtils) as T;
+  }
 }
