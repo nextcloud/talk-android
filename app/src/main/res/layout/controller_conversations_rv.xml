@@ -25,54 +25,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="@dimen/item_height"
-        android:layout_height="@dimen/item_height"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/colorPrimary"
-        android:indeterminateTintMode="src_in" />
-
-    <RelativeLayout
-        android:id="@+id/emptyLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/noConversationsImageView"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_logo"
-            android:tint="@color/colorPrimary" />
-
-        <TextView
-            android:id="@+id/sendHiTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/noConversationsImageView"
-            android:layout_margin="8dp"
-            android:text="@string/nc_conversations_empty"
-            android:textAlignment="center"
-            android:textSize="20sp" />
-    </RelativeLayout>
+    <include layout="@layout/view_states"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayoutView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_behavior="com.nextcloud.talk.utils.FABAwareScrollingViewBehavior">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/dataStateView"
+            android:visibility="invisible">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"

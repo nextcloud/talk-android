@@ -47,7 +47,7 @@ class NetworkUtils {
           .header("OCS-APIRequest", "true")
           .method(original.method, original.body)
           .build()
-
+      
       val response = chain.proceed(request)
 
       if (request.url.encodedPath.contains("/avatar/")) {

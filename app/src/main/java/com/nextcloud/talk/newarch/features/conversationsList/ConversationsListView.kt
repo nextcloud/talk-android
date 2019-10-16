@@ -22,6 +22,7 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -60,6 +61,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.mvvm.ViewState.FAILED
 import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED
+import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED_EMPTY
 import com.nextcloud.talk.newarch.mvvm.ViewState.LOADING
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.utils.ApiUtils
@@ -72,12 +74,14 @@ import eu.davidea.flexibleadapter.FlexibleAdapter.OnItemClickListener
 import eu.davidea.flexibleadapter.FlexibleAdapter.OnItemLongClickListener
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.IFlexible
-import kotlinx.android.synthetic.main.controller_conversations_rv.view.emptyLayout
+import kotlinx.android.synthetic.main.controller_conversations_rv.view.dataStateView
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.floatingActionButton
-import kotlinx.android.synthetic.main.controller_conversations_rv.view.progressBar
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.recyclerView
-import kotlinx.android.synthetic.main.controller_conversations_rv.view.swipeRefreshLayoutView
 import kotlinx.android.synthetic.main.fast_scroller.view.fast_scroller
+import kotlinx.android.synthetic.main.view_states.view.errorStateImageView
+import kotlinx.android.synthetic.main.view_states.view.errorStateTextView
+import kotlinx.android.synthetic.main.view_states.view.loadingStateView
+import kotlinx.android.synthetic.main.view_states.view.stateWithMessageView
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
 import java.util.ArrayList
@@ -178,18 +182,36 @@ class ConversationsListView() : BaseView(), OnQueryTextListener,
       viewState.observe(this@ConversationsListView, Observer { value ->
         when (value) {
           LOADING -> {
-            view?.recyclerView?.visibility = View.GONE
-            view?.emptyLayout?.visibility = View.GONE
-            view?.swipeRefreshLayoutView?.visibility = View.GONE
-            view?.progressBar?.visibility = View.VISIBLE
+            view?.loadingStateView?.visibility = View.VISIBLE
+            view?.stateWithMessageView?.visibility = View.GONE
+            view?.dataStateView?.visibility = View.GONE
             view?.floatingActionButton?.visibility = View.GONE
-            searchItem?.setVisible(false)
+            searchItem?.isVisible = false
           }
-          LOADED, FAILED -> {
-            view?.recyclerView?.visibility = View.VISIBLE
-            // The rest is handled in an actual network call
-            view?.progressBar?.visibility = View.GONE
-            view?.floatingActionButton?.visibility = View.VISIBLE
+          LOADED -> {
+            view?.loadingStateView?.visibility = View.GONE
+            view?.stateWithMessageView?.visibility = View.GONE
+            view!!.dataStateView.visibility = View.VISIBLE
+            view?.floatingActionButton?.visibility = View.GONE
+            searchItem?.isVisible = true
+          }
+          LOADED_EMPTY, FAILED -> {
+            view?.loadingStateView?.visibility = View.GONE
+            view?.dataStateView?.visibility = View.VISIBLE
+            view?.floatingActionButton?.visibility = View.GONE
+            searchItem?.isVisible = false
+
+            if (value.equals(FAILED)) {
+              view?.stateWithMessageView?.errorStateTextView?.text = messageData
+              view?.stateWithMessageView?.errorStateImageView?.setImageResource(
+                  R.drawable.ic_announcement_white_24dp
+              )
+            } else {
+              view?.stateWithMessageView?.errorStateTextView?.text = resources?.getText(R.string.nc_conversations_empty)
+              view?.stateWithMessageView?.errorStateImageView?.setImageResource(R.drawable.ic_logo)
+            }
+
+            view?.stateWithMessageView?.visibility = View.VISIBLE
           }
           else -> {
             // We should not be here
@@ -208,16 +230,6 @@ class ConversationsListView() : BaseView(), OnQueryTextListener,
           }
 
           recyclerViewAdapter.updateDataSet(newConversations as List<IFlexible<ViewHolder>>?)
-
-          if (it.isNotEmpty()) {
-            view?.emptyLayout?.visibility = View.GONE
-            view?.swipeRefreshLayoutView?.visibility = View.VISIBLE
-            searchItem?.setVisible(true)
-          } else {
-            view?.emptyLayout?.visibility = View.VISIBLE
-            view?.swipeRefreshLayoutView?.visibility = View.GONE
-            searchItem?.setVisible(false)
-          }
         })
 
       })
@@ -243,7 +255,8 @@ class ConversationsListView() : BaseView(), OnQueryTextListener,
       dataSource.subscribe(object : BaseBitmapDataSubscriber() {
         override fun onNewResultImpl(bitmap: Bitmap?) {
           if (bitmap != null && resources != null) {
-            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources!!, bitmap)
+            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources as Resources,
+                bitmap)
             roundedBitmapDrawable.isCircular = true
             roundedBitmapDrawable.setAntiAlias(true)
             menuItem.icon = roundedBitmapDrawable
@@ -261,8 +274,19 @@ class ConversationsListView() : BaseView(), OnQueryTextListener,
     return R.layout.controller_conversations_rv
   }
 
-  @OnClick(R.id.floatingActionButton, R.id.emptyLayout)
+  @OnClick(R.id.floatingActionButton)
   fun onFloatingActionButtonClick() {
+    openNewConversationScreen()
+  }
+
+  @OnClick(R.id.stateWithMessageView)
+  fun onStateWithMessageViewClick() {
+    if (viewModel.viewState.equals(LOADED_EMPTY)) {
+      openNewConversationScreen()
+    }
+  }
+
+  private fun openNewConversationScreen() {
     val bundle = Bundle()
     bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
     router.pushController(
@@ -273,7 +297,7 @@ class ConversationsListView() : BaseView(), OnQueryTextListener,
   }
 
   override fun getTitle(): String? {
-    return resources!!.getString(R.string.nc_app_name)
+    return resources?.getString(R.string.nc_app_name)
   }
 
   override fun onAttach(view: View) {

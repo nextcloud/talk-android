@@ -151,7 +151,6 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
         ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
-        DeviceUtils.ignoreSpecialBatteryFeatures()
 
         val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()

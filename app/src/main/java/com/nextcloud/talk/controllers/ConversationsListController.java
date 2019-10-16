@@ -142,9 +142,6 @@ public class ConversationsListController extends BaseController implements Searc
     @BindView(R.id.progressBar)
     ProgressBar progressBarView;
 
-    @BindView(R.id.emptyLayout)
-    RelativeLayout emptyLayoutView;
-
     @BindView(R.id.fast_scroller)
     FastScroller fastScroller;
 
@@ -319,7 +316,7 @@ public class ConversationsListController extends BaseController implements Searc
                         progressBarView.setVisibility(View.GONE);
                     }
 
-                    if (roomsOverall.getOcs().getData().size() > 0) {
+                    /*if (roomsOverall.getOcs().getData().size() > 0) {
                         if (emptyLayoutView.getVisibility() != View.GONE) {
                             emptyLayoutView.setVisibility(View.GONE);
                         }
@@ -335,7 +332,7 @@ public class ConversationsListController extends BaseController implements Searc
                         if (swipeRefreshLayout.getVisibility() != View.GONE) {
                             swipeRefreshLayout.setVisibility(View.GONE);
                         }
-                    }
+                    }*/
 
                     Conversation conversation;
                     for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
@@ -386,14 +383,14 @@ public class ConversationsListController extends BaseController implements Searc
                         HttpException exception = (HttpException) throwable;
                         switch (exception.code()) {
                             case 401:
-                                if (getParentController() != null &&
+                                /*if (getParentController() != null &&
                                         getParentController().getRouter() != null) {
                                     getParentController().getRouter().pushController((RouterTransaction.with
                                             (new WebViewLoginController(currentUser.getBaseUrl(),
                                                     true))
                                             .pushChangeHandler(new VerticalChangeHandler())
                                             .popChangeHandler(new VerticalChangeHandler())));
-                                }
+                                }*/
                                 break;
                             default:
                                 break;
@@ -432,7 +429,7 @@ public class ConversationsListController extends BaseController implements Searc
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
-        emptyLayoutView.setOnClickListener(v -> showNewConversationsScreen());
+        //emptyLayoutView.setOnClickListener(v -> showNewConversationsScreen());
         floatingActionButton.setOnClickListener(v -> {
             showNewConversationsScreen();
         });

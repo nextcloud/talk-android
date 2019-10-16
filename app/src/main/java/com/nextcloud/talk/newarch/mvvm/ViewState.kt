@@ -22,6 +22,7 @@ package com.nextcloud.talk.newarch.mvvm
 
 enum class ViewState {
   LOADING,
+  LOADED_EMPTY,
   LOADED,
   FAILED
 }

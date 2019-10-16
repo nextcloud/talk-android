@@ -30,6 +30,7 @@ import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.mvvm.ViewState
 import com.nextcloud.talk.newarch.mvvm.ViewState.FAILED
 import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED
+import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED_EMPTY
 import com.nextcloud.talk.newarch.mvvm.ViewState.LOADING
 import com.nextcloud.talk.utils.database.user.UserUtils
 import org.apache.commons.lang3.builder.CompareToBuilder
@@ -41,7 +42,7 @@ class ConversationsListViewModel constructor(
 
   val conversationsListData = MutableLiveData<List<Conversation>>()
   val viewState = MutableLiveData<ViewState>(LOADING)
-  val messageData = MutableLiveData<String>()
+  var messageData : String? = null
   val searchQuery = MutableLiveData<String>()
   lateinit var currentUser: UserEntity
 
@@ -66,11 +67,12 @@ class ConversationsListViewModel constructor(
         })
 
         conversationsListData.value = newConversations
-        viewState.value = LOADED
+        viewState.value = if (newConversations.isNotEmpty()) LOADED else LOADED_EMPTY
+
       }
 
       override fun onError(errorModel: ErrorModel?) {
-        messageData.value = errorModel?.message
+        messageData = errorModel?.message
         viewState.value = FAILED
       }
 

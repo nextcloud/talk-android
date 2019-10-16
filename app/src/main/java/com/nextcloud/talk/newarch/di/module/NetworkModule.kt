@@ -251,3 +251,9 @@ fun createNextcloudTalkRepository(apiService: ApiService): NextcloudTalkReposito
   return NextcloudTalkRepositoryImpl(apiService)
 }
 
+fun createGetConversationsUseCase(
+  nextcloudTalkRepository: NextcloudTalkRepository,
+  apiErrorHandler: ApiErrorHandler
+): GetConversationsUseCase {
+  return GetConversationsUseCase(nextcloudTalkRepository, apiErrorHandler)
+}

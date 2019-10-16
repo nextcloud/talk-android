@@ -48,6 +48,7 @@ import com.nextcloud.talk.jobs.CapabilitiesWorker;
 import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.jobs.SignalingSettingsWorker;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListView;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -407,7 +408,7 @@ public class AccountVerificationController extends BaseController {
             getActivity().runOnUiThread(() -> {
                 if (userUtils.getUsers().size() == 1) {
                     getRouter().setRoot(RouterTransaction.with(new
-                            ConversationsListController())
+                        ConversationsListView())
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler()));
                 } else {
@@ -474,7 +475,7 @@ public class AccountVerificationController extends BaseController {
 
                     } else {
                         if (userUtils.anyUserExists()) {
-                            getRouter().setRoot(RouterTransaction.with(new ConversationsListController())
+                            getRouter().setRoot(RouterTransaction.with(new ConversationsListView())
                                     .pushChangeHandler(new HorizontalChangeHandler())
                                     .popChangeHandler(new HorizontalChangeHandler()));
                         } else {

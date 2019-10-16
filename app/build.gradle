@@ -143,6 +143,7 @@ ext {
     work_version = "1.0.1"
     koin_version = "2.1.0-alpha-1"
     lifecycle_version = "2.1.0"
+    coil_version = "0.7.0"
 }
 
 
@@ -268,6 +269,10 @@ dependencies {
     implementation 'com.github.mario.fresco:webpsupport:111'
     implementation 'com.github.mario.fresco:animated-gif:111'
     implementation 'com.github.mario.fresco:imagepipeline-okhttp3:111'
+
+    implementation "io.coil-kt:coil:${coil_version}"
+    implementation "io.coil-kt:coil-gif:${coil_version}"
+    implementation "io.coil-kt:coil-svg:${coil_version}"
 
     implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
