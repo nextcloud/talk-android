@@ -22,8 +22,6 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.SearchManager
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -36,7 +34,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -45,12 +42,6 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
-import com.facebook.common.executors.UiThreadImmediateExecutorService
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.DataSource
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
-import com.facebook.imagepipeline.image.CloseableImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.controllers.ContactsController
@@ -64,7 +55,6 @@ import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED
 import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED_EMPTY
 import com.nextcloud.talk.newarch.mvvm.ViewState.LOADING
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.animations.SharedElementTransition
@@ -77,6 +67,7 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.dataStateView
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.floatingActionButton
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.recyclerView
+import kotlinx.android.synthetic.main.controller_conversations_rv.view.swipeRefreshLayoutView
 import kotlinx.android.synthetic.main.fast_scroller.view.fast_scroller
 import kotlinx.android.synthetic.main.view_states.view.errorStateImageView
 import kotlinx.android.synthetic.main.view_states.view.errorStateTextView
@@ -95,6 +86,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
   private val recyclerViewAdapter = FlexibleAdapter(mutableListOf())
 
   private var searchItem: MenuItem? = null
+  private var settingsItem: MenuItem? = null
   private var searchView: SearchView? = null
 
   override fun onCreateOptionsMenu(
@@ -115,7 +107,17 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
       recyclerViewAdapter.filterItems()
     }
 
-    loadUserAvatar(menu.findItem(R.id.action_settings))
+    settingsItem = menu.findItem(R.id.action_settings)
+    val iconSize = settingsItem?.icon?.intrinsicHeight?.toFloat()
+        ?.let {
+          DisplayUtils.convertDpToPixel(
+              it,
+              activity
+          )
+              .toInt()
+        }
+
+    iconSize?.let { viewModel.loadAvatar(it) }
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -182,6 +184,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
       viewState.observe(this@ConversationsListView, Observer { value ->
         when (value) {
           LOADING -> {
+            view?.swipeRefreshLayoutView?.isEnabled = false
             view?.loadingStateView?.visibility = View.VISIBLE
             view?.stateWithMessageView?.visibility = View.GONE
             view?.dataStateView?.visibility = View.GONE
@@ -189,6 +192,10 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             searchItem?.isVisible = false
           }
           LOADED -> {
+            view?.swipeRefreshLayoutView?.isEnabled = true
+            view?.swipeRefreshLayoutView?.post {
+              view?.swipeRefreshLayoutView?.isRefreshing = false
+            }
             view?.loadingStateView?.visibility = View.GONE
             view?.stateWithMessageView?.visibility = View.GONE
             view?.dataStateView?.visibility = View.VISIBLE
@@ -196,6 +203,10 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             searchItem?.isVisible = true
           }
           LOADED_EMPTY, FAILED -> {
+            view?.swipeRefreshLayoutView?.post {
+              view?.swipeRefreshLayoutView?.isRefreshing = false
+            }
+            view?.swipeRefreshLayoutView?.isEnabled = true
             view?.loadingStateView?.visibility = View.GONE
             view?.dataStateView?.visibility = View.GONE
             view?.floatingActionButton?.visibility = View.GONE
@@ -218,59 +229,29 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             // We should not be here
           }
         }
+      })
 
-        searchQuery.observe(this@ConversationsListView, Observer {
-          recyclerViewAdapter.setFilter(it)
-          recyclerViewAdapter.filterItems(500)
-        })
+      conversationsListData.observe(this@ConversationsListView, Observer {
+        val newConversations = mutableListOf<ConversationItem>()
+        for (conversation in it) {
+          newConversations.add(ConversationItem(conversation, viewModel.currentUser, activity))
+        }
 
-        conversationsListData.observe(this@ConversationsListView, Observer {
-          val newConversations = mutableListOf<ConversationItem>()
-          for (conversation in it) {
-            newConversations.add(ConversationItem(conversation, viewModel.currentUser, activity))
-          }
+        recyclerViewAdapter.updateDataSet(newConversations as List<IFlexible<ViewHolder>>?)
+      })
 
-          recyclerViewAdapter.updateDataSet(newConversations as List<IFlexible<ViewHolder>>?)
-        })
+      searchQuery.observe(this@ConversationsListView, Observer {
+        recyclerViewAdapter.setFilter(it)
+        recyclerViewAdapter.filterItems(500)
+      })
 
+
+      currentUserAvatar.observe(this@ConversationsListView, Observer {
+        settingsItem?.icon = it
       })
     }
 
     return super.onCreateView(inflater, container)
-  }
-
-  private fun loadUserAvatar(menuItem: MenuItem) {
-    if (activity != null) {
-      val avatarSize =
-        DisplayUtils.convertDpToPixel(menuItem.icon.intrinsicHeight.toFloat(), activity!!)
-            .toInt()
-      val imageRequest = DisplayUtils.getImageRequestForUrl(
-          ApiUtils.getUrlForAvatarWithNameAndPixels(
-              viewModel.currentUser.baseUrl,
-              viewModel.currentUser.userId, avatarSize
-          ), null
-      )
-
-      val imagePipeline = Fresco.getImagePipeline()
-      val dataSource = imagePipeline.fetchDecodedImage(imageRequest, null)
-      dataSource.subscribe(object : BaseBitmapDataSubscriber() {
-        override fun onNewResultImpl(bitmap: Bitmap?) {
-          if (bitmap != null && resources != null) {
-            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(
-                resources as Resources,
-                bitmap
-            )
-            roundedBitmapDrawable.isCircular = true
-            roundedBitmapDrawable.setAntiAlias(true)
-            menuItem.icon = roundedBitmapDrawable
-          }
-        }
-
-        override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>) {
-          menuItem.setIcon(R.drawable.ic_settings_white_24dp)
-        }
-      }, UiThreadImmediateExecutorService.getInstance())
-    }
   }
 
   override fun getLayoutId(): Int {
@@ -308,6 +289,9 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
     view.recyclerView.initRecyclerView(
         SmoothScrollLinearLayoutManager(view.context), recyclerViewAdapter
     )
+
+    view.swipeRefreshLayoutView.setOnRefreshListener { viewModel.loadConversations() }
+    view.swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
 
     recyclerViewAdapter.fastScroller = view.fast_scroller
     recyclerViewAdapter.mItemClickListener = this

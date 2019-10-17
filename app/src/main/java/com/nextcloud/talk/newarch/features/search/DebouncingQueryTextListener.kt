@@ -22,7 +22,6 @@
 
 package com.nextcloud.talk.newarch.features.search
 
-import android.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope

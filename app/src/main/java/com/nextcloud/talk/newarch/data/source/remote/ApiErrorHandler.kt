@@ -64,7 +64,9 @@ class ApiErrorHandler {
       else -> null
     }
     return errorModel ?: ErrorModel(
-        NextcloudTalkApplication.sharedApplication?.resources!!.getString(R.string.nc_not_defined_error), 0, ErrorModel.ErrorStatus.BAD_RESPONSE
+        NextcloudTalkApplication.sharedApplication?.resources!!.getString(
+            R.string.nc_not_defined_error
+        ), 0, ErrorModel.ErrorStatus.BAD_RESPONSE
     )
   }
 

@@ -27,6 +27,6 @@ val CommunicationModule = module {
   single { createEventBus() }
 }
 
-fun createEventBus() : EventBus {
+fun createEventBus(): EventBus {
   return EventBus.getDefault()
 }

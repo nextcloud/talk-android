@@ -20,18 +20,20 @@
 
 package com.nextcloud.talk.newarch.features.conversationsList.di.module
 
+import android.app.Application
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.di.module.createApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.features.conversationsList.ConversationListViewModelFactory
 import com.nextcloud.talk.utils.database.user.UserUtils
+import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
 val ConversationsListModule = module {
   single { createGetConversationsUseCase(get(), createApiErrorHandler()) }
   //viewModel { ConversationsListViewModel(get(), get()) }
-  factory { createConversationListViewModelFactory(get(), get()) }
+  factory { createConversationListViewModelFactory(androidApplication(), get(), get()) }
 }
 
 fun createGetConversationsUseCase(
@@ -41,7 +43,11 @@ fun createGetConversationsUseCase(
   return GetConversationsUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
-fun createConversationListViewModelFactory(conversationsUseCase: GetConversationsUseCase,
-  userUtils: UserUtils): ConversationListViewModelFactory {
-  return ConversationListViewModelFactory(conversationsUseCase, userUtils)
+fun createConversationListViewModelFactory(
+  application: Application,
+  conversationsUseCase:
+  GetConversationsUseCase,
+  userUtils: UserUtils
+): ConversationListViewModelFactory {
+  return ConversationListViewModelFactory(application, conversationsUseCase, userUtils)
 }

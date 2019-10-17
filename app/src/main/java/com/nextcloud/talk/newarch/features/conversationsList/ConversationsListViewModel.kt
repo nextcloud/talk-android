@@ -20,8 +20,20 @@
 
 package com.nextcloud.talk.newarch.features.conversationsList
 
+import android.app.Application
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.facebook.common.executors.UiThreadImmediateExecutorService
+import com.facebook.common.references.CloseableReference
+import com.facebook.datasource.DataSource
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
+import com.facebook.imagepipeline.image.CloseableImage
+import com.nextcloud.talk.R
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
@@ -33,19 +45,30 @@ import com.nextcloud.talk.newarch.mvvm.ViewState.FAILED
 import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED
 import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED_EMPTY
 import com.nextcloud.talk.newarch.mvvm.ViewState.LOADING
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
 import org.apache.commons.lang3.builder.CompareToBuilder
 
 class ConversationsListViewModel constructor(
+  application: Application,
   private val conversationsUseCase: GetConversationsUseCase,
   private val userUtils: UserUtils
-) : BaseViewModel<ConversationsListView>() {
+) : BaseViewModel<ConversationsListView>(application) {
 
   val conversationsListData = MutableLiveData<List<Conversation>>()
   val viewState = MutableLiveData<ViewState>(LOADING)
   var messageData: String? = null
   val searchQuery = MutableLiveData<String>()
   var currentUser: UserEntity = userUtils.currentUser
+  var currentUserAvatar: MutableLiveData<Drawable> = MutableLiveData()
+    get() {
+      if (field.value == null) {
+        field.value = context.resources.getDrawable(R.drawable.ic_settings_white_24dp)
+      }
+
+      return field
+    }
 
   fun loadConversations() {
     currentUser = userUtils.currentUser
@@ -80,5 +103,35 @@ class ConversationsListViewModel constructor(
       }
 
     })
+  }
+
+  fun loadAvatar(avatarSize: Int) {
+    val imageRequest = DisplayUtils.getImageRequestForUrl(
+        ApiUtils.getUrlForAvatarWithNameAndPixels(
+            currentUser.baseUrl,
+            currentUser.userId, avatarSize
+        ), null
+    )
+
+    val imagePipeline = Fresco.getImagePipeline()
+    val dataSource = imagePipeline.fetchDecodedImage(imageRequest, viewModelScope)
+    dataSource.subscribe(object : BaseBitmapDataSubscriber() {
+      override fun onNewResultImpl(bitmap: Bitmap?) {
+        if (bitmap != null) {
+          val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(
+              context.resources as Resources,
+              bitmap
+          )
+          roundedBitmapDrawable.isCircular = true
+          roundedBitmapDrawable.setAntiAlias(true)
+          currentUserAvatar.value = roundedBitmapDrawable
+        }
+      }
+
+      override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>) {
+        currentUserAvatar.value = context.getDrawable(R.drawable.ic_settings_white_24dp)
+      }
+    }, UiThreadImmediateExecutorService.getInstance())
+
   }
 }

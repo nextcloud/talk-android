@@ -28,7 +28,10 @@ import com.nextcloud.talk.utils.ApiUtils
 
 class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : NextcloudTalkRepository {
   override suspend fun getConversationsForUser(user: UserEntity): List<Conversation> {
-    return apiService.getConversations(ApiUtils.getCredentials(user.username, user.token),
-        ApiUtils.getUrlForGetRooms(user.baseUrl)).ocs.data
+    return apiService.getConversations(
+        ApiUtils.getCredentials(user.username, user.token),
+        ApiUtils.getUrlForGetRooms(user.baseUrl)
+    )
+        .ocs.data
   }
 }

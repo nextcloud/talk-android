@@ -20,17 +20,19 @@
 
 package com.nextcloud.talk.newarch.features.conversationsList
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.utils.database.user.UserUtils
 
 class ConversationListViewModelFactory constructor(
+  private val application: Application,
   private val conversationsUseCase: GetConversationsUseCase,
   private val userUtils: UserUtils
-): ViewModelProvider.Factory {
+) : ViewModelProvider.Factory {
 
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-    return ConversationsListViewModel(conversationsUseCase, userUtils) as T
+    return ConversationsListViewModel(application, conversationsUseCase, userUtils) as T
   }
 }

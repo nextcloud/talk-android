@@ -174,8 +174,11 @@ fun createTrustManager(): MagicTrustManager {
   return MagicTrustManager()
 }
 
-fun createSslSocketFactory(magicKeyManager: MagicKeyManager, magicTrustManager:
-MagicTrustManager) : SSLSocketFactoryCompat {
+fun createSslSocketFactory(
+  magicKeyManager: MagicKeyManager,
+  magicTrustManager:
+  MagicTrustManager
+): SSLSocketFactoryCompat {
   return SSLSocketFactoryCompat(magicKeyManager, magicTrustManager)
 }
 
@@ -227,14 +230,14 @@ fun createProxy(appPreferences: AppPreferences): Proxy {
 
 }
 
-fun createDispatcher() : Dispatcher {
+fun createDispatcher(): Dispatcher {
   val dispatcher = Dispatcher()
   dispatcher.maxRequestsPerHost = 100
   dispatcher.maxRequests = 100
   return dispatcher
 }
 
-fun createCache(androidApplication: NextcloudTalkApplication) : Cache {
+fun createCache(androidApplication: NextcloudTalkApplication): Cache {
   val cacheSize = 128 * 1024 * 1024 // 128 MB
   return Cache(androidApplication.cacheDir, cacheSize.toLong())
 }

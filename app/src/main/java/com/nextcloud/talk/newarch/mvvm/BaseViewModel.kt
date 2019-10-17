@@ -20,16 +20,21 @@
 
 package com.nextcloud.talk.newarch.conversationsList.mvp
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 
-abstract class BaseViewModel<V : BaseView> : ViewModel() {
+abstract class BaseViewModel<V : BaseView>(application: Application) : AndroidViewModel(
+    application
+) {
 
   protected val disposables: CompositeDisposable = CompositeDisposable()
+  protected val context: Context = getApplication<Application>().applicationContext
 
   val backgroundAndUIScope = CoroutineScope(
       Job() + Dispatchers.Main
