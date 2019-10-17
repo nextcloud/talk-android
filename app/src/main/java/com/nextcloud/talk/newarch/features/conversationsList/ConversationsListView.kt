@@ -199,7 +199,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             view?.loadingStateView?.visibility = View.GONE
             view?.stateWithMessageView?.visibility = View.GONE
             view?.dataStateView?.visibility = View.VISIBLE
-            view?.floatingActionButton?.visibility = View.GONE
+            view?.floatingActionButton?.visibility = View.VISIBLE
             searchItem?.isVisible = true
           }
           LOADED_EMPTY, FAILED -> {
@@ -209,15 +209,20 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             view?.swipeRefreshLayoutView?.isEnabled = true
             view?.loadingStateView?.visibility = View.GONE
             view?.dataStateView?.visibility = View.GONE
-            view?.floatingActionButton?.visibility = View.GONE
             searchItem?.isVisible = false
 
             if (value.equals(FAILED)) {
               view?.stateWithMessageView?.errorStateTextView?.text = messageData
-              view?.stateWithMessageView?.errorStateImageView?.setImageResource(
-                  R.drawable.ic_announcement_white_24dp
-              )
+              if (messageData.equals(context.resources.getString(R.string.nc_no_connection_error))) {
+                view?.stateWithMessageView?.errorStateImageView?.setImageResource(
+                    R.drawable.ic_cloud_off_white_24dp)
+              } else {
+                view?.stateWithMessageView?.errorStateImageView?.setImageResource(
+                    R.drawable.ic_announcement_white_24dp)
+              }
+              view?.floatingActionButton?.visibility = View.GONE
             } else {
+              view?.floatingActionButton?.visibility = View.VISIBLE
               view?.stateWithMessageView?.errorStateTextView?.text =
                 resources?.getText(R.string.nc_conversations_empty)
               view?.stateWithMessageView?.errorStateImageView?.setImageResource(R.drawable.ic_logo)
