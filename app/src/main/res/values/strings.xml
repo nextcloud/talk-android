@@ -298,4 +298,13 @@
     <string name="nc_lobby_waiting_with_date">You are currently waiting in the lobby.\n This
         meeting is scheduled for %1$s.</string>
     <string name="nc_manual">Not set</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">No connection</string>
+    <string name="nc_bad_response_error">Bad response</string>
+    <string name="nc_timeout_error">Timeout</string>
+    <string name="nc_empty_response_error">Empty response</string>
+    <string name="nc_not_defined_error">Unknown error</string>
+    <string name="nc_unauthorized_error">No Unauthorized</string>
+
 </resources>

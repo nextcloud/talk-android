@@ -21,6 +21,7 @@
 package com.nextcloud.talk.newarch.features.conversationsList
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
@@ -42,20 +43,22 @@ class ConversationsListViewModel constructor(
 
   val conversationsListData = MutableLiveData<List<Conversation>>()
   val viewState = MutableLiveData<ViewState>(LOADING)
-  var messageData : String? = null
+  var messageData: String? = null
   val searchQuery = MutableLiveData<String>()
   var currentUser: UserEntity = userUtils.currentUser
 
   fun loadConversations() {
     currentUser = userUtils.currentUser
 
-    if (!conversationsUseCase.isUserInitialized() || conversationsUseCase.user != currentUser) {
+    if (viewState.value?.equals(FAILED)!! || !conversationsUseCase.isUserInitialized() ||
+        conversationsUseCase.user != currentUser
+    ) {
       conversationsUseCase.user = currentUser
       viewState.value = LOADING
     }
 
     conversationsUseCase.invoke(
-        backgroundAndUIScope, null, object : UseCaseResponse<List<Conversation>> {
+        viewModelScope, null, object : UseCaseResponse<List<Conversation>> {
       override fun onSuccess(result: List<Conversation>) {
         val newConversations = result.toMutableList()
 
@@ -68,7 +71,7 @@ class ConversationsListViewModel constructor(
 
         conversationsListData.value = newConversations
         viewState.value = if (newConversations.isNotEmpty()) LOADED else LOADED_EMPTY
-
+        messageData = ""
       }
 
       override fun onError(errorModel: ErrorModel?) {

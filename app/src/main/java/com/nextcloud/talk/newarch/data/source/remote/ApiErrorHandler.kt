@@ -23,12 +23,13 @@
 
 package com.nextcloud.talk.newarch.data.source.remote
 
+import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import okhttp3.ResponseBody
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 
 /**
  * This class trace exceptions(api call or parse data or connection errors) &
@@ -62,7 +63,9 @@ class ApiErrorHandler {
       }
       else -> null
     }
-    return errorModel ?: ErrorModel("No Defined Error!", 0, ErrorModel.ErrorStatus.BAD_RESPONSE)
+    return errorModel ?: ErrorModel(
+        NextcloudTalkApplication.sharedApplication?.resources!!.getString(R.string.nc_not_defined_error), 0, ErrorModel.ErrorStatus.BAD_RESPONSE
+    )
   }
 
   /**

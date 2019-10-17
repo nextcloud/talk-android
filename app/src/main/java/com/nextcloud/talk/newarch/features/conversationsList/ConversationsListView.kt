@@ -191,7 +191,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
           LOADED -> {
             view?.loadingStateView?.visibility = View.GONE
             view?.stateWithMessageView?.visibility = View.GONE
-            view!!.dataStateView.visibility = View.VISIBLE
+            view?.dataStateView?.visibility = View.VISIBLE
             view?.floatingActionButton?.visibility = View.GONE
             searchItem?.isVisible = true
           }
@@ -207,7 +207,8 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                   R.drawable.ic_announcement_white_24dp
               )
             } else {
-              view?.stateWithMessageView?.errorStateTextView?.text = resources?.getText(R.string.nc_conversations_empty)
+              view?.stateWithMessageView?.errorStateTextView?.text =
+                resources?.getText(R.string.nc_conversations_empty)
               view?.stateWithMessageView?.errorStateImageView?.setImageResource(R.drawable.ic_logo)
             }
 
@@ -255,8 +256,10 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
       dataSource.subscribe(object : BaseBitmapDataSubscriber() {
         override fun onNewResultImpl(bitmap: Bitmap?) {
           if (bitmap != null && resources != null) {
-            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources as Resources,
-                bitmap)
+            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(
+                resources as Resources,
+                bitmap
+            )
             roundedBitmapDrawable.isCircular = true
             roundedBitmapDrawable.setAntiAlias(true)
             menuItem.icon = roundedBitmapDrawable
