@@ -119,7 +119,7 @@ class ConversationsListViewModel constructor(
       override fun onNewResultImpl(bitmap: Bitmap?) {
         if (bitmap != null) {
           val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(
-              context.resources as Resources,
+              context.resources,
               bitmap
           )
           roundedBitmapDrawable.isCircular = true
