@@ -29,12 +29,12 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class RoomWebSocketMessage {
-    @JsonField(name = "roomid")
-    String roomId;
+  @JsonField(name = "roomid")
+  String roomId;
 
-    @JsonField(name = "sessionid")
-    String sessiondId;
+  @JsonField(name = "sessionid")
+  String sessiondId;
 
-    @JsonField(name = "properties")
-    RoomPropertiesWebSocketMessage roomPropertiesWebSocketMessage;
+  @JsonField(name = "properties")
+  RoomPropertiesWebSocketMessage roomPropertiesWebSocketMessage;
 }

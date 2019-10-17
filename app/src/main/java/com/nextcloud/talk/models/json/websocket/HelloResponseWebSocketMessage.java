@@ -29,17 +29,18 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class HelloResponseWebSocketMessage {
-    @JsonField(name = "resumeid")
-    String resumeId;
+  @JsonField(name = "resumeid")
+  String resumeId;
 
-    @JsonField(name = "sessionid")
-    String sessionId;
+  @JsonField(name = "sessionid")
+  String sessionId;
 
-    @JsonField(name = "server")
-    ServerHelloResponseFeaturesWebSocketMessage serverHelloResponseFeaturesWebSocketMessage;
+  @JsonField(name = "server")
+  ServerHelloResponseFeaturesWebSocketMessage serverHelloResponseFeaturesWebSocketMessage;
 
-    public boolean serverHasMCUSupport() {
-        return serverHelloResponseFeaturesWebSocketMessage != null && serverHelloResponseFeaturesWebSocketMessage.getFeatures() != null
-                && serverHelloResponseFeaturesWebSocketMessage.getFeatures().contains("mcu");
-    }
+  public boolean serverHasMCUSupport() {
+    return serverHelloResponseFeaturesWebSocketMessage != null
+        && serverHelloResponseFeaturesWebSocketMessage.getFeatures() != null
+        && serverHelloResponseFeaturesWebSocketMessage.getFeatures().contains("mcu");
+  }
 }

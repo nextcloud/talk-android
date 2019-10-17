@@ -34,39 +34,40 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 public class OCFavorite implements Property {
-    public static final Property.Name NAME = new Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_FAVORITE);
+  public static final Property.Name NAME =
+      new Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_FAVORITE);
 
-    @Getter
-    @Setter
-    private boolean ocFavorite;
+  @Getter
+  @Setter
+  private boolean ocFavorite;
 
-    OCFavorite(boolean isFavorite) {
-        ocFavorite = isFavorite;
+  OCFavorite(boolean isFavorite) {
+    ocFavorite = isFavorite;
+  }
+
+  public static class Factory implements PropertyFactory {
+
+    @Nullable
+    @Override
+    public Property create(@NotNull XmlPullParser xmlPullParser) {
+      try {
+        String text = XmlUtils.INSTANCE.readText(xmlPullParser);
+        if (!TextUtils.isEmpty(text)) {
+          return new OCFavorite(Boolean.parseBoolean(text));
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (XmlPullParserException e) {
+        e.printStackTrace();
+      }
+
+      return new OCFavorite(false);
     }
 
-    public static class Factory implements PropertyFactory {
-
-        @Nullable
-        @Override
-        public Property create(@NotNull XmlPullParser xmlPullParser) {
-            try {
-                String text = XmlUtils.INSTANCE.readText(xmlPullParser);
-                if (!TextUtils.isEmpty(text)) {
-                    return new OCFavorite(Boolean.parseBoolean(text));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            }
-
-            return new OCFavorite(false);
-        }
-
-        @NotNull
-        @Override
-        public Property.Name getName() {
-            return NAME;
-        }
+    @NotNull
+    @Override
+    public Property.Name getName() {
+      return NAME;
     }
+  }
 }

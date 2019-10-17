@@ -31,6 +31,6 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class AutocompleteOCS extends GenericOCS {
-    @JsonField(name = "data")
-    List<AutocompleteUser> data;
+  @JsonField(name = "data")
+  List<AutocompleteUser> data;
 }

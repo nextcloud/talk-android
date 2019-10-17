@@ -28,15 +28,15 @@ import lombok.Data;
 @Data
 @JsonObject
 public class Settings {
-    @JsonField(name = "stunservers")
-    List<IceServer> stunServers;
+  @JsonField(name = "stunservers")
+  List<IceServer> stunServers;
 
-    @JsonField(name = "turnservers")
-    List<IceServer> turnServers;
+  @JsonField(name = "turnservers")
+  List<IceServer> turnServers;
 
-    @JsonField(name = "server")
-    String externalSignalingServer;
+  @JsonField(name = "server")
+  String externalSignalingServer;
 
-    @JsonField(name = "ticket")
-    String externalSignalingTicket;
+  @JsonField(name = "ticket")
+  String externalSignalingTicket;
 }

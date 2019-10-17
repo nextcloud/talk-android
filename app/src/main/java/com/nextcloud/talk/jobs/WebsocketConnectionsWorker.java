@@ -29,8 +29,8 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
@@ -41,43 +41,47 @@ import javax.inject.Inject;
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebsocketConnectionsWorker extends Worker {
 
-    private static final String TAG = "WebsocketConnectionsWorker";
+  private static final String TAG = "WebsocketConnectionsWorker";
 
-    @Inject
-    UserUtils userUtils;
+  @Inject
+  UserUtils userUtils;
 
-    public WebsocketConnectionsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
-    }
+  public WebsocketConnectionsWorker(@NonNull Context context,
+      @NonNull WorkerParameters workerParams) {
+    super(context, workerParams);
+  }
 
-    @SuppressLint("LongLogTag")
-    @NonNull
-    @Override
-    public Result doWork() {
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+  @SuppressLint("LongLogTag")
+  @NonNull
+  @Override
+  public Result doWork() {
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
 
-        List<UserEntity> userEntityList = userUtils.getUsers();
-        UserEntity userEntity;
-        ExternalSignalingServer externalSignalingServer;
-        WebSocketConnectionHelper webSocketConnectionHelper = new WebSocketConnectionHelper();
-        for (int i = 0; i < userEntityList.size(); i++) {
-            userEntity = userEntityList.get(i);
-            if (!TextUtils.isEmpty(userEntity.getExternalSignalingServer())) {
-                try {
-                    externalSignalingServer = LoganSquare.parse(userEntity.getExternalSignalingServer(), ExternalSignalingServer.class);
-                    if (!TextUtils.isEmpty(externalSignalingServer.getExternalSignalingServer()) &&
-                            !TextUtils.isEmpty(externalSignalingServer.getExternalSignalingTicket())) {
-                        WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
-                                externalSignalingServer.getExternalSignalingServer(),
-                                userEntity, externalSignalingServer.getExternalSignalingTicket(),
-                                false);
-                    }
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to parse external signaling server");
-                }
-            }
+    List<UserEntity> userEntityList = userUtils.getUsers();
+    UserEntity userEntity;
+    ExternalSignalingServer externalSignalingServer;
+    WebSocketConnectionHelper webSocketConnectionHelper = new WebSocketConnectionHelper();
+    for (int i = 0; i < userEntityList.size(); i++) {
+      userEntity = userEntityList.get(i);
+      if (!TextUtils.isEmpty(userEntity.getExternalSignalingServer())) {
+        try {
+          externalSignalingServer = LoganSquare.parse(userEntity.getExternalSignalingServer(),
+              ExternalSignalingServer.class);
+          if (!TextUtils.isEmpty(externalSignalingServer.getExternalSignalingServer()) &&
+              !TextUtils.isEmpty(externalSignalingServer.getExternalSignalingTicket())) {
+            WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                externalSignalingServer.getExternalSignalingServer(),
+                userEntity, externalSignalingServer.getExternalSignalingTicket(),
+                false);
+          }
+        } catch (IOException e) {
+          Log.e(TAG, "Failed to parse external signaling server");
         }
-
-        return Result.success();
+      }
     }
+
+    return Result.success();
+  }
 }

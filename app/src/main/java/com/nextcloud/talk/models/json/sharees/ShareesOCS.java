@@ -30,6 +30,6 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class ShareesOCS extends GenericOCS {
-    @JsonField(name = "data")
-    SharesData data;
+  @JsonField(name = "data")
+  SharesData data;
 }

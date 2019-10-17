@@ -28,15 +28,15 @@ import lombok.Data;
 @Data
 @JsonObject
 public class IceServer {
-    @JsonField(name = "url")
-    String url;
+  @JsonField(name = "url")
+  String url;
 
-    @JsonField(name = "urls")
-    List<String> urls;
+  @JsonField(name = "urls")
+  List<String> urls;
 
-    @JsonField(name = "username")
-    String username;
+  @JsonField(name = "username")
+  String username;
 
-    @JsonField(name = "credential")
-    String credential;
+  @JsonField(name = "credential")
+  String credential;
 }

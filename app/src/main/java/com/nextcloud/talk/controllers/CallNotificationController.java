@@ -61,17 +61,17 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.postprocessors.BlurPostProcessor;
 import com.facebook.imagepipeline.request.ImageRequest;
-import com.nextcloud.talk.models.RingtoneSettings;
-import com.nextcloud.talk.models.json.conversations.Conversation;
-import com.nextcloud.talk.models.json.conversations.RoomsOverall;
-import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
+import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.RoomsOverall;
+import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
@@ -97,397 +97,411 @@ import org.parceler.Parcels;
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallNotificationController extends BaseController {
 
-    private static final String TAG = "CallNotificationController";
+  private static final String TAG = "CallNotificationController";
 
-    @Inject
-    NcApi ncApi;
+  @Inject
+  NcApi ncApi;
 
-    @Inject
-    AppPreferences appPreferences;
+  @Inject
+  AppPreferences appPreferences;
 
-    @Inject
-    Cache cache;
+  @Inject
+  Cache cache;
 
-    @Inject
-    EventBus eventBus;
+  @Inject
+  EventBus eventBus;
 
-    @Inject
-    Context context;
+  @Inject
+  Context context;
 
-    @BindView(R.id.conversationNameTextView)
-    TextView conversationNameTextView;
+  @BindView(R.id.conversationNameTextView)
+  TextView conversationNameTextView;
 
-    @BindView(R.id.avatarImageView)
-    SimpleDraweeView avatarImageView;
+  @BindView(R.id.avatarImageView)
+  SimpleDraweeView avatarImageView;
 
-    @BindView(R.id.callAnswerVoiceOnlyView)
-    SimpleDraweeView callAnswerVoiceOnlyView;
+  @BindView(R.id.callAnswerVoiceOnlyView)
+  SimpleDraweeView callAnswerVoiceOnlyView;
 
-    @BindView(R.id.callAnswerCameraView)
-    SimpleDraweeView callAnswerCameraView;
+  @BindView(R.id.callAnswerCameraView)
+  SimpleDraweeView callAnswerCameraView;
 
-    @BindView(R.id.backgroundImageView)
-    ImageView backgroundImageView;
+  @BindView(R.id.backgroundImageView)
+  ImageView backgroundImageView;
 
-    @BindView(R.id.incomingTextRelativeLayout)
-    RelativeLayout incomingTextRelativeLayout;
+  @BindView(R.id.incomingTextRelativeLayout)
+  RelativeLayout incomingTextRelativeLayout;
 
-    private Bundle originalBundle;
-    private String roomId;
-    private UserEntity userBeingCalled;
-    private String credentials;
-    private Conversation currentConversation;
-    private MediaPlayer mediaPlayer;
-    private boolean leavingScreen = false;
-    private RenderScript renderScript;
-    private Vibrator vibrator;
-    private Handler handler;
+  private Bundle originalBundle;
+  private String roomId;
+  private UserEntity userBeingCalled;
+  private String credentials;
+  private Conversation currentConversation;
+  private MediaPlayer mediaPlayer;
+  private boolean leavingScreen = false;
+  private RenderScript renderScript;
+  private Vibrator vibrator;
+  private Handler handler;
 
-    public CallNotificationController(Bundle args) {
-        super();
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+  public CallNotificationController(Bundle args) {
+    super();
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
 
-        this.roomId = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
-        this.currentConversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
-        this.userBeingCalled = args.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());
+    this.roomId = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
+    this.currentConversation =
+        Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
+    this.userBeingCalled = args.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());
 
-        this.originalBundle = args;
-        credentials = ApiUtils.getCredentials(userBeingCalled.getUsername(), userBeingCalled.getToken());
+    this.originalBundle = args;
+    credentials =
+        ApiUtils.getCredentials(userBeingCalled.getUsername(), userBeingCalled.getToken());
+  }
+
+  @Override
+  protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    return inflater.inflate(R.layout.controller_call_notification, container, false);
+  }
+
+  @Override
+  protected void onDetach(@NonNull View view) {
+    eventBus.unregister(this);
+    super.onDetach(view);
+  }
+
+  @Override
+  protected void onAttach(@NonNull View view) {
+    super.onAttach(view);
+    eventBus.register(this);
+  }
+
+  private void showAnswerControls() {
+    callAnswerCameraView.setVisibility(View.VISIBLE);
+    callAnswerVoiceOnlyView.setVisibility(View.VISIBLE);
+  }
+
+  @OnClick(R.id.callControlHangupView)
+  void hangup() {
+    leavingScreen = true;
+
+    if (getActivity() != null) {
+      getActivity().finish();
     }
+  }
 
-    @Override
-    protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        return inflater.inflate(R.layout.controller_call_notification, container, false);
-    }
+  @OnClick(R.id.callAnswerCameraView)
+  void answerWithCamera() {
+    originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
+    proceedToCall();
+  }
 
-    @Override
-    protected void onDetach(@NonNull View view) {
-        eventBus.unregister(this);
-        super.onDetach(view);
-    }
+  @OnClick(R.id.callAnswerVoiceOnlyView)
+  void answerVoiceOnly() {
+    originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), true);
+    proceedToCall();
+  }
 
-    @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-        eventBus.register(this);
-    }
+  private void proceedToCall() {
+    originalBundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(),
+        currentConversation.getToken());
 
-    private void showAnswerControls() {
-        callAnswerCameraView.setVisibility(View.VISIBLE);
-        callAnswerVoiceOnlyView.setVisibility(View.VISIBLE);
-    }
+    getRouter().replaceTopController(RouterTransaction.with(new CallController(originalBundle))
+        .popChangeHandler(new HorizontalChangeHandler())
+        .pushChangeHandler(new HorizontalChangeHandler()));
+  }
 
-    @OnClick(R.id.callControlHangupView)
-    void hangup() {
-        leavingScreen = true;
+  private void checkIfAnyParticipantsRemainInRoom() {
+    ncApi.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(userBeingCalled.getBaseUrl(),
+        currentConversation.getToken()))
+        .subscribeOn(Schedulers.io())
+        .takeWhile(observable -> !leavingScreen)
+        .retry(3)
+        .as(AutoDispose.autoDisposable(getScopeProvider()))
+        .subscribe(new Observer<ParticipantsOverall>() {
+          @Override
+          public void onSubscribe(Disposable d) {
+          }
 
-        if (getActivity() != null) {
-            getActivity().finish();
-        }
-    }
+          @Override
+          public void onNext(ParticipantsOverall participantsOverall) {
+            boolean hasParticipantsInCall = false;
+            boolean inCallOnDifferentDevice = false;
+            List<Participant> participantList = participantsOverall.getOcs().getData();
+            for (Participant participant : participantList) {
+              if (participant.getParticipantFlags() != Participant.ParticipantFlags.NOT_IN_CALL) {
+                hasParticipantsInCall = true;
 
-    @OnClick(R.id.callAnswerCameraView)
-    void answerWithCamera() {
-        originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
-        proceedToCall();
-    }
-
-    @OnClick(R.id.callAnswerVoiceOnlyView)
-    void answerVoiceOnly() {
-        originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), true);
-        proceedToCall();
-    }
-
-    private void proceedToCall() {
-        originalBundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), currentConversation.getToken());
-
-        getRouter().replaceTopController(RouterTransaction.with(new CallController(originalBundle))
-                .popChangeHandler(new HorizontalChangeHandler())
-                .pushChangeHandler(new HorizontalChangeHandler()));
-    }
-
-    private void checkIfAnyParticipantsRemainInRoom() {
-        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(userBeingCalled.getBaseUrl(),
-                currentConversation.getToken()))
-                .subscribeOn(Schedulers.io())
-                .takeWhile(observable -> !leavingScreen)
-                .retry(3)
-                .as(AutoDispose.autoDisposable(getScopeProvider()))
-                .subscribe(new Observer<ParticipantsOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onNext(ParticipantsOverall participantsOverall) {
-                        boolean hasParticipantsInCall = false;
-                        boolean inCallOnDifferentDevice = false;
-                        List<Participant> participantList = participantsOverall.getOcs().getData();
-                        for (Participant participant : participantList) {
-                            if (participant.getParticipantFlags() != Participant.ParticipantFlags.NOT_IN_CALL) {
-                                hasParticipantsInCall = true;
-
-                                if (participant.getUserId().equals(userBeingCalled.getUserId())) {
-                                    inCallOnDifferentDevice = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (!hasParticipantsInCall || inCallOnDifferentDevice) {
-                            if (getActivity() != null) {
-                                getActivity().runOnUiThread(() -> hangup());
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        if (!leavingScreen) {
-                            checkIfAnyParticipantsRemainInRoom();
-                        }
-                    }
-                });
-
-    }
-
-    private void handleFromNotification() {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(userBeingCalled.getBaseUrl()))
-                .subscribeOn(Schedulers.io())
-                .retry(3)
-                .observeOn(AndroidSchedulers.mainThread())
-                .as(AutoDispose.autoDisposable(getScopeProvider()))
-                .subscribe(new Observer<RoomsOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onNext(RoomsOverall roomsOverall) {
-                        for (Conversation conversation : roomsOverall.getOcs().getData()) {
-                            if (roomId.equals(conversation.getRoomId())) {
-                                currentConversation = conversation;
-                                runAllThings();
-                                break;
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    private void runAllThings() {
-        if (conversationNameTextView != null) {
-            conversationNameTextView.setText(currentConversation.getDisplayName());
-        }
-
-        loadAvatar();
-        checkIfAnyParticipantsRemainInRoom();
-        showAnswerControls();
-    }
-
-    @SuppressLint("LongLogTag")
-    @Override
-    protected void onViewBound(@NonNull View view) {
-        super.onViewBound(view);
-
-        renderScript = RenderScript.create(getActivity());
-
-        if (handler == null) {
-            handler = new Handler();
-
-            try {
-                cache.evictAll();
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to evict cache");
+                if (participant.getUserId().equals(userBeingCalled.getUserId())) {
+                  inCallOnDifferentDevice = true;
+                  break;
+                }
+              }
             }
-        }
 
-        if (currentConversation == null) {
-            handleFromNotification();
+            if (!hasParticipantsInCall || inCallOnDifferentDevice) {
+              if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> hangup());
+              }
+            }
+          }
+
+          @Override
+          public void onError(Throwable e) {
+
+          }
+
+          @Override
+          public void onComplete() {
+            if (!leavingScreen) {
+              checkIfAnyParticipantsRemainInRoom();
+            }
+          }
+        });
+  }
+
+  private void handleFromNotification() {
+    ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(userBeingCalled.getBaseUrl()))
+        .subscribeOn(Schedulers.io())
+        .retry(3)
+        .observeOn(AndroidSchedulers.mainThread())
+        .as(AutoDispose.autoDisposable(getScopeProvider()))
+        .subscribe(new Observer<RoomsOverall>() {
+          @Override
+          public void onSubscribe(Disposable d) {
+          }
+
+          @Override
+          public void onNext(RoomsOverall roomsOverall) {
+            for (Conversation conversation : roomsOverall.getOcs().getData()) {
+              if (roomId.equals(conversation.getRoomId())) {
+                currentConversation = conversation;
+                runAllThings();
+                break;
+              }
+            }
+          }
+
+          @Override
+          public void onError(Throwable e) {
+
+          }
+
+          @Override
+          public void onComplete() {
+
+          }
+        });
+  }
+
+  private void runAllThings() {
+    if (conversationNameTextView != null) {
+      conversationNameTextView.setText(currentConversation.getDisplayName());
+    }
+
+    loadAvatar();
+    checkIfAnyParticipantsRemainInRoom();
+    showAnswerControls();
+  }
+
+  @SuppressLint("LongLogTag")
+  @Override
+  protected void onViewBound(@NonNull View view) {
+    super.onViewBound(view);
+
+    renderScript = RenderScript.create(getActivity());
+
+    if (handler == null) {
+      handler = new Handler();
+
+      try {
+        cache.evictAll();
+      } catch (IOException e) {
+        Log.e(TAG, "Failed to evict cache");
+      }
+    }
+
+    if (currentConversation == null) {
+      handleFromNotification();
+    } else {
+      runAllThings();
+    }
+
+    if (DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
+      String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
+      Uri ringtoneUri;
+
+      if (TextUtils.isEmpty(callRingtonePreferenceString)) {
+        // play default sound
+        ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+            "/raw/librem_by_feandesign_call");
+      } else {
+        try {
+          RingtoneSettings ringtoneSettings =
+              LoganSquare.parse(callRingtonePreferenceString, RingtoneSettings.class);
+          ringtoneUri = ringtoneSettings.getRingtoneUri();
+        } catch (IOException e) {
+          Log.e(TAG, "Failed to parse ringtone settings");
+          ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+              "/raw/librem_by_feandesign_call");
+        }
+      }
+
+      if (ringtoneUri != null && getActivity() != null) {
+        mediaPlayer = new MediaPlayer();
+        try {
+          mediaPlayer.setDataSource(getActivity(), ringtoneUri);
+
+          mediaPlayer.setLooping(true);
+          AudioAttributes audioAttributes =
+              new AudioAttributes.Builder().setContentType(AudioAttributes
+                  .CONTENT_TYPE_SONIFICATION)
+                  .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                  .build();
+          mediaPlayer.setAudioAttributes(audioAttributes);
+
+          mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
+
+          mediaPlayer.prepareAsync();
+        } catch (IOException e) {
+          Log.e(TAG, "Failed to set data source");
+        }
+      }
+    }
+
+    if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
+      vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+
+      if (vibrator != null) {
+        long[] vibratePattern = new long[] { 0, 400, 800, 600, 800, 800, 800, 1000 };
+        int[] amplitudes = new int[] { 0, 255, 0, 255, 0, 255, 0, 255 };
+
+        VibrationEffect vibrationEffect;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          if (vibrator.hasAmplitudeControl()) {
+            vibrationEffect = VibrationEffect.createWaveform(vibratePattern, amplitudes, -1);
+            vibrator.vibrate(vibrationEffect);
+          } else {
+            vibrationEffect = VibrationEffect.createWaveform(vibratePattern, -1);
+            vibrator.vibrate(vibrationEffect);
+          }
         } else {
-            runAllThings();
+          vibrator.vibrate(vibratePattern, -1);
         }
+      }
 
-        if (DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
-            String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
-            Uri ringtoneUri;
-
-            if (TextUtils.isEmpty(callRingtonePreferenceString)) {
-                // play default sound
-                ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
-                        "/raw/librem_by_feandesign_call");
-            } else {
-                try {
-                    RingtoneSettings ringtoneSettings = LoganSquare.parse(callRingtonePreferenceString, RingtoneSettings.class);
-                    ringtoneUri = ringtoneSettings.getRingtoneUri();
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to parse ringtone settings");
-                    ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
-                            "/raw/librem_by_feandesign_call");
-                }
-            }
-
-            if (ringtoneUri != null && getActivity() != null) {
-                mediaPlayer = new MediaPlayer();
-                try {
-                    mediaPlayer.setDataSource(getActivity(), ringtoneUri);
-
-                    mediaPlayer.setLooping(true);
-                    AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes
-                            .CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
-                    mediaPlayer.setAudioAttributes(audioAttributes);
-
-                    mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
-
-                    mediaPlayer.prepareAsync();
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to set data source");
-                }
-            }
-        }
-
-        if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
-            vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-
-            if (vibrator != null) {
-                long[] vibratePattern = new long[]{0, 400, 800, 600, 800, 800, 800, 1000};
-                int[] amplitudes = new int[]{0, 255, 0, 255, 0, 255, 0, 255};
-
-                VibrationEffect vibrationEffect;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (vibrator.hasAmplitudeControl()) {
-                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, amplitudes, -1);
-                        vibrator.vibrate(vibrationEffect);
-                    } else {
-                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, -1);
-                        vibrator.vibrate(vibrationEffect);
-                    }
-                } else {
-                    vibrator.vibrate(vibratePattern, -1);
-                }
-            }
-
-            handler.postDelayed(() -> {
-                if (vibrator != null) {
-                    vibrator.cancel();
-                }
-            }, 10000);
-        }
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) avatarImageView.getLayoutParams();
-        int dimen = (int) getResources().getDimension(R.dimen.avatar_size_very_big);
-
-        layoutParams.width = dimen;
-        layoutParams.height = dimen;
-        avatarImageView.setLayoutParams(layoutParams);
-    }
-
-    private void loadAvatar() {
-        switch (currentConversation.getType()) {
-            case ROOM_TYPE_ONE_TO_ONE_CALL:
-                avatarImageView.setVisibility(View.VISIBLE);
-
-                ImageRequest imageRequest =
-                        DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
-                                currentConversation.getName(), R.dimen.avatar_size_very_big), null);
-
-                ImagePipeline imagePipeline = Fresco.getImagePipeline();
-                DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
-
-                dataSource.subscribe(new BaseBitmapDataSubscriber() {
-                    @Override
-                    protected void onNewResultImpl(@Nullable Bitmap bitmap) {
-                        if (avatarImageView != null) {
-                            avatarImageView.getHierarchy().setImage(new BitmapDrawable(bitmap), 100,
-                                    true);
-
-                            if (getResources() != null) {
-                                incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
-                                        .incoming_gradient));
-                            }
-
-                            if ((AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 || AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) &&
-                                    userBeingCalled.hasSpreedFeatureCapability("no-ping")) {
-                                if (getActivity() != null) {
-                                    Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
-                                    new BlurPostProcessor(5, getActivity()).process(backgroundBitmap);
-                                    backgroundImageView.setImageDrawable(new BitmapDrawable(backgroundBitmap));
-                                }
-                            } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
-                                ColorArt colorArt = new ColorArt(bitmap);
-                                int color = colorArt.getBackgroundColor();
-
-                                float[] hsv = new float[3];
-                                Color.colorToHSV(color, hsv);
-                                hsv[2] *= 0.75f;
-                                color = Color.HSVToColor(hsv);
-
-                                backgroundImageView.setImageDrawable(new ColorDrawable(color));
-                            }
-                        }
-                    }
-
-                    @Override
-                    protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                    }
-                }, UiThreadImmediateExecutorService.getInstance());
-
-                break;
-            case ROOM_GROUP_CALL:
-                avatarImageView.getHierarchy().setImage(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px))
-                        , 100, true);
-            case ROOM_PUBLIC_CALL:
-                avatarImageView.getHierarchy().setImage(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px))
-                        , 100, true);
-                break;
-            default:
-        }
-    }
-
-    private void endMediaAndVibratorNotifications() {
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-            }
-
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-
+      handler.postDelayed(() -> {
         if (vibrator != null) {
-            vibrator.cancel();
+          vibrator.cancel();
         }
+      }, 10000);
+    }
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
+    ConstraintLayout.LayoutParams layoutParams =
+        (ConstraintLayout.LayoutParams) avatarImageView.getLayoutParams();
+    int dimen = (int) getResources().getDimension(R.dimen.avatar_size_very_big);
+
+    layoutParams.width = dimen;
+    layoutParams.height = dimen;
+    avatarImageView.setLayoutParams(layoutParams);
+  }
+
+  private void loadAvatar() {
+    switch (currentConversation.getType()) {
+      case ROOM_TYPE_ONE_TO_ONE_CALL:
+        avatarImageView.setVisibility(View.VISIBLE);
+
+        ImageRequest imageRequest =
+            DisplayUtils.getImageRequestForUrl(
+                ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
+                    currentConversation.getName(), R.dimen.avatar_size_very_big), null);
+
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        DataSource<CloseableReference<CloseableImage>> dataSource =
+            imagePipeline.fetchDecodedImage(imageRequest, null);
+
+        dataSource.subscribe(new BaseBitmapDataSubscriber() {
+          @Override
+          protected void onNewResultImpl(@Nullable Bitmap bitmap) {
+            if (avatarImageView != null) {
+              avatarImageView.getHierarchy().setImage(new BitmapDrawable(bitmap), 100,
+                  true);
+
+              if (getResources() != null) {
+                incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
+                    .incoming_gradient));
+              }
+
+              if ((AvatarStatusCodeHolder.getInstance().getStatusCode() == 200
+                  || AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) &&
+                  userBeingCalled.hasSpreedFeatureCapability("no-ping")) {
+                if (getActivity() != null) {
+                  Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
+                  new BlurPostProcessor(5, getActivity()).process(backgroundBitmap);
+                  backgroundImageView.setImageDrawable(new BitmapDrawable(backgroundBitmap));
+                }
+              } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
+                ColorArt colorArt = new ColorArt(bitmap);
+                int color = colorArt.getBackgroundColor();
+
+                float[] hsv = new float[3];
+                Color.colorToHSV(color, hsv);
+                hsv[2] *= 0.75f;
+                color = Color.HSVToColor(hsv);
+
+                backgroundImageView.setImageDrawable(new ColorDrawable(color));
+              }
+            }
+          }
+
+          @Override
+          protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+          }
+        }, UiThreadImmediateExecutorService.getInstance());
+
+        break;
+      case ROOM_GROUP_CALL:
+        avatarImageView.getHierarchy()
+            .setImage(DisplayUtils.getRoundedDrawable(
+                context.getDrawable(R.drawable.ic_people_group_white_24px))
+                , 100, true);
+      case ROOM_PUBLIC_CALL:
+        avatarImageView.getHierarchy()
+            .setImage(DisplayUtils.getRoundedDrawable(
+                context.getDrawable(R.drawable.ic_people_group_white_24px))
+                , 100, true);
+        break;
+      default:
+    }
+  }
+
+  private void endMediaAndVibratorNotifications() {
+    if (mediaPlayer != null) {
+      if (mediaPlayer.isPlaying()) {
+        mediaPlayer.stop();
+      }
+
+      mediaPlayer.release();
+      mediaPlayer = null;
     }
 
-    @Override
-    public void onDestroy() {
-        AvatarStatusCodeHolder.getInstance().setStatusCode(0);
-        leavingScreen = true;
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-            handler = null;
-        }
-        endMediaAndVibratorNotifications();
-        super.onDestroy();
+    if (vibrator != null) {
+      vibrator.cancel();
     }
+  }
+
+  @Override
+  public void onDestroy() {
+    AvatarStatusCodeHolder.getInstance().setStatusCode(0);
+    leavingScreen = true;
+    if (handler != null) {
+      handler.removeCallbacksAndMessages(null);
+      handler = null;
+    }
+    endMediaAndVibratorNotifications();
+    super.onDestroy();
+  }
 }

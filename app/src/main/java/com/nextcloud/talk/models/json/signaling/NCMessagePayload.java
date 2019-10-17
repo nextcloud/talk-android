@@ -29,18 +29,18 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class NCMessagePayload {
-    @JsonField(name = "type")
-    String type;
+  @JsonField(name = "type")
+  String type;
 
-    @JsonField(name = "sdp")
-    String sdp;
+  @JsonField(name = "sdp")
+  String sdp;
 
-    @JsonField(name = "nick")
-    String nick;
+  @JsonField(name = "nick")
+  String nick;
 
-    @JsonField(name = "candidate")
-    NCIceCandidate iceCandidate;
+  @JsonField(name = "candidate")
+  NCIceCandidate iceCandidate;
 
-    @JsonField(name = "name")
-    String name;
+  @JsonField(name = "name")
+  String name;
 }

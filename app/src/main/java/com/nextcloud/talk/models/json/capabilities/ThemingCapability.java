@@ -29,33 +29,33 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 class ThemingCapability {
-    @JsonField(name = "name")
-    String name;
+  @JsonField(name = "name")
+  String name;
 
-    @JsonField(name = "url")
-    String url;
+  @JsonField(name = "url")
+  String url;
 
-    @JsonField(name = "slogan")
-    String slogan;
+  @JsonField(name = "slogan")
+  String slogan;
 
-    @JsonField(name = "color")
-    String color;
+  @JsonField(name = "color")
+  String color;
 
-    @JsonField(name = "color-text")
-    String colorText;
+  @JsonField(name = "color-text")
+  String colorText;
 
-    @JsonField(name = "color-element")
-    String colorElement;
+  @JsonField(name = "color-element")
+  String colorElement;
 
-    @JsonField(name = "logo")
-    String logo;
+  @JsonField(name = "logo")
+  String logo;
 
-    @JsonField(name = "background")
-    String background;
+  @JsonField(name = "background")
+  String background;
 
-    @JsonField(name = "background-plain")
-    boolean backgroundPlain;
+  @JsonField(name = "background-plain")
+  boolean backgroundPlain;
 
-    @JsonField(name = "background-default")
-    boolean backgroundDefault;
+  @JsonField(name = "background-default")
+  boolean backgroundDefault;
 }

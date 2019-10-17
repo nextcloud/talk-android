@@ -23,62 +23,63 @@ package com.nextcloud.talk.utils.singletons;
 import com.nextcloud.talk.models.database.UserEntity;
 
 public class ApplicationWideCurrentRoomHolder {
-    private static final ApplicationWideCurrentRoomHolder holder = new ApplicationWideCurrentRoomHolder();
-    private String currentRoomId = "";
-    private String currentRoomToken = "";
-    private UserEntity userInRoom = new UserEntity();
-    private boolean inCall = false;
-    private String session = "";
+  private static final ApplicationWideCurrentRoomHolder holder =
+      new ApplicationWideCurrentRoomHolder();
+  private String currentRoomId = "";
+  private String currentRoomToken = "";
+  private UserEntity userInRoom = new UserEntity();
+  private boolean inCall = false;
+  private String session = "";
 
-    public static ApplicationWideCurrentRoomHolder getInstance() {
-        return holder;
-    }
+  public static ApplicationWideCurrentRoomHolder getInstance() {
+    return holder;
+  }
 
-    public void clear() {
-        currentRoomId = "";
-        userInRoom = new UserEntity();
-        inCall = false;
-        currentRoomToken = "";
-        session = "";
-    }
+  public void clear() {
+    currentRoomId = "";
+    userInRoom = new UserEntity();
+    inCall = false;
+    currentRoomToken = "";
+    session = "";
+  }
 
-    public String getCurrentRoomToken() {
-        return currentRoomToken;
-    }
+  public String getCurrentRoomToken() {
+    return currentRoomToken;
+  }
 
-    public void setCurrentRoomToken(String currentRoomToken) {
-        this.currentRoomToken = currentRoomToken;
-    }
+  public void setCurrentRoomToken(String currentRoomToken) {
+    this.currentRoomToken = currentRoomToken;
+  }
 
-    public String getCurrentRoomId() {
-        return currentRoomId;
-    }
+  public String getCurrentRoomId() {
+    return currentRoomId;
+  }
 
-    public void setCurrentRoomId(String currentRoomId) {
-        this.currentRoomId = currentRoomId;
-    }
+  public void setCurrentRoomId(String currentRoomId) {
+    this.currentRoomId = currentRoomId;
+  }
 
-    public UserEntity getUserInRoom() {
-        return userInRoom;
-    }
+  public UserEntity getUserInRoom() {
+    return userInRoom;
+  }
 
-    public void setUserInRoom(UserEntity userInRoom) {
-        this.userInRoom = userInRoom;
-    }
+  public void setUserInRoom(UserEntity userInRoom) {
+    this.userInRoom = userInRoom;
+  }
 
-    public boolean isInCall() {
-        return inCall;
-    }
+  public boolean isInCall() {
+    return inCall;
+  }
 
-    public void setInCall(boolean inCall) {
-        this.inCall = inCall;
-    }
+  public void setInCall(boolean inCall) {
+    this.inCall = inCall;
+  }
 
-    public String getSession() {
-        return session;
-    }
+  public String getSession() {
+    return session;
+  }
 
-    public void setSession(String session) {
-        this.session = session;
-    }
+  public void setSession(String session) {
+    this.session = session;
+  }
 }

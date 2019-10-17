@@ -30,12 +30,12 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.models.ExternalSignalingServer;
-import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.EventStatus;
+import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -49,100 +49,112 @@ import org.greenrobot.eventbus.EventBus;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class SignalingSettingsWorker extends Worker {
-    private static final String TAG = "SignalingSettingsJob";
+  private static final String TAG = "SignalingSettingsJob";
 
-    @Inject
-    UserUtils userUtils;
+  @Inject
+  UserUtils userUtils;
 
-    @Inject
-    NcApi ncApi;
+  @Inject
+  NcApi ncApi;
 
-    @Inject
-    EventBus eventBus;
+  @Inject
+  EventBus eventBus;
 
-    public SignalingSettingsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
+  public SignalingSettingsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+    super(context, workerParams);
+  }
+
+  @NonNull
+  @Override
+  public Result doWork() {
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
+
+    Data data = getInputData();
+
+    long internalUserId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1);
+
+    List<UserEntity> userEntityList = new ArrayList<>();
+    UserEntity userEntity;
+    if (internalUserId == -1
+        || (userEntity = userUtils.getUserWithInternalId(internalUserId)) == null) {
+      userEntityList = userUtils.getUsers();
+    } else {
+      userEntityList.add(userEntity);
     }
 
-    @NonNull
-    @Override
-    public Result doWork() {
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+    for (int i = 0; i < userEntityList.size(); i++) {
+      userEntity = userEntityList.get(i);
+      UserEntity finalUserEntity = userEntity;
+      ncApi.getSignalingSettings(
+          ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
+          ApiUtils.getUrlForSignalingSettings(userEntity.getBaseUrl()))
+          .blockingSubscribe(new Observer<SignalingSettingsOverall>() {
+            @Override
+            public void onSubscribe(Disposable d) {
 
-        Data data = getInputData();
+            }
 
-        long internalUserId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1);
+            @Override
+            public void onNext(SignalingSettingsOverall signalingSettingsOverall) {
+              ExternalSignalingServer externalSignalingServer;
+              externalSignalingServer = new ExternalSignalingServer();
+              externalSignalingServer.setExternalSignalingServer(
+                  signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
+              externalSignalingServer.setExternalSignalingTicket(
+                  signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
 
-        List<UserEntity> userEntityList = new ArrayList<>();
-        UserEntity userEntity;
-        if (internalUserId == -1 || (userEntity = userUtils.getUserWithInternalId(internalUserId)) == null) {
-            userEntityList = userUtils.getUsers();
-        } else {
-            userEntityList.add(userEntity);
-        }
+              try {
+                userUtils.createOrUpdateUser(null, null, null, null, null,
+                    null, null, finalUserEntity.getId(), null, null,
+                    LoganSquare.serialize(externalSignalingServer))
+                    .subscribe(new Observer<UserEntity>() {
+                      @Override
+                      public void onSubscribe(Disposable d) {
 
-        for (int i = 0; i < userEntityList.size(); i++) {
-            userEntity = userEntityList.get(i);
-            UserEntity finalUserEntity = userEntity;
-            ncApi.getSignalingSettings(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                    ApiUtils.getUrlForSignalingSettings(userEntity.getBaseUrl()))
-                    .blockingSubscribe(new Observer<SignalingSettingsOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+                      }
 
-                        }
+                      @Override
+                      public void onNext(UserEntity userEntity) {
+                        eventBus.post(new EventStatus(finalUserEntity.getId(),
+                            EventStatus.EventType.SIGNALING_SETTINGS, true));
+                      }
 
-                        @Override
-                        public void onNext(SignalingSettingsOverall signalingSettingsOverall) {
-                            ExternalSignalingServer externalSignalingServer;
-                            externalSignalingServer = new ExternalSignalingServer();
-                            externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
-                            externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
+                      @Override
+                      public void onError(Throwable e) {
+                        eventBus.post(new EventStatus(finalUserEntity.getId(),
+                            EventStatus.EventType.SIGNALING_SETTINGS, false));
+                      }
 
-                            try {
-                                userUtils.createOrUpdateUser(null, null, null, null, null,
-                                        null, null, finalUserEntity.getId(), null, null, LoganSquare.serialize(externalSignalingServer))
-                                        .subscribe(new Observer<UserEntity>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
+                      @Override
+                      public void onComplete() {
 
-                                            }
-
-                                            @Override
-                                            public void onNext(UserEntity userEntity) {
-                                                eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, true));
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, false));
-                                            }
-
-                                            @Override
-                                            public void onComplete() {
-
-                                            }
-                                        });
-                            } catch (IOException e) {
-                                Log.e(TAG, "Failed to serialize external signaling server");
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            eventBus.post(new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS, false));
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
+                      }
                     });
-        }
+              } catch (IOException e) {
+                Log.e(TAG, "Failed to serialize external signaling server");
+              }
+            }
 
-        OneTimeWorkRequest websocketConnectionsWorker = new OneTimeWorkRequest.Builder(WebsocketConnectionsWorker.class).build();
-        WorkManager.getInstance().enqueue(websocketConnectionsWorker);
+            @Override
+            public void onError(Throwable e) {
+              eventBus.post(
+                  new EventStatus(finalUserEntity.getId(), EventStatus.EventType.SIGNALING_SETTINGS,
+                      false));
+            }
 
-        return Result.success();
+            @Override
+            public void onComplete() {
+
+            }
+          });
     }
+
+    OneTimeWorkRequest websocketConnectionsWorker =
+        new OneTimeWorkRequest.Builder(WebsocketConnectionsWorker.class).build();
+    WorkManager.getInstance().enqueue(websocketConnectionsWorker);
+
+    return Result.success();
+  }
 }

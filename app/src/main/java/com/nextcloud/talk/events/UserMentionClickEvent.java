@@ -24,5 +24,5 @@ import lombok.Data;
 
 @Data
 public class UserMentionClickEvent {
-    public final String userId;
+  public final String userId;
 }

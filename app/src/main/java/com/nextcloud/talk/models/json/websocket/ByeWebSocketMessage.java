@@ -30,6 +30,6 @@ import org.parceler.Parcel;
 @Parcel
 @Data
 public class ByeWebSocketMessage extends BaseWebSocketMessage {
-    @JsonField(name = "bye")
-    HashMap<String, Object> bye;
+  @JsonField(name = "bye")
+  HashMap<String, Object> bye;
 }

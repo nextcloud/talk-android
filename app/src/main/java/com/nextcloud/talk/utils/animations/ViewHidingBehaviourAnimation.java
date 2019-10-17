@@ -31,45 +31,46 @@ import androidx.core.view.ViewCompat;
 
 public class ViewHidingBehaviourAnimation extends CoordinatorLayout.Behavior<View> {
 
-    private int height;
-    private boolean slidingDown = false;
+  private int height;
+  private boolean slidingDown = false;
 
-    @Override
-    public boolean onLayoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
-        height = child.getHeight();
-        return super.onLayoutChild(parent, child, layoutDirection);
+  @Override
+  public boolean onLayoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
+    height = child.getHeight();
+    return super.onLayoutChild(parent, child, layoutDirection);
+  }
+
+  @Override
+  public boolean onStartNestedScroll(@NonNull CoordinatorLayout coordinatorLayout,
+      @NonNull View child, @NonNull View directTargetChild, @NonNull View
+      target, int nestedScrollAxes) {
+    return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL;
+  }
+
+  @Override
+  public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child,
+      @NonNull View target, int dxConsumed, int
+      dyConsumed, int dxUnconsumed, int dyUnconsumed) {
+    if (dyConsumed > 0) {
+      slideDown(child);
+    } else if (dyConsumed < 0) {
+      slideUp(child);
     }
+  }
 
-    @Override
-    public boolean onStartNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View directTargetChild, @NonNull View
-            target, int nestedScrollAxes) {
-        return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL;
+  private void slideUp(View child) {
+    if (slidingDown) {
+      slidingDown = false;
+      child.clearAnimation();
+      child.animate().translationY(0).setDuration(200);
     }
+  }
 
-    @Override
-    public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View target, int dxConsumed, int
-            dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-        if (dyConsumed > 0) {
-            slideDown(child);
-        } else if (dyConsumed < 0) {
-            slideUp(child);
-        }
+  private void slideDown(View child) {
+    if (!slidingDown) {
+      slidingDown = true;
+      child.clearAnimation();
+      child.animate().translationY(height).setDuration(200);
     }
-
-    private void slideUp(View child) {
-        if (slidingDown) {
-            slidingDown = false;
-            child.clearAnimation();
-            child.animate().translationY(0).setDuration(200);
-        }
-    }
-
-    private void slideDown(View child) {
-        if (!slidingDown) {
-            slidingDown = true;
-            child.clearAnimation();
-            child.animate().translationY(height).setDuration(200);
-        }
-    }
-
+  }
 }

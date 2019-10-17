@@ -26,14 +26,14 @@ import android.util.Base64;
 import android.util.Log;
 import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.models.SignatureVerification;
-import com.nextcloud.talk.models.json.push.PushConfigurationState;
-import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.EventStatus;
+import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.push.PushConfigurationState;
+import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import io.reactivex.Observer;
@@ -65,377 +65,381 @@ import org.greenrobot.eventbus.EventBus;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class PushUtils {
-    private static final String TAG = "PushUtils";
+  private static final String TAG = "PushUtils";
 
-    @Inject
-    UserUtils userUtils;
+  @Inject
+  UserUtils userUtils;
 
-    @Inject
-    AppPreferences appPreferences;
+  @Inject
+  AppPreferences appPreferences;
 
-    @Inject
-    EventBus eventBus;
+  @Inject
+  EventBus eventBus;
 
-    @Inject
-    NcApi ncApi;
+  @Inject
+  NcApi ncApi;
 
-    private File keysFile;
-    private File publicKeyFile;
-    private File privateKeyFile;
+  private File keysFile;
+  private File publicKeyFile;
+  private File privateKeyFile;
 
-    private String proxyServer;
+  private String proxyServer;
 
-    public PushUtils() {
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+  public PushUtils() {
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
 
-        keysFile = NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeyStore", Context.MODE_PRIVATE);
+    keysFile = NextcloudTalkApplication.Companion.getSharedApplication()
+        .getDir("PushKeyStore", Context.MODE_PRIVATE);
 
-        publicKeyFile = new File(NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore",
-                Context.MODE_PRIVATE), "push_key.pub");
-        privateKeyFile = new File(NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore",
-                Context.MODE_PRIVATE), "push_key.priv");
-        proxyServer = NextcloudTalkApplication.Companion.getSharedApplication().getResources().
-                getString(R.string.nc_push_server_url);
-    }
+    publicKeyFile =
+        new File(NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore",
+            Context.MODE_PRIVATE), "push_key.pub");
+    privateKeyFile =
+        new File(NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore",
+            Context.MODE_PRIVATE), "push_key.priv");
+    proxyServer = NextcloudTalkApplication.Companion.getSharedApplication().getResources().
+        getString(R.string.nc_push_server_url);
+  }
 
-    public SignatureVerification verifySignature(byte[] signatureBytes, byte[] subjectBytes) {
-        Signature signature = null;
-        PushConfigurationState pushConfigurationState;
-        PublicKey publicKey;
-        SignatureVerification signatureVerification = new SignatureVerification();
-        signatureVerification.setSignatureValid(false);
+  public SignatureVerification verifySignature(byte[] signatureBytes, byte[] subjectBytes) {
+    Signature signature = null;
+    PushConfigurationState pushConfigurationState;
+    PublicKey publicKey;
+    SignatureVerification signatureVerification = new SignatureVerification();
+    signatureVerification.setSignatureValid(false);
 
-        List<UserEntity> userEntities = userUtils.getUsers();
-        try {
-            signature = Signature.getInstance("SHA512withRSA");
-            if (userEntities != null && userEntities.size() > 0) {
-                for (UserEntity userEntity : userEntities) {
-                    if (!TextUtils.isEmpty(userEntity.getPushConfigurationState())) {
-                        pushConfigurationState = LoganSquare.parse(userEntity.getPushConfigurationState(),
-                                PushConfigurationState.class);
-                        publicKey = (PublicKey) readKeyFromString(true,
-                                pushConfigurationState.getUserPublicKey());
-                        signature.initVerify(publicKey);
-                        signature.update(subjectBytes);
-                        if (signature.verify(signatureBytes)) {
-                            signatureVerification.setSignatureValid(true);
-                            signatureVerification.setUserEntity(userEntity);
-                            return signatureVerification;
-                        }
-                    }
-                }
+    List<UserEntity> userEntities = userUtils.getUsers();
+    try {
+      signature = Signature.getInstance("SHA512withRSA");
+      if (userEntities != null && userEntities.size() > 0) {
+        for (UserEntity userEntity : userEntities) {
+          if (!TextUtils.isEmpty(userEntity.getPushConfigurationState())) {
+            pushConfigurationState = LoganSquare.parse(userEntity.getPushConfigurationState(),
+                PushConfigurationState.class);
+            publicKey = (PublicKey) readKeyFromString(true,
+                pushConfigurationState.getUserPublicKey());
+            signature.initVerify(publicKey);
+            signature.update(subjectBytes);
+            if (signature.verify(signatureBytes)) {
+              signatureVerification.setSignatureValid(true);
+              signatureVerification.setUserEntity(userEntity);
+              return signatureVerification;
             }
-        } catch (NoSuchAlgorithmException e) {
-            Log.d(TAG, "No such algorithm");
-        } catch (IOException e) {
-            Log.d(TAG, "Error while trying to parse push configuration viewState");
-        } catch (InvalidKeyException e) {
-            Log.d(TAG, "Invalid key while trying to verify");
-        } catch (SignatureException e) {
-            Log.d(TAG, "Signature exception while trying to verify");
+          }
         }
-
-        return signatureVerification;
+      }
+    } catch (NoSuchAlgorithmException e) {
+      Log.d(TAG, "No such algorithm");
+    } catch (IOException e) {
+      Log.d(TAG, "Error while trying to parse push configuration viewState");
+    } catch (InvalidKeyException e) {
+      Log.d(TAG, "Invalid key while trying to verify");
+    } catch (SignatureException e) {
+      Log.d(TAG, "Signature exception while trying to verify");
     }
 
-    private int saveKeyToFile(Key key, String path) {
-        byte[] encoded = key.getEncoded();
+    return signatureVerification;
+  }
 
-        try {
-            if (!new File(path).exists()) {
-                if (!new File(path).createNewFile()) {
-                    return -1;
-                }
-            }
+  private int saveKeyToFile(Key key, String path) {
+    byte[] encoded = key.getEncoded();
 
-            try (FileOutputStream keyFileOutputStream = new FileOutputStream(path)) {
-                keyFileOutputStream.write(encoded);
-                return 0;
-            }
-        } catch (FileNotFoundException e) {
-            Log.d(TAG, "Failed to save key to file");
-        } catch (IOException e) {
-            Log.d(TAG, "Failed to save key to file via IOException");
+    try {
+      if (!new File(path).exists()) {
+        if (!new File(path).createNewFile()) {
+          return -1;
         }
+      }
 
-        return -1;
+      try (FileOutputStream keyFileOutputStream = new FileOutputStream(path)) {
+        keyFileOutputStream.write(encoded);
+        return 0;
+      }
+    } catch (FileNotFoundException e) {
+      Log.d(TAG, "Failed to save key to file");
+    } catch (IOException e) {
+      Log.d(TAG, "Failed to save key to file via IOException");
     }
 
-    private String generateSHA512Hash(String pushToken) {
-        MessageDigest messageDigest = null;
-        try {
-            messageDigest = MessageDigest.getInstance("SHA-512");
-            messageDigest.update(pushToken.getBytes());
-            return bytesToHex(messageDigest.digest());
-        } catch (NoSuchAlgorithmException e) {
-            Log.d(TAG, "SHA-512 algorithm not supported");
-        }
-        return "";
+    return -1;
+  }
+
+  private String generateSHA512Hash(String pushToken) {
+    MessageDigest messageDigest = null;
+    try {
+      messageDigest = MessageDigest.getInstance("SHA-512");
+      messageDigest.update(pushToken.getBytes());
+      return bytesToHex(messageDigest.digest());
+    } catch (NoSuchAlgorithmException e) {
+      Log.d(TAG, "SHA-512 algorithm not supported");
     }
+    return "";
+  }
 
-    private String bytesToHex(byte[] bytes) {
-        StringBuilder result = new StringBuilder();
-        for (byte individualByte : bytes) {
-            result.append(Integer.toString((individualByte & 0xff) + 0x100, 16)
-                    .substring(1));
-        }
-        return result.toString();
+  private String bytesToHex(byte[] bytes) {
+    StringBuilder result = new StringBuilder();
+    for (byte individualByte : bytes) {
+      result.append(Integer.toString((individualByte & 0xff) + 0x100, 16)
+          .substring(1));
     }
+    return result.toString();
+  }
 
-    public int generateRsa2048KeyPair() {
-        if (!publicKeyFile.exists() && !privateKeyFile.exists()) {
-            if (!keysFile.exists()) {
-                keysFile.mkdirs();
-            }
+  public int generateRsa2048KeyPair() {
+    if (!publicKeyFile.exists() && !privateKeyFile.exists()) {
+      if (!keysFile.exists()) {
+        keysFile.mkdirs();
+      }
 
-            KeyPairGenerator keyGen = null;
-            try {
-                keyGen = KeyPairGenerator.getInstance("RSA");
-                keyGen.initialize(2048);
+      KeyPairGenerator keyGen = null;
+      try {
+        keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(2048);
 
-                KeyPair pair = keyGen.generateKeyPair();
-                int statusPrivate = saveKeyToFile(pair.getPrivate(), privateKeyFile.getAbsolutePath());
-                int statusPublic = saveKeyToFile(pair.getPublic(), publicKeyFile.getAbsolutePath());
+        KeyPair pair = keyGen.generateKeyPair();
+        int statusPrivate = saveKeyToFile(pair.getPrivate(), privateKeyFile.getAbsolutePath());
+        int statusPublic = saveKeyToFile(pair.getPublic(), publicKeyFile.getAbsolutePath());
 
-                if (statusPrivate == 0 && statusPublic == 0) {
-                    // all went well
-                    return 0;
-                } else {
-                    return -2;
-                }
-
-            } catch (NoSuchAlgorithmException e) {
-                Log.d(TAG, "RSA algorithm not supported");
-            }
+        if (statusPrivate == 0 && statusPublic == 0) {
+          // all went well
+          return 0;
         } else {
-            // We already have the key
-            return -1;
+          return -2;
         }
-
-        // we failed to generate the key
-        return -2;
+      } catch (NoSuchAlgorithmException e) {
+        Log.d(TAG, "RSA algorithm not supported");
+      }
+    } else {
+      // We already have the key
+      return -1;
     }
 
-    public void pushRegistrationToServer() {
-        String token = appPreferences.getPushToken();
+    // we failed to generate the key
+    return -2;
+  }
 
-        if (!TextUtils.isEmpty(token)) {
-            String credentials;
-            String pushTokenHash = generateSHA512Hash(token).toLowerCase();
-            PublicKey devicePublicKey = (PublicKey) readKeyFromFile(true);
-            if (devicePublicKey != null) {
-                byte[] publicKeyBytes = Base64.encode(devicePublicKey.getEncoded(), Base64.NO_WRAP);
-                String publicKey = new String(publicKeyBytes);
-                publicKey = publicKey.replaceAll("(.{64})", "$1\n");
+  public void pushRegistrationToServer() {
+    String token = appPreferences.getPushToken();
 
-                publicKey = "-----BEGIN PUBLIC KEY-----\n" + publicKey + "\n-----END PUBLIC KEY-----\n";
+    if (!TextUtils.isEmpty(token)) {
+      String credentials;
+      String pushTokenHash = generateSHA512Hash(token).toLowerCase();
+      PublicKey devicePublicKey = (PublicKey) readKeyFromFile(true);
+      if (devicePublicKey != null) {
+        byte[] publicKeyBytes = Base64.encode(devicePublicKey.getEncoded(), Base64.NO_WRAP);
+        String publicKey = new String(publicKeyBytes);
+        publicKey = publicKey.replaceAll("(.{64})", "$1\n");
 
-                if (userUtils.anyUserExists()) {
-                    String providerValue;
-                    PushConfigurationState accountPushData = null;
-                    for (Object userEntityObject : userUtils.getUsers()) {
-                        UserEntity userEntity = (UserEntity) userEntityObject;
-                        providerValue = userEntity.getPushConfigurationState();
-                        if (!TextUtils.isEmpty(providerValue)) {
-                            try {
-                                accountPushData = LoganSquare.parse(providerValue, PushConfigurationState.class);
-                            } catch (IOException e) {
-                                Log.d(TAG, "Failed to parse account push data");
-                                accountPushData = null;
+        publicKey = "-----BEGIN PUBLIC KEY-----\n" + publicKey + "\n-----END PUBLIC KEY-----\n";
+
+        if (userUtils.anyUserExists()) {
+          String providerValue;
+          PushConfigurationState accountPushData = null;
+          for (Object userEntityObject : userUtils.getUsers()) {
+            UserEntity userEntity = (UserEntity) userEntityObject;
+            providerValue = userEntity.getPushConfigurationState();
+            if (!TextUtils.isEmpty(providerValue)) {
+              try {
+                accountPushData = LoganSquare.parse(providerValue, PushConfigurationState.class);
+              } catch (IOException e) {
+                Log.d(TAG, "Failed to parse account push data");
+                accountPushData = null;
+              }
+            } else {
+              accountPushData = null;
+            }
+
+            if (((TextUtils.isEmpty(providerValue) || accountPushData == null)
+                && !userEntity.getScheduledForDeletion()) ||
+                (accountPushData != null
+                    && !accountPushData.getPushToken().equals(token)
+                    && !userEntity.getScheduledForDeletion())) {
+
+              Map<String, String> queryMap = new HashMap<>();
+              queryMap.put("format", "json");
+              queryMap.put("pushTokenHash", pushTokenHash);
+              queryMap.put("devicePublicKey", publicKey);
+              queryMap.put("proxyServer", proxyServer);
+
+              credentials =
+                  ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
+
+              String finalCredentials = credentials;
+              ncApi.registerDeviceForNotificationsWithNextcloud(
+                  credentials,
+                  ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()), queryMap)
+                  .subscribe(new Observer<PushRegistrationOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(PushRegistrationOverall pushRegistrationOverall) {
+                      Map<String, String> proxyMap = new HashMap<>();
+                      proxyMap.put("pushToken", token);
+                      proxyMap.put("deviceIdentifier", pushRegistrationOverall.getOcs().getData().
+                          getDeviceIdentifier());
+                      proxyMap.put("deviceIdentifierSignature", pushRegistrationOverall.getOcs()
+                          .getData().getSignature());
+                      proxyMap.put("userPublicKey", pushRegistrationOverall.getOcs()
+                          .getData().getPublicKey());
+
+                      ncApi.registerDeviceForNotificationsWithProxy(
+                          ApiUtils.getUrlPushProxy(), proxyMap)
+                          .subscribeOn(Schedulers.io())
+                          .subscribe(new Observer<Void>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
                             }
-                        } else {
-                            accountPushData = null;
-                        }
 
-                        if (((TextUtils.isEmpty(providerValue) || accountPushData == null) && !userEntity.getScheduledForDeletion()) ||
-                                (accountPushData != null && !accountPushData.getPushToken().equals(token) && !userEntity.getScheduledForDeletion())) {
+                            @Override
+                            public void onNext(Void aVoid) {
+                              PushConfigurationState pushConfigurationState =
+                                  new PushConfigurationState();
+                              pushConfigurationState.setPushToken(token);
+                              pushConfigurationState.setDeviceIdentifier(
+                                  pushRegistrationOverall.getOcs()
+                                      .getData().getDeviceIdentifier());
+                              pushConfigurationState.setDeviceIdentifierSignature(
+                                  pushRegistrationOverall
+                                      .getOcs().getData().getSignature());
+                              pushConfigurationState.setUserPublicKey(
+                                  pushRegistrationOverall.getOcs()
+                                      .getData().getPublicKey());
+                              pushConfigurationState.setUsesRegularPass(false);
 
+                              try {
+                                userUtils.createOrUpdateUser(null,
+                                    null, null,
+                                    userEntity.getDisplayName(),
+                                    LoganSquare.serialize(pushConfigurationState), null,
+                                    null, userEntity.getId(), null, null, null)
+                                    .subscribe(new Observer<UserEntity>() {
+                                      @Override
+                                      public void onSubscribe(Disposable d) {
 
-                            Map<String, String> queryMap = new HashMap<>();
-                            queryMap.put("format", "json");
-                            queryMap.put("pushTokenHash", pushTokenHash);
-                            queryMap.put("devicePublicKey", publicKey);
-                            queryMap.put("proxyServer", proxyServer);
+                                      }
 
-                            credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
+                                      @Override
+                                      public void onNext(UserEntity userEntity) {
+                                        eventBus.post(new EventStatus(userEntity.getId(),
+                                            EventStatus.EventType.PUSH_REGISTRATION, true));
+                                      }
 
-                            String finalCredentials = credentials;
-                            ncApi.registerDeviceForNotificationsWithNextcloud(
-                                    credentials,
-                                    ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()), queryMap)
-                                    .subscribe(new Observer<PushRegistrationOverall>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
+                                      @Override
+                                      public void onError(Throwable e) {
+                                        eventBus.post(new EventStatus
+                                            (userEntity.getId(),
+                                                EventStatus.EventType
+                                                    .PUSH_REGISTRATION, false));
+                                      }
 
-                                        }
+                                      @Override
+                                      public void onComplete() {
 
-                                        @Override
-                                        public void onNext(PushRegistrationOverall pushRegistrationOverall) {
-                                            Map<String, String> proxyMap = new HashMap<>();
-                                            proxyMap.put("pushToken", token);
-                                            proxyMap.put("deviceIdentifier", pushRegistrationOverall.getOcs().getData().
-                                                    getDeviceIdentifier());
-                                            proxyMap.put("deviceIdentifierSignature", pushRegistrationOverall.getOcs()
-                                                    .getData().getSignature());
-                                            proxyMap.put("userPublicKey", pushRegistrationOverall.getOcs()
-                                                    .getData().getPublicKey());
-
-
-                                            ncApi.registerDeviceForNotificationsWithProxy(
-                                                    ApiUtils.getUrlPushProxy(), proxyMap)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .subscribe(new Observer<Void>() {
-                                                        @Override
-                                                        public void onSubscribe(Disposable d) {
-
-                                                        }
-
-                                                        @Override
-                                                        public void onNext(Void aVoid) {
-                                                            PushConfigurationState pushConfigurationState =
-                                                                    new PushConfigurationState();
-                                                            pushConfigurationState.setPushToken(token);
-                                                            pushConfigurationState.setDeviceIdentifier(
-                                                                    pushRegistrationOverall.getOcs()
-                                                                            .getData().getDeviceIdentifier());
-                                                            pushConfigurationState.setDeviceIdentifierSignature(
-                                                                    pushRegistrationOverall
-                                                                            .getOcs().getData().getSignature());
-                                                            pushConfigurationState.setUserPublicKey(
-                                                                    pushRegistrationOverall.getOcs()
-                                                                            .getData().getPublicKey());
-                                                            pushConfigurationState.setUsesRegularPass(false);
-
-                                                            try {
-                                                                userUtils.createOrUpdateUser(null,
-                                                                        null, null,
-                                                                        userEntity.getDisplayName(),
-                                                                        LoganSquare.serialize(pushConfigurationState), null,
-                                                                        null, userEntity.getId(), null, null, null)
-                                                                        .subscribe(new Observer<UserEntity>() {
-                                                                            @Override
-                                                                            public void onSubscribe(Disposable d) {
-
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onNext(UserEntity userEntity) {
-                                                                                eventBus.post(new EventStatus(userEntity.getId(), EventStatus.EventType.PUSH_REGISTRATION, true));
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onError(Throwable e) {
-                                                                                eventBus.post(new EventStatus
-                                                                                        (userEntity.getId(),
-                                                                                                EventStatus.EventType
-                                                                                                        .PUSH_REGISTRATION, false));
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onComplete() {
-
-                                                                            }
-                                                                        });
-                                                            } catch (IOException e) {
-                                                                Log.e(TAG, "IOException while updating user");
-                                                            }
-
-
-                                                        }
-
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                            eventBus.post(new EventStatus(userEntity.getId(),
-                                                                    EventStatus.EventType.PUSH_REGISTRATION, false));
-                                                        }
-
-                                                        @Override
-                                                        public void onComplete() {
-
-                                                        }
-                                                    });
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            eventBus.post(new EventStatus(userEntity.getId(),
-                                                    EventStatus.EventType.PUSH_REGISTRATION, false));
-
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-                                        }
+                                      }
                                     });
-                        }
+                              } catch (IOException e) {
+                                Log.e(TAG, "IOException while updating user");
+                              }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                              eventBus.post(new EventStatus(userEntity.getId(),
+                                  EventStatus.EventType.PUSH_REGISTRATION, false));
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                          });
                     }
-                }
+
+                    @Override
+                    public void onError(Throwable e) {
+                      eventBus.post(new EventStatus(userEntity.getId(),
+                          EventStatus.EventType.PUSH_REGISTRATION, false));
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                  });
             }
+          }
         }
+      }
+    }
+  }
+
+  private Key readKeyFromString(boolean readPublicKey, String keyString) {
+    if (readPublicKey) {
+      keyString = keyString.replaceAll("\\n", "").replace("-----BEGIN PUBLIC KEY-----",
+          "").replace("-----END PUBLIC KEY-----", "");
+    } else {
+      keyString = keyString.replaceAll("\\n", "").replace("-----BEGIN PRIVATE KEY-----",
+          "").replace("-----END PRIVATE KEY-----", "");
     }
 
-    private Key readKeyFromString(boolean readPublicKey, String keyString) {
-        if (readPublicKey) {
-            keyString = keyString.replaceAll("\\n", "").replace("-----BEGIN PUBLIC KEY-----",
-                    "").replace("-----END PUBLIC KEY-----", "");
-        } else {
-            keyString = keyString.replaceAll("\\n", "").replace("-----BEGIN PRIVATE KEY-----",
-                    "").replace("-----END PRIVATE KEY-----", "");
-        }
-
-        KeyFactory keyFactory = null;
-        try {
-            keyFactory = KeyFactory.getInstance("RSA");
-            if (readPublicKey) {
-                X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.decode(keyString, Base64.DEFAULT));
-                return keyFactory.generatePublic(keySpec);
-            } else {
-                PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.decode(keyString, Base64.DEFAULT));
-                return keyFactory.generatePrivate(keySpec);
-            }
-
-        } catch (NoSuchAlgorithmException e) {
-            Log.d("TAG", "No such algorithm while reading key from string");
-        } catch (InvalidKeySpecException e) {
-            Log.d("TAG", "Invalid key spec while reading key from string");
-        }
-
-        return null;
+    KeyFactory keyFactory = null;
+    try {
+      keyFactory = KeyFactory.getInstance("RSA");
+      if (readPublicKey) {
+        X509EncodedKeySpec keySpec =
+            new X509EncodedKeySpec(Base64.decode(keyString, Base64.DEFAULT));
+        return keyFactory.generatePublic(keySpec);
+      } else {
+        PKCS8EncodedKeySpec keySpec =
+            new PKCS8EncodedKeySpec(Base64.decode(keyString, Base64.DEFAULT));
+        return keyFactory.generatePrivate(keySpec);
+      }
+    } catch (NoSuchAlgorithmException e) {
+      Log.d("TAG", "No such algorithm while reading key from string");
+    } catch (InvalidKeySpecException e) {
+      Log.d("TAG", "Invalid key spec while reading key from string");
     }
 
-    public Key readKeyFromFile(boolean readPublicKey) {
-        String path;
+    return null;
+  }
 
-        if (readPublicKey) {
-            path = publicKeyFile.getAbsolutePath();
-        } else {
-            path = privateKeyFile.getAbsolutePath();
-        }
+  public Key readKeyFromFile(boolean readPublicKey) {
+    String path;
 
-        try (FileInputStream fileInputStream = new FileInputStream(path)) {
-            byte[] bytes = new byte[fileInputStream.available()];
-            fileInputStream.read(bytes);
-
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
-            if (readPublicKey) {
-                X509EncodedKeySpec keySpec = new X509EncodedKeySpec(bytes);
-                return keyFactory.generatePublic(keySpec);
-            } else {
-                PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(bytes);
-                return keyFactory.generatePrivate(keySpec);
-            }
-
-        } catch (FileNotFoundException e) {
-            Log.d(TAG, "Failed to find path while reading the Key");
-        } catch (IOException e) {
-            Log.d(TAG, "IOException while reading the key");
-        } catch (InvalidKeySpecException e) {
-            Log.d(TAG, "InvalidKeySpecException while reading the key");
-        } catch (NoSuchAlgorithmException e) {
-            Log.d(TAG, "RSA algorithm not supported");
-        }
-
-        return null;
+    if (readPublicKey) {
+      path = publicKeyFile.getAbsolutePath();
+    } else {
+      path = privateKeyFile.getAbsolutePath();
     }
+
+    try (FileInputStream fileInputStream = new FileInputStream(path)) {
+      byte[] bytes = new byte[fileInputStream.available()];
+      fileInputStream.read(bytes);
+
+      KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+
+      if (readPublicKey) {
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(bytes);
+        return keyFactory.generatePublic(keySpec);
+      } else {
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(bytes);
+        return keyFactory.generatePrivate(keySpec);
+      }
+    } catch (FileNotFoundException e) {
+      Log.d(TAG, "Failed to find path while reading the Key");
+    } catch (IOException e) {
+      Log.d(TAG, "IOException while reading the key");
+    } catch (InvalidKeySpecException e) {
+      Log.d(TAG, "InvalidKeySpecException while reading the key");
+    } catch (NoSuchAlgorithmException e) {
+      Log.d(TAG, "RSA algorithm not supported");
+    }
+
+    return null;
+  }
 }

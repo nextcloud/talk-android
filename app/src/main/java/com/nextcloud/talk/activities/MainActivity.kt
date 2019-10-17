@@ -39,7 +39,6 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.CallNotificationController
-import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
@@ -56,117 +55,129 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class MainActivity : BaseActivity(), ActionBarProvider {
 
-    @BindView(R.id.toolbar)
-    lateinit var toolbar: MaterialToolbar
-    @BindView(R.id.controller_container)
-    lateinit var container: ViewGroup
+  @BindView(R.id.toolbar)
+  lateinit var toolbar: MaterialToolbar
+  @BindView(R.id.controller_container)
+  lateinit var container: ViewGroup
 
-    @Inject
-    lateinit var userUtils: UserUtils
-    @Inject
-    lateinit var dataStore: ReactiveEntityStore<Persistable>
-    @Inject
-    lateinit var sqlCipherDatabaseSource: SqlCipherDatabaseSource
+  @Inject
+  lateinit var userUtils: UserUtils
+  @Inject
+  lateinit var dataStore: ReactiveEntityStore<Persistable>
+  @Inject
+  lateinit var sqlCipherDatabaseSource: SqlCipherDatabaseSource
 
-    private var router: Router? = null
+  private var router: Router? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
+    setContentView(R.layout.activity_main)
 
-        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        ButterKnife.bind(this)
+    NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+    ButterKnife.bind(this)
 
-        setSupportActionBar(toolbar)
+    setSupportActionBar(toolbar)
 
-        router = Conductor.attachRouter(this, container, savedInstanceState)
+    router = Conductor.attachRouter(this, container, savedInstanceState)
 
-        var hasDb = true
+    var hasDb = true
 
-        try {
-            sqlCipherDatabaseSource.writableDatabase
-        } catch (exception: Exception) {
-            hasDb = false
-        }
-
-        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            if (!router!!.hasRootController()) {
-                router!!.setRoot(RouterTransaction.with(ConversationsListView())
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
-            }
-            onNewIntent(intent)
-        } else if (!router!!.hasRootController()) {
-            if (hasDb) {
-                if (userUtils.anyUserExists()) {
-                    router!!.setRoot(RouterTransaction.with(ConversationsListView())
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler()))
-                } else {
-                    router!!.setRoot(RouterTransaction.with(ServerSelectionController())
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler()))
-                }
-            } else {
-                router!!.setRoot(RouterTransaction.with(ServerSelectionController())
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
-
-            }
-        }
+    try {
+      sqlCipherDatabaseSource.writableDatabase
+    } catch (exception: Exception) {
+      hasDb = false
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkIfWeAreSecure()
+    if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+      if (!router!!.hasRootController()) {
+        router!!.setRoot(
+            RouterTransaction.with(ConversationsListView())
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())
+        )
+      }
+      onNewIntent(intent)
+    } else if (!router!!.hasRootController()) {
+      if (hasDb) {
+        if (userUtils.anyUserExists()) {
+          router!!.setRoot(
+              RouterTransaction.with(ConversationsListView())
+                  .pushChangeHandler(HorizontalChangeHandler())
+                  .popChangeHandler(HorizontalChangeHandler())
+          )
+        } else {
+          router!!.setRoot(
+              RouterTransaction.with(ServerSelectionController())
+                  .pushChangeHandler(HorizontalChangeHandler())
+                  .popChangeHandler(HorizontalChangeHandler())
+          )
         }
+      } else {
+        router!!.setRoot(
+            RouterTransaction.with(ServerSelectionController())
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())
+        )
+
+      }
+    }
+  }
+
+  override fun onStart() {
+    super.onStart()
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      checkIfWeAreSecure()
+    }
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.M)
+  fun checkIfWeAreSecure() {
+    val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+    if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {
+      if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
+        if (router != null && router!!.getControllerWithTag(LockedController.TAG) == null) {
+          router!!.pushController(
+              RouterTransaction.with(LockedController())
+                  .pushChangeHandler(VerticalChangeHandler())
+                  .popChangeHandler(VerticalChangeHandler())
+                  .tag(LockedController.TAG)
+          )
+        }
+      }
+    }
+  }
+
+  override fun onNewIntent(intent: Intent) {
+    super.onNewIntent(intent)
+
+    if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+      if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
+        router!!.pushController(
+            RouterTransaction.with(CallNotificationController(intent.extras))
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())
+        )
+      } else {
+        ConductorRemapping.remapChatController(
+            router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
+            intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN), intent.extras!!, false
+        )
+      }
+    }
+  }
+
+  override fun onBackPressed() {
+    if (router!!.getControllerWithTag(LockedController.TAG) != null) {
+      return
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    fun checkIfWeAreSecure() {
-        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {
-            if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
-                if (router != null && router!!.getControllerWithTag(LockedController.TAG) == null) {
-                    router!!.pushController(RouterTransaction.with(LockedController())
-                            .pushChangeHandler(VerticalChangeHandler())
-                            .popChangeHandler(VerticalChangeHandler())
-                            .tag(LockedController.TAG))
-                }
-            }
-        }
+    if (!router!!.handleBack()) {
+      super.onBackPressed()
     }
+  }
 
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-
-        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
-                router!!.pushController(RouterTransaction.with(CallNotificationController(intent.extras))
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
-            } else {
-                ConductorRemapping.remapChatController(router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
-                        intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN), intent.extras!!, false)
-            }
-        }
-    }
-
-    override fun onBackPressed() {
-        if (router!!.getControllerWithTag(LockedController.TAG) != null) {
-            return
-        }
-
-        if (!router!!.handleBack()) {
-            super.onBackPressed()
-        }
-    }
-
-    companion object {
-        private val TAG = "MainActivity"
-    }
+  companion object {
+    private val TAG = "MainActivity"
+  }
 }

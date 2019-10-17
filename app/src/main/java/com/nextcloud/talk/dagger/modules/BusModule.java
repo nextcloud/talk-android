@@ -28,9 +28,9 @@ import org.greenrobot.eventbus.EventBus;
 @Module
 public class BusModule {
 
-    @Provides
-    @Singleton
-    public EventBus provideEventBus() {
-        return EventBus.getDefault();
-    }
+  @Provides
+  @Singleton
+  public EventBus provideEventBus() {
+    return EventBus.getDefault();
+  }
 }

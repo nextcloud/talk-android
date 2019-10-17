@@ -34,39 +34,40 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 public class OCId implements Property {
-    public static final Name NAME = new Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_REMOTE_ID);
+  public static final Name NAME =
+      new Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_REMOTE_ID);
 
-    @Getter
-    @Setter
-    private String ocId;
+  @Getter
+  @Setter
+  private String ocId;
 
-    private OCId(String id) {
-        ocId = id;
+  private OCId(String id) {
+    ocId = id;
+  }
+
+  public static class Factory implements PropertyFactory {
+
+    @Nullable
+    @Override
+    public Property create(@NotNull XmlPullParser xmlPullParser) {
+      try {
+        String text = XmlUtils.INSTANCE.readText(xmlPullParser);
+        if (!TextUtils.isEmpty(text)) {
+          return new OCId(text);
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (XmlPullParserException e) {
+        e.printStackTrace();
+      }
+
+      return new OCId("");
     }
 
-    public static class Factory implements PropertyFactory {
-
-        @Nullable
-        @Override
-        public Property create(@NotNull XmlPullParser xmlPullParser) {
-            try {
-                String text = XmlUtils.INSTANCE.readText(xmlPullParser);
-                if (!TextUtils.isEmpty(text)) {
-                    return new OCId(text);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            }
-
-            return new OCId("");
-        }
-
-        @NotNull
-        @Override
-        public Name getName() {
-            return NAME;
-        }
+    @NotNull
+    @Override
+    public Name getName() {
+      return NAME;
     }
+  }
 }

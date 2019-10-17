@@ -29,18 +29,18 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class PushConfigurationState {
-    @JsonField(name = "pushToken")
-    public String pushToken;
+  @JsonField(name = "pushToken")
+  public String pushToken;
 
-    @JsonField(name = "deviceIdentifier")
-    public String deviceIdentifier;
+  @JsonField(name = "deviceIdentifier")
+  public String deviceIdentifier;
 
-    @JsonField(name = "deviceIdentifierSignature")
-    public String deviceIdentifierSignature;
+  @JsonField(name = "deviceIdentifierSignature")
+  public String deviceIdentifierSignature;
 
-    @JsonField(name = "userPublicKey")
-    public String userPublicKey;
+  @JsonField(name = "userPublicKey")
+  public String userPublicKey;
 
-    @JsonField(name = "usesRegularPass")
-    public boolean usesRegularPass;
+  @JsonField(name = "usesRegularPass")
+  public boolean usesRegularPass;
 }

@@ -32,9 +32,9 @@ import org.parceler.Parcel;
 @JsonObject
 @Data
 public class RingtoneSettings {
-    @JsonField(name = "ringtoneUri", typeConverter = UriTypeConverter.class)
-    @Nullable
-    Uri ringtoneUri;
-    @JsonField(name = "ringtoneName")
-    String ringtoneName;
+  @JsonField(name = "ringtoneUri", typeConverter = UriTypeConverter.class)
+  @Nullable
+  Uri ringtoneUri;
+  @JsonField(name = "ringtoneName")
+  String ringtoneName;
 }

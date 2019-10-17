@@ -30,6 +30,6 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class ChatOCS extends GenericOCS {
-    @JsonField(name = "data")
-    public List<ChatMessage> data;
+  @JsonField(name = "data")
+  public List<ChatMessage> data;
 }

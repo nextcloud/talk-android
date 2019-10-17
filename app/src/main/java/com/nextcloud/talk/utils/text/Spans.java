@@ -27,16 +27,16 @@ import lombok.Data;
 
 public class Spans {
 
-    @Data
-    public static class MentionChipSpan extends BetterImageSpan {
-        public String id;
-        public CharSequence label;
+  @Data
+  public static class MentionChipSpan extends BetterImageSpan {
+    public String id;
+    public CharSequence label;
 
-        public MentionChipSpan(@NonNull Drawable drawable, int verticalAlignment, String id, CharSequence label) {
-            super(drawable, verticalAlignment);
-            this.id = id;
-            this.label = label;
-        }
+    public MentionChipSpan(@NonNull Drawable drawable, int verticalAlignment, String id,
+        CharSequence label) {
+      super(drawable, verticalAlignment);
+      this.id = id;
+      this.label = label;
     }
-
+  }
 }

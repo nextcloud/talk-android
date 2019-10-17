@@ -41,127 +41,131 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class Conversation {
-    @JsonField(name = "id")
-    public String roomId;
-    @JsonField(name = "token")
-    public String token;
-    @JsonField(name = "name")
-    public String name;
-    @JsonField(name = "displayName")
-    public String displayName;
-    @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
-    public ConversationType type;
-    @JsonField(name = "count")
-    public long count;
-    @JsonField(name = "lastPing")
-    public long lastPing;
-    @JsonField(name = "numGuests")
-    public long numberOfGuests;
-    @JsonField(name = "guestList")
-    public HashMap<String, HashMap<String, Object>> guestList;
-    @JsonField(name = "participants")
-    public HashMap<String, HashMap<String, Object>> participants;
-    @JsonField(name = "participantType", typeConverter = EnumParticipantTypeConverter.class)
-    public Participant.ParticipantType participantType;
-    @JsonField(name = "hasPassword")
-    public boolean hasPassword;
-    @JsonField(name = "sessionId")
-    public String sessionId;
-    public String password;
-    @JsonField(name = "isFavorite")
-    public boolean isFavorite;
-    @JsonField(name = "lastActivity")
-    public long lastActivity;
-    @JsonField(name = "unreadMessages")
-    public int unreadMessages;
-    @JsonField(name = "unreadMention")
-    public boolean unreadMention;
-    @JsonField(name = "lastMessage")
-    public ChatMessage lastMessage;
-    @JsonField(name = "objectType")
-    public String objectType;
-    @JsonField(name = "notificationLevel", typeConverter = EnumNotificationLevelConverter.class)
-    public NotificationLevel notificationLevel;
-    @JsonField(name = "readOnly", typeConverter = EnumReadOnlyConversationConverter.class)
-    public ConversationReadOnlyState conversationReadOnlyState;
-    @JsonField(name = "lobbyState", typeConverter = EnumLobbyStateConverter.class)
-    public LobbyState lobbyState;
-    @JsonField(name = "lobbyTimer")
-    public Long lobbyTimer;
-    @JsonField(name = "lastReadMessage")
-    public int lastReadMessage;
+  @JsonField(name = "id")
+  public String roomId;
+  @JsonField(name = "token")
+  public String token;
+  @JsonField(name = "name")
+  public String name;
+  @JsonField(name = "displayName")
+  public String displayName;
+  @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
+  public ConversationType type;
+  @JsonField(name = "count")
+  public long count;
+  @JsonField(name = "lastPing")
+  public long lastPing;
+  @JsonField(name = "numGuests")
+  public long numberOfGuests;
+  @JsonField(name = "guestList")
+  public HashMap<String, HashMap<String, Object>> guestList;
+  @JsonField(name = "participants")
+  public HashMap<String, HashMap<String, Object>> participants;
+  @JsonField(name = "participantType", typeConverter = EnumParticipantTypeConverter.class)
+  public Participant.ParticipantType participantType;
+  @JsonField(name = "hasPassword")
+  public boolean hasPassword;
+  @JsonField(name = "sessionId")
+  public String sessionId;
+  public String password;
+  @JsonField(name = "isFavorite")
+  public boolean isFavorite;
+  @JsonField(name = "lastActivity")
+  public long lastActivity;
+  @JsonField(name = "unreadMessages")
+  public int unreadMessages;
+  @JsonField(name = "unreadMention")
+  public boolean unreadMention;
+  @JsonField(name = "lastMessage")
+  public ChatMessage lastMessage;
+  @JsonField(name = "objectType")
+  public String objectType;
+  @JsonField(name = "notificationLevel", typeConverter = EnumNotificationLevelConverter.class)
+  public NotificationLevel notificationLevel;
+  @JsonField(name = "readOnly", typeConverter = EnumReadOnlyConversationConverter.class)
+  public ConversationReadOnlyState conversationReadOnlyState;
+  @JsonField(name = "lobbyState", typeConverter = EnumLobbyStateConverter.class)
+  public LobbyState lobbyState;
+  @JsonField(name = "lobbyTimer")
+  public Long lobbyTimer;
+  @JsonField(name = "lastReadMessage")
+  public int lastReadMessage;
 
-    public boolean isPublic() {
-        return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
+  public boolean isPublic() {
+    return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
+  }
+
+  public boolean isGuest() {
+    return (Participant.ParticipantType.GUEST.equals(participantType) ||
+        Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participantType));
+  }
+
+  private boolean isLockedOneToOne(UserEntity conversationUser) {
+    return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        && conversationUser.hasSpreedFeatureCapability("locked-one-to-one-rooms"));
+  }
+
+  public boolean canModerate(UserEntity conversationUser) {
+    return ((Participant.ParticipantType.OWNER.equals(participantType)
+        || Participant.ParticipantType.MODERATOR.equals(participantType)) && !isLockedOneToOne(
+        conversationUser));
+  }
+
+  public boolean shouldShowLobby(UserEntity conversationUser) {
+    return LobbyState.LOBBY_STATE_MODERATORS_ONLY.equals(getLobbyState()) && !canModerate(
+        conversationUser);
+  }
+
+  public boolean isLobbyViewApplicable(UserEntity conversationUser) {
+    return !canModerate(conversationUser) && (getType() == ConversationType.ROOM_GROUP_CALL
+        || getType() == ConversationType.ROOM_PUBLIC_CALL);
+  }
+
+  public boolean isNameEditable(UserEntity conversationUser) {
+    return (canModerate(conversationUser) && !ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(
+        type));
+  }
+
+  public boolean canLeave(UserEntity conversationUser) {
+    return !canModerate(conversationUser) || (getType()
+        != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getParticipants().size() > 1);
+  }
+
+  public String getDeleteWarningMessage() {
+    Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
+    if (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+      return String.format(resources.getString(R.string.nc_delete_conversation_one2one),
+          getDisplayName());
+    } else if (getParticipants().size() > 1) {
+      return resources.getString(R.string.nc_delete_conversation_more);
     }
 
-    public boolean isGuest() {
-        return (Participant.ParticipantType.GUEST.equals(participantType) ||
-                Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participantType));
-    }
+    return resources.getString(R.string.nc_delete_conversation_default);
+  }
 
+  public enum NotificationLevel {
+    DEFAULT,
+    ALWAYS,
+    MENTION,
+    NEVER
+  }
 
-    private boolean isLockedOneToOne(UserEntity conversationUser) {
-        return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && conversationUser.hasSpreedFeatureCapability("locked-one-to-one-rooms"));
-    }
+  public enum LobbyState {
+    LOBBY_STATE_ALL_PARTICIPANTS,
+    LOBBY_STATE_MODERATORS_ONLY
+  }
 
-    public boolean canModerate(UserEntity conversationUser) {
-        return ((Participant.ParticipantType.OWNER.equals(participantType)
-                || Participant.ParticipantType.MODERATOR.equals(participantType)) && !isLockedOneToOne(conversationUser));
-    }
+  public enum ConversationReadOnlyState {
+    CONVERSATION_READ_WRITE,
+    CONVERSATION_READ_ONLY
+  }
 
-    public boolean shouldShowLobby(UserEntity conversationUser) {
-        return LobbyState.LOBBY_STATE_MODERATORS_ONLY.equals(getLobbyState()) && !canModerate(conversationUser);
-    }
-
-    public boolean isLobbyViewApplicable(UserEntity conversationUser) {
-        return !canModerate(conversationUser) && (getType() == ConversationType.ROOM_GROUP_CALL || getType() == ConversationType.ROOM_PUBLIC_CALL);
-    }
-    public boolean isNameEditable(UserEntity conversationUser) {
-        return (canModerate(conversationUser) && !ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
-    }
-
-    public boolean canLeave(UserEntity conversationUser) {
-        return !canModerate(conversationUser) || (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getParticipants().size() > 1);
-
-    }
-
-    public String getDeleteWarningMessage() {
-        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
-        if (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            return String.format(resources.getString(R.string.nc_delete_conversation_one2one),
-                    getDisplayName());
-        } else if (getParticipants().size() > 1) {
-            return resources.getString(R.string.nc_delete_conversation_more);
-        }
-
-        return resources.getString(R.string.nc_delete_conversation_default);
-    }
-
-    public enum NotificationLevel {
-        DEFAULT,
-        ALWAYS,
-        MENTION,
-        NEVER
-    }
-
-    public enum LobbyState {
-        LOBBY_STATE_ALL_PARTICIPANTS,
-        LOBBY_STATE_MODERATORS_ONLY
-    }
-
-    public enum ConversationReadOnlyState {
-        CONVERSATION_READ_WRITE,
-        CONVERSATION_READ_ONLY
-    }
-
-    @Parcel
-    public enum ConversationType {
-        DUMMY,
-        ROOM_TYPE_ONE_TO_ONE_CALL,
-        ROOM_GROUP_CALL,
-        ROOM_PUBLIC_CALL,
-        ROOM_SYSTEM
-    }
-
+  @Parcel
+  public enum ConversationType {
+    DUMMY,
+    ROOM_TYPE_ONE_TO_ONE_CALL,
+    ROOM_GROUP_CALL,
+    ROOM_PUBLIC_CALL,
+    ROOM_SYSTEM
+  }
 }

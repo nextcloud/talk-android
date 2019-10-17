@@ -40,11 +40,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.NotificationSoundItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -57,247 +57,255 @@ import java.util.List;
 import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class RingtoneSelectionController extends BaseController implements FlexibleAdapter.OnItemClickListener {
+public class RingtoneSelectionController extends BaseController
+    implements FlexibleAdapter.OnItemClickListener {
 
-    private static final String TAG = "RingtoneSelectionController";
+  private static final String TAG = "RingtoneSelectionController";
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
+  @BindView(R.id.recyclerView)
+  RecyclerView recyclerView;
 
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout swipeRefreshLayout;
+  @BindView(R.id.swipe_refresh_layout)
+  SwipeRefreshLayout swipeRefreshLayout;
 
-    @Inject
-    AppPreferences appPreferences;
+  @Inject
+  AppPreferences appPreferences;
 
-    @Inject
-    Context context;
+  @Inject
+  Context context;
 
-    private FlexibleAdapter adapter;
-    private RecyclerView.AdapterDataObserver adapterDataObserver;
-    private List<AbstractFlexibleItem> abstractFlexibleItemList = new ArrayList<>();
+  private FlexibleAdapter adapter;
+  private RecyclerView.AdapterDataObserver adapterDataObserver;
+  private List<AbstractFlexibleItem> abstractFlexibleItemList = new ArrayList<>();
 
-    private boolean callNotificationSounds;
-    private MediaPlayer mediaPlayer;
-    private Handler cancelMediaPlayerHandler;
+  private boolean callNotificationSounds;
+  private MediaPlayer mediaPlayer;
+  private Handler cancelMediaPlayerHandler;
 
-    public RingtoneSelectionController(Bundle args) {
-        super();
-        setHasOptionsMenu(true);
-        this.callNotificationSounds = args.getBoolean(BundleKeys.INSTANCE.getKEY_ARE_CALL_SOUNDS(), false);
+  public RingtoneSelectionController(Bundle args) {
+    super();
+    setHasOptionsMenu(true);
+    this.callNotificationSounds =
+        args.getBoolean(BundleKeys.INSTANCE.getKEY_ARE_CALL_SOUNDS(), false);
+  }
+
+  @Override
+  protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    return inflater.inflate(R.layout.controller_generic_rv, container, false);
+  }
+
+  @Override
+  protected void onViewBound(@NonNull View view) {
+    super.onViewBound(view);
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
+
+    if (adapter == null) {
+      adapter = new FlexibleAdapter<>(abstractFlexibleItemList, getActivity(), false);
+
+      adapter.setNotifyChangeOfUnfilteredItems(true)
+          .setMode(SelectableAdapter.Mode.SINGLE);
+
+      adapter.addListener(this);
+
+      cancelMediaPlayerHandler = new Handler();
     }
 
-    @Override
-    protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        return inflater.inflate(R.layout.controller_generic_rv, container, false);
+    adapter.addListener(this);
+    prepareViews();
+    fetchNotificationSounds();
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        return getRouter().popCurrentController();
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
+
+  private void prepareViews() {
+    RecyclerView.LayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
+    recyclerView.setLayoutManager(layoutManager);
+    recyclerView.setHasFixedSize(true);
+    recyclerView.setAdapter(adapter);
+
+    adapterDataObserver = new RecyclerView.AdapterDataObserver() {
+      @Override
+      public void onChanged() {
+        super.onChanged();
+        findSelectedSound();
+      }
+    };
+
+    adapter.registerAdapterDataObserver(adapterDataObserver);
+    swipeRefreshLayout.setEnabled(false);
+  }
+
+  @SuppressLint("LongLogTag")
+  private void findSelectedSound() {
+    boolean foundDefault = false;
+
+    String preferencesString = null;
+    if ((callNotificationSounds && TextUtils.isEmpty(
+        (preferencesString = appPreferences.getCallRingtoneUri())))
+        || (!callNotificationSounds && TextUtils.isEmpty((preferencesString = appPreferences
+        .getMessageRingtoneUri())))) {
+      adapter.toggleSelection(1);
+      foundDefault = true;
     }
 
-    @Override
-    protected void onViewBound(@NonNull View view) {
-        super.onViewBound(view);
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-
-        if (adapter == null) {
-            adapter = new FlexibleAdapter<>(abstractFlexibleItemList, getActivity(), false);
-
-            adapter.setNotifyChangeOfUnfilteredItems(true)
-                    .setMode(SelectableAdapter.Mode.SINGLE);
-
-            adapter.addListener(this);
-
-            cancelMediaPlayerHandler = new Handler();
-        }
-
-        adapter.addListener(this);
-        prepareViews();
-        fetchNotificationSounds();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                return getRouter().popCurrentController();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void prepareViews() {
-        RecyclerView.LayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-
-        adapterDataObserver = new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                findSelectedSound();
-            }
-        };
-
-        adapter.registerAdapterDataObserver(adapterDataObserver);
-        swipeRefreshLayout.setEnabled(false);
-    }
-
-    @SuppressLint("LongLogTag")
-    private void findSelectedSound() {
-        boolean foundDefault = false;
-
-        String preferencesString = null;
-        if ((callNotificationSounds && TextUtils.isEmpty((preferencesString = appPreferences.getCallRingtoneUri())))
-                || (!callNotificationSounds && TextUtils.isEmpty((preferencesString = appPreferences
-                .getMessageRingtoneUri())))) {
-            adapter.toggleSelection(1);
-            foundDefault = true;
-        }
-
-        if (!TextUtils.isEmpty(preferencesString) && !foundDefault) {
-            try {
-                RingtoneSettings ringtoneSettings = LoganSquare.parse(preferencesString, RingtoneSettings.class);
-                if (ringtoneSettings.getRingtoneUri() == null) {
-                    adapter.toggleSelection(0);
-                } else if (ringtoneSettings.getRingtoneUri().toString().equals(getRingtoneString())) {
-                    adapter.toggleSelection(1);
-                } else {
-                    NotificationSoundItem notificationSoundItem;
-                    for (int i = 2; i < adapter.getItemCount(); i++) {
-                        notificationSoundItem = (NotificationSoundItem) adapter.getItem(i);
-                        if (notificationSoundItem.getNotificationSoundUri().equals(ringtoneSettings.getRingtoneUri().toString())) {
-                            adapter.toggleSelection(i);
-                            break;
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to parse ringtone settings");
-            }
-        }
-
-        adapter.unregisterAdapterDataObserver(adapterDataObserver);
-        adapterDataObserver = null;
-    }
-
-    private String getRingtoneString() {
-        if (callNotificationSounds) {
-            return ("android.resource://" + context.getPackageName() +
-                    "/raw/librem_by_feandesign_call");
+    if (!TextUtils.isEmpty(preferencesString) && !foundDefault) {
+      try {
+        RingtoneSettings ringtoneSettings =
+            LoganSquare.parse(preferencesString, RingtoneSettings.class);
+        if (ringtoneSettings.getRingtoneUri() == null) {
+          adapter.toggleSelection(0);
+        } else if (ringtoneSettings.getRingtoneUri().toString().equals(getRingtoneString())) {
+          adapter.toggleSelection(1);
         } else {
-            return ("android.resource://" + context.getPackageName() + "/raw" +
-                    "/librem_by_feandesign_message");
-        }
-
-    }
-
-    private void fetchNotificationSounds() {
-        abstractFlexibleItemList.add(new NotificationSoundItem(getResources().getString(R.string.nc_settings_no_ringtone), null));
-        abstractFlexibleItemList.add(new NotificationSoundItem(getResources()
-                .getString(R.string.nc_settings_default_ringtone), getRingtoneString()));
-
-
-        if (getActivity() != null) {
-            RingtoneManager manager = new RingtoneManager(getActivity());
-
-            if (callNotificationSounds) {
-                manager.setType(RingtoneManager.TYPE_RINGTONE);
-            } else {
-                manager.setType(RingtoneManager.TYPE_NOTIFICATION);
+          NotificationSoundItem notificationSoundItem;
+          for (int i = 2; i < adapter.getItemCount(); i++) {
+            notificationSoundItem = (NotificationSoundItem) adapter.getItem(i);
+            if (notificationSoundItem.getNotificationSoundUri()
+                .equals(ringtoneSettings.getRingtoneUri().toString())) {
+              adapter.toggleSelection(i);
+              break;
             }
-
-            Cursor cursor = manager.getCursor();
-
-            NotificationSoundItem notificationSoundItem;
-
-            while (cursor.moveToNext()) {
-                String notificationTitle = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
-                String notificationUri = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
-                String completeNotificationUri = notificationUri + "/" + cursor.getString(RingtoneManager
-                        .ID_COLUMN_INDEX);
-
-                notificationSoundItem = new NotificationSoundItem(notificationTitle, completeNotificationUri);
-
-                abstractFlexibleItemList.add(notificationSoundItem);
-            }
+          }
         }
-
-        adapter.updateDataSet(abstractFlexibleItemList, false);
+      } catch (IOException e) {
+        Log.e(TAG, "Failed to parse ringtone settings");
+      }
     }
 
-    @Override
-    public String getTitle() {
-        return getResources().getString(R.string.nc_settings_notification_sounds);
+    adapter.unregisterAdapterDataObserver(adapterDataObserver);
+    adapterDataObserver = null;
+  }
+
+  private String getRingtoneString() {
+    if (callNotificationSounds) {
+      return ("android.resource://" + context.getPackageName() +
+          "/raw/librem_by_feandesign_call");
+    } else {
+      return ("android.resource://" + context.getPackageName() + "/raw" +
+          "/librem_by_feandesign_message");
+    }
+  }
+
+  private void fetchNotificationSounds() {
+    abstractFlexibleItemList.add(
+        new NotificationSoundItem(getResources().getString(R.string.nc_settings_no_ringtone),
+            null));
+    abstractFlexibleItemList.add(new NotificationSoundItem(getResources()
+        .getString(R.string.nc_settings_default_ringtone), getRingtoneString()));
+
+    if (getActivity() != null) {
+      RingtoneManager manager = new RingtoneManager(getActivity());
+
+      if (callNotificationSounds) {
+        manager.setType(RingtoneManager.TYPE_RINGTONE);
+      } else {
+        manager.setType(RingtoneManager.TYPE_NOTIFICATION);
+      }
+
+      Cursor cursor = manager.getCursor();
+
+      NotificationSoundItem notificationSoundItem;
+
+      while (cursor.moveToNext()) {
+        String notificationTitle = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
+        String notificationUri = cursor.getString(RingtoneManager.URI_COLUMN_INDEX);
+        String completeNotificationUri = notificationUri + "/" + cursor.getString(RingtoneManager
+            .ID_COLUMN_INDEX);
+
+        notificationSoundItem =
+            new NotificationSoundItem(notificationTitle, completeNotificationUri);
+
+        abstractFlexibleItemList.add(notificationSoundItem);
+      }
     }
 
-    @SuppressLint("LongLogTag")
-    @Override
-    public boolean onItemClick(View view, int position) {
-        NotificationSoundItem notificationSoundItem = (NotificationSoundItem) adapter.getItem(position);
+    adapter.updateDataSet(abstractFlexibleItemList, false);
+  }
 
-        Uri ringtoneUri = null;
+  @Override
+  public String getTitle() {
+    return getResources().getString(R.string.nc_settings_notification_sounds);
+  }
 
-        if (!TextUtils.isEmpty(notificationSoundItem.getNotificationSoundUri())) {
-            ringtoneUri = Uri.parse(notificationSoundItem.getNotificationSoundUri());
+  @SuppressLint("LongLogTag")
+  @Override
+  public boolean onItemClick(View view, int position) {
+    NotificationSoundItem notificationSoundItem = (NotificationSoundItem) adapter.getItem(position);
 
-            endMediaPlayer();
-            mediaPlayer = MediaPlayer.create(getActivity(), ringtoneUri);
+    Uri ringtoneUri = null;
 
-            cancelMediaPlayerHandler = new Handler();
-            cancelMediaPlayerHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    endMediaPlayer();
-                }
-            }, mediaPlayer.getDuration() + 25);
-            mediaPlayer.start();
+    if (!TextUtils.isEmpty(notificationSoundItem.getNotificationSoundUri())) {
+      ringtoneUri = Uri.parse(notificationSoundItem.getNotificationSoundUri());
+
+      endMediaPlayer();
+      mediaPlayer = MediaPlayer.create(getActivity(), ringtoneUri);
+
+      cancelMediaPlayerHandler = new Handler();
+      cancelMediaPlayerHandler.postDelayed(new Runnable() {
+        @Override
+        public void run() {
+          endMediaPlayer();
         }
-
-        if (adapter.getSelectedPositions().size() == 0 || adapter.getSelectedPositions().get(0) != position) {
-            RingtoneSettings ringtoneSettings = new RingtoneSettings();
-            ringtoneSettings.setRingtoneName(notificationSoundItem.getNotificationSoundName());
-            ringtoneSettings.setRingtoneUri(ringtoneUri);
-
-            if (callNotificationSounds) {
-                try {
-                    appPreferences.setCallRingtoneUri(LoganSquare.serialize(ringtoneSettings));
-                    adapter.toggleSelection(position);
-                    adapter.notifyDataSetChanged();
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to store selected ringtone for calls");
-                }
-            } else {
-                try {
-                    appPreferences.setMessageRingtoneUri(LoganSquare.serialize(ringtoneSettings));
-                    adapter.toggleSelection(position);
-                    adapter.notifyDataSetChanged();
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to store selected ringtone for calls");
-                }
-            }
-        }
-
-        return true;
+      }, mediaPlayer.getDuration() + 25);
+      mediaPlayer.start();
     }
 
-    private void endMediaPlayer() {
-        if (cancelMediaPlayerHandler != null) {
-            cancelMediaPlayerHandler.removeCallbacksAndMessages(null);
-        }
+    if (adapter.getSelectedPositions().size() == 0
+        || adapter.getSelectedPositions().get(0) != position) {
+      RingtoneSettings ringtoneSettings = new RingtoneSettings();
+      ringtoneSettings.setRingtoneName(notificationSoundItem.getNotificationSoundName());
+      ringtoneSettings.setRingtoneUri(ringtoneUri);
 
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-            }
-
-            mediaPlayer.release();
-            mediaPlayer = null;
+      if (callNotificationSounds) {
+        try {
+          appPreferences.setCallRingtoneUri(LoganSquare.serialize(ringtoneSettings));
+          adapter.toggleSelection(position);
+          adapter.notifyDataSetChanged();
+        } catch (IOException e) {
+          Log.e(TAG, "Failed to store selected ringtone for calls");
         }
+      } else {
+        try {
+          appPreferences.setMessageRingtoneUri(LoganSquare.serialize(ringtoneSettings));
+          adapter.toggleSelection(position);
+          adapter.notifyDataSetChanged();
+        } catch (IOException e) {
+          Log.e(TAG, "Failed to store selected ringtone for calls");
+        }
+      }
     }
 
-    @Override
-    public void onDestroy() {
-        endMediaPlayer();
-        super.onDestroy();
+    return true;
+  }
+
+  private void endMediaPlayer() {
+    if (cancelMediaPlayerHandler != null) {
+      cancelMediaPlayerHandler.removeCallbacksAndMessages(null);
     }
 
+    if (mediaPlayer != null) {
+      if (mediaPlayer.isPlaying()) {
+        mediaPlayer.stop();
+      }
+
+      mediaPlayer.release();
+      mediaPlayer = null;
+    }
+  }
+
+  @Override
+  public void onDestroy() {
+    endMediaPlayer();
+    super.onDestroy();
+  }
 }

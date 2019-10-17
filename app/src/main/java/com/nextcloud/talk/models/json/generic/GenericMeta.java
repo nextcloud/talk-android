@@ -29,12 +29,12 @@ import org.parceler.Parcel;
 @Data
 @JsonObject(serializeNullObjects = true)
 public class GenericMeta {
-    @JsonField(name = "status")
-    public String status;
+  @JsonField(name = "status")
+  public String status;
 
-    @JsonField(name = "statuscode")
-    public int statusCode;
+  @JsonField(name = "statuscode")
+  public int statusCode;
 
-    @JsonField(name = "message")
-    public String message;
+  @JsonField(name = "message")
+  public String message;
 }

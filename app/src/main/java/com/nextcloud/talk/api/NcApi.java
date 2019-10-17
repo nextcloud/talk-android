@@ -54,36 +54,37 @@ import retrofit2.http.Url;
 
 public interface NcApi {
 
-    /*
-        QueryMap items are as follows:
-            - "format" : "json"
-            - "search" : ""
-            - "perPage" : "200"
-            - "itemType" : "call"
+  /*
+      QueryMap items are as follows:
+          - "format" : "json"
+          - "search" : ""
+          - "perPage" : "200"
+          - "itemType" : "call"
 
-        Server URL is: baseUrl + ocsApiVersion + /apps/files_sharing/api/v1/sharees
+      Server URL is: baseUrl + ocsApiVersion + /apps/files_sharing/api/v1/sharees
 
-        or if we're on 14 and up:
+      or if we're on 14 and up:
 
-        baseUrl + ocsApiVersion + "/core/autocomplete/get");
+      baseUrl + ocsApiVersion + "/core/autocomplete/get");
 
-     */
-    @GET
-    Observable<ResponseBody> getContactsWithSearchParam(@Header("Authorization") String authorization, @Url String url,
-                                                        @Nullable @Query("shareTypes[]") List<String> listOfShareTypes, @QueryMap Map<String, Object> options);
+   */
+  @GET
+  Observable<ResponseBody> getContactsWithSearchParam(@Header("Authorization") String authorization,
+      @Url String url,
+      @Nullable @Query("shareTypes[]") List<String> listOfShareTypes,
+      @QueryMap Map<String, Object> options);
 
+  /*
+      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
+   */
+  @GET
+  Observable<RoomsOverall> getRooms(@Header("Authorization") String authorization, @Url String url);
 
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
-     */
-    @GET
-    Observable<RoomsOverall> getRooms(@Header("Authorization") String authorization, @Url String url);
-
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken
-    */
-    @GET
-    Observable<RoomOverall> getRoom(@Header("Authorization") String authorization, @Url String url);
+  /*
+      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken
+  */
+  @GET
+  Observable<RoomOverall> getRoom(@Header("Authorization") String authorization, @Url String url);
 
     /*
         QueryMap items are as follows:
@@ -93,9 +94,9 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
      */
 
-    @POST
-    Observable<RoomOverall> createRoom(@Header("Authorization") String authorization, @Url String url,
-                                       @QueryMap Map<String, String> options);
+  @POST
+  Observable<RoomOverall> createRoom(@Header("Authorization") String authorization, @Url String url,
+      @QueryMap Map<String, String> options);
 
     /*
         QueryMap items are as follows:
@@ -104,109 +105,126 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken
      */
 
-    @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> renameRoom(@Header("Authorization") String authorization, @Url String url,
-                                          @Field("roomName") String roomName);
+  @FormUrlEncoded
+  @PUT
+  Observable<GenericOverall> renameRoom(@Header("Authorization") String authorization,
+      @Url String url,
+      @Field("roomName") String roomName);
 
+  /*
+      QueryMap items are as follows:
+          - "newParticipant" : "user"
 
-    /*
-        QueryMap items are as follows:
-            - "newParticipant" : "user"
+      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/participants
+  */
+  @POST
+  Observable<AddParticipantOverall> addParticipant(@Header("Authorization") String authorization,
+      @Url String url,
+      @QueryMap Map<String, String> options);
 
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/participants
-    */
-    @POST
-    Observable<AddParticipantOverall> addParticipant(@Header("Authorization") String authorization, @Url String url,
-                                                     @QueryMap Map<String, String> options);
+  // also used for removing a guest from a conversation
+  @DELETE
+  Observable<GenericOverall> removeParticipantFromConversation(
+      @Header("Authorization") String authorization, @Url String url,
+      @Query("participant") String participantId);
 
+  @POST
+  Observable<GenericOverall> promoteUserToModerator(@Header("Authorization") String authorization,
+      @Url String url, @Query("participant") String participantId);
 
-    // also used for removing a guest from a conversation
-    @DELETE
-    Observable<GenericOverall> removeParticipantFromConversation(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
-
-    @POST
-    Observable<GenericOverall> promoteUserToModerator(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
-
-    @DELETE
-    Observable<GenericOverall> demoteModeratorToUser(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
+  @DELETE
+  Observable<GenericOverall> demoteModeratorToUser(@Header("Authorization") String authorization,
+      @Url String url, @Query("participant") String participantId);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/participants/self
      */
 
-    @DELETE
-    Observable<GenericOverall> removeSelfFromRoom(@Header("Authorization") String authorization, @Url String url);
+  @DELETE
+  Observable<GenericOverall> removeSelfFromRoom(@Header("Authorization") String authorization,
+      @Url String url);
 
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/public
-    */
-    @POST
-    Observable<GenericOverall> makeRoomPublic(@Header("Authorization") String authorization, @Url String url);
+  /*
+      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/public
+  */
+  @POST
+  Observable<GenericOverall> makeRoomPublic(@Header("Authorization") String authorization,
+      @Url String url);
 
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/public
-    */
-    @DELETE
-    Observable<GenericOverall> makeRoomPrivate(@Header("Authorization") String authorization, @Url String url);
+  /*
+      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/public
+  */
+  @DELETE
+  Observable<GenericOverall> makeRoomPrivate(@Header("Authorization") String authorization,
+      @Url String url);
 
-    @DELETE
-    Observable<GenericOverall> deleteRoom(@Header("Authorization") String authorization, @Url String url);
+  @DELETE
+  Observable<GenericOverall> deleteRoom(@Header("Authorization") String authorization,
+      @Url String url);
+
+  /*
+      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
+  */
+  @GET
+  Observable<ParticipantsOverall> getPeersForCall(@Header("Authorization") String authorization,
+      @Url String url);
+
+  @FormUrlEncoded
+  @POST
+  Observable<RoomOverall> joinRoom(@Nullable @Header("Authorization") String authorization,
+      @Url String url, @Nullable @Field("password") String password);
+
+  @DELETE
+  Observable<GenericOverall> leaveRoom(@Nullable @Header("Authorization") String authorization,
+      @Url String url);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
     */
-    @GET
-    Observable<ParticipantsOverall> getPeersForCall(@Header("Authorization") String authorization, @Url String url);
 
-    @FormUrlEncoded
-    @POST
-    Observable<RoomOverall> joinRoom(@Nullable @Header("Authorization") String authorization, @Url String url, @Nullable @Field("password") String password);
+  @POST
+  Observable<GenericOverall> joinCall(@Nullable @Header("Authorization") String authorization,
+      @Url String url);
 
-    @DELETE
-    Observable<GenericOverall> leaveRoom(@Nullable @Header("Authorization") String authorization, @Url String url);
+  /*
+  Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
+  */
+  @DELETE
+  Observable<GenericOverall> leaveCall(@Nullable @Header("Authorization") String authorization,
+      @Url String url);
 
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
-    */
+  /*
+      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken/ping
+  */
+  @POST
+  Observable<GenericOverall> pingCall(@Nullable @Header("Authorization") String authorization,
+      @Url String url);
 
-    @POST
-    Observable<GenericOverall> joinCall(@Nullable @Header("Authorization") String authorization, @Url String url);
+  @GET
+  Observable<SignalingSettingsOverall> getSignalingSettings(
+      @Nullable @Header("Authorization") String authorization,
+      @Url String url);
 
-    /*
-    Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
-    */
-    @DELETE
-    Observable<GenericOverall> leaveCall(@Nullable @Header("Authorization") String authorization, @Url String url);
+  /*
+      QueryMap items are as follows:
+          - "messages" : "message"
 
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken/ping
-    */
-    @POST
-    Observable<GenericOverall> pingCall(@Nullable @Header("Authorization") String authorization, @Url String url);
+      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
+  */
+  @FormUrlEncoded
+  @POST
+  Observable<SignalingOverall> sendSignalingMessages(
+      @Nullable @Header("Authorization") String authorization, @Url String url,
+      @Field("messages") String messages);
 
-    @GET
-    Observable<SignalingSettingsOverall> getSignalingSettings(@Nullable @Header("Authorization") String authorization,
-                                                              @Url String url);
-
-    /*
-        QueryMap items are as follows:
-            - "messages" : "message"
-
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
-    */
-    @FormUrlEncoded
-    @POST
-    Observable<SignalingOverall> sendSignalingMessages(@Nullable @Header("Authorization") String authorization, @Url String url,
-                                                       @Field("messages") String messages);
-
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
-    */
-    @GET
-    Observable<SignalingOverall> pullSignalingMessages(@Nullable @Header("Authorization") String authorization, @Url
-            String
-            url);
+  /*
+      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /signaling
+  */
+  @GET
+  Observable<SignalingOverall> pullSignalingMessages(
+      @Nullable @Header("Authorization") String authorization, @Url
+      String
+      url);
 
      /*
         QueryMap items are as follows:
@@ -215,14 +233,15 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + "/cloud/user"
     */
 
-    @GET
-    Observable<UserProfileOverall> getUserProfile(@Header("Authorization") String authorization, @Url String url);
+  @GET
+  Observable<UserProfileOverall> getUserProfile(@Header("Authorization") String authorization,
+      @Url String url);
 
-    /*
-        Server URL is: baseUrl + /status.php
-     */
-    @GET
-    Observable<Status> getServerStatus(@Url String url);
+  /*
+      Server URL is: baseUrl + /status.php
+   */
+  @GET
+  Observable<Status> getServerStatus(@Url String url);
 
 
     /*
@@ -235,52 +254,55 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + "/apps/notifications/api/v2/push
      */
 
-    @POST
-    Observable<PushRegistrationOverall> registerDeviceForNotificationsWithNextcloud(@Header("Authorization")
-                                                                                            String authorization,
-                                                                                    @Url String url,
-                                                                                    @QueryMap Map<String,
-                                                                                            String> options);
+  @POST
+  Observable<PushRegistrationOverall> registerDeviceForNotificationsWithNextcloud(
+      @Header("Authorization")
+          String authorization,
+      @Url String url,
+      @QueryMap Map<String,
+          String> options);
 
-    @DELETE
-    Observable<GenericOverall> unregisterDeviceForNotificationsWithNextcloud(@Header("Authorization")
-                                                                                     String authorization,
-                                                                             @Url String url);
+  @DELETE
+  Observable<GenericOverall> unregisterDeviceForNotificationsWithNextcloud(@Header("Authorization")
+      String authorization,
+      @Url String url);
 
-    @FormUrlEncoded
-    @POST
-    Observable<Void> registerDeviceForNotificationsWithProxy(@Url String url,
-                                                             @FieldMap Map<String, String> fields);
+  @FormUrlEncoded
+  @POST
+  Observable<Void> registerDeviceForNotificationsWithProxy(@Url String url,
+      @FieldMap Map<String, String> fields);
 
+  /*
+      QueryMap items are as follows:
+        - "deviceIdentifier": "{{deviceIdentifier}}",
+        - "deviceIdentifierSignature": "{{signature}}",
+        - "userPublicKey": "{{userPublicKey}}"
+  */
+  @DELETE
+  Observable<Void> unregisterDeviceForNotificationsWithProxy(@Url String url,
+      @QueryMap Map<String, String> fields);
 
-    /*
-        QueryMap items are as follows:
-          - "deviceIdentifier": "{{deviceIdentifier}}",
-          - "deviceIdentifierSignature": "{{signature}}",
-          - "userPublicKey": "{{userPublicKey}}"
-    */
-    @DELETE
-    Observable<Void> unregisterDeviceForNotificationsWithProxy(@Url String url,
-                                                               @QueryMap Map<String, String> fields);
+  @FormUrlEncoded
+  @PUT
+  Observable<GenericOverall> setPassword(@Header("Authorization") String authorization,
+      @Url String url,
+      @Field("password") String password);
 
-    @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> setPassword(@Header("Authorization") String authorization, @Url String url,
-                                           @Field("password") String password);
+  @GET
+  Observable<CapabilitiesOverall> getCapabilities(@Header("Authorization") String authorization,
+      @Url String url);
 
-    @GET
-    Observable<CapabilitiesOverall> getCapabilities(@Header("Authorization") String authorization, @Url String url);
-
-    /*
-       QueryMap items are as follows:
-         - "lookIntoFuture": int (0 or 1),
-         - "limit" : int, range 100-200,
-         - "timeout": used with look into future, 30 default, 60 at most
-         - "lastKnownMessageId", int, use one from X-Chat-Last-Given
-   */
-    @GET
-    Observable<Response<ChatOverall>> pullChatMessages(@Header("Authorization") String authorization, @Url String url,
-                                                       @QueryMap Map<String, Integer> fields);
+  /*
+     QueryMap items are as follows:
+       - "lookIntoFuture": int (0 or 1),
+       - "limit" : int, range 100-200,
+       - "timeout": used with look into future, 30 default, 60 at most
+       - "lastKnownMessageId", int, use one from X-Chat-Last-Given
+ */
+  @GET
+  Observable<Response<ChatOverall>> pullChatMessages(@Header("Authorization") String authorization,
+      @Url String url,
+      @QueryMap Map<String, Integer> fields);
 
     /*
         Fieldmap items are as follows:
@@ -288,51 +310,56 @@ public interface NcApi {
           - "actorDisplayName"
     */
 
-    @FormUrlEncoded
-    @POST
-    Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization, @Url String url,
-                                               @Field("message") CharSequence message,
-                                               @Field("actorDisplayName") String actorDisplayName);
+  @FormUrlEncoded
+  @POST
+  Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization,
+      @Url String url,
+      @Field("message") CharSequence message,
+      @Field("actorDisplayName") String actorDisplayName);
 
-    @GET
-    Observable<MentionOverall> getMentionAutocompleteSuggestions(@Header("Authorization") String authorization,
-                                                                 @Url String url, @Query("search") String query,
-                                                                 @Nullable @Query("limit") Integer limit);
+  @GET
+  Observable<MentionOverall> getMentionAutocompleteSuggestions(
+      @Header("Authorization") String authorization,
+      @Url String url, @Query("search") String query,
+      @Nullable @Query("limit") Integer limit);
 
-    // Url is: /api/{apiVersion}/room/{token}/pin
-    @POST
-    Observable<GenericOverall> addConversationToFavorites(@Header("Authorization") String authorization,
-                                                          @Url String url);
+  // Url is: /api/{apiVersion}/room/{token}/pin
+  @POST
+  Observable<GenericOverall> addConversationToFavorites(
+      @Header("Authorization") String authorization,
+      @Url String url);
 
-    // Url is: /api/{apiVersion}/room/{token}/favorites
-    @DELETE
-    Observable<GenericOverall> removeConversationFromFavorites(@Header("Authorization") String authorization,
-                                                               @Url String url);
+  // Url is: /api/{apiVersion}/room/{token}/favorites
+  @DELETE
+  Observable<GenericOverall> removeConversationFromFavorites(
+      @Header("Authorization") String authorization,
+      @Url String url);
 
-    @GET
-    Observable<NotificationOverall> getNotification(@Header("Authorization") String authorization,
-                                                    @Url String url);
+  @GET
+  Observable<NotificationOverall> getNotification(@Header("Authorization") String authorization,
+      @Url String url);
 
-    @FormUrlEncoded
-    @POST
-    Observable<GenericOverall> setNotificationLevel(@Header("Authorization") String authorization, @Url String url, @Field("level") int level);
+  @FormUrlEncoded
+  @POST
+  Observable<GenericOverall> setNotificationLevel(@Header("Authorization") String authorization,
+      @Url String url, @Field("level") int level);
 
-    @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> setReadOnlyState(@Header("Authorization") String authorization, @Url String url, @Field("viewState") int state);
+  @FormUrlEncoded
+  @PUT
+  Observable<GenericOverall> setReadOnlyState(@Header("Authorization") String authorization,
+      @Url String url, @Field("viewState") int state);
 
+  @FormUrlEncoded
+  @POST
+  Observable<Void> createRemoteShare(@Nullable @Header("Authorization") String authorization,
+      @Url String url,
+      @Field("path") String remotePath,
+      @Field("shareWith") String roomToken,
+      @Field("shareType") String shareType);
 
-    @FormUrlEncoded
-    @POST
-    Observable<Void> createRemoteShare(@Nullable @Header("Authorization") String authorization, @Url String url,
-                                       @Field("path") String remotePath,
-                                       @Field("shareWith") String roomToken,
-                                       @Field("shareType") String shareType);
-
-    @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> setLobbyForConversation(@Header("Authorization") String authorization,
-                                      @Url String url, @Field("viewState") Integer state,
-                                                       @Field("timer") Long timer);
-
+  @FormUrlEncoded
+  @PUT
+  Observable<GenericOverall> setLobbyForConversation(@Header("Authorization") String authorization,
+      @Url String url, @Field("viewState") Integer state,
+      @Field("timer") Long timer);
 }

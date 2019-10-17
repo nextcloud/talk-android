@@ -30,6 +30,6 @@ import org.parceler.Parcel;
 @Parcel
 @Data
 public class ServerHelloResponseFeaturesWebSocketMessage {
-    @JsonField(name = "features")
-    List<String> features;
+  @JsonField(name = "features")
+  List<String> features;
 }

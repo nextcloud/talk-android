@@ -28,6 +28,6 @@ import lombok.Data;
 @Data
 @JsonObject
 public class RoomOCS extends GenericOCS {
-    @JsonField(name = "data")
-    public Conversation data;
+  @JsonField(name = "data")
+  public Conversation data;
 }

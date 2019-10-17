@@ -30,6 +30,6 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class NotificationsCapability {
-    @JsonField(name = "ocs-endpoints")
-    List<String> features;
+  @JsonField(name = "ocs-endpoints")
+  List<String> features;
 }

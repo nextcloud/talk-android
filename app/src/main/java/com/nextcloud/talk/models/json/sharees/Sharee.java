@@ -29,12 +29,12 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class Sharee {
-    @JsonField(name = "id")
-    String id;
+  @JsonField(name = "id")
+  String id;
 
-    @JsonField(name = "value")
-    Value value;
+  @JsonField(name = "value")
+  Value value;
 
-    @JsonField(name = "label")
-    String label;
+  @JsonField(name = "label")
+  String label;
 }

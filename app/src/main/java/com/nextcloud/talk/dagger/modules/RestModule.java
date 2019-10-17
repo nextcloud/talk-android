@@ -73,250 +73,253 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 @Module(includes = DatabaseModule.class)
 public class RestModule {
 
-    private static final String TAG = "RestModule";
-    private final Context context;
+  private static final String TAG = "RestModule";
+  private final Context context;
 
-    public RestModule(Context context) {
-        this.context = context;
+  public RestModule(Context context) {
+    this.context = context;
+  }
+
+  @Singleton
+  @Provides
+  NcApi provideNcApi(Retrofit retrofit) {
+    return retrofit.create(NcApi.class);
+  }
+
+  @Singleton
+  @Provides
+  Proxy provideProxy(AppPreferences appPreferences) {
+    if (!TextUtils.isEmpty(appPreferences.getProxyType()) && !"No proxy".equals(
+        appPreferences.getProxyType())
+        && !TextUtils.isEmpty(appPreferences.getProxyHost())) {
+      GetProxyRunnable getProxyRunnable = new GetProxyRunnable(appPreferences);
+      Thread getProxyThread = new Thread(getProxyRunnable);
+      getProxyThread.start();
+      try {
+        getProxyThread.join();
+        return getProxyRunnable.getProxyValue();
+      } catch (InterruptedException e) {
+        Log.e(TAG, "Failed to join the thread while getting proxy: " + e.getLocalizedMessage());
+        return Proxy.NO_PROXY;
+      }
+    } else {
+      return Proxy.NO_PROXY;
+    }
+  }
+
+  @Singleton
+  @Provides
+  Retrofit provideRetrofit(OkHttpClient httpClient) {
+    Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
+        .client(httpClient)
+        .baseUrl("https://nextcloud.com")
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+        .addConverterFactory(LoganSquareConverterFactory.create());
+
+    return retrofitBuilder.build();
+  }
+
+  @Singleton
+  @Provides
+  MagicTrustManager provideMagicTrustManager() {
+    return new MagicTrustManager();
+  }
+
+  @Singleton
+  @Provides
+  MagicKeyManager provideKeyManager(AppPreferences appPreferences, UserUtils userUtils) {
+    KeyStore keyStore = null;
+    try {
+      keyStore = KeyStore.getInstance("AndroidKeyStore");
+      keyStore.load(null);
+      KeyManagerFactory kmf =
+          KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+      kmf.init(keyStore, null);
+      X509KeyManager origKm = (X509KeyManager) kmf.getKeyManagers()[0];
+      return new MagicKeyManager(origKm, userUtils, appPreferences);
+    } catch (KeyStoreException e) {
+      Log.e(TAG, "KeyStoreException " + e.getLocalizedMessage());
+    } catch (CertificateException e) {
+      Log.e(TAG, "CertificateException " + e.getLocalizedMessage());
+    } catch (NoSuchAlgorithmException e) {
+      Log.e(TAG, "NoSuchAlgorithmException " + e.getLocalizedMessage());
+    } catch (IOException e) {
+      Log.e(TAG, "IOException " + e.getLocalizedMessage());
+    } catch (UnrecoverableKeyException e) {
+      Log.e(TAG, "UnrecoverableKeyException " + e.getLocalizedMessage());
     }
 
-    @Singleton
-    @Provides
-    NcApi provideNcApi(Retrofit retrofit) {
-        return retrofit.create(NcApi.class);
+    return null;
+  }
+
+  @Singleton
+  @Provides
+  SSLSocketFactoryCompat provideSslSocketFactoryCompat(MagicKeyManager keyManager, MagicTrustManager
+      magicTrustManager) {
+    return new SSLSocketFactoryCompat(keyManager, magicTrustManager);
+  }
+
+  @Singleton
+  @Provides
+  CookieManager provideCookieManager() {
+    CookieManager cookieManager = new CookieManager();
+    cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_NONE);
+    return cookieManager;
+  }
+
+  @Singleton
+  @Provides
+  Cache provideCache() {
+    int cacheSize = 128 * 1024 * 1024; // 128 MB
+    return new Cache(NextcloudTalkApplication.Companion.getSharedApplication().getCacheDir(),
+        cacheSize);
+  }
+
+  @Singleton
+  @Provides
+  Dispatcher provideDispatcher() {
+    Dispatcher dispatcher = new Dispatcher();
+    dispatcher.setMaxRequestsPerHost(100);
+    dispatcher.setMaxRequests(100);
+    return dispatcher;
+  }
+
+  @Singleton
+  @Provides
+  OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
+      MagicTrustManager magicTrustManager,
+      SSLSocketFactoryCompat sslSocketFactoryCompat, Cache cache,
+      CookieManager cookieManager, Dispatcher dispatcher) {
+    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+    httpClient.retryOnConnectionFailure(true);
+    httpClient.connectTimeout(45, TimeUnit.SECONDS);
+    httpClient.readTimeout(45, TimeUnit.SECONDS);
+    httpClient.writeTimeout(45, TimeUnit.SECONDS);
+
+    httpClient.cookieJar(new JavaNetCookieJar(cookieManager));
+    httpClient.cache(cache);
+
+    // Trust own CA and all self-signed certs
+    httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager);
+    httpClient.retryOnConnectionFailure(true);
+    httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE));
+
+    httpClient.dispatcher(dispatcher);
+    if (!Proxy.NO_PROXY.equals(proxy)) {
+      httpClient.proxy(proxy);
+
+      if (appPreferences.getProxyCredentials() &&
+          !TextUtils.isEmpty(appPreferences.getProxyUsername()) &&
+          !TextUtils.isEmpty(appPreferences.getProxyPassword())) {
+        httpClient.proxyAuthenticator(new MagicAuthenticator(Credentials.basic(
+            appPreferences.getProxyUsername(),
+            appPreferences.getProxyPassword()), "Proxy-Authorization"));
+      }
     }
 
-    @Singleton
-    @Provides
-    Proxy provideProxy(AppPreferences appPreferences) {
-        if (!TextUtils.isEmpty(appPreferences.getProxyType()) && !"No proxy".equals(appPreferences.getProxyType())
-                && !TextUtils.isEmpty(appPreferences.getProxyHost())) {
-            GetProxyRunnable getProxyRunnable = new GetProxyRunnable(appPreferences);
-            Thread getProxyThread = new Thread(getProxyRunnable);
-            getProxyThread.start();
-            try {
-                getProxyThread.join();
-                return getProxyRunnable.getProxyValue();
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Failed to join the thread while getting proxy: " + e.getLocalizedMessage());
-                return Proxy.NO_PROXY;
-            }
-        } else {
-            return Proxy.NO_PROXY;
-        }
+    httpClient.addInterceptor(new HeadersInterceptor());
+
+    if (BuildConfig.DEBUG && !context.getResources().getBoolean(R.bool.nc_is_debug)) {
+      HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+      loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+      loggingInterceptor.redactHeader("Authorization");
+      loggingInterceptor.redactHeader("Proxy-Authorization");
+      httpClient.addInterceptor(loggingInterceptor);
+    } else if (context.getResources().getBoolean(R.bool.nc_is_debug)) {
+
+      HttpLoggingInterceptor.Logger fileLogger =
+          s -> LoggingUtils.INSTANCE.writeLogEntryToFile(context, s);
+      HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(fileLogger);
+      loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+      loggingInterceptor.redactHeader("Authorization");
+      loggingInterceptor.redactHeader("Proxy-Authorization");
+      httpClient.addInterceptor(loggingInterceptor);
     }
 
-    @Singleton
-    @Provides
-    Retrofit provideRetrofit(OkHttpClient httpClient) {
-        Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
-                .client(httpClient)
-                .baseUrl("https://nextcloud.com")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(LoganSquareConverterFactory.create());
+    return httpClient.build();
+  }
 
-        return retrofitBuilder.build();
+  public static class HeadersInterceptor implements Interceptor {
+
+    @NonNull
+    @Override
+    public Response intercept(@NonNull Chain chain) throws IOException {
+      Request original = chain.request();
+      Request request = original.newBuilder()
+          .header("User-Agent", ApiUtils.getUserAgent())
+          .header("Accept", "application/json")
+          .header("OCS-APIRequest", "true")
+          .method(original.method(), original.body())
+          .build();
+
+      Response response = chain.proceed(request);
+
+      if (request.url().encodedPath().contains("/avatar/")) {
+        AvatarStatusCodeHolder.getInstance().setStatusCode(response.code());
+      }
+
+      return response;
+    }
+  }
+
+  public static class MagicAuthenticator implements Authenticator {
+
+    private String credentials;
+    private String authenticatorType;
+
+    public MagicAuthenticator(@NonNull String credentials, @NonNull String authenticatorType) {
+      this.credentials = credentials;
+      this.authenticatorType = authenticatorType;
     }
 
-    @Singleton
-    @Provides
-    MagicTrustManager provideMagicTrustManager() {
-        return new MagicTrustManager();
-    }
-
-    @Singleton
-    @Provides
-    MagicKeyManager provideKeyManager(AppPreferences appPreferences, UserUtils userUtils) {
-        KeyStore keyStore = null;
-        try {
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
-            keyStore.load(null);
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            kmf.init(keyStore, null);
-            X509KeyManager origKm = (X509KeyManager) kmf.getKeyManagers()[0];
-            return new MagicKeyManager(origKm, userUtils, appPreferences);
-        } catch (KeyStoreException e) {
-            Log.e(TAG, "KeyStoreException " + e.getLocalizedMessage());
-        } catch (CertificateException e) {
-            Log.e(TAG, "CertificateException " + e.getLocalizedMessage());
-        } catch (NoSuchAlgorithmException e) {
-            Log.e(TAG, "NoSuchAlgorithmException " + e.getLocalizedMessage());
-        } catch (IOException e) {
-            Log.e(TAG, "IOException " + e.getLocalizedMessage());
-        } catch (UnrecoverableKeyException e) {
-            Log.e(TAG, "UnrecoverableKeyException " + e.getLocalizedMessage());
-        }
-
+    @Nullable
+    @Override
+    public Request authenticate(@Nullable Route route, @NonNull Response response) {
+      if (response.request().header(authenticatorType) != null) {
         return null;
-    }
+      }
 
-    @Singleton
-    @Provides
-    SSLSocketFactoryCompat provideSslSocketFactoryCompat(MagicKeyManager keyManager, MagicTrustManager
-            magicTrustManager) {
-        return new SSLSocketFactoryCompat(keyManager, magicTrustManager);
-    }
+      Response countedResponse = response;
 
-    @Singleton
-    @Provides
-    CookieManager provideCookieManager() {
-        CookieManager cookieManager = new CookieManager();
-        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_NONE);
-        return cookieManager;
-    }
+      int attemptsCount = 0;
 
-    @Singleton
-    @Provides
-    Cache provideCache() {
-        int cacheSize = 128 * 1024 * 1024; // 128 MB
-        return new Cache(NextcloudTalkApplication.Companion.getSharedApplication().getCacheDir(), cacheSize);
-    }
-
-    @Singleton
-    @Provides
-    Dispatcher provideDispatcher() {
-        Dispatcher dispatcher = new Dispatcher();
-        dispatcher.setMaxRequestsPerHost(100);
-        dispatcher.setMaxRequests(100);
-        return dispatcher;
-    }
-
-    @Singleton
-    @Provides
-    OkHttpClient provideHttpClient(Proxy proxy, AppPreferences appPreferences,
-                                   MagicTrustManager magicTrustManager,
-                                   SSLSocketFactoryCompat sslSocketFactoryCompat, Cache cache,
-                                   CookieManager cookieManager, Dispatcher dispatcher) {
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-        httpClient.retryOnConnectionFailure(true);
-        httpClient.connectTimeout(45, TimeUnit.SECONDS);
-        httpClient.readTimeout(45, TimeUnit.SECONDS);
-        httpClient.writeTimeout(45, TimeUnit.SECONDS);
-
-        httpClient.cookieJar(new JavaNetCookieJar(cookieManager));
-        httpClient.cache(cache);
-
-        // Trust own CA and all self-signed certs
-        httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager);
-        httpClient.retryOnConnectionFailure(true);
-        httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE));
-
-        httpClient.dispatcher(dispatcher);
-        if (!Proxy.NO_PROXY.equals(proxy)) {
-            httpClient.proxy(proxy);
-
-            if (appPreferences.getProxyCredentials() &&
-                    !TextUtils.isEmpty(appPreferences.getProxyUsername()) &&
-                    !TextUtils.isEmpty(appPreferences.getProxyPassword())) {
-                httpClient.proxyAuthenticator(new MagicAuthenticator(Credentials.basic(
-                        appPreferences.getProxyUsername(),
-                        appPreferences.getProxyPassword()), "Proxy-Authorization"));
-            }
+      while ((countedResponse = countedResponse.priorResponse()) != null) {
+        attemptsCount++;
+        if (attemptsCount == 3) {
+          return null;
         }
+      }
 
-        httpClient.addInterceptor(new HeadersInterceptor());
+      return response.request().newBuilder()
+          .header(authenticatorType, credentials)
+          .build();
+    }
+  }
 
-        if (BuildConfig.DEBUG && !context.getResources().getBoolean(R.bool.nc_is_debug)) {
-            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            loggingInterceptor.redactHeader("Authorization");
-            loggingInterceptor.redactHeader("Proxy-Authorization");
-            httpClient.addInterceptor(loggingInterceptor);
-        } else if (context.getResources().getBoolean(R.bool.nc_is_debug)) {
+  private class GetProxyRunnable implements Runnable {
+    private volatile Proxy proxy;
+    private AppPreferences appPreferences;
 
-            HttpLoggingInterceptor.Logger fileLogger =
-                    s -> LoggingUtils.INSTANCE.writeLogEntryToFile(context, s);
-            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(fileLogger);
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            loggingInterceptor.redactHeader("Authorization");
-            loggingInterceptor.redactHeader("Proxy-Authorization");
-            httpClient.addInterceptor(loggingInterceptor);
-        }
-
-        return httpClient.build();
+    GetProxyRunnable(AppPreferences appPreferences) {
+      this.appPreferences = appPreferences;
     }
 
-    public static class HeadersInterceptor implements Interceptor {
-
-        @NonNull
-        @Override
-        public Response intercept(@NonNull Chain chain) throws IOException {
-            Request original = chain.request();
-            Request request = original.newBuilder()
-                    .header("User-Agent", ApiUtils.getUserAgent())
-                    .header("Accept", "application/json")
-                    .header("OCS-APIRequest", "true")
-                    .method(original.method(), original.body())
-                    .build();
-
-            Response response = chain.proceed(request);
-
-            if (request.url().encodedPath().contains("/avatar/")) {
-                AvatarStatusCodeHolder.getInstance().setStatusCode(response.code());
-            }
-
-            return response;
-        }
+    @Override
+    public void run() {
+      if (Proxy.Type.SOCKS.equals(Proxy.Type.valueOf(appPreferences.getProxyType()))) {
+        proxy = new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
+            InetSocketAddress.createUnresolved(appPreferences.getProxyHost(), Integer.parseInt(
+                appPreferences.getProxyPort())));
+      } else {
+        proxy = new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
+            new InetSocketAddress(appPreferences.getProxyHost(),
+                Integer.parseInt(appPreferences.getProxyPort())));
+      }
     }
 
-    public static class MagicAuthenticator implements Authenticator {
-
-        private String credentials;
-        private String authenticatorType;
-
-        public MagicAuthenticator(@NonNull String credentials, @NonNull String authenticatorType) {
-            this.credentials = credentials;
-            this.authenticatorType = authenticatorType;
-        }
-
-        @Nullable
-        @Override
-        public Request authenticate(@Nullable Route route, @NonNull Response response) {
-            if (response.request().header(authenticatorType) != null) {
-                return null;
-            }
-
-            Response countedResponse = response;
-
-            int attemptsCount = 0;
-
-            while ((countedResponse = countedResponse.priorResponse()) != null) {
-                attemptsCount++;
-                if (attemptsCount == 3) {
-                    return null;
-                }
-            }
-
-            return response.request().newBuilder()
-                    .header(authenticatorType, credentials)
-                    .build();
-        }
+    Proxy getProxyValue() {
+      return proxy;
     }
-
-    private class GetProxyRunnable implements Runnable {
-        private volatile Proxy proxy;
-        private AppPreferences appPreferences;
-
-        GetProxyRunnable(AppPreferences appPreferences) {
-            this.appPreferences = appPreferences;
-        }
-
-        @Override
-        public void run() {
-            if (Proxy.Type.SOCKS.equals(Proxy.Type.valueOf(appPreferences.getProxyType()))) {
-                proxy = new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
-                        InetSocketAddress.createUnresolved(appPreferences.getProxyHost(), Integer.parseInt(
-                                appPreferences.getProxyPort())));
-            } else {
-                proxy = new Proxy(Proxy.Type.valueOf(appPreferences.getProxyType()),
-                        new InetSocketAddress(appPreferences.getProxyHost(),
-                                Integer.parseInt(appPreferences.getProxyPort())));
-            }
-        }
-
-        Proxy getProxyValue() {
-            return proxy;
-        }
-    }
+  }
 }

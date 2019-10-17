@@ -29,12 +29,12 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class ActorWebSocketMessage {
-    @JsonField(name = "type")
-    String type;
+  @JsonField(name = "type")
+  String type;
 
-    @JsonField(name = "sessionid")
-    String sessionId;
+  @JsonField(name = "sessionid")
+  String sessionId;
 
-    @JsonField(name = "userid")
-    String userid;
+  @JsonField(name = "userid")
+  String userid;
 }

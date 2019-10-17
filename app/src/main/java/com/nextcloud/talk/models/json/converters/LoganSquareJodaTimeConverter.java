@@ -28,26 +28,27 @@ import org.joda.time.DateTime;
 
 public class LoganSquareJodaTimeConverter implements TypeConverter<DateTime> {
 
-    @Override
-    public DateTime parse(JsonParser jsonParser) throws IOException {
-        final String dateString = jsonParser.getValueAsString();
-        if (dateString == null) {
-            return null;
-        }
-        try {
-            return DateTime.parse(dateString);
-        } catch (final RuntimeException exception) {
-            Log.e("NC", exception.getLocalizedMessage());
-        }
-        return null;
+  @Override
+  public DateTime parse(JsonParser jsonParser) throws IOException {
+    final String dateString = jsonParser.getValueAsString();
+    if (dateString == null) {
+      return null;
     }
+    try {
+      return DateTime.parse(dateString);
+    } catch (final RuntimeException exception) {
+      Log.e("NC", exception.getLocalizedMessage());
+    }
+    return null;
+  }
 
-    @Override
-    public void serialize(DateTime object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
-        if (fieldName != null) {
-            jsonGenerator.writeStringField(fieldName, object != null ? object.toString() : null);
-        } else {
-            jsonGenerator.writeString(object != null ? object.toString() : null);
-        }
+  @Override
+  public void serialize(DateTime object, String fieldName, boolean writeFieldNameForObject,
+      JsonGenerator jsonGenerator) throws IOException {
+    if (fieldName != null) {
+      jsonGenerator.writeStringField(fieldName, object != null ? object.toString() : null);
+    } else {
+      jsonGenerator.writeString(object != null ? object.toString() : null);
     }
+  }
 }

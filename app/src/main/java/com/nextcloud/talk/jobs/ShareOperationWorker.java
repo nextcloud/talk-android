@@ -42,63 +42,64 @@ import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ShareOperationWorker extends Worker {
-    @Inject
-    UserUtils userUtils;
-    @Inject
-    NcApi ncApi;
-    private long userId;
-    private UserEntity operationsUser;
-    private String roomToken;
-    private List<String> filesArray = new ArrayList<>();
-    private String credentials;
-    private String baseUrl;
+  @Inject
+  UserUtils userUtils;
+  @Inject
+  NcApi ncApi;
+  private long userId;
+  private UserEntity operationsUser;
+  private String roomToken;
+  private List<String> filesArray = new ArrayList<>();
+  private String credentials;
+  private String baseUrl;
 
-    public ShareOperationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        Data data = workerParams.getInputData();
-        userId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), 0);
-        roomToken = data.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());
-        Collections.addAll(filesArray, data.getStringArray(BundleKeys.INSTANCE.getKEY_FILE_PATHS()));
-        operationsUser = userUtils.getUserWithId(userId);
-        credentials = ApiUtils.getCredentials(operationsUser.getUsername(), operationsUser.getToken());
-        baseUrl = operationsUser.getBaseUrl();
+  public ShareOperationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+    super(context, workerParams);
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
+    Data data = workerParams.getInputData();
+    userId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), 0);
+    roomToken = data.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());
+    Collections.addAll(filesArray, data.getStringArray(BundleKeys.INSTANCE.getKEY_FILE_PATHS()));
+    operationsUser = userUtils.getUserWithId(userId);
+    credentials = ApiUtils.getCredentials(operationsUser.getUsername(), operationsUser.getToken());
+    baseUrl = operationsUser.getBaseUrl();
+  }
+
+  @NonNull
+  @Override
+  public Result doWork() {
+    for (int i = 0; i < filesArray.size(); i++) {
+      ncApi.createRemoteShare(credentials,
+          ApiUtils.getSharingUrl(baseUrl),
+          filesArray.get(i),
+          roomToken,
+          "10")
+          .subscribeOn(Schedulers.io())
+          .blockingSubscribe(new Observer<Void>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+          });
     }
 
-
-    @NonNull
-    @Override
-    public Result doWork() {
-        for (int i = 0; i < filesArray.size(); i++) {
-            ncApi.createRemoteShare(credentials,
-                    ApiUtils.getSharingUrl(baseUrl),
-                    filesArray.get(i),
-                    roomToken,
-                    "10")
-                    .subscribeOn(Schedulers.io())
-                    .blockingSubscribe(new Observer<Void>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(Void aVoid) {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        }
-
-        return Result.success();
-    }
+    return Result.success();
+  }
 }

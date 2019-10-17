@@ -28,12 +28,12 @@ import java.io.Serializable;
 
 @Entity
 public interface ArbitraryStorage extends Parcelable, Persistable, Serializable {
-    @Key
-    long getAccountIdentifier();
+  @Key
+  long getAccountIdentifier();
 
-    String getKey();
+  String getKey();
 
-    String getObject();
+  String getObject();
 
-    String getValue();
+  String getValue();
 }

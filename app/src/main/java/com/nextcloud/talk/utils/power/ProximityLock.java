@@ -27,38 +27,39 @@ import androidx.annotation.RequiresApi;
 import java.util.Optional;
 
 class ProximityLock {
-    private final Optional<PowerManager.WakeLock> proximityLock;
+  private final Optional<PowerManager.WakeLock> proximityLock;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    ProximityLock(PowerManager pm) {
-        proximityLock = getProximityLock(pm);
+  @RequiresApi(api = Build.VERSION_CODES.N) ProximityLock(PowerManager pm) {
+    proximityLock = getProximityLock(pm);
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.N)
+  private Optional<PowerManager.WakeLock> getProximityLock(PowerManager powerManager) {
+    if (powerManager.isWakeLockLevelSupported(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK)) {
+      return Optional.ofNullable(
+          powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK,
+              "nctalk:proximitylock"));
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  @SuppressLint("WakelockTimeout")
+  @RequiresApi(api = Build.VERSION_CODES.N)
+  void acquire() {
+    if (!proximityLock.isPresent() || proximityLock.get().isHeld()) {
+      return;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private Optional<PowerManager.WakeLock> getProximityLock(PowerManager powerManager) {
-        if (powerManager.isWakeLockLevelSupported(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK)) {
-            return Optional.ofNullable(powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, "nctalk:proximitylock"));
-        } else {
-            return Optional.empty();
-        }
+    proximityLock.get().acquire();
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.N)
+  void release() {
+    if (!proximityLock.isPresent() || !proximityLock.get().isHeld()) {
+      return;
     }
 
-    @SuppressLint("WakelockTimeout")
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    void acquire() {
-        if (!proximityLock.isPresent() || proximityLock.get().isHeld()) {
-            return;
-        }
-
-        proximityLock.get().acquire();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    void release() {
-        if (!proximityLock.isPresent() || !proximityLock.get().isHeld()) {
-            return;
-        }
-
-        proximityLock.get().release(PowerManager.RELEASE_FLAG_WAIT_FOR_NO_PROXIMITY);
-    }
+    proximityLock.get().release(PowerManager.RELEASE_FLAG_WAIT_FOR_NO_PROXIMITY);
+  }
 }

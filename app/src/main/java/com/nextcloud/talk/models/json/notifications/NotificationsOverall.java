@@ -26,6 +26,6 @@ import lombok.Data;
 @Data
 @JsonObject
 public class NotificationsOverall {
-    @JsonField(name = "ocs")
-    NotificationsOCS ocs;
+  @JsonField(name = "ocs")
+  NotificationsOCS ocs;
 }

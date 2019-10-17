@@ -25,17 +25,16 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.yarolegovich.mp.io.StorageModule;
 
 public class DatabaseStorageFactory implements StorageModule.Factory {
-    private UserEntity conversationUser;
-    private String conversationToken;
+  private UserEntity conversationUser;
+  private String conversationToken;
 
+  public DatabaseStorageFactory(UserEntity conversationUser, String conversationToken) {
+    this.conversationUser = conversationUser;
+    this.conversationToken = conversationToken;
+  }
 
-    public DatabaseStorageFactory(UserEntity conversationUser, String conversationToken) {
-        this.conversationUser = conversationUser;
-        this.conversationToken = conversationToken;
-    }
-
-    @Override
-    public StorageModule create(Context context) {
-        return new DatabaseStorageModule(conversationUser, conversationToken);
-    }
+  @Override
+  public StorageModule create(Context context) {
+    return new DatabaseStorageModule(conversationUser, conversationToken);
+  }
 }

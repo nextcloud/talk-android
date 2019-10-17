@@ -27,19 +27,19 @@ import androidx.work.WorkerParameters;
 import com.nextcloud.talk.utils.PushUtils;
 
 public class PushRegistrationWorker extends Worker {
-    public static final String TAG = "PushRegistrationWorker";
+  public static final String TAG = "PushRegistrationWorker";
 
-    public PushRegistrationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
-    }
+  public PushRegistrationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+    super(context, workerParams);
+  }
 
-    @NonNull
-    @Override
-    public Result doWork() {
-        PushUtils pushUtils = new PushUtils();
-        pushUtils.generateRsa2048KeyPair();
-        pushUtils.pushRegistrationToServer();
+  @NonNull
+  @Override
+  public Result doWork() {
+    PushUtils pushUtils = new PushUtils();
+    pushUtils.generateRsa2048KeyPair();
+    pushUtils.pushRegistrationToServer();
 
-        return Result.success();
-    }
+    return Result.success();
+  }
 }

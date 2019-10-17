@@ -29,6 +29,6 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class RequestOfferOverallWebSocketMessage extends BaseWebSocketMessage {
-    @JsonField(name = "message")
-    RequestOfferSignalingMessage requestOfferOverallWebSocketMessage;
+  @JsonField(name = "message")
+  RequestOfferSignalingMessage requestOfferOverallWebSocketMessage;
 }

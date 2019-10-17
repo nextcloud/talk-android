@@ -33,34 +33,34 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class Notification {
-    @JsonField(name = "icon")
-    public String icon;
-    @JsonField(name = "notification_id")
-    int notificationId;
-    @JsonField(name = "app")
-    String app;
-    @JsonField(name = "user")
-    String user;
-    @JsonField(name = "datetime", typeConverter = LoganSquareJodaTimeConverter.class)
-    DateTime datetime;
-    @JsonField(name = "object_type")
-    String objectType;
-    @JsonField(name = "object_id")
-    String objectId;
-    @JsonField(name = "subject")
-    String subject;
-    @JsonField(name = "subjectRich")
-    String subjectRich;
-    @JsonField(name = "subjectRichParameters")
-    HashMap<String, HashMap<String, String>> subjectRichParameters;
-    @JsonField(name = "message")
-    String message;
-    @JsonField(name = "messageRich")
-    String messageRich;
-    @JsonField(name = "messageRichParameters")
-    HashMap<String, HashMap<String, String>> messageRichParameters;
-    @JsonField(name = "link")
-    String link;
-    @JsonField(name = "actions")
-    List<NotificationAction> actions;
+  @JsonField(name = "icon")
+  public String icon;
+  @JsonField(name = "notification_id")
+  int notificationId;
+  @JsonField(name = "app")
+  String app;
+  @JsonField(name = "user")
+  String user;
+  @JsonField(name = "datetime", typeConverter = LoganSquareJodaTimeConverter.class)
+  DateTime datetime;
+  @JsonField(name = "object_type")
+  String objectType;
+  @JsonField(name = "object_id")
+  String objectId;
+  @JsonField(name = "subject")
+  String subject;
+  @JsonField(name = "subjectRich")
+  String subjectRich;
+  @JsonField(name = "subjectRichParameters")
+  HashMap<String, HashMap<String, String>> subjectRichParameters;
+  @JsonField(name = "message")
+  String message;
+  @JsonField(name = "messageRich")
+  String messageRich;
+  @JsonField(name = "messageRichParameters")
+  HashMap<String, HashMap<String, String>> messageRichParameters;
+  @JsonField(name = "link")
+  String link;
+  @JsonField(name = "actions")
+  List<NotificationAction> actions;
 }

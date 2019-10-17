@@ -28,6 +28,6 @@ import lombok.Data;
 @Data
 @JsonObject
 public class AddParticipantOverall {
-    @JsonField(name = "ocs")
-    RoomsOCS ocs;
+  @JsonField(name = "ocs")
+  RoomsOCS ocs;
 }

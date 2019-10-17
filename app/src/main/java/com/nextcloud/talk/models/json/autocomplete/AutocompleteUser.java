@@ -29,12 +29,12 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class AutocompleteUser {
-    @JsonField(name = "id")
-    String id;
+  @JsonField(name = "id")
+  String id;
 
-    @JsonField(name = "label")
-    String label;
+  @JsonField(name = "label")
+  String label;
 
-    @JsonField(name = "source")
-    String source;
+  @JsonField(name = "source")
+  String source;
 }

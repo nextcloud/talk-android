@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.models;
 
-
 import com.nextcloud.talk.models.database.UserEntity;
 import lombok.Data;
 import org.parceler.Parcel;
@@ -28,6 +27,6 @@ import org.parceler.Parcel;
 @Data
 @Parcel
 public class SignatureVerification {
-    boolean signatureValid;
-    UserEntity userEntity;
+  boolean signatureValid;
+  UserEntity userEntity;
 }

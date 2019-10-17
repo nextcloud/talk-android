@@ -29,6 +29,6 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class RoomsOverall {
-    @JsonField(name = "ocs")
-    public RoomsOCS ocs;
+  @JsonField(name = "ocs")
+  public RoomsOCS ocs;
 }

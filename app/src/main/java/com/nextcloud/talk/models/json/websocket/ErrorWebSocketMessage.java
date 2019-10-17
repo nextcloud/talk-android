@@ -29,9 +29,9 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class ErrorWebSocketMessage {
-    @JsonField(name = "code")
-    String code;
+  @JsonField(name = "code")
+  String code;
 
-    @JsonField(name = "message")
-    String message;
+  @JsonField(name = "message")
+  String message;
 }

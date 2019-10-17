@@ -29,6 +29,6 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class GenericOverall {
-    @JsonField(name = "ocs")
-    public GenericOCS ocs;
+  @JsonField(name = "ocs")
+  public GenericOCS ocs;
 }

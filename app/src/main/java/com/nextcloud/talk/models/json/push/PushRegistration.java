@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.models.json.push;
 
-
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import lombok.Data;
@@ -30,13 +29,13 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class PushRegistration {
-    @JsonField(name = "publicKey")
-    String publicKey;
+  @JsonField(name = "publicKey")
+  String publicKey;
 
-    @JsonField(name = "deviceIdentifier")
-    String deviceIdentifier;
+  @JsonField(name = "deviceIdentifier")
+  String deviceIdentifier;
 
-    @JsonField(name = "signature")
-    String signature;
+  @JsonField(name = "signature")
+  String signature;
 }
 

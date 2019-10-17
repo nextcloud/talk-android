@@ -30,12 +30,12 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class CallWebSocketMessage {
-    @JsonField(name = "recipient")
-    ActorWebSocketMessage recipientWebSocketMessage;
+  @JsonField(name = "recipient")
+  ActorWebSocketMessage recipientWebSocketMessage;
 
-    @JsonField(name = "sender")
-    ActorWebSocketMessage senderWebSocketMessage;
+  @JsonField(name = "sender")
+  ActorWebSocketMessage senderWebSocketMessage;
 
-    @JsonField(name = "data")
-    NCSignalingMessage ncSignalingMessage;
+  @JsonField(name = "data")
+  NCSignalingMessage ncSignalingMessage;
 }

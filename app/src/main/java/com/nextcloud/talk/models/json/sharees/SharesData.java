@@ -30,10 +30,9 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class SharesData {
-    @JsonField(name = "users")
-    List<Sharee> users;
+  @JsonField(name = "users")
+  List<Sharee> users;
 
-    @JsonField(name = "exact")
-    ExactSharees exactUsers;
-
+  @JsonField(name = "exact")
+  ExactSharees exactUsers;
 }

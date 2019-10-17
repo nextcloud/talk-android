@@ -28,11 +28,11 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -50,114 +50,116 @@ import retrofit2.Retrofit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CapabilitiesWorker extends Worker {
-    public static final String TAG = "CapabilitiesWorker";
+  public static final String TAG = "CapabilitiesWorker";
 
-    @Inject
-    UserUtils userUtils;
+  @Inject
+  UserUtils userUtils;
 
-    @Inject
-    Retrofit retrofit;
+  @Inject
+  Retrofit retrofit;
 
-    @Inject
-    EventBus eventBus;
+  @Inject
+  EventBus eventBus;
 
-    @Inject
-    OkHttpClient okHttpClient;
+  @Inject
+  OkHttpClient okHttpClient;
 
-    NcApi ncApi;
+  NcApi ncApi;
 
-    public CapabilitiesWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
+  public CapabilitiesWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+    super(context, workerParams);
+  }
 
+  private void updateUser(CapabilitiesOverall capabilitiesOverall, UserEntity internalUserEntity) {
+    try {
+      userUtils.createOrUpdateUser(null, null,
+          null, null,
+          null, null, null, internalUserEntity.getId(),
+          LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()), null,
+          null)
+          .blockingSubscribe(new Observer<UserEntity>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(UserEntity userEntity) {
+              eventBus.post(new EventStatus(userEntity.getId(),
+                  EventStatus.EventType.CAPABILITIES_FETCH, true));
+            }
+
+            @Override
+            public void onError(Throwable e) {
+              eventBus.post(new EventStatus(internalUserEntity.getId(),
+                  EventStatus.EventType.CAPABILITIES_FETCH, false));
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+          });
+    } catch (IOException e) {
+      Log.e(TAG, "Failed to create or update user");
+    }
+  }
+
+  @NonNull
+  @Override
+  public Result doWork() {
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
+
+    Data data = getInputData();
+
+    long internalUserId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1);
+
+    UserEntity userEntity;
+    List userEntityObjectList = new ArrayList();
+
+    if (internalUserId == -1
+        || (userEntity = userUtils.getUserWithInternalId(internalUserId)) == null) {
+      userEntityObjectList = userUtils.getUsers();
+    } else {
+      userEntityObjectList.add(userEntity);
     }
 
-    private void updateUser(CapabilitiesOverall capabilitiesOverall, UserEntity internalUserEntity) {
-        try {
-            userUtils.createOrUpdateUser(null, null,
-                    null, null,
-                    null, null, null, internalUserEntity.getId(),
-                    LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()), null, null)
-                    .blockingSubscribe(new Observer<UserEntity>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+    for (Object userEntityObject : userEntityObjectList) {
+      UserEntity internalUserEntity = (UserEntity) userEntityObject;
 
-                        }
+      ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
+          JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
-                        @Override
-                        public void onNext(UserEntity userEntity) {
-                            eventBus.post(new EventStatus(userEntity.getId(),
-                                    EventStatus.EventType.CAPABILITIES_FETCH, true));
-                        }
+      ncApi.getCapabilities(ApiUtils.getCredentials(internalUserEntity.getUsername(),
+          internalUserEntity.getToken()),
+          ApiUtils.getUrlForCapabilities(internalUserEntity.getBaseUrl()))
+          .retry(3)
+          .blockingSubscribe(new Observer<CapabilitiesOverall>() {
+            @Override
+            public void onSubscribe(Disposable d) {
 
-                        @Override
-                        public void onError(Throwable e) {
-                            eventBus.post(new EventStatus(internalUserEntity.getId(),
-                                    EventStatus.EventType.CAPABILITIES_FETCH, false));
-                        }
+            }
 
-                        @Override
-                        public void onComplete() {
+            @Override
+            public void onNext(CapabilitiesOverall capabilitiesOverall) {
+              updateUser(capabilitiesOverall, internalUserEntity);
+            }
 
-                        }
-                    });
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to create or update user");
-        }
+            @Override
+            public void onError(Throwable e) {
+              eventBus.post(new EventStatus(internalUserEntity.getId(),
+                  EventStatus.EventType.CAPABILITIES_FETCH, false));
+            }
 
+            @Override
+            public void onComplete() {
+
+            }
+          });
     }
 
-    @NonNull
-    @Override
-    public Result doWork() {
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-
-        Data data = getInputData();
-
-        long internalUserId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1);
-
-        UserEntity userEntity;
-        List userEntityObjectList = new ArrayList();
-
-        if (internalUserId == -1 || (userEntity = userUtils.getUserWithInternalId(internalUserId)) == null) {
-            userEntityObjectList = userUtils.getUsers();
-        } else {
-            userEntityObjectList.add(userEntity);
-        }
-
-        for (Object userEntityObject : userEntityObjectList) {
-            UserEntity internalUserEntity = (UserEntity) userEntityObject;
-
-            ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
-                    JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
-
-            ncApi.getCapabilities(ApiUtils.getCredentials(internalUserEntity.getUsername(),
-                    internalUserEntity.getToken()), ApiUtils.getUrlForCapabilities(internalUserEntity.getBaseUrl()))
-                    .retry(3)
-                    .blockingSubscribe(new Observer<CapabilitiesOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(CapabilitiesOverall capabilitiesOverall) {
-                            updateUser(capabilitiesOverall, internalUserEntity);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            eventBus.post(new EventStatus(internalUserEntity.getId(),
-                                    EventStatus.EventType.CAPABILITIES_FETCH, false));
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        }
-
-        return Result.success();
-    }
+    return Result.success();
+  }
 }

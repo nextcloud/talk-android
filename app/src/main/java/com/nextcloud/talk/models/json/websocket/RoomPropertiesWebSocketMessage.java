@@ -31,9 +31,9 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class RoomPropertiesWebSocketMessage {
-    @JsonField(name = "name")
-    String name;
+  @JsonField(name = "name")
+  String name;
 
-    @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
-    Conversation.ConversationType roomType;
+  @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
+  Conversation.ConversationType roomType;
 }

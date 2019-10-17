@@ -27,14 +27,14 @@ import dagger.Provides;
 
 @Module
 public class ContextModule {
-    private final Context context;
+  private final Context context;
 
-    public ContextModule(@NonNull final Context context) {
-        this.context = context;
-    }
+  public ContextModule(@NonNull final Context context) {
+    this.context = context;
+  }
 
-    @Provides
-    public Context provideContext() {
-        return context;
-    }
+  @Provides
+  public Context provideContext() {
+    return context;
+  }
 }

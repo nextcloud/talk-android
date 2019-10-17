@@ -39,25 +39,26 @@ import net.orange_box.storebox.StoreBox;
 @Module
 public class DatabaseModule {
 
-    @Provides
-    @Singleton
-    public SqlCipherDatabaseSource provideSqlCipherDatabaseSource(@NonNull final Context context) {
-        return new SqlCipherDatabaseSource(context, Models.DEFAULT,
-                context.getResources().getString(R.string.nc_app_name).toLowerCase()
-                        .replace(" ", "_").trim() + ".sqlite",
-                context.getString(R.string.nc_talk_database_encryption_key), 6);
-    }
+  @Provides
+  @Singleton
+  public SqlCipherDatabaseSource provideSqlCipherDatabaseSource(@NonNull final Context context) {
+    return new SqlCipherDatabaseSource(context, Models.DEFAULT,
+        context.getResources().getString(R.string.nc_app_name).toLowerCase()
+            .replace(" ", "_").trim() + ".sqlite",
+        context.getString(R.string.nc_talk_database_encryption_key), 6);
+  }
 
-    @Provides
-    @Singleton
-    public ReactiveEntityStore<Persistable> provideDataStore(@NonNull final SqlCipherDatabaseSource sqlCipherDatabaseSource) {
-        final Configuration configuration = sqlCipherDatabaseSource.getConfiguration();
-        return ReactiveSupport.toReactiveStore(new EntityDataStore<Persistable>(configuration));
-    }
+  @Provides
+  @Singleton
+  public ReactiveEntityStore<Persistable> provideDataStore(
+      @NonNull final SqlCipherDatabaseSource sqlCipherDatabaseSource) {
+    final Configuration configuration = sqlCipherDatabaseSource.getConfiguration();
+    return ReactiveSupport.toReactiveStore(new EntityDataStore<Persistable>(configuration));
+  }
 
-    @Provides
-    @Singleton
-    public AppPreferences providePreferences(@NonNull final Context poContext) {
-        return StoreBox.create(poContext, AppPreferences.class);
-    }
+  @Provides
+  @Singleton
+  public AppPreferences providePreferences(@NonNull final Context poContext) {
+    return StoreBox.create(poContext, AppPreferences.class);
+  }
 }

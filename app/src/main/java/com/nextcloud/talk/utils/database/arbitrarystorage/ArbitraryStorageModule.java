@@ -32,12 +32,13 @@ import javax.inject.Inject;
 @AutoInjector(NextcloudTalkApplication.class)
 public class ArbitraryStorageModule {
 
-    @Inject
-    public ArbitraryStorageModule() {
-    }
+  @Inject
+  public ArbitraryStorageModule() {
+  }
 
-    @Provides
-    public ArbitraryStorageUtils provideArbitraryStorageUtils(ReactiveEntityStore<Persistable> dataStore) {
-        return new ArbitraryStorageUtils(dataStore);
-    }
+  @Provides
+  public ArbitraryStorageUtils provideArbitraryStorageUtils(
+      ReactiveEntityStore<Persistable> dataStore) {
+    return new ArbitraryStorageUtils(dataStore);
+  }
 }

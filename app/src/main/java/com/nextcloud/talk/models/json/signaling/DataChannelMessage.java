@@ -29,17 +29,17 @@ import org.parceler.ParcelPropertyConverter;
 @Data
 @JsonObject
 public class DataChannelMessage {
-    @JsonField(name = "type")
-    String type;
+  @JsonField(name = "type")
+  String type;
 
-    @ParcelPropertyConverter(ObjectParcelConverter.class)
-    @JsonField(name = "payload")
-    Object payload;
+  @ParcelPropertyConverter(ObjectParcelConverter.class)
+  @JsonField(name = "payload")
+  Object payload;
 
-    public DataChannelMessage(String type) {
-        this.type = type;
-    }
+  public DataChannelMessage(String type) {
+    this.type = type;
+  }
 
-    public DataChannelMessage() {
-    }
+  public DataChannelMessage() {
+  }
 }

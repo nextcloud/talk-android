@@ -45,233 +45,269 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class ChatMessage implements IMessage, MessageContentType, MessageContentType.Image {
-    @JsonIgnore
-    public boolean isGrouped;
-    @JsonIgnore
-    public boolean isOneToOneConversation;
-    @JsonIgnore
-    public UserEntity activeUser;
-    @JsonIgnore
-    public Map<String, String> selectedIndividualHashMap;
-    @JsonIgnore
-    public boolean isLinkPreviewAllowed;
-    List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
-            MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
-            MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
-    @JsonField(name = "id")
-    public int jsonMessageId;
-    @JsonField(name = "token")
-    public String token;
-    // guests or users
-    @JsonField(name = "actorType")
-    public String actorType;
-    @JsonField(name = "actorId")
-    public String actorId;
-    // send when crafting a message
-    @JsonField(name = "actorDisplayName")
-    public String actorDisplayName;
-    @JsonField(name = "timestamp")
-    public long timestamp;
-    // send when crafting a message, max 1000 lines
-    @JsonField(name = "message")
-    public String message;
-    @JsonField(name = "messageParameters")
-    public HashMap<String, HashMap<String, String>> messageParameters;
-    @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
-    public SystemMessageType systemMessageType;
+  @JsonIgnore
+  public boolean isGrouped;
+  @JsonIgnore
+  public boolean isOneToOneConversation;
+  @JsonIgnore
+  public UserEntity activeUser;
+  @JsonIgnore
+  public Map<String, String> selectedIndividualHashMap;
+  @JsonIgnore
+  public boolean isLinkPreviewAllowed;
+  @JsonField(name = "id")
+  public int jsonMessageId;
+  @JsonField(name = "token")
+  public String token;
+  // guests or users
+  @JsonField(name = "actorType")
+  public String actorType;
+  @JsonField(name = "actorId")
+  public String actorId;
+  // send when crafting a message
+  @JsonField(name = "actorDisplayName")
+  public String actorDisplayName;
+  @JsonField(name = "timestamp")
+  public long timestamp;
+  // send when crafting a message, max 1000 lines
+  @JsonField(name = "message")
+  public String message;
+  @JsonField(name = "messageParameters")
+  public HashMap<String, HashMap<String, String>> messageParameters;
+  @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
+  public SystemMessageType systemMessageType;
+  List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
+      MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
+      MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
 
-    private boolean hasFileAttachment() {
-        if (messageParameters != null && messageParameters.size() > 0) {
-            for (String key : messageParameters.keySet()) {
-                Map<String, String> individualHashMap = messageParameters.get(key);
-                if (individualHashMap.get("type").equals("file")) {
-                    return true;
-                }
-            }
+  private boolean hasFileAttachment() {
+    if (messageParameters != null && messageParameters.size() > 0) {
+      for (String key : messageParameters.keySet()) {
+        Map<String, String> individualHashMap = messageParameters.get(key);
+        if (individualHashMap.get("type").equals("file")) {
+          return true;
         }
-
-        return false;
+      }
     }
 
-    @Nullable
-    @Override
-    public String getImageUrl() {
-        if (messageParameters != null && messageParameters.size() > 0) {
-            for (String key : messageParameters.keySet()) {
-                Map<String, String> individualHashMap = messageParameters.get(key);
-                if (individualHashMap.get("type").equals("file")) {
-                    selectedIndividualHashMap = individualHashMap;
-                    return (ApiUtils.getUrlForFilePreviewWithFileId(getActiveUser().getBaseUrl(),
-                            individualHashMap.get("id"), NextcloudTalkApplication.Companion.getSharedApplication().getResources().getDimensionPixelSize(R.dimen.maximum_file_preview_size)));
-                }
-            }
+    return false;
+  }
+
+  @Nullable
+  @Override
+  public String getImageUrl() {
+    if (messageParameters != null && messageParameters.size() > 0) {
+      for (String key : messageParameters.keySet()) {
+        Map<String, String> individualHashMap = messageParameters.get(key);
+        if (individualHashMap.get("type").equals("file")) {
+          selectedIndividualHashMap = individualHashMap;
+          return (ApiUtils.getUrlForFilePreviewWithFileId(getActiveUser().getBaseUrl(),
+              individualHashMap.get("id"), NextcloudTalkApplication.Companion.getSharedApplication()
+                  .getResources()
+                  .getDimensionPixelSize(R.dimen.maximum_file_preview_size)));
         }
-
-        if (!messageTypesToIgnore.contains(getMessageType()) && isLinkPreviewAllowed) {
-            return getMessage().trim();
-        }
-
-        return null;
+      }
     }
 
-    public MessageType getMessageType() {
-        if (!TextUtils.isEmpty(getSystemMessage())) {
-            return MessageType.SYSTEM_MESSAGE;
-        }
-
-        if (hasFileAttachment()) {
-            return MessageType.SINGLE_NC_ATTACHMENT_MESSAGE;
-        }
-
-        return TextMatchers.getMessageTypeFromString(getText());
+    if (!messageTypesToIgnore.contains(getMessageType()) && isLinkPreviewAllowed) {
+      return getMessage().trim();
     }
 
-    public Map<String, String> getSelectedIndividualHashMap() {
-        return selectedIndividualHashMap;
+    return null;
+  }
+
+  public MessageType getMessageType() {
+    if (!TextUtils.isEmpty(getSystemMessage())) {
+      return MessageType.SYSTEM_MESSAGE;
     }
 
-    public void setSelectedIndividualHashMap(Map<String, String> selectedIndividualHashMap) {
-        this.selectedIndividualHashMap = selectedIndividualHashMap;
+    if (hasFileAttachment()) {
+      return MessageType.SINGLE_NC_ATTACHMENT_MESSAGE;
     }
 
-    @Override
-    public String getId() {
-        return Integer.toString(jsonMessageId);
-    }
+    return TextMatchers.getMessageTypeFromString(getText());
+  }
 
-    @Override
-    public String getText() {
-        return ChatUtils.getParsedMessage(getMessage(), getMessageParameters());
-    }
+  public Map<String, String> getSelectedIndividualHashMap() {
+    return selectedIndividualHashMap;
+  }
 
-    public String getLastMessageDisplayText() {
-        if (getMessageType().equals(MessageType.REGULAR_TEXT_MESSAGE) || getMessageType().equals(MessageType.SYSTEM_MESSAGE)) {
-            return getText();
+  public void setSelectedIndividualHashMap(Map<String, String> selectedIndividualHashMap) {
+    this.selectedIndividualHashMap = selectedIndividualHashMap;
+  }
+
+  @Override
+  public String getId() {
+    return Integer.toString(jsonMessageId);
+  }
+
+  @Override
+  public String getText() {
+    return ChatUtils.getParsedMessage(getMessage(), getMessageParameters());
+  }
+
+  public String getLastMessageDisplayText() {
+    if (getMessageType().equals(MessageType.REGULAR_TEXT_MESSAGE) || getMessageType().equals(
+        MessageType.SYSTEM_MESSAGE)) {
+      return getText();
+    } else {
+      if (getMessageType().equals(MessageType.SINGLE_LINK_GIPHY_MESSAGE)
+          || getMessageType().equals(MessageType.SINGLE_LINK_TENOR_MESSAGE)
+          || getMessageType().equals(MessageType.SINGLE_LINK_GIF_MESSAGE)) {
+        if (getActorId().equals(getActiveUser().getUserId())) {
+          return (NextcloudTalkApplication.Companion.getSharedApplication()
+              .getString(R.string.nc_sent_a_gif_you));
         } else {
-            if (getMessageType().equals(MessageType.SINGLE_LINK_GIPHY_MESSAGE)
-                    || getMessageType().equals(MessageType.SINGLE_LINK_TENOR_MESSAGE)
-                    || getMessageType().equals(MessageType.SINGLE_LINK_GIF_MESSAGE)) {
-                if (getActorId().equals(getActiveUser().getUserId())) {
-                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_a_gif_you));
-                } else {
-                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_a_gif),
-                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
-                }
-            } else if (getMessageType().equals(MessageType.SINGLE_NC_ATTACHMENT_MESSAGE)) {
-                if (getActorId().equals(getActiveUser().getUserId())) {
-                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_an_attachment_you));
-                } else {
-                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_an_attachment),
-                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
-                }
-            } else if (getMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
-                if (getActorId().equals(getActiveUser().getUserId())) {
-                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_a_link_you));
-                } else {
-                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_a_link),
-                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
-                }
-            } else if (getMessageType().equals(MessageType.SINGLE_LINK_AUDIO_MESSAGE)) {
-                if (getActorId().equals(getActiveUser().getUserId())) {
-                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_an_audio_you));
-                } else {
-                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_an_audio),
-                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
-                }
-            } else if (getMessageType().equals(MessageType.SINGLE_LINK_VIDEO_MESSAGE)) {
-                if (getActorId().equals(getActiveUser().getUserId())) {
-                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_a_video_you));
-                } else {
-                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_a_video),
-                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
-                }
-            } else if (getMessageType().equals(MessageType.SINGLE_LINK_IMAGE_MESSAGE)) {
-                if (getActorId().equals(getActiveUser().getUserId())) {
-                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_an_image_you));
-                } else {
-                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_an_image),
-                            !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
-                }
-            }
+          return (String.format(NextcloudTalkApplication.Companion.getSharedApplication()
+                  .getResources()
+                  .getString(R.string.nc_sent_a_gif),
+              !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName()
+                  : NextcloudTalkApplication.Companion.getSharedApplication()
+                      .getString(R.string.nc_guest)));
         }
-
-        return "";
+      } else if (getMessageType().equals(MessageType.SINGLE_NC_ATTACHMENT_MESSAGE)) {
+        if (getActorId().equals(getActiveUser().getUserId())) {
+          return (NextcloudTalkApplication.Companion.getSharedApplication()
+              .getString(R.string.nc_sent_an_attachment_you));
+        } else {
+          return (String.format(NextcloudTalkApplication.Companion.getSharedApplication()
+                  .getResources()
+                  .getString(R.string.nc_sent_an_attachment),
+              !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName()
+                  : NextcloudTalkApplication.Companion.getSharedApplication()
+                      .getString(R.string.nc_guest)));
+        }
+      } else if (getMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
+        if (getActorId().equals(getActiveUser().getUserId())) {
+          return (NextcloudTalkApplication.Companion.getSharedApplication()
+              .getString(R.string.nc_sent_a_link_you));
+        } else {
+          return (String.format(NextcloudTalkApplication.Companion.getSharedApplication()
+                  .getResources()
+                  .getString(R.string.nc_sent_a_link),
+              !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName()
+                  : NextcloudTalkApplication.Companion.getSharedApplication()
+                      .getString(R.string.nc_guest)));
+        }
+      } else if (getMessageType().equals(MessageType.SINGLE_LINK_AUDIO_MESSAGE)) {
+        if (getActorId().equals(getActiveUser().getUserId())) {
+          return (NextcloudTalkApplication.Companion.getSharedApplication()
+              .getString(R.string.nc_sent_an_audio_you));
+        } else {
+          return (String.format(NextcloudTalkApplication.Companion.getSharedApplication()
+                  .getResources()
+                  .getString(R.string.nc_sent_an_audio),
+              !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName()
+                  : NextcloudTalkApplication.Companion.getSharedApplication()
+                      .getString(R.string.nc_guest)));
+        }
+      } else if (getMessageType().equals(MessageType.SINGLE_LINK_VIDEO_MESSAGE)) {
+        if (getActorId().equals(getActiveUser().getUserId())) {
+          return (NextcloudTalkApplication.Companion.getSharedApplication()
+              .getString(R.string.nc_sent_a_video_you));
+        } else {
+          return (String.format(NextcloudTalkApplication.Companion.getSharedApplication()
+                  .getResources()
+                  .getString(R.string.nc_sent_a_video),
+              !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName()
+                  : NextcloudTalkApplication.Companion.getSharedApplication()
+                      .getString(R.string.nc_guest)));
+        }
+      } else if (getMessageType().equals(MessageType.SINGLE_LINK_IMAGE_MESSAGE)) {
+        if (getActorId().equals(getActiveUser().getUserId())) {
+          return (NextcloudTalkApplication.Companion.getSharedApplication()
+              .getString(R.string.nc_sent_an_image_you));
+        } else {
+          return (String.format(NextcloudTalkApplication.Companion.getSharedApplication()
+                  .getResources()
+                  .getString(R.string.nc_sent_an_image),
+              !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName()
+                  : NextcloudTalkApplication.Companion.getSharedApplication()
+                      .getString(R.string.nc_guest)));
+        }
+      }
     }
 
-    @Override
-    public IUser getUser() {
-        return new IUser() {
-            @Override
-            public String getId() {
-                return actorId;
-            }
+    return "";
+  }
 
-            @Override
-            public String getName() {
-                return actorDisplayName;
-            }
+  @Override
+  public IUser getUser() {
+    return new IUser() {
+      @Override
+      public String getId() {
+        return actorId;
+      }
 
-            @Override
-            public String getAvatar() {
-                if (getActorType().equals("users")) {
-                    return ApiUtils.getUrlForAvatarWithName(getActiveUser().getBaseUrl(), actorId, R.dimen.avatar_size);
-                } else if (getActorType().equals("guests")) {
-                    String apiId =
-                            NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
+      @Override
+      public String getName() {
+        return actorDisplayName;
+      }
 
-                    if (!TextUtils.isEmpty(getActorDisplayName())) {
-                        apiId = getActorDisplayName();
-                    }
-                    return ApiUtils.getUrlForAvatarWithNameForGuests(getActiveUser().getBaseUrl(), apiId, R.dimen.avatar_size);
-                } else {
-                    return null;
-                }
-            }
-        };
-    }
+      @Override
+      public String getAvatar() {
+        if (getActorType().equals("users")) {
+          return ApiUtils.getUrlForAvatarWithName(getActiveUser().getBaseUrl(), actorId,
+              R.dimen.avatar_size);
+        } else if (getActorType().equals("guests")) {
+          String apiId =
+              NextcloudTalkApplication.Companion.getSharedApplication()
+                  .getString(R.string.nc_guest);
 
-    @Override
-    public Date getCreatedAt() {
-        return new Date(timestamp * 1000L);
-    }
+          if (!TextUtils.isEmpty(getActorDisplayName())) {
+            apiId = getActorDisplayName();
+          }
+          return ApiUtils.getUrlForAvatarWithNameForGuests(getActiveUser().getBaseUrl(), apiId,
+              R.dimen.avatar_size);
+        } else {
+          return null;
+        }
+      }
+    };
+  }
 
-    @Override
-    public String getSystemMessage() {
-        return new EnumSystemMessageTypeConverter().convertToString(getSystemMessageType());
-    }
+  @Override
+  public Date getCreatedAt() {
+    return new Date(timestamp * 1000L);
+  }
 
-    public enum MessageType {
-        REGULAR_TEXT_MESSAGE,
-        SYSTEM_MESSAGE,
-        SINGLE_LINK_GIPHY_MESSAGE,
-        SINGLE_LINK_TENOR_MESSAGE,
-        SINGLE_LINK_GIF_MESSAGE,
-        SINGLE_LINK_MESSAGE,
-        SINGLE_LINK_VIDEO_MESSAGE,
-        SINGLE_LINK_IMAGE_MESSAGE,
-        SINGLE_LINK_AUDIO_MESSAGE,
-        SINGLE_NC_ATTACHMENT_MESSAGE,
-    }
+  @Override
+  public String getSystemMessage() {
+    return new EnumSystemMessageTypeConverter().convertToString(getSystemMessageType());
+  }
 
-    public enum SystemMessageType {
-        DUMMY,
-        CONVERSATION_CREATED,
-        CONVERSATION_RENAMED,
-        CALL_STARTED,
-        CALL_JOINED,
-        CALL_LEFT,
-        CALL_ENDED,
-        GUESTS_ALLOWED,
-        GUESTS_DISALLOWED,
-        PASSWORD_SET,
-        PASSWORD_REMOVED,
-        USER_ADDED,
-        USER_REMOVED,
-        MODERATOR_PROMOTED,
-        MODERATOR_DEMOTED,
-        FILE_SHARED,
-        LOBBY_NONE,
-        LOBBY_NON_MODERATORS,
-        LOBBY_OPEN_TO_EVERYONE
-    }
+  public enum MessageType {
+    REGULAR_TEXT_MESSAGE,
+    SYSTEM_MESSAGE,
+    SINGLE_LINK_GIPHY_MESSAGE,
+    SINGLE_LINK_TENOR_MESSAGE,
+    SINGLE_LINK_GIF_MESSAGE,
+    SINGLE_LINK_MESSAGE,
+    SINGLE_LINK_VIDEO_MESSAGE,
+    SINGLE_LINK_IMAGE_MESSAGE,
+    SINGLE_LINK_AUDIO_MESSAGE,
+    SINGLE_NC_ATTACHMENT_MESSAGE,
+  }
+
+  public enum SystemMessageType {
+    DUMMY,
+    CONVERSATION_CREATED,
+    CONVERSATION_RENAMED,
+    CALL_STARTED,
+    CALL_JOINED,
+    CALL_LEFT,
+    CALL_ENDED,
+    GUESTS_ALLOWED,
+    GUESTS_DISALLOWED,
+    PASSWORD_SET,
+    PASSWORD_REMOVED,
+    USER_ADDED,
+    USER_REMOVED,
+    MODERATOR_PROMOTED,
+    MODERATOR_DEMOTED,
+    FILE_SHARED,
+    LOBBY_NONE,
+    LOBBY_NON_MODERATORS,
+    LOBBY_OPEN_TO_EVERYONE
+  }
 }

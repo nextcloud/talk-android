@@ -32,12 +32,12 @@ import javax.inject.Inject;
 @AutoInjector(NextcloudTalkApplication.class)
 public class UserModule {
 
-    @Inject
-    public UserModule() {
-    }
+  @Inject
+  public UserModule() {
+  }
 
-    @Provides
-    public UserUtils provideUserUtils(ReactiveEntityStore<Persistable> dataStore) {
-        return new UserUtils(dataStore);
-    }
+  @Provides
+  public UserUtils provideUserUtils(ReactiveEntityStore<Persistable> dataStore) {
+    return new UserUtils(dataStore);
+  }
 }

@@ -38,48 +38,54 @@ import java.util.Map;
 import javax.inject.Inject;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
+public class MagicSystemMessageViewHolder
+    extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 
-    @Inject
-    AppPreferences appPreferences;
+  @Inject
+  AppPreferences appPreferences;
 
-    @Inject
-    Context context;
+  @Inject
+  Context context;
 
-    public MagicSystemMessageViewHolder(View itemView) {
-        super(itemView);
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-    }
+  public MagicSystemMessageViewHolder(View itemView) {
+    super(itemView);
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
+  }
 
-    @Override
-    public void onBind(ChatMessage message) {
-        super.onBind(message);
+  @Override
+  public void onBind(ChatMessage message) {
+    super.onBind(message);
 
-        Resources resources = itemView.getResources();
-        int normalColor = resources.getColor(R.color.bg_message_list_incoming_bubble);
-        int pressedColor;
-        int mentionColor;
+    Resources resources = itemView.getResources();
+    int normalColor = resources.getColor(R.color.bg_message_list_incoming_bubble);
+    int pressedColor;
+    int mentionColor;
 
+    pressedColor = normalColor;
+    mentionColor = resources.getColor(R.color.nc_author_text);
 
-        pressedColor = normalColor;
-        mentionColor = resources.getColor(R.color.nc_author_text);
+    Drawable bubbleDrawable = DisplayUtils.getMessageSelector(normalColor,
+        resources.getColor(R.color.transparent), pressedColor,
+        R.drawable.shape_grouped_incoming_message);
+    ViewCompat.setBackground(bubble, bubbleDrawable);
 
-        Drawable bubbleDrawable = DisplayUtils.getMessageSelector(normalColor,
-                                resources.getColor(R.color.transparent), pressedColor,
-                                R.drawable.shape_grouped_incoming_message);
-        ViewCompat.setBackground(bubble, bubbleDrawable);
+    Spannable messageString = new SpannableString(message.getText());
 
-        Spannable messageString = new SpannableString(message.getText());
-
-        if (message.getMessageParameters() != null && message.getMessageParameters().size() > 0) {
-            for (String key : message.getMessageParameters().keySet()) {
-                Map<String, String> individualHashMap = message.getMessageParameters().get(key);
-                if (individualHashMap != null && (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call"))) {
-                    messageString = DisplayUtils.searchAndColor(messageString, "@" + individualHashMap.get("name"), mentionColor);
-                }
-            }
+    if (message.getMessageParameters() != null && message.getMessageParameters().size() > 0) {
+      for (String key : message.getMessageParameters().keySet()) {
+        Map<String, String> individualHashMap = message.getMessageParameters().get(key);
+        if (individualHashMap != null && (individualHashMap.get("type").equals("user")
+            || individualHashMap.get("type").equals("guest")
+            || individualHashMap.get("type").equals("call"))) {
+          messageString =
+              DisplayUtils.searchAndColor(messageString, "@" + individualHashMap.get("name"),
+                  mentionColor);
         }
-
-        text.setText(messageString);
+      }
     }
+
+    text.setText(messageString);
+  }
 }

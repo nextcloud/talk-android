@@ -50,134 +50,134 @@ import org.webrtc.ThreadUtils;
  * Anything less than the threshold value and the sensor  returns "NEAR".
  */
 public class MagicProximitySensor implements SensorEventListener {
-    private static final String TAG = "MagicProximitySensor";
+  private static final String TAG = "MagicProximitySensor";
 
-    // This class should be created, started and stopped on one thread
-    // (e.g. the main thread). We use |nonThreadSafe| to ensure that this is
-    // the case. Only active when |DEBUG| is set to true.
-    private final ThreadUtils.ThreadChecker threadChecker = new ThreadUtils.ThreadChecker();
+  // This class should be created, started and stopped on one thread
+  // (e.g. the main thread). We use |nonThreadSafe| to ensure that this is
+  // the case. Only active when |DEBUG| is set to true.
+  private final ThreadUtils.ThreadChecker threadChecker = new ThreadUtils.ThreadChecker();
 
-    private final Runnable onSensorStateListener;
-    private final SensorManager sensorManager;
-    private Sensor proximitySensor = null;
-    private boolean lastStateReportIsNear = false;
+  private final Runnable onSensorStateListener;
+  private final SensorManager sensorManager;
+  private Sensor proximitySensor = null;
+  private boolean lastStateReportIsNear = false;
 
-    private MagicProximitySensor(Context context, Runnable sensorStateListener) {
-        onSensorStateListener = sensorStateListener;
-        sensorManager = ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE));
+  private MagicProximitySensor(Context context, Runnable sensorStateListener) {
+    onSensorStateListener = sensorStateListener;
+    sensorManager = ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE));
+  }
+
+  /**
+   * Construction
+   */
+  static MagicProximitySensor create(Context context, Runnable sensorStateListener) {
+    return new MagicProximitySensor(context, sensorStateListener);
+  }
+
+  /**
+   * Activate the proximity sensor. Also do initialization if called for the
+   * first time.
+   */
+  public boolean start() {
+    threadChecker.checkIsOnValidThread();
+    if (!initDefaultSensor()) {
+      // Proximity sensor is not supported on this device.
+      return false;
     }
+    sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+    return true;
+  }
 
-    /**
-     * Construction
-     */
-    static MagicProximitySensor create(Context context, Runnable sensorStateListener) {
-        return new MagicProximitySensor(context, sensorStateListener);
+  /**
+   * Deactivate the proximity sensor.
+   */
+  void stop() {
+    threadChecker.checkIsOnValidThread();
+    if (proximitySensor == null) {
+      return;
     }
+    sensorManager.unregisterListener(this, proximitySensor);
+  }
 
-    /**
-     * Activate the proximity sensor. Also do initialization if called for the
-     * first time.
-     */
-    public boolean start() {
-        threadChecker.checkIsOnValidThread();
-        if (!initDefaultSensor()) {
-            // Proximity sensor is not supported on this device.
-            return false;
-        }
-        sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
-        return true;
+  /**
+   * Getter for last reported viewState. Set to true if "near" is reported.
+   */
+  boolean sensorReportsNearState() {
+    threadChecker.checkIsOnValidThread();
+    return lastStateReportIsNear;
+  }
+
+  @Override
+  public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+    threadChecker.checkIsOnValidThread();
+    if (sensor.getType() == Sensor.TYPE_PROXIMITY &&
+        accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+      Log.e(TAG, "The values returned by this sensor cannot be trusted");
     }
+  }
 
-    /**
-     * Deactivate the proximity sensor.
-     */
-    void stop() {
-        threadChecker.checkIsOnValidThread();
-        if (proximitySensor == null) {
-            return;
-        }
-        sensorManager.unregisterListener(this, proximitySensor);
+  @Override
+  public final void onSensorChanged(SensorEvent event) {
+    threadChecker.checkIsOnValidThread();
+    if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+      // As a best practice; do as little as possible within this method and
+      // avoid blocking.
+      float distanceInCentimeters = event.values[0];
+      if (distanceInCentimeters < proximitySensor.getMaximumRange()) {
+        Log.d(TAG, "Proximity sensor => NEAR viewState");
+        lastStateReportIsNear = true;
+      } else {
+        Log.d(TAG, "Proximity sensor => FAR viewState");
+        lastStateReportIsNear = false;
+      }
+
+      // Report about new viewState to listening client. Client can then call
+      // sensorReportsNearState() to query the current viewState (NEAR or FAR).
+      if (onSensorStateListener != null) {
+        onSensorStateListener.run();
+      }
     }
+  }
 
-    /**
-     * Getter for last reported viewState. Set to true if "near" is reported.
-     */
-    boolean sensorReportsNearState() {
-        threadChecker.checkIsOnValidThread();
-        return lastStateReportIsNear;
+  /**
+   * Get default proximity sensor if it exists. Tablet devices (e.g. Nexus 7)
+   * does not support this type of sensor and false will be returned in such
+   * cases.
+   */
+  private boolean initDefaultSensor() {
+    if (proximitySensor != null) {
+      return true;
     }
-
-    @Override
-    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
-        threadChecker.checkIsOnValidThread();
-        if (sensor.getType() == Sensor.TYPE_PROXIMITY &&
-                accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-            Log.e(TAG, "The values returned by this sensor cannot be trusted");
-        }
+    proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+    if (proximitySensor == null) {
+      return false;
     }
+    logProximitySensorInfo();
+    return true;
+  }
 
-    @Override
-    public final void onSensorChanged(SensorEvent event) {
-        threadChecker.checkIsOnValidThread();
-        if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-            // As a best practice; do as little as possible within this method and
-            // avoid blocking.
-            float distanceInCentimeters = event.values[0];
-            if (distanceInCentimeters < proximitySensor.getMaximumRange()) {
-                Log.d(TAG, "Proximity sensor => NEAR viewState");
-                lastStateReportIsNear = true;
-            } else {
-                Log.d(TAG, "Proximity sensor => FAR viewState");
-                lastStateReportIsNear = false;
-            }
-
-            // Report about new viewState to listening client. Client can then call
-            // sensorReportsNearState() to query the current viewState (NEAR or FAR).
-            if (onSensorStateListener != null) {
-                onSensorStateListener.run();
-            }
-        }
+  /**
+   * Helper method for logging information about the proximity sensor.
+   */
+  private void logProximitySensorInfo() {
+    if (proximitySensor == null) {
+      return;
     }
-
-    /**
-     * Get default proximity sensor if it exists. Tablet devices (e.g. Nexus 7)
-     * does not support this type of sensor and false will be returned in such
-     * cases.
-     */
-    private boolean initDefaultSensor() {
-        if (proximitySensor != null) {
-            return true;
-        }
-        proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        if (proximitySensor == null) {
-            return false;
-        }
-        logProximitySensorInfo();
-        return true;
+    StringBuilder info = new StringBuilder("Proximity sensor: ");
+    info.append("name=").append(proximitySensor.getName())
+        .append(", vendor: ").append(proximitySensor.getVendor())
+        .append(", power: ").append(proximitySensor.getPower())
+        .append(", resolution: ").append(proximitySensor.getResolution())
+        .append(", max range: ").append(proximitySensor.getMaximumRange())
+        .append(", min delay: ").append(proximitySensor.getMinDelay());
+    // Added in API level 20.
+    info.append(", type: ").append(proximitySensor.getStringType());
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      // Added in API level 21.
+      info.append(", max delay: ").append(proximitySensor.getMaxDelay())
+          .append(", reporting mode: ").append(proximitySensor.getReportingMode())
+          .append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor());
     }
-
-    /**
-     * Helper method for logging information about the proximity sensor.
-     */
-    private void logProximitySensorInfo() {
-        if (proximitySensor == null) {
-            return;
-        }
-        StringBuilder info = new StringBuilder("Proximity sensor: ");
-        info.append("name=").append(proximitySensor.getName())
-                .append(", vendor: ").append(proximitySensor.getVendor())
-                .append(", power: ").append(proximitySensor.getPower())
-                .append(", resolution: ").append(proximitySensor.getResolution())
-                .append(", max range: ").append(proximitySensor.getMaximumRange())
-                .append(", min delay: ").append(proximitySensor.getMinDelay());
-        // Added in API level 20.
-        info.append(", type: ").append(proximitySensor.getStringType());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Added in API level 21.
-            info.append(", max delay: ").append(proximitySensor.getMaxDelay())
-                    .append(", reporting mode: ").append(proximitySensor.getReportingMode())
-                    .append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor());
-        }
-        Log.d(TAG, info.toString());
-    }
+    Log.d(TAG, info.toString());
+  }
 }

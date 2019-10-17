@@ -26,6 +26,6 @@ import org.parceler.Parcel;
 @Parcel
 @Data
 public class RetrofitBucket {
-    public String url;
-    public Map<String, String> queryMap;
+  public String url;
+  public Map<String, String> queryMap;
 }

@@ -27,22 +27,23 @@ import com.nextcloud.talk.models.database.UserEntity;
 import okhttp3.OkHttpClient;
 
 public abstract class ListingAbstractClass {
-    Handler handler;
-    ListingInterface listingInterface;
+  Handler handler;
+  ListingInterface listingInterface;
 
-    ListingAbstractClass(ListingInterface listingInterface) {
-        handler = new Handler();
-        this.listingInterface = listingInterface;
-    }
+  ListingAbstractClass(ListingInterface listingInterface) {
+    handler = new Handler();
+    this.listingInterface = listingInterface;
+  }
 
-    public abstract void getFiles(String path, UserEntity currentUser, @Nullable OkHttpClient okHttpClient);
+  public abstract void getFiles(String path, UserEntity currentUser,
+      @Nullable OkHttpClient okHttpClient);
 
-    public void cancelAllJobs() {
-        handler.removeCallbacksAndMessages(null);
-    }
+  public void cancelAllJobs() {
+    handler.removeCallbacksAndMessages(null);
+  }
 
-    public void tearDown() {
-        cancelAllJobs();
-        handler = null;
-    }
+  public void tearDown() {
+    cancelAllJobs();
+    handler = null;
+  }
 }

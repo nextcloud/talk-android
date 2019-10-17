@@ -29,9 +29,9 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class AuthParametersWebSocketMessage {
-    @JsonField(name = "userid")
-    String userid;
+  @JsonField(name = "userid")
+  String userid;
 
-    @JsonField(name = "ticket")
-    String ticket;
+  @JsonField(name = "ticket")
+  String ticket;
 }

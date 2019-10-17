@@ -26,7 +26,7 @@ import lombok.Data;
 
 @Data
 public class WebSocketCommunicationEvent {
-    public final String type;
-    @Nullable
-    public final HashMap<String, String> hashMap;
+  public final String type;
+  @Nullable
+  public final HashMap<String, String> hashMap;
 }

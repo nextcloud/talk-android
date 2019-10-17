@@ -29,15 +29,15 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class NotificationAction {
-    @JsonField(name = "label")
-    String label;
+  @JsonField(name = "label")
+  String label;
 
-    @JsonField(name = "link")
-    String link;
+  @JsonField(name = "link")
+  String link;
 
-    @JsonField(name = "type")
-    String type;
+  @JsonField(name = "type")
+  String type;
 
-    @JsonField(name = "primary")
-    boolean primary;
+  @JsonField(name = "primary")
+  boolean primary;
 }

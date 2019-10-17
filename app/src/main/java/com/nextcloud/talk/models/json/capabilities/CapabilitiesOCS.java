@@ -29,6 +29,6 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class CapabilitiesOCS extends GenericOCS {
-    @JsonField(name = "data")
-    CapabilitiesList data;
+  @JsonField(name = "data")
+  CapabilitiesList data;
 }

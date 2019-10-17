@@ -31,6 +31,6 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class RoomsOCS extends GenericOCS {
-    @JsonField(name = "data")
-    public List<Conversation> data;
+  @JsonField(name = "data")
+  public List<Conversation> data;
 }

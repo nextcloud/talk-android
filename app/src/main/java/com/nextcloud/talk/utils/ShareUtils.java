@@ -41,65 +41,65 @@ import java.util.Set;
 
 public class ShareUtils {
 
-    public static String getStringForIntent(Context context, @Nullable String password, UserUtils userUtils, Conversation
-            conversation) {
-        UserEntity userEntity = userUtils.getCurrentUser();
+  public static String getStringForIntent(Context context, @Nullable String password,
+      UserUtils userUtils, Conversation
+      conversation) {
+    UserEntity userEntity = userUtils.getCurrentUser();
 
-        String shareString = "";
-        if (userEntity != null && context != null) {
-            shareString = String.format(context.getResources().getString(R.string.nc_share_text),
-                    userEntity.getBaseUrl(), conversation.getToken());
+    String shareString = "";
+    if (userEntity != null && context != null) {
+      shareString = String.format(context.getResources().getString(R.string.nc_share_text),
+          userEntity.getBaseUrl(), conversation.getToken());
 
-            if (!TextUtils.isEmpty(password)) {
-                shareString += String.format(context.getResources().getString(R.string.nc_share_text_pass), password);
-            }
-        }
-
-        return shareString;
+      if (!TextUtils.isEmpty(password)) {
+        shareString +=
+            String.format(context.getResources().getString(R.string.nc_share_text_pass), password);
+      }
     }
 
-    public static List<AppAdapter.AppInfo> getShareApps(Context context, Intent intent,
-                                                        @Nullable Set<String> appsFilter, @Nullable Set<String> toExclude) {
+    return shareString;
+  }
 
-        if (context == null || intent == null) return null;
+  public static List<AppAdapter.AppInfo> getShareApps(Context context, Intent intent,
+      @Nullable Set<String> appsFilter, @Nullable Set<String> toExclude) {
 
-        PackageManager manager = context.getPackageManager();
-        List<ResolveInfo> apps = manager.queryIntentActivities(intent, 0);
+    if (context == null || intent == null) return null;
 
-        if (apps != null && !apps.isEmpty()) {
-            List<AppAdapter.AppInfo> appResources = new ArrayList<>(apps.size());
-            boolean shouldCheckPackages = appsFilter != null && !appsFilter.isEmpty();
+    PackageManager manager = context.getPackageManager();
+    List<ResolveInfo> apps = manager.queryIntentActivities(intent, 0);
 
-            for (ResolveInfo resolveInfo : apps) {
-                String packageName = resolveInfo.activityInfo.packageName;
+    if (apps != null && !apps.isEmpty()) {
+      List<AppAdapter.AppInfo> appResources = new ArrayList<>(apps.size());
+      boolean shouldCheckPackages = appsFilter != null && !appsFilter.isEmpty();
 
-                if (shouldCheckPackages && !appsFilter.contains(packageName)) {
-                    continue;
-                }
+      for (ResolveInfo resolveInfo : apps) {
+        String packageName = resolveInfo.activityInfo.packageName;
 
-                String title = resolveInfo.loadLabel(manager).toString();
-                String name = resolveInfo.activityInfo.name;
-                Drawable drawable = resolveInfo.loadIcon(manager);
-                appResources.add(new AppAdapter.AppInfo(title, packageName, name, drawable));
-            }
-
-            if (toExclude != null && !toExclude.isEmpty()) {
-                List<AppAdapter.AppInfo> toRemove = new ArrayList<>();
-
-                for (AppAdapter.AppInfo appInfo : appResources) {
-                    if (toExclude.contains(appInfo.packageName)) {
-                        toRemove.add(appInfo);
-                    }
-                }
-
-                if (!toRemove.isEmpty()) appResources.removeAll(toRemove);
-            }
-
-            return appResources;
-
+        if (shouldCheckPackages && !appsFilter.contains(packageName)) {
+          continue;
         }
 
-        return null;
+        String title = resolveInfo.loadLabel(manager).toString();
+        String name = resolveInfo.activityInfo.name;
+        Drawable drawable = resolveInfo.loadIcon(manager);
+        appResources.add(new AppAdapter.AppInfo(title, packageName, name, drawable));
+      }
+
+      if (toExclude != null && !toExclude.isEmpty()) {
+        List<AppAdapter.AppInfo> toRemove = new ArrayList<>();
+
+        for (AppAdapter.AppInfo appInfo : appResources) {
+          if (toExclude.contains(appInfo.packageName)) {
+            toRemove.add(appInfo);
+          }
+        }
+
+        if (!toRemove.isEmpty()) appResources.removeAll(toRemove);
+      }
+
+      return appResources;
     }
 
+    return null;
+  }
 }

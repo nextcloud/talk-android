@@ -30,6 +30,6 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class MentionOCS extends GenericOCS {
-    @JsonField(name = "data")
-    List<Mention> data;
+  @JsonField(name = "data")
+  List<Mention> data;
 }

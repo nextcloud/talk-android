@@ -28,6 +28,6 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class CapabilitiesOverall {
-    @JsonField(name = "ocs")
-    CapabilitiesOCS ocs;
+  @JsonField(name = "ocs")
+  CapabilitiesOCS ocs;
 }

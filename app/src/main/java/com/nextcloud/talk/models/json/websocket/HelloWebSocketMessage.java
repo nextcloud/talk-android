@@ -29,12 +29,12 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class HelloWebSocketMessage {
-    @JsonField(name = "version")
-    String version;
+  @JsonField(name = "version")
+  String version;
 
-    @JsonField(name = "resumeid")
-    String resumeid;
+  @JsonField(name = "resumeid")
+  String resumeid;
 
-    @JsonField(name = "auth")
-    AuthWebSocketMessage authWebSocketMessage;
+  @JsonField(name = "auth")
+  AuthWebSocketMessage authWebSocketMessage;
 }

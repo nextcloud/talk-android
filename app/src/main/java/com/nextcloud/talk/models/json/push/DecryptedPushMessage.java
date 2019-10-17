@@ -30,33 +30,33 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class DecryptedPushMessage {
-    @JsonField(name = "app")
-    String app;
+  @JsonField(name = "app")
+  String app;
 
-    @JsonField(name = "type")
-    String type;
+  @JsonField(name = "type")
+  String type;
 
-    @JsonField(name = "subject")
-    String subject;
+  @JsonField(name = "subject")
+  String subject;
 
-    @JsonField(name = "id")
-    String id;
+  @JsonField(name = "id")
+  String id;
 
-    @JsonField(name = "nid")
-    long notificationId;
+  @JsonField(name = "nid")
+  long notificationId;
 
-    @JsonField(name = "delete")
-    boolean delete;
+  @JsonField(name = "delete")
+  boolean delete;
 
-    @JsonField(name = "delete-all")
-    boolean deleteAll;
+  @JsonField(name = "delete-all")
+  boolean deleteAll;
 
-    @JsonIgnore
-    NotificationUser notificationUser;
+  @JsonIgnore
+  NotificationUser notificationUser;
 
-    @JsonIgnore
-    String text;
+  @JsonIgnore
+  String text;
 
-    @JsonIgnore
-    long timestamp;
+  @JsonIgnore
+  long timestamp;
 }

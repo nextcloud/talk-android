@@ -25,9 +25,9 @@ import lombok.Data;
 
 @Data
 public class MoreMenuClickEvent {
-    private final Conversation conversation;
+  private final Conversation conversation;
 
-    public MoreMenuClickEvent(Conversation conversation) {
-        this.conversation = conversation;
-    }
+  public MoreMenuClickEvent(Conversation conversation) {
+    this.conversation = conversation;
+  }
 }

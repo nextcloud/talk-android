@@ -29,6 +29,6 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class AutocompleteOverall {
-    @JsonField(name = "ocs")
-    AutocompleteOCS ocs;
+  @JsonField(name = "ocs")
+  AutocompleteOCS ocs;
 }

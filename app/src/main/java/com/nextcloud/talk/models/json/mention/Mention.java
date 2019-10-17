@@ -28,13 +28,13 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class Mention {
-    @JsonField(name = "id")
-    String id;
+  @JsonField(name = "id")
+  String id;
 
-    @JsonField(name = "label")
-    String label;
+  @JsonField(name = "label")
+  String label;
 
-    // type of user (guests or users or calls)
-    @JsonField(name = "source")
-    String source;
+  // type of user (guests or users or calls)
+  @JsonField(name = "source")
+  String source;
 }

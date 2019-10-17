@@ -29,12 +29,12 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class NotificationRichObject {
-    @JsonField(name = "id")
-    String label;
+  @JsonField(name = "id")
+  String label;
 
-    @JsonField(name = "type")
-    String type;
+  @JsonField(name = "type")
+  String type;
 
-    @JsonField(name = "name")
-    String name;
+  @JsonField(name = "name")
+  String name;
 }

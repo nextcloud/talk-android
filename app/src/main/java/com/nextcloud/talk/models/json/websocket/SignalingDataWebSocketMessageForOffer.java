@@ -29,9 +29,9 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class SignalingDataWebSocketMessageForOffer {
-    @JsonField(name = "type")
-    String type;
+  @JsonField(name = "type")
+  String type;
 
-    @JsonField(name = "roomType")
-    String roomType;
+  @JsonField(name = "roomType")
+  String roomType;
 }

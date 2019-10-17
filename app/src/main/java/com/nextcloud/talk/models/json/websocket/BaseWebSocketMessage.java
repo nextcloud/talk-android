@@ -29,6 +29,6 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class BaseWebSocketMessage {
-    @JsonField(name = "type")
-    String type;
+  @JsonField(name = "type")
+  String type;
 }

@@ -31,15 +31,15 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class Capabilities {
-    @JsonField(name = "spreed")
-    SpreedCapability spreedCapability;
+  @JsonField(name = "spreed")
+  SpreedCapability spreedCapability;
 
-    @JsonField(name = "notifications")
-    NotificationsCapability notificationsCapability;
+  @JsonField(name = "notifications")
+  NotificationsCapability notificationsCapability;
 
-    @JsonField(name = "theming")
-    ThemingCapability themingCapability;
+  @JsonField(name = "theming")
+  ThemingCapability themingCapability;
 
-    @JsonField(name = "external")
-    HashMap<String, List<String>> externalCapability;
+  @JsonField(name = "external")
+  HashMap<String, List<String>> externalCapability;
 }

@@ -29,8 +29,8 @@ import org.parceler.Parcel;
 @Parcel
 @JsonObject
 public class ExternalSignalingServer {
-    @JsonField(name = "externalSignalingServer")
-    String externalSignalingServer;
-    @JsonField(name = "externalSignalingTicket")
-    String externalSignalingTicket;
+  @JsonField(name = "externalSignalingServer")
+  String externalSignalingServer;
+  @JsonField(name = "externalSignalingTicket")
+  String externalSignalingTicket;
 }

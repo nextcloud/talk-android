@@ -27,6 +27,6 @@ import lombok.Data;
 @Data
 @JsonObject
 public class RoomOverall {
-    @JsonField(name = "ocs")
-    public RoomOCS ocs;
+  @JsonField(name = "ocs")
+  public RoomOCS ocs;
 }

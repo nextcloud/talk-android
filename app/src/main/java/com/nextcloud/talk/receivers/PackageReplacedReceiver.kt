@@ -37,52 +37,66 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class PackageReplacedReceiver : BroadcastReceiver() {
 
-    @Inject
-    lateinit var userUtils: UserUtils
+  @Inject
+  lateinit var userUtils: UserUtils
 
-    @Inject
-    lateinit var appPreferences: AppPreferences
+  @Inject
+  lateinit var appPreferences: AppPreferences
 
-    override fun onReceive(context: Context, intent: Intent?) {
-        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+  override fun onReceive(
+    context: Context,
+    intent: Intent?
+  ) {
+    NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        if (intent != null && intent.action != null &&
-                intent.action == "android.intent.action.MY_PACKAGE_REPLACED") {
-            try {
-                val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-                if (packageInfo.versionCode > 43 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val notificationManager = context.getSystemService(Context
-                            .NOTIFICATION_SERVICE) as NotificationManager
+    if (intent != null && intent.action != null &&
+        intent.action == "android.intent.action.MY_PACKAGE_REPLACED"
+    ) {
+      try {
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        if (packageInfo.versionCode > 43 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          val notificationManager = context.getSystemService(
+              Context
+                  .NOTIFICATION_SERVICE
+          ) as NotificationManager
 
-                    if (notificationManager != null) {
-                        if (!appPreferences.isNotificationChannelUpgradedToV2) {
-                            for (notificationChannelGroup in notificationManager
-                                    .notificationChannelGroups) {
-                                notificationManager.deleteNotificationChannelGroup(notificationChannelGroup.id)
-                            }
+          if (notificationManager != null) {
+            if (!appPreferences.isNotificationChannelUpgradedToV2) {
+              for (notificationChannelGroup in notificationManager
+                  .notificationChannelGroups) {
+                notificationManager.deleteNotificationChannelGroup(notificationChannelGroup.id)
+              }
 
-                            notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS)
-                            notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES)
+              notificationManager.deleteNotificationChannel(
+                  NotificationUtils.NOTIFICATION_CHANNEL_CALLS
+              )
+              notificationManager.deleteNotificationChannel(
+                  NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES
+              )
 
-                            appPreferences.setNotificationChannelIsUpgradedToV2(true)
-                        }
-
-                        if (!appPreferences.isNotificationChannelUpgradedToV3 && packageInfo.versionCode > 51) {
-                            notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2)
-                            notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2)
-                            appPreferences.setNotificationChannelIsUpgradedToV3(true)
-                        }
-                    }
-
-                }
-            } catch (e: PackageManager.NameNotFoundException) {
-                Log.e(TAG, "Failed to fetch package info")
+              appPreferences.setNotificationChannelIsUpgradedToV2(true)
             }
 
-        }
-    }
+            if (!appPreferences.isNotificationChannelUpgradedToV3 && packageInfo.versionCode > 51) {
+              notificationManager.deleteNotificationChannel(
+                  NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2
+              )
+              notificationManager.deleteNotificationChannel(
+                  NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2
+              )
+              appPreferences.setNotificationChannelIsUpgradedToV3(true)
+            }
+          }
 
-    companion object {
-        private val TAG = "PackageReplacedReceiver"
+        }
+      } catch (e: PackageManager.NameNotFoundException) {
+        Log.e(TAG, "Failed to fetch package info")
+      }
+
     }
+  }
+
+  companion object {
+    private val TAG = "PackageReplacedReceiver"
+  }
 }

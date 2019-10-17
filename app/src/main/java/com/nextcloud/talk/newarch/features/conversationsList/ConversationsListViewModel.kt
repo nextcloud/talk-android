@@ -21,7 +21,6 @@
 package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.Application
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory

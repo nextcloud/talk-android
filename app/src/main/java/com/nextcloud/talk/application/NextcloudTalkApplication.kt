@@ -29,7 +29,6 @@ import androidx.emoji.bundled.BundledEmojiCompatConfig
 import androidx.emoji.text.EmojiCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.multidex.MultiDex
-import androidx.multidex.MultiDexApplication
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
@@ -54,7 +53,6 @@ import com.nextcloud.talk.newarch.di.module.NetworkModule
 import com.nextcloud.talk.newarch.di.module.StorageModule
 import com.nextcloud.talk.newarch.features.conversationsList.di.module.ConversationsListModule
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
-import com.nextcloud.talk.utils.DeviceUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
@@ -78,150 +76,174 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@AutoComponent(modules = [BusModule::class, ContextModule::class, DatabaseModule::class, RestModule::class, UserModule::class, ArbitraryStorageModule::class])
+@AutoComponent(
+    modules = [BusModule::class, ContextModule::class, DatabaseModule::class, RestModule::class, UserModule::class, ArbitraryStorageModule::class]
+)
 @Singleton
 @AutoInjector(NextcloudTalkApplication::class)
 class NextcloudTalkApplication : Application(), LifecycleObserver {
-    //region Fields (components)
-    lateinit var componentApplication: NextcloudTalkApplicationComponent
-        private set
-    //endregion
+  //region Fields (components)
+  lateinit var componentApplication: NextcloudTalkApplicationComponent
+    private set
+  //endregion
 
-    //region Getters
+  //region Getters
 
-    @Inject
-    lateinit var appPreferences: AppPreferences
-    @Inject
-    lateinit var okHttpClient: OkHttpClient
-    //endregion
+  @Inject
+  lateinit var appPreferences: AppPreferences
+  @Inject
+  lateinit var okHttpClient: OkHttpClient
+  //endregion
 
-    //region private methods
-    private fun initializeWebRtc() {
-        try {
-            if (MagicWebRTCUtils.HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
-                WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true)
-            }
+  //region private methods
+  private fun initializeWebRtc() {
+    try {
+      if (MagicWebRTCUtils.HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
+        WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true)
+      }
 
-            if (!MagicWebRTCUtils.OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
-                WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true)
-            }
+      if (!MagicWebRTCUtils.OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
+        WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true)
+      }
 
 
-            PeerConnectionFactory.initialize(PeerConnectionFactory.InitializationOptions.builder(this)
-                    .setEnableVideoHwAcceleration(MagicWebRTCUtils.shouldEnableVideoHardwareAcceleration())
-                    .createInitializationOptions())
-        } catch (e: UnsatisfiedLinkError) {
-            Log.w(TAG, e)
-        }
-
+      PeerConnectionFactory.initialize(
+          PeerConnectionFactory.InitializationOptions.builder(this)
+              .setEnableVideoHwAcceleration(
+                  MagicWebRTCUtils.shouldEnableVideoHardwareAcceleration()
+              )
+              .createInitializationOptions()
+      )
+    } catch (e: UnsatisfiedLinkError) {
+      Log.w(TAG, e)
     }
 
-    //endregion
+  }
 
-    //region Overridden methods
-    override fun onCreate() {
-        sharedApplication = this
+  //endregion
 
-        val securityKeyManager = SecurityKeyManager.getInstance()
-        val securityKeyConfig = SecurityKeyManagerConfig.Builder()
-                .setEnableDebugLogging(BuildConfig.DEBUG)
+  //region Overridden methods
+  override fun onCreate() {
+    sharedApplication = this
+
+    val securityKeyManager = SecurityKeyManager.getInstance()
+    val securityKeyConfig = SecurityKeyManagerConfig.Builder()
+        .setEnableDebugLogging(BuildConfig.DEBUG)
+        .build()
+    securityKeyManager.init(this, securityKeyConfig)
+
+    initializeWebRtc()
+    DisplayUtils.useCompatVectorIfNeeded()
+    buildComponent()
+    DavUtils.registerCustomFactories()
+
+    componentApplication.inject(this)
+
+    setAppTheme(appPreferences.theme)
+    super.onCreate()
+
+    val imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
+        .setNetworkFetcher(OkHttpNetworkFetcherWithCache(okHttpClient))
+        .setMainDiskCacheConfig(
+            DiskCacheConfig.newBuilder(this)
+                .setMaxCacheSize(0)
+                .setMaxCacheSizeOnLowDiskSpace(0)
+                .setMaxCacheSizeOnVeryLowDiskSpace(0)
                 .build()
-        securityKeyManager.init(this, securityKeyConfig)
+        )
+        .build()
 
-        initializeWebRtc()
-        DisplayUtils.useCompatVectorIfNeeded()
-        buildComponent()
-        DavUtils.registerCustomFactories()
+    Fresco.initialize(this, imagePipelineConfig)
+    Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
-        componentApplication.inject(this)
+    ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
 
-        setAppTheme(appPreferences.theme)
-        super.onCreate()
+    val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
+        .build()
+    val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+        .build()
+    val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
+        CapabilitiesWorker::class.java,
+        12, TimeUnit.HOURS
+    )
+        .build()
+    val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
+        .build()
+    val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
+        .build()
 
-        val imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
-                .setNetworkFetcher(OkHttpNetworkFetcherWithCache(okHttpClient))
-                .setMainDiskCacheConfig(DiskCacheConfig.newBuilder(this)
-                        .setMaxCacheSize(0)
-                        .setMaxCacheSizeOnLowDiskSpace(0)
-                        .setMaxCacheSizeOnVeryLowDiskSpace(0)
-                        .build())
-                .build()
+    WorkManager.getInstance()
+        .enqueue(pushRegistrationWork)
+    WorkManager.getInstance()
+        .enqueue(accountRemovalWork)
+    WorkManager.getInstance()
+        .enqueue(capabilitiesUpdateWork)
+    WorkManager.getInstance()
+        .enqueue(signalingSettingsWork)
+    WorkManager.getInstance()
+        .enqueueUniquePeriodicWork(
+            "DailyCapabilitiesUpdateWork", ExistingPeriodicWorkPolicy.REPLACE,
+            periodicCapabilitiesUpdateWork
+        )
 
-        Fresco.initialize(this, imagePipelineConfig)
-        Security.insertProviderAt(Conscrypt.newProvider(), 1)
+    val config = BundledEmojiCompatConfig(this)
+    config.setReplaceAll(true)
+    val emojiCompat = EmojiCompat.init(config)
 
-        ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
+    EmojiManager.install(GoogleCompatEmojiProvider(emojiCompat))
+  }
 
-        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
-        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
-        val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(CapabilitiesWorker::class.java,
-                12, TimeUnit.HOURS).build()
-        val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
-        val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()
+  override fun onTerminate() {
+    super.onTerminate()
+    sharedApplication = null
+  }
+  //endregion
 
-        WorkManager.getInstance().enqueue(pushRegistrationWork)
-        WorkManager.getInstance().enqueue(accountRemovalWork)
-        WorkManager.getInstance().enqueue(capabilitiesUpdateWork)
-        WorkManager.getInstance().enqueue(signalingSettingsWork)
-        WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork", ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork)
+  //region Protected methods
+  protected fun buildComponent() {
+    componentApplication = DaggerNextcloudTalkApplicationComponent.builder()
+        .busModule(BusModule())
+        .contextModule(ContextModule(applicationContext))
+        .databaseModule(DatabaseModule())
+        .restModule(RestModule(applicationContext))
+        .userModule(UserModule())
+        .arbitraryStorageModule(ArbitraryStorageModule())
+        .build()
 
-        val config = BundledEmojiCompatConfig(this)
-        config.setReplaceAll(true)
-        val emojiCompat = EmojiCompat.init(config)
-
-        EmojiManager.install(GoogleCompatEmojiProvider(emojiCompat))
+    startKoin {
+      androidContext(this@NextcloudTalkApplication)
+      androidLogger()
+      modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule))
     }
+  }
 
-    override fun onTerminate() {
-        super.onTerminate()
-        sharedApplication = null
-    }
+  override fun attachBaseContext(base: Context) {
+    super.attachBaseContext(base)
+    MultiDex.install(this)
+  }
+
+  companion object {
+    private val TAG = NextcloudTalkApplication::class.java.simpleName
+    //region Singleton
     //endregion
 
-
-    //region Protected methods
-    protected fun buildComponent() {
-        componentApplication = DaggerNextcloudTalkApplicationComponent.builder()
-                .busModule(BusModule())
-                .contextModule(ContextModule(applicationContext))
-                .databaseModule(DatabaseModule())
-                .restModule(RestModule(applicationContext))
-                .userModule(UserModule())
-                .arbitraryStorageModule(ArbitraryStorageModule())
-                .build()
-
-        startKoin {
-            androidContext(this@NextcloudTalkApplication)
-            androidLogger()
-            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule))
-        }
-    }
-
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
-    }
-
-    companion object {
-        private val TAG = NextcloudTalkApplication::class.java.simpleName
-        //region Singleton
-        //endregion
-
-        var sharedApplication: NextcloudTalkApplication? = null
-            protected set
-        //endregion
-
-        //region Setters
-        fun setAppTheme(theme: String) {
-            when (theme) {
-                "night_no" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                "night_yes" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                "battery_saver" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
-                else ->
-                    // will be "follow_system" only for now
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
-        }
-    }
+    var sharedApplication: NextcloudTalkApplication? = null
+      protected set
     //endregion
+
+    //region Setters
+    fun setAppTheme(theme: String) {
+      when (theme) {
+        "night_no" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        "night_yes" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        "battery_saver" -> AppCompatDelegate.setDefaultNightMode(
+            AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+        )
+        else ->
+          // will be "follow_system" only for now
+          AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+      }
+    }
+  }
+  //endregion
 }

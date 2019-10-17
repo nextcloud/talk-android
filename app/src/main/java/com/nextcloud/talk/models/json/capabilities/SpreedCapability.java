@@ -31,9 +31,9 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class SpreedCapability {
-    @JsonField(name = "features")
-    List<String> features;
+  @JsonField(name = "features")
+  List<String> features;
 
-    @JsonField(name = "config")
-    HashMap<String, HashMap<String, String>> config;
+  @JsonField(name = "config")
+  HashMap<String, HashMap<String, String>> config;
 }

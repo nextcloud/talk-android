@@ -29,13 +29,13 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class NCMessageWrapper {
-    @JsonField(name = "fn")
-    NCSignalingMessage signalingMessage;
+  @JsonField(name = "fn")
+  NCSignalingMessage signalingMessage;
 
-    // always a "message"
-    @JsonField(name = "ev")
-    String ev;
+  // always a "message"
+  @JsonField(name = "ev")
+  String ev;
 
-    @JsonField(name = "sessionId")
-    String sessionId;
+  @JsonField(name = "sessionId")
+  String sessionId;
 }

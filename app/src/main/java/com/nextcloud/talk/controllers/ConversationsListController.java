@@ -36,8 +36,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -65,8 +63,6 @@ import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
-import com.nextcloud.talk.models.json.conversations.Conversation;
-import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.items.CallItem;
@@ -82,6 +78,8 @@ import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -111,207 +109,218 @@ import org.parceler.Parcels;
 import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
-        FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, FastScroller
-                .OnScrollStateChangeListener, ConversationMenuInterface {
+public class ConversationsListController extends BaseController
+    implements SearchView.OnQueryTextListener,
+    FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, FastScroller
+        .OnScrollStateChangeListener, ConversationMenuInterface {
 
-    public static final String TAG = "ConversationsListController";
-    public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
-    private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
-    @Inject
-    UserUtils userUtils;
+  public static final String TAG = "ConversationsListController";
+  public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
+  private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
+  @Inject
+  UserUtils userUtils;
 
-    @Inject
-    EventBus eventBus;
+  @Inject
+  EventBus eventBus;
 
-    @Inject
-    NcApi ncApi;
+  @Inject
+  NcApi ncApi;
 
-    @Inject
-    Context context;
+  @Inject
+  Context context;
 
-    @Inject
-    AppPreferences appPreferences;
+  @Inject
+  AppPreferences appPreferences;
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
+  @BindView(R.id.recyclerView)
+  RecyclerView recyclerView;
 
-    @BindView(R.id.swipeRefreshLayoutView)
-    SwipeRefreshLayout swipeRefreshLayout;
+  @BindView(R.id.swipeRefreshLayoutView)
+  SwipeRefreshLayout swipeRefreshLayout;
 
-    @BindView(R.id.fast_scroller)
-    FastScroller fastScroller;
+  @BindView(R.id.fast_scroller)
+  FastScroller fastScroller;
 
-    @BindView(R.id.floatingActionButton)
-    FloatingActionButton floatingActionButton;
+  @BindView(R.id.floatingActionButton)
+  FloatingActionButton floatingActionButton;
 
-    private UserEntity currentUser;
-    private FlexibleAdapter<AbstractFlexibleItem> adapter;
-    private List<AbstractFlexibleItem> callItems = new ArrayList<>();
+  private UserEntity currentUser;
+  private FlexibleAdapter<AbstractFlexibleItem> adapter;
+  private List<AbstractFlexibleItem> callItems = new ArrayList<>();
 
-    private BottomSheet bottomSheet;
-    private MenuItem searchItem;
-    private SearchView searchView;
-    private String searchQuery;
+  private BottomSheet bottomSheet;
+  private MenuItem searchItem;
+  private SearchView searchView;
+  private String searchQuery;
 
-    private View view;
-    private boolean shouldUseLastMessageLayout;
+  private View view;
+  private boolean shouldUseLastMessageLayout;
 
-    private String credentials;
+  private String credentials;
 
-    private boolean adapterWasNull = true;
+  private boolean adapterWasNull = true;
 
-    private boolean isRefreshing;
+  private boolean isRefreshing;
 
-    private LovelySaveStateHandler saveStateHandler;
+  private LovelySaveStateHandler saveStateHandler;
 
-    private Bundle conversationMenuBundle = null;
+  private Bundle conversationMenuBundle = null;
 
-    public ConversationsListController() {
-        super();
-        setHasOptionsMenu(true);
+  public ConversationsListController() {
+    super();
+    setHasOptionsMenu(true);
+  }
+
+  @Override
+  protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    return inflater.inflate(R.layout.controller_conversations_rv, container, false);
+  }
+
+  @Override
+  protected void onViewBound(@NonNull View view) {
+    super.onViewBound(view);
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
+
+    if (getActionBar() != null) {
+      getActionBar().show();
     }
 
-    @Override
-    protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        return inflater.inflate(R.layout.controller_conversations_rv, container, false);
+    if (saveStateHandler == null) {
+      saveStateHandler = new LovelySaveStateHandler();
     }
 
-    @Override
-    protected void onViewBound(@NonNull View view) {
-        super.onViewBound(view);
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+    if (adapter == null) {
+      adapter = new FlexibleAdapter<>(callItems, getActivity(), true);
+    } else {
+      //progressBarView.setVisibility(View.GONE);
+    }
 
-        if (getActionBar() != null) {
-            getActionBar().show();
+    adapter.addListener(this);
+    prepareViews();
+  }
+
+  private void loadUserAvatar(MenuItem menuItem) {
+    if (getActivity() != null) {
+      int avatarSize = (int) DisplayUtils.convertDpToPixel(menuItem.getIcon().getIntrinsicHeight(),
+          getActivity());
+      ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(
+          ApiUtils.getUrlForAvatarWithNameAndPixels(currentUser.getBaseUrl(),
+              currentUser.getUserId(), avatarSize), null);
+
+      ImagePipeline imagePipeline = Fresco.getImagePipeline();
+      DataSource<CloseableReference<CloseableImage>> dataSource =
+          imagePipeline.fetchDecodedImage(imageRequest, null);
+      dataSource.subscribe(new BaseBitmapDataSubscriber() {
+        @Override
+        protected void onNewResultImpl(Bitmap bitmap) {
+          if (bitmap != null && getResources() != null) {
+            RoundedBitmapDrawable roundedBitmapDrawable =
+                RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+            roundedBitmapDrawable.setCircular(true);
+            roundedBitmapDrawable.setAntiAlias(true);
+            menuItem.setIcon(roundedBitmapDrawable);
+          }
         }
 
-        if (saveStateHandler == null) {
-            saveStateHandler = new LovelySaveStateHandler();
+        @Override
+        protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+          menuItem.setIcon(R.drawable.ic_settings_white_24dp);
         }
+      }, UiThreadImmediateExecutorService.getInstance());
+    }
+  }
 
-        if (adapter == null) {
-            adapter = new FlexibleAdapter<>(callItems, getActivity(), true);
-        } else {
+  @Override
+  protected void onAttach(@NonNull View view) {
+    super.onAttach(view);
+    currentUser = userUtils.getCurrentUser();
+
+    if (currentUser != null) {
+      credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
+      shouldUseLastMessageLayout = currentUser.hasSpreedFeatureCapability("last-room-activity");
+      fetchData(false);
+    }
+  }
+
+  private void initSearchView() {
+    if (getActivity() != null) {
+      SearchManager searchManager =
+          (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+      if (searchItem != null) {
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
+        int imeOptions = EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            && appPreferences.getIsKeyboardIncognito()) {
+          imeOptions |= EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
+        }
+        searchView.setImeOptions(imeOptions);
+        searchView.setQueryHint(getResources().getString(R.string.nc_search));
+        if (searchManager != null) {
+          searchView.setSearchableInfo(
+              searchManager.getSearchableInfo(getActivity().getComponentName()));
+        }
+        searchView.setOnQueryTextListener(this);
+      }
+    }
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.action_settings:
+        ArrayList<String> names = new ArrayList<>();
+        names.add("userAvatar.transitionTag");
+        getRouter().pushController((RouterTransaction.with(new SettingsController())
+            .pushChangeHandler(new TransitionChangeHandlerCompat(new SharedElementTransition(names),
+                new VerticalChangeHandler()))
+            .popChangeHandler(new TransitionChangeHandlerCompat(new SharedElementTransition(names),
+                new VerticalChangeHandler()))));
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
+    searchItem = menu.findItem(R.id.action_search);
+    initSearchView();
+  }
+
+  @Override
+  public void onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
+    searchItem.setVisible(callItems.size() > 0);
+    if (adapter.hasFilter()) {
+      searchItem.expandActionView();
+      searchView.setQuery(adapter.getFilter(String.class), false);
+    }
+
+    MenuItem menuItem = menu.findItem(R.id.action_settings);
+    loadUserAvatar(menuItem);
+  }
+
+  private void fetchData(boolean fromBottomSheet) {
+    isRefreshing = true;
+
+    callItems = new ArrayList<>();
+
+    ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(currentUser.getBaseUrl()))
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .as(AutoDispose.autoDisposable(getScopeProvider()))
+        .subscribe(roomsOverall -> {
+
+          if (adapterWasNull) {
+            adapterWasNull = false;
             //progressBarView.setVisibility(View.GONE);
-        }
-
-        adapter.addListener(this);
-        prepareViews();
-    }
-
-    private void loadUserAvatar(MenuItem menuItem) {
-        if (getActivity() != null) {
-            int avatarSize = (int) DisplayUtils.convertDpToPixel(menuItem.getIcon().getIntrinsicHeight(), getActivity());
-            ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(currentUser.getBaseUrl(),
-                    currentUser.getUserId(), avatarSize), null);
-
-            ImagePipeline imagePipeline = Fresco.getImagePipeline();
-            DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
-            dataSource.subscribe(new BaseBitmapDataSubscriber() {
-                @Override
-                protected void onNewResultImpl(Bitmap bitmap) {
-                    if (bitmap != null && getResources() != null) {
-                        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-                        roundedBitmapDrawable.setCircular(true);
-                        roundedBitmapDrawable.setAntiAlias(true);
-                        menuItem.setIcon(roundedBitmapDrawable);
-                    }
-                }
-
-                @Override
-                protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                    menuItem.setIcon(R.drawable.ic_settings_white_24dp);
-                }
-            }, UiThreadImmediateExecutorService.getInstance());
-        }
-    }
-
-    @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-        currentUser = userUtils.getCurrentUser();
-
-        if (currentUser != null) {
-            credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
-            shouldUseLastMessageLayout = currentUser.hasSpreedFeatureCapability("last-room-activity");
-            fetchData(false);
-        }
-    }
-
-
-    private void initSearchView() {
-        if (getActivity() != null) {
-            SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-            if (searchItem != null) {
-                searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-                searchView.setMaxWidth(Integer.MAX_VALUE);
-                searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
-                int imeOptions = EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
-                    imeOptions |= EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
-                }
-                searchView.setImeOptions(imeOptions);
-                searchView.setQueryHint(getResources().getString(R.string.nc_search));
-                if (searchManager != null) {
-                    searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-                }
-                searchView.setOnQueryTextListener(this);
-            }
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                ArrayList<String> names = new ArrayList<>();
-                names.add("userAvatar.transitionTag");
-                getRouter().pushController((RouterTransaction.with(new SettingsController())
-                        .pushChangeHandler(new TransitionChangeHandlerCompat(new SharedElementTransition(names), new VerticalChangeHandler()))
-                        .popChangeHandler(new TransitionChangeHandlerCompat(new SharedElementTransition(names), new VerticalChangeHandler()))));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
-        searchItem = menu.findItem(R.id.action_search);
-        initSearchView();
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        searchItem.setVisible(callItems.size() > 0);
-        if (adapter.hasFilter()) {
-            searchItem.expandActionView();
-            searchView.setQuery(adapter.getFilter(String.class), false);
-        }
-
-        MenuItem menuItem = menu.findItem(R.id.action_settings);
-        loadUserAvatar(menuItem);
-    }
-
-    private void fetchData(boolean fromBottomSheet) {
-        isRefreshing = true;
-
-        callItems = new ArrayList<>();
-
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(currentUser.getBaseUrl()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .as(AutoDispose.autoDisposable(getScopeProvider()))
-                .subscribe(roomsOverall -> {
-
-                    if (adapterWasNull) {
-                        adapterWasNull = false;
-                        //progressBarView.setVisibility(View.GONE);
-                    }
+          }
 
                     /*if (roomsOverall.getOcs().getData().size() > 0) {
                         if (emptyLayoutView.getVisibility() != View.GONE) {
@@ -331,55 +340,54 @@ public class ConversationsListController extends BaseController implements Searc
                         }
                     }*/
 
-                    Conversation conversation;
-                    for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
-                        conversation = roomsOverall.getOcs().getData().get(i);
-                        if (shouldUseLastMessageLayout) {
-                            if (getActivity() != null) {
-                                ConversationItem conversationItem = new ConversationItem(conversation
-                                        , currentUser, getActivity());
-                                callItems.add(conversationItem);
-                            }
-                        } else {
-                            CallItem callItem = new CallItem(conversation, currentUser);
-                            callItems.add(callItem);
-                        }
-                    }
+          Conversation conversation;
+          for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
+            conversation = roomsOverall.getOcs().getData().get(i);
+            if (shouldUseLastMessageLayout) {
+              if (getActivity() != null) {
+                ConversationItem conversationItem = new ConversationItem(conversation
+                    , currentUser, getActivity());
+                callItems.add(conversationItem);
+              }
+            } else {
+              CallItem callItem = new CallItem(conversation, currentUser);
+              callItems.add(callItem);
+            }
+          }
 
-                    if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
-                        Collections.sort(callItems, (o1, o2) -> {
-                            Conversation conversation1 = ((ConversationItem) o1).getModel();
-                            Conversation conversation2 = ((ConversationItem) o2).getModel();
-                            return new CompareToBuilder()
-                                    .append(conversation2.isFavorite(), conversation1.isFavorite())
-                                    .append(conversation2.getLastActivity(), conversation1.getLastActivity())
-                                    .toComparison();
-                        });
-                    } else {
-                        Collections.sort(callItems, (callItem, t1) ->
-                                Long.compare(((CallItem) t1).getModel().getLastPing(),
-                                        ((CallItem) callItem).getModel().getLastPing()));
-                    }
+          if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
+            Collections.sort(callItems, (o1, o2) -> {
+              Conversation conversation1 = ((ConversationItem) o1).getModel();
+              Conversation conversation2 = ((ConversationItem) o2).getModel();
+              return new CompareToBuilder()
+                  .append(conversation2.isFavorite(), conversation1.isFavorite())
+                  .append(conversation2.getLastActivity(), conversation1.getLastActivity())
+                  .toComparison();
+            });
+          } else {
+            Collections.sort(callItems, (callItem, t1) ->
+                Long.compare(((CallItem) t1).getModel().getLastPing(),
+                    ((CallItem) callItem).getModel().getLastPing()));
+          }
 
-                    adapter.updateDataSet(callItems, false);
+          adapter.updateDataSet(callItems, false);
 
-                    if (searchItem != null) {
-                        searchItem.setVisible(callItems.size() > 0);
-                    }
+          if (searchItem != null) {
+            searchItem.setVisible(callItems.size() > 0);
+          }
 
-                    if (swipeRefreshLayout != null) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+          if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+          }
+        }, throwable -> {
+          if (searchItem != null) {
+            searchItem.setVisible(false);
+          }
 
-                }, throwable -> {
-                    if (searchItem != null) {
-                        searchItem.setVisible(false);
-                    }
-
-                    if (throwable instanceof HttpException) {
-                        HttpException exception = (HttpException) throwable;
-                        switch (exception.code()) {
-                            case 401:
+          if (throwable instanceof HttpException) {
+            HttpException exception = (HttpException) throwable;
+            switch (exception.code()) {
+              case 401:
                                 /*if (getParentController() != null &&
                                         getParentController().getRouter() != null) {
                                     getParentController().getRouter().pushController((RouterTransaction.with
@@ -388,325 +396,333 @@ public class ConversationsListController extends BaseController implements Searc
                                             .pushChangeHandler(new VerticalChangeHandler())
                                             .popChangeHandler(new VerticalChangeHandler())));
                                 }*/
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    if (swipeRefreshLayout != null) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, () -> {
-                    if (swipeRefreshLayout != null) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                break;
+              default:
+                break;
+            }
+          }
+          if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+          }
+        }, () -> {
+          if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+          }
 
-                    if (fromBottomSheet) {
-                        new Handler().postDelayed(() -> {
-                            bottomSheet.setCancelable(true);
-                            if (bottomSheet.isShowing()) {
-                                bottomSheet.cancel();
-                            }
-                        }, 2500);
-                    }
+          if (fromBottomSheet) {
+            new Handler().postDelayed(() -> {
+              bottomSheet.setCancelable(true);
+              if (bottomSheet.isShowing()) {
+                bottomSheet.cancel();
+              }
+            }, 2500);
+          }
 
-                    isRefreshing = false;
-                });
-
-    }
-
-    private void prepareViews() {
-        SmoothScrollLinearLayoutManager layoutManager =
-                new SmoothScrollLinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-
-        recyclerView.setAdapter(adapter);
-
-        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-
-        //emptyLayoutView.setOnClickListener(v -> showNewConversationsScreen());
-        floatingActionButton.setOnClickListener(v -> {
-            showNewConversationsScreen();
+          isRefreshing = false;
         });
+  }
 
-        fastScroller.addOnScrollStateChangeListener(this);
-        adapter.setFastScroller(fastScroller);
+  private void prepareViews() {
+    SmoothScrollLinearLayoutManager layoutManager =
+        new SmoothScrollLinearLayoutManager(getActivity());
+    recyclerView.setLayoutManager(layoutManager);
+    recyclerView.setHasFixedSize(true);
 
-        fastScroller.setBubbleTextCreator(position -> {
-            String displayName;
-            if (shouldUseLastMessageLayout) {
-                displayName = ((ConversationItem) adapter.getItem(position)).getModel().getDisplayName();
-            } else {
-                displayName = ((CallItem) adapter.getItem(position)).getModel().getDisplayName();
-            }
+    recyclerView.setAdapter(adapter);
 
-            if (displayName.length() > 8) {
-                displayName = displayName.substring(0, 4) + "...";
-            }
-            return displayName;
-        });
+    swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
+    swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+
+    //emptyLayoutView.setOnClickListener(v -> showNewConversationsScreen());
+    floatingActionButton.setOnClickListener(v -> {
+      showNewConversationsScreen();
+    });
+
+    fastScroller.addOnScrollStateChangeListener(this);
+    adapter.setFastScroller(fastScroller);
+
+    fastScroller.setBubbleTextCreator(position -> {
+      String displayName;
+      if (shouldUseLastMessageLayout) {
+        displayName = ((ConversationItem) adapter.getItem(position)).getModel().getDisplayName();
+      } else {
+        displayName = ((CallItem) adapter.getItem(position)).getModel().getDisplayName();
+      }
+
+      if (displayName.length() > 8) {
+        displayName = displayName.substring(0, 4) + "...";
+      }
+      return displayName;
+    });
+  }
+
+  private void showNewConversationsScreen() {
+    Bundle bundle = new Bundle();
+    bundle.putBoolean(BundleKeys.INSTANCE.getKEY_NEW_CONVERSATION(), true);
+    getRouter().pushController((RouterTransaction.with(new ContactsController(bundle))
+        .pushChangeHandler(new HorizontalChangeHandler())
+        .popChangeHandler(new HorizontalChangeHandler())));
+  }
+
+  @Override
+  public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+    saveStateHandler.saveInstanceState(outState);
+
+    if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
+      outState.putString(KEY_SEARCH_QUERY, searchView.getQuery().toString());
     }
 
-    private void showNewConversationsScreen() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(BundleKeys.INSTANCE.getKEY_NEW_CONVERSATION(), true);
-        getRouter().pushController((RouterTransaction.with(new ContactsController(bundle))
-                .pushChangeHandler(new HorizontalChangeHandler())
-                .popChangeHandler(new HorizontalChangeHandler())));
+    super.onSaveViewState(view, outState);
+  }
+
+  @Override
+  public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+    super.onRestoreViewState(view, savedViewState);
+    searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
+    if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
+      //Dialog won't be restarted automatically, so we need to call this method.
+      //Each dialog knows how to restore its viewState
+      showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState);
+    }
+  }
+
+  @Override
+  public boolean onQueryTextChange(String newText) {
+    if (adapter.hasNewFilter(newText) || !TextUtils.isEmpty(searchQuery)) {
+
+      if (!TextUtils.isEmpty(searchQuery)) {
+        adapter.setFilter(searchQuery);
+        searchQuery = "";
+        adapter.filterItems();
+      } else {
+        adapter.setFilter(newText);
+        adapter.filterItems(300);
+      }
     }
 
-    @Override
-    public void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-        saveStateHandler.saveInstanceState(outState);
-
-        if (searchView != null && !TextUtils.isEmpty(searchView.getQuery())) {
-            outState.putString(KEY_SEARCH_QUERY, searchView.getQuery().toString());
-        }
-
-        super.onSaveViewState(view, outState);
+    if (swipeRefreshLayout != null) {
+      swipeRefreshLayout.setEnabled(!adapter.hasFilter());
     }
 
-    @Override
-    public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
-        super.onRestoreViewState(view, savedViewState);
-        searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
-        if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
-            //Dialog won't be restarted automatically, so we need to call this method.
-            //Each dialog knows how to restore its viewState
-            showLovelyDialog(LovelySaveStateHandler.getSavedDialogId(savedViewState), savedViewState);
-        }
-    }
+    return true;
+  }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        if (adapter.hasNewFilter(newText) || !TextUtils.isEmpty(searchQuery)) {
+  @Override
+  public boolean onQueryTextSubmit(String query) {
+    return onQueryTextChange(query);
+  }
 
-            if (!TextUtils.isEmpty(searchQuery)) {
-                adapter.setFilter(searchQuery);
-                searchQuery = "";
-                adapter.filterItems();
-            } else {
-                adapter.setFilter(newText);
-                adapter.filterItems(300);
-            }
-        }
-
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setEnabled(!adapter.hasFilter());
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return onQueryTextChange(query);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BottomSheetLockEvent bottomSheetLockEvent) {
-        if (bottomSheet != null) {
-            if (!bottomSheetLockEvent.isCancelable()) {
-                bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
-            } else {
-                if (bottomSheetLockEvent.getDelay() != 0 && bottomSheetLockEvent.isShouldRefreshData()) {
-                    fetchData(true);
-                } else {
-                    bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
-                    if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
-                        bottomSheet.cancel();
-                    }
-                }
-            }
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MoreMenuClickEvent moreMenuClickEvent) {
-        Bundle bundle = new Bundle();
-        Conversation conversation = moreMenuClickEvent.getConversation();
-        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
-        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_MENU_TYPE(), Parcels.wrap(CallMenuController.MenuType.REGULAR));
-
-        prepareAndShowBottomSheetWithBundle(bundle, true);
-    }
-
-    private void prepareAndShowBottomSheetWithBundle(Bundle bundle, boolean shouldShowCallMenuController) {
-        if (view == null) {
-            view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
-        }
-
-        if (shouldShowCallMenuController) {
-            getChildRouter((ViewGroup) view).setRoot(
-                    RouterTransaction.with(new CallMenuController(bundle, this))
-                            .popChangeHandler(new VerticalChangeHandler())
-                            .pushChangeHandler(new VerticalChangeHandler()));
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onMessageEvent(BottomSheetLockEvent bottomSheetLockEvent) {
+    if (bottomSheet != null) {
+      if (!bottomSheetLockEvent.isCancelable()) {
+        bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
+      } else {
+        if (bottomSheetLockEvent.getDelay() != 0 && bottomSheetLockEvent.isShouldRefreshData()) {
+          fetchData(true);
         } else {
-            getChildRouter((ViewGroup) view).setRoot(
-                    RouterTransaction.with(new EntryMenuController(bundle))
-                            .popChangeHandler(new VerticalChangeHandler())
-                            .pushChangeHandler(new VerticalChangeHandler()));
+          bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
+          if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
+            bottomSheet.cancel();
+          }
+        }
+      }
+    }
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN)
+  public void onMessageEvent(MoreMenuClickEvent moreMenuClickEvent) {
+    Bundle bundle = new Bundle();
+    Conversation conversation = moreMenuClickEvent.getConversation();
+    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
+    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_MENU_TYPE(),
+        Parcels.wrap(CallMenuController.MenuType.REGULAR));
+
+    prepareAndShowBottomSheetWithBundle(bundle, true);
+  }
+
+  private void prepareAndShowBottomSheetWithBundle(Bundle bundle,
+      boolean shouldShowCallMenuController) {
+    if (view == null) {
+      view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
+    }
+
+    if (shouldShowCallMenuController) {
+      getChildRouter((ViewGroup) view).setRoot(
+          RouterTransaction.with(new CallMenuController(bundle, this))
+              .popChangeHandler(new VerticalChangeHandler())
+              .pushChangeHandler(new VerticalChangeHandler()));
+    } else {
+      getChildRouter((ViewGroup) view).setRoot(
+          RouterTransaction.with(new EntryMenuController(bundle))
+              .popChangeHandler(new VerticalChangeHandler())
+              .pushChangeHandler(new VerticalChangeHandler()));
+    }
+
+    if (bottomSheet == null) {
+      bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
+    }
+
+    bottomSheet.setOnShowListener(
+        dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true));
+    bottomSheet.setOnDismissListener(
+        dialog -> getActionBar().setDisplayHomeAsUpEnabled(getRouter().getBackstackSize() > 1));
+    bottomSheet.show();
+  }
+
+  @Override
+  public String getTitle() {
+    return getResources().getString(R.string.nc_app_name);
+  }
+
+  @Override
+  public void onFastScrollerStateChange(boolean scrolling) {
+    swipeRefreshLayout.setEnabled(!scrolling);
+  }
+
+  @Override
+  public boolean onItemClick(View view, int position) {
+    Object clickedItem = adapter.getItem(position);
+    if (clickedItem != null && getActivity() != null) {
+      Conversation conversation;
+      if (shouldUseLastMessageLayout) {
+        conversation = ((ConversationItem) clickedItem).getModel();
+      } else {
+        conversation = ((CallItem) clickedItem).getModel();
+      }
+
+      Bundle bundle = new Bundle();
+      bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
+      bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
+      bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
+
+      if (conversation.hasPassword && (conversation.getParticipantType()
+          .equals(Participant.ParticipantType.GUEST) ||
+          conversation.getParticipantType()
+              .equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
+        bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
+        prepareAndShowBottomSheetWithBundle(bundle, false);
+      } else {
+        currentUser = userUtils.getCurrentUser();
+
+        if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
+          bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
+              Parcels.wrap(conversation));
+          ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+              conversation.getToken(), bundle, false);
+        } else {
+          overridePushHandler(new NoOpControllerChangeHandler());
+          overridePopHandler(new NoOpControllerChangeHandler());
+          Intent callIntent = new Intent(getActivity(), MagicCallActivity.class);
+          callIntent.putExtras(bundle);
+          startActivity(callIntent);
+        }
+      }
+    }
+
+    return true;
+  }
+
+  @Override
+  public void onItemLongClick(int position) {
+    if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
+      Object clickedItem = adapter.getItem(position);
+      if (clickedItem != null) {
+        Conversation conversation;
+        if (shouldUseLastMessageLayout) {
+          conversation = ((ConversationItem) clickedItem).getModel();
+        } else {
+          conversation = ((CallItem) clickedItem).getModel();
         }
 
-        if (bottomSheet == null) {
-            bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
-        }
-
-        bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true));
-        bottomSheet.setOnDismissListener(dialog -> getActionBar().setDisplayHomeAsUpEnabled(getRouter().getBackstackSize() > 1));
-        bottomSheet.show();
+        MoreMenuClickEvent moreMenuClickEvent = new MoreMenuClickEvent(conversation);
+        onMessageEvent(moreMenuClickEvent);
+      }
     }
+  }
 
-
-    @Override
-    public String getTitle() {
-        return getResources().getString(R.string.nc_app_name);
+  @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
+  public void onMessageEvent(EventStatus eventStatus) {
+    if (currentUser != null && eventStatus.getUserId() == currentUser.getId()) {
+      switch (eventStatus.getEventType()) {
+        case CONVERSATION_UPDATE:
+          if (eventStatus.isAllGood() && !isRefreshing) {
+            fetchData(false);
+          }
+          break;
+        default:
+          break;
+      }
     }
+  }
 
-    @Override
-    public void onFastScrollerStateChange(boolean scrolling) {
-        swipeRefreshLayout.setEnabled(!scrolling);
+  private void showDeleteConversationDialog(Bundle savedInstanceState) {
+    if (getActivity() != null
+        && conversationMenuBundle != null
+        && currentUser != null
+        && conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID())
+        == currentUser.getId()) {
+
+      Conversation conversation =
+          Parcels.unwrap(conversationMenuBundle.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
+
+      if (conversation != null) {
+        new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+            .setTopColorRes(R.color.nc_darkRed)
+            .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
+                R.drawable.ic_delete_black_24dp, R.color.bg_default))
+            .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
+            .setTitle(R.string.nc_delete_call)
+            .setMessage(conversation.getDeleteWarningMessage())
+            .setPositiveButton(R.string.nc_delete, new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                Data.Builder data = new Data.Builder();
+                data.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
+                    conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()));
+                data.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
+                conversationMenuBundle = null;
+                deleteConversation(data.build());
+              }
+            })
+            .setNegativeButton(R.string.nc_cancel, new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                conversationMenuBundle = null;
+              }
+            })
+            .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler)
+            .setSavedInstanceState(savedInstanceState)
+            .show();
+      }
     }
+  }
 
-    @Override
-    public boolean onItemClick(View view, int position) {
-        Object clickedItem = adapter.getItem(position);
-        if (clickedItem != null && getActivity() != null) {
-            Conversation conversation;
-            if (shouldUseLastMessageLayout) {
-                conversation = ((ConversationItem) clickedItem).getModel();
-            } else {
-                conversation = ((CallItem) clickedItem).getModel();
-            }
+  private void deleteConversation(Data data) {
+    OneTimeWorkRequest deleteConversationWorker =
+        new OneTimeWorkRequest.Builder(DeleteConversationWorker.class).setInputData(data).build();
+    WorkManager.getInstance().enqueue(deleteConversationWorker);
+  }
 
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
-            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
-            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
-
-            if (conversation.hasPassword && (conversation.getParticipantType().equals(Participant.ParticipantType.GUEST) ||
-                    conversation.getParticipantType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
-                bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
-                prepareAndShowBottomSheetWithBundle(bundle, false);
-            } else {
-                currentUser = userUtils.getCurrentUser();
-
-                if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
-                    ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                            conversation.getToken(), bundle, false);
-                } else {
-                    overridePushHandler(new NoOpControllerChangeHandler());
-                    overridePopHandler(new NoOpControllerChangeHandler());
-                    Intent callIntent = new Intent(getActivity(), MagicCallActivity.class);
-                    callIntent.putExtras(bundle);
-                    startActivity(callIntent);
-                }
-            }
-        }
-
-        return true;
+  private void showLovelyDialog(int dialogId, Bundle savedInstanceState) {
+    switch (dialogId) {
+      case ID_DELETE_CONVERSATION_DIALOG:
+        showDeleteConversationDialog(savedInstanceState);
+        break;
+      default:
+        break;
     }
+  }
 
-    @Override
-    public void onItemLongClick(int position) {
-        if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
-            Object clickedItem = adapter.getItem(position);
-            if (clickedItem != null) {
-                Conversation conversation;
-                if (shouldUseLastMessageLayout) {
-                    conversation = ((ConversationItem) clickedItem).getModel();
-                } else {
-                    conversation = ((CallItem) clickedItem).getModel();
-                }
-
-                MoreMenuClickEvent moreMenuClickEvent = new MoreMenuClickEvent(conversation);
-                onMessageEvent(moreMenuClickEvent);
-            }
-        }
+  @Override
+  public void openLovelyDialogWithIdAndBundle(int dialogId, Bundle bundle) {
+    conversationMenuBundle = bundle;
+    switch (dialogId) {
+      case ID_DELETE_CONVERSATION_DIALOG:
+        showLovelyDialog(dialogId, null);
+        break;
+      default:
+        break;
     }
-
-    @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
-    public void onMessageEvent(EventStatus eventStatus) {
-        if (currentUser != null && eventStatus.getUserId() == currentUser.getId()) {
-            switch (eventStatus.getEventType()) {
-                case CONVERSATION_UPDATE:
-                    if (eventStatus.isAllGood() && !isRefreshing) {
-                        fetchData(false);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    private void showDeleteConversationDialog(Bundle savedInstanceState) {
-        if (getActivity() != null && conversationMenuBundle != null && currentUser != null && conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()) == currentUser.getId()) {
-
-            Conversation conversation =
-                    Parcels.unwrap(conversationMenuBundle.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
-
-            if (conversation != null) {
-                new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
-                        .setTopColorRes(R.color.nc_darkRed)
-                        .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
-                                R.drawable.ic_delete_black_24dp, R.color.bg_default))
-                        .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
-                        .setTitle(R.string.nc_delete_call)
-                        .setMessage(conversation.getDeleteWarningMessage())
-                        .setPositiveButton(R.string.nc_delete, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Data.Builder data = new Data.Builder();
-                                data.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
-                                        conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()));
-                                data.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
-                                conversationMenuBundle = null;
-                                deleteConversation(data.build());
-                            }
-                        })
-                        .setNegativeButton(R.string.nc_cancel, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                conversationMenuBundle = null;
-                            }
-                        })
-                        .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler)
-                        .setSavedInstanceState(savedInstanceState)
-                        .show();
-            }
-        }
-    }
-
-    private void deleteConversation(Data data) {
-        OneTimeWorkRequest deleteConversationWorker =
-                new OneTimeWorkRequest.Builder(DeleteConversationWorker.class).setInputData(data).build();
-        WorkManager.getInstance().enqueue(deleteConversationWorker);
-    }
-
-    private void showLovelyDialog(int dialogId, Bundle savedInstanceState) {
-        switch (dialogId) {
-            case ID_DELETE_CONVERSATION_DIALOG:
-                showDeleteConversationDialog(savedInstanceState);
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void openLovelyDialogWithIdAndBundle(int dialogId, Bundle bundle) {
-        conversationMenuBundle = bundle;
-        switch (dialogId) {
-            case ID_DELETE_CONVERSATION_DIALOG:
-                showLovelyDialog(dialogId, null);
-                break;
-            default:
-                break;
-        }
-
-    }
+  }
 }

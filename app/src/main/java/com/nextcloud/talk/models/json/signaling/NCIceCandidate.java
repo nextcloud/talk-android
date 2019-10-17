@@ -29,12 +29,12 @@ import org.parceler.Parcel;
 @JsonObject
 @Parcel
 public class NCIceCandidate {
-    @JsonField(name = "sdpMLineIndex")
-    int sdpMLineIndex;
+  @JsonField(name = "sdpMLineIndex")
+  int sdpMLineIndex;
 
-    @JsonField(name = "sdpMid")
-    String sdpMid;
+  @JsonField(name = "sdpMid")
+  String sdpMid;
 
-    @JsonField(name = "candidate")
-    String candidate;
+  @JsonField(name = "candidate")
+  String candidate;
 }

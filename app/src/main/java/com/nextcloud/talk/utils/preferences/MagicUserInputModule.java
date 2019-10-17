@@ -40,55 +40,59 @@ import javax.inject.Inject;
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicUserInputModule extends StandardUserInputModule {
 
-    @Inject
-    AppPreferences appPreferences;
+  @Inject
+  AppPreferences appPreferences;
 
-    private List<String> keysWithIntegerInput = new ArrayList<>();
+  private List<String> keysWithIntegerInput = new ArrayList<>();
 
-    public MagicUserInputModule(Context context) {
-        super(context);
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+  public MagicUserInputModule(Context context) {
+    super(context);
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
+  }
+
+  public MagicUserInputModule(Context context, List<String> keysWithIntegerInput) {
+    super(context);
+    NextcloudTalkApplication.Companion.getSharedApplication()
+        .getComponentApplication()
+        .inject(this);
+    this.keysWithIntegerInput = keysWithIntegerInput;
+  }
+
+  @Override
+  public void showEditTextInput(
+      String key,
+      CharSequence title,
+      CharSequence defaultValue,
+      final Listener<String> listener) {
+    final View view = LayoutInflater.from(context).inflate(R.layout.dialog_edittext, null);
+    final EditText inputField = view.findViewById(R.id.mp_text_input);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
+      inputField.setImeOptions(
+          inputField.getImeOptions() | EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);
     }
 
-    public MagicUserInputModule(Context context, List<String> keysWithIntegerInput) {
-        super(context);
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        this.keysWithIntegerInput = keysWithIntegerInput;
+    if (defaultValue != null) {
+      inputField.setText(defaultValue);
+      inputField.setSelection(defaultValue.length());
     }
 
-    @Override
-    public void showEditTextInput(
-            String key,
-            CharSequence title,
-            CharSequence defaultValue,
-            final Listener<String> listener) {
-        final View view = LayoutInflater.from(context).inflate(R.layout.dialog_edittext, null);
-        final EditText inputField = view.findViewById(R.id.mp_text_input);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.getIsKeyboardIncognito()) {
-            inputField.setImeOptions(inputField.getImeOptions() | EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);
-        }
-
-        if (defaultValue != null) {
-            inputField.setText(defaultValue);
-            inputField.setSelection(defaultValue.length());
-        }
-
-        if (keysWithIntegerInput.contains(key)) {
-            inputField.setInputType(InputType.TYPE_CLASS_NUMBER);
-        }
-
-        final Dialog dialog = new AlertDialog.Builder(context)
-                .setTitle(title)
-                .setView(view)
-                .show();
-        view.findViewById(R.id.mp_btn_confirm).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onInput(inputField.getText().toString());
-                dialog.dismiss();
-            }
-        });
+    if (keysWithIntegerInput.contains(key)) {
+      inputField.setInputType(InputType.TYPE_CLASS_NUMBER);
     }
 
+    final Dialog dialog = new AlertDialog.Builder(context)
+        .setTitle(title)
+        .setView(view)
+        .show();
+    view.findViewById(R.id.mp_btn_confirm).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        listener.onInput(inputField.getText().toString());
+        dialog.dismiss();
+      }
+    });
+  }
 }

@@ -33,98 +33,103 @@ import java.util.HashMap;
 
 @Entity
 public interface User extends Parcelable, Persistable, Serializable {
-    String TAG = "UserEntity";
+  String TAG = "UserEntity";
 
-    @Key
-    @Generated
-    long getId();
+  @Key
+  @Generated
+  long getId();
 
-    String getUserId();
+  String getUserId();
 
-    String getUsername();
+  String getUsername();
 
-    String getBaseUrl();
+  String getBaseUrl();
 
-    String getToken();
+  String getToken();
 
-    String getDisplayName();
+  String getDisplayName();
 
-    String getPushConfigurationState();
+  String getPushConfigurationState();
 
-    String getCapabilities();
+  String getCapabilities();
 
-    String getClientCertificate();
+  String getClientCertificate();
 
-    String getExternalSignalingServer();
+  String getExternalSignalingServer();
 
-    boolean getCurrent();
+  boolean getCurrent();
 
-    boolean getScheduledForDeletion();
+  boolean getScheduledForDeletion();
 
-    default boolean hasNotificationsCapability(String capabilityName) {
-        if (getCapabilities() != null) {
-            try {
-                Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
-                if (capabilities.getNotificationsCapability() != null && capabilities.getNotificationsCapability().getFeatures() != null) {
-                    return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to get capabilities for the user");
-            }
+  default boolean hasNotificationsCapability(String capabilityName) {
+    if (getCapabilities() != null) {
+      try {
+        Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+        if (capabilities.getNotificationsCapability() != null
+            && capabilities.getNotificationsCapability().getFeatures() != null) {
+          return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
         }
-        return false;
+      } catch (IOException e) {
+        Log.e(TAG, "Failed to get capabilities for the user");
+      }
     }
+    return false;
+  }
 
-    default boolean hasExternalCapability(String capabilityName) {
-        if (getCapabilities() != null) {
-            try {
-                Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
-                if (capabilities.getExternalCapability() != null && capabilities.getExternalCapability().containsKey("v1")) {
-                    return capabilities.getExternalCapability().get("v1").contains("capabilityName");
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to get capabilities for the user");
-            }
+  default boolean hasExternalCapability(String capabilityName) {
+    if (getCapabilities() != null) {
+      try {
+        Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+        if (capabilities.getExternalCapability() != null && capabilities.getExternalCapability()
+            .containsKey("v1")) {
+          return capabilities.getExternalCapability().get("v1").contains("capabilityName");
         }
-        return false;
+      } catch (IOException e) {
+        Log.e(TAG, "Failed to get capabilities for the user");
+      }
     }
+    return false;
+  }
 
-    default boolean hasSpreedFeatureCapability(String capabilityName) {
-        if (getCapabilities() != null) {
-            try {
-                Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
-                if (capabilities != null && capabilities.getSpreedCapability() != null &&
-                        capabilities.getSpreedCapability().getFeatures() != null) {
-                    return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to get capabilities for the user");
-            }
+  default boolean hasSpreedFeatureCapability(String capabilityName) {
+    if (getCapabilities() != null) {
+      try {
+        Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+        if (capabilities != null && capabilities.getSpreedCapability() != null &&
+            capabilities.getSpreedCapability().getFeatures() != null) {
+          return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
         }
-        return false;
+      } catch (IOException e) {
+        Log.e(TAG, "Failed to get capabilities for the user");
+      }
     }
+    return false;
+  }
 
-    default int getMessageMaxLength() {
-        if (getCapabilities() != null) {
-            Capabilities capabilities = null;
-            try {
-                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
-                if (capabilities != null && capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getConfig() != null
-                        && capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
-                    HashMap<String, String> chatConfigHashMap = capabilities.getSpreedCapability().getConfig().get("chat");
-                    if (chatConfigHashMap != null && chatConfigHashMap.containsKey("max-length")) {
-                        int chatSize = Integer.parseInt(chatConfigHashMap.get("max-length"));
-                        if (chatSize > 0) {
-                            return chatSize;
-                        } else {
-                            return 1000;
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+  default int getMessageMaxLength() {
+    if (getCapabilities() != null) {
+      Capabilities capabilities = null;
+      try {
+        capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+        if (capabilities != null
+            && capabilities.getSpreedCapability() != null
+            && capabilities.getSpreedCapability().getConfig() != null
+            && capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
+          HashMap<String, String> chatConfigHashMap =
+              capabilities.getSpreedCapability().getConfig().get("chat");
+          if (chatConfigHashMap != null && chatConfigHashMap.containsKey("max-length")) {
+            int chatSize = Integer.parseInt(chatConfigHashMap.get("max-length"));
+            if (chatSize > 0) {
+              return chatSize;
+            } else {
+              return 1000;
             }
+          }
         }
-        return 1000;
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
+    return 1000;
+  }
 }

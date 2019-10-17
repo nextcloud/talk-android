@@ -29,6 +29,6 @@ import org.parceler.Parcel;
 @Data
 @JsonObject
 public class Value {
-    @JsonField(name = "shareWith")
-    String shareWith;
+  @JsonField(name = "shareWith")
+  String shareWith;
 }

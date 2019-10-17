@@ -27,9 +27,9 @@ import com.nextcloud.talk.models.json.generic.GenericOCS;
 
 @JsonObject
 public class AddParticipantOCS extends GenericOCS {
-    /*
-        Returned room will have only type set, and sometimes even that will be null
-     */
-    @JsonField(name = "data")
-    Conversation data;
+  /*
+      Returned room will have only type set, and sometimes even that will be null
+   */
+  @JsonField(name = "data")
+  Conversation data;
 }
