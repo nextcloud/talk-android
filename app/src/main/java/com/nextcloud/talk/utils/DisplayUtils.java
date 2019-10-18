@@ -246,9 +246,10 @@ public class DisplayUtils {
   public static Drawable getTintedDrawable(Resources res, @DrawableRes int drawableResId,
       @ColorRes int colorResId) {
     Drawable drawable = res.getDrawable(drawableResId);
+    Drawable mutableDrawable = drawable.mutate();
     int color = res.getColor(colorResId);
-    drawable.setTint(color);
-    return drawable;
+    mutableDrawable.setTint(color);
+    return mutableDrawable;
   }
 
   public static Drawable getDrawableForMentionChipSpan(Context context, String id,

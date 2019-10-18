@@ -18,36 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.domain.usecases.base
+package com.nextcloud.talk.newarch.domain.usecases
 
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkRepository
+import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
+import org.koin.core.parameter.DefinitionParameters
 
-abstract class UseCase<Type, in Params>(private val apiErrorHandler: ApiErrorHandler?) where Type : Any {
+class LeaveConversationUseCase constructor(
+  private val nextcloudTalkRepository: NextcloudTalkRepository,
+  apiErrorHandler: ApiErrorHandler?
+) : UseCase<GenericOverall, Any?>(apiErrorHandler) {
 
-  abstract suspend fun run(params: Params? = null): Type
-  lateinit var user: UserEntity
-  fun isUserInitialized() = ::user.isInitialized
-
-  fun invoke(
-    scope: CoroutineScope,
-    params: Params?,
-    onResult: (UseCaseResponse<Type>)
-  ) {
-    val backgroundJob = scope.async { run(params) }
-    scope.launch {
-      try {
-        backgroundJob.await()
-            .let {
-              onResult.onSuccess(it)
-            }
-      } catch (e: Exception) {
-        onResult.onError(apiErrorHandler?.traceErrorException(e))
-      }
-    }
+  override suspend fun run(params: Any?): GenericOverall {
+    val definitionParameters = params as DefinitionParameters
+    return nextcloudTalkRepository.leaveConversationForUser(user, definitionParameters.get(0))
   }
 }

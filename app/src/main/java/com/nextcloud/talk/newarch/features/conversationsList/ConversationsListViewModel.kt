@@ -21,6 +21,7 @@
 package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.Application
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
@@ -33,29 +34,42 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
 import com.nextcloud.talk.R
+import com.nextcloud.talk.R.drawable
+import com.nextcloud.talk.R.string
+import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
+import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
+import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
+import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
-import com.nextcloud.talk.newarch.mvvm.ViewState
-import com.nextcloud.talk.newarch.mvvm.ViewState.FAILED
-import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED
-import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED_EMPTY
-import com.nextcloud.talk.newarch.mvvm.ViewState.LOADING
+import com.nextcloud.talk.newarch.utils.ViewState
+import com.nextcloud.talk.newarch.utils.ViewState.FAILED
+import com.nextcloud.talk.newarch.utils.ViewState.LOADED
+import com.nextcloud.talk.newarch.utils.ViewState.LOADED_EMPTY
+import com.nextcloud.talk.newarch.utils.ViewState.LOADING
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
 import org.apache.commons.lang3.builder.CompareToBuilder
+import org.koin.core.parameter.parametersOf
 
 class ConversationsListViewModel constructor(
   application: Application,
-  private val conversationsUseCase: GetConversationsUseCase,
+  private val getConversationsUseCase: GetConversationsUseCase,
+  private val setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
+  private val leaveConversationUseCase: LeaveConversationUseCase,
+  private val deleteConversationUseCase: DeleteConversationUseCase,
   private val userUtils: UserUtils
 ) : BaseViewModel<ConversationsListView>(application) {
 
-  val conversationsListData = MutableLiveData<List<Conversation>>()
+  private var conversations: MutableList<Conversation> = mutableListOf()
+  val conversationsLiveListData = MutableLiveData<List<Conversation>>()
   val viewState = MutableLiveData<ViewState>(LOADING)
   var messageData: String? = null
   val searchQuery = MutableLiveData<String>()
@@ -63,23 +77,91 @@ class ConversationsListViewModel constructor(
   var currentUserAvatar: MutableLiveData<Drawable> = MutableLiveData()
     get() {
       if (field.value == null) {
-        field.value = context.resources.getDrawable(R.drawable.ic_settings_white_24dp)
+        field.value = context.resources.getDrawable(drawable.ic_settings_white_24dp)
       }
 
       return field
     }
 
+  fun leaveConversation(conversation: Conversation) {
+    leaveConversationUseCase.user = currentUser
+
+    setConversationUpdateStatus(conversation, true)
+
+    leaveConversationUseCase.invoke(viewModelScope, parametersOf(conversation),
+        object : UseCaseResponse<GenericOverall> {
+          override fun onSuccess(result: GenericOverall) {
+            // TODO: Use binary search to find the right room
+            conversations.find { it.roomId == conversation.roomId }?.let {
+              conversations.remove(it)
+              conversationsLiveListData.value = conversations
+            }
+          }
+
+          override fun onError(errorModel: ErrorModel?) {
+            setConversationUpdateStatus(conversation, false)
+          }
+        })
+  }
+
+  fun deleteConversation(conversation: Conversation) {
+    deleteConversationUseCase.user = currentUser
+
+    setConversationUpdateStatus(conversation, true)
+
+    deleteConversationUseCase.invoke(viewModelScope, parametersOf(conversation),
+        object : UseCaseResponse<GenericOverall> {
+          override fun onSuccess(result: GenericOverall) {
+            // TODO: Use binary search to find the right room
+            conversations.find { it.roomId == conversation.roomId }?.let {
+              conversations.remove(it)
+              conversationsLiveListData.value = conversations
+            }
+          }
+
+          override fun onError(errorModel: ErrorModel?) {
+            setConversationUpdateStatus(conversation, false)
+          }
+        })
+
+  }
+
+  fun changeFavoriteValueForConversation(
+    conversation: Conversation,
+    favorite: Boolean
+  ) {
+    setConversationFavoriteValueUseCase.user = currentUser
+
+    setConversationUpdateStatus(conversation, true)
+
+    setConversationFavoriteValueUseCase.invoke(viewModelScope, parametersOf(conversation, favorite),
+        object : UseCaseResponse<GenericOverall> {
+          override fun onSuccess(result: GenericOverall) {
+            // TODO: Use binary search to find the right room
+            conversations.find { it.roomId == conversation.roomId }?.apply {
+              updating = false
+              isFavorite = favorite
+              conversationsLiveListData.value = conversations
+            }
+          }
+
+          override fun onError(errorModel: ErrorModel?) {
+            setConversationUpdateStatus(conversation, false)
+          }
+        })
+  }
+
   fun loadConversations() {
     currentUser = userUtils.currentUser
 
-    if (viewState.value?.equals(FAILED)!! || !conversationsUseCase.isUserInitialized() ||
-        conversationsUseCase.user != currentUser
+    if (viewState.value?.equals(FAILED)!! || !getConversationsUseCase.isUserInitialized() ||
+        getConversationsUseCase.user != currentUser
     ) {
-      conversationsUseCase.user = currentUser
+      getConversationsUseCase.user = currentUser
       viewState.value = LOADING
     }
 
-    conversationsUseCase.invoke(
+    getConversationsUseCase.invoke(
         viewModelScope, null, object : UseCaseResponse<List<Conversation>> {
       override fun onSuccess(result: List<Conversation>) {
         val newConversations = result.toMutableList()
@@ -91,7 +173,8 @@ class ConversationsListViewModel constructor(
               .toComparison()
         })
 
-        conversationsListData.value = newConversations
+        conversations = newConversations
+        conversationsLiveListData.value = conversations
         viewState.value = if (newConversations.isNotEmpty()) LOADED else LOADED_EMPTY
         messageData = ""
       }
@@ -132,5 +215,89 @@ class ConversationsListViewModel constructor(
       }
     }, UiThreadImmediateExecutorService.getInstance())
 
+  }
+
+  fun getShareIntentForConversation(conversation: Conversation): Intent {
+    val sendIntent: Intent = Intent().apply {
+      action = Intent.ACTION_SEND
+      putExtra(
+          Intent.EXTRA_SUBJECT,
+          String.format(
+              context.getString(R.string.nc_share_subject),
+              context.getString(R.string.nc_app_name)
+          )
+      )
+
+      // TODO, make sure we ask for password if needed
+      putExtra(
+          Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(
+          context, null,
+          userUtils, conversation
+      )
+      )
+
+      type = "text/plain"
+    }
+
+    val intent = Intent.createChooser(sendIntent, context.getString(string.nc_share_link))
+    // TODO filter our own app once we're there
+    return intent
+  }
+
+  fun getConversationMenuItemsForConversation(conversation: Conversation): MutableList<BasicListItemWithImage> {
+    val items = mutableListOf<BasicListItemWithImage>()
+
+    if (conversation.isFavorite) {
+      items.add(
+          BasicListItemWithImage(
+              drawable.ic_star_border_black_24dp,
+              context.getString(string.nc_remove_from_favorites)
+          )
+      )
+    } else {
+      items.add(
+          BasicListItemWithImage(
+              drawable.ic_star_black_24dp,
+              context.getString(string.nc_add_to_favorites)
+          )
+      )
+    }
+
+    if (conversation.isPublic) {
+      items.add(
+          (BasicListItemWithImage(
+              drawable
+                  .ic_link_grey600_24px, context.getString(string.nc_share_link)
+          ))
+      )
+    }
+
+    if (conversation.canLeave(currentUser)) {
+      items.add(
+          BasicListItemWithImage(
+              drawable.ic_exit_to_app_black_24dp, context.getString
+          (string.nc_leave)
+          )
+      )
+    }
+
+    if (conversation.canModerate(currentUser)) {
+      items.add(
+          BasicListItemWithImage(
+              drawable.ic_delete_grey600_24dp, context.getString(
+              string.nc_delete_call
+          )
+          )
+      )
+    }
+
+    return items
+  }
+
+  private fun setConversationUpdateStatus(conversation: Conversation, value: Boolean) {
+    conversations.find { it.roomId == conversation.roomId }?.apply {
+      updating = value
+      conversationsLiveListData.value = conversations
+    }
   }
 }

@@ -22,6 +22,7 @@ package com.nextcloud.talk.models.json.conversations;
 
 import android.content.res.Resources;
 import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -90,6 +91,7 @@ public class Conversation {
   public Long lobbyTimer;
   @JsonField(name = "lastReadMessage")
   public int lastReadMessage;
+  public boolean updating;
 
   public boolean isPublic() {
     return (ConversationType.ROOM_PUBLIC_CALL.equals(type));

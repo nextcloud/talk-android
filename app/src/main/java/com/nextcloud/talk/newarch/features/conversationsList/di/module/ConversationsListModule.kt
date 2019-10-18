@@ -22,18 +22,35 @@ package com.nextcloud.talk.newarch.features.conversationsList.di.module
 
 import android.app.Application
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
-import com.nextcloud.talk.newarch.di.module.createApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkRepository
+import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
+import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
+import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
 import com.nextcloud.talk.newarch.features.conversationsList.ConversationListViewModelFactory
 import com.nextcloud.talk.utils.database.user.UserUtils
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
 val ConversationsListModule = module {
-  single { createGetConversationsUseCase(get(), createApiErrorHandler()) }
+  single { createGetConversationsUseCase(get(), get()) }
+  single { createSetConversationFavoriteValueUseCase(get(), get()) }
+  single { createLeaveConversationUseCase(get(), get()) }
+  single { createDeleteConversationuseCase(get(), get()) }
   //viewModel { ConversationsListViewModel(get(), get()) }
-  factory { createConversationListViewModelFactory(androidApplication(), get(), get()) }
+  factory {
+    createConversationListViewModelFactory(
+        androidApplication(), get(), get(), get(), get
+    (), get()
+    )
+  }
+}
+
+fun createSetConversationFavoriteValueUseCase(
+  nextcloudTalkRepository: NextcloudTalkRepository,
+  apiErrorHandler: ApiErrorHandler
+): SetConversationFavoriteValueUseCase {
+  return SetConversationFavoriteValueUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createGetConversationsUseCase(
@@ -43,11 +60,32 @@ fun createGetConversationsUseCase(
   return GetConversationsUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
+fun createLeaveConversationUseCase(
+  nextcloudTalkRepository: NextcloudTalkRepository,
+  apiErrorHandler: ApiErrorHandler
+): LeaveConversationUseCase {
+  return LeaveConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
+}
+
+fun createDeleteConversationuseCase(
+  nextcloudTalkRepository: NextcloudTalkRepository,
+  apiErrorHandler: ApiErrorHandler
+): DeleteConversationUseCase {
+  return DeleteConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
+}
+
 fun createConversationListViewModelFactory(
   application: Application,
-  conversationsUseCase:
+  getConversationsUseCase:
   GetConversationsUseCase,
+  setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
+  leaveConversationUseCase: LeaveConversationUseCase,
+  deleteConversationUseCase: DeleteConversationUseCase,
   userUtils: UserUtils
 ): ConversationListViewModelFactory {
-  return ConversationListViewModelFactory(application, conversationsUseCase, userUtils)
+  return ConversationListViewModelFactory(
+      application, getConversationsUseCase,
+      setConversationFavoriteValueUseCase, leaveConversationUseCase, deleteConversationUseCase,
+      userUtils
+  )
 }

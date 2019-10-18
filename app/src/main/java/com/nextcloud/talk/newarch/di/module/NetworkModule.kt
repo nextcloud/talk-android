@@ -79,7 +79,7 @@ val NetworkModule = module {
   single { createSslSocketFactory(get(), get()) }
   single { createCache(androidApplication() as NextcloudTalkApplication) }
   single { createOkHttpClient(androidContext(), get(), get(), get(), get(), get(), get(), get()) }
-
+  factory { createApiErrorHandler() }
   single { createNextcloudTalkRepository(get()) }
 }
 

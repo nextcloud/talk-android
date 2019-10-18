@@ -27,7 +27,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/rv_item_view_height"
-    android:layout_margin="@dimen/double_margin_between_elements">
+    android:layout_margin="@dimen/double_margin_between_elements"
+    android:animateLayoutChanges="true">
 
 
     <RelativeLayout
@@ -78,7 +79,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/dialogUnreadBubble"
-                android:layout_toEndOf="@id/dialogLastMessageUserAvatar"
                 android:ellipsize="end"
                 android:gravity="top"
                 android:lines="1"
@@ -112,13 +112,25 @@
             android:maxLines="1"
             android:textColor="@color/conversation_date" />
 
+
+        <ProgressBar
+            android:layout_width="16sp"
+            android:layout_height="16sp"
+            android:id="@+id/actionProgressBar"
+            android:layout_alignBottom="@id/dialogName"
+            android:layout_marginEnd="8dp"
+            android:layout_toEndOf="@+id/dialogAvatarFrameLayout"
+            android:indeterminateTint="@color/colorPrimary"
+            android:visibility="gone"
+            />
+
         <androidx.emoji.widget.EmojiTextView
             android:id="@id/dialogName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/dialogAvatarFrameLayout"
             android:layout_toStartOf="@id/dialogDate"
-            android:layout_toEndOf="@id/dialogAvatarFrameLayout"
+            android:layout_toEndOf="@id/actionProgressBar"
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"

@@ -21,8 +21,12 @@
 package com.nextcloud.talk.newarch.data.source.remote
 
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import io.reactivex.Observable
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Url
 
 interface ApiService {
@@ -36,4 +40,29 @@ interface ApiService {
         "Authorization"
     ) authorization: String, @Url url: String
   ): RoomsOverall
+
+  @POST
+  suspend fun addConversationToFavorites(
+    @Header("Authorization") authorization: String,
+    @Url url: String
+  ): GenericOverall
+
+  @DELETE
+  suspend fun removeConversationFromFavorites(
+    @Header("Authorization") authorization: String,
+    @Url url: String
+  ): GenericOverall
+
+  @DELETE
+  suspend fun leaveConversation(
+    @Header("Authorization") authorization: String,
+    @Url url: String
+  ): GenericOverall
+
+  @DELETE
+  suspend fun deleteConversation(
+    @Header("Authorization") authorization: String,
+    @Url url: String
+  ): GenericOverall
+
 }

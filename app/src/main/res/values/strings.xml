@@ -147,6 +147,8 @@
     <string name="nc_start_conversation">Start a conversation</string>
     <string name="nc_configure_room">Configure conversation</string>
     <string name="nc_leave">Leave conversation</string>
+    <string name="nc_leave_message">Please confirm your intent to leave this conversation.</string>
+    <string name="nc_simple_leave">Leave</string>
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_set_password">Set a password</string>
     <string name="nc_change_password">Change password</string>
@@ -157,10 +159,12 @@
     <string name="nc_make_call_private">Make conversation private</string>
     <string name="nc_delete_call">Delete conversation</string>
     <string name="nc_delete">Delete</string>
-    <string name="nc_delete_conversation_default">Please confirm your intent to remove the conversation.</string>
-    <string name="nc_delete_conversation_one2one">If you delete the conversation, it will also be
+    <string name="nc_delete_conversation_default">Please confirm your intent to delete this
+        conversation.</string>
+    <string name="nc_delete_conversation_one2one">If you delete the conversation it will also be
         deleted for %1$s.</string>
-    <string name="nc_delete_conversation_more">If you delete the conversation, it will also be deleted for all other participants.</string>
+    <string name="nc_delete_conversation_more">If you delete this conversation it will also be
+        deleted for all other participants.</string>
 
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_join_via_link">Join with a link</string>

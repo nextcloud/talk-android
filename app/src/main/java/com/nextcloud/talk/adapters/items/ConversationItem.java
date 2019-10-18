@@ -28,6 +28,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.emoji.widget.EmojiTextView;
 import butterknife.BindView;
@@ -102,6 +103,12 @@ public class ConversationItem
         NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
 
     holder.dialogAvatar.setController(null);
+
+    if (conversation.isUpdating()) {
+      holder.progressBar.setVisibility(View.VISIBLE);
+    } else {
+      holder.progressBar.setVisibility(View.GONE);
+    }
 
     if (adapter.hasFilter()) {
       FlexibleUtils.highlightText(holder.dialogName, conversation.getDisplayName(),
@@ -274,6 +281,8 @@ public class ConversationItem
     ImageView passwordProtectedRoomImageView;
     @BindView(R.id.favoriteConversationImageView)
     ImageView pinnedConversationImageView;
+    @BindView(R.id.actionProgressBar)
+    ProgressBar progressBar;
 
     ConversationItemViewHolder(View view, FlexibleAdapter adapter) {
       super(view, adapter);

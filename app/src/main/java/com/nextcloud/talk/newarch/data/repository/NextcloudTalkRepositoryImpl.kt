@@ -22,16 +22,50 @@ package com.nextcloud.talk.newarch.data.repository
 
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
 import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkRepository
+import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 
 class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : NextcloudTalkRepository {
+  override suspend fun deleteConversationForUser(
+    user: UserEntity,
+    conversation: Conversation
+  ): GenericOverall {
+    return apiService.deleteConversation(user.getCredentials(), ApiUtils.getRoom(user.baseUrl, conversation.token))
+  }
+
+  override suspend fun leaveConversationForUser(
+    user: UserEntity,
+    conversation: Conversation
+  ): GenericOverall {
+    return apiService.leaveConversation(user.getCredentials(), ApiUtils.getUrlForRemoveSelfFromRoom(user
+        .baseUrl, conversation.token))
+  }
+
+  override suspend fun setFavoriteValueForConversation(
+    user: UserEntity,
+    conversation: Conversation,
+    favorite: Boolean
+  ): GenericOverall {
+    if (favorite) {
+      return apiService.addConversationToFavorites(
+          user.getCredentials(),
+          ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
+      )
+    } else {
+      return apiService.removeConversationFromFavorites(
+          user.getCredentials(),
+          ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
+      )
+    }
+  }
+
   override suspend fun getConversationsForUser(user: UserEntity): List<Conversation> {
     return apiService.getConversations(
-        ApiUtils.getCredentials(user.username, user.token),
+        user.getCredentials(),
         ApiUtils.getUrlForGetRooms(user.baseUrl)
-    )
-        .ocs.data
+    ).ocs.data
   }
 }

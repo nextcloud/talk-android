@@ -18,19 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.domain.repository
+package com.nextcloud.talk.newarch.utils
 
 import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.utils.ApiUtils
 
-interface NextcloudTalkRepository {
-  suspend fun getConversationsForUser(user: UserEntity): List<Conversation>
-  suspend fun setFavoriteValueForConversation(
-    user: UserEntity,
-    conversation: Conversation,
-    favorite: Boolean
-  ) : GenericOverall
-  suspend fun deleteConversationForUser(user: UserEntity, conversation: Conversation) : GenericOverall
-  suspend fun leaveConversationForUser(userEntity: UserEntity, conversation: Conversation) : GenericOverall
-}
+fun UserEntity.getCredentials() = ApiUtils.getCredentials(username, token)

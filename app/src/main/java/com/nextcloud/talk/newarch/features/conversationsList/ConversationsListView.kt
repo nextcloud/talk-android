@@ -38,23 +38,25 @@ import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import butterknife.OnClick
+import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.nextcloud.talk.R
+import com.nextcloud.talk.R.drawable
 import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.controllers.ContactsController
 import com.nextcloud.talk.controllers.SettingsController
-import com.nextcloud.talk.controllers.bottomsheet.CallMenuController.MenuType
-import com.nextcloud.talk.controllers.bottomsheet.CallMenuController.MenuType.REGULAR
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
-import com.nextcloud.talk.newarch.mvvm.ViewState.FAILED
-import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED
-import com.nextcloud.talk.newarch.mvvm.ViewState.LOADED_EMPTY
-import com.nextcloud.talk.newarch.mvvm.ViewState.LOADING
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
+import com.nextcloud.talk.newarch.utils.ViewState.FAILED
+import com.nextcloud.talk.newarch.utils.ViewState.LOADED
+import com.nextcloud.talk.newarch.utils.ViewState.LOADED_EMPTY
+import com.nextcloud.talk.newarch.utils.ViewState.LOADING
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.animations.SharedElementTransition
@@ -213,12 +215,17 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
             if (value.equals(FAILED)) {
               view?.stateWithMessageView?.errorStateTextView?.text = messageData
-              if (messageData.equals(context.resources.getString(R.string.nc_no_connection_error))) {
+              if (messageData.equals(
+                      context.resources.getString(R.string.nc_no_connection_error)
+                  )
+              ) {
                 view?.stateWithMessageView?.errorStateImageView?.setImageResource(
-                    R.drawable.ic_cloud_off_white_24dp)
+                    R.drawable.ic_cloud_off_white_24dp
+                )
               } else {
                 view?.stateWithMessageView?.errorStateImageView?.setImageResource(
-                    R.drawable.ic_announcement_white_24dp)
+                    R.drawable.ic_announcement_white_24dp
+                )
               }
               view?.floatingActionButton?.visibility = View.GONE
             } else {
@@ -236,7 +243,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         }
       })
 
-      conversationsListData.observe(this@ConversationsListView, Observer {
+      conversationsLiveListData.observe(this@ConversationsListView, Observer {
         val newConversations = mutableListOf<ConversationItem>()
         for (conversation in it) {
           newConversations.add(ConversationItem(conversation, viewModel.currentUser, activity))
@@ -318,12 +325,64 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
   override fun onItemLongClick(position: Int) {
     val clickedItem = recyclerViewAdapter.getItem(position)
-    if (clickedItem != null) {
-      val conversation = (clickedItem as ConversationItem).model
-      val bundle = Bundle()
-      bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap<Conversation>(conversation))
-      bundle.putParcelable(BundleKeys.KEY_MENU_TYPE, Parcels.wrap<MenuType>(REGULAR))
-      //prepareAndShowBottomSheetWithBundle(bundle, true)
+    clickedItem?.let {
+      val conversationItem = it as ConversationItem
+      val conversation = conversationItem.model
+
+      activity?.let { activity ->
+        MaterialDialog(activity, BottomSheet(WRAP_CONTENT)).show {
+          cornerRadius(res = R.dimen.corner_radius)
+          title(text = conversation.displayName)
+          listItemsWithImage(
+              viewModel.getConversationMenuItemsForConversation(conversation)
+          ) { dialog,
+            index, item ->
+
+            when (item.iconRes) {
+              drawable.ic_star_border_black_24dp -> {
+                viewModel.changeFavoriteValueForConversation(conversation, false)
+
+              }
+              drawable.ic_star_black_24dp -> {
+                viewModel.changeFavoriteValueForConversation(conversation, true)
+              }
+              drawable.ic_link_grey600_24px -> {
+                startActivity(viewModel.getShareIntentForConversation(conversation))
+              }
+              drawable.ic_exit_to_app_black_24dp -> {
+                MaterialDialog(activity).show {
+                  title(R.string.nc_leave)
+                  message(R.string.nc_leave_message)
+                  positiveButton(R.string.nc_simple_leave) { dialog ->
+                    viewModel.leaveConversation(conversation)
+                  }
+                  negativeButton(R.string.nc_cancel)
+                  icon(drawable.ic_exit_to_app_black_24dp)
+                }
+              }
+              drawable.ic_delete_grey600_24dp -> {
+                MaterialDialog(activity).show {
+                  title(R.string.nc_delete)
+                  message(text = conversation.deleteWarningMessage)
+                  positiveButton(R.string.nc_delete_call) { dialog ->
+                    viewModel.deleteConversation(conversation)
+                  }
+                  negativeButton(R.string.nc_cancel)
+                  icon(
+                      drawable = DisplayUtils.getTintedDrawable(
+                          resources, drawable
+                          .ic_delete_grey600_24dp, R.color.nc_darkRed
+                      )
+                  )
+                }
+              }
+              else -> {
+
+              }
+            }
+          }
+        }
+      }
     }
   }
 

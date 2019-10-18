@@ -42,8 +42,7 @@ import java.util.Set;
 public class ShareUtils {
 
   public static String getStringForIntent(Context context, @Nullable String password,
-      UserUtils userUtils, Conversation
-      conversation) {
+      UserUtils userUtils, Conversation conversation) {
     UserEntity userEntity = userUtils.getCurrentUser();
 
     String shareString = "";
