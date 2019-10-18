@@ -92,10 +92,14 @@ class ConversationsListViewModel constructor(
         object : UseCaseResponse<GenericOverall> {
           override fun onSuccess(result: GenericOverall) {
             // TODO: Use binary search to find the right room
-            conversations.find { it.roomId == conversation.roomId }?.let {
-              conversations.remove(it)
-              conversationsLiveListData.value = conversations
-            }
+            conversations.find { it.roomId == conversation.roomId }
+                ?.let {
+                  conversations.remove(it)
+                  conversationsLiveListData.value = conversations
+                  if (conversations.isEmpty()) {
+                    viewState.value = LOADED_EMPTY
+                  }
+                }
           }
 
           override fun onError(errorModel: ErrorModel?) {
@@ -113,10 +117,14 @@ class ConversationsListViewModel constructor(
         object : UseCaseResponse<GenericOverall> {
           override fun onSuccess(result: GenericOverall) {
             // TODO: Use binary search to find the right room
-            conversations.find { it.roomId == conversation.roomId }?.let {
-              conversations.remove(it)
-              conversationsLiveListData.value = conversations
-            }
+            conversations.find { it.roomId == conversation.roomId }
+                ?.let {
+                  conversations.remove(it)
+                  conversationsLiveListData.value = conversations
+                  if (conversations.isEmpty()) {
+                    viewState.value = LOADED_EMPTY
+                  }
+                }
           }
 
           override fun onError(errorModel: ErrorModel?) {
@@ -138,11 +146,12 @@ class ConversationsListViewModel constructor(
         object : UseCaseResponse<GenericOverall> {
           override fun onSuccess(result: GenericOverall) {
             // TODO: Use binary search to find the right room
-            conversations.find { it.roomId == conversation.roomId }?.apply {
-              updating = false
-              isFavorite = favorite
-              conversationsLiveListData.value = conversations
-            }
+            conversations.find { it.roomId == conversation.roomId }
+                ?.apply {
+                  updating = false
+                  isFavorite = favorite
+                  conversationsLiveListData.value = conversations
+                }
           }
 
           override fun onError(errorModel: ErrorModel?) {
@@ -154,8 +163,8 @@ class ConversationsListViewModel constructor(
   fun loadConversations() {
     currentUser = userUtils.currentUser
 
-    if (viewState.value?.equals(FAILED)!! || !getConversationsUseCase.isUserInitialized() ||
-        getConversationsUseCase.user != currentUser
+    if ((FAILED).equals(viewState.value) || (LOADED_EMPTY).equals(viewState.value) ||
+        !getConversationsUseCase.isUserInitialized() || getConversationsUseCase.user != currentUser
     ) {
       getConversationsUseCase.user = currentUser
       viewState.value = LOADING
@@ -294,10 +303,14 @@ class ConversationsListViewModel constructor(
     return items
   }
 
-  private fun setConversationUpdateStatus(conversation: Conversation, value: Boolean) {
-    conversations.find { it.roomId == conversation.roomId }?.apply {
-      updating = value
-      conversationsLiveListData.value = conversations
-    }
+  private fun setConversationUpdateStatus(
+    conversation: Conversation,
+    value: Boolean
+  ) {
+    conversations.find { it.roomId == conversation.roomId }
+        ?.apply {
+          updating = value
+          conversationsLiveListData.value = conversations
+        }
   }
 }

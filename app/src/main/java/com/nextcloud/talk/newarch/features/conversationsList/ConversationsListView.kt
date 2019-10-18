@@ -220,11 +220,11 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                   )
               ) {
                 view?.stateWithMessageView?.errorStateImageView?.setImageResource(
-                    R.drawable.ic_cloud_off_white_24dp
+                    drawable.ic_cloud_off_white_24dp
                 )
               } else {
                 view?.stateWithMessageView?.errorStateImageView?.setImageResource(
-                    R.drawable.ic_announcement_white_24dp
+                    drawable.ic_announcement_white_24dp
                 )
               }
               view?.floatingActionButton?.visibility = View.GONE
@@ -232,7 +232,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
               view?.floatingActionButton?.visibility = View.VISIBLE
               view?.stateWithMessageView?.errorStateTextView?.text =
                 resources?.getText(R.string.nc_conversations_empty)
-              view?.stateWithMessageView?.errorStateImageView?.setImageResource(R.drawable.ic_logo)
+              view?.stateWithMessageView?.errorStateImageView?.setImageResource(drawable.ic_logo)
             }
 
             view?.stateWithMessageView?.visibility = View.VISIBLE
@@ -326,8 +326,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
   override fun onItemLongClick(position: Int) {
     val clickedItem = recyclerViewAdapter.getItem(position)
     clickedItem?.let {
-      val conversationItem = it as ConversationItem
-      val conversation = conversationItem.model
+      val conversation = (it as ConversationItem).model
 
       activity?.let { activity ->
         MaterialDialog(activity, BottomSheet(WRAP_CONTENT)).show {
