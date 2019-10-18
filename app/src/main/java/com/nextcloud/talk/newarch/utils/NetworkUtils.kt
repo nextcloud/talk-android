@@ -45,14 +45,14 @@ class NetworkUtils {
           .header("User-Agent", ApiUtils.getUserAgent())
           .header("Accept", "application/json")
           .header("OCS-APIRequest", "true")
-          .method(original.method, original.body)
+          .method(original.method(), original.body())
           .build()
 
       val response = chain.proceed(request)
 
-      if (request.url.encodedPath.contains("/avatar/")) {
+      if (request.url().encodedPath().contains("/avatar/")) {
         AvatarStatusCodeHolder.getInstance()
-            .statusCode = response.code
+            .statusCode = response.code()
       }
 
       return response
@@ -68,7 +68,7 @@ class NetworkUtils {
       route: Route?,
       response: Response
     ): Request? {
-      if (response.request.header(authenticatorType) != null) {
+      if (response.request().header(authenticatorType) != null) {
         return null
       }
 
@@ -77,13 +77,13 @@ class NetworkUtils {
       var attemptsCount = 0
 
 
-      while ({ countedResponse = countedResponse?.priorResponse; countedResponse }() != null) {
+      while ({ countedResponse = countedResponse?.priorResponse(); countedResponse }() != null) {
         attemptsCount++
         if (attemptsCount == 3) {
           return null
         }
       }
-      return response.request.newBuilder()
+      return response.request().newBuilder()
           .header(authenticatorType, credentials)
           .build()
     }

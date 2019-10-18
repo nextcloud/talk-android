@@ -197,9 +197,7 @@ dependencies {
     implementation "android.arch.work:work-rxjava2:${work_version}"
     implementation 'com.google.android:flexbox:1.1.0'
     androidTestImplementation "android.arch.work:work-testing:${work_version}"
-    implementation ('com.gitlab.bitfireAT:dav4jvm:f2078bc846', {
-        exclude group: 'org.ogce', module: 'xpp3'	// Android comes with its own XmlPullParser
-    })
+    implementation 'com.gitlab.bitfireAT:dav4jvm:ee66e8e5'
     implementation 'org.conscrypt:conscrypt-android:2.2.1'
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
@@ -219,9 +217,9 @@ dependencies {
     implementation 'com.bluelinelabs:conductor-autodispose:3.0.0-rc2'
     implementation "com.github.miquelbeltran:conductor-viewmodel:1.0.3"
 
-    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
-    implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.2.2'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.4'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.14.4'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'
 
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'

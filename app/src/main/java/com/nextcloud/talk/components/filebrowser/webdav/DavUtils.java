@@ -20,26 +20,23 @@
 
 package com.nextcloud.talk.components.filebrowser.webdav;
 
-import at.bitfire.dav4android.Property;
-import at.bitfire.dav4android.PropertyFactory;
-import at.bitfire.dav4android.PropertyRegistry;
-import at.bitfire.dav4android.property.CreationDate;
-import at.bitfire.dav4android.property.DisplayName;
-import at.bitfire.dav4android.property.GetContentLength;
-import at.bitfire.dav4android.property.GetContentType;
-import at.bitfire.dav4android.property.GetETag;
-import at.bitfire.dav4android.property.GetLastModified;
-import at.bitfire.dav4android.property.ResourceType;
+import at.bitfire.dav4jvm.Property;
+import at.bitfire.dav4jvm.PropertyFactory;
+import at.bitfire.dav4jvm.PropertyRegistry;
+import at.bitfire.dav4jvm.property.CreationDate;
+import at.bitfire.dav4jvm.property.DisplayName;
+import at.bitfire.dav4jvm.property.GetContentLength;
+import at.bitfire.dav4jvm.property.GetContentType;
+import at.bitfire.dav4jvm.property.GetETag;
+import at.bitfire.dav4jvm.property.GetLastModified;
+import at.bitfire.dav4jvm.property.ResourceType;
 import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted;
 import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview;
 import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite;
 import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
 import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DavUtils {
   public static final String OC_NAMESPACE = "http://owncloud.org/ns";
@@ -95,23 +92,13 @@ public class DavUtils {
 
   public static void registerCustomFactories() {
     PropertyRegistry propertyRegistry = PropertyRegistry.INSTANCE;
-    try {
-      Field factories = propertyRegistry.getClass().getDeclaredField("factories");
-      factories.setAccessible(true);
-      Map<Property.Name, PropertyFactory> reflectionMap = (HashMap<Property.Name,
-          PropertyFactory>) factories.get(propertyRegistry);
+    List<PropertyFactory> propertyFactories = new ArrayList<>();
+    propertyFactories.add(new OCId.Factory());
+    propertyFactories.add(new NCPreview.Factory());
+    propertyFactories.add(new NCEncrypted.Factory());
+    propertyFactories.add(new OCFavorite.Factory());
+    propertyFactories.add(new OCSize.Factory());
 
-      reflectionMap.put(OCId.NAME, new OCId.Factory());
-      reflectionMap.put(NCPreview.NAME, new NCPreview.Factory());
-      reflectionMap.put(NCEncrypted.NAME, new NCEncrypted.Factory());
-      reflectionMap.put(OCFavorite.NAME, new OCFavorite.Factory());
-      reflectionMap.put(OCSize.NAME, new OCSize.Factory());
-
-      factories.set(propertyRegistry, reflectionMap);
-    } catch (NoSuchFieldException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    }
+    propertyRegistry.register(propertyFactories);
   }
 }

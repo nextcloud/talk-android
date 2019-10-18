@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.components.filebrowser.models;
 
-import at.bitfire.dav4android.Response;
+import at.bitfire.dav4jvm.Response;
 import lombok.Data;
 
 @Data
