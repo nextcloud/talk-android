@@ -138,11 +138,6 @@
     <string name="nc_make_call_private">Сделать беседу личной</string>
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete">Удалить</string>
-    <string name="nc_delete_conversation_default">Пожалуйста, подтвердите удаление обсуждения.</string>
-    <string name="nc_delete_conversation_one2one">При удалении беседы, она будет также
- удалена у %1$s.</string>
-    <string name="nc_delete_conversation_more">При удалении беседы, она будет также удалена у других участников</string>
-
     <string name="nc_new_conversation">Новая беседа</string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
     <string name="nc_join_via_web">Присоединиться через веб</string>
@@ -267,4 +262,5 @@
     <string name="nc_lobby_waiting">В данный момент Вы ожидаете в вестибюле.</string>
     <string name="nc_lobby_waiting_with_date">В данный момент вы ожидаете начала встречи, запланированной на %1$s.</string>
     <string name="nc_manual">Не задано</string>
-</resources>
+
+    </resources>

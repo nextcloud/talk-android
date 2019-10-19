@@ -137,11 +137,6 @@
     <string name="nc_make_call_private">Učini razgovor privatnim</string>
     <string name="nc_delete_call">Izbriši razgovor</string>
     <string name="nc_delete">Izbriši</string>
-    <string name="nc_delete_conversation_default">Potvrdite namjeru uklanjanja razgovora.</string>
-    <string name="nc_delete_conversation_one2one">Ako izbrišete razgovor, također će biti
-            izbrisan za %1$s.</string>
-    <string name="nc_delete_conversation_more">Ako izbrišete razgovor, također će biti izbrisan za sve ostale sudionike.</string>
-
     <string name="nc_new_conversation">Novi razgovor</string>
     <string name="nc_join_via_link">Pridružite se putem poveznice</string>
     <string name="nc_join_via_web">Pridružite se putem weba</string>

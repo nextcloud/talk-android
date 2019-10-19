@@ -140,11 +140,6 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_make_call_private">Facer privada a conversa</string>
     <string name="nc_delete_call">Eliminar a conversa</string>
     <string name="nc_delete">Eliminar</string>
-    <string name="nc_delete_conversation_default">Confirme a súa intención de retirar a conversa.</string>
-    <string name="nc_delete_conversation_one2one">Se elimina a conversa, tamén se eliminará
-        para %1$s.</string>
-    <string name="nc_delete_conversation_more">Se elimina a conversa, tamén se eliminará para todos os demais participantes.</string>
-
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Xuntarse mediante unha ligazón</string>
     <string name="nc_join_via_web">Xuntarse medinte a web</string>
@@ -280,4 +275,5 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_lobby_waiting_with_date">Actualmente estás agardando no vestíbulo.\n Esta
         xuntanza está programada para %1$s.</string>
     <string name="nc_manual">Sen estabelecer</string>
-</resources>
+
+    </resources>

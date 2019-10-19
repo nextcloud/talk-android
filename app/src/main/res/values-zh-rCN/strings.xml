@@ -138,10 +138,6 @@
     <string name="nc_make_call_private">设置会话为私有</string>
     <string name="nc_delete_call">删除会话</string>
     <string name="nc_delete">删除</string>
-    <string name="nc_delete_conversation_default">请确认您真要移除此会话。</string>
-    <string name="nc_delete_conversation_one2one">如果您删除会话，它也将会从 %1$s 处删除。</string>
-    <string name="nc_delete_conversation_more">如果您删除了此会话，它也将会从所有其他参与者处删除。</string>
-
     <string name="nc_new_conversation">新的会话</string>
     <string name="nc_join_via_link">使用链接加入</string>
     <string name="nc_join_via_web">通过网页加入</string>
@@ -276,4 +272,5 @@
     <string name="nc_lobby_waiting_with_date">您当前正在休息室等待。\n此
 会议预定于%1$s开始。</string>
     <string name="nc_manual">未设置</string>
-</resources>
+
+    </resources>

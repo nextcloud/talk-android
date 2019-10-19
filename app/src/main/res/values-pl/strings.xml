@@ -138,11 +138,6 @@
     <string name="nc_make_call_private">Ustaw jako rozmowę prywatą</string>
     <string name="nc_delete_call">Usuń rozmowę</string>
     <string name="nc_delete">Usuń</string>
-    <string name="nc_delete_conversation_default">Potwierdź zamiar usunięcia rozmowy.</string>
-    <string name="nc_delete_conversation_one2one">Jeśli usuniesz rozmowę, usuniesz
-        również dla %1$s.</string>
-    <string name="nc_delete_conversation_more">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla wszystkich pozostałych uczestników.</string>
-
     <string name="nc_new_conversation">Nowa rozmowa</string>
     <string name="nc_join_via_link">Dołącz przez link</string>
     <string name="nc_join_via_web">Dołącz przez sieć</string>
@@ -278,4 +273,5 @@
     <string name="nc_lobby_waiting_with_date">Obecnie czekasz w poczekalni.\n To spotkanie
          jest zaplanowane na %1$s.</string>
     <string name="nc_manual">Nie ustawiony</string>
-</resources>
+
+    </resources>

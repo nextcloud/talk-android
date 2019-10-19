@@ -138,11 +138,6 @@
     <string name="nc_make_call_private">Hacer privada la conversación</string>
     <string name="nc_delete_call">Eliminar conversación</string>
     <string name="nc_delete">Borrar</string>
-    <string name="nc_delete_conversation_default">Por favor, confirma tu intención de eliminar la conversación</string>
-    <string name="nc_delete_conversation_one2one">SI borras la conversación, también se
-         borrará para %1$s.</string>
-    <string name="nc_delete_conversation_more">Si borras la conversación, también se borrará para los demás participantes.</string>
-
     <string name="nc_new_conversation">Nueva conversación</string>
     <string name="nc_join_via_link">Unirse con un enlace</string>
     <string name="nc_join_via_web">Unirse vía web</string>
@@ -278,4 +273,5 @@
     <string name="nc_lobby_waiting_with_date">Ahora estás esperando en el recibidor.\n Esta
         reunión está planificada para %1$s.</string>
     <string name="nc_manual">No configurado</string>
-</resources>
+
+    </resources>

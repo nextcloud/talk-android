@@ -138,11 +138,6 @@
     <string name="nc_make_call_private">Görüşmeyi özel yap</string>
     <string name="nc_delete_call">Görüşmeyi sil</string>
     <string name="nc_delete">Sil</string>
-    <string name="nc_delete_conversation_default">Lütfen görüşmeyi silmek istediğinizi onaylayın.</string>
-    <string name="nc_delete_conversation_one2one">Görüşmeyi silerseniz
-        %1$s için de silinecek.</string>
-    <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de silinecek.</string>
-
     <string name="nc_new_conversation">Yeni görüşme</string>
     <string name="nc_join_via_link">Bir bağlantı ile katıl</string>
     <string name="nc_join_via_web">Web üzerinden katıl</string>
@@ -278,4 +273,5 @@
     <string name="nc_lobby_waiting_with_date">Şu anda girişte bekliyorsunuz.\n Bu
         görüşme %1$s zamanında başlayacak.</string>
     <string name="nc_manual">Ayarlanmamış</string>
-</resources>
+
+    </resources>

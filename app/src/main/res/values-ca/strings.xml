@@ -138,11 +138,6 @@
     <string name="nc_make_call_private">Fes que la conversa sigui privada</string>
     <string name="nc_delete_call">Suprimeix la conversa</string>
     <string name="nc_delete">Suprimeix</string>
-    <string name="nc_delete_conversation_default">Si us plau, confirmeu la vostra intenció de suprimir la conversa.</string>
-    <string name="nc_delete_conversation_one2one">Si suprimiu la conversa, també serà suprimit
-per %1$s.</string>
-    <string name="nc_delete_conversation_more">Si suprimiu la conversa, també se suprimirà per a la resta de participants.</string>
-
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Uniu-vos amb un enllaç</string>
     <string name="nc_join_via_web">Uniu-vos via web</string>
@@ -278,4 +273,5 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_lobby_waiting_with_date">Actualment esteu esperant al vestíbul.\n Aquesta
 trobada està prevista per a les %1$s.</string>
     <string name="nc_manual">No establert</string>
-</resources>
+
+    </resources>

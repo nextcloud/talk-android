@@ -138,11 +138,6 @@
     <string name="nc_make_call_private">Unterhaltung privat machen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
     <string name="nc_delete">Löschen</string>
-    <string name="nc_delete_conversation_default">Bitte bestätigen Sie, dass Sie diese Unterhaltung entfernen möchten.</string>
-    <string name="nc_delete_conversation_one2one">Wenn Sie diese Unterhaltung entfernen, so wird diese auch
-       entfernt für %1$s.</string>
-    <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung entfernen, so wird diese auch für alle anderen Teilnehmer.</string>
-
     <string name="nc_new_conversation">Neue Unterhaltung</string>
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
@@ -278,4 +273,5 @@
     <string name="nc_lobby_waiting_with_date">Sie warten aktuell in der Lobby.\n Dieses
 Meeting ist für %1$s geplant.</string>
     <string name="nc_manual">Nicht eingestellt</string>
-</resources>
+
+    </resources>

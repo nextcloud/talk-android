@@ -137,11 +137,6 @@
     <string name="nc_make_call_private">Beszélgetés priváttá tétele</string>
     <string name="nc_delete_call">Beszélgetés törlése</string>
     <string name="nc_delete">Törlés</string>
-    <string name="nc_delete_conversation_default">Erősítse meg szándékát, hogy eltávolítja a beszélgetést.</string>
-    <string name="nc_delete_conversation_one2one">Ha törli a beszélgetést, akkor %1$s
-        számára is törölve lesz.</string>
-    <string name="nc_delete_conversation_more">Ha törli a beszélgetést, akkor az összes többi résztvevő számára is törölve lesz.</string>
-
     <string name="nc_new_conversation">Új beszélgetés</string>
     <string name="nc_join_via_link">Csatlakozás hivatkozással</string>
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
