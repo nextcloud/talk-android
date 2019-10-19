@@ -132,6 +132,7 @@
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_username">Username</string>
     <string name="nc_password">Password</string>
+    <string name="nc_password_redacted">Redacted for privacy reasons</string>
     <string name="nc_conversation_link">Conversation link</string>
     <string name="nc_new_password">New password</string>
     <string name="nc_wrong_password">Wrong password</string>
@@ -169,8 +170,11 @@
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_join_via_link">Join with a link</string>
     <string name="nc_join_via_web">Join via web</string>
+    <string name="nc_favorite_conversation">Favorite conversation</string>
     <string name="nc_add_to_favorites">Add to favorites</string>
     <string name="nc_remove_from_favorites">Remove from favorites</string>
+    <string name="nc_favorites_explanation">Conversation will be pinned to the top of the
+        conversations list</string>
 
     <!-- Contacts -->
     <string name="nc_select_contacts">Select contacts</string>
@@ -310,5 +314,8 @@
     <string name="nc_empty_response_error">Empty response</string>
     <string name="nc_not_defined_error">Unknown error</string>
     <string name="nc_unauthorized_error">No Unauthorized</string>
+
+    <string name="nc_general_settings">General</string>
+    <string name="nc_allow_guests">Allow guests</string>
 
 </resources>

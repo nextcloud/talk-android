@@ -23,285 +23,305 @@ apply plugin: 'findbugs'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'realm-android'
 
 def taskRequest = getGradle().getStartParameter().getTaskRequests().toString()
-if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") || taskRequest.contains("lint")) {
-    apply from: 'gplay.gradle'
+if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") ||
+    taskRequest.contains("lint")) {
+  apply from: 'gplay.gradle'
 }
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.2'
-    defaultConfig {
-        applicationId "com.nextcloud.talk2"
-        versionName version
-        minSdkVersion 21
-        targetSdkVersion 29
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+  compileSdkVersion 29
+  buildToolsVersion '29.0.2'
+  defaultConfig {
+    applicationId "com.nextcloud.talk2"
+    versionName version
+    minSdkVersion 21
+    targetSdkVersion 29
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode 119
-        versionName "7.0.5"
+    versionCode 120
+    versionName "8.0.0alpha1"
 
-        flavorDimensions "default"
-        renderscriptTargetApi 19
-        renderscriptSupportModeEnabled true
+    flavorDimensions "default"
+    renderscriptTargetApi 19
+    renderscriptSupportModeEnabled true
 
-        productFlavors {
-            dev {
-                resConfigs "en", "xxxhdpi"
-            }
-            // used for f-droid
-            generic
-            gplay
-
-        }
-
-        // Enabling multidex support.
-        multiDexEnabled true
-
-        vectorDrawables.useSupportLibrary = true
-
-        lintOptions {
-            disable 'InvalidPackage'
-            disable 'MissingTranslation'
-            disable "ValidController"
-            disable "ValidControllerChangeHandler"
-        }
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [
-                        parcelerStacktrace: "true"
-                ]
-            }
-        }
-
-        dataBinding {
-            enabled = true
-        }
+    productFlavors {
+      dev {
+        resConfigs "en", "xxxhdpi"
+      }
+      // used for f-droid
+      generic
+      gplay
     }
 
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
+    // Enabling multidex support.
+    multiDexEnabled true
 
-    buildTypes {
-        debug {
-            applicationIdSuffix '.debug'
-            splits.abi.enable = false
-            splits.density.enable = false
-        }
-
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    packagingOptions {
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/rxjava.properties'
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+    vectorDrawables.useSupportLibrary = true
 
     lintOptions {
-        abortOnError false
-        htmlReport true
-        htmlOutput file("$project.buildDir/reports/lint/lint.html")
-        disable 'MissingTranslation'
+      disable 'InvalidPackage'
+      disable 'MissingTranslation'
+      disable "ValidController"
+      disable "ValidControllerChangeHandler"
     }
 
-    task findbugs(type: FindBugs) {
-        ignoreFailures = false
-        effort = "max"
-        reportLevel = "medium"
-        classes = fileTree("$project.buildDir/intermediates/classes/gplay/debug/com/nextcloud")
-        excludeFilter = file("${project.rootDir}/findbugs-filter.xml")
-        source = fileTree('src/main/java')
-        pluginClasspath = project.configurations.findbugsPlugins
-        classpath = files()
-        include '**/*.java'
-        exclude '**/gen/**'
-
-        reports {
-            xml.enabled = false
-            html.enabled = true
-            html {
-                destination = file("$project.buildDir/reports/findbugs/findbugs.html")
-            }
-        }
+    javaCompileOptions {
+      annotationProcessorOptions {
+        arguments = [
+            parcelerStacktrace: "true"
+        ]
+      }
     }
+
+    dataBinding {
+      enabled = true
+    }
+  }
+
+  dexOptions {
+    javaMaxHeapSize "4g"
+  }
+
+  buildTypes {
+    debug {
+      applicationIdSuffix '.debug'
+      splits.abi.enable = false
+      splits.density.enable = false
+    }
+
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  packagingOptions {
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/rxjava.properties'
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  lintOptions {
+    abortOnError false
+    htmlReport true
+    htmlOutput file("$project.buildDir/reports/lint/lint.html")
+    disable 'MissingTranslation'
+  }
+
+  task findbugs(type: FindBugs) {
+    ignoreFailures = false
+    effort = "max"
+    reportLevel = "medium"
+    classes = fileTree("$project.buildDir/intermediates/classes/gplay/debug/com/nextcloud")
+    excludeFilter = file("${project.rootDir}/findbugs-filter.xml")
+    source = fileTree('src/main/java')
+    pluginClasspath = project.configurations.findbugsPlugins
+    classpath = files()
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    reports {
+      xml.enabled = false
+      html.enabled = true
+      html {
+        destination = file("$project.buildDir/reports/findbugs/findbugs.html")
+      }
+    }
+  }
 }
 
 ext {
-    work_version = "1.0.1"
-    koin_version = "2.1.0-alpha-1"
-    lifecycle_version = "2.1.0"
-    coil_version = "0.7.0"
+  work_version = "2.3.0-alpha02"
+  koin_version = "2.1.0-alpha-1"
+  lifecycle_version = "2.2.0-beta01"
+  coil_version = "0.7.0"
+  room_version = "2.2.0"
 }
-
 
 configurations.all {
-    exclude group: 'com.google.firebase', module: 'firebase-core'
-    exclude group: 'com.google.firebase', module: 'firebase-analytics'
-    exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
+  exclude group: 'com.google.firebase', module: 'firebase-core'
+  exclude group: 'com.google.firebase', module: 'firebase-analytics'
+  exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
 }
 
-
 dependencies {
-    implementation fileTree(include: ['*'], dir: 'libs')
+  implementation fileTree(include: ['*'], dir: 'libs')
 
-    // Koin for Android
-    implementation "org.koin:koin-android:$koin_version"
-    // Koin AndroidX Scope features
-    implementation "org.koin:koin-androidx-scope:$koin_version"
-    // Koin AndroidX ViewModel features
-    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-    // Koin AndroidX Experimental features
-    implementation "org.koin:koin-androidx-ext:$koin_version"
+  // Koin for Android
+  implementation "org.koin:koin-android:$koin_version"
+  // Koin AndroidX Scope features
+  implementation "org.koin:koin-androidx-scope:$koin_version"
+  // Koin AndroidX ViewModel features
+  implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+  // Koin AndroidX Experimental features
+  implementation "org.koin:koin-androidx-ext:$koin_version"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2'
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2'
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2'
+  implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    implementation "com.github.stateless4j:stateless4j:2.6.0"
+  implementation "com.github.stateless4j:stateless4j:2.6.0"
 
-    // ViewModel and LiveData
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+  // ViewModel and LiveData
+  implementation "androidx.core:core-ktx:1.1.0"
+  implementation "androidx.sqlite:sqlite-ktx:2.0.1"
+  implementation "androidx.collection:collection-ktx:1.1.0"
+  implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+  implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+  implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-beta01"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-beta01"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-beta01"
-
-    // optional - ReactiveStreams support for LiveData
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle_version" // For Kotlin use lifecycle-reactivestreams-ktx
-
-    // optional - Test helpers for LiveData
-    testImplementation "androidx.arch.core:core-testing:$lifecycle_version"
-
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.android.material:material:1.1.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
-    implementation 'com.github.vanniktech:Emoji:0.6.0'
-    implementation group: 'androidx.emoji', name: 'emoji-bundled', version: '1.0.0'
-    implementation 'org.michaelevans.colorart:library:0.0.3'
-    implementation "android.arch.work:work-runtime:${work_version}"
-    implementation "android.arch.work:work-rxjava2:${work_version}"
-    implementation 'com.google.android:flexbox:1.1.0'
-    androidTestImplementation "android.arch.work:work-testing:${work_version}"
-    implementation 'com.gitlab.bitfireAT:dav4jvm:ee66e8e5'
-    implementation 'org.conscrypt:conscrypt-android:2.2.1'
-
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
-
-    implementation 'androidx.biometric:biometric:1.0.0-rc01'
-    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
-
-    implementation 'androidx.multidex:multidex:2.0.1'
-
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation "io.reactivex.rxjava2:rxjava:2.2.11"
-
-    implementation 'com.bluelinelabs:conductor:3.0.0-rc2'
-    implementation 'com.bluelinelabs:conductor-support:3.0.0-rc2'
-    implementation 'com.bluelinelabs:conductor-archlifecycle:3.0.0-rc2'
-    implementation 'com.bluelinelabs:conductor-rxlifecycle2:3.0.0-rc2'
-    implementation 'com.bluelinelabs:conductor-autodispose:3.0.0-rc2'
-    implementation "com.github.miquelbeltran:conductor-viewmodel:1.0.3"
-
-    implementation 'com.squareup.okhttp3:okhttp:3.14.4'
-    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.14.4'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'
-
-    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
-    implementation 'com.github.aurae.retrofit2:converter-logansquare:1.4.1'
-    implementation  group: 'joda-time', name: 'joda-time', version: '2.10.3'
-    implementation 'com.bluelinelabs:logansquare:1.3.7'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0.pr1'
-    kapt 'com.bluelinelabs:logansquare-compiler:1.3.7'
-
-    implementation 'com.google.dagger:dagger:2.24'
-    kapt 'com.google.dagger:dagger-compiler:2.24'
-    implementation 'com.github.lukaspili.autodagger2:autodagger2:1.1'
-    kapt 'com.github.lukaspili.autodagger2:autodagger2-compiler:1.1'
-    compileOnly 'javax.annotation:jsr250-api:1.0'
-    // Android only
-    implementation 'org.greenrobot:eventbus:3.1.1'
-    implementation 'io.requery:requery:1.5.1'
-    implementation 'io.requery:requery-android:1.5.1'
-    implementation 'net.zetetic:android-database-sqlcipher:3.5.9'
-    kapt 'io.requery:requery-processor:1.5.1'
-    implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
-    compileOnly 'org.projectlombok:lombok:1.18.10'
-    annotationProcessor 'org.projectlombok:lombok:1.18.10'
-    kapt "org.projectlombok:lombok:1.18.10"
-
-    implementation 'com.jakewharton:butterknife:10.2.0'
-    kapt 'com.jakewharton:butterknife-compiler:10.2.0'
-    implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'
-    implementation 'eu.davidea:flexible-adapter:5.1.0'
-    implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-    implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b3'
-    implementation 'org.webrtc:google-webrtc:1.0.23295'
-    implementation 'com.yarolegovich:lovely-dialog:1.1.0'
-    implementation 'com.yarolegovich:lovelyinput:1.0.9'
-    implementation 'com.yarolegovich:mp:1.0.9'
-    implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
-    implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'com.github.wooplr:Spotlight:1.3'
-    implementation('com.github.mario:chatkit:a183142049', {
-        exclude group: 'com.facebook.fresco'
-    })
-
-    implementation 'com.github.mario.fresco:fresco:111'
-    implementation 'com.github.mario.fresco:animated-webp:111'
-    implementation 'com.github.mario.fresco:webpsupport:111'
-    implementation 'com.github.mario.fresco:animated-gif:111'
-    implementation 'com.github.mario.fresco:imagepipeline-okhttp3:111'
-
-    implementation "io.coil-kt:coil:${coil_version}"
-    implementation "io.coil-kt:coil-gif:${coil_version}"
-    implementation "io.coil-kt:coil-svg:${coil_version}"
-
-    implementation 'com.github.natario1:Autocomplete:v1.1.0'
-
-    implementation 'com.github.cotechde.hwsecurity:hwsecurity-fido:2.4.5'
-
-    implementation 'com.novoda:merlin:1.2.1'
-
-    implementation 'com.github.Kennyc1012:BottomSheet:2.4.1'
-    implementation 'com.github.mario:PopupBubble:a365177d96'
-    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    implementation 'eu.medsea.mimeutil:mime-util:2.1.3'
-
-    implementation 'com.afollestad.material-dialogs:core:3.1.0'
-    implementation 'com.afollestad.material-dialogs:datetime:3.1.0'
-    implementation 'com.afollestad.material-dialogs:bottomsheets:3.1.0'
-    implementation 'com.afollestad.material-dialogs:lifecycle:3.1.0'
-
-    implementation 'org.parceler:parceler-api:1.1.12'
-    kapt 'org.parceler:parceler:1.1.12'
-
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:3.0.0'
-    testImplementation 'org.powermock:powermock-core:2.0.2'
-    testImplementation 'org.powermock:powermock-module-junit4:2.0.2'
-    testImplementation 'org.powermock:powermock-api-mockito2:2.0.2'
+  implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+  implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+  implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
 
-    androidTestImplementation ('androidx.test.espresso:espresso-core:3.3.0-alpha02', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
-    findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
+  // optional - ReactiveStreams support for LiveData
+  implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version"
+
+  // optional - Test helpers for LiveData
+  testImplementation "androidx.arch.core:core-testing:2.1.0"
+
+  implementation "androidx.room:room-runtime:$room_version"
+  kapt "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of
+  // annotationProcessor
+
+  // optional - Kotlin Extensions and Coroutines support for Room
+  implementation "androidx.room:room-ktx:$room_version"
+
+  // optional - RxJava support for Room
+  implementation "androidx.room:room-rxjava2:$room_version"
+
+  // optional - Guava support for Room, including Optional and ListenableFuture
+  //implementation "androidx.room:room-guava:$room_version"
+
+  // Test helpers
+  testImplementation "androidx.room:room-testing:$room_version"
+
+  implementation "androidx.work:work-runtime-ktx:$work_version"
+  implementation "androidx.work:work-rxjava2:$work_version"
+  androidTestImplementation "androidx.work:work-testing:$work_version"
+
+  implementation 'androidx.appcompat:appcompat:1.1.0'
+  implementation 'com.google.android.material:material:1.1.0-beta01'
+  implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+  implementation 'com.github.vanniktech:Emoji:0.6.0'
+  implementation group: 'androidx.emoji', name: 'emoji-bundled', version: '1.0.0'
+  implementation 'org.michaelevans.colorart:library:0.0.3'
+  implementation 'com.google.android:flexbox:1.1.0'
+  implementation 'com.gitlab.bitfireAT:dav4jvm:ee66e8e5'
+  implementation 'org.conscrypt:conscrypt-android:2.2.1'
+
+  implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+
+  implementation 'androidx.biometric:biometric:1.0.0-rc01'
+  implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
+
+  implementation 'androidx.multidex:multidex:2.0.1'
+
+  implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+  implementation "io.reactivex.rxjava2:rxjava:2.2.11"
+
+  implementation 'com.bluelinelabs:conductor:3.0.0-rc2'
+  implementation 'com.bluelinelabs:conductor-support:3.0.0-rc2'
+  implementation 'com.bluelinelabs:conductor-archlifecycle:3.0.0-rc2'
+  implementation 'com.bluelinelabs:conductor-rxlifecycle2:3.0.0-rc2'
+  implementation 'com.bluelinelabs:conductor-autodispose:3.0.0-rc2'
+  implementation "com.github.miquelbeltran:conductor-viewmodel:1.0.3"
+
+  implementation 'com.squareup.okhttp3:okhttp:3.14.4'
+  implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.14.4'
+  implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'
+
+  implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+  implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
+  implementation 'com.github.aurae.retrofit2:converter-logansquare:1.4.1'
+  implementation group: 'joda-time', name: 'joda-time', version: '2.10.3'
+  implementation 'com.bluelinelabs:logansquare:1.3.7'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.0.pr1'
+  kapt 'com.bluelinelabs:logansquare-compiler:1.3.7'
+
+  implementation 'com.google.dagger:dagger:2.24'
+  kapt 'com.google.dagger:dagger-compiler:2.24'
+  kapt 'com.google.dagger:dagger-android-processor:2.24'
+  implementation 'com.github.lukaspili.autodagger2:autodagger2:1.1'
+  kapt 'com.github.lukaspili.autodagger2:autodagger2-compiler:1.1'
+  compileOnly 'javax.annotation:jsr250-api:1.0'
+  // Android only
+  implementation 'org.greenrobot:eventbus:3.1.1'
+  implementation 'io.requery:requery:1.5.1'
+  implementation 'io.requery:requery-android:1.5.1'
+  implementation 'net.zetetic:android-database-sqlcipher:3.5.9'
+  kapt 'io.requery:requery-processor:1.5.1'
+  implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
+  compileOnly 'org.projectlombok:lombok:1.18.10'
+  annotationProcessor 'org.projectlombok:lombok:1.18.10'
+  kapt "org.projectlombok:lombok:1.18.10"
+
+  implementation 'com.jakewharton:butterknife:10.2.0'
+  kapt 'com.jakewharton:butterknife-compiler:10.2.0'
+  implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'
+  implementation 'eu.davidea:flexible-adapter:5.1.0'
+  implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
+  implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b3'
+  implementation 'org.webrtc:google-webrtc:1.0.23295'
+  implementation 'com.yarolegovich:lovely-dialog:1.1.0'
+  implementation 'com.yarolegovich:lovelyinput:1.0.9'
+  implementation 'com.yarolegovich:mp:1.0.9'
+  implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
+  implementation 'org.apache.commons:commons-lang3:3.9'
+  implementation 'com.github.wooplr:Spotlight:1.3'
+  implementation('com.github.mario:chatkit:c6a6176729', {
+    exclude group: 'com.facebook.fresco'
+  })
+
+  implementation 'com.github.mario.fresco:fresco:111'
+  implementation 'com.github.mario.fresco:animated-webp:111'
+  implementation 'com.github.mario.fresco:webpsupport:111'
+  implementation 'com.github.mario.fresco:animated-gif:111'
+  implementation 'com.github.mario.fresco:imagepipeline-okhttp3:111'
+
+  implementation "io.coil-kt:coil:${coil_version}"
+  implementation "io.coil-kt:coil-gif:${coil_version}"
+  implementation "io.coil-kt:coil-svg:${coil_version}"
+
+  implementation 'com.github.natario1:Autocomplete:v1.1.0'
+
+  implementation 'com.github.cotechde.hwsecurity:hwsecurity-fido:2.4.5'
+
+  implementation 'com.novoda:merlin:1.2.1'
+
+  implementation 'com.github.mario:PopupBubble:a365177d96'
+  implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+  implementation 'eu.medsea.mimeutil:mime-util:2.1.3'
+
+  implementation 'com.afollestad.material-dialogs:core:3.1.0'
+  implementation 'com.afollestad.material-dialogs:datetime:3.1.0'
+  implementation 'com.afollestad.material-dialogs:bottomsheets:3.1.0'
+  implementation 'com.afollestad.material-dialogs:lifecycle:3.1.0'
+
+  implementation 'org.parceler:parceler-api:1.1.12'
+  kapt 'org.parceler:parceler:1.1.12'
+
+  testImplementation 'junit:junit:4.12'
+  testImplementation 'org.mockito:mockito-core:3.0.0'
+  testImplementation 'org.powermock:powermock-core:2.0.2'
+  testImplementation 'org.powermock:powermock-module-junit4:2.0.2'
+  testImplementation 'org.powermock:powermock-api-mockito2:2.0.2'
+
+  androidTestImplementation('androidx.test.espresso:espresso-core:3.3.0-alpha02', {
+    exclude group: 'com.android.support', module: 'support-annotations'
+  })
+  findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
+  findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
+  implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+  implementation 'com.github.Kennyc1012:BottomSheet:2.4.1'
 }

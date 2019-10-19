@@ -345,7 +345,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
               drawable.ic_star_black_24dp -> {
                 viewModel.changeFavoriteValueForConversation(conversation, true)
               }
-              drawable.ic_link_grey600_24px -> {
+              drawable.ic_share_black_24dp -> {
                 startActivity(viewModel.getShareIntentForConversation(conversation))
               }
               drawable.ic_exit_to_app_black_24dp -> {

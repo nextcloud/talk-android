@@ -75,24 +75,12 @@
                 </RelativeLayout>
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
-            <com.yarolegovich.mp.MaterialPreferenceCategory
-                android:id="@+id/otherRoomOptions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+
+            <include layout="@layout/general_info_item"
                 android:layout_below="@id/conversation_info_name"
-                android:visibility="gone">
-
-                <com.yarolegovich.mp.MaterialStandardPreference
-                    android:id="@+id/favoriteConversationAction"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    apc:mp_icon="@drawable/ic_star_black_24dp"
-                    apc:mp_icon_tint="@color/grey_600"
-                    apc:mp_title="@string/nc_add_to_favorites">
-
-                </com.yarolegovich.mp.MaterialStandardPreference>
-
-            </com.yarolegovich.mp.MaterialPreferenceCategory>
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                />
 
             <com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink
                 android:id="@+id/participants_list_category"
@@ -142,7 +130,7 @@
                 layout="@layout/notification_settings_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/otherRoomOptions"
+                android:layout_below="@id/generalConversationOptions"
                 android:visibility="gone" />
 
             <include

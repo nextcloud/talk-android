@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import autodagger.AutoInjector;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.interfaces.ConversationInfoInterface;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
@@ -50,10 +51,17 @@ public class DatabaseStorageModule implements StorageModule {
   private long accountIdentifier;
 
   private boolean lobbyValue;
+  private boolean favoriteConversationValue;
+  private boolean allowGuestsValue;
+
+  private Boolean hasPassword;
+  private String conversationNameValue;
 
   private String messageNotificationLevel;
+  private ConversationInfoInterface conversationInfoInterface;
 
-  public DatabaseStorageModule(UserEntity conversationUser, String conversationToken) {
+  public DatabaseStorageModule(UserEntity conversationUser, String conversationToken,
+      ConversationInfoInterface conversationInfoInterface) {
     NextcloudTalkApplication.Companion.getSharedApplication()
         .getComponentApplication()
         .inject(this);
@@ -61,46 +69,94 @@ public class DatabaseStorageModule implements StorageModule {
     this.conversationUser = conversationUser;
     this.accountIdentifier = conversationUser.getId();
     this.conversationToken = conversationToken;
+    this.conversationInfoInterface = conversationInfoInterface;
   }
 
   @Override
   public void saveBoolean(String key, boolean value) {
-    if (!key.equals("conversation_lobby")) {
+    if (!key.equals("conversation_lobby") && !key.equals("allow_guests") && !key.equals(
+        "favorite_conversation")) {
       arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, Boolean.toString(value),
           conversationToken);
     } else {
-      lobbyValue = value;
+      switch (key) {
+        case "conversation_lobby":
+          lobbyValue = value;
+          break;
+        case "allow_guests":
+          allowGuestsValue = value;
+          break;
+        case "favorite_conversation":
+          favoriteConversationValue = value;
+          break;
+        default:
+      }
     }
   }
 
   @Override
   public void saveString(String key, String value) {
-    if (!key.equals("message_notification_level")) {
+    if (!key.equals("message_notification_level")
+        && !key.equals("conversation_name")
+        && !key.equals("conversation_password")) {
       arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, value, conversationToken);
     } else {
-      if (conversationUser.hasSpreedFeatureCapability("notification-levels")) {
-        if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(
-            value)) {
-          int intValue;
-          switch (value) {
-            case "never":
-              intValue = 3;
-              break;
-            case "mention":
-              intValue = 2;
-              break;
-            case "always":
-              intValue = 1;
-              break;
-            default:
-              intValue = 0;
-          }
+      if (key.equals("message_notification_level")) {
+        if (conversationUser.hasSpreedFeatureCapability("notification-levels")) {
+          if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(
+              value)) {
+            int intValue;
+            switch (value) {
+              case "never":
+                intValue = 3;
+                break;
+              case "mention":
+                intValue = 2;
+                break;
+              case "always":
+                intValue = 1;
+                break;
+              default:
+                intValue = 0;
+            }
 
-          ncApi.setNotificationLevel(
-              ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
-              ApiUtils.getUrlForSettingNotificationlevel(conversationUser.getBaseUrl(),
-                  conversationToken),
-              intValue)
+            ncApi.setNotificationLevel(
+                ApiUtils.getCredentials(conversationUser.getUsername(),
+                    conversationUser.getToken()),
+                ApiUtils.getUrlForSettingNotificationlevel(conversationUser.getBaseUrl(),
+                    conversationToken),
+                intValue)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<GenericOverall>() {
+                  @Override
+                  public void onSubscribe(Disposable d) {
+
+                  }
+
+                  @Override
+                  public void onNext(GenericOverall genericOverall) {
+                    messageNotificationLevel = value;
+                  }
+
+                  @Override
+                  public void onError(Throwable e) {
+
+                  }
+
+                  @Override
+                  public void onComplete() {
+                  }
+                });
+          } else {
+            messageNotificationLevel = value;
+          }
+        }
+      } else if (key.equals("conversation_password")) {
+        if (hasPassword != null) {
+          ncApi.setPassword(ApiUtils.getCredentials(conversationUser.getUsername(),
+              conversationUser.getToken()),
+              ApiUtils.getUrlForPassword(conversationUser.getBaseUrl(),
+                  conversationToken), value)
               .subscribeOn(Schedulers.io())
               .subscribe(new Observer<GenericOverall>() {
                 @Override
@@ -110,7 +166,8 @@ public class DatabaseStorageModule implements StorageModule {
 
                 @Override
                 public void onNext(GenericOverall genericOverall) {
-                  messageNotificationLevel = value;
+                  hasPassword = !TextUtils.isEmpty(value);
+                  conversationInfoInterface.passwordSet(TextUtils.isEmpty(value));
                 }
 
                 @Override
@@ -123,7 +180,37 @@ public class DatabaseStorageModule implements StorageModule {
                 }
               });
         } else {
-          messageNotificationLevel = value;
+          hasPassword = Boolean.parseBoolean(value);
+        }
+      } else if (key.equals("conversation_name")) {
+        if (!TextUtils.isEmpty(conversationNameValue) && !conversationNameValue.equals(value)) {
+          ncApi.renameRoom(ApiUtils.getCredentials(conversationUser.getUsername(),
+              conversationUser.getToken()), ApiUtils.getRoom(conversationUser.getBaseUrl(),
+              conversationToken), value)
+              .subscribeOn(Schedulers.io())
+              .subscribe(new Observer<GenericOverall>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(GenericOverall genericOverall) {
+                  conversationNameValue = value;
+                  conversationInfoInterface.conversationNameSet(value);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+                }
+              });
+        } else {
+          conversationNameValue = value;
         }
       }
     }
@@ -144,6 +231,10 @@ public class DatabaseStorageModule implements StorageModule {
   public boolean getBoolean(String key, boolean defaultVal) {
     if (key.equals("conversation_lobby")) {
       return lobbyValue;
+    } else if (key.equals("allow_guests")) {
+      return allowGuestsValue;
+    } else if (key.equals("favorite_conversation")) {
+      return favoriteConversationValue;
     } else {
       ArbitraryStorageEntity valueFromDb =
           arbitraryStorageUtils.getStorageSetting(accountIdentifier, key, conversationToken);
@@ -157,7 +248,9 @@ public class DatabaseStorageModule implements StorageModule {
 
   @Override
   public String getString(String key, String defaultVal) {
-    if (!key.equals("message_notification_level")) {
+    if (!key.equals("message_notification_level")
+        && !key.equals("conversation_name")
+        && !key.equals("conversation_password")) {
       ArbitraryStorageEntity valueFromDb =
           arbitraryStorageUtils.getStorageSetting(accountIdentifier, key, conversationToken);
       if (valueFromDb == null) {
@@ -165,9 +258,15 @@ public class DatabaseStorageModule implements StorageModule {
       } else {
         return valueFromDb.getValue();
       }
-    } else {
+    } else if (key.equals("message_notification_level")) {
       return messageNotificationLevel;
+    } else if (key.equals("conversation_name")) {
+      return conversationNameValue;
+    } else if (key.equals("conversation_password")) {
+      return "";
     }
+
+    return "";
   }
 
   @Override

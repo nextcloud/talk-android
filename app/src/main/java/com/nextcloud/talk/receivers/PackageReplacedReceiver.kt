@@ -60,32 +60,30 @@ class PackageReplacedReceiver : BroadcastReceiver() {
                   .NOTIFICATION_SERVICE
           ) as NotificationManager
 
-          if (notificationManager != null) {
-            if (!appPreferences.isNotificationChannelUpgradedToV2) {
-              for (notificationChannelGroup in notificationManager
-                  .notificationChannelGroups) {
-                notificationManager.deleteNotificationChannelGroup(notificationChannelGroup.id)
-              }
-
-              notificationManager.deleteNotificationChannel(
-                  NotificationUtils.NOTIFICATION_CHANNEL_CALLS
-              )
-              notificationManager.deleteNotificationChannel(
-                  NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES
-              )
-
-              appPreferences.setNotificationChannelIsUpgradedToV2(true)
+          if (!appPreferences.isNotificationChannelUpgradedToV2) {
+            for (notificationChannelGroup in notificationManager
+                .notificationChannelGroups) {
+              notificationManager.deleteNotificationChannelGroup(notificationChannelGroup.id)
             }
 
-            if (!appPreferences.isNotificationChannelUpgradedToV3 && packageInfo.versionCode > 51) {
-              notificationManager.deleteNotificationChannel(
-                  NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2
-              )
-              notificationManager.deleteNotificationChannel(
-                  NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2
-              )
-              appPreferences.setNotificationChannelIsUpgradedToV3(true)
-            }
+            notificationManager.deleteNotificationChannel(
+                NotificationUtils.NOTIFICATION_CHANNEL_CALLS
+            )
+            notificationManager.deleteNotificationChannel(
+                NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES
+            )
+
+            appPreferences.setNotificationChannelIsUpgradedToV2(true)
+          }
+
+          if (!appPreferences.isNotificationChannelUpgradedToV3 && packageInfo.versionCode > 51) {
+            notificationManager.deleteNotificationChannel(
+                NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2
+            )
+            notificationManager.deleteNotificationChannel(
+                NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2
+            )
+            appPreferences.setNotificationChannelIsUpgradedToV3(true)
           }
 
         }

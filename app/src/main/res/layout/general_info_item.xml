@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:apc="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/generalConversationOptions"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    >
+
+  <com.yarolegovich.mp.MaterialPreferenceCategory
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:animateLayoutChanges="true"
+      apc:mpc_title="@string/nc_general_settings"
+      apc:mpc_title_color="@color/colorPrimary"
+      >
+
+    <com.yarolegovich.mp.MaterialEditTextPreference
+        android:id="@+id/changeConversationName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        apc:mp_icon="@drawable/ic_pencil_grey600_24dp"
+        apc:mp_icon_tint="@color/grey_600"
+        apc:mp_key="conversation_name"
+        apc:mp_title="@string/nc_rename"
+        />
+
+    <com.yarolegovich.mp.MaterialSwitchPreference
+        android:id="@+id/favoriteConversationAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        apc:mp_icon="@drawable/ic_star_black_24dp"
+        apc:mp_icon_tint="@color/grey_600"
+        apc:mp_key="favorite_conversation"
+        apc:mp_summary="@string/nc_favorites_explanation"
+        apc:mp_title="@string/nc_favorite_conversation"
+        />
+
+    <com.yarolegovich.mp.MaterialSwitchPreference
+        android:id="@+id/allowGuestsAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        apc:mp_icon="@drawable/link_variant"
+        apc:mp_icon_tint="@color/grey_600"
+        apc:mp_key="allow_guests"
+        apc:mp_title="@string/nc_allow_guests"
+        />
+
+    <com.yarolegovich.mp.MaterialEditTextPreference
+        android:id="@+id/passwordAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        apc:mp_icon="@drawable/ic_lock_grey600_24px"
+        apc:mp_icon_tint="@color/grey_600"
+        apc:mp_key="conversation_password"
+        android:visibility="gone"
+        apc:mp_summary="@string/nc_manual"
+        apc:mp_title="@string/nc_password"
+        />
+
+    <com.yarolegovich.mp.MaterialStandardPreference
+        android:id="@+id/shareAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        apc:mp_icon="@drawable/ic_share_black_24dp"
+        apc:mp_icon_tint="@color/grey_600"
+        android:visibility="gone"
+        apc:mp_title="@string/nc_share_link"
+        >
+
+    </com.yarolegovich.mp.MaterialStandardPreference>
+  </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+</com.yarolegovich.mp.MaterialPreferenceScreen>

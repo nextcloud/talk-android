@@ -37,6 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_default_value="false"
+            apc:mp_icon="@drawable/ic_whatshot_black_24dp"
+            apc:mp_icon_tint="@color/grey_600"
             apc:mp_key="important_conversation"
             apc:mp_title="@string/nc_important_conversation"
             apc:mp_summary="@string/nc_important_conversation_desc"/>
@@ -45,6 +47,8 @@
             android:id="@+id/conversation_info_message_notifications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            apc:mp_icon="@drawable/ic_message_black_24dp"
+            apc:mp_icon_tint="@color/grey_600"
             apc:mp_entry_descriptions="@array/message_notification_levels"
             apc:mp_entry_values="@array/message_notification_levels_entry_values"
             apc:mp_key="message_notification_level"
@@ -57,6 +61,8 @@
             android:layout_height="wrap_content"
             apc:mp_default_value="false"
             apc:mp_key="mute_calls"
+            apc:mp_icon="@drawable/ic_volume_mute_white_24dp"
+            apc:mp_icon_tint="@color/grey_600"
             apc:mp_title="@string/nc_mute_calls"
             apc:mp_summary="@string/nc_mute_calls_desc"/>
 

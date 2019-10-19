@@ -39,10 +39,6 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="ListItem" parent="BottomSheet.ListItem.TextAppearance">
-        <item name="android:textColor">@color/nc_incoming_text_default</item>
-    </style>
-
     <style name="ChipIncomingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textColor">@color/nc_incoming_text_default</item>
     </style>

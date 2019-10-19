@@ -61,13 +61,13 @@
         android:padding="4dp"
         android:scaleType="centerInside" />
 
-    <androidx.legacy.widget.Space
+    <Space
         android:id="@id/attachmentButtonSpace"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_toEndOf="@id/attachmentButton" />
 
-    <androidx.legacy.widget.Space
+    <Space
         android:id="@id/sendButtonSpace"
         android:layout_width="0dp"
         android:layout_height="0dp"

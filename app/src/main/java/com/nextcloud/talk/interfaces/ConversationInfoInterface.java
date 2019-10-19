@@ -18,7 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-dependencies {
-  implementation "androidx.work:work-gcm:$work_version"
-  implementation "com.google.firebase:firebase-messaging:20.0.0"
+package com.nextcloud.talk.interfaces;
+
+public interface ConversationInfoInterface {
+  void conversationNameSet(String name);
+  void passwordSet(boolean isCleared);
 }

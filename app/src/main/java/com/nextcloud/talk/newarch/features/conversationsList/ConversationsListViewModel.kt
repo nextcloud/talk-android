@@ -276,7 +276,7 @@ class ConversationsListViewModel constructor(
       items.add(
           (BasicListItemWithImage(
               drawable
-                  .ic_link_grey600_24px, context.getString(string.nc_share_link)
+                  .ic_share_black_24dp, context.getString(string.nc_share_link)
           ))
       )
     }

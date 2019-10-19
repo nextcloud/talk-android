@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.controllers
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
@@ -48,6 +49,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
+import com.nextcloud.talk.R.string
 import com.nextcloud.talk.adapters.items.UserItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -55,24 +57,30 @@ import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.events.EventStatus
+import com.nextcloud.talk.interfaces.ConversationInfoInterface
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ROOM_PUBLIC_CALL
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
+import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
 import com.yarolegovich.lovelydialog.LovelyStandardDialog
 import com.yarolegovich.mp.MaterialChoicePreference
+import com.yarolegovich.mp.MaterialEditTextPreference
 import com.yarolegovich.mp.MaterialPreferenceCategory
 import com.yarolegovich.mp.MaterialPreferenceScreen
 import com.yarolegovich.mp.MaterialStandardPreference
@@ -92,7 +100,24 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationInfoController(args: Bundle) : BaseController(),
-    FlexibleAdapter.OnItemClickListener {
+    FlexibleAdapter.OnItemClickListener, ConversationInfoInterface {
+
+  override fun conversationNameSet(name: String?) {
+    conversationDisplayName.post {
+      conversationDisplayName.text = name
+    }
+  }
+
+  override fun passwordSet(isCleared: Boolean) {
+    passwordAction.post {
+      if (!isCleared) {
+        passwordAction.setSummary(context.getString(string.nc_password_redacted))
+      } else {
+        passwordAction.setSummary(context.getString(string.nc_manual))
+      }
+    }
+  }
+
   @BindView(R.id.notification_settings)
   lateinit var notificationsPreferenceScreen: MaterialPreferenceScreen
   @BindView(R.id.progressBar)
@@ -125,9 +150,23 @@ class ConversationInfoController(args: Bundle) : BaseController(),
   lateinit var muteCalls: MaterialSwitchPreference
   @BindView(R.id.mpc_action)
   lateinit var actionTextView: TextView
+  @BindView(R.id.generalConversationOptions)
+  lateinit var generalConversationOptions: MaterialPreferenceScreen
+  @BindView(R.id.changeConversationName)
+  lateinit var changeConversationName: MaterialEditTextPreference
+  @BindView(R.id.favoriteConversationAction)
+  lateinit var favoriteConversationAction: MaterialSwitchPreference
+  @BindView(R.id.allowGuestsAction)
+  lateinit var allowGuestsAction: MaterialSwitchPreference
+  @BindView(R.id.passwordAction)
+  lateinit var passwordAction: MaterialEditTextPreference
+  @BindView(R.id.shareAction)
+  lateinit var shareAction: MaterialStandardPreference
 
   @set:Inject
   lateinit var ncApi: NcApi
+  @set:Inject
+  lateinit var userUtils: UserUtils
 
   private val conversationToken: String?
   private val conversationUser: UserEntity?
@@ -189,13 +228,6 @@ class ConversationInfoController(args: Bundle) : BaseController(),
     super.onAttach(view)
     eventBus.register(this)
 
-    if (databaseStorageModule == null) {
-      databaseStorageModule = DatabaseStorageModule(conversationUser!!, conversationToken)
-    }
-
-    notificationsPreferenceScreen.setStorageModule(databaseStorageModule)
-    conversationInfoWebinar.setStorageModule(databaseStorageModule)
-
     fetchRoomInfo()
   }
 
@@ -205,6 +237,15 @@ class ConversationInfoController(args: Bundle) : BaseController(),
     if (saveStateHandler == null) {
       saveStateHandler = LovelySaveStateHandler()
     }
+
+    if (databaseStorageModule == null) {
+      databaseStorageModule = DatabaseStorageModule(
+          conversationUser, conversationToken, this)
+    }
+
+    notificationsPreferenceScreen.setStorageModule(databaseStorageModule)
+    conversationInfoWebinar.setStorageModule(databaseStorageModule)
+    generalConversationOptions.setStorageModule(databaseStorageModule)
 
     actionTextView.visibility = View.GONE
   }
@@ -280,6 +321,91 @@ class ConversationInfoController(args: Bundle) : BaseController(),
     }
   }
 
+  fun submitGuestChange() {
+    if (databaseStorageModule != null && conversationUser != null && conversation != null) {
+      if ((allowGuestsAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked) {
+        ncApi.makeRoomPublic(conversationUser.getCredentials(), ApiUtils.getUrlForRoomVisibility
+        (conversationUser.baseUrl, conversation!!.token))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GenericOverall> {
+              override fun onComplete() {
+              }
+
+              override fun onSubscribe(d: Disposable) {
+              }
+
+              override fun onNext(t: GenericOverall) {
+              }
+
+              override fun onError(e: Throwable) {
+              }
+            })
+      } else {
+        ncApi.makeRoomPrivate(conversationUser.getCredentials(), ApiUtils.getUrlForRoomVisibility
+        (conversationUser.baseUrl, conversation!!.token))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GenericOverall> {
+              override fun onComplete() {
+              }
+
+              override fun onSubscribe(d: Disposable) {
+              }
+
+              override fun onNext(t: GenericOverall) {
+              }
+
+              override fun onError(e: Throwable) {
+              }
+            })
+      }
+    }
+  }
+
+  fun submitFavoriteChange() {
+    if (databaseStorageModule != null && conversationUser != null && conversation != null) {
+      if ((favoriteConversationAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked) {
+        ncApi.addConversationToFavorites(conversationUser.getCredentials(), ApiUtils
+            .getUrlForConversationFavorites(conversationUser.baseUrl, conversation!!.token))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GenericOverall> {
+              override fun onComplete() {
+              }
+
+              override fun onSubscribe(d: Disposable) {
+              }
+
+              override fun onNext(t: GenericOverall) {
+              }
+
+              override fun onError(e: Throwable) {
+              }
+
+            })
+      } else {
+        ncApi.removeConversationFromFavorites(conversationUser.getCredentials(), ApiUtils
+            .getUrlForConversationFavorites(conversationUser.baseUrl, conversation!!.token))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GenericOverall> {
+              override fun onComplete() {
+              }
+
+              override fun onSubscribe(d: Disposable) {
+              }
+
+              override fun onNext(t: GenericOverall) {
+              }
+
+              override fun onError(e: Throwable) {
+              }
+
+            })
+      }
+    }
+  }
   fun submitLobbyChanges() {
     val state = if ((conversationInfoLobby.findViewById<View>(
             R.id
@@ -518,15 +644,17 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
             val conversationCopy = conversation
 
-            if (conversationCopy!!.canModerate(conversationUser)) {
-              actionTextView.visibility = View.VISIBLE
-            } else {
-              actionTextView.visibility = View.GONE
-            }
 
             if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
+              if (conversationCopy!!.canModerate(conversationUser)) {
+                actionTextView.visibility = View.VISIBLE
+              } else {
+                actionTextView.visibility = View.GONE
+              }
+
               ownOptionsCategory.visibility = View.VISIBLE
 
+              setupGeneralSettings()
               setupWebinaryView()
 
               if (!conversation!!.canLeave(conversationUser)) {
@@ -569,6 +697,83 @@ class ConversationInfoController(args: Bundle) : BaseController(),
             roomDisposable!!.dispose()
           }
         })
+  }
+
+  private fun setupGeneralSettings() {
+    if (conversation != null) {
+      changeConversationName.value = conversation!!.displayName
+
+      if (conversation!!.isNameEditable(conversationUser)) {
+        changeConversationName.visibility = View.VISIBLE
+      } else {
+        changeConversationName.visibility = View.GONE
+      }
+
+      favoriteConversationAction.value = conversation!!.isFavorite
+      allowGuestsAction.value = conversation!!.type == ROOM_PUBLIC_CALL
+
+      (allowGuestsAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+          .isChecked = allowGuestsAction.value
+      (favoriteConversationAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+          .isChecked = favoriteConversationAction.value
+
+      (favoriteConversationAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat).setOnCheckedChangeListener { buttonView, isChecked ->
+        submitFavoriteChange()
+      }
+
+      (allowGuestsAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat).setOnCheckedChangeListener { buttonView, isChecked ->
+        if (isChecked) {
+          passwordAction.visibility = View.VISIBLE
+          shareAction.visibility = View.VISIBLE
+        } else {
+          passwordAction.visibility = View.GONE
+          shareAction.visibility = View.GONE
+        }
+
+        submitGuestChange()
+      }
+
+      shareAction.setOnClickListener {
+        val sendIntent: Intent = Intent().apply {
+          action = Intent.ACTION_SEND
+          putExtra(
+              Intent.EXTRA_SUBJECT,
+              String.format(
+                  context.getString(R.string.nc_share_subject),
+                  context.getString(R.string.nc_app_name)
+              )
+          )
+
+          putExtra(
+              Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(
+              context, conversation!!.password,
+              userUtils, conversation
+          )
+          )
+
+          type = "text/plain"
+        }
+
+        val intent = Intent.createChooser(sendIntent, context.getString(string.nc_share_link))
+        startActivity(intent)
+      }
+
+      if (allowGuestsAction.value) {
+        passwordAction.visibility = View.VISIBLE
+        shareAction.visibility = View.VISIBLE
+
+        passwordAction.value = conversation!!.hasPassword.toString()
+        if (conversation!!.hasPassword) {
+          passwordAction.setSummary(context.getString(string.nc_password_redacted))
+        } else {
+          passwordAction.setSummary(context.getString(string.nc_manual))
+        }
+      } else {
+        passwordAction.visibility = View.GONE
+        shareAction.visibility = View.GONE
+      }
+
+    }
   }
 
   private fun adjustNotificationLevelUI() {
