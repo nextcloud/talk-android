@@ -132,7 +132,6 @@
     <string name="nc_join_via_web">Pridruži se prek spleta</string>
     <string name="nc_add_to_favorites">Dodaj med priljubljene</string>
     <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Izbor stikov</string>
     <string name="nc_contacts_done">Začni pogovor</string>

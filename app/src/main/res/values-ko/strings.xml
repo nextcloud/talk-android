@@ -123,7 +123,6 @@
     <string name="nc_join_via_web">웹에서 참여</string>
     <string name="nc_add_to_favorites">즐겨찾기에 추가</string>
     <string name="nc_remove_from_favorites">즐겨찾기에서 제거</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">연락처 선택</string>
     <string name="nc_contacts_done">완료</string>

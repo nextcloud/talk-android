@@ -143,7 +143,6 @@
     <string name="nc_join_via_web">通过网页加入</string>
     <string name="nc_add_to_favorites">添加收藏</string>
     <string name="nc_remove_from_favorites">取消收藏</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">选择联系人</string>
     <string name="nc_contacts_done">完成</string>

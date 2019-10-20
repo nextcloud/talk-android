@@ -142,7 +142,6 @@
     <string name="nc_join_via_web">Pripojiť sa cez web</string>
     <string name="nc_add_to_favorites">Pridať do obľúbených</string>
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Vyberte si kontakty</string>
     <string name="nc_contacts_done">Hotovo</string>

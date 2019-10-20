@@ -128,6 +128,8 @@
     <string name="nc_start_conversation">Commencer une conversation</string>
     <string name="nc_configure_room">Configurer la conversation</string>
     <string name="nc_leave">Quitter la conversation</string>
+    <string name="nc_leave_message">Veuillez confirmer votre volonté de quitter cette conversation.</string>
+    <string name="nc_simple_leave">Quitter</string>
     <string name="nc_rename">Renommer la conversation</string>
     <string name="nc_set_password">Saisissez un mot de passe</string>
     <string name="nc_change_password">Changer de mot de passe</string>
@@ -138,12 +140,12 @@
     <string name="nc_make_call_private">Effectuer une conversation privée</string>
     <string name="nc_delete_call">Supprimer la conversation</string>
     <string name="nc_delete">Supprimer</string>
+    <string name="nc_delete_conversation_default">Veuillez confirmer votre volonté de supprimer cette conversation.</string>
     <string name="nc_new_conversation">Nouvelle conversation</string>
     <string name="nc_join_via_link">Joindre via un lien</string>
     <string name="nc_join_via_web">Joindre via le web</string>
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Choisissez un contact</string>
     <string name="nc_contacts_done">Terminé</string>
@@ -274,4 +276,8 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
 Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_manual">Non défini</string>
 
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Aucune connexion</string>
+    <string name="nc_timeout_error">Délai d\'attente</string>
+    <string name="nc_not_defined_error">Erreur inconnue </string>
     </resources>

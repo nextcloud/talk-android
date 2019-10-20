@@ -143,7 +143,6 @@
     <string name="nc_join_via_web">Dołącz przez sieć</string>
     <string name="nc_add_to_favorites">Dodaj do ulubionych</string>
     <string name="nc_remove_from_favorites">Usuń z ulubionych</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Wybierz kontakty</string>
     <string name="nc_contacts_done">Gotowe</string>

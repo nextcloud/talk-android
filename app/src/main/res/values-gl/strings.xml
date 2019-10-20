@@ -130,6 +130,8 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_start_conversation">Iniciar unha conversa</string>
     <string name="nc_configure_room">Configurar a conversa</string>
     <string name="nc_leave">Abandonar a conversa</string>
+    <string name="nc_leave_message">Confirme a súa intención de abandonar a conversa.</string>
+    <string name="nc_simple_leave">Abandonar</string>
     <string name="nc_rename">Renomear a conversa</string>
     <string name="nc_set_password">Estabelecer un contrasinal</string>
     <string name="nc_change_password">Cambiar o contrasinal</string>
@@ -140,12 +142,18 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_make_call_private">Facer privada a conversa</string>
     <string name="nc_delete_call">Eliminar a conversa</string>
     <string name="nc_delete">Eliminar</string>
+    <string name="nc_delete_conversation_default">Confirme a súa intención de eliminar esta
+        conversa.</string>
+    <string name="nc_delete_conversation_one2one">Se elimina a conversa, tamén se eliminará
+        para %1$s.</string>
+    <string name="nc_delete_conversation_more">Se elimina a conversa, tamén se eliminrá
+        para todos os demais participantes.</string>
+
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Xuntarse mediante unha ligazón</string>
     <string name="nc_join_via_web">Xuntarse medinte a web</string>
     <string name="nc_add_to_favorites">Engadir a favoritos</string>
     <string name="nc_remove_from_favorites">Retirar de favoritos</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Seleccionar contactos</string>
     <string name="nc_contacts_done">Feito</string>
@@ -275,5 +283,13 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_lobby_waiting_with_date">Actualmente estás agardando no vestíbulo.\n Esta
         xuntanza está programada para %1$s.</string>
     <string name="nc_manual">Sen estabelecer</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Sen conexión</string>
+    <string name="nc_bad_response_error">Resposta incorrecta</string>
+    <string name="nc_timeout_error">Límite de tempo</string>
+    <string name="nc_empty_response_error">Resposta baleira</string>
+    <string name="nc_not_defined_error">Produciuse un erro descoñecido</string>
+    <string name="nc_unauthorized_error">Non autorizado.</string>
 
     </resources>

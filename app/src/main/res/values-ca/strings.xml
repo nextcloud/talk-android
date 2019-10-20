@@ -143,7 +143,6 @@
     <string name="nc_join_via_web">Uniu-vos via web</string>
     <string name="nc_add_to_favorites">Afegeix a favorits</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecciona els contactes</string>
     <string name="nc_contacts_done">Fet</string>

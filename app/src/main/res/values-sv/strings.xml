@@ -143,7 +143,6 @@
     <string name="nc_join_via_web">Gå med via webb</string>
     <string name="nc_add_to_favorites">Lägg till som favorit</string>
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Välj kontakter</string>
     <string name="nc_contacts_done">Färdig</string>

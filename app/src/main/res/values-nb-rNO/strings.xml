@@ -111,7 +111,6 @@
     <string name="nc_join_via_web">Bli med via nett</string>
     <string name="nc_add_to_favorites">Legg til favoritter</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Velg kontakter</string>
     <string name="nc_contacts_done">Ferdig</string>

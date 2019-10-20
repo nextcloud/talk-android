@@ -109,7 +109,6 @@
     <string name="nc_join_via_web">Συμμετοχή μέσω ιστού</string>
     <string name="nc_add_to_favorites">Προσθήκη στα αγαπημένα</string>
     <string name="nc_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Επιλογή επαφών</string>
     <string name="nc_contacts_done">Ολοκληρώθηκε</string>

@@ -143,7 +143,6 @@
     <string name="nc_join_via_web">ウェブ経由で参加</string>
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">連絡先を選択</string>
     <string name="nc_contacts_done">完了</string>

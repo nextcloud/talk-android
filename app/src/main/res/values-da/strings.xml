@@ -143,7 +143,6 @@
     <string name="nc_join_via_web">Deltag via web</string>
     <string name="nc_add_to_favorites">Føj til favoritter</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Vælg kontakter</string>
     <string name="nc_contacts_done">Færdig</string>

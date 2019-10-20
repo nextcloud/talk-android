@@ -142,7 +142,6 @@
     <string name="nc_join_via_web">Pridružite se putem weba</string>
     <string name="nc_add_to_favorites">Dodaj u favorite</string>
     <string name="nc_remove_from_favorites">Ukloni iz favorita</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Odaberi kontakte</string>
     <string name="nc_contacts_done">Gotovo</string>

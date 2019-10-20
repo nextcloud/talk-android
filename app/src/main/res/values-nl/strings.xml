@@ -144,7 +144,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
     <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecteer contacten</string>
     <string name="nc_contacts_done">Gereed</string>

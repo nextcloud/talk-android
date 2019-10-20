@@ -105,7 +105,6 @@
     <string name="nc_join_via_web">Join via web</string>
     <string name="nc_add_to_favorites">Add to favourites</string>
     <string name="nc_remove_from_favorites">Remove from favourites</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Select contacts</string>
     <string name="nc_contacts_done">Done</string>

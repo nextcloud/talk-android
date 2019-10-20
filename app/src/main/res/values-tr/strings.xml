@@ -128,6 +128,8 @@
     <string name="nc_start_conversation">Yeni bir görüşme başlat</string>
     <string name="nc_configure_room">Görüşmeyi yapılandır</string>
     <string name="nc_leave">Görüşmeden ayrıl</string>
+    <string name="nc_leave_message">Lütfen bu görüşmeden ayrılma isteğinizi onaylayın.</string>
+    <string name="nc_simple_leave">Ayrıl</string>
     <string name="nc_rename">Görüşmeyi yeniden adlandır</string>
     <string name="nc_set_password">Bir parola ayarlayın</string>
     <string name="nc_change_password">Parolayı değiştir</string>
@@ -138,12 +140,18 @@
     <string name="nc_make_call_private">Görüşmeyi özel yap</string>
     <string name="nc_delete_call">Görüşmeyi sil</string>
     <string name="nc_delete">Sil</string>
+    <string name="nc_delete_conversation_default">Lütfen bu görüşmeyi silme isteğinizi
+        onaylayın.</string>
+    <string name="nc_delete_conversation_one2one">Bu görüşmeyi silerseniz %1$s için de
+        silinecek.</string>
+    <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de
+        silinecek.</string>
+
     <string name="nc_new_conversation">Yeni görüşme</string>
     <string name="nc_join_via_link">Bir bağlantı ile katıl</string>
     <string name="nc_join_via_web">Web üzerinden katıl</string>
     <string name="nc_add_to_favorites">Sık kullanılanlara ekle</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
-
     <!-- Contacts -->
     <string name="nc_select_contacts">Kişileri seçin</string>
     <string name="nc_contacts_done">Tamam</string>
@@ -273,5 +281,13 @@
     <string name="nc_lobby_waiting_with_date">Şu anda girişte bekliyorsunuz.\n Bu
         görüşme %1$s zamanında başlayacak.</string>
     <string name="nc_manual">Ayarlanmamış</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Bağlantı yok</string>
+    <string name="nc_bad_response_error">Yanıt hatalı</string>
+    <string name="nc_timeout_error">Zaman aşımı</string>
+    <string name="nc_empty_response_error">Yanıt boş</string>
+    <string name="nc_not_defined_error">Bilinmeyen sorun</string>
+    <string name="nc_unauthorized_error">Kimlik Doğrulanmamış</string>
 
     </resources>

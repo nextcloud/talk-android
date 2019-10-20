@@ -92,7 +92,6 @@
     <string name="nc_new_conversation">Naujas pokalbis</string>
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
     <string name="nc_remove_from_favorites">Šalinti iš mėgstamų</string>
-
     <string name="nc_contacts_done">Atlikta</string>
 
     <!-- Permissions -->
