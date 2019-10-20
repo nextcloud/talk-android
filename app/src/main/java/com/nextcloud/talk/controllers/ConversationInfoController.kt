@@ -62,6 +62,7 @@ import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ROOM_PUBLIC_CALL
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
@@ -710,7 +711,12 @@ class ConversationInfoController(args: Bundle) : BaseController(),
       }
 
       favoriteConversationAction.value = conversation!!.isFavorite
-      allowGuestsAction.value = conversation!!.type == ROOM_PUBLIC_CALL
+      if (conversation!!.type.equals(ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) || conversation!!
+              .type.equals(ConversationType.ROOM_SYSTEM)) {
+        allowGuestsAction.visibility = View.GONE
+      } else {
+        allowGuestsAction.value = conversation!!.type == ROOM_PUBLIC_CALL
+      }
 
       (allowGuestsAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
           .isChecked = allowGuestsAction.value
