@@ -652,7 +652,7 @@ public class OperationsMenuController extends BaseController {
 
       Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
       bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
-      bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
+      bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getConversationId());
       bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(),
           conversation.getDisplayName());
       UserEntity conversationUser;

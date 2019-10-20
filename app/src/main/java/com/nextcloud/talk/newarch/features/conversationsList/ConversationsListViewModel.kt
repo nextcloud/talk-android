@@ -49,6 +49,7 @@ import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUs
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.utils.ViewState
 import com.nextcloud.talk.newarch.utils.ViewState.FAILED
+import com.nextcloud.talk.newarch.utils.ViewState.INITIAL_LOAD
 import com.nextcloud.talk.newarch.utils.ViewState.LOADED
 import com.nextcloud.talk.newarch.utils.ViewState.LOADED_EMPTY
 import com.nextcloud.talk.newarch.utils.ViewState.LOADING
@@ -70,7 +71,7 @@ class ConversationsListViewModel constructor(
 
   private var conversations: MutableList<Conversation> = mutableListOf()
   val conversationsLiveListData = MutableLiveData<List<Conversation>>()
-  val viewState = MutableLiveData<ViewState>(LOADING)
+  val viewState = MutableLiveData<ViewState>(INITIAL_LOAD)
   var messageData: String? = null
   val searchQuery = MutableLiveData<String>()
   var currentUser: UserEntity = userUtils.currentUser
@@ -84,15 +85,13 @@ class ConversationsListViewModel constructor(
     }
 
   fun leaveConversation(conversation: Conversation) {
-    leaveConversationUseCase.user = currentUser
-
     setConversationUpdateStatus(conversation, true)
 
-    leaveConversationUseCase.invoke(viewModelScope, parametersOf(conversation),
+    leaveConversationUseCase.invoke(viewModelScope, parametersOf(currentUser, conversation),
         object : UseCaseResponse<GenericOverall> {
           override fun onSuccess(result: GenericOverall) {
             // TODO: Use binary search to find the right room
-            conversations.find { it.roomId == conversation.roomId }
+            conversations.find { it.conversationId == conversation.conversationId }
                 ?.let {
                   conversations.remove(it)
                   conversationsLiveListData.value = conversations
@@ -109,15 +108,13 @@ class ConversationsListViewModel constructor(
   }
 
   fun deleteConversation(conversation: Conversation) {
-    deleteConversationUseCase.user = currentUser
-
     setConversationUpdateStatus(conversation, true)
 
-    deleteConversationUseCase.invoke(viewModelScope, parametersOf(conversation),
+    deleteConversationUseCase.invoke(viewModelScope, parametersOf(currentUser, conversation),
         object : UseCaseResponse<GenericOverall> {
           override fun onSuccess(result: GenericOverall) {
             // TODO: Use binary search to find the right room
-            conversations.find { it.roomId == conversation.roomId }
+            conversations.find { it.conversationId == conversation.conversationId }
                 ?.let {
                   conversations.remove(it)
                   conversationsLiveListData.value = conversations
@@ -138,15 +135,17 @@ class ConversationsListViewModel constructor(
     conversation: Conversation,
     favorite: Boolean
   ) {
-    setConversationFavoriteValueUseCase.user = currentUser
-
     setConversationUpdateStatus(conversation, true)
 
-    setConversationFavoriteValueUseCase.invoke(viewModelScope, parametersOf(conversation, favorite),
+    setConversationFavoriteValueUseCase.invoke(viewModelScope, parametersOf(
+        currentUser,
+        conversation,
+        favorite
+    ),
         object : UseCaseResponse<GenericOverall> {
           override fun onSuccess(result: GenericOverall) {
             // TODO: Use binary search to find the right room
-            conversations.find { it.roomId == conversation.roomId }
+            conversations.find { it.conversationId == conversation.conversationId }
                 ?.apply {
                   updating = false
                   isFavorite = favorite
@@ -161,17 +160,20 @@ class ConversationsListViewModel constructor(
   }
 
   fun loadConversations() {
-    currentUser = userUtils.currentUser
+    val userChanged = !currentUser.equals(userUtils.currentUser)
+
+    if (userChanged) {
+      currentUser = userUtils.currentUser
+    }
 
     if ((FAILED).equals(viewState.value) || (LOADED_EMPTY).equals(viewState.value) ||
-        !getConversationsUseCase.isUserInitialized() || getConversationsUseCase.user != currentUser
+        (INITIAL_LOAD).equals(viewState.value) || !currentUser.equals(userUtils.currentUser) || userChanged
     ) {
-      getConversationsUseCase.user = currentUser
       viewState.value = LOADING
     }
 
     getConversationsUseCase.invoke(
-        viewModelScope, null, object : UseCaseResponse<List<Conversation>> {
+        viewModelScope, parametersOf(currentUser), object : UseCaseResponse<List<Conversation>> {
       override fun onSuccess(result: List<Conversation>) {
         val newConversations = result.toMutableList()
 
@@ -232,7 +234,7 @@ class ConversationsListViewModel constructor(
       putExtra(
           Intent.EXTRA_SUBJECT,
           String.format(
-              context.getString(R.string.nc_share_subject),
+              context.getString(string.nc_share_subject),
               context.getString(R.string.nc_app_name)
           )
       )
@@ -248,9 +250,8 @@ class ConversationsListViewModel constructor(
       type = "text/plain"
     }
 
-    val intent = Intent.createChooser(sendIntent, context.getString(string.nc_share_link))
     // TODO filter our own app once we're there
-    return intent
+    return Intent.createChooser(sendIntent, context.getString(string.nc_share_link))
   }
 
   fun getConversationMenuItemsForConversation(conversation: Conversation): MutableList<BasicListItemWithImage> {
@@ -307,7 +308,7 @@ class ConversationsListViewModel constructor(
     conversation: Conversation,
     value: Boolean
   ) {
-    conversations.find { it.roomId == conversation.roomId }
+    conversations.find { it.conversationId == conversation.conversationId }
         ?.apply {
           updating = value
           conversationsLiveListData.value = conversations

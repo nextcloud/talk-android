@@ -43,7 +43,7 @@ import org.parceler.Parcel;
 @JsonObject
 public class Conversation {
   @JsonField(name = "id")
-  public String roomId;
+  public String conversationId;
   @JsonField(name = "token")
   public String token;
   @JsonField(name = "name")

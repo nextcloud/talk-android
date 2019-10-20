@@ -282,7 +282,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
           override fun onNext(roomsOverall: RoomsOverall) {
             for (conversation in roomsOverall.ocs.data) {
-              if (roomId == conversation.roomId) {
+              if (roomId == conversation.conversationId) {
                 roomToken = conversation.token
                 currentConversation = conversation
                 setTitle()
@@ -519,7 +519,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
             .nc_description_send_message_button
     )
 
-    if (currentConversation != null && currentConversation?.roomId != null) {
+    if (currentConversation != null && currentConversation?.conversationId != null) {
       loadAvatarForStatusBar()
       checkLobbyState()
       setTitle()
@@ -1472,7 +1472,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
               val bundle = Bundle()
               bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
               bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
-              bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs.data.roomId)
+              bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs.data.conversationId)
 
               if (conversationUser != null) {
                 if (conversationUser.hasSpreedFeatureCapability("chat-v2")) {

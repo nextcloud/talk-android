@@ -20,8 +20,6 @@
 
 package com.nextcloud.talk.newarch.domain.usecases.base
 
-import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -30,8 +28,6 @@ import kotlinx.coroutines.launch
 abstract class UseCase<Type, in Params>(private val apiErrorHandler: ApiErrorHandler?) where Type : Any {
 
   abstract suspend fun run(params: Params? = null): Type
-  lateinit var user: UserEntity
-  fun isUserInitialized() = ::user.isInitialized
 
   fun invoke(
     scope: CoroutineScope,

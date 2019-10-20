@@ -71,7 +71,7 @@ public class ConversationItem
   public boolean equals(Object o) {
     if (o instanceof ConversationItem) {
       ConversationItem inItem = (ConversationItem) o;
-      return conversation.equals(inItem.getModel());
+      return conversation.getConversationId().equals(inItem.getModel().getConversationId());
     }
     return false;
   }

@@ -33,6 +33,10 @@ class SetConversationFavoriteValueUseCase constructor(
 
   override suspend fun run(params: Any?): GenericOverall {
     val definitionParameters = params as DefinitionParameters
-    return nextcloudTalkRepository.setFavoriteValueForConversation(user, definitionParameters.get(0), definitionParameters.get(1))
+    return nextcloudTalkRepository.setFavoriteValueForConversation(
+        definitionParameters.get(0),
+        definitionParameters.get(1),
+        definitionParameters.get(2)
+    )
   }
 }

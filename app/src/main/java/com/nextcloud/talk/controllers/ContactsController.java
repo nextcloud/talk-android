@@ -308,7 +308,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(),
                     roomOverall.getOcs().getData().getToken());
                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(),
-                    roomOverall.getOcs().getData().getRoomId());
+                    roomOverall.getOcs().getData().getConversationId());
 
                 if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
                   ncApi.getRoom(credentials,
@@ -903,7 +903,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                   bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(),
                       roomOverall.getOcs().getData().getToken());
                   bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(),
-                      roomOverall.getOcs().getData().getRoomId());
+                      roomOverall.getOcs().getData().getConversationId());
                   conversationIntent.putExtras(bundle);
 
                   if (currentUser.hasSpreedFeatureCapability("chat-v2")) {

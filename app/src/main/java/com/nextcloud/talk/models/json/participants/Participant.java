@@ -52,7 +52,7 @@ public class Participant {
   @JsonField(name = "sessionId")
   public String sessionId;
 
-  @JsonField(name = "roomId")
+  @JsonField(name = "conversationId")
   public long roomId;
 
   @ParcelPropertyConverter(ObjectParcelConverter.class)

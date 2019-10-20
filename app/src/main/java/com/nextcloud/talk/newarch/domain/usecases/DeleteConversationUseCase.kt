@@ -33,6 +33,9 @@ class DeleteConversationUseCase constructor(
 
   override suspend fun run(params: Any?): GenericOverall {
     val definitionParameters = params as DefinitionParameters
-    return nextcloudTalkRepository.deleteConversationForUser(user, definitionParameters.get(0))
+    return nextcloudTalkRepository.deleteConversationForUser(
+        definitionParameters.get(0),
+        definitionParameters.get(1)
+    )
   }
 }

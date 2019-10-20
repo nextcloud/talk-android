@@ -415,7 +415,7 @@ public class CallController extends BaseController {
           @Override
           public void onNext(RoomsOverall roomsOverall) {
             for (Conversation conversation : roomsOverall.getOcs().getData()) {
-              if (roomId.equals(conversation.getRoomId())) {
+              if (roomId.equals(conversation.getConversationId())) {
                 roomToken = conversation.getToken();
                 break;
               }

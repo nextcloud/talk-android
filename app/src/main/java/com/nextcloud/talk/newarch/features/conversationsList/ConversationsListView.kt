@@ -220,7 +220,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                   )
               ) {
                 view?.stateWithMessageView?.errorStateImageView?.setImageResource(
-                    drawable.ic_cloud_off_white_24dp
+                    drawable.ic_signal_wifi_off_white_24dp
                 )
               } else {
                 view?.stateWithMessageView?.errorStateImageView?.setImageResource(
@@ -396,7 +396,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
       val bundle = Bundle()
       bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, viewModel.currentUser)
       bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
-      bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.roomId)
+      bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.conversationId)
       bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
       ConductorRemapping.remapChatController(
           router, viewModel.currentUser.id, conversation.token,
