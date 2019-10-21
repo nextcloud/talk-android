@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Benutzername</string>
     <string name="nc_password">Passwort</string>
+    <string name="nc_password_redacted">Aus Datenschutzgründen überarbeitet</string>
     <string name="nc_conversation_link">Unterhaltungs-Link</string>
     <string name="nc_new_password">Neues Passwort</string>
     <string name="nc_wrong_password">Falsches Passwort</string>
@@ -150,8 +151,12 @@ sie auch für alle anderen Teilnehmer gelöscht.</string>
     <string name="nc_new_conversation">Neue Unterhaltung</string>
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
+    <string name="nc_favorite_conversation">Beliebte Unterhaltung</string>
     <string name="nc_add_to_favorites">Zu den Favoriten hinzufügen</string>
     <string name="nc_remove_from_favorites">Von den Favoriten entfernen</string>
+    <string name="nc_favorites_explanation">Das Unterhaltung wird an den oberen Rand der
+       Unterhaltungssliste angeheftet</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Kontakte auswählen</string>
     <string name="nc_contacts_done">Fertig</string>
@@ -288,6 +293,7 @@ Meeting ist für %1$s geplant.</string>
     <string name="nc_timeout_error">Zeitüberschreitung</string>
     <string name="nc_empty_response_error">Leere Antwort</string>
     <string name="nc_not_defined_error">Unbekannter Fehler</string>
-    <string name="nc_unauthorized_error">Keine unautorisierten</string>
+    <string name="nc_general_settings">Allgemein</string>
+    <string name="nc_allow_guests">Gäste zulassen</string>
 
-    </resources>
+</resources>

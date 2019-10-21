@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Användarnamn</string>
     <string name="nc_password">Lösenord</string>
+    <string name="nc_password_redacted">Reduceras av integritetsskäl</string>
     <string name="nc_conversation_link">Konversationslänk</string>
     <string name="nc_new_password">Nytt lösenord</string>
     <string name="nc_wrong_password">Fel lösenord</string>
@@ -128,6 +129,8 @@
     <string name="nc_start_conversation">Starta en konversation</string>
     <string name="nc_configure_room">Anpassa konversation</string>
     <string name="nc_leave">Lämna konversationen</string>
+    <string name="nc_leave_message">Bekräfta att du vill lämna den här konversationen.</string>
+    <string name="nc_simple_leave">Lämna</string>
     <string name="nc_rename">Byt namn på konversation</string>
     <string name="nc_set_password">Sätt ett lösenord</string>
     <string name="nc_change_password">Ändra lösenord</string>
@@ -138,11 +141,22 @@
     <string name="nc_make_call_private">Gör samtalet privat</string>
     <string name="nc_delete_call">Ta bort konversation</string>
     <string name="nc_delete">Radera</string>
+    <string name="nc_delete_conversation_default">Bekräfta att du vill radera den här
+        konversationen.</string>
+    <string name="nc_delete_conversation_one2one">Om du raderar konversationen kommer den även att
+        raderas för %1$s.</string>
+    <string name="nc_delete_conversation_more">Om du raderar konversationen kommer den även att
+        raderas för alla andra deltagare.</string>
+
     <string name="nc_new_conversation">Ny konversation</string>
     <string name="nc_join_via_link">Gå med via länk</string>
     <string name="nc_join_via_web">Gå med via webb</string>
+    <string name="nc_favorite_conversation">Favoritkonversation</string>
     <string name="nc_add_to_favorites">Lägg till som favorit</string>
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
+    <string name="nc_favorites_explanation">Konversationen kommer att fästas på toppen av
+        konversationslistan</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Välj kontakter</string>
     <string name="nc_contacts_done">Färdig</string>
@@ -273,4 +287,13 @@
         möte är planerat till %1$s.</string>
     <string name="nc_manual">Inte inställd</string>
 
-    </resources>
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Ingen anslutning</string>
+    <string name="nc_bad_response_error">Felaktigt svar</string>
+    <string name="nc_timeout_error">Timeout</string>
+    <string name="nc_empty_response_error">Tomt svar</string>
+    <string name="nc_not_defined_error">Okänt fel</string>
+    <string name="nc_general_settings">Allmänt</string>
+    <string name="nc_allow_guests">Tillåt gäster</string>
+
+</resources>

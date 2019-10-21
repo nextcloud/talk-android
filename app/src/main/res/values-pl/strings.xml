@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Brak proxy</string>
     <string name="nc_username">Nazwa użytkownika</string>
     <string name="nc_password">Hasło</string>
+    <string name="nc_password_redacted">Zredagowany ze względu na prywatność</string>
     <string name="nc_conversation_link">Link do rozmowy</string>
     <string name="nc_new_password">Nowe hasło</string>
     <string name="nc_wrong_password">Złe hasło</string>
@@ -128,6 +129,8 @@
     <string name="nc_start_conversation">Rozpocznij rozmowę</string>
     <string name="nc_configure_room">Konfiguruj rozmowę</string>
     <string name="nc_leave">Opuść rozmowę</string>
+    <string name="nc_leave_message">Potwierdź zamiar opuszczenia tej rozmowy.</string>
+    <string name="nc_simple_leave">Opuść</string>
     <string name="nc_rename">Zmień nazwę rozmowy</string>
     <string name="nc_set_password">Ustaw hasło</string>
     <string name="nc_change_password">Zmień hasło</string>
@@ -138,11 +141,22 @@
     <string name="nc_make_call_private">Ustaw jako rozmowę prywatą</string>
     <string name="nc_delete_call">Usuń rozmowę</string>
     <string name="nc_delete">Usuń</string>
+    <string name="nc_delete_conversation_default">Potwierdź zamiar usunięcia tej
+        rozmowy.</string>
+    <string name="nc_delete_conversation_one2one">Jeśli usuniesz rozmowę, zostanie ona również
+        usunięta dla %1$s.</string>
+    <string name="nc_delete_conversation_more">Jeśli usuniesz tę rozmowę, zostanie ona również
+   usunięta dla wszystkich innych uczestników.</string>
+
     <string name="nc_new_conversation">Nowa rozmowa</string>
     <string name="nc_join_via_link">Dołącz przez link</string>
     <string name="nc_join_via_web">Dołącz przez sieć</string>
+    <string name="nc_favorite_conversation">Ulubiona rozmowa</string>
     <string name="nc_add_to_favorites">Dodaj do ulubionych</string>
     <string name="nc_remove_from_favorites">Usuń z ulubionych</string>
+    <string name="nc_favorites_explanation">Rozmowa zostanie przypięta na górze
+        listy rozmów</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Wybierz kontakty</string>
     <string name="nc_contacts_done">Gotowe</string>
@@ -273,4 +287,13 @@
          jest zaplanowane na %1$s.</string>
     <string name="nc_manual">Nie ustawiony</string>
 
-    </resources>
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Brak połączenia</string>
+    <string name="nc_bad_response_error">Zła odpowiedź</string>
+    <string name="nc_timeout_error">Przekroczono limit czasu</string>
+    <string name="nc_empty_response_error">Pusta odpowiedź</string>
+    <string name="nc_not_defined_error">Nieznany błąd</string>
+    <string name="nc_general_settings">Ogólne</string>
+    <string name="nc_allow_guests">Zezwól gościom</string>
+
+</resources>

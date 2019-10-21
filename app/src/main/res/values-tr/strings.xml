@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Vekil sunucu yok</string>
     <string name="nc_username">Kullanıcı adı</string>
     <string name="nc_password">Parola</string>
+    <string name="nc_password_redacted">Gizlilik nedeniyle yeniden düzenlendi</string>
     <string name="nc_conversation_link">Görüşme bağlantısı</string>
     <string name="nc_new_password">Yeni parola</string>
     <string name="nc_wrong_password">Parola yanlış</string>
@@ -150,8 +151,12 @@
     <string name="nc_new_conversation">Yeni görüşme</string>
     <string name="nc_join_via_link">Bir bağlantı ile katıl</string>
     <string name="nc_join_via_web">Web üzerinden katıl</string>
+    <string name="nc_favorite_conversation">Sık kullanılan görüşme</string>
     <string name="nc_add_to_favorites">Sık kullanılanlara ekle</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
+    <string name="nc_favorites_explanation">Görüşme, görüşmeler listesinin en üstüne
+        sabitlenir</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Kişileri seçin</string>
     <string name="nc_contacts_done">Tamam</string>
@@ -288,6 +293,7 @@
     <string name="nc_timeout_error">Zaman aşımı</string>
     <string name="nc_empty_response_error">Yanıt boş</string>
     <string name="nc_not_defined_error">Bilinmeyen sorun</string>
-    <string name="nc_unauthorized_error">Kimlik Doğrulanmamış</string>
+    <string name="nc_general_settings">Genel</string>
+    <string name="nc_allow_guests">Konuklar katılabilsin</string>
 
-    </resources>
+</resources>

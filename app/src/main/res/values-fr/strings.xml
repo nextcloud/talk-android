@@ -144,6 +144,7 @@
     <string name="nc_new_conversation">Nouvelle conversation</string>
     <string name="nc_join_via_link">Joindre via un lien</string>
     <string name="nc_join_via_web">Joindre via le web</string>
+    <string name="nc_favorite_conversation">Ajouter la conversation aux favoris</string>
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
     <!-- Contacts -->
@@ -280,4 +281,7 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_no_connection_error">Aucune connexion</string>
     <string name="nc_timeout_error">Délai d\'attente</string>
     <string name="nc_not_defined_error">Erreur inconnue </string>
-    </resources>
+    <string name="nc_general_settings">Général</string>
+    <string name="nc_allow_guests">Autoriser les invités</string>
+
+</resources>

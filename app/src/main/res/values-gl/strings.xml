@@ -115,6 +115,7 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_no_proxy">Sen proxy </string>
     <string name="nc_username">Nome de usuario</string>
     <string name="nc_password">Contrasinal</string>
+    <string name="nc_password_redacted">Redactouse por motivos de privacidade</string>
     <string name="nc_conversation_link">Ligazón da conversa</string>
     <string name="nc_new_password">Novo contrasinal</string>
     <string name="nc_wrong_password">Contrasinal incorrecto </string>
@@ -152,8 +153,12 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Xuntarse mediante unha ligazón</string>
     <string name="nc_join_via_web">Xuntarse medinte a web</string>
+    <string name="nc_favorite_conversation">Conversa favorita</string>
     <string name="nc_add_to_favorites">Engadir a favoritos</string>
     <string name="nc_remove_from_favorites">Retirar de favoritos</string>
+    <string name="nc_favorites_explanation">A conversa estará fixada na parte superior da
+        lista de conversas</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Seleccionar contactos</string>
     <string name="nc_contacts_done">Feito</string>
@@ -290,6 +295,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_timeout_error">Límite de tempo</string>
     <string name="nc_empty_response_error">Resposta baleira</string>
     <string name="nc_not_defined_error">Produciuse un erro descoñecido</string>
-    <string name="nc_unauthorized_error">Non autorizado.</string>
+    <string name="nc_general_settings">Xeral</string>
+    <string name="nc_allow_guests">Permitir convidados</string>
 
-    </resources>
+</resources>
