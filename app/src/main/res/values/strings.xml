@@ -313,7 +313,7 @@
     <string name="nc_timeout_error">Timeout</string>
     <string name="nc_empty_response_error">Empty response</string>
     <string name="nc_not_defined_error">Unknown error</string>
-    <string name="nc_unauthorized_error">No Unauthorized</string>
+    <string name="nc_unauthorized_error">Unauthorized</string>
 
     <string name="nc_general_settings">General</string>
     <string name="nc_allow_guests">Allow guests</string>
