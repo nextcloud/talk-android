@@ -141,12 +141,17 @@
     <string name="nc_delete_call">Supprimer la conversation</string>
     <string name="nc_delete">Supprimer</string>
     <string name="nc_delete_conversation_default">Veuillez confirmer votre volonté de supprimer cette conversation.</string>
+    <string name="nc_delete_conversation_one2one">Si vous supprimez la conversation, elle sera aussi supprimée pour %1$s.</string>
+    <string name="nc_delete_conversation_more">Si vous supprimez cette conversation, elle sera supprimée pour tous les participants.</string>
+
     <string name="nc_new_conversation">Nouvelle conversation</string>
     <string name="nc_join_via_link">Joindre via un lien</string>
     <string name="nc_join_via_web">Joindre via le web</string>
     <string name="nc_favorite_conversation">Ajouter la conversation aux favoris</string>
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
+    <string name="nc_favorites_explanation">La conversation sera épinglée au-dessus de la listes des conversations.</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Choisissez un contact</string>
     <string name="nc_contacts_done">Terminé</string>
@@ -281,6 +286,8 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_no_connection_error">Aucune connexion</string>
     <string name="nc_timeout_error">Délai d\'attente</string>
     <string name="nc_not_defined_error">Erreur inconnue </string>
+    <string name="nc_unauthorized_error">Interdit</string>
+
     <string name="nc_general_settings">Général</string>
     <string name="nc_allow_guests">Autoriser les invités</string>
 

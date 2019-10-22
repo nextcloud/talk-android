@@ -293,6 +293,8 @@
     <string name="nc_timeout_error">Timeout</string>
     <string name="nc_empty_response_error">Tomt svar</string>
     <string name="nc_not_defined_error">Okänt fel</string>
+    <string name="nc_unauthorized_error">Obehörig</string>
+
     <string name="nc_general_settings">Allmänt</string>
     <string name="nc_allow_guests">Tillåt gäster</string>
 

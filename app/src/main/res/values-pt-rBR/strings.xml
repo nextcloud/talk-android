@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Sem proxy</string>
     <string name="nc_username">Usuário</string>
     <string name="nc_password">Senha</string>
+    <string name="nc_password_redacted">Revisto por questões de privacidade</string>
     <string name="nc_conversation_link">Link de conversação</string>
     <string name="nc_new_password">Nova senha</string>
     <string name="nc_wrong_password">Senha incorreta</string>
@@ -128,6 +129,8 @@
     <string name="nc_start_conversation">Iniciar uma conversa</string>
     <string name="nc_configure_room">Configurar uma conversa</string>
     <string name="nc_leave">Sair da conversa</string>
+    <string name="nc_leave_message">Confirme se realmente quer sair desta conversa.</string>
+    <string name="nc_simple_leave">Sair</string>
     <string name="nc_rename">Renomear conversa</string>
     <string name="nc_set_password">Definir uma senha</string>
     <string name="nc_change_password">Alterar a senha</string>
@@ -138,11 +141,22 @@
     <string name="nc_make_call_private">Fazer esta conversa privada</string>
     <string name="nc_delete_call">Excluir conversa</string>
     <string name="nc_delete">Excluir</string>
+    <string name="nc_delete_conversation_default">Confirme se realmente quer excluir esta
+        conversa.</string>
+    <string name="nc_delete_conversation_one2one">Se você excluir a conversa, ela também será
+        excluída para %1$s.</string>
+    <string name="nc_delete_conversation_more">Se você excluir esta conversa, ela também será
+        excluída para todos os participantes.</string>
+
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Juntar-se com um link</string>
     <string name="nc_join_via_web">Juntar-se via web</string>
+    <string name="nc_favorite_conversation">Conversa favorita</string>
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
     <string name="nc_remove_from_favorites">Remover dos favoritos</string>
+    <string name="nc_favorites_explanation">A conversa será fixada na parte superior da
+        lista de conversas</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecionar contatos</string>
     <string name="nc_contacts_done">Concluído</string>
@@ -273,4 +287,15 @@
         reunião está marcada para %1$s.</string>
     <string name="nc_manual">Não definido</string>
 
-    </resources>
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Sem conexão</string>
+    <string name="nc_bad_response_error">Resposta ruim</string>
+    <string name="nc_timeout_error">Tempo de expiração</string>
+    <string name="nc_empty_response_error">Resposta vazia</string>
+    <string name="nc_not_defined_error">Erro desconhecido</string>
+    <string name="nc_unauthorized_error">Não autorizado</string>
+
+    <string name="nc_general_settings">Geral</string>
+    <string name="nc_allow_guests">Permitir convidados</string>
+
+</resources>

@@ -289,10 +289,12 @@
 
     <!-- Errors -->
     <string name="nc_no_connection_error">Brak połączenia</string>
-    <string name="nc_bad_response_error">Zła odpowiedź</string>
+    <string name="nc_bad_response_error">Błędna odpowiedź</string>
     <string name="nc_timeout_error">Przekroczono limit czasu</string>
     <string name="nc_empty_response_error">Pusta odpowiedź</string>
     <string name="nc_not_defined_error">Nieznany błąd</string>
+    <string name="nc_unauthorized_error">Nieautoryzowany</string>
+
     <string name="nc_general_settings">Ogólne</string>
     <string name="nc_allow_guests">Zezwól gościom</string>
 

@@ -295,6 +295,8 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_timeout_error">Límite de tempo</string>
     <string name="nc_empty_response_error">Resposta baleira</string>
     <string name="nc_not_defined_error">Produciuse un erro descoñecido</string>
+    <string name="nc_unauthorized_error">Non autorizado.</string>
+
     <string name="nc_general_settings">Xeral</string>
     <string name="nc_allow_guests">Permitir convidados</string>
 

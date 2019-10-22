@@ -293,6 +293,8 @@
     <string name="nc_timeout_error">Zaman aşımı</string>
     <string name="nc_empty_response_error">Yanıt boş</string>
     <string name="nc_not_defined_error">Bilinmeyen sorun</string>
+    <string name="nc_unauthorized_error">Kimliği doğrulanmamış</string>
+
     <string name="nc_general_settings">Genel</string>
     <string name="nc_allow_guests">Konuklar katılabilsin</string>
 

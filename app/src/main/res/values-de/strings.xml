@@ -293,6 +293,8 @@ Meeting ist für %1$s geplant.</string>
     <string name="nc_timeout_error">Zeitüberschreitung</string>
     <string name="nc_empty_response_error">Leere Antwort</string>
     <string name="nc_not_defined_error">Unbekannter Fehler</string>
+    <string name="nc_unauthorized_error">Nicht autorisiert</string>
+
     <string name="nc_general_settings">Allgemein</string>
     <string name="nc_allow_guests">Gäste zulassen</string>
 
