@@ -312,7 +312,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
   private fun loadAvatarForStatusBar() {
     if (currentConversation != null && currentConversation?.type != null &&
         currentConversation?.type == Conversation.ConversationType
-            .ROOM_TYPE_ONE_TO_ONE_CALL && activity != null && conversationVoiceCallMenuItem != null
+            .ONE_TO_ONE_CONVERSATION && activity != null && conversationVoiceCallMenuItem != null
     ) {
       val avatarSize = DisplayUtils.convertDpToPixel(
           conversationVoiceCallMenuItem?.icon!!
@@ -536,9 +536,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
   }
 
   private fun checkReadOnlyState() {
-    if (currentConversation != null) {
-      if (currentConversation?.shouldShowLobby(
-              conversationUser
+    if (currentConversation != null && conversationUser != null) {
+      if (currentConversation?.shouldShowLobby(conversationUser
           ) == true || currentConversation?.conversationReadOnlyState != null && currentConversation?.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
       ) {
 
@@ -555,8 +554,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
           conversationVideoMenuItem?.icon?.alpha = 255
         }
 
-        if (currentConversation != null && currentConversation!!.shouldShowLobby
-            (conversationUser)
+        if (conversationUser != null && currentConversation != null && currentConversation!!
+                .shouldShowLobby(conversationUser)
         ) {
           messageInputView?.visibility = View.GONE
         } else {
@@ -567,8 +566,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
   }
 
   private fun checkLobbyState() {
-    if (currentConversation != null && currentConversation?.isLobbyViewApplicable(
-            conversationUser
+    if (currentConversation != null && conversationUser != null && currentConversation?.isLobbyViewApplicable(conversationUser
         ) == true
     ) {
 
@@ -754,9 +752,11 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
   override fun getTitle(): String? {
     if (currentConversation != null && currentConversation?.displayName != null) {
-      return EmojiCompat.get()
-          .process(currentConversation!!.displayName)
-          .toString()
+      return currentConversation!!.displayName?.let {
+        EmojiCompat.get()
+            .process(it)
+            .toString()
+      }
     } else {
       return ""
     }
@@ -1032,7 +1032,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
       return
     }
 
-    if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser)) {
+    if (currentConversation != null && conversationUser != null && currentConversation!!
+        .shouldShowLobby(conversationUser)) {
       return
     }
 
@@ -1050,8 +1051,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
       lookingIntoFuture = true
     } else if (isFirstMessagesProcessing) {
       if (currentConversation != null) {
-        globalLastKnownFutureMessageId = currentConversation!!.lastReadMessage
-        globalLastKnownPastMessageId = currentConversation!!.lastReadMessage
+        globalLastKnownFutureMessageId = currentConversation!!.lastReadMessageId
+        globalLastKnownPastMessageId = currentConversation!!.lastReadMessageId
         fieldMap["includeLastKnown"] = 1
       }
     }
@@ -1188,7 +1189,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
           val chatMessage = chatMessageList[i]
           chatMessage.isOneToOneConversation =
-            currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            currentConversation?.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
           chatMessage.isLinkPreviewAllowed = isLinkPreviewAllowed
           chatMessage.activeUser = conversationUser
 
@@ -1258,7 +1259,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                     .actorId, -1
             ) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) % 5 > 0)
             chatMessage.isOneToOneConversation =
-              (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
+              (currentConversation?.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION)
             adapter?.addToStart(chatMessage, shouldScroll)
           }
 
@@ -1447,7 +1448,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
   @Subscribe(threadMode = ThreadMode.BACKGROUND)
   fun onMessageEvent(userMentionClickEvent: UserMentionClickEvent) {
     if (currentConversation?.type != Conversation.ConversationType
-            .ROOM_TYPE_ONE_TO_ONE_CALL || currentConversation?.name !=
+            .ONE_TO_ONE_CONVERSATION || currentConversation?.name !=
         userMentionClickEvent.userId
     ) {
       val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
@@ -1482,10 +1483,13 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                   )
                   conversationIntent.putExtras(bundle)
 
-                  ConductorRemapping.remapChatController(
-                      router, conversationUser.id,
-                      roomOverall.ocs.data.token, bundle, false
-                  )
+                  if (roomOverall != null && roomOverall.ocs != null && roomOverall.ocs.data !=
+                      null && roomOverall.ocs.data.token != null) {
+                    ConductorRemapping.remapChatController(
+                        router, conversationUser.id,
+                        roomOverall.ocs.data.token!!, bundle, false
+                    )
+                  }
                 }
 
               } else {

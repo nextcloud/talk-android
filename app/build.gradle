@@ -70,14 +70,17 @@ android {
 
     javaCompileOptions {
       annotationProcessorOptions {
-        arguments = [
-            parcelerStacktrace: "true"
-        ]
+        arguments = ["room.schemaLocation":
+            "$projectDir/schemas".toString()]
       }
     }
 
     dataBinding {
       enabled = true
+    }
+
+    androidExtensions {
+      experimental = true
     }
   }
 
@@ -107,6 +110,10 @@ android {
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  kotlinOptions {
+    jvmTarget = "1.8"
   }
 
   lintOptions {

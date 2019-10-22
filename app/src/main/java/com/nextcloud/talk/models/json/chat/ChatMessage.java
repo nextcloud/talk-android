@@ -43,7 +43,7 @@ import org.parceler.Parcel;
 
 @Parcel
 @Data
-@JsonObject
+@JsonObject(serializeNullCollectionElements = true, serializeNullObjects = true)
 public class ChatMessage implements IMessage, MessageContentType, MessageContentType.Image {
   @JsonIgnore
   public boolean isGrouped;

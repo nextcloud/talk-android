@@ -26,6 +26,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.facebook.common.executors.UiThreadImmediateExecutorService
 import com.facebook.common.references.CloseableReference
@@ -42,22 +43,19 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
+import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkOfflineRepository
 import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.utils.ViewState
-import com.nextcloud.talk.newarch.utils.ViewState.FAILED
-import com.nextcloud.talk.newarch.utils.ViewState.INITIAL_LOAD
-import com.nextcloud.talk.newarch.utils.ViewState.LOADED
-import com.nextcloud.talk.newarch.utils.ViewState.LOADED_EMPTY
 import com.nextcloud.talk.newarch.utils.ViewState.LOADING
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
-import org.apache.commons.lang3.builder.CompareToBuilder
+import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class ConversationsListViewModel constructor(
@@ -66,15 +64,18 @@ class ConversationsListViewModel constructor(
   private val setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
   private val leaveConversationUseCase: LeaveConversationUseCase,
   private val deleteConversationUseCase: DeleteConversationUseCase,
-  private val userUtils: UserUtils
+  private val userUtils: UserUtils,
+  private val offlineRepository: NextcloudTalkOfflineRepository
 ) : BaseViewModel<ConversationsListView>(application) {
 
-  private var conversations: MutableList<Conversation> = mutableListOf()
-  val conversationsLiveListData = MutableLiveData<List<Conversation>>()
-  val viewState = MutableLiveData<ViewState>(INITIAL_LOAD)
+  val viewState = MutableLiveData<ViewState>(LOADING)
   var messageData: String? = null
   val searchQuery = MutableLiveData<String>()
-  var currentUser: UserEntity = userUtils.currentUser
+  val currentUserLiveData: MutableLiveData<UserEntity> = MutableLiveData()
+  val conversationsLiveData = Transformations.switchMap(currentUserLiveData) {
+    offlineRepository.getConversationsForUser(it)
+  }
+
   var currentUserAvatar: MutableLiveData<Drawable> = MutableLiveData()
     get() {
       if (field.value == null) {
@@ -85,47 +86,52 @@ class ConversationsListViewModel constructor(
     }
 
   fun leaveConversation(conversation: Conversation) {
-    setConversationUpdateStatus(conversation, true)
-
-    leaveConversationUseCase.invoke(viewModelScope, parametersOf(currentUser, conversation),
+    viewModelScope.launch {
+      setConversationUpdateStatus(conversation, true)
+    }
+    leaveConversationUseCase.invoke(viewModelScope, parametersOf(
+        currentUserLiveData.value,
+        conversation
+    ),
         object : UseCaseResponse<GenericOverall> {
-          override fun onSuccess(result: GenericOverall) {
-            // TODO: Use binary search to find the right room
-            conversations.find { it.conversationId == conversation.conversationId }
-                ?.let {
-                  conversations.remove(it)
-                  conversationsLiveListData.value = conversations
-                  if (conversations.isEmpty()) {
-                    viewState.value = LOADED_EMPTY
-                  }
-                }
+          override suspend fun onSuccess(result: GenericOverall) {
+            offlineRepository.deleteConversation(
+                currentUserLiveData.value!!.id, conversation
+                .conversationId
+            )
           }
 
           override fun onError(errorModel: ErrorModel?) {
-            setConversationUpdateStatus(conversation, false)
+            messageData = errorModel?.getErrorMessage()
+            viewModelScope.launch {
+              setConversationUpdateStatus(conversation, false)
+            }
           }
         })
   }
 
   fun deleteConversation(conversation: Conversation) {
-    setConversationUpdateStatus(conversation, true)
+    viewModelScope.launch {
+      setConversationUpdateStatus(conversation, true)
+    }
 
-    deleteConversationUseCase.invoke(viewModelScope, parametersOf(currentUser, conversation),
+    deleteConversationUseCase.invoke(viewModelScope, parametersOf(
+        currentUserLiveData.value,
+        conversation
+    ),
         object : UseCaseResponse<GenericOverall> {
-          override fun onSuccess(result: GenericOverall) {
-            // TODO: Use binary search to find the right room
-            conversations.find { it.conversationId == conversation.conversationId }
-                ?.let {
-                  conversations.remove(it)
-                  conversationsLiveListData.value = conversations
-                  if (conversations.isEmpty()) {
-                    viewState.value = LOADED_EMPTY
-                  }
-                }
+          override suspend fun onSuccess(result: GenericOverall) {
+            offlineRepository.deleteConversation(
+                currentUserLiveData.value!!.id, conversation
+                .conversationId
+            )
           }
 
           override fun onError(errorModel: ErrorModel?) {
-            setConversationUpdateStatus(conversation, false)
+            messageData = errorModel?.getErrorMessage()
+            viewModelScope.launch {
+              setConversationUpdateStatus(conversation, false)
+            }
           }
         })
 
@@ -135,74 +141,63 @@ class ConversationsListViewModel constructor(
     conversation: Conversation,
     favorite: Boolean
   ) {
-    setConversationUpdateStatus(conversation, true)
+    viewModelScope.launch {
+      setConversationUpdateStatus(conversation, true)
+    }
 
     setConversationFavoriteValueUseCase.invoke(viewModelScope, parametersOf(
-        currentUser,
+        currentUserLiveData.value,
         conversation,
         favorite
     ),
         object : UseCaseResponse<GenericOverall> {
-          override fun onSuccess(result: GenericOverall) {
-            // TODO: Use binary search to find the right room
-            conversations.find { it.conversationId == conversation.conversationId }
-                ?.apply {
-                  updating = false
-                  isFavorite = favorite
-                  conversationsLiveListData.value = conversations
-                }
+          override suspend fun onSuccess(result: GenericOverall) {
+            offlineRepository.setFavoriteValueForConversation(
+                currentUserLiveData.value!!.id,
+                conversation.conversationId, favorite
+            )
           }
 
           override fun onError(errorModel: ErrorModel?) {
-            setConversationUpdateStatus(conversation, false)
+            messageData = errorModel?.getErrorMessage()
+            viewModelScope.launch {
+              setConversationUpdateStatus(conversation, false)
+            }
           }
         })
   }
 
   fun loadConversations() {
-    val userChanged = !currentUser.equals(userUtils.currentUser)
+    val userChanged = !(currentUserLiveData.value?.equals(userUtils.currentUser) ?: false)
 
     if (userChanged) {
-      currentUser = userUtils.currentUser
-    }
-
-    if ((FAILED).equals(viewState.value) || (LOADED_EMPTY).equals(viewState.value) ||
-        (INITIAL_LOAD).equals(viewState.value) || !currentUser.equals(userUtils.currentUser) || userChanged
-    ) {
+      currentUserLiveData.value = userUtils.currentUser
       viewState.value = LOADING
     }
 
-    getConversationsUseCase.invoke(
-        viewModelScope, parametersOf(currentUser), object : UseCaseResponse<List<Conversation>> {
-      override fun onSuccess(result: List<Conversation>) {
-        val newConversations = result.toMutableList()
+    getConversationsUseCase.invoke(viewModelScope, parametersOf(currentUserLiveData.value), object :
+        UseCaseResponse<List<Conversation>> {
+      override suspend fun onSuccess(result: List<Conversation>) {
+        val mutableList = result.toMutableList()
+        mutableList.forEach {
+          it.user = currentUserLiveData.value!!.id
+        }
 
-        newConversations.sortWith(Comparator { conversation1, conversation2 ->
-          CompareToBuilder()
-              .append(conversation2.isFavorite, conversation1.isFavorite)
-              .append(conversation2.lastActivity, conversation1.lastActivity)
-              .toComparison()
-        })
-
-        conversations = newConversations
-        conversationsLiveListData.value = conversations
-        viewState.value = if (newConversations.isNotEmpty()) LOADED else LOADED_EMPTY
+        offlineRepository.saveConversationsForUser(currentUserLiveData.value!!, mutableList)
         messageData = ""
       }
 
       override fun onError(errorModel: ErrorModel?) {
         messageData = errorModel?.getErrorMessage()
-        viewState.value = FAILED
       }
-
     })
   }
 
   fun loadAvatar(avatarSize: Int) {
     val imageRequest = DisplayUtils.getImageRequestForUrl(
         ApiUtils.getUrlForAvatarWithNameAndPixels(
-            currentUser.baseUrl,
-            currentUser.userId, avatarSize
+            currentUserLiveData.value!!.baseUrl,
+            currentUserLiveData.value!!.userId, avatarSize
         ), null
     )
 
@@ -257,7 +252,7 @@ class ConversationsListViewModel constructor(
   fun getConversationMenuItemsForConversation(conversation: Conversation): MutableList<BasicListItemWithImage> {
     val items = mutableListOf<BasicListItemWithImage>()
 
-    if (conversation.isFavorite) {
+    if (conversation.favorite) {
       items.add(
           BasicListItemWithImage(
               drawable.ic_star_border_black_24dp,
@@ -282,7 +277,7 @@ class ConversationsListViewModel constructor(
       )
     }
 
-    if (conversation.canLeave(currentUser)) {
+    if (conversation.canLeave(currentUserLiveData.value!!)) {
       items.add(
           BasicListItemWithImage(
               drawable.ic_exit_to_app_black_24dp, context.getString
@@ -291,7 +286,7 @@ class ConversationsListViewModel constructor(
       )
     }
 
-    if (conversation.canModerate(currentUser)) {
+    if (conversation.canModerate(currentUserLiveData.value!!)) {
       items.add(
           BasicListItemWithImage(
               drawable.ic_delete_grey600_24dp, context.getString(
@@ -304,14 +299,13 @@ class ConversationsListViewModel constructor(
     return items
   }
 
-  private fun setConversationUpdateStatus(
+  private suspend fun setConversationUpdateStatus(
     conversation: Conversation,
     value: Boolean
   ) {
-    conversations.find { it.conversationId == conversation.conversationId }
-        ?.apply {
-          updating = value
-          conversationsLiveListData.value = conversations
-        }
+    offlineRepository.setChangingValueForConversation(
+        currentUserLiveData.value!!.id, conversation
+        .conversationId, value
+    )
   }
 }

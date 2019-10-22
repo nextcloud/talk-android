@@ -270,7 +270,7 @@ public class OperationsMenuController extends BaseController {
             invite = invitedGroups.get(0);
           }
 
-          if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) ||
+          if (conversationType.equals(Conversation.ConversationType.PUBLIC_CONVERSATION) ||
               !currentUser.hasSpreedFeatureCapability("empty-group-room")) {
             retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
                 "3", invite, conversationName);
@@ -314,7 +314,7 @@ public class OperationsMenuController extends BaseController {
                         public void onNext(RoomOverall roomOverall) {
                           conversation = roomOverall.getOcs().getData();
                           if (conversationType.equals(
-                              Conversation.ConversationType.ROOM_PUBLIC_CALL)
+                              Conversation.ConversationType.PUBLIC_CONVERSATION)
                               && isGroupCallWorkaroundFinal) {
                             performGroupCallWorkaround(credentials);
                           } else {
@@ -490,7 +490,7 @@ public class OperationsMenuController extends BaseController {
                     .getFeatures() != null && capabilitiesOverall.getOcs().getData()
                 .getCapabilities().getSpreedCapability()
                 .getFeatures().contains("chat-v2")) {
-              if (conversation.isHasPassword() && conversation.isGuest()) {
+              if (conversation.getHasPassword() && conversation.isGuest()) {
                 eventBus.post(new BottomSheetLockEvent(true, 0,
                     true, false));
                 Bundle bundle = new Bundle();

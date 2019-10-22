@@ -104,7 +104,7 @@ public class ConversationItem
 
     holder.dialogAvatar.setController(null);
 
-    if (conversation.isUpdating()) {
+    if (conversation.getChanging()) {
       holder.progressBar.setVisibility(View.VISIBLE);
     } else {
       holder.progressBar.setVisibility(View.GONE);
@@ -127,7 +127,7 @@ public class ConversationItem
         holder.dialogUnreadBubble.setText("99+");
       }
 
-      if (conversation.isUnreadMention()) {
+      if (conversation.getUnreadMention()) {
         holder.dialogUnreadBubble.setBackground(
             context.getDrawable(R.drawable.bubble_circle_unread_mention));
       } else {
@@ -138,13 +138,13 @@ public class ConversationItem
       holder.dialogUnreadBubble.setVisibility(View.GONE);
     }
 
-    if (conversation.isHasPassword()) {
+    if (conversation.getHasPassword()) {
       holder.passwordProtectedRoomImageView.setVisibility(View.VISIBLE);
     } else {
       holder.passwordProtectedRoomImageView.setVisibility(View.GONE);
     }
 
-    if (conversation.isFavorite()) {
+    if (conversation.getFavorite()) {
       holder.pinnedConversationImageView.setVisibility(View.VISIBLE);
     } else {
       holder.pinnedConversationImageView.setVisibility(View.GONE);
@@ -157,7 +157,7 @@ public class ConversationItem
               System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
 
       if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage())
-          || Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
+          || Conversation.ConversationType.SYSTEM_CONVERSATION.equals(conversation.getType())) {
         holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
       } else {
         String authorDisplayName = "";
@@ -213,7 +213,7 @@ public class ConversationItem
       }
     }
 
-    if (Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
+    if (Conversation.ConversationType.SYSTEM_CONVERSATION.equals(conversation.getType())) {
       Drawable[] layers = new Drawable[2];
       layers[0] = context.getDrawable(R.drawable.ic_launcher_background);
       layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground);
@@ -227,7 +227,7 @@ public class ConversationItem
 
     if (shouldLoadAvatar) {
       switch (conversation.getType()) {
-        case ROOM_TYPE_ONE_TO_ONE_CALL:
+        case ONE_TO_ONE_CONVERSATION:
           if (!TextUtils.isEmpty(conversation.getName())) {
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setOldController(holder.dialogAvatar.getController())
@@ -241,13 +241,13 @@ public class ConversationItem
             holder.dialogAvatar.setVisibility(View.GONE);
           }
           break;
-        case ROOM_GROUP_CALL:
+        case GROUP_CONVERSATION:
           holder.dialogAvatar.getHierarchy()
               .setImage(new BitmapDrawable(
                   DisplayUtils.getRoundedBitmapFromVectorDrawableResource(context.getResources(),
                       R.drawable.ic_people_group_white_24px)), 100, true);
           break;
-        case ROOM_PUBLIC_CALL:
+        case PUBLIC_CONVERSATION:
           holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
               .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
                   R.drawable.ic_link_white_24px)), 100, true);

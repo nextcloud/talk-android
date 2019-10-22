@@ -23,7 +23,7 @@ package com.nextcloud.talk.newarch.domain.usecases.base
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 
 interface UseCaseResponse<Type> {
-  fun onSuccess(result: Type)
+  suspend fun onSuccess(result: Type)
   fun onError(errorModel: ErrorModel?)
 }
 

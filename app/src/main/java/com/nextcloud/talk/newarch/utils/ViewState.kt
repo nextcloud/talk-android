@@ -21,7 +21,6 @@
 package com.nextcloud.talk.newarch.utils
 
 enum class ViewState {
-  INITIAL_LOAD,
   LOADING,
   LOADED_EMPTY,
   LOADED,

@@ -22,6 +22,7 @@ package com.nextcloud.talk.newarch.features.conversationsList.di.module
 
 import android.app.Application
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
+import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkOfflineRepository
 import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
@@ -41,7 +42,7 @@ val ConversationsListModule = module {
   factory {
     createConversationListViewModelFactory(
         androidApplication(), get(), get(), get(), get
-    (), get()
+    (), get(), get()
     )
   }
 }
@@ -81,11 +82,12 @@ fun createConversationListViewModelFactory(
   setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
   leaveConversationUseCase: LeaveConversationUseCase,
   deleteConversationUseCase: DeleteConversationUseCase,
-  userUtils: UserUtils
+  userUtils: UserUtils,
+  offlineRepository: NextcloudTalkOfflineRepository
 ): ConversationListViewModelFactory {
   return ConversationListViewModelFactory(
       application, getConversationsUseCase,
       setConversationFavoriteValueUseCase, leaveConversationUseCase, deleteConversationUseCase,
-      userUtils
+      userUtils, offlineRepository
   )
 }

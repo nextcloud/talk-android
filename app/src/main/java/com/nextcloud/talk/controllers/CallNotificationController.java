@@ -411,7 +411,7 @@ public class CallNotificationController extends BaseController {
 
   private void loadAvatar() {
     switch (currentConversation.getType()) {
-      case ROOM_TYPE_ONE_TO_ONE_CALL:
+      case ONE_TO_ONE_CONVERSATION:
         avatarImageView.setVisibility(View.VISIBLE);
 
         ImageRequest imageRequest =
@@ -463,12 +463,12 @@ public class CallNotificationController extends BaseController {
         }, UiThreadImmediateExecutorService.getInstance());
 
         break;
-      case ROOM_GROUP_CALL:
+      case GROUP_CONVERSATION:
         avatarImageView.getHierarchy()
             .setImage(DisplayUtils.getRoundedDrawable(
                 context.getDrawable(R.drawable.ic_people_group_white_24px))
                 , 100, true);
-      case ROOM_PUBLIC_CALL:
+      case PUBLIC_CONVERSATION:
         avatarImageView.getHierarchy()
             .setImage(DisplayUtils.getRoundedDrawable(
                 context.getDrawable(R.drawable.ic_people_group_white_24px))

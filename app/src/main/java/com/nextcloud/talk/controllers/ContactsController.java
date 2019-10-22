@@ -372,9 +372,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         Bundle bundle = new Bundle();
         Conversation.ConversationType roomType;
         if (isPublicCall) {
-          roomType = Conversation.ConversationType.ROOM_PUBLIC_CALL;
+          roomType = Conversation.ConversationType.PUBLIC_CONVERSATION;
         } else {
-          roomType = Conversation.ConversationType.ROOM_GROUP_CALL;
+          roomType = Conversation.ConversationType.GROUP_CONVERSATION;
         }
 
         ArrayList<String> userIdsArray = new ArrayList<>(selectedUserIds);

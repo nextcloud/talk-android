@@ -33,15 +33,21 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
     user: UserEntity,
     conversation: Conversation
   ): GenericOverall {
-    return apiService.deleteConversation(user.getCredentials(), ApiUtils.getRoom(user.baseUrl, conversation.token))
+    return apiService.deleteConversation(
+        user.getCredentials(), ApiUtils.getRoom(user.baseUrl, conversation.token)
+    )
   }
 
   override suspend fun leaveConversationForUser(
     user: UserEntity,
     conversation: Conversation
   ): GenericOverall {
-    return apiService.leaveConversation(user.getCredentials(), ApiUtils.getUrlForRemoveSelfFromRoom(user
-        .baseUrl, conversation.token))
+    return apiService.leaveConversation(
+        user.getCredentials(), ApiUtils.getUrlForRemoveSelfFromRoom(
+        user
+            .baseUrl, conversation.token
+    )
+    )
   }
 
   override suspend fun setFavoriteValueForConversation(
@@ -66,6 +72,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
     return apiService.getConversations(
         user.getCredentials(),
         ApiUtils.getUrlForGetRooms(user.baseUrl)
-    ).ocs.data
+    )
+        .ocs.data
   }
 }

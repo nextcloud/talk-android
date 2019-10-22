@@ -21,8 +21,12 @@
 package com.nextcloud.talk.newarch.di.module
 
 import android.content.Context
+import androidx.room.Room
 import com.nextcloud.talk.R.string
 import com.nextcloud.talk.models.database.Models
+import com.nextcloud.talk.newarch.data.repository.NextcloudTalkOfflineRepositoryImpl
+import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkOfflineRepository
+import com.nextcloud.talk.newarch.local.db.TalkDatabase
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.requery.Persistable
@@ -31,6 +35,7 @@ import io.requery.reactivex.ReactiveEntityStore
 import io.requery.reactivex.ReactiveSupport
 import io.requery.sql.EntityDataStore
 import net.orange_box.storebox.StoreBox
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -39,6 +44,21 @@ val StorageModule = module {
   single { createSqlCipherDatabaseSource(androidContext()) }
   single { createDataStore(get()) }
   single { createUserUtils(get()) }
+  single { createNextcloudTalkOfflineRepository(get()) }
+  single { TalkDatabase.getInstance(androidApplication()) }
+  single { get<TalkDatabase>().conversationsDao() }
+}
+
+fun createNextcloudTalkOfflineRepository(database: TalkDatabase): NextcloudTalkOfflineRepository {
+  return NextcloudTalkOfflineRepositoryImpl(database)
+}
+
+fun createDatabase(context: Context): TalkDatabase {
+  return Room.databaseBuilder(
+      context,
+      TalkDatabase::class.java, "talk.db"
+  )
+      .build()
 }
 
 fun createPreferences(context: Context): AppPreferences {

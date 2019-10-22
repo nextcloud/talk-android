@@ -31,7 +31,6 @@ import com.nextcloud.talk.newarch.data.repository.NextcloudTalkRepositoryImpl
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
 import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkRepository
-import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.utils.NetworkUtils
 import com.nextcloud.talk.newarch.utils.NetworkUtils.GetProxyRunnable
 import com.nextcloud.talk.newarch.utils.NetworkUtils.MagicAuthenticator
@@ -81,6 +80,7 @@ val NetworkModule = module {
   single { createOkHttpClient(androidContext(), get(), get(), get(), get(), get(), get(), get()) }
   factory { createApiErrorHandler() }
   single { createNextcloudTalkRepository(get()) }
+
 }
 
 fun createCookieManager(): CookieManager {
@@ -252,11 +252,4 @@ fun createService(retrofit: Retrofit): ApiService {
 
 fun createNextcloudTalkRepository(apiService: ApiService): NextcloudTalkRepository {
   return NextcloudTalkRepositoryImpl(apiService)
-}
-
-fun createGetConversationsUseCase(
-  nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler
-): GetConversationsUseCase {
-  return GetConversationsUseCase(nextcloudTalkRepository, apiErrorHandler)
 }

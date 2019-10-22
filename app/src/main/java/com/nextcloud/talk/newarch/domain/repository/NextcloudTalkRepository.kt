@@ -30,7 +30,15 @@ interface NextcloudTalkRepository {
     user: UserEntity,
     conversation: Conversation,
     favorite: Boolean
-  ) : GenericOverall
-  suspend fun deleteConversationForUser(user: UserEntity, conversation: Conversation) : GenericOverall
-  suspend fun leaveConversationForUser(userEntity: UserEntity, conversation: Conversation) : GenericOverall
+  ): GenericOverall
+
+  suspend fun deleteConversationForUser(
+    user: UserEntity,
+    conversation: Conversation
+  ): GenericOverall
+
+  suspend fun leaveConversationForUser(
+    userEntity: UserEntity,
+    conversation: Conversation
+  ): GenericOverall
 }

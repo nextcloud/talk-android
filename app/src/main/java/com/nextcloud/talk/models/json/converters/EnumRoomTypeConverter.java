@@ -28,33 +28,31 @@ public class EnumRoomTypeConverter extends IntBasedTypeConverter<Conversation.Co
   public Conversation.ConversationType getFromInt(int i) {
     switch (i) {
       case 1:
-        return Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL;
+        return Conversation.ConversationType.ONE_TO_ONE_CONVERSATION;
       case 2:
-        return Conversation.ConversationType.ROOM_GROUP_CALL;
+        return Conversation.ConversationType.GROUP_CONVERSATION;
       case 3:
-        return Conversation.ConversationType.ROOM_PUBLIC_CALL;
+        return Conversation.ConversationType.PUBLIC_CONVERSATION;
       case 4:
-        return Conversation.ConversationType.ROOM_SYSTEM;
+        return Conversation.ConversationType.SYSTEM_CONVERSATION;
       default:
-        return Conversation.ConversationType.DUMMY;
+        return Conversation.ConversationType.ONE_TO_ONE_CONVERSATION;
     }
   }
 
   @Override
   public int convertToInt(Conversation.ConversationType object) {
     switch (object) {
-      case DUMMY:
-        return 0;
-      case ROOM_TYPE_ONE_TO_ONE_CALL:
+      case ONE_TO_ONE_CONVERSATION:
         return 1;
-      case ROOM_GROUP_CALL:
+      case GROUP_CONVERSATION:
         return 2;
-      case ROOM_PUBLIC_CALL:
+      case PUBLIC_CONVERSATION:
         return 3;
-      case ROOM_SYSTEM:
+      case SYSTEM_CONVERSATION:
         return 4;
       default:
-        return 0;
+        return 1;
     }
   }
 }

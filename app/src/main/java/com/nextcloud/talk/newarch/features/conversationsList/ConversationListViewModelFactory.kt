@@ -23,6 +23,7 @@ package com.nextcloud.talk.newarch.features.conversationsList
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkOfflineRepository
 import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
@@ -32,15 +33,18 @@ import com.nextcloud.talk.utils.database.user.UserUtils
 class ConversationListViewModelFactory constructor(
   private val application: Application,
   private val conversationsUseCase: GetConversationsUseCase,
-  private  val setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
+  private val setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
   private val leaveConversationUseCase: LeaveConversationUseCase,
   private val deleteConversationUseCase: DeleteConversationUseCase,
-  private val userUtils: UserUtils
+  private val userUtils: UserUtils,
+  private val offlineRepository: NextcloudTalkOfflineRepository
 ) : ViewModelProvider.Factory {
 
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-    return ConversationsListViewModel(application, conversationsUseCase,
+    return ConversationsListViewModel(
+        application, conversationsUseCase,
         setConversationFavoriteValueUseCase, leaveConversationUseCase, deleteConversationUseCase,
-        userUtils) as T
+        userUtils, offlineRepository
+    ) as T
   }
 }

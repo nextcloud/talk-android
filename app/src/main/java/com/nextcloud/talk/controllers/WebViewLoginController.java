@@ -123,6 +123,9 @@ public class WebViewLoginController extends BaseController {
 
   private WebViewFidoBridge webViewFidoBridge;
 
+  public WebViewLoginController() {
+  }
+
   public WebViewLoginController(String baseUrl, boolean isPasswordUpdate) {
     this.baseUrl = baseUrl;
     this.isPasswordUpdate = isPasswordUpdate;

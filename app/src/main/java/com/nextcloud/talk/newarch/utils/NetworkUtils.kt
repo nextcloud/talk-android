@@ -83,7 +83,8 @@ class NetworkUtils {
           return null
         }
       }
-      return response.request().newBuilder()
+      return response.request()
+          .newBuilder()
           .header(authenticatorType, credentials)
           .build()
     }

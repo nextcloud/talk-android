@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -171,12 +170,12 @@ public class NotificationWorker extends Worker {
 
             intent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
             if (conversation.getType()
-                .equals(Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) ||
+                .equals(Conversation.ConversationType.ONE_TO_ONE_CONVERSATION) ||
                 (!TextUtils.isEmpty(conversation.getObjectType()) && "share:password".equals
                     (conversation.getObjectType()))) {
               context.startActivity(intent);
             } else {
-              if (conversation.getType().equals(Conversation.ConversationType.ROOM_GROUP_CALL)) {
+              if (conversation.getType().equals(Conversation.ConversationType.GROUP_CONVERSATION)) {
                 conversationType = "group";
               } else {
                 conversationType = "public";

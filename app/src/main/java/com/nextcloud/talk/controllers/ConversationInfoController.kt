@@ -63,7 +63,7 @@ import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
-import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ROOM_PUBLIC_CALL
+import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.PUBLIC_CONVERSATION
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -253,8 +253,8 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
   private fun setupWebinaryView() {
     if (conversationUser!!.hasSpreedFeatureCapability("webinary-lobby") && (conversation!!.type
-            == Conversation.ConversationType.ROOM_GROUP_CALL || conversation!!.type ==
-            Conversation.ConversationType.ROOM_PUBLIC_CALL) && conversation!!.canModerate(
+            == Conversation.ConversationType.GROUP_CONVERSATION || conversation!!.type ==
+            Conversation.ConversationType.PUBLIC_CONVERSATION) && conversation!!.canModerate(
             conversationUser
         )
     ) {
@@ -270,8 +270,8 @@ class ConversationInfoController(args: Bundle) : BaseController(),
       startTimeView.setOnClickListener {
         MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
           val currentTimeCalendar = Calendar.getInstance()
-          if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
-            currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer * 1000
+          if (conversation != null && conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
+            currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer!! * 1000
           }
 
           dateTimePicker(minDateTime = Calendar.getInstance(), requireFutureDateTime =
@@ -309,7 +309,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
     if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != java.lang.Long.MIN_VALUE && conversation!!.lobbyTimer != 0L) {
       startTimeView.setSummary(
-          DateUtils.getLocalDateStringFromTimestampForLobby(conversation!!.lobbyTimer)
+          conversation!!.lobbyTimer?.let { DateUtils.getLocalDateStringFromTimestampForLobby(it) }
       )
     } else {
       startTimeView.setSummary(R.string.nc_manual)
@@ -670,7 +670,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
                 deleteConversationAction.visibility = View.VISIBLE
               }
 
-              if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
+              if (Conversation.ConversationType.SYSTEM_CONVERSATION == conversation!!.type) {
                 muteCalls.visibility = View.GONE
               }
 
@@ -701,7 +701,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
   }
 
   private fun setupGeneralSettings() {
-    if (conversation != null) {
+    if (conversation != null && conversationUser != null) {
       changeConversationName.value = conversation!!.displayName
 
       if (conversation!!.isNameEditable(conversationUser)) {
@@ -710,12 +710,12 @@ class ConversationInfoController(args: Bundle) : BaseController(),
         changeConversationName.visibility = View.GONE
       }
 
-      favoriteConversationAction.value = conversation!!.isFavorite
-      if (conversation!!.type.equals(ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) || conversation!!
-              .type.equals(ConversationType.ROOM_SYSTEM)) {
+      favoriteConversationAction.value = conversation!!.favorite
+      if (conversation!!.type!!.equals(ConversationType.ONE_TO_ONE_CONVERSATION) || conversation!!
+              .type!!.equals(ConversationType.SYSTEM_CONVERSATION)) {
         allowGuestsAction.visibility = View.GONE
       } else {
-        allowGuestsAction.value = conversation!!.type == ROOM_PUBLIC_CALL
+        allowGuestsAction.value = conversation!!.type == PUBLIC_CONVERSATION
       }
 
       (allowGuestsAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
@@ -813,7 +813,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
   }
 
   private fun setProperNotificationValue(conversation: Conversation?) {
-    if (conversation!!.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+    if (conversation!!.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION) {
       // hack to see if we get mentioned always or just on mention
       if (conversationUser!!.hasSpreedFeatureCapability("mention-flag")) {
         messageNotificationLevel.value = "always"
@@ -827,7 +827,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
   private fun loadConversationAvatar() {
     when (conversation!!.type) {
-      Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty
+      Conversation.ConversationType.ONE_TO_ONE_CONVERSATION -> if (!TextUtils.isEmpty
           (conversation!!.name)
       ) {
         val draweeController = Fresco.newDraweeControllerBuilder()
@@ -844,21 +844,21 @@ class ConversationInfoController(args: Bundle) : BaseController(),
             .build()
         conversationAvatarImageView.controller = draweeController
       }
-      Conversation.ConversationType.ROOM_GROUP_CALL -> conversationAvatarImageView.hierarchy.setPlaceholderImage(
+      Conversation.ConversationType.GROUP_CONVERSATION -> conversationAvatarImageView.hierarchy.setPlaceholderImage(
           DisplayUtils
               .getRoundedBitmapDrawableFromVectorDrawableResource(
                   resources,
                   R.drawable.ic_people_group_white_24px
               )
       )
-      Conversation.ConversationType.ROOM_PUBLIC_CALL -> conversationAvatarImageView.hierarchy.setPlaceholderImage(
+      Conversation.ConversationType.PUBLIC_CONVERSATION -> conversationAvatarImageView.hierarchy.setPlaceholderImage(
           DisplayUtils
               .getRoundedBitmapDrawableFromVectorDrawableResource(
                   resources,
                   R.drawable.ic_link_white_24px
               )
       )
-      Conversation.ConversationType.ROOM_SYSTEM -> {
+      Conversation.ConversationType.SYSTEM_CONVERSATION -> {
         val layers = arrayOfNulls<Drawable>(2)
         layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
         layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
