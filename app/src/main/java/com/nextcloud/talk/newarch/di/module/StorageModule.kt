@@ -53,14 +53,6 @@ fun createNextcloudTalkOfflineRepository(database: TalkDatabase): NextcloudTalkO
   return NextcloudTalkOfflineRepositoryImpl(database)
 }
 
-fun createDatabase(context: Context): TalkDatabase {
-  return Room.databaseBuilder(
-      context,
-      TalkDatabase::class.java, "talk.db"
-  )
-      .build()
-}
-
 fun createPreferences(context: Context): AppPreferences {
   return StoreBox.create<AppPreferences>(context, AppPreferences::class.java)
 }
