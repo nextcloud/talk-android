@@ -50,6 +50,7 @@ import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class ConversationItem
@@ -71,7 +72,23 @@ public class ConversationItem
   public boolean equals(Object o) {
     if (o instanceof ConversationItem) {
       ConversationItem inItem = (ConversationItem) o;
-      return conversation.getConversationId().equals(inItem.getModel().getConversationId());
+      Conversation comparedConversation = inItem.conversation;
+      return (conversation.getConversationId().equals(comparedConversation.getConversationId())
+          && Objects.equals(conversation.getToken(), comparedConversation.getToken())
+          && Objects.equals(conversation.getName(), comparedConversation.getName())
+          && Objects.equals(conversation.getDisplayName(), comparedConversation.getDisplayName())
+          && Objects.equals(conversation.getType(), comparedConversation.getType())
+          && Objects.equals(conversation.getLastMessage(), comparedConversation.getLastMessage())
+          && Objects.equals(conversation.getFavorite(), comparedConversation.getFavorite())
+          && Objects.equals(conversation.getHasPassword(), comparedConversation.getHasPassword())
+          && Objects.equals(conversation.getUnreadMessages(),
+          comparedConversation.getUnreadMessages())
+          && Objects.equals(conversation.getUnreadMention(),
+          comparedConversation.getUnreadMention())
+          && Objects.equals(conversation.getObjectType(), comparedConversation.getObjectType())
+          && Objects.equals(conversation.getChanging(), comparedConversation.getChanging())
+          && Objects.equals(userEntity.getId(), inItem.userEntity.getId())
+      );
     }
     return false;
   }
@@ -82,7 +99,8 @@ public class ConversationItem
 
   @Override
   public int hashCode() {
-    return conversation.hashCode();
+    return Objects.hash(conversation.getConversationId(), conversation.getToken(),
+        userEntity.getId());
   }
 
   @Override

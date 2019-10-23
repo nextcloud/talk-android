@@ -86,7 +86,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
   lateinit var viewModel: ConversationsListViewModel
   val factory: ConversationListViewModelFactory by inject()
 
-  private val recyclerViewAdapter = FlexibleAdapter(mutableListOf())
+  private val recyclerViewAdapter = FlexibleAdapter(mutableListOf(), null, true)
 
   private var searchItem: MenuItem? = null
   private var settingsItem: MenuItem? = null
@@ -246,7 +246,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
       })
 
       conversationsLiveData.observe(this@ConversationsListView, Observer {
-        if (it.size == 0) {
+        if (it.isEmpty()) {
           viewState.value = LOADED_EMPTY
         } else {
           viewState.value = LOADED
@@ -270,7 +270,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
           )
         }
 
-        recyclerViewAdapter.updateDataSet(newConversations as List<IFlexible<ViewHolder>>?)
+        recyclerViewAdapter.updateDataSet(newConversations as List<IFlexible<ViewHolder>>?, false)
       })
 
       searchQuery.observe(this@ConversationsListView, Observer {
@@ -320,15 +320,16 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
   override fun onAttach(view: View) {
     super.onAttach(view)
     view.recyclerView.initRecyclerView(
-        SmoothScrollLinearLayoutManager(view.context), recyclerViewAdapter
+        SmoothScrollLinearLayoutManager(view.context), recyclerViewAdapter, false
     )
-
-    view.swipeRefreshLayoutView.setOnRefreshListener { viewModel.loadConversations() }
-    view.swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
 
     recyclerViewAdapter.fastScroller = view.fast_scroller
     recyclerViewAdapter.mItemClickListener = this
     recyclerViewAdapter.mItemLongClickListener = this
+
+    view.swipeRefreshLayoutView.setOnRefreshListener { viewModel.loadConversations() }
+    view.swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
+
 
     view.fast_scroller.setBubbleTextCreator { position ->
       var displayName =

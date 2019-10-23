@@ -50,8 +50,7 @@ abstract class ConversationsDao {
   abstract suspend fun saveConversations(vararg conversations: ConversationEntity)
 
   @Query(
-      "UPDATE conversations SET changing = :changing WHERE user = :userId AND " +
-          "'conversation_id' = :conversationId"
+      "UPDATE conversations SET changing = :changing WHERE user = :userId AND conversation_id = :conversationId"
   )
   abstract suspend fun updateChangingValueForConversation(
     userId: Long,
@@ -60,7 +59,7 @@ abstract class ConversationsDao {
   )
 
   @Query(
-      "UPDATE conversations SET favorite = :favorite, changing = 0 WHERE user = :userId AND 'conversation_id' = :conversationId"
+      "UPDATE conversations SET favorite = :favorite, changing = 0 WHERE user = :userId AND conversation_id = :conversationId"
   )
   abstract suspend fun updateFavoriteValueForConversation(
     userId: Long,
@@ -68,7 +67,7 @@ abstract class ConversationsDao {
     favorite: Boolean
   )
 
-  @Query("DELETE FROM conversations WHERE user = :userId AND 'conversation_id' = :conversationId")
+  @Query("DELETE FROM conversations WHERE user = :userId AND conversation_id = :conversationId")
   abstract suspend fun deleteConversation(
     userId: Long,
     conversationId: String
@@ -77,7 +76,7 @@ abstract class ConversationsDao {
   @Delete
   abstract suspend fun deleteConversations(vararg conversation: ConversationEntity)
 
-  @Query("DELETE FROM conversations WHERE user = :userId AND 'modified_at' < :timestamp")
+  @Query("DELETE FROM conversations WHERE user = :userId AND modified_at < :timestamp")
   abstract suspend fun deleteConversationsForUserWithTimestamp(
     userId: Long,
     timestamp: Long

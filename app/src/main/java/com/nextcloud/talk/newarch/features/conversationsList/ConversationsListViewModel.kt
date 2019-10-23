@@ -103,6 +103,9 @@ class ConversationsListViewModel constructor(
 
           override fun onError(errorModel: ErrorModel?) {
             messageData = errorModel?.getErrorMessage()
+            if (errorModel?.code == 400) {
+              // couldn't leave because we're last moderator
+            }
             viewModelScope.launch {
               setConversationUpdateStatus(conversation, false)
             }
