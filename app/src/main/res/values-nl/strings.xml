@@ -114,6 +114,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_no_proxy">geen proxy</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
+    <string name="nc_password_redacted">Verwijderd voor privacy-redenen</string>
     <string name="nc_conversation_link">Conversatie link</string>
     <string name="nc_new_password">Nieuw wachtwoord</string>
     <string name="nc_wrong_password">Onjuist wachtwoord</string>
@@ -129,6 +130,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_start_conversation">Begin een gesprek</string>
     <string name="nc_configure_room">Configureren gesprek</string>
     <string name="nc_leave">Verlaat gesprek</string>
+    <string name="nc_leave_message">Bevestig dat je het gesprek wilt verlaten.</string>
+    <string name="nc_simple_leave">Verlaat</string>
     <string name="nc_rename">Hernoem gesprek</string>
     <string name="nc_set_password">Instellen wachtwoord</string>
     <string name="nc_change_password">Wachtwoord wijzigen</string>
@@ -139,11 +142,19 @@ Kies er eentje van een provider.</string>
     <string name="nc_make_call_private">Maak gesprek besloten</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
     <string name="nc_delete">Verwijderen</string>
+    <string name="nc_delete_conversation_default">Bevestig alstublieft dat je dit gesprek wilt verwijderen</string>
+    <string name="nc_delete_conversation_one2one">Als je het gesprek verwijdert, wordt het ook
+        verwijderd voor %1$s.</string>
+    <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
+
     <string name="nc_new_conversation">Nieuw gesprek</string>
     <string name="nc_join_via_link">Deelnemen via een link</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
+    <string name="nc_favorite_conversation">Favoriete gesprek</string>
     <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
+    <string name="nc_favorites_explanation">Gesprek zal vastgemaakt worden aan de bovenkant van de lijst met gesprekken</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecteer contacten</string>
     <string name="nc_contacts_done">Gereed</string>
@@ -179,6 +190,8 @@ via een persoonlijke link.</string>
     <string name="nc_mute_calls">Gesprekken dempen</string>
     <string name="nc_mute_calls_desc">Inkomende gesprekken worden genegeerd</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
+    <string name="nc_important_conversation_desc">Bel- en berichtnotificaties zullen getoond worden, zelfs in \'Niet storen\' modus (volgt de systeem instelling \"Alleen belangrijke onderbrekingen\")</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons.
@@ -273,4 +286,15 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
         vergadering is ingepland voor %1$s.</string>
     <string name="nc_manual">Niet ingesteld</string>
 
-    </resources>
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Geen verbinding</string>
+    <string name="nc_bad_response_error">Fout antwoord</string>
+    <string name="nc_timeout_error">Time-out</string>
+    <string name="nc_empty_response_error">Leeg antwoord</string>
+    <string name="nc_not_defined_error">Onbekende fout</string>
+    <string name="nc_unauthorized_error">Niet toegestaan</string>
+
+    <string name="nc_general_settings">Algemeen</string>
+    <string name="nc_allow_guests">Laat gasten toe</string>
+
+</resources>

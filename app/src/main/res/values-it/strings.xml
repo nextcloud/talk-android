@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Nessun proxy</string>
     <string name="nc_username">Nome utente</string>
     <string name="nc_password">Password</string>
+    <string name="nc_password_redacted">Redatto per motivi di riservatezza</string>
     <string name="nc_conversation_link">Collegamento della conversazione</string>
     <string name="nc_new_password">Nuova password</string>
     <string name="nc_wrong_password">Password errata</string>
@@ -150,8 +151,12 @@
     <string name="nc_new_conversation">Nuova conversazione</string>
     <string name="nc_join_via_link">Unisciti tramite un collegamento</string>
     <string name="nc_join_via_web">Unisciti tramite web</string>
+    <string name="nc_favorite_conversation">Conversazione preferita</string>
     <string name="nc_add_to_favorites">Aggiungi ai preferiti</string>
     <string name="nc_remove_from_favorites">Rimuovi dai preferiti</string>
+    <string name="nc_favorites_explanation">La conversazione sarà appuntata in cima all\'elenco
+       delle conversazioni</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Seleziona contatti</string>
     <string name="nc_contacts_done">Fine</string>
@@ -288,4 +293,9 @@
     <string name="nc_timeout_error">Tempo scaduto</string>
     <string name="nc_empty_response_error">Risposta vuota</string>
     <string name="nc_not_defined_error">Errore sconosciuto</string>
-    </resources>
+    <string name="nc_unauthorized_error">Non autorizzato</string>
+
+    <string name="nc_general_settings">Generale</string>
+    <string name="nc_allow_guests">Consenti ospiti</string>
+
+</resources>

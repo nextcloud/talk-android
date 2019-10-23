@@ -88,7 +88,7 @@
     <string name="nc_settings_privacy">Privacidade</string>
     <string name="nc_settings_screen_lock_title">Bloquear tela</string>
     <string name="nc_settings_screen_lock_desc">Bloquear %1$s com o bloqueio de tela do Android ou um método biométrico suportado</string>
-    <string name="nc_settings_screen_lock_timeout_title">Tempo para bloqueio de tela</string>
+    <string name="nc_settings_screen_lock_timeout_title">Tempo limite para bloqueio de tela</string>
     <string name="nc_none">Nada</string>
     <string name="nc_settings_screen_security_title">Segurança da tela</string>
     <string name="nc_settings_screen_security_desc">Impede capturas de tela na lista recente e dentro do aplicativo</string>
@@ -290,7 +290,7 @@
     <!-- Errors -->
     <string name="nc_no_connection_error">Sem conexão</string>
     <string name="nc_bad_response_error">Resposta ruim</string>
-    <string name="nc_timeout_error">Tempo de expiração</string>
+    <string name="nc_timeout_error">Tempo limite</string>
     <string name="nc_empty_response_error">Resposta vazia</string>
     <string name="nc_not_defined_error">Erro desconhecido</string>
     <string name="nc_unauthorized_error">Não autorizado</string>
