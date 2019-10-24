@@ -25,10 +25,10 @@ import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 
 interface NextcloudTalkOfflineRepository {
-  fun getConversationsForUser(user: UserEntity): LiveData<List<Conversation>>
-  suspend fun clearConversationsForUser(user: UserEntity)
+  fun getConversationsForUser(userId: Long): LiveData<List<Conversation>>
+  suspend fun clearConversationsForUser(userId: Long)
   suspend fun saveConversationsForUser(
-    user: UserEntity,
+    userId: Long,
     conversations: List<Conversation>
   )
 
@@ -50,7 +50,7 @@ interface NextcloudTalkOfflineRepository {
   )
 
   suspend fun deleteConversationForUserWithTimestamp(
-    user: UserEntity,
+    userId: Long,
     timestamp: Long
   )
 }

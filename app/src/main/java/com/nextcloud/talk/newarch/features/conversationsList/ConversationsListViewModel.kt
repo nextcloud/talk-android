@@ -75,7 +75,7 @@ class ConversationsListViewModel constructor(
   val searchQuery = MutableLiveData<String>()
   val currentUserLiveData: MutableLiveData<UserEntity> = MutableLiveData()
   val conversationsLiveData = Transformations.switchMap(currentUserLiveData) {
-    offlineRepository.getConversationsForUser(it)
+    offlineRepository.getConversationsForUser(it.id)
   }
 
   var currentUserAvatar: MutableLiveData<Drawable> = MutableLiveData()
@@ -189,7 +189,7 @@ class ConversationsListViewModel constructor(
           it.user = currentUserLiveData.value!!.id
         }
 
-        offlineRepository.saveConversationsForUser(currentUserLiveData.value!!, mutableList)
+        offlineRepository.saveConversationsForUser(currentUserLiveData.value!!.id, mutableList)
         messageData = ""
       }
 

@@ -57,9 +57,9 @@ class NextcloudTalkOfflineRepositoryImpl(val nextcloudTalkDatabase: TalkDatabase
         .deleteConversation(userId, conversationId)
   }
 
-  override fun getConversationsForUser(user: UserEntity): LiveData<List<Conversation>> {
+  override fun getConversationsForUser(userId: Long): LiveData<List<Conversation>> {
     return nextcloudTalkDatabase.conversationsDao()
-        .getConversationsForUser(user.id)
+        .getConversationsForUser(userId)
         .map { data ->
           data.map {
             it.toConversation()
@@ -71,18 +71,18 @@ class NextcloudTalkOfflineRepositoryImpl(val nextcloudTalkDatabase: TalkDatabase
     return nextcloudTalkDatabase
   }
 
-  override suspend fun clearConversationsForUser(user: UserEntity) {
+  override suspend fun clearConversationsForUser(userId: Long) {
     nextcloudTalkDatabase.conversationsDao()
-        .clearConversationsForUser(user.id)
+        .clearConversationsForUser(userId)
   }
 
   override suspend fun saveConversationsForUser(
-    user: UserEntity,
+    userId: Long,
     conversations: List<Conversation>
   ) {
     nextcloudTalkDatabase.conversationsDao()
         .updateConversationsForUser(
-            user.id,
+            userId,
             conversations.map {
               it.toConversationEntity()
             }.toTypedArray()
@@ -90,10 +90,10 @@ class NextcloudTalkOfflineRepositoryImpl(val nextcloudTalkDatabase: TalkDatabase
   }
 
   override suspend fun deleteConversationForUserWithTimestamp(
-    user: UserEntity,
+    userId: Long,
     timestamp: Long
   ) {
     nextcloudTalkDatabase.conversationsDao()
-        .deleteConversationsForUserWithTimestamp(user.id, timestamp)
+        .deleteConversationsForUserWithTimestamp(userId, timestamp)
   }
 }
