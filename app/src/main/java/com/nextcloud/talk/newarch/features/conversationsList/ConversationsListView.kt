@@ -293,8 +293,8 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         for (conversation in sortedConversationsList) {
           newConversations.add(
               ConversationItem(
-                  conversation, viewModel.currentUserLiveData.value,
-                  activity
+                  conversation, viewModel.currentUserLiveData.value!!,
+                  activity!!
               )
           )
         }

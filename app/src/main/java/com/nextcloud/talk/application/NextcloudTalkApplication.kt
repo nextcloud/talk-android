@@ -35,6 +35,8 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoComponent
 import autodagger.AutoInjector
+import coil.Coil
+import coil.ImageLoader
 import com.facebook.cache.disk.DiskCacheConfig
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
@@ -65,6 +67,7 @@ import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
 import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -86,6 +89,8 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
   lateinit var componentApplication: NextcloudTalkApplicationComponent
     private set
   //endregion
+
+  val imageLoader: ImageLoader by inject()
 
   //region Getters
 
@@ -138,6 +143,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
     DavUtils.registerCustomFactories()
 
     componentApplication.inject(this)
+    Coil.setDefaultImageLoader(imageLoader)
 
     setAppTheme(appPreferences.theme)
     super.onCreate()
