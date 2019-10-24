@@ -23,9 +23,9 @@ package com.nextcloud.talk.controllers
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
@@ -45,7 +45,6 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.widget.EmojiEditText
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,15 +52,12 @@ import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.OnClick
+import coil.target.Target
+import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
-import com.facebook.common.executors.UiThreadImmediateExecutorService
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.DataSource
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
-import com.facebook.imagepipeline.image.CloseableImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
@@ -84,6 +80,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
+import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
@@ -115,6 +112,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.koin.android.ext.android.inject
 import org.parceler.Parcels
 import retrofit2.HttpException
 import retrofit2.Response
@@ -193,6 +191,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
   var lobbyTimerHandler: Handler? = null
   val roomJoined: Boolean = false
+
+  val imageLoader: coil.ImageLoader by inject()
 
   init {
     setHasOptionsMenu(true)
@@ -320,28 +320,25 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
       )
           .toInt()
 
-      val imageRequest = DisplayUtils.getImageRequestForUrl(
-          ApiUtils.getUrlForAvatarWithNameAndPixels(
-              conversationUser?.baseUrl,
-              currentConversation?.name, avatarSize / 2
-          ), null
-      )
-
-      val imagePipeline = Fresco.getImagePipeline()
-      val dataSource = imagePipeline.fetchDecodedImage(imageRequest, null)
-
-      dataSource.subscribe(object : BaseBitmapDataSubscriber() {
-        override fun onNewResultImpl(bitmap: Bitmap?) {
-          if (actionBar != null && bitmap != null && resources != null) {
-            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources!!, bitmap)
-            roundedBitmapDrawable.isCircular = true
-            roundedBitmapDrawable.setAntiAlias(true)
-            actionBar?.setIcon(roundedBitmapDrawable)
+      avatarSize.let {
+        val target = object : Target {
+          override fun onSuccess(result: Drawable) {
+            super.onSuccess(result)
+            actionBar?.setIcon(result)
           }
         }
 
-        override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>) {}
-      }, UiThreadImmediateExecutorService.getInstance())
+        // change lifecycle owner once we move to MVVM
+        val avatarRequest = Images().getRequestForUrl(
+            imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
+            conversationUser?.baseUrl,
+            currentConversation?.name, avatarSize / 2
+        ), conversationUser!!, target, null,
+            CircleCropTransformation()
+        );
+
+        imageLoader.load(avatarRequest)
+      }
     }
   }
 
@@ -537,7 +534,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
   private fun checkReadOnlyState() {
     if (currentConversation != null && conversationUser != null) {
-      if (currentConversation?.shouldShowLobby(conversationUser
+      if (currentConversation?.shouldShowLobby(
+              conversationUser
           ) == true || currentConversation?.conversationReadOnlyState != null && currentConversation?.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
       ) {
 
@@ -566,7 +564,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
   }
 
   private fun checkLobbyState() {
-    if (currentConversation != null && conversationUser != null && currentConversation?.isLobbyViewApplicable(conversationUser
+    if (currentConversation != null && conversationUser != null && currentConversation?.isLobbyViewApplicable(
+            conversationUser
         ) == true
     ) {
 
@@ -1033,7 +1032,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     }
 
     if (currentConversation != null && conversationUser != null && currentConversation!!
-        .shouldShowLobby(conversationUser)) {
+            .shouldShowLobby(conversationUser)
+    ) {
       return
     }
 
@@ -1484,7 +1484,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                   conversationIntent.putExtras(bundle)
 
                   if (roomOverall != null && roomOverall.ocs != null && roomOverall.ocs.data !=
-                      null && roomOverall.ocs.data.token != null) {
+                      null && roomOverall.ocs.data.token != null
+                  ) {
                     ConductorRemapping.remapChatController(
                         router, conversationUser.id,
                         roomOverall.ocs.data.token!!, bundle, false

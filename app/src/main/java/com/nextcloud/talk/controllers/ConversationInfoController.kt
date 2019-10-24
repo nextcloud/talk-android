@@ -29,6 +29,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
@@ -40,14 +41,14 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.OnClick
+import coil.api.load
+import coil.transform.CircleCropTransformation
 import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.datetime.dateTimePicker
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.R.string
 import com.nextcloud.talk.adapters.items.UserItem
@@ -63,7 +64,10 @@ import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
+import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.GROUP_CONVERSATION
+import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.PUBLIC_CONVERSATION
+import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.SYSTEM_CONVERSATION
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -134,7 +138,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
   @BindView(R.id.start_time_preferences)
   lateinit var startTimeView: MaterialStandardPreference
   @BindView(R.id.avatar_image)
-  lateinit var conversationAvatarImageView: SimpleDraweeView
+  lateinit var conversationAvatarImageView: ImageView
   @BindView(R.id.display_name_text)
   lateinit var conversationDisplayName: EmojiTextView
   @BindView(R.id.participants_list_category)
@@ -254,7 +258,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
   private fun setupWebinaryView() {
     if (conversationUser!!.hasSpreedFeatureCapability("webinary-lobby") && (conversation!!.type
             == Conversation.ConversationType.GROUP_CONVERSATION || conversation!!.type ==
-            Conversation.ConversationType.PUBLIC_CONVERSATION) && conversation!!.canModerate(
+            PUBLIC_CONVERSATION) && conversation!!.canModerate(
             conversationUser
         )
     ) {
@@ -827,45 +831,35 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
   private fun loadConversationAvatar() {
     when (conversation!!.type) {
-      Conversation.ConversationType.ONE_TO_ONE_CONVERSATION -> if (!TextUtils.isEmpty
+      ONE_TO_ONE_CONVERSATION -> if (!TextUtils.isEmpty
           (conversation!!.name)
       ) {
-        val draweeController = Fresco.newDraweeControllerBuilder()
-            .setOldController(conversationAvatarImageView.controller)
-            .setAutoPlayAnimations(true)
-            .setImageRequest(
-                DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForAvatarWithName(
-                        conversationUser!!.baseUrl,
-                        conversation!!.name, R.dimen.avatar_size_big
-                    ), null
-                )
-            )
-            .build()
-        conversationAvatarImageView.controller = draweeController
+        conversationAvatarImageView.load(ApiUtils.getUrlForAvatarWithName(
+            conversationUser!!.baseUrl,
+            conversation!!.name, R.dimen.avatar_size_big
+        )) {
+          transformations(CircleCropTransformation())
+        }
       }
-      Conversation.ConversationType.GROUP_CONVERSATION -> conversationAvatarImageView.hierarchy.setPlaceholderImage(
-          DisplayUtils
-              .getRoundedBitmapDrawableFromVectorDrawableResource(
-                  resources,
-                  R.drawable.ic_people_group_white_24px
-              )
-      )
-      Conversation.ConversationType.PUBLIC_CONVERSATION -> conversationAvatarImageView.hierarchy.setPlaceholderImage(
-          DisplayUtils
-              .getRoundedBitmapDrawableFromVectorDrawableResource(
-                  resources,
-                  R.drawable.ic_link_white_24px
-              )
-      )
-      Conversation.ConversationType.SYSTEM_CONVERSATION -> {
+      GROUP_CONVERSATION -> {
+        conversationAvatarImageView.load(R.drawable.ic_people_group_white_24px) {
+          transformations(CircleCropTransformation())
+        }
+      }
+      PUBLIC_CONVERSATION -> {
+        conversationAvatarImageView.load(R.drawable.ic_link_white_24px) {
+          transformations(CircleCropTransformation())
+        }
+      }
+
+      SYSTEM_CONVERSATION -> {
         val layers = arrayOfNulls<Drawable>(2)
         layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
         layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
         val layerDrawable = LayerDrawable(layers)
-        conversationAvatarImageView.hierarchy.setPlaceholderImage(
-            DisplayUtils.getRoundedDrawable(layerDrawable)
-        )
+        conversationAvatarImageView.load(layerDrawable) {
+          transformations(CircleCropTransformation())
+        }
       }
 
       else -> {

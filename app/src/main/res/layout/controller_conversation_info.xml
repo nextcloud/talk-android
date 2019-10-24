@@ -65,12 +65,12 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/margin_between_elements" />
 
-                    <com.facebook.drawee.view.SimpleDraweeView
+                    <ImageView
                         android:id="@+id/avatar_image"
                         android:layout_width="@dimen/avatar_size_big"
                         android:layout_height="@dimen/avatar_size_big"
                         android:layout_centerHorizontal="true"
-                        apc:roundAsCircle="true" />
+                        />
 
                 </RelativeLayout>
             </com.yarolegovich.mp.MaterialPreferenceCategory>

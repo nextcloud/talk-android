@@ -72,7 +72,6 @@ import eu.davidea.flexibleadapter.FlexibleAdapter.OnItemClickListener
 import eu.davidea.flexibleadapter.FlexibleAdapter.OnItemLongClickListener
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.IFlexible
-import kotlinx.android.synthetic.main.controller_conversations_rv.view.*
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.dataStateView
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.floatingActionButton
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.recyclerView
