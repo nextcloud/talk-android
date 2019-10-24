@@ -44,12 +44,11 @@
             android:src="@drawable/ic_lock_white_24px"
             android:visibility="visible" />
 
-        <com.facebook.drawee.view.SimpleDraweeView xmlns:app="http://schemas.android.com/apk/res-auto"
+        <ImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/avatar_image"
             android:layout_width="@dimen/small_item_height"
             android:layout_height="@dimen/small_item_height"
-            android:layout_margin="@dimen/margin_between_elements"
-            app:roundAsCircle="true" />
+            android:layout_margin="@dimen/margin_between_elements"/>
 
     </FrameLayout>
 
