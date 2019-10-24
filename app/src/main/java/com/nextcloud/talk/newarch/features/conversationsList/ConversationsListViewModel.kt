@@ -28,6 +28,8 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import coil.request.LoadRequest
+import coil.target.ViewTarget
 import com.facebook.common.executors.UiThreadImmediateExecutorService
 import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.DataSource
@@ -89,6 +91,7 @@ class ConversationsListViewModel constructor(
     viewModelScope.launch {
       setConversationUpdateStatus(conversation, true)
     }
+
     leaveConversationUseCase.invoke(viewModelScope, parametersOf(
         currentUserLiveData.value,
         conversation
@@ -194,36 +197,6 @@ class ConversationsListViewModel constructor(
         messageData = errorModel?.getErrorMessage()
       }
     })
-  }
-
-  fun loadAvatar(avatarSize: Int) {
-    val imageRequest = DisplayUtils.getImageRequestForUrl(
-        ApiUtils.getUrlForAvatarWithNameAndPixels(
-            currentUserLiveData.value!!.baseUrl,
-            currentUserLiveData.value!!.userId, avatarSize
-        ), null
-    )
-
-    val imagePipeline = Fresco.getImagePipeline()
-    val dataSource = imagePipeline.fetchDecodedImage(imageRequest, viewModelScope)
-    dataSource.subscribe(object : BaseBitmapDataSubscriber() {
-      override fun onNewResultImpl(bitmap: Bitmap?) {
-        if (bitmap != null) {
-          val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(
-              context.resources,
-              bitmap
-          )
-          roundedBitmapDrawable.isCircular = true
-          roundedBitmapDrawable.setAntiAlias(true)
-          currentUserAvatar.value = roundedBitmapDrawable
-        }
-      }
-
-      override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>) {
-        currentUserAvatar.value = context.getDrawable(R.drawable.ic_settings_white_24dp)
-      }
-    }, UiThreadImmediateExecutorService.getInstance())
-
   }
 
   fun getShareIntentForConversation(conversation: Conversation): Intent {

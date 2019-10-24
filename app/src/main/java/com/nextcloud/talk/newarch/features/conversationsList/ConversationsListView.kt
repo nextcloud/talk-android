@@ -22,6 +22,7 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.SearchManager
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -38,6 +39,9 @@ import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import butterknife.OnClick
+import coil.ImageLoader
+import coil.target.Target
+import coil.transform.CircleCropTransformation
 import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -53,10 +57,12 @@ import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
+import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.newarch.utils.ViewState.FAILED
 import com.nextcloud.talk.newarch.utils.ViewState.LOADED
 import com.nextcloud.talk.newarch.utils.ViewState.LOADED_EMPTY
 import com.nextcloud.talk.newarch.utils.ViewState.LOADING
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.animations.SharedElementTransition
@@ -66,6 +72,7 @@ import eu.davidea.flexibleadapter.FlexibleAdapter.OnItemClickListener
 import eu.davidea.flexibleadapter.FlexibleAdapter.OnItemLongClickListener
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.IFlexible
+import kotlinx.android.synthetic.main.controller_conversations_rv.view.*
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.dataStateView
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.floatingActionButton
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.recyclerView
@@ -85,6 +92,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
   lateinit var viewModel: ConversationsListViewModel
   val factory: ConversationListViewModelFactory by inject()
+  val imageLoader: ImageLoader by inject()
 
   private val recyclerViewAdapter = FlexibleAdapter(mutableListOf(), null, true)
 
@@ -120,7 +128,28 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
               .toInt()
         }
 
-    iconSize?.let { viewModel.loadAvatar(it) }
+    iconSize?.let {
+      val target = object : Target {
+        override fun onSuccess(result: Drawable) {
+          super.onSuccess(result)
+          settingsItem?.icon = result
+        }
+
+        override fun onError(error: Drawable?) {
+          super.onError(error)
+          settingsItem?.icon = context.getDrawable(R.drawable.ic_settings_white_24dp)
+        }
+      }
+
+      viewModel.currentUserLiveData.value?.let {
+        val avatarRequest = Images().getRequestForUrl(imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
+            it.baseUrl,
+            it.userId, iconSize), it, target, this, CircleCropTransformation()
+        )
+
+        imageLoader.load(avatarRequest)
+      }
+    }
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
