@@ -138,6 +138,13 @@
     <string name="nc_make_call_private">Udělat konverzaci neveřejnou</string>
     <string name="nc_delete_call">Smazat konverzaci</string>
     <string name="nc_delete">Smazat</string>
+    <string name="nc_delete_conversation_default">Potvrďte prosím svůj úmysl smazat tuto
+        konverzaci.</string>
+    <string name="nc_delete_conversation_one2one">Pokud konverzaci smažete, bude také
+        smazána pro %1$s.</string>
+    <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude také
+        smazána pro všechny ostatní účastníky.</string>
+
     <string name="nc_new_conversation">Nová konverzace</string>
     <string name="nc_join_via_link">Připojit se s odkazem</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
