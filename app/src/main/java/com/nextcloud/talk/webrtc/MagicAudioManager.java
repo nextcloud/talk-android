@@ -490,7 +490,7 @@ public class MagicAudioManager {
         + "selected=" + selectedAudioDevice + ", "
         + "user selected=" + userSelectedAudioDevice);
 
-    // Check if any Bluetooth headset is connected. The internal BT viewState will
+    // Check if any Bluetooth headset is connected. The BT viewState will
     // change accordingly.
     // TODO(henrika): perhaps wrap required viewState into BT manager.
     if (bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_AVAILABLE

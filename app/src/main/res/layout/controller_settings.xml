@@ -64,13 +64,12 @@
                 android:layout_margin="4dp"
                 android:textColor="@color/nc_incoming_text_default" />
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@+id/avatar_image"
                 android:layout_width="@dimen/avatar_size_big"
                 android:layout_height="@dimen/avatar_size_big"
                 android:layout_centerHorizontal="true"
-                android:transitionName="userAvatar.transitionTag"
-                apc:roundAsCircle="true" />
+                android:transitionName="userAvatar.transitionTag" />
 
 
             <com.yarolegovich.mp.MaterialStandardPreference

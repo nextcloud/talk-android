@@ -82,13 +82,12 @@
         android:singleLine="true"
         android:textSize="16sp" />
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/file_icon"
         android:layout_width="@dimen/small_item_height"
         android:layout_height="@dimen/small_item_height"
         android:layout_centerVertical="true"
         android:layout_marginEnd="8dp"
-        app:actualImageScaleType="fitCenter"
-        app:placeholderImageScaleType="fitCenter" />
+        android:scaleType="fitCenter" />
 
 </RelativeLayout>

@@ -30,11 +30,11 @@ import org.parceler.Parcel;
 @JsonObject()
 public class UserProfileData {
   @JsonField(name = "display-name")
-  String displayName;
+  public String displayName;
 
   @JsonField(name = "displayname")
-  String displayNameAlt;
+  public String displayNameAlt;
 
   @JsonField(name = "id")
-  String userId;
+  public String userId;
 }

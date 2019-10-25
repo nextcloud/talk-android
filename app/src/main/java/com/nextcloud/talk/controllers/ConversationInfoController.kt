@@ -543,11 +543,11 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
     for (i in participants.indices) {
       participant = participants[i]
-      userItem = UserItem(participant, conversationUser, null, activity)
+      userItem = UserItem(participant, conversationUser!!, null, activity!!)
       userItem.isOnline = !participant.sessionId.equals("0")
       if (!TextUtils.isEmpty(
               participant.userId
-          ) && participant.userId == conversationUser!!.userId
+          ) && participant.userId == conversationUser.userId
       ) {
         ownUserItem = userItem
         ownUserItem.model.sessionId = "-1"
@@ -599,7 +599,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
   }
 
   @OnClick(R.id.leaveConversationAction)
-  internal fun leaveConversation() {
+  fun leaveConversation() {
     workerData?.let {
       WorkManager.getInstance()
           .enqueue(
@@ -625,7 +625,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
   }
 
   @OnClick(R.id.deleteConversationAction)
-  internal fun deleteConversationClick() {
+  fun deleteConversationClick() {
     showDeleteConversationDialog(null)
   }
 

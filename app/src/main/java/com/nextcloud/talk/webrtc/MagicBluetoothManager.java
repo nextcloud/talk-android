@@ -98,7 +98,7 @@ public class MagicBluetoothManager {
   }
 
   /**
-   * Returns the internal viewState.
+   * Returns the viewState.
    */
   public State getState() {
     ThreadUtils.checkIsOnMainThread();
@@ -254,7 +254,7 @@ public class MagicBluetoothManager {
   /**
    * Use the BluetoothHeadset proxy object (controls the Bluetooth Headset
    * Service via IPC) to update the list of connected devices for the HEADSET
-   * profile. The internal viewState will change to HEADSET_UNAVAILABLE or to
+   * profile. The viewState will change to HEADSET_UNAVAILABLE or to
    * HEADSET_AVAILABLE and |bluetoothDevice| will be mapped to the connected
    * device if available.
    */

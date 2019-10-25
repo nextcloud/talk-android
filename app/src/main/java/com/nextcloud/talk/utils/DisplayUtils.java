@@ -292,6 +292,7 @@ public class DisplayUtils {
         url = ApiUtils.getUrlForAvatarWithNameForGuests(conversationUser.getBaseUrl(),
             String.valueOf(label), R.dimen.avatar_size_big);
       }
+
       ImageRequest imageRequest = getImageRequestForUrl(url, null);
       ImagePipeline imagePipeline = Fresco.getImagePipeline();
       DataSource<CloseableReference<CloseableImage>> dataSource =
