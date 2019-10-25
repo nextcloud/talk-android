@@ -66,7 +66,7 @@ public class MagicSystemMessageViewHolder
     pressedColor = normalColor;
     mentionColor = resources.getColor(R.color.nc_author_text);
 
-    Drawable bubbleDrawable = DisplayUtils.getMessageSelector(normalColor,
+    Drawable bubbleDrawable = DisplayUtils.INSTANCE.getMessageSelector(normalColor,
         resources.getColor(R.color.transparent), pressedColor,
         R.drawable.shape_grouped_incoming_message);
     ViewCompat.setBackground(bubble, bubbleDrawable);
@@ -80,7 +80,7 @@ public class MagicSystemMessageViewHolder
             || individualHashMap.get("type").equals("guest")
             || individualHashMap.get("type").equals("call"))) {
           messageString =
-              DisplayUtils.searchAndColor(messageString, "@" + individualHashMap.get("name"),
+              DisplayUtils.INSTANCE.searchAndColor(messageString, "@" + individualHashMap.get("name"),
                   mentionColor);
         }
       }

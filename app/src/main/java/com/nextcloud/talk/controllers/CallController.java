@@ -1988,7 +1988,7 @@ public class CallController extends BaseController {
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setOldController(avatarImageView.getController())
                 .setImageRequest(
-                    DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(baseUrl,
+                    DisplayUtils.INSTANCE.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(baseUrl,
                         userId,
                         R.dimen.avatar_size_big), null))
                 .build();

@@ -96,7 +96,7 @@ public class MagicPreviewMessageViewHolder
           LayerDrawable layerDrawable = new LayerDrawable(layers);
 
           userAvatar.getHierarchy()
-              .setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
+              .setPlaceholderImage(DisplayUtils.INSTANCE.getRoundedDrawable(layerDrawable));
         }
       }
     }
@@ -104,7 +104,7 @@ public class MagicPreviewMessageViewHolder
     if (message.getMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
       // it's a preview for a Nextcloud share
       messageText.setText(message.getSelectedIndividualHashMap().get("name"));
-      DisplayUtils.setClickableString(message.getSelectedIndividualHashMap().get("name"),
+      DisplayUtils.INSTANCE.setClickableString(message.getSelectedIndividualHashMap().get("name"),
           message.getSelectedIndividualHashMap().get("link"), messageText);
       if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
         image.getHierarchy()
@@ -145,10 +145,10 @@ public class MagicPreviewMessageViewHolder
       });
     } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
       messageText.setText("GIPHY");
-      DisplayUtils.setClickableString("GIPHY", "https://giphy.com", messageText);
+      DisplayUtils.INSTANCE.setClickableString("GIPHY", "https://giphy.com", messageText);
     } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE) {
       messageText.setText("Tenor");
-      DisplayUtils.setClickableString("Tenor", "https://tenor.com", messageText);
+      DisplayUtils.INSTANCE.setClickableString("Tenor", "https://tenor.com", messageText);
     } else {
       if (message.getMessageType().equals(ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE)) {
         image.setOnClickListener(v -> {

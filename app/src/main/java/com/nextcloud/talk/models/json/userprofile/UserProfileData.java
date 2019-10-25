@@ -27,7 +27,7 @@ import org.parceler.Parcel;
 
 @Parcel
 @Data
-@JsonObject()
+@JsonObject
 public class UserProfileData {
   @JsonField(name = "display-name")
   public String displayName;

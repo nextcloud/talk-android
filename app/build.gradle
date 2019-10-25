@@ -30,6 +30,12 @@ if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") ||
   apply from: 'gplay.gradle'
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}
+
 android {
   compileSdkVersion 29
   buildToolsVersion '29.0.2'
@@ -148,7 +154,7 @@ android {
 ext {
   work_version = "2.3.0-alpha02"
   koin_version = "2.1.0-alpha-1"
-  lifecycle_version = "2.2.0-beta01"
+  lifecycle_version = "2.2.0-rc01"
   coil_version = "0.8.0"
   room_version = "2.2.0"
 }
@@ -218,8 +224,8 @@ dependencies {
   androidTestImplementation "androidx.work:work-testing:$work_version"
 
   implementation 'androidx.appcompat:appcompat:1.1.0'
-  implementation 'com.google.android.material:material:1.1.0-beta01'
-  implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+  implementation 'com.google.android.material:material:1.2.0-alpha01'
+  implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
   implementation 'com.github.vanniktech:Emoji:0.6.0'
   implementation group: 'androidx.emoji', name: 'emoji-bundled', version: '1.0.0'
   implementation 'org.michaelevans.colorart:library:0.0.3'
@@ -229,7 +235,7 @@ dependencies {
 
   implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 
-  implementation 'androidx.biometric:biometric:1.0.0-rc01'
+  implementation 'androidx.biometric:biometric:1.0.0-rc02'
   implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
 
   implementation 'androidx.multidex:multidex:2.0.1'
@@ -244,9 +250,9 @@ dependencies {
   implementation 'com.bluelinelabs:conductor-autodispose:3.0.0-rc2'
   implementation "com.github.miquelbeltran:conductor-viewmodel:1.0.3"
 
-  implementation 'com.squareup.okhttp3:okhttp:3.14.4'
-  implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.14.4'
-  implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'
+  implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+  implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.2.2'
+  implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
 
   implementation 'com.squareup.retrofit2:retrofit:2.6.2'
   implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
@@ -327,8 +333,8 @@ dependencies {
   androidTestImplementation('androidx.test.espresso:espresso-core:3.3.0-alpha02', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
-  findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
-  findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
+  findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.0'
+  findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
   implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
   implementation 'com.github.Kennyc1012:BottomSheet:2.4.1'
 }

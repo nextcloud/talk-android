@@ -98,7 +98,7 @@ public class MagicOutcomingTextMessageViewHolder
           if (individualHashMap.get("type").equals("user") || individualHashMap.get("type")
               .equals("guest") || individualHashMap.get("type").equals("call")) {
             messageString =
-                DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
+                DisplayUtils.INSTANCE.searchAndReplaceWithMentionSpan(messageText.getContext(),
                     messageString,
                     individualHashMap.get("id"),
                     individualHashMap.get("name"),
@@ -124,14 +124,14 @@ public class MagicOutcomingTextMessageViewHolder
     Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
     if (message.isGrouped) {
       Drawable bubbleDrawable =
-          DisplayUtils.getMessageSelector(
+          DisplayUtils.INSTANCE.getMessageSelector(
               resources.getColor(R.color.bg_message_list_outcoming_bubble),
               resources.getColor(R.color.transparent),
               resources.getColor(R.color.bg_message_list_outcoming_bubble),
               R.drawable.shape_grouped_outcoming_message);
       ViewCompat.setBackground(bubble, bubbleDrawable);
     } else {
-      Drawable bubbleDrawable = DisplayUtils.getMessageSelector(
+      Drawable bubbleDrawable = DisplayUtils.INSTANCE.getMessageSelector(
           resources.getColor(R.color.bg_message_list_outcoming_bubble),
           resources.getColor(R.color.transparent),
           resources.getColor(R.color.bg_message_list_outcoming_bubble),

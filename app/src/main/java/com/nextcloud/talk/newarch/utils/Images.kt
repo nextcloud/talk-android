@@ -34,7 +34,7 @@ class Images {
     context: Context,
     url: String,
     userEntity:
-    UserEntity,
+    UserEntity?,
     target: Target?,
     lifecycleOwner: LifecycleOwner?,
     vararg transformations: Transformation
@@ -50,7 +50,7 @@ class Images {
         target(target)
       }
 
-      if (url.startsWith(userEntity.baseUrl) && url.contains(
+      if (userEntity != null && url.startsWith(userEntity.baseUrl) && url.contains(
               "index.php/core/preview?fileId="
           )
       ) {

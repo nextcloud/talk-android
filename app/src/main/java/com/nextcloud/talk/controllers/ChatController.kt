@@ -316,7 +316,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     ) {
       val avatarSize = DisplayUtils.convertDpToPixel(
           conversationVoiceCallMenuItem?.icon!!
-              .intrinsicWidth.toFloat(), activity
+              .intrinsicWidth.toFloat(), activity!!
       )
           .toInt()
 
@@ -384,13 +384,13 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
       adapter = MessagesListAdapter(
           conversationUser?.userId, messageHolders, ImageLoader { imageView, url, payload ->
-        val draweeController = Fresco.newDraweeControllerBuilder()
+        /*val draweeController = Fresco.newDraweeControllerBuilder()
             .setImageRequest(DisplayUtils.getImageRequestForUrl(url, conversationUser))
             .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
             .setOldController(imageView.controller)
             .setAutoPlayAnimations(true)
             .build()
-        imageView.controller = draweeController
+        imageView.controller = draweeController*/
       })
     } else {
       messagesListView?.visibility = View.VISIBLE
@@ -1136,9 +1136,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     isFromTheFuture: Boolean,
     timeout: Int
   ) {
-    val xChatLastGivenHeader: String? = response.headers()
-        .get("X-Chat-Last-Given")
-    if (response.headers().size() > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
+    val xChatLastGivenHeader: String? = response.headers().get("X-Chat-Last-Given")
+    if (response.headers().size > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
 
       val header = Integer.parseInt(xChatLastGivenHeader!!)
       if (header > 0) {

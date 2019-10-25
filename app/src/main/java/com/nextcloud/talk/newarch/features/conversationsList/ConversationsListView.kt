@@ -122,7 +122,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         ?.let {
           DisplayUtils.convertDpToPixel(
               it,
-              activity
+              activity!!
           )
               .toInt()
         }
@@ -419,7 +419,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                   negativeButton(R.string.nc_cancel)
                   icon(
                       drawable = DisplayUtils.getTintedDrawable(
-                          resources, drawable
+                          resources!!, drawable
                           .ic_delete_grey600_24dp, R.color.nc_darkRed
                       )
                   )

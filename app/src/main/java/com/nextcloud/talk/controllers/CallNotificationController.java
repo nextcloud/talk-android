@@ -415,7 +415,7 @@ public class CallNotificationController extends BaseController {
         avatarImageView.setVisibility(View.VISIBLE);
 
         ImageRequest imageRequest =
-            DisplayUtils.getImageRequestForUrl(
+            DisplayUtils.INSTANCE.getImageRequestForUrl(
                 ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
                     currentConversation.getName(), R.dimen.avatar_size_very_big), null);
 
@@ -465,12 +465,12 @@ public class CallNotificationController extends BaseController {
         break;
       case GROUP_CONVERSATION:
         avatarImageView.getHierarchy()
-            .setImage(DisplayUtils.getRoundedDrawable(
+            .setImage(DisplayUtils.INSTANCE.getRoundedDrawable(
                 context.getDrawable(R.drawable.ic_people_group_white_24px))
                 , 100, true);
       case PUBLIC_CONVERSATION:
         avatarImageView.getHierarchy()
-            .setImage(DisplayUtils.getRoundedDrawable(
+            .setImage(DisplayUtils.INSTANCE.getRoundedDrawable(
                 context.getDrawable(R.drawable.ic_people_group_white_24px))
                 , 100, true);
         break;

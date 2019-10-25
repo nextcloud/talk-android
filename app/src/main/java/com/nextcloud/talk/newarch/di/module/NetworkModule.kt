@@ -117,7 +117,7 @@ fun createOkHttpClient(
   // Trust own CA and all self-signed certs
   httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager)
   httpClient.retryOnConnectionFailure(true)
-  httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE))
+  httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier))
 
   httpClient.dispatcher(dispatcher)
   if (Proxy.NO_PROXY != proxy) {

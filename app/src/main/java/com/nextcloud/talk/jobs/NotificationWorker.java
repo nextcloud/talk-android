@@ -438,7 +438,7 @@ public class NotificationWorker extends Worker {
         }
 
         ImageRequest imageRequest =
-            DisplayUtils.getImageRequestForUrl(avatarUrl, null);
+            DisplayUtils.INSTANCE.getImageRequestForUrl(avatarUrl, null);
         ImagePipeline imagePipeline = Fresco.getImagePipeline();
         DataSource<CloseableReference<CloseableImage>> dataSource =
             imagePipeline.fetchDecodedImage(imageRequest, context);
