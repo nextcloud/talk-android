@@ -30,11 +30,11 @@ import org.parceler.Parcel;
 @JsonObject
 public class NotificationUser {
   @JsonField(name = "type")
-  String type;
+  public String type;
 
   @JsonField(name = "id")
-  String id;
+  public String id;
 
   @JsonField(name = "name")
-  String name;
+  public String name;
 }

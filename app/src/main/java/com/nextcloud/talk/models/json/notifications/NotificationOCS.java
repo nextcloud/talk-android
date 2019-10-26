@@ -31,5 +31,5 @@ import org.parceler.Parcel;
 @JsonObject
 public class NotificationOCS extends GenericOCS {
   @JsonField(name = "data")
-  Notification notification;
+  public Notification notification;
 }

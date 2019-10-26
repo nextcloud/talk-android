@@ -77,6 +77,7 @@ import com.nextcloud.talk.models.json.notifications.NotificationOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.models.json.push.NotificationUser
 import com.nextcloud.talk.newarch.utils.Images
+import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DoNotDisturbUtils.isDnDActive
 import com.nextcloud.talk.utils.DoNotDisturbUtils.isInDoNotDisturbWithPriority
@@ -124,15 +125,18 @@ class NotificationWorker(
   context: Context,
   workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
+  @JvmField
   @Inject
-  internal var appPreferences: AppPreferences? = null
+  var appPreferences: AppPreferences? = null
+  @JvmField
   @Inject
-  internal var arbitraryStorageUtils: ArbitraryStorageUtils? =
-    null
+  var arbitraryStorageUtils: ArbitraryStorageUtils? = null
+  @JvmField
   @Inject
-  internal var retrofit: Retrofit? = null
+  var retrofit: Retrofit? = null
+  @JvmField
   @Inject
-  internal var okHttpClient: OkHttpClient? = null
+  var okHttpClient: OkHttpClient? = null
   private var ncApi: NcApi? = null
   private var decryptedPushMessage: DecryptedPushMessage? = null
   private var context: Context? = null
@@ -180,8 +184,7 @@ class NotificationWorker(
           override fun onSubscribe(d: Disposable) {}
           override fun onNext(roomOverall: RoomOverall) {
             val conversation: Conversation =
-              roomOverall.getOcs()
-                  .getData()
+              roomOverall.ocs.data
             intent.putExtra(
                 KEY_ROOM,
                 Parcels.wrap(
@@ -557,7 +560,7 @@ class NotificationWorker(
             LoganSquare.parse<RingtoneSettings>(
                 ringtonePreferencesString, RingtoneSettings::class.java
             )
-          ringtoneSettings.getRingtoneUri()
+          ringtoneSettings.ringtoneUri
         } catch (exception: IOException) {
           Uri.parse(
               "android.resource://" + context!!.packageName +
@@ -634,7 +637,7 @@ class NotificationWorker(
             base64DecodedSignature,
             base64DecodedSubject
         )
-        if (signatureVerification!!.isSignatureValid()) {
+        if (signatureVerification!!.signatureValid) {
           val cipher: Cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
           cipher.init(Cipher.DECRYPT_MODE, privateKey)
           val decryptedSubject: ByteArray? = cipher.doFinal(base64DecodedSubject)
@@ -644,21 +647,19 @@ class NotificationWorker(
                 DecryptedPushMessage::class.java
             )
           decryptedPushMessage!!.timestamp = System.currentTimeMillis()
-          if (decryptedPushMessage!!.isDelete) {
+          if (decryptedPushMessage!!.delete) {
             cancelExistingNotificationWithId(
                 context,
-                signatureVerification!!.getUserEntity(), decryptedPushMessage!!.notificationId
+                signatureVerification!!.userEntity, decryptedPushMessage!!.notificationId
             )
-          } else if (decryptedPushMessage!!.isDeleteAll) {
+          } else if (decryptedPushMessage!!.deleteAll) {
             cancelAllNotificationsForAccount(
                 context,
-                signatureVerification!!.getUserEntity()
+                signatureVerification!!.userEntity
             )
           } else {
-            credentials = ApiUtils.getCredentials(
-                signatureVerification!!.getUserEntity().username,
-                signatureVerification!!.getUserEntity().token
-            )
+            credentials = signatureVerification!!.userEntity.getCredentials()
+
             ncApi = retrofit!!.newBuilder()
                 .client(
                     okHttpClient!!.newBuilder().cookieJar(
@@ -669,8 +670,7 @@ class NotificationWorker(
                 .create(
                     NcApi::class.java
                 )
-            val hasChatSupport = signatureVerification!!.getUserEntity()
-                .hasSpreedFeatureCapability("chat-v2")
+            val hasChatSupport = signatureVerification!!.userEntity.hasSpreedFeatureCapability("chat-v2")
             val shouldShowNotification = decryptedPushMessage!!.app == "spreed"
             if (shouldShowNotification) {
               val intent: Intent
@@ -687,7 +687,7 @@ class NotificationWorker(
                 )
               }
               intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-              if (!signatureVerification!!.getUserEntity().hasSpreedFeatureCapability("no-ping")) {
+              if (!signatureVerification!!.userEntity.hasSpreedFeatureCapability("no-ping")) {
                 bundle.putString(
                     KEY_ROOM_ID,
                     decryptedPushMessage!!.id
@@ -700,7 +700,7 @@ class NotificationWorker(
               }
               bundle.putParcelable(
                   KEY_USER_ENTITY,
-                  signatureVerification!!.getUserEntity()
+                  signatureVerification!!.userEntity
               )
               bundle.putBoolean(
                   KEY_FROM_NOTIFICATION_START_CALL,

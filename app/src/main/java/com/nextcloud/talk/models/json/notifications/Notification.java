@@ -36,31 +36,31 @@ public class Notification {
   @JsonField(name = "icon")
   public String icon;
   @JsonField(name = "notification_id")
-  int notificationId;
+  public int notificationId;
   @JsonField(name = "app")
-  String app;
+  public String app;
   @JsonField(name = "user")
-  String user;
+  public String user;
   @JsonField(name = "datetime", typeConverter = LoganSquareJodaTimeConverter.class)
-  DateTime datetime;
+  public DateTime datetime;
   @JsonField(name = "object_type")
-  String objectType;
+  public String objectType;
   @JsonField(name = "object_id")
-  String objectId;
+  public String objectId;
   @JsonField(name = "subject")
-  String subject;
+  public String subject;
   @JsonField(name = "subjectRich")
-  String subjectRich;
+  public String subjectRich;
   @JsonField(name = "subjectRichParameters")
-  HashMap<String, HashMap<String, String>> subjectRichParameters;
+  public HashMap<String, HashMap<String, String>> subjectRichParameters;
   @JsonField(name = "message")
-  String message;
+  public String message;
   @JsonField(name = "messageRich")
-  String messageRich;
+  public String messageRich;
   @JsonField(name = "messageRichParameters")
-  HashMap<String, HashMap<String, String>> messageRichParameters;
+  public HashMap<String, HashMap<String, String>> messageRichParameters;
   @JsonField(name = "link")
-  String link;
+  public String link;
   @JsonField(name = "actions")
-  List<NotificationAction> actions;
+  public List<NotificationAction> actions;
 }

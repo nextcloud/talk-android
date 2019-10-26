@@ -136,7 +136,6 @@ public class CallNotificationController extends BaseController {
   private Conversation currentConversation;
   private MediaPlayer mediaPlayer;
   private boolean leavingScreen = false;
-  private RenderScript renderScript;
   private Vibrator vibrator;
   private Handler handler;
 
@@ -305,8 +304,6 @@ public class CallNotificationController extends BaseController {
   @Override
   protected void onViewBound(@NonNull View view) {
     super.onViewBound(view);
-
-    renderScript = RenderScript.create(getActivity());
 
     if (handler == null) {
       handler = new Handler();
