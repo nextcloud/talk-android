@@ -203,8 +203,6 @@ public class CallController extends BaseController {
   @Inject
   AppPreferences appPreferences;
   @Inject
-  Cache cache;
-  @Inject
   EventBus eventBus;
 
   private PeerConnectionFactory peerConnectionFactory;
@@ -326,12 +324,6 @@ public class CallController extends BaseController {
         .setRepeatMode(PulseAnimation.REVERSE);
 
     setPipVideoViewDimensions();
-
-    try {
-      cache.evictAll();
-    } catch (IOException e) {
-      Log.e(TAG, "Failed to evict cache");
-    }
 
     callControls.setZ(100.0f);
     basicInitialization();

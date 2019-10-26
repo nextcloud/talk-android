@@ -106,9 +106,6 @@ public class CallNotificationController extends BaseController {
   AppPreferences appPreferences;
 
   @Inject
-  Cache cache;
-
-  @Inject
   EventBus eventBus;
 
   @Inject
@@ -313,12 +310,6 @@ public class CallNotificationController extends BaseController {
 
     if (handler == null) {
       handler = new Handler();
-
-      try {
-        cache.evictAll();
-      } catch (IOException e) {
-        Log.e(TAG, "Failed to evict cache");
-      }
     }
 
     if (currentConversation == null) {

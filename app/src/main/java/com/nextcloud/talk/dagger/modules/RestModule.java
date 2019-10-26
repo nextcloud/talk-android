@@ -170,9 +170,8 @@ public class RestModule {
   @Singleton
   @Provides
   Cache provideCache() {
-    int cacheSize = 128 * 1024 * 1024; // 128 MB
     return new Cache(NextcloudTalkApplication.Companion.getSharedApplication().getCacheDir(),
-        cacheSize);
+        Long.MAX_VALUE);
   }
 
   @Singleton
