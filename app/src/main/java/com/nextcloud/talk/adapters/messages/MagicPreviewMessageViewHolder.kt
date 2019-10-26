@@ -72,10 +72,10 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
   var messageText: EmojiTextView? = null
   @JvmField
   @Inject
-  internal var context: Context? = null
+  var context: Context? = null
   @JvmField
   @Inject
-  internal var okHttpClient: OkHttpClient? = null
+  var okHttpClient: OkHttpClient? = null
 
   @SuppressLint("SetTextI18n")
   override fun onBind(message: ChatMessage) {

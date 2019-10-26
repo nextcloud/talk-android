@@ -47,6 +47,14 @@ import eu.davidea.flexibleadapter.items.IFilterable
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.flexibleadapter.utils.FlexibleUtils
 import eu.davidea.viewholders.FlexibleViewHolder
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.actionProgressBar
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.dialogAvatar
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.dialogDate
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.dialogLastMessage
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.dialogName
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.dialogUnreadBubble
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.favoriteConversationImageView
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.passwordProtectedRoomImageView
 import java.util.Objects
 import java.util.regex.Pattern
 
@@ -104,57 +112,57 @@ class ConversationItem(
     val appContext = NextcloudTalkApplication.sharedApplication!!.applicationContext
 
     if (model.changing) {
-      holder.progressBar!!.visibility = View.VISIBLE
+      holder.itemView.actionProgressBar!!.visibility = View.VISIBLE
     } else {
-      holder.progressBar!!.visibility = View.GONE
+      holder.itemView.actionProgressBar!!.visibility = View.GONE
     }
 
     if (adapter.hasFilter()) {
       FlexibleUtils.highlightText(
-          holder.dialogName!!, model.displayName,
+          holder.itemView.dialogName!!, model.displayName,
           adapter.getFilter(String::class.java).toString(),
           NextcloudTalkApplication.sharedApplication!!
               .resources.getColor(R.color.colorPrimary)
       )
     } else {
-      holder.dialogName!!.text = model.displayName
+      holder.itemView.dialogName!!.text = model.displayName
     }
 
     if (model.unreadMessages > 0) {
-      holder.dialogUnreadBubble!!.visibility = View.VISIBLE
+      holder.itemView.dialogUnreadBubble!!.visibility = View.VISIBLE
       if (model.unreadMessages < 100) {
-        holder.dialogUnreadBubble!!.text = model.unreadMessages.toLong()
+        holder.itemView.dialogUnreadBubble!!.text = model.unreadMessages.toLong()
             .toString()
       } else {
-        holder.dialogUnreadBubble!!.text = context.getString(R.string.nc_99_plus)
+        holder.itemView.dialogUnreadBubble!!.text = context.getString(R.string.nc_99_plus)
       }
 
       if (model.unreadMention) {
-        holder.dialogUnreadBubble!!.background =
+        holder.itemView.dialogUnreadBubble!!.background =
           context.getDrawable(R.drawable.bubble_circle_unread_mention)
       } else {
-        holder.dialogUnreadBubble!!.background =
+        holder.itemView.dialogUnreadBubble!!.background =
           context.getDrawable(R.drawable.bubble_circle_unread)
       }
     } else {
-      holder.dialogUnreadBubble!!.visibility = View.GONE
+      holder.itemView.dialogUnreadBubble!!.visibility = View.GONE
     }
 
     if (model.hasPassword) {
-      holder.passwordProtectedRoomImageView!!.visibility = View.VISIBLE
+      holder.itemView.passwordProtectedRoomImageView!!.visibility = View.VISIBLE
     } else {
-      holder.passwordProtectedRoomImageView!!.visibility = View.GONE
+      holder.itemView.passwordProtectedRoomImageView!!.visibility = View.GONE
     }
 
     if (model.favorite) {
-      holder.pinnedConversationImageView!!.visibility = View.VISIBLE
+      holder.itemView.favoriteConversationImageView!!.visibility = View.VISIBLE
     } else {
-      holder.pinnedConversationImageView!!.visibility = View.GONE
+      holder.itemView.favoriteConversationImageView!!.visibility = View.GONE
     }
 
     if (model.lastMessage != null) {
-      holder.dialogDate!!.visibility = View.VISIBLE
-      holder.dialogDate!!.text = DateUtils.getRelativeTimeSpanString(
+      holder.itemView.dialogDate!!.visibility = View.VISIBLE
+      holder.itemView.dialogDate!!.text = DateUtils.getRelativeTimeSpanString(
           model.lastActivity * 1000L,
           System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE
       )
@@ -163,7 +171,7 @@ class ConversationItem(
               model.lastMessage!!.systemMessage
           ) || Conversation.ConversationType.SYSTEM_CONVERSATION == model.type
       ) {
-        holder.dialogLastMessage!!.text = model.lastMessage!!.text
+        holder.itemView.dialogLastMessage!!.text = model.lastMessage!!.text
       } else {
         var authorDisplayName = ""
         model.lastMessage!!.activeUser = userEntity
@@ -194,14 +202,14 @@ class ConversationItem(
           text = model.lastMessage!!.lastMessageDisplayText
         }
 
-        holder.dialogLastMessage?.text = text
+        holder.itemView.dialogLastMessage.text = text
       }
     } else {
-      holder.dialogDate?.visibility = View.GONE
-      holder.dialogLastMessage!!.setText(R.string.nc_no_messages_yet)
+      holder.itemView.dialogDate.visibility = View.GONE
+      holder.itemView.dialogLastMessage.setText(R.string.nc_no_messages_yet)
     }
 
-    holder.dialogAvatar?.visibility = View.VISIBLE
+    holder.itemView.dialogAvatar.visibility = View.VISIBLE
 
     var shouldLoadAvatar = true
     val objectType: String? = model.objectType
@@ -209,13 +217,13 @@ class ConversationItem(
       when (objectType) {
         "share:password" -> {
           shouldLoadAvatar = false
-          holder.dialogAvatar?.load(R.drawable.ic_file_password_request) {
+          holder.itemView.dialogAvatar.load(R.drawable.ic_file_password_request) {
             transformations(CircleCropTransformation())
           }
         }
         "file" -> {
           shouldLoadAvatar = false
-          holder.dialogAvatar?.load(R.drawable.ic_file_icon) {
+          holder.itemView.dialogAvatar.load(R.drawable.ic_file_icon) {
             transformations(CircleCropTransformation())
           }
 
@@ -231,7 +239,7 @@ class ConversationItem(
       layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
       val layerDrawable = LayerDrawable(layers)
 
-      holder.dialogAvatar?.load(layerDrawable) {
+      holder.itemView.dialogAvatar.load(layerDrawable) {
         transformations(CircleCropTransformation())
       }
 
@@ -240,11 +248,11 @@ class ConversationItem(
 
     if (shouldLoadAvatar) {
       when (model.type) {
-        Conversation.ConversationType.ONE_TO_ONE_CONVERSATION -> if (!TextUtils.isEmpty(
+        ONE_TO_ONE_CONVERSATION -> if (!TextUtils.isEmpty(
                 model.name
             )
         ) {
-          holder.dialogAvatar?.load(
+          holder.itemView.dialogAvatar.load(
               ApiUtils.getUrlForAvatarWithName(
                   userEntity.baseUrl,
                   model.name, R.dimen.avatar_size
@@ -254,17 +262,17 @@ class ConversationItem(
           }
 
         } else {
-          holder.dialogAvatar?.visibility = View.GONE
+          holder.itemView.dialogAvatar.visibility = View.GONE
         }
         Conversation.ConversationType.GROUP_CONVERSATION ->
-          holder.dialogAvatar?.load(R.drawable.ic_people_group_white_24px) {
+          holder.itemView.dialogAvatar.load(R.drawable.ic_people_group_white_24px) {
             transformations(CircleCropTransformation())
           }
         Conversation.ConversationType.PUBLIC_CONVERSATION ->
-          holder.dialogAvatar?.load(R.drawable.ic_link_white_24px) {
+          holder.itemView.dialogAvatar.load(R.drawable.ic_link_white_24px) {
             transformations(CircleCropTransformation())
           }
-        else -> holder.dialogAvatar?.visibility = View.GONE
+        else -> holder.itemView.dialogAvatar.visibility = View.GONE
       }
     }
   }
@@ -281,33 +289,5 @@ class ConversationItem(
     view: View,
     adapter: FlexibleAdapter<*>
   ) : FlexibleViewHolder(view, adapter) {
-    @JvmField
-    @BindView(R.id.dialogAvatar)
-    var dialogAvatar: ImageView? = null
-    @JvmField
-    @BindView(R.id.dialogName)
-    var dialogName: EmojiTextView? = null
-    @JvmField
-    @BindView(R.id.dialogDate)
-    var dialogDate: TextView? = null
-    @JvmField
-    @BindView(R.id.dialogLastMessage)
-    var dialogLastMessage: EmojiTextView? = null
-    @JvmField
-    @BindView(R.id.dialogUnreadBubble)
-    var dialogUnreadBubble: TextView? = null
-    @JvmField
-    @BindView(R.id.passwordProtectedRoomImageView)
-    var passwordProtectedRoomImageView: ImageView? = null
-    @JvmField
-    @BindView(R.id.favoriteConversationImageView)
-    var pinnedConversationImageView: ImageView? = null
-    @JvmField
-    @BindView(R.id.actionProgressBar)
-    var progressBar: ProgressBar? = null
-
-    init {
-      ButterKnife.bind(this, view)
-    }
   }
 }

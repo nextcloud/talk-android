@@ -21,7 +21,6 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/item_height"
@@ -35,7 +34,7 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin">
 
         <ImageView
-            android:id="@+id/AvatarImageView"
+            android:id="@+id/avatarImageView"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"/>
 

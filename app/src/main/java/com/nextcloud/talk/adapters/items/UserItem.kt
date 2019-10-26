@@ -21,8 +21,6 @@
 package com.nextcloud.talk.adapters.items
 
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.drawable.BitmapDrawable
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
@@ -32,16 +30,12 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import coil.api.load
 import coil.transform.CircleCropTransformation
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.interfaces.DraweeController
-import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFilterable
