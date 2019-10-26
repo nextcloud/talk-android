@@ -25,20 +25,33 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.nextcloud.talk.newarch.local.converters.CapabilitiesConverter
 import com.nextcloud.talk.newarch.local.converters.ChatMessageConverter
 import com.nextcloud.talk.newarch.local.converters.ConversationReadOnlyStateConverter
 import com.nextcloud.talk.newarch.local.converters.ConversationTypeConverter
+import com.nextcloud.talk.newarch.local.converters.ExternalSignalingConverter
 import com.nextcloud.talk.newarch.local.converters.LobbyStateConverter
 import com.nextcloud.talk.newarch.local.converters.NotificationLevelConverter
 import com.nextcloud.talk.newarch.local.converters.ParticipantTypeConverter
+import com.nextcloud.talk.newarch.local.converters.PushConfigurationConverter
+import com.nextcloud.talk.newarch.local.converters.UserStatusConverter
 import com.nextcloud.talk.newarch.local.dao.ConversationsDao
 import com.nextcloud.talk.newarch.local.models.ConversationEntity
+import com.nextcloud.talk.newarch.local.models.MessageEntity
+import com.nextcloud.talk.newarch.local.models.UserEntityNg
 
-@Database(entities = arrayOf(ConversationEntity::class), version = 1)
+@Database(
+    entities = arrayOf(ConversationEntity::class, MessageEntity::class, UserEntityNg::class),
+    version = 4,
+    exportSchema = true
+)
 @TypeConverters(
     ChatMessageConverter::class, LobbyStateConverter::class,
     ConversationReadOnlyStateConverter::class, NotificationLevelConverter::class,
-    ConversationTypeConverter::class, ParticipantTypeConverter::class
+    ConversationTypeConverter::class, ParticipantTypeConverter::class,
+    PushConfigurationConverter::class, CapabilitiesConverter::class,
+    ExternalSignalingConverter::class,
+    UserStatusConverter::class
 )
 
 abstract class TalkDatabase : RoomDatabase() {
@@ -59,6 +72,5 @@ abstract class TalkDatabase : RoomDatabase() {
       Room.databaseBuilder(context.applicationContext, TalkDatabase::class.java, DB_NAME)
           .fallbackToDestructiveMigration()
           .build()
-
   }
 }

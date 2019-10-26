@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.models;
+package com.nextcloud.talk.newarch.local.models
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
-import org.parceler.Parcel;
+import androidx.annotation.NonNull
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 
-@Data
-@Parcel
-@JsonObject
-public class ExternalSignalingServer {
-  @JsonField(name = "externalSignalingServer")
-  public String externalSignalingServer;
-  @JsonField(name = "externalSignalingTicket")
-  public String externalSignalingTicket;
-}
+@Entity(tableName = "messages",
+    foreignKeys = arrayOf(
+        ForeignKey(entity = UserEntityNg::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("user"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ))data class MessageEntity(
+  @PrimaryKey(autoGenerate = true) var id: Long = 0,
+  @NonNull @ColumnInfo(name = "user") var user: Long? = null
+)

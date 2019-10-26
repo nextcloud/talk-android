@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.models;
+package com.nextcloud.talk.newarch.local.models.other
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
-import org.parceler.Parcel;
-
-@Data
-@Parcel
-@JsonObject
-public class ExternalSignalingServer {
-  @JsonField(name = "externalSignalingServer")
-  public String externalSignalingServer;
-  @JsonField(name = "externalSignalingTicket")
-  public String externalSignalingTicket;
+enum class UserStatus {
+  // account that is NOT actively used by the UI, but might be used by background tasks
+  DORMANT,
+  // currently active account
+  ACTIVE,
+  // account that will be deleted in the near future
+  PENDING_DELETE
 }

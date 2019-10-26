@@ -20,22 +20,31 @@
 
 package com.nextcloud.talk.newarch.local.models
 
-import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
+import androidx.room.PrimaryKey
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationReadOnlyState
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
 import com.nextcloud.talk.models.json.conversations.Conversation.LobbyState
 import com.nextcloud.talk.models.json.conversations.Conversation.NotificationLevel
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
 import java.util.HashMap
 
-@Entity(tableName = "conversations", primaryKeys = ["user", "conversation_id"])
+@Entity(tableName = "conversations",
+    foreignKeys = arrayOf(
+        ForeignKey(entity = UserEntityNg::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("user"),
+            onDelete = CASCADE)
+    ))
 data class ConversationEntity(
-  @NonNull @ColumnInfo(name = "user") var userId: Long,
-  @NonNull @ColumnInfo(name = "conversation_id") var conversationId: String,
+  @PrimaryKey(autoGenerate = true) var id: Long? = null,
+  @ColumnInfo(name = "user") var user: Long?,
+  @ColumnInfo(name = "conversation_id") var conversationId: String?,
   @ColumnInfo(name = "token") var token: String? = null,
   @ColumnInfo(name = "name") var name: String? = null,
   @ColumnInfo(name = "display_name") var displayName: String? = null,
@@ -48,7 +57,7 @@ data class ConversationEntity(
      */
     // hack for participants list
   @ColumnInfo(name = "participants_count") var participantsCount: Int = 0,
-  @ColumnInfo(name = "participant_type") var participantType: Participant.ParticipantType? = null,
+  @ColumnInfo(name = "participant_type") var participantType: ParticipantType? = null,
   @ColumnInfo(name = "has_password") var hasPassword: Boolean = false,
   @ColumnInfo(name = "session_id") var sessionId: String? = null,
   @ColumnInfo(name = "favorite") var favorite: Boolean = false,
@@ -70,7 +79,7 @@ data class ConversationEntity(
 
 fun ConversationEntity.toConversation(): Conversation {
   val conversation = Conversation()
-  conversation.user = this.userId
+  conversation.internalUserId = this.user
   conversation.conversationId = this.conversationId
   conversation.type = this.type
   conversation.token = this.token
@@ -102,7 +111,7 @@ fun ConversationEntity.toConversation(): Conversation {
 }
 
 fun Conversation.toConversationEntity(): ConversationEntity {
-  val conversationEntity = ConversationEntity(this.user, this.conversationId)
+  val conversationEntity = ConversationEntity(this.internalId, this.internalUserId, this.conversationId)
   conversationEntity.token = this.token
   conversationEntity.name = this.name
   conversationEntity.displayName = this.displayName

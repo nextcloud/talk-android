@@ -100,7 +100,7 @@ class ConversationsListViewModel constructor(
           override suspend fun onSuccess(result: GenericOverall) {
             offlineRepository.deleteConversation(
                 currentUserLiveData.value!!.id, conversation
-                .conversationId
+                .conversationId!!
             )
           }
 
@@ -129,7 +129,7 @@ class ConversationsListViewModel constructor(
           override suspend fun onSuccess(result: GenericOverall) {
             offlineRepository.deleteConversation(
                 currentUserLiveData.value!!.id, conversation
-                .conversationId
+                .conversationId!!
             )
           }
 
@@ -160,7 +160,7 @@ class ConversationsListViewModel constructor(
           override suspend fun onSuccess(result: GenericOverall) {
             offlineRepository.setFavoriteValueForConversation(
                 currentUserLiveData.value!!.id,
-                conversation.conversationId, favorite
+                conversation.conversationId!!, favorite
             )
           }
 
@@ -186,7 +186,7 @@ class ConversationsListViewModel constructor(
       override suspend fun onSuccess(result: List<Conversation>) {
         val mutableList = result.toMutableList()
         mutableList.forEach {
-          it.user = currentUserLiveData.value!!.id
+          it.internalUserId = currentUserLiveData.value!!.id
         }
 
         offlineRepository.saveConversationsForUser(currentUserLiveData.value!!.id, mutableList)
@@ -281,7 +281,7 @@ class ConversationsListViewModel constructor(
   ) {
     offlineRepository.setChangingValueForConversation(
         currentUserLiveData.value!!.id, conversation
-        .conversationId, value
+        .conversationId!!, value
     )
   }
 }

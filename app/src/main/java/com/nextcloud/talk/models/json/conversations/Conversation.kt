@@ -45,9 +45,11 @@ import java.util.HashMap
 class Conversation {
   @JsonIgnore
   @NonNull
-  var user: Long = 0L
+  var internalUserId: Long? = null
+  @JsonIgnore
+  var internalId: Long? = null
   @JsonField(name = ["id"])
-  var conversationId: String = ""
+  var conversationId: String? = null
   @JsonField(name = ["token"])
   var token: String? = null
   @JsonField(name = ["name"])

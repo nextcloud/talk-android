@@ -76,7 +76,6 @@ import org.webrtc.voiceengine.WebRtcAudioManager
 import org.webrtc.voiceengine.WebRtcAudioUtils
 import java.security.Security
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @AutoComponent(
@@ -90,14 +89,11 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
     private set
   //endregion
 
-  val imageLoader: ImageLoader by inject()
-
   //region Getters
 
-  @Inject
-  lateinit var appPreferences: AppPreferences
-  @Inject
-  lateinit var okHttpClient: OkHttpClient
+  val imageLoader: ImageLoader by inject()
+  val appPreferences: AppPreferences by inject()
+  val okHttpClient: OkHttpClient by inject()
   //endregion
 
   //region private methods
@@ -110,7 +106,6 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
       if (!MagicWebRTCUtils.OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
         WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true)
       }
-
 
       PeerConnectionFactory.initialize(
           PeerConnectionFactory.InitializationOptions.builder(this)
