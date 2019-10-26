@@ -126,7 +126,7 @@ class ConversationItem(
         holder.dialogUnreadBubble!!.text = model.unreadMessages.toLong()
             .toString()
       } else {
-        holder.dialogUnreadBubble!!.text = "99+"
+        holder.dialogUnreadBubble!!.text = context.getString(R.string.nc_99_plus)
       }
 
       if (model.unreadMention) {

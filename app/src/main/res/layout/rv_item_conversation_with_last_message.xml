@@ -88,18 +88,20 @@
 
             <TextView
                 android:id="@id/dialogUnreadBubble"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/bubble_circle_unread"
-                android:gravity="center"
+                android:gravity="center_vertical"
+                android:layout_centerInParent="true"
                 android:lines="1"
                 android:textAlignment="center"
                 android:textColor="@color/conversation_unread_bubble"
-                android:textSize="12sp"
+                android:textSize="8sp"
                 tools:background="@drawable/bubble_circle_unread"
-                tools:text="99+" />
+                tools:text="99+"
+                />
 
         </RelativeLayout>
 

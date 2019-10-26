@@ -52,7 +52,7 @@
           android:id="@+id/recyclerView"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          tools:listitem="@layout/rv_item_conversation"
+          tools:listitem="@layout/rv_item_conversation_with_last_message"
           />
 
     </FrameLayout>

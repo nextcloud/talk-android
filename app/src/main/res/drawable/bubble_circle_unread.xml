@@ -20,9 +20,8 @@
   -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-       android:shape="oval">
+       android:shape="oval" >
+    <size android:width="16dp" android:height="16dp"/>
     <solid android:color="#757575" />
-    <size
-        android:width="32dp"
-        android:height="32dp" />
+
 </shape>

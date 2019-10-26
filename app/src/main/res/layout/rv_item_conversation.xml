@@ -44,11 +44,12 @@
             android:src="@drawable/ic_lock_white_24px"
             android:visibility="visible" />
 
-        <ImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        <ImageView
             android:id="@+id/avatar_image"
             android:layout_width="@dimen/small_item_height"
             android:layout_height="@dimen/small_item_height"
-            android:layout_margin="@dimen/margin_between_elements"/>
+            android:layout_margin="@dimen/margin_between_elements"
+            />
 
     </FrameLayout>
 
@@ -58,10 +59,10 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/margin_between_elements"
         android:background="?android:attr/selectableItemBackground"
         android:scaleType="center"
-        android:src="@drawable/ic_more_horiz_black_24dp" />
+        android:src="@drawable/ic_more_horiz_black_24dp"
+        />
 
     <LinearLayout
         android:id="@+id/linear_layout"
