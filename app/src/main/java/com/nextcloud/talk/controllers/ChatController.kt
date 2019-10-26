@@ -1138,7 +1138,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     timeout: Int
   ) {
     val xChatLastGivenHeader: String? = response.headers().get("X-Chat-Last-Given")
-    if (response.headers().size > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
+    if (response.headers().size() > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
 
       val header = Integer.parseInt(xChatLastGivenHeader!!)
       if (header > 0) {

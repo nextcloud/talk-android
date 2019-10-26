@@ -90,6 +90,10 @@ android {
     }
   }
 
+  sourceSets {
+    androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+  }
+
   dexOptions {
     javaMaxHeapSize "4g"
   }
@@ -250,9 +254,9 @@ dependencies {
   implementation 'com.bluelinelabs:conductor-autodispose:3.0.0-rc2'
   implementation "com.github.miquelbeltran:conductor-viewmodel:1.0.3"
 
-  implementation 'com.squareup.okhttp3:okhttp:4.2.2'
-  implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.2.2'
-  implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
+  implementation 'com.squareup.okhttp3:okhttp:3.14.2'
+  implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.14.2'
+  implementation 'com.squareup.okhttp3:logging-interceptor:3.14.2'
 
   implementation 'com.squareup.retrofit2:retrofit:2.6.2'
   implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
