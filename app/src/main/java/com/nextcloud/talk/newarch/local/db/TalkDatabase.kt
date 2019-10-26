@@ -57,6 +57,7 @@ abstract class TalkDatabase : RoomDatabase() {
 
     private fun build(context: Context) =
       Room.databaseBuilder(context.applicationContext, TalkDatabase::class.java, DB_NAME)
+          .fallbackToDestructiveMigration()
           .build()
 
   }

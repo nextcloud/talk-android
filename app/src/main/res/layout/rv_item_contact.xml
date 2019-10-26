@@ -44,17 +44,16 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toStartOf="@id/checkedImageView"
-        android:layout_toEndOf="@id/simple_drawee_view"
+        android:layout_toEndOf="@id/avatarImageView"
         android:ellipsize="end"
         tools:text="Contact item text" />
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/simple_drawee_view"
+    <ImageView
+        android:id="@+id/avatarImageView"
         android:layout_width="@dimen/small_item_height"
         android:layout_height="@dimen/small_item_height"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/double_margin_between_elements"
-        android:layout_marginEnd="@dimen/margin_between_elements"
-        app:roundAsCircle="true" />
+        android:layout_marginEnd="@dimen/margin_between_elements" />
 
 </RelativeLayout>
