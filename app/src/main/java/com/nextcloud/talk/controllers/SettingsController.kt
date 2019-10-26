@@ -61,6 +61,7 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DoNotDisturbUtils
@@ -85,6 +86,7 @@ import io.reactivex.schedulers.Schedulers
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import org.koin.android.ext.android.inject
 import java.io.IOException
+import java.net.Proxy
 import java.net.URI
 import java.net.URISyntaxException
 import java.util.ArrayList
@@ -178,12 +180,12 @@ class SettingsController : BaseController() {
   private var saveStateHandler: LovelySaveStateHandler? = null
   private var currentUser: UserEntity? = null
   private var credentials: String? = null
-  private var proxyTypeChangeListener: OnPreferenceValueChangedListener<String>? = null
-  private var proxyCredentialsChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
-  private var screenSecurityChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
-  private var screenLockChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
-  private var screenLockTimeoutChangeListener: OnPreferenceValueChangedListener<String>? = null
-  private var themeChangeListener: OnPreferenceValueChangedListener<String>? = null
+  lateinit var proxyTypeChangeListener: OnPreferenceValueChangedListener<String>
+  lateinit var proxyCredentialsChangeListener: OnPreferenceValueChangedListener<Boolean>
+  lateinit var screenSecurityChangeListener: OnPreferenceValueChangedListener<Boolean>
+  lateinit var screenLockChangeListener: OnPreferenceValueChangedListener<Boolean>
+  lateinit var screenLockTimeoutChangeListener: OnPreferenceValueChangedListener<String>
+  lateinit var themeChangeListener: OnPreferenceValueChangedListener<String>
 
   override fun inflateView(
     inflater: LayoutInflater,
@@ -193,8 +195,8 @@ class SettingsController : BaseController() {
   }
 
   private fun getCurrentUser() {
-    currentUser = userUtils!!.currentUser
-    credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+    currentUser = userUtils.currentUser
+    credentials = currentUser!!.getCredentials()
   }
 
   override fun onViewBound(view: View) {
@@ -212,20 +214,18 @@ class SettingsController : BaseController() {
       saveStateHandler = LovelySaveStateHandler()
     }
 
-    appPreferences!!.registerProxyTypeListener(
-        ProxyTypeChangeListener()
-    )
-    appPreferences!!.registerProxyCredentialsListener(
-        ProxyCredentialsChangeListener()
-    )
-    appPreferences!!.registerScreenSecurityListener(
-        ScreenSecurityChangeListener()
-    )
-    appPreferences!!.registerScreenLockListener(ScreenLockListener())
-    appPreferences!!.registerScreenLockTimeoutListener(
-        ScreenLockTimeoutListener()
-    )
-    appPreferences!!.registerThemeChangeListener(ThemeChangeListener())
+    proxyTypeChangeListener = ProxyTypeChangeListener()
+    proxyCredentialsChangeListener = ProxyCredentialsChangeListener()
+    screenSecurityChangeListener = ScreenSecurityChangeListener()
+    screenLockChangeListener = ScreenLockListener()
+    screenLockTimeoutChangeListener = ScreenLockTimeoutListener()
+    themeChangeListener = ThemeChangeListener()
+    appPreferences.registerProxyTypeListener(proxyTypeChangeListener)
+    appPreferences.registerProxyCredentialsListener { proxyCredentialsChangeListener }
+    appPreferences.registerScreenSecurityListener { screenSecurityChangeListener }
+    appPreferences.registerScreenLockListener { screenLockChangeListener }
+    appPreferences.registerScreenLockTimeoutListener { screenLockTimeoutChangeListener }
+    appPreferences.registerThemeChangeListener { themeChangeListener }
 
     val listWithIntFields = ArrayList<String>()
     listWithIntFields.add("proxy_port")
@@ -358,7 +358,7 @@ class SettingsController : BaseController() {
           realAlias = ""
         }
 
-        userUtils!!.createOrUpdateUser(
+        userUtils.createOrUpdateUser(
             null, null, null, null, null, null, null,
             currentUser!!.id, null, realAlias, null
         )
@@ -713,23 +713,21 @@ class SettingsController : BaseController() {
   }
 
   public override fun onDestroy() {
-    if (appPreferences != null) {
-      appPreferences!!.unregisterProxyTypeListener(proxyTypeChangeListener)
-      appPreferences!!.unregisterProxyCredentialsListener(proxyCredentialsChangeListener)
-      appPreferences!!.unregisterScreenSecurityListener(screenSecurityChangeListener)
-      appPreferences!!.unregisterScreenLockListener(screenLockChangeListener)
-      appPreferences!!.unregisterScreenLockTimeoutListener(screenLockTimeoutChangeListener)
-      appPreferences!!.unregisterThemeChangeListener(themeChangeListener)
-    }
+    appPreferences.unregisterProxyTypeListener(proxyTypeChangeListener)
+    appPreferences.unregisterProxyCredentialsListener(proxyCredentialsChangeListener)
+    appPreferences.unregisterScreenSecurityListener(screenSecurityChangeListener)
+    appPreferences.unregisterScreenLockListener(screenLockChangeListener)
+    appPreferences.unregisterScreenLockTimeoutListener(screenLockTimeoutChangeListener)
+    appPreferences.unregisterThemeChangeListener(themeChangeListener)
     super.onDestroy()
   }
 
   private fun hideProxySettings() {
-    appPreferences!!.removeProxyHost()
-    appPreferences!!.removeProxyPort()
-    appPreferences!!.removeProxyCredentials()
-    appPreferences!!.removeProxyUsername()
-    appPreferences!!.removeProxyPassword()
+    appPreferences.removeProxyHost()
+    appPreferences.removeProxyPort()
+    appPreferences.removeProxyCredentials()
+    appPreferences.removeProxyUsername()
+    appPreferences.removeProxyPassword()
     settingsScreen!!.findViewById<View>(R.id.settings_proxy_host_edit)
         .visibility = View.GONE
     settingsScreen!!.findViewById<View>(R.id.settings_proxy_port_edit)
@@ -775,7 +773,7 @@ class SettingsController : BaseController() {
 
     override fun onChanged(newValue: String) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        SecurityUtils.createKey(appPreferences!!.screenLockTimeout)
+        SecurityUtils.createKey(appPreferences.screenLockTimeout)
       }
     }
   }
