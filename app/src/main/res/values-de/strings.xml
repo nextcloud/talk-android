@@ -297,4 +297,7 @@ Meeting ist für %1$s geplant.</string>
 
     <string name="nc_general_settings">Allgemein</string>
     <string name="nc_allow_guests">Gäste zulassen</string>
-    </resources>
+    <string name="nc_last_moderator_title">Unterhaltung konnte nicht verlassen werden</string>
+    <string name="nc_last_moderator">Sie müssen einen neuen Moderator bestimmen, bevor Sie %1$s verlassen können.</string>
+
+</resources>
