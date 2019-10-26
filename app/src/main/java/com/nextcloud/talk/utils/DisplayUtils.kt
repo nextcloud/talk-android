@@ -68,11 +68,14 @@ import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.DataSource
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor
 import com.facebook.imagepipeline.postprocessors.RoundPostprocessor
+import com.facebook.imagepipeline.request.ImageRequest
+import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.facebook.widget.text.span.BetterImageSpan
 import com.google.android.material.chip.ChipDrawable
 import com.nextcloud.talk.R
@@ -134,16 +137,6 @@ object DisplayUtils {
     val bitmap = getBitmap(drawable!!)
     RoundAsCirclePostprocessor(true).process(bitmap)
     return BitmapDrawable(bitmap)
-  }
-
-  fun getRoundedBitmapFromVectorDrawableResource(
-    resources: Resources,
-    resource: Int
-  ): Bitmap {
-    val vectorDrawable = resources.getDrawable(resource) as VectorDrawable
-    val bitmap = getBitmap(vectorDrawable)
-    RoundPostprocessor(true).process(bitmap)
-    return bitmap
   }
 
   private fun getBitmap(drawable: Drawable): Bitmap {
@@ -386,6 +379,21 @@ object DisplayUtils {
     return spannableString
   }
 
+    fun getImageRequestForUrl(url: String, userEntity: UserEntity?): ImageRequest {
+    val headers = HashMap<String, String>();
+    if (userEntity != null && url.startsWith(userEntity.getBaseUrl()) && url.contains(
+        "index.php/core/preview?fileId=")) {
+      headers.put("Authorization",
+          ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()));
+    }
+
+    return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+        .setProgressiveRenderingEnabled(true)
+        .setRotationOptions(RotationOptions.autoRotate())
+        .disableDiskCache()
+        .setHeaders(headers)
+        .build();
+  }
   fun getMessageSelector(
     @ColorInt normalColor: Int, @ColorInt selectedColor: Int,
     @ColorInt pressedColor: Int, @DrawableRes shape: Int

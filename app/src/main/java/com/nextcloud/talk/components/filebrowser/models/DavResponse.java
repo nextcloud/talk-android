@@ -26,5 +26,5 @@ import lombok.Data;
 @Data
 public class DavResponse {
   Response response;
-  Object data;
+  public Object data;
 }

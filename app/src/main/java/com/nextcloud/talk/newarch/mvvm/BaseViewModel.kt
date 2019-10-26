@@ -34,7 +34,7 @@ abstract class BaseViewModel<V : BaseView>(application: Application) : AndroidVi
 ) {
 
   protected val disposables: CompositeDisposable = CompositeDisposable()
-  protected val context: Context = getApplication<Application>().applicationContext
+  protected val context: Context = application.applicationContext
 
   val backgroundAndUIScope = CoroutineScope(
       Job() + Dispatchers.Main

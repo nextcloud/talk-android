@@ -113,7 +113,7 @@ public class MagicIncomingTextMessageViewHolder
         LayerDrawable layerDrawable = new LayerDrawable(layers);
 
         messageUserAvatarView.getHierarchy()
-            .setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
+            .setPlaceholderImage(DisplayUtils.INSTANCE.getRoundedDrawable(layerDrawable));
       } else if (message.getActorType().equals("bots")) {
         messageUserAvatarView.setController(null);
         TextDrawable drawable =
@@ -141,7 +141,7 @@ public class MagicIncomingTextMessageViewHolder
       bubbleResource = R.drawable.shape_grouped_incoming_message;
     }
 
-    Drawable bubbleDrawable = DisplayUtils.getMessageSelector(bg_bubble_color,
+    Drawable bubbleDrawable = DisplayUtils.INSTANCE.getMessageSelector(bg_bubble_color,
         resources.getColor(R.color.transparent),
         bg_bubble_color, bubbleResource);
     ViewCompat.setBackground(bubble, bubbleDrawable);
@@ -167,7 +167,7 @@ public class MagicIncomingTextMessageViewHolder
               .equals("guest") || individualHashMap.get("type").equals("call")) {
             if (individualHashMap.get("id").equals(message.getActiveUser().getUserId())) {
               messageString =
-                  DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
+                  DisplayUtils.INSTANCE.searchAndReplaceWithMentionSpan(messageText.getContext(),
                       messageString,
                       individualHashMap.get("id"),
                       individualHashMap.get("name"),
@@ -176,7 +176,7 @@ public class MagicIncomingTextMessageViewHolder
                       R.xml.chip_you);
             } else {
               messageString =
-                  DisplayUtils.searchAndReplaceWithMentionSpan(messageText.getContext(),
+                  DisplayUtils.INSTANCE.searchAndReplaceWithMentionSpan(messageText.getContext(),
                       messageString,
                       individualHashMap.get("id"),
                       individualHashMap.get("name"),

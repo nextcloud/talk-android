@@ -52,6 +52,7 @@ import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.OnClick
+import coil.api.load
 import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
@@ -81,6 +82,7 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.newarch.utils.Images
+import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
@@ -384,13 +386,12 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
       adapter = MessagesListAdapter(
           conversationUser?.userId, messageHolders, ImageLoader { imageView, url, payload ->
-        /*val draweeController = Fresco.newDraweeControllerBuilder()
-            .setImageRequest(DisplayUtils.getImageRequestForUrl(url, conversationUser))
-            .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
-            .setOldController(imageView.controller)
-            .setAutoPlayAnimations(true)
-            .build()
-        imageView.controller = draweeController*/
+        imageView.load(url) {
+          transformations(CircleCropTransformation())
+          if (conversationUser != null) {
+            addHeader("Authorization", conversationUser.getCredentials())
+          }
+        }
       })
     } else {
       messagesListView?.visibility = View.VISIBLE

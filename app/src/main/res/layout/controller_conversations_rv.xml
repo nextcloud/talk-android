@@ -67,6 +67,8 @@
       android:layout_margin="16dp"
       android:visibility="gone"
       app:srcCompat="@drawable/ic_add_white_24px"
+      app:tint="@color/white"
+      app:backgroundTint="@color/colorPrimary"
       />
 
   <include layout="@layout/fast_scroller" />

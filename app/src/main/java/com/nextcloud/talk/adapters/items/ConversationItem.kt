@@ -39,6 +39,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
 import com.nextcloud.talk.utils.ApiUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -122,7 +123,8 @@ class ConversationItem(
     if (model.unreadMessages > 0) {
       holder.dialogUnreadBubble!!.visibility = View.VISIBLE
       if (model.unreadMessages < 100) {
-        holder.dialogUnreadBubble!!.text = model.unreadMessages.toLong().toString()
+        holder.dialogUnreadBubble!!.text = model.unreadMessages.toLong()
+            .toString()
       } else {
         holder.dialogUnreadBubble!!.text = "99+"
       }
@@ -167,7 +169,8 @@ class ConversationItem(
         model.lastMessage!!.activeUser = userEntity
         val text: String
         if (model.lastMessage!!
-                .messageType == ChatMessage.MessageType.REGULAR_TEXT_MESSAGE
+                .messageType == ChatMessage.MessageType.REGULAR_TEXT_MESSAGE && (!(ONE_TO_ONE_CONVERSATION).equals(
+                model.type) || model.lastMessage!!.actorId == userEntity.userId)
         ) {
           if (model.lastMessage!!.actorId == userEntity.userId) {
             text = String.format(

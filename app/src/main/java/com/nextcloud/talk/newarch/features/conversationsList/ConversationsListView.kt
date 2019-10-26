@@ -141,9 +141,11 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
       }
 
       viewModel.currentUserLiveData.value?.let {
-        val avatarRequest = Images().getRequestForUrl(imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
+        val avatarRequest = Images().getRequestForUrl(
+            imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
             it.baseUrl,
-            it.userId, iconSize), it, target, this, CircleCropTransformation()
+            it.userId, iconSize
+        ), it, target, this, CircleCropTransformation()
         )
 
         imageLoader.load(avatarRequest)
@@ -298,7 +300,10 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
           )
         }
 
-        recyclerViewAdapter.updateDataSet(newConversations as List<IFlexible<ViewHolder>>?, false)
+        recyclerViewAdapter.updateDataSet(
+            newConversations as
+                List<IFlexible<ViewHolder>>?, false
+        )
       })
 
       searchQuery.observe(this@ConversationsListView, Observer {
@@ -355,9 +360,12 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
     recyclerViewAdapter.mItemClickListener = this
     recyclerViewAdapter.mItemLongClickListener = this
 
-    view.swipeRefreshLayoutView.setOnRefreshListener { viewModel.loadConversations() }
-    view.swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
+    view.swipeRefreshLayoutView.setOnRefreshListener {
+      view.swipeRefreshLayoutView.isRefreshing = false
+      viewModel.loadConversations()
+    }
 
+    view.swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
 
     view.fast_scroller.setBubbleTextCreator { position ->
       var displayName =

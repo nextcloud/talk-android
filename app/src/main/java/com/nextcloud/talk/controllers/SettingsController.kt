@@ -52,9 +52,6 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.bluelinelabs.logansquare.LoganSquare
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.interfaces.DraweeController
-import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
@@ -71,7 +68,6 @@ import com.nextcloud.talk.utils.LoggingUtils
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.UserUtils
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.uber.autodispose.AutoDispose
@@ -86,6 +82,8 @@ import com.yarolegovich.mp.MaterialStandardPreference
 import com.yarolegovich.mp.MaterialSwitchPreference
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
+import org.koin.android.ext.android.inject
 import java.io.IOException
 import java.net.URI
 import java.net.URISyntaxException
@@ -94,7 +92,6 @@ import java.util.Arrays
 import java.util.Locale
 import java.util.Objects
 import javax.inject.Inject
-import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 
 @AutoInjector(NextcloudTalkApplication::class)
 class SettingsController : BaseController() {
@@ -177,9 +174,7 @@ class SettingsController : BaseController() {
   @JvmField
   @Inject
   var ncApi: NcApi? = null
-  @JvmField
-  @Inject
-  var userUtils: UserUtils? = null
+  val userUtils: UserUtils by inject()
   private var saveStateHandler: LovelySaveStateHandler? = null
   private var currentUser: UserEntity? = null
   private var credentials: String? = null
@@ -518,8 +513,8 @@ class SettingsController : BaseController() {
       } else {
         screenLockSwitchPreference!!.isEnabled = false
         screenLockTimeoutChoicePreference!!.isEnabled = false
-        appPreferences!!.removeScreenLock()
-        appPreferences!!.removeScreenLockTimeout()
+        appPreferences.removeScreenLock()
+        appPreferences.removeScreenLockTimeout()
         (screenLockSwitchPreference!!.findViewById<View>(
             R.id.mp_checkable
         ) as Checkable).isChecked =
@@ -707,10 +702,12 @@ class SettingsController : BaseController() {
       avatarId = currentUser!!.username
     }
 
-    avatarImageView!!.load(ApiUtils.getUrlForAvatarWithName(
-        currentUser!!.baseUrl,
-        avatarId, R.dimen.avatar_size_big
-    )) {
+    avatarImageView!!.load(
+        ApiUtils.getUrlForAvatarWithName(
+            currentUser!!.baseUrl,
+            avatarId, R.dimen.avatar_size_big
+        )
+    ) {
       transformations(CircleCropTransformation())
     }
   }
