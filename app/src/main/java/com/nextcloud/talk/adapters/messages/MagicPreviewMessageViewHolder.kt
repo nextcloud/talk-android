@@ -55,6 +55,7 @@ import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import com.stfalcon.chatkit.messages.MessageHolders.IncomingImageMessageViewHolder
+import eu.davidea.flexibleadapter.Payload
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -109,14 +110,17 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
           message.getSelectedIndividualHashMap()["name"]!!,
           message.getSelectedIndividualHashMap()["link"]!!, messageText!!
       )
+
       if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
-        image.load(getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap().get("mimetype")))
+        // we now handle this directly in imageloader
+        //image.load(getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap().get ("mimetype")))
       } else {
         fetchFileInformation(
             "/" + message.getSelectedIndividualHashMap()["path"],
             message.activeUser
         )
       }
+
       image.setOnClickListener { v: View? ->
         val accountString =
           message.activeUser.username + "@" + message.activeUser
@@ -207,6 +211,15 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
 
           override fun onError(e: Throwable) {}
         })
+  }
+
+  override fun getPayloadForImageLoader(message: ChatMessage): Any {
+    val map = HashMap<String, Any>()
+    if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
+      map.put("mimetype", message.getSelectedIndividualHashMap().get("mimetype")!!)
+    }
+
+    return ImageLoaderPayload(map)
   }
 
   init {

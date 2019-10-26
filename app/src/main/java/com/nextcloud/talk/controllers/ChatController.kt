@@ -58,9 +58,9 @@ import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
-import com.facebook.drawee.backends.pipeline.Fresco
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
+import com.nextcloud.talk.adapters.messages.ImageLoaderPayload
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
@@ -88,6 +88,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.KeyboardUtils
 import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.NotificationUtils
@@ -387,8 +388,24 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
       adapter = MessagesListAdapter(
           conversationUser?.userId, messageHolders, ImageLoader { imageView, url, payload ->
         imageView.load(url) {
-          transformations(CircleCropTransformation())
-          if (conversationUser != null) {
+          if (url!!.contains("/avatar/")) {
+            transformations(CircleCropTransformation())
+          } else {
+            if (payload is ImageLoaderPayload) {
+              payload.map?.let {
+                if (payload.map.containsKey("mimetype")) {
+                  placeholder(
+                      getDrawableResourceIdForMimeType(
+                          payload.map.get("mimetype") as String?
+                      )
+                  )
+                }
+              }
+            }
+          }
+
+          if (conversationUser != null && url.startsWith(conversationUser.baseUrl) && url.contains(
+                  "index.php/core/preview?fileId=")) {
             addHeader("Authorization", conversationUser.getCredentials())
           }
         }
@@ -1137,7 +1154,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     isFromTheFuture: Boolean,
     timeout: Int
   ) {
-    val xChatLastGivenHeader: String? = response.headers().get("X-Chat-Last-Given")
+    val xChatLastGivenHeader: String? = response.headers()
+        .get("X-Chat-Last-Given")
     if (response.headers().size() > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
 
       val header = Integer.parseInt(xChatLastGivenHeader!!)
