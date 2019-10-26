@@ -35,6 +35,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile
 import com.nextcloud.talk.interfaces.SelectionInterface
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DrawableUtils
@@ -120,7 +121,9 @@ class BrowserFileItem(
       )
 
       if (path.length > 0) {
-        holder.fileIconImageView!!.load(path)
+        holder.fileIconImageView!!.load(path) {
+          addHeader("Authorization", activeUser.getCredentials())
+        }
       }
     }
 
