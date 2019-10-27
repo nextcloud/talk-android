@@ -299,4 +299,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
 
     <string name="nc_general_settings">Xeral</string>
     <string name="nc_allow_guests">Permitir convidados</string>
+    <string name="nc_last_moderator_title">Non foi posíbel abandonar a conversa</string>
+    <string name="nc_last_moderator">Debe promover un novo moderador antes de poder abandonar %1$s.</string>
+
     </resources>
