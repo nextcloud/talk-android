@@ -106,6 +106,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import java.io.IOException;
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -202,6 +203,8 @@ public class CallController extends BaseController {
   UserUtils userUtils;
   @Inject
   AppPreferences appPreferences;
+  @Inject
+  CookieManager cookieManager;
   @Inject
   EventBus eventBus;
 
@@ -1747,6 +1750,8 @@ public class CallController extends BaseController {
     }
 
     setPipVideoViewDimensions();
+
+    cookieManager.getCookieStore().removeAll();
   }
 
   private void setPipVideoViewDimensions() {

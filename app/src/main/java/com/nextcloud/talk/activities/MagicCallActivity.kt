@@ -70,7 +70,7 @@ class MagicCallActivity : BaseActivity() {
     if (!router!!.hasRootController()) {
       if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
         router!!.setRoot(
-            RouterTransaction.with(CallNotificationController(intent.extras))
+            RouterTransaction.with(CallNotificationController(intent.extras!!))
                 .pushChangeHandler(HorizontalChangeHandler())
                 .popChangeHandler(HorizontalChangeHandler())
         )

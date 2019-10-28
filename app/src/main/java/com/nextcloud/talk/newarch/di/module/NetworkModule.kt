@@ -60,6 +60,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.io.IOException
 import java.net.CookieManager
+import java.net.CookiePolicy.ACCEPT_ALL
 import java.net.CookiePolicy.ACCEPT_NONE
 import java.net.Proxy
 import java.security.KeyStore
@@ -90,7 +91,7 @@ val NetworkModule = module {
 
 fun createCookieManager(): CookieManager {
   val cookieManager = CookieManager()
-  cookieManager.setCookiePolicy(ACCEPT_NONE)
+  cookieManager.setCookiePolicy(ACCEPT_ALL)
   return cookieManager
 }
 

@@ -154,7 +154,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
       if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
         router!!.pushController(
-            RouterTransaction.with(CallNotificationController(intent.extras))
+            RouterTransaction.with(CallNotificationController(intent.extras!!))
                 .pushChangeHandler(HorizontalChangeHandler())
                 .popChangeHandler(HorizontalChangeHandler())
         )

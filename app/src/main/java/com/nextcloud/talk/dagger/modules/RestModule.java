@@ -163,7 +163,7 @@ public class RestModule {
   @Provides
   CookieManager provideCookieManager() {
     CookieManager cookieManager = new CookieManager();
-    cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_NONE);
+    cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
     return cookieManager;
   }
 

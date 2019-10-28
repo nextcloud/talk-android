@@ -101,12 +101,11 @@
 
     </RelativeLayout>
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/avatarImageView"
         android:layout_width="@dimen/avatar_size_very_big"
         android:layout_height="@dimen/avatar_size_very_big"
         android:layout_centerInParent="true"
-        app:roundAsCircle="true"
         tools:srcCompat="@tools:sample/avatars[0]" />
 
 </RelativeLayout>

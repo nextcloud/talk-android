@@ -220,7 +220,7 @@ object DisplayUtils {
     val chip = ChipDrawable.createFromResource(context, chipResource)
     chip.text = EmojiCompat.get()
         .process(label)
-    chip.ellipsize = TextUtils.TruncateAt.MIDDLE
+    chip.ellipsize = TextUtils.TruncateAt.END
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       val config = context.resources.configuration

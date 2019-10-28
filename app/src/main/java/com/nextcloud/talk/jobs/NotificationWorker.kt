@@ -145,27 +145,33 @@ class NotificationWorker(
   private var credentials: String? = null
   private var muteCall = false
   private var importantConversation = false
+
+
   private fun showNotificationForCallWithNoPing(intent: Intent) {
     val userEntity: UserEntity =
       signatureVerification!!.userEntity
-    var arbitraryStorageEntity: ArbitraryStorageEntity
-    if (arbitraryStorageUtils!!.getStorageSetting(
-            userEntity.id,
-            "mute_calls",
-            intent.extras!!.getString(KEY_ROOM_TOKEN)
-        ).also { arbitraryStorageEntity = it }
-        != null
-    ) {
+    var arbitraryStorageEntity: ArbitraryStorageEntity?
+
+    arbitraryStorageEntity = arbitraryStorageUtils!!.getStorageSetting(
+        userEntity.id,
+        "mute_calls",
+        intent.extras!!.getString(KEY_ROOM_TOKEN)
+    )
+
+    if (arbitraryStorageEntity != null) {
       muteCall = arbitraryStorageEntity.value!!.toBoolean()
     }
-    if (arbitraryStorageUtils!!.getStorageSetting(
-            userEntity.id,
-            "important_conversation",
-            intent.extras!!.getString(KEY_ROOM_TOKEN)
-        ).also { arbitraryStorageEntity = it } != null
-    ) {
+
+    arbitraryStorageEntity = arbitraryStorageUtils!!.getStorageSetting(
+        userEntity.id,
+        "important_conversation",
+        intent.extras!!.getString(KEY_ROOM_TOKEN)
+    )
+
+    if (arbitraryStorageEntity != null) {
       importantConversation = arbitraryStorageEntity.value!!.toBoolean()
     }
+
     if (isDnDActive()) {
       if (!isInDoNotDisturbWithPriority()
           || !importantConversation
@@ -624,133 +630,125 @@ class NotificationWorker(
       data.getString(KEY_NOTIFICATION_SUBJECT)
     val signature =
       data.getString(KEY_NOTIFICATION_SIGNATURE)
+    val base64DecodedSubject: ByteArray = Base64.decode(subject, Base64.DEFAULT)
+    val base64DecodedSignature: ByteArray = Base64.decode(signature, Base64.DEFAULT)
+    val pushUtils = PushUtils()
+    val privateKey = pushUtils.readKeyFromFile(false) as PrivateKey
     try {
-      val base64DecodedSubject: ByteArray? =
-        Base64.decode(subject, Base64.DEFAULT)
-      val base64DecodedSignature: ByteArray? =
-        Base64.decode(signature, Base64.DEFAULT)
-      val pushUtils = PushUtils()
-      val privateKey =
-        pushUtils.readKeyFromFile(false) as PrivateKey
-      try {
-        signatureVerification = pushUtils.verifySignature(
-            base64DecodedSignature,
-            base64DecodedSubject
-        )
-        if (signatureVerification!!.signatureValid) {
-          val cipher: Cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
-          cipher.init(Cipher.DECRYPT_MODE, privateKey)
-          val decryptedSubject: ByteArray? = cipher.doFinal(base64DecodedSubject)
-          decryptedPushMessage =
-            LoganSquare.parse<DecryptedPushMessage>(
-                String(decryptedSubject!!),
-                DecryptedPushMessage::class.java
-            )
-          decryptedPushMessage!!.timestamp = System.currentTimeMillis()
-          if (decryptedPushMessage!!.delete) {
-            cancelExistingNotificationWithId(
-                context,
-                signatureVerification!!.userEntity, decryptedPushMessage!!.notificationId
-            )
-          } else if (decryptedPushMessage!!.deleteAll) {
-            cancelAllNotificationsForAccount(
-                context,
+      signatureVerification = pushUtils.verifySignature(
+          base64DecodedSignature,
+          base64DecodedSubject
+      )
+      if (signatureVerification!!.signatureValid) {
+        val cipher: Cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
+        cipher.init(Cipher.DECRYPT_MODE, privateKey)
+        val decryptedSubject: ByteArray? = cipher.doFinal(base64DecodedSubject)
+        decryptedPushMessage =
+          LoganSquare.parse(
+              decryptedSubject!!.toString(Charsets.UTF_8),
+              DecryptedPushMessage::class.java
+          )
+        decryptedPushMessage!!.timestamp = System.currentTimeMillis()
+        if (decryptedPushMessage!!.delete) {
+          cancelExistingNotificationWithId(
+              context,
+              signatureVerification!!.userEntity, decryptedPushMessage!!.notificationId
+          )
+        } else if (decryptedPushMessage!!.deleteAll) {
+          cancelAllNotificationsForAccount(
+              context,
+              signatureVerification!!.userEntity
+          )
+        } else {
+          credentials = signatureVerification!!.userEntity.getCredentials()
+
+          ncApi = retrofit!!.newBuilder()
+              .client(
+                  okHttpClient!!.newBuilder().cookieJar(
+                      JavaNetCookieJar(CookieManager())
+                  ).build()
+              )
+              .build()
+              .create(
+                  NcApi::class.java
+              )
+          val hasChatSupport =
+            signatureVerification!!.userEntity.hasSpreedFeatureCapability("chat-v2")
+          val shouldShowNotification = decryptedPushMessage!!.app == "spreed"
+          if (shouldShowNotification) {
+            val intent: Intent
+            val bundle = Bundle()
+            val startACall =
+              decryptedPushMessage!!.type == "call" || !hasChatSupport
+            intent = if (startACall) {
+              Intent(
+                  context, MagicCallActivity::class.java
+              )
+            } else {
+              Intent(
+                  context, MainActivity::class.java
+              )
+            }
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            if (!signatureVerification!!.userEntity.hasSpreedFeatureCapability("no-ping")) {
+              bundle.putString(
+                  KEY_ROOM_ID,
+                  decryptedPushMessage!!.id
+              )
+            } else {
+              bundle.putString(
+                  KEY_ROOM_TOKEN,
+                  decryptedPushMessage!!.id
+              )
+            }
+            bundle.putParcelable(
+                KEY_USER_ENTITY,
                 signatureVerification!!.userEntity
             )
-          } else {
-            credentials = signatureVerification!!.userEntity.getCredentials()
-
-            ncApi = retrofit!!.newBuilder()
-                .client(
-                    okHttpClient!!.newBuilder().cookieJar(
-                        JavaNetCookieJar(CookieManager())
-                    ).build()
-                )
-                .build()
-                .create(
-                    NcApi::class.java
-                )
-            val hasChatSupport = signatureVerification!!.userEntity.hasSpreedFeatureCapability("chat-v2")
-            val shouldShowNotification = decryptedPushMessage!!.app == "spreed"
-            if (shouldShowNotification) {
-              val intent: Intent
-              val bundle = Bundle()
-              val startACall =
-                decryptedPushMessage!!.type == "call" || !hasChatSupport
-              intent = if (startACall) {
-                Intent(
-                    context, MagicCallActivity::class.java
-                )
+            bundle.putBoolean(
+                KEY_FROM_NOTIFICATION_START_CALL,
+                startACall
+            )
+            intent.putExtras(bundle)
+            when (decryptedPushMessage!!.type) {
+              "call" -> if (!bundle.containsKey(
+                      KEY_ROOM_TOKEN
+                  )
+              ) {
+                context!!.startActivity(intent)
               } else {
-                Intent(
-                    context, MainActivity::class.java
-                )
+                showNotificationForCallWithNoPing(intent)
               }
-              intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-              if (!signatureVerification!!.userEntity.hasSpreedFeatureCapability("no-ping")) {
-                bundle.putString(
-                    KEY_ROOM_ID,
-                    decryptedPushMessage!!.id
-                )
+              "room" -> if (bundle.containsKey(
+                      KEY_ROOM_TOKEN
+                  )
+              ) {
+                showNotificationWithObjectData(intent)
+              }
+              "chat" -> if (decryptedPushMessage!!.notificationId != Long.MIN_VALUE) {
+                showNotificationWithObjectData(intent)
               } else {
-                bundle.putString(
-                    KEY_ROOM_TOKEN,
-                    decryptedPushMessage!!.id
-                )
+                showNotification(intent)
               }
-              bundle.putParcelable(
-                  KEY_USER_ENTITY,
-                  signatureVerification!!.userEntity
-              )
-              bundle.putBoolean(
-                  KEY_FROM_NOTIFICATION_START_CALL,
-                  startACall
-              )
-              intent.putExtras(bundle)
-              when (decryptedPushMessage!!.type) {
-                "call" -> if (!bundle.containsKey(
-                        KEY_ROOM_TOKEN
-                    )
-                ) {
-                  context!!.startActivity(intent)
-                } else {
-                  showNotificationForCallWithNoPing(intent)
-                }
-                "room" -> if (bundle.containsKey(
-                        KEY_ROOM_TOKEN
-                    )
-                ) {
-                  showNotificationWithObjectData(intent)
-                }
-                "chat" -> if (decryptedPushMessage!!.notificationId != Long.MIN_VALUE) {
-                  showNotificationWithObjectData(intent)
-                } else {
-                  showNotification(intent)
-                }
-                else -> {
-                }
+              else -> {
               }
             }
           }
         }
-      } catch (e1: NoSuchAlgorithmException) {
-        Log.d(
-            TAG,
-            "No proper algorithm to decrypt the message " + e1.localizedMessage
-        )
-      } catch (e1: NoSuchPaddingException) {
-        Log.d(
-            TAG,
-            "No proper padding to decrypt the message " + e1.localizedMessage
-        )
-      } catch (e1: InvalidKeyException) {
-        Log.d(
-            TAG, "Invalid private key " + e1.localizedMessage
-        )
       }
-    } catch (exception: Exception) {
+    } catch (e1: NoSuchAlgorithmException) {
       Log.d(
-          TAG, "Something went very wrong " + exception.localizedMessage
+          TAG,
+          "No proper algorithm to decrypt the message " + e1.localizedMessage
+      )
+    } catch (e1: NoSuchPaddingException) {
+      Log.d(
+          TAG,
+          "No proper padding to decrypt the message " + e1.localizedMessage
+      )
+    } catch (e1: InvalidKeyException) {
+      Log.d(
+          TAG, "Invalid private key " + e1.localizedMessage
       )
     }
     return Result.success()
