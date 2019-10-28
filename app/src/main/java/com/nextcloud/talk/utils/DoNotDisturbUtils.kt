@@ -25,6 +25,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Build
 import android.os.Vibrator
+import android.telephony.TelephonyManager
 import com.nextcloud.talk.application.NextcloudTalkApplication
 
 object DoNotDisturbUtils {
@@ -62,6 +63,15 @@ object DoNotDisturbUtils {
     return false
   }
 
+  fun areWeInTelephonyCall(context: Context): Boolean {
+    val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+    if (telephonyManager.callState != TelephonyManager.CALL_STATE_IDLE) {
+      return true
+    }
+
+    return false
+  }
+
   fun shouldPlaySound(importantConversation: Boolean): Boolean {
     val context = NextcloudTalkApplication.sharedApplication?.applicationContext
 
@@ -86,7 +96,7 @@ object DoNotDisturbUtils {
       shouldPlaySound = true
     }
 
-    if (audioManager.mode == AudioManager.MODE_IN_CALL) {
+    if (areWeInTelephonyCall(context)) {
       shouldPlaySound = false
     }
 
@@ -101,9 +111,7 @@ object DoNotDisturbUtils {
 
   fun shouldVibrate(vibrate: Boolean): Boolean {
     val context = NextcloudTalkApplication.sharedApplication?.applicationContext
-    val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-    if (audioManager.mode == AudioManager.MODE_IN_CALL) {
+    if (areWeInTelephonyCall(context!!)) {
       return false
     }
 
