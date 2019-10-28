@@ -297,4 +297,10 @@
 
     <string name="nc_general_settings">Genel</string>
     <string name="nc_allow_guests">Konuklar katılabilsin</string>
+    <string name="nc_last_moderator_title">Görüşmeden ayrılınamadı</string>
+    <string name="nc_last_moderator">%1$s görüşmesinden ayrılabilmek için yeni bir sorumlu atamalısınız.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+
     </resources>

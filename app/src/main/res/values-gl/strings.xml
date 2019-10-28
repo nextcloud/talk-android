@@ -302,4 +302,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_last_moderator_title">Non foi posíbel abandonar a conversa</string>
     <string name="nc_last_moderator">Debe promover un novo moderador antes de poder abandonar %1$s.</string>
 
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+
     </resources>

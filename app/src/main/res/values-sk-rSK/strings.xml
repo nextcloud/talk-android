@@ -129,6 +129,7 @@
     <string name="nc_start_conversation">Začať rozhovor</string>
     <string name="nc_configure_room">Nastavenia rozhovoru</string>
     <string name="nc_leave">Odísť z rozhovoru</string>
+    <string name="nc_leave_message">Prosím potvrďte, že naozaj chcete opustiť tento rozhovor.</string>
     <string name="nc_simple_leave">Odísť</string>
     <string name="nc_rename">Premenovať rozhovor</string>
     <string name="nc_set_password">Nastavte si heslo</string>
@@ -140,12 +141,22 @@
     <string name="nc_make_call_private">Urobiť rozhovor súkromným</string>
     <string name="nc_delete_call">Zmazať rozhovor</string>
     <string name="nc_delete">Zmazať</string>
+    <string name="nc_delete_conversation_default">Potvrďte prosím, že naozaj chcete zmazať tento 
+rozhovor</string>
+    <string name="nc_delete_conversation_one2one">Ak zmažete tento rozhovor, bude takisto 
+zmazaný pre %1$s.</string>
+    <string name="nc_delete_conversation_more">Ak zmažete tento rozhovor, bude takisto 
+zmazaný pre všetkých ostatných zúčastnených</string>
+
     <string name="nc_new_conversation">Nový rozhovor</string>
     <string name="nc_join_via_link">Pripojiť sa cez odkaz</string>
     <string name="nc_join_via_web">Pripojiť sa cez web</string>
     <string name="nc_favorite_conversation">Pridať rozhovor do obľúbených</string>
     <string name="nc_add_to_favorites">Pridať do obľúbených</string>
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
+    <string name="nc_favorites_explanation">Rozhovor bude pripnutý na vrchu 
+v zozname rozhovorov</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Vyberte si kontakty</string>
     <string name="nc_contacts_done">Hotovo</string>
@@ -179,7 +190,10 @@
     <string name="nc_notify_me_mention">Notifikuj pri spomenutí</string>
     <string name="nc_notify_me_never">Nikdy nenotifikuj</string>
     <string name="nc_mute_calls">Stíš hovory</string>
+    <string name="nc_mute_calls_desc">Prichádzajúce hovory budú ignorované</string>
     <string name="nc_important_conversation">Dôležitý rozhovor</string>
+    <string name="nc_important_conversation_desc">Notifikácie hovorov a správ budú zobrazené aj v móde Nerušiť (kopíruje systémové nastavenie \"Povoliť iba prioritné prerušenia\")</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa nepodarilo!</string>
     <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil 
@@ -200,6 +214,8 @@
     <string name="nc_configure_cert_auth">Vybrať autentifikačný certifikát</string>
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Odobrať moderovanie</string>
     <string name="nc_promote">Povýšiť na moderátora</string>
     <string name="nc_remove_participant">Odobrať účastníka</string>
 
@@ -269,11 +285,22 @@
     <string name="nc_lobby_waiting">Momentálne čakáte v miestnosti.</string>
     <string name="nc_lobby_waiting_with_date">Momentálne čakáte v miestnosti.\n Toto
        stretnutie je naplánované na %1$s.</string>
+    <string name="nc_manual">Nenastavené</string>
+
     <!-- Errors -->
     <string name="nc_no_connection_error">Žiadne spojenie</string>
+    <string name="nc_bad_response_error">Zlá odpoveď</string>
     <string name="nc_timeout_error">Vypršal čas požiadavky</string>
     <string name="nc_empty_response_error">Prázdna odpoveď</string>
     <string name="nc_not_defined_error">Neznáma chyba</string>
+    <string name="nc_unauthorized_error">Nepovolené</string>
+
+    <string name="nc_general_settings">Všeobecné</string>
     <string name="nc_allow_guests">Povoliť hostí</string>
     <string name="nc_last_moderator_title">Nie je možné opustiť rozhovor</string>
+    <string name="nc_last_moderator">Skôr než budete môcť opustiť %1$s , je potrebné niekomu odovzdať rolu moderátora.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+
     </resources>
