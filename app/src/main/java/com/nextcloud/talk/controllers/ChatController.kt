@@ -336,7 +336,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
             imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
             conversationUser?.baseUrl,
             currentConversation?.name, avatarSize / 2
-        ), conversationUser!!, target, null,
+        ), null, target, null,
             CircleCropTransformation()
         );
 
