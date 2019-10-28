@@ -23,7 +23,6 @@
     <!-- Set before a release -->
     <string name="nc_talk_database_encryption_key" translatable="false">HvAfHtAy/QdFYqAWFFXa1VV_Iv6ZQ1.tf5swMc^45wS_vz=Wm[oyRP5D-</string>
     <string name="nc_talk_login_scheme" translatable="false">nc</string>
-    <string name="nc_legacy_database_name">Nextcloud Talk</string>
     <bool name="nc_is_debug">false</bool>
 
     <!-- App label shown on the home screen -->
