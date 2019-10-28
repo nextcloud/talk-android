@@ -41,7 +41,7 @@ import com.nextcloud.talk.newarch.local.models.MessageEntity
 import com.nextcloud.talk.newarch.local.models.UserEntityNg
 
 @Database(
-    entities = arrayOf(ConversationEntity::class, MessageEntity::class, UserEntityNg::class),
+    entities = [ConversationEntity::class, MessageEntity::class, UserEntityNg::class],
     version = 4,
     exportSchema = true
 )
