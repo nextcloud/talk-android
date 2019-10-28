@@ -62,7 +62,7 @@ object DoNotDisturbUtils {
     return false
   }
 
-  fun shouldPlaySound(): Boolean {
+  fun shouldPlaySound(importantConversation: Boolean): Boolean {
     val context = NextcloudTalkApplication.sharedApplication?.applicationContext
 
     val notificationManager =
@@ -82,6 +82,14 @@ object DoNotDisturbUtils {
       }
     }
 
+    if (!shouldPlaySound && importantConversation) {
+      shouldPlaySound = true
+    }
+
+    if (audioManager.mode == AudioManager.MODE_IN_CALL) {
+      shouldPlaySound = false
+    }
+
     return shouldPlaySound
   }
 
@@ -92,6 +100,12 @@ object DoNotDisturbUtils {
   }
 
   fun shouldVibrate(vibrate: Boolean): Boolean {
+    val context = NextcloudTalkApplication.sharedApplication?.applicationContext
+    val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+    if (audioManager.mode == AudioManager.MODE_IN_CALL) {
+      return false
+    }
 
     if (hasVibrator()) {
       val context = NextcloudTalkApplication.sharedApplication?.applicationContext

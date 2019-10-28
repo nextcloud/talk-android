@@ -59,6 +59,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.ConfigurationChangeEvent
 import com.nextcloud.talk.models.RingtoneSettings
+import com.nextcloud.talk.models.database.ArbitraryStorageEntity
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
@@ -67,6 +68,7 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DoNotDisturbUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder
 import com.uber.autodispose.AutoDispose
 import io.reactivex.Observer
@@ -88,6 +90,10 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
   @JvmField
   @Inject
   internal var ncApi: NcApi? = null
+
+  @JvmField
+  @Inject
+  internal var arbitraryStorageUtils: ArbitraryStorageUtils? = null
 
   @JvmField
   @BindView(R.id.conversationNameTextView)
@@ -289,7 +295,18 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
       runAllThings()
     }
 
-    if (DoNotDisturbUtils.shouldPlaySound()) {
+    var importantConversation = false
+    val arbitraryStorageEntity: ArbitraryStorageEntity? = arbitraryStorageUtils!!.getStorageSetting(
+        userBeingCalled!!.id,
+        "important_conversation",
+        currentConversation!!.token
+    )
+
+    if (arbitraryStorageEntity != null) {
+      importantConversation = arbitraryStorageEntity.value!!.toBoolean()
+    }
+
+    if (DoNotDisturbUtils.shouldPlaySound(importantConversation)) {
       val callRingtonePreferenceString = appPreferences.callRingtoneUri
       var ringtoneUri: Uri?
 

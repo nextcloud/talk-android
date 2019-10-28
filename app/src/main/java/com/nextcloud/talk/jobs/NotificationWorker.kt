@@ -563,7 +563,7 @@ class NotificationWorker(
       } else {
         try {
           val ringtoneSettings: RingtoneSettings =
-            LoganSquare.parse<RingtoneSettings>(
+            LoganSquare.parse(
                 ringtonePreferencesString, RingtoneSettings::class.java
             )
           ringtoneSettings.ringtoneUri
@@ -574,8 +574,9 @@ class NotificationWorker(
           )
         }
       }
+
       if (soundUri != null && !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
-          (shouldPlaySound() || importantConversation)
+          (shouldPlaySound(importantConversation))
       ) {
         val audioAttributesBuilder: AudioAttributes.Builder =
           AudioAttributes.Builder()
@@ -602,10 +603,7 @@ class NotificationWorker(
           Log.e(TAG, "Failed to set data source")
         }
       }
-      if (shouldVibrate(
-              appPreferences!!.shouldVibrateSetting
-          )
-          || importantConversation
+      if (shouldVibrate(appPreferences!!.shouldVibrateSetting)
       ) {
         val vibrator =
           context!!.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
