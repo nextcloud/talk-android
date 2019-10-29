@@ -119,7 +119,6 @@ import javax.inject.Inject;
 import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied;
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
 import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
-import okhttp3.Cache;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

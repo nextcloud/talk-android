@@ -21,7 +21,6 @@
 package com.nextcloud.talk.newarch.local.converters
 
 import androidx.room.TypeConverter
-import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_JOINED
@@ -42,10 +41,6 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PASSWOR
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PASSWORD_SET
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_ADDED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_REMOVED
-import com.nextcloud.talk.newarch.local.models.other.UserStatus
-import com.nextcloud.talk.newarch.local.models.other.UserStatus.ACTIVE
-import com.nextcloud.talk.newarch.local.models.other.UserStatus.DORMANT
-import com.nextcloud.talk.newarch.local.models.other.UserStatus.PENDING_DELETE
 
 class SystemMessageTypeConverter {
   @TypeConverter

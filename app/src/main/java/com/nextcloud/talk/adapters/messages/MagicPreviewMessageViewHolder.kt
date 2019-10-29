@@ -55,7 +55,6 @@ import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import com.stfalcon.chatkit.messages.MessageHolders.IncomingImageMessageViewHolder
-import eu.davidea.flexibleadapter.Payload
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable

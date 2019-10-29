@@ -86,7 +86,6 @@ import io.reactivex.schedulers.Schedulers
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import org.koin.android.ext.android.inject
 import java.io.IOException
-import java.net.Proxy
 import java.net.URI
 import java.net.URISyntaxException
 import java.util.ArrayList

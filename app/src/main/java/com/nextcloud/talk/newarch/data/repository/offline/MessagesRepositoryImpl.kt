@@ -21,11 +21,9 @@
 package com.nextcloud.talk.newarch.data.repository.offline
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.local.dao.MessagesDao
-import com.nextcloud.talk.newarch.local.models.toConversation
 
 class MessagesRepositoryImpl(val messagesDao: MessagesDao): MessagesRepository {
   override fun getMessagesWithUserForConversation(

@@ -26,12 +26,6 @@ import android.graphics.drawable.LayerDrawable
 import android.text.TextUtils
 import android.text.format.DateUtils
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.emoji.widget.EmojiTextView
-import butterknife.BindView
-import butterknife.ButterKnife
 import coil.api.load
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R

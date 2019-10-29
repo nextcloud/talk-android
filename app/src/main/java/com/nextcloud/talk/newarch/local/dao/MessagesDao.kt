@@ -25,8 +25,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.newarch.local.models.ConversationEntity
 import com.nextcloud.talk.newarch.local.models.MessageEntity
 
 @Dao

@@ -20,29 +20,16 @@
 
 package com.nextcloud.talk.adapters.items
 
-import android.content.res.Resources
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
-import coil.Coil
 import coil.api.load
-import coil.request.LoadRequest
-import coil.request.Request
-import coil.request.RequestBuilder
-import coil.target.Target
-import coil.transform.CircleCropTransformation
-import com.nextcloud.talk.R
-import com.nextcloud.talk.R.color
 import com.nextcloud.talk.R.drawable
 import com.nextcloud.talk.R.id
 import com.nextcloud.talk.R.layout
 import com.nextcloud.talk.adapters.items.NotificationSoundItem.NotificationSoundItemViewHolder
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.newarch.utils.Images
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFlexible

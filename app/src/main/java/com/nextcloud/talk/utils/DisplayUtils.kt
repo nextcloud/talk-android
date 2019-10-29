@@ -24,14 +24,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.VectorDrawable
 import android.net.Uri
 import android.os.Build
 import android.text.Spannable
@@ -59,21 +57,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.emoji.text.EmojiCompat
 import coil.Coil
-import coil.ImageLoader
 import coil.api.load
 import coil.target.Target
 import coil.transform.CircleCropTransformation
-import com.facebook.common.executors.UiThreadImmediateExecutorService
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.DataSource
-import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.RotationOptions
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
-import com.facebook.imagepipeline.image.CloseableImage
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor
-import com.facebook.imagepipeline.postprocessors.RoundPostprocessor
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.facebook.widget.text.span.BetterImageSpan
@@ -83,12 +73,10 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.newarch.utils.Images
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.text.Spans
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.InvocationTargetException
 import java.util.regex.Pattern
-import org.koin.android.ext.android.inject
 
 object DisplayUtils {
 

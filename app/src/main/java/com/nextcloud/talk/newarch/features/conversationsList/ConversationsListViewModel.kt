@@ -41,7 +41,6 @@ import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
-import com.nextcloud.talk.newarch.utils.ViewState
 import com.nextcloud.talk.newarch.utils.ViewState.LOADING
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.database.user.UserUtils

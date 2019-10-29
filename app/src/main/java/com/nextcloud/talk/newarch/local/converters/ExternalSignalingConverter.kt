@@ -23,8 +23,6 @@ package com.nextcloud.talk.newarch.local.converters
 import androidx.room.TypeConverter
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.models.ExternalSignalingServer
-import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.push.PushConfigurationState
 
 class ExternalSignalingConverter {
   @TypeConverter

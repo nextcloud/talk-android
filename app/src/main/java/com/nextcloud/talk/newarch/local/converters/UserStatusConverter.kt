@@ -21,7 +21,6 @@
 package com.nextcloud.talk.newarch.local.converters
 
 import androidx.room.TypeConverter
-import com.nextcloud.talk.models.json.conversations.Conversation.LobbyState
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.ACTIVE
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.DORMANT
