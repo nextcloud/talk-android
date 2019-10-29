@@ -18,20 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.domain.usecases
+package com.nextcloud.talk.newarch.domain.repository.offline
 
+import androidx.lifecycle.LiveData
+import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
-import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
-import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
-import org.koin.core.parameter.DefinitionParameters
 
-class GetConversationsUseCase constructor(
-  private val nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler?
-) : UseCase<List<Conversation>, Any?>(apiErrorHandler) {
+interface MessagesRepository {
+  fun getMessagesWithUserForConversation(userId: Int, conversationId: String): LiveData<List<ChatMessage>>
 
-  override suspend fun run(params: Any?): List<Conversation> {
-    return nextcloudTalkRepository.getConversationsForUser((params as DefinitionParameters).get(0))
-  }
 }

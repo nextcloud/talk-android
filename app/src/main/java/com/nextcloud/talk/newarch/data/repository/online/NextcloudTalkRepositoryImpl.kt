@@ -18,13 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.data.repository
+package com.nextcloud.talk.newarch.data.repository.online
 
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
-import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkRepository
+import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 

@@ -29,8 +29,8 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
 
 @Entity(tableName = "users")
-data class UserEntityNg(
-  @PrimaryKey(autoGenerate = true) var id: Long = 0,
+data class UserNgEntity(
+  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long? = null,
   @ColumnInfo(name = "user_id") var userId: String? = null,
   @ColumnInfo(name = "username") var username: String? = null,
   @ColumnInfo(name = "token") var token: String? = null,

@@ -97,7 +97,7 @@ class Conversation {
   @JsonField(name = ["lobbyTimer"])
   var lobbyTimer: Long? = 0
   @JsonField(name = ["lastReadMessageId"])
-  var lastReadMessageId: Int = 0
+  var lastReadMessageId: Long = 0
   var changing: Boolean = false
 
   val isPublic: Boolean = ConversationType.PUBLIC_CONVERSATION == type

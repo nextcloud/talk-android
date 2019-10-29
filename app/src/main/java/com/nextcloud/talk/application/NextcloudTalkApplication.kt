@@ -37,6 +37,7 @@ import autodagger.AutoComponent
 import autodagger.AutoInjector
 import coil.Coil
 import coil.ImageLoader
+import com.bluelinelabs.logansquare.LoganSquare
 import com.facebook.cache.disk.DiskCacheConfig
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
@@ -50,21 +51,32 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
+import com.nextcloud.talk.models.ExternalSignalingServer
+import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.models.json.capabilities.Capabilities
+import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.newarch.di.module.CommunicationModule
 import com.nextcloud.talk.newarch.di.module.NetworkModule
 import com.nextcloud.talk.newarch.di.module.StorageModule
 import com.nextcloud.talk.newarch.features.conversationsList.di.module.ConversationsListModule
+import com.nextcloud.talk.newarch.local.dao.UsersDao
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.other.UserStatus.ACTIVE
+import com.nextcloud.talk.newarch.local.models.other.UserStatus.DORMANT
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
 import com.nextcloud.talk.utils.database.user.UserModule
+import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.googlecompat.GoogleCompatEmojiProvider
 import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
 import org.koin.android.ext.android.inject
@@ -76,6 +88,7 @@ import org.webrtc.voiceengine.WebRtcAudioManager
 import org.webrtc.voiceengine.WebRtcAudioUtils
 import java.security.Security
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @AutoComponent(
@@ -90,10 +103,13 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
   //endregion
 
   //region Getters
+  @Inject
+  lateinit var userUtils: UserUtils
 
   val imageLoader: ImageLoader by inject()
   val appPreferences: AppPreferences by inject()
   val okHttpClient: OkHttpClient by inject()
+  val usersDao: UsersDao by inject()
   //endregion
 
   //region private methods
@@ -139,6 +155,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
 
     componentApplication.inject(this)
     Coil.setDefaultImageLoader(imageLoader)
+    migrateUsers()
 
     setAppTheme(appPreferences.theme)
     super.onCreate()
@@ -221,6 +238,32 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
   override fun attachBaseContext(base: Context) {
     super.attachBaseContext(base)
     MultiDex.install(this)
+  }
+
+  fun migrateUsers() {
+    GlobalScope.launch {
+      val users: List<UserEntity> = userUtils.users as List<UserEntity>
+      var userNg: UserNgEntity
+      val newUsers = mutableListOf<UserNgEntity>()
+      for (user in users) {
+        userNg = UserNgEntity()
+        userNg.userId = user.userId
+        userNg.username = user.username
+        userNg.token = user.token
+        userNg.displayName = user.displayName
+        userNg.pushConfiguration = LoganSquare.parse(user.pushConfigurationState, PushConfigurationState::class.java)
+        userNg.capabilities = LoganSquare.parse(user.capabilities, Capabilities::class.java)
+        userNg.clientCertificate = user.clientCertificate
+        userNg.externalSignaling = LoganSquare.parse(user.externalSignalingServer, ExternalSignalingServer::class.java)
+        if (user.current) {
+          userNg.status = ACTIVE
+        } else {
+          userNg.status = DORMANT
+        }
+        newUsers.add(userNg)
+      }
+      usersDao.saveUsers(*newUsers.toTypedArray())
+    }
   }
 
   companion object {

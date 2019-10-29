@@ -31,10 +31,10 @@ import com.github.aurae.retrofit2.LoganSquareConverterFactory
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.newarch.data.repository.NextcloudTalkRepositoryImpl
+import com.nextcloud.talk.newarch.data.repository.online.NextcloudTalkRepositoryImpl
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
-import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkRepository
+import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.utils.NetworkUtils
 import com.nextcloud.talk.newarch.utils.NetworkUtils.GetProxyRunnable
 import com.nextcloud.talk.newarch.utils.NetworkUtils.MagicAuthenticator
@@ -61,7 +61,6 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.io.IOException
 import java.net.CookieManager
 import java.net.CookiePolicy.ACCEPT_ALL
-import java.net.CookiePolicy.ACCEPT_NONE
 import java.net.Proxy
 import java.security.KeyStore
 import java.security.KeyStoreException

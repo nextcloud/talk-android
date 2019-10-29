@@ -22,20 +22,10 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.Application
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
-import coil.request.LoadRequest
-import coil.target.ViewTarget
-import com.facebook.common.executors.UiThreadImmediateExecutorService
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.DataSource
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
-import com.facebook.imagepipeline.image.CloseableImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.R.drawable
 import com.nextcloud.talk.R.string
@@ -45,7 +35,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
-import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkOfflineRepository
+import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
@@ -53,8 +43,6 @@ import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUs
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.utils.ViewState
 import com.nextcloud.talk.newarch.utils.ViewState.LOADING
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
 import kotlinx.coroutines.launch
@@ -67,10 +55,10 @@ class ConversationsListViewModel constructor(
   private val leaveConversationUseCase: LeaveConversationUseCase,
   private val deleteConversationUseCase: DeleteConversationUseCase,
   private val userUtils: UserUtils,
-  private val offlineRepository: NextcloudTalkOfflineRepository
+  private val offlineRepository: ConversationsRepository
 ) : BaseViewModel<ConversationsListView>(application) {
 
-  val viewState = MutableLiveData<ViewState>(LOADING)
+  val viewState = MutableLiveData(LOADING)
   var messageData: String? = null
   val searchQuery = MutableLiveData<String>()
   val currentUserLiveData: MutableLiveData<UserEntity> = MutableLiveData()

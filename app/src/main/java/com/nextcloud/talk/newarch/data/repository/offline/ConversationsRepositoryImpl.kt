@@ -18,25 +18,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.data.repository
+package com.nextcloud.talk.newarch.data.repository.offline
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.newarch.domain.repository.NextcloudTalkOfflineRepository
-import com.nextcloud.talk.newarch.local.db.TalkDatabase
+import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
+import com.nextcloud.talk.newarch.local.dao.ConversationsDao
 import com.nextcloud.talk.newarch.local.models.toConversation
 import com.nextcloud.talk.newarch.local.models.toConversationEntity
 
-class NextcloudTalkOfflineRepositoryImpl(val nextcloudTalkDatabase: TalkDatabase) :
-    NextcloudTalkOfflineRepository {
+class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
+    ConversationsRepository {
   override suspend fun setChangingValueForConversation(
     userId: Long,
     conversationId: String,
     changing: Boolean
   ) {
-    nextcloudTalkDatabase.conversationsDao()
+    conversationsDao
         .updateChangingValueForConversation(userId, conversationId, changing)
   }
 
@@ -45,7 +44,7 @@ class NextcloudTalkOfflineRepositoryImpl(val nextcloudTalkDatabase: TalkDatabase
     conversationId: String,
     favorite: Boolean
   ) {
-    nextcloudTalkDatabase.conversationsDao()
+    conversationsDao
         .updateFavoriteValueForConversation(userId, conversationId, favorite)
   }
 
@@ -53,12 +52,12 @@ class NextcloudTalkOfflineRepositoryImpl(val nextcloudTalkDatabase: TalkDatabase
     userId: Long,
     conversationId: String
   ) {
-    nextcloudTalkDatabase.conversationsDao()
+    conversationsDao
         .deleteConversation(userId, conversationId)
   }
 
   override fun getConversationsForUser(userId: Long): LiveData<List<Conversation>> {
-    return nextcloudTalkDatabase.conversationsDao()
+    return conversationsDao
         .getConversationsForUser(userId)
         .map { data ->
           data.map {
@@ -67,12 +66,8 @@ class NextcloudTalkOfflineRepositoryImpl(val nextcloudTalkDatabase: TalkDatabase
         }
   }
 
-  internal fun getDatabase(): TalkDatabase {
-    return nextcloudTalkDatabase
-  }
-
   override suspend fun clearConversationsForUser(userId: Long) {
-    nextcloudTalkDatabase.conversationsDao()
+    conversationsDao
         .clearConversationsForUser(userId)
   }
 
@@ -80,7 +75,7 @@ class NextcloudTalkOfflineRepositoryImpl(val nextcloudTalkDatabase: TalkDatabase
     userId: Long,
     conversations: List<Conversation>
   ) {
-    nextcloudTalkDatabase.conversationsDao()
+    conversationsDao
         .updateConversationsForUser(
             userId,
             conversations.map {
@@ -93,7 +88,7 @@ class NextcloudTalkOfflineRepositoryImpl(val nextcloudTalkDatabase: TalkDatabase
     userId: Long,
     timestamp: Long
   ) {
-    nextcloudTalkDatabase.conversationsDao()
+    conversationsDao
         .deleteConversationsForUserWithTimestamp(userId, timestamp)
   }
 }

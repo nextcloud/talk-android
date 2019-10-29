@@ -21,6 +21,7 @@ package com.nextcloud.talk.models.json.chat;
 
 import android.text.TextUtils;
 import androidx.annotation.Nullable;
+import androidx.room.Ignore;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -46,17 +47,29 @@ import org.parceler.Parcel;
 @JsonObject(serializeNullCollectionElements = true, serializeNullObjects = true)
 public class ChatMessage implements IMessage, MessageContentType, MessageContentType.Image {
   @JsonIgnore
+  @Ignore
   public boolean isGrouped;
   @JsonIgnore
+  @Ignore
   public boolean isOneToOneConversation;
   @JsonIgnore
+  @Ignore
   public UserEntity activeUser;
   @JsonIgnore
+  @Ignore
   public Map<String, String> selectedIndividualHashMap;
   @JsonIgnore
+  @Ignore
   public boolean isLinkPreviewAllowed;
+  @JsonIgnore
+  public Long internalUserId = null;
+  @JsonIgnore
+  public Long internalMessageId = null;
+  @JsonIgnore
+  public Long internalConversationId = null;
   @JsonField(name = "id")
-  public int jsonMessageId;
+  @Ignore
+  public Long jsonMessageId;
   @JsonField(name = "token")
   public String token;
   // guests or users
@@ -73,9 +86,13 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
   @JsonField(name = "message")
   public String message;
   @JsonField(name = "messageParameters")
+  @Ignore
   public HashMap<String, HashMap<String, String>> messageParameters;
   @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
   public SystemMessageType systemMessageType;
+
+  @JsonIgnore
+  @Ignore
   List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
       MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
       MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
@@ -138,7 +155,7 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
 
   @Override
   public String getId() {
-    return Integer.toString(jsonMessageId);
+    return Long.toString(jsonMessageId);
   }
 
   @Override

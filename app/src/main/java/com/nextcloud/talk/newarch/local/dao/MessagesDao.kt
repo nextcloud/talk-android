@@ -18,20 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.domain.usecases
+package com.nextcloud.talk.newarch.local.dao
 
-import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
-import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
-import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
-import org.koin.core.parameter.DefinitionParameters
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.newarch.local.models.ConversationEntity
+import com.nextcloud.talk.newarch.local.models.MessageEntity
 
-class GetConversationsUseCase constructor(
-  private val nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler?
-) : UseCase<List<Conversation>, Any?>(apiErrorHandler) {
+@Dao
+abstract class MessagesDao {
+  @Query("SELECT * FROM messages WHERE id = :userId AND conversation = :conversationId")
+  abstract fun getMessagesWithUserForConversation(userId: Long, conversationId: String): LiveData<List<MessageEntity>>
 
-  override suspend fun run(params: Any?): List<Conversation> {
-    return nextcloudTalkRepository.getConversationsForUser((params as DefinitionParameters).get(0))
-  }
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  abstract suspend fun saveMessages(vararg messages: MessageEntity)
 }

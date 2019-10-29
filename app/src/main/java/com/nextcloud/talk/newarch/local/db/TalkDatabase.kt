@@ -34,15 +34,18 @@ import com.nextcloud.talk.newarch.local.converters.LobbyStateConverter
 import com.nextcloud.talk.newarch.local.converters.NotificationLevelConverter
 import com.nextcloud.talk.newarch.local.converters.ParticipantTypeConverter
 import com.nextcloud.talk.newarch.local.converters.PushConfigurationConverter
+import com.nextcloud.talk.newarch.local.converters.SystemMessageTypeConverter
 import com.nextcloud.talk.newarch.local.converters.UserStatusConverter
 import com.nextcloud.talk.newarch.local.dao.ConversationsDao
+import com.nextcloud.talk.newarch.local.dao.MessagesDao
+import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.ConversationEntity
 import com.nextcloud.talk.newarch.local.models.MessageEntity
-import com.nextcloud.talk.newarch.local.models.UserEntityNg
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 @Database(
-    entities = [ConversationEntity::class, MessageEntity::class, UserEntityNg::class],
-    version = 4,
+    entities = [ConversationEntity::class, MessageEntity::class, UserNgEntity::class],
+    version = 1,
     exportSchema = true
 )
 @TypeConverters(
@@ -51,12 +54,14 @@ import com.nextcloud.talk.newarch.local.models.UserEntityNg
     ConversationTypeConverter::class, ParticipantTypeConverter::class,
     PushConfigurationConverter::class, CapabilitiesConverter::class,
     ExternalSignalingConverter::class,
-    UserStatusConverter::class
+    UserStatusConverter::class, SystemMessageTypeConverter::class
 )
 
 abstract class TalkDatabase : RoomDatabase() {
 
   abstract fun conversationsDao(): ConversationsDao
+  abstract fun messagesDao(): MessagesDao
+  abstract fun usersDao(): UsersDao
 
   companion object {
     private const val DB_NAME = "talk.db"

@@ -167,8 +167,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
   var currentConversation: Conversation? = null
   var inConversation = false
   var historyRead = false
-  var globalLastKnownFutureMessageId = -1
-  var globalLastKnownPastMessageId = -1
+  var globalLastKnownFutureMessageId: Long = -1
+  var globalLastKnownPastMessageId: Long = -1
   var adapter: MessagesListAdapter<ChatMessage>? = null
   var mentionAutocomplete: Autocomplete<*>? = null
   var layoutManager: LinearLayoutManager? = null
@@ -1079,14 +1079,14 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     fieldMap["limit"] = 100
     fieldMap["setReadMarker"] = 1
 
-    val lastKnown: Int
+    val lastKnown: Long
     if (lookIntoFuture > 0) {
       lastKnown = globalLastKnownFutureMessageId
     } else {
       lastKnown = globalLastKnownPastMessageId
     }
 
-    fieldMap["lastKnownMessageId"] = lastKnown
+    fieldMap["lastKnownMessageId"] = lastKnown.toInt()
 
     if (!wasDetached) {
       if (lookIntoFuture > 0) {
@@ -1158,8 +1158,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
         .get("X-Chat-Last-Given")
     if (response.headers().size() > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
 
-      val header = Integer.parseInt(xChatLastGivenHeader!!)
-      if (header > 0) {
+      val header = xChatLastGivenHeader?.toLong()
+      if (header != null) {
         if (isFromTheFuture) {
           globalLastKnownFutureMessageId = header
         } else {

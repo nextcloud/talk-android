@@ -18,20 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.domain.usecases
+package com.nextcloud.talk.newarch.domain.repository.offline
 
-import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
-import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
-import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
-import org.koin.core.parameter.DefinitionParameters
+interface UsersRepository {
 
-class GetConversationsUseCase constructor(
-  private val nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler?
-) : UseCase<List<Conversation>, Any?>(apiErrorHandler) {
-
-  override suspend fun run(params: Any?): List<Conversation> {
-    return nextcloudTalkRepository.getConversationsForUser((params as DefinitionParameters).get(0))
-  }
 }

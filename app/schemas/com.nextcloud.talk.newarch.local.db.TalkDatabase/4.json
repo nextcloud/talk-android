@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "99ff92e07b8afc6473ee55cf38d30a81",
+    "identityHash": "8b9e5dddd027e51eb17ffd53d365e6d4",
     "entities": [
       {
         "tableName": "conversations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `user` INTEGER, `conversation_id` TEXT, `token` TEXT, `name` TEXT, `display_name` TEXT, `type` INTEGER, `count` INTEGER NOT NULL, `number_of_guests` INTEGER NOT NULL, `participants_count` INTEGER NOT NULL, `participant_type` INTEGER, `has_password` INTEGER NOT NULL, `session_id` TEXT, `favorite` INTEGER NOT NULL, `last_activity` INTEGER NOT NULL, `unread_messages` INTEGER NOT NULL, `unread_mention` INTEGER NOT NULL, `last_message` TEXT, `object_type` TEXT, `notification_level` INTEGER, `read_only_state` INTEGER, `lobby_state` INTEGER, `lobby_timer` INTEGER, `last_read_message_id` INTEGER NOT NULL, `modified_at` INTEGER, `changing` INTEGER NOT NULL, FOREIGN KEY(`user`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `user` INTEGER, `conversation_id` TEXT, `token` TEXT, `name` TEXT, `display_name` TEXT, `type` INTEGER, `count` INTEGER NOT NULL, `number_of_guests` INTEGER NOT NULL, `participants_count` INTEGER NOT NULL, `participant_type` INTEGER, `has_password` INTEGER NOT NULL, `session_id` TEXT, `favorite` INTEGER NOT NULL, `last_activity` INTEGER NOT NULL, `unread_messages` INTEGER NOT NULL, `unread_mention` INTEGER NOT NULL, `last_message` TEXT, `object_type` TEXT, `notification_level` INTEGER, `read_only_state` INTEGER, `lobby_state` INTEGER, `lobby_timer` INTEGER, `last_read_message_id` INTEGER NOT NULL, `modified_at` INTEGER, `changing` INTEGER NOT NULL, FOREIGN KEY(`user`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "id",
@@ -171,7 +171,16 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_conversations_user",
+            "unique": false,
+            "columnNames": [
+              "user"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_conversations_user` ON `${TABLE_NAME}` (`user`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "users",
@@ -188,18 +197,66 @@
       },
       {
         "tableName": "messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user` INTEGER, FOREIGN KEY(`user`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `user` INTEGER, `conversation` INTEGER, `message_id` INTEGER NOT NULL, `actor_id` TEXT, `actor_type` TEXT, `actor_display_name` TEXT, `timestamp` INTEGER NOT NULL, `message` TEXT, `system_message_type` TEXT, FOREIGN KEY(`conversation`) REFERENCES `conversations`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "user",
             "columnName": "user",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "conversation",
+            "columnName": "conversation",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "messageId",
+            "columnName": "message_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actorId",
+            "columnName": "actor_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actorType",
+            "columnName": "actor_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actorDisplayName",
+            "columnName": "actor_display_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "systemMessageType",
+            "columnName": "system_message_type",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],
@@ -209,14 +266,32 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_messages_conversation",
+            "unique": false,
+            "columnNames": [
+              "conversation"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_messages_conversation` ON `${TABLE_NAME}` (`conversation`)"
+          },
+          {
+            "name": "index_messages_user_conversation",
+            "unique": false,
+            "columnNames": [
+              "user",
+              "conversation"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_messages_user_conversation` ON `${TABLE_NAME}` (`user`, `conversation`)"
+          }
+        ],
         "foreignKeys": [
           {
-            "table": "users",
+            "table": "conversations",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "user"
+              "conversation"
             ],
             "referencedColumns": [
               "id"
@@ -226,13 +301,13 @@
       },
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` TEXT, `username` TEXT, `token` TEXT, `display_name` TEXT, `push_configuration` TEXT, `capabilities` TEXT, `client_auth_cert` TEXT, `external_signaling` TEXT, `status` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `user_id` TEXT, `username` TEXT, `token` TEXT, `display_name` TEXT, `push_configuration` TEXT, `capabilities` TEXT, `client_auth_cert` TEXT, `external_signaling` TEXT, `status` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "userId",
@@ -302,7 +377,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '99ff92e07b8afc6473ee55cf38d30a81')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8b9e5dddd027e51eb17ffd53d365e6d4')"
     ]
   }
 }

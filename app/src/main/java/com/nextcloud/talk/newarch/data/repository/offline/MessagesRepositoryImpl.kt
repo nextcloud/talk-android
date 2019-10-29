@@ -18,27 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.domain.repository
+package com.nextcloud.talk.newarch.data.repository.offline
 
-import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.generic.GenericOverall
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
+import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
+import com.nextcloud.talk.newarch.local.dao.MessagesDao
+import com.nextcloud.talk.newarch.local.models.toConversation
 
-interface NextcloudTalkRepository {
-  suspend fun getConversationsForUser(user: UserEntity): List<Conversation>
-  suspend fun setFavoriteValueForConversation(
-    user: UserEntity,
-    conversation: Conversation,
-    favorite: Boolean
-  ): GenericOverall
-
-  suspend fun deleteConversationForUser(
-    user: UserEntity,
-    conversation: Conversation
-  ): GenericOverall
-
-  suspend fun leaveConversationForUser(
-    userEntity: UserEntity,
-    conversation: Conversation
-  ): GenericOverall
+class MessagesRepositoryImpl(val messagesDao: MessagesDao): MessagesRepository {
+  override fun getMessagesWithUserForConversation(
+    userId: Int,
+    conversationId: String
+  ): LiveData<List<ChatMessage>> {
+    TODO(
+        "not implemented"
+    ) //To change body of created functions use File | Settings | File Templates.
+  }
 }

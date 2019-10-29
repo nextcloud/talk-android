@@ -24,6 +24,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -34,15 +35,19 @@ import com.nextcloud.talk.models.json.conversations.Conversation.NotificationLev
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
 import java.util.HashMap
 
-@Entity(tableName = "conversations",
-    foreignKeys = arrayOf(
-        ForeignKey(entity = UserEntityNg::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("user"),
-            onDelete = CASCADE)
-    ))
+@Entity(
+    tableName = "conversations",
+    indices = [Index(value = ["user"])],
+    foreignKeys = [ForeignKey(
+        entity = UserNgEntity::class,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("user"),
+        onDelete = CASCADE,
+        deferred = true
+    )]
+)
 data class ConversationEntity(
-  @PrimaryKey(autoGenerate = true) var id: Long? = null,
+  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long? = null,
   @ColumnInfo(name = "user") var user: Long?,
   @ColumnInfo(name = "conversation_id") var conversationId: String?,
   @ColumnInfo(name = "token") var token: String? = null,
@@ -72,7 +77,7 @@ data class ConversationEntity(
   ) var conversationReadOnlyState: ConversationReadOnlyState? = null,
   @ColumnInfo(name = "lobby_state") var lobbyState: LobbyState? = null,
   @ColumnInfo(name = "lobby_timer") var lobbyTimer: Long? = null,
-  @ColumnInfo(name = "last_read_message_id") var lastReadMessageId: Int = 0,
+  @ColumnInfo(name = "last_read_message_id") var lastReadMessageId: Long = 0,
   @ColumnInfo(name = "modified_at") var modifiedAt: Long? = null,
   @ColumnInfo(name = "changing") var changing: Boolean = false
 )
@@ -111,7 +116,8 @@ fun ConversationEntity.toConversation(): Conversation {
 }
 
 fun Conversation.toConversationEntity(): ConversationEntity {
-  val conversationEntity = ConversationEntity(this.internalId, this.internalUserId, this.conversationId)
+  val conversationEntity =
+    ConversationEntity(this.internalId, this.internalUserId, this.conversationId)
   conversationEntity.token = this.token
   conversationEntity.name = this.name
   conversationEntity.displayName = this.displayName

@@ -18,13 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.domain.repository
+package com.nextcloud.talk.newarch.domain.repository.offline
 
 import androidx.lifecycle.LiveData
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 
-interface NextcloudTalkOfflineRepository {
+interface ConversationsRepository {
   fun getConversationsForUser(userId: Long): LiveData<List<Conversation>>
   suspend fun clearConversationsForUser(userId: Long)
   suspend fun saveConversationsForUser(
