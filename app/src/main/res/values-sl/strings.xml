@@ -81,6 +81,7 @@
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_follow_system">Uporabi sistemsko privzeto možnost</string>
+    <string name="nc_settings_theme_battery_saver">Nastavljeno prek zunanjega programa</string>
     <string name="nc_settings_theme_light">Svetla</string>
     <string name="nc_settings_theme_dark">Temna</string>
     <string name="nc_settings_privacy">Zasebnost</string>
@@ -184,6 +185,9 @@
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Ponižaj iz moderatorja</string>
+    <string name="nc_promote">Povišaj v moderatorja</string>
     <string name="nc_remove_participant">Odstrani udeležence</string>
 
     <!-- Chat -->
