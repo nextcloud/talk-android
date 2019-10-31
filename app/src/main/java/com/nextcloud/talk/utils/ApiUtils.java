@@ -95,10 +95,7 @@ public class ApiUtils {
       @Nullable String searchQuery) {
     RetrofitBucket retrofitBucket = getRetrofitBucketForContactsSearch(baseUrl, searchQuery);
     retrofitBucket.setUrl(baseUrl + ocsApiVersion + "/core/autocomplete/get");
-
     retrofitBucket.getQueryMap().put("itemId", "new");
-    retrofitBucket.getQueryMap().put("limit", "50");
-
     return retrofitBucket;
   }
 
