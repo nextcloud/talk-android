@@ -25,11 +25,11 @@ import lombok.Data;
 
 @Data
 public class PeerConnectionEvent {
-  private final PeerConnectionEventType peerConnectionEventType;
-  private final String sessionId;
-  private final String nick;
-  private final Boolean changeValue;
-  private final String videoStreamType;
+  public final PeerConnectionEventType peerConnectionEventType;
+  public final String sessionId;
+  public final String nick;
+  public final Boolean changeValue;
+  public final String videoStreamType;
 
   public PeerConnectionEvent(PeerConnectionEventType peerConnectionEventType,
       @Nullable String sessionId,

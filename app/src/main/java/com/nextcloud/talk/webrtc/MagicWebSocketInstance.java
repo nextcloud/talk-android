@@ -40,6 +40,7 @@ import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
+import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.MagicMap;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -72,7 +73,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
   @Inject
   Context context;
 
-  private UserEntity conversationUser;
+  private UserNgEntity conversationUser;
   private String webSocketTicket;
   private String resumeId;
   private String sessionId;
@@ -91,7 +92,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
 
   private List<String> messagesQueue = new ArrayList<>();
 
-  MagicWebSocketInstance(UserEntity conversationUser, String connectionUrl,
+  MagicWebSocketInstance(UserNgEntity conversationUser, String connectionUrl,
       String webSocketTicket) {
     NextcloudTalkApplication.Companion.getSharedApplication()
         .getComponentApplication()

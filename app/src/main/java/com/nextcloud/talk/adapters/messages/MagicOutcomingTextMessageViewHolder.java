@@ -103,7 +103,7 @@ public class MagicOutcomingTextMessageViewHolder
                     individualHashMap.get("id"),
                     individualHashMap.get("name"),
                     individualHashMap.get("type"),
-                    userUtils.getUserById(message.getActiveUser().getUserId()),
+                    message.activeUser,
                     R.xml.chip_others);
           } else if (individualHashMap.get("type").equals("file")) {
             itemView.setOnClickListener(v -> {
@@ -122,7 +122,7 @@ public class MagicOutcomingTextMessageViewHolder
     }
 
     Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
-    if (message.isGrouped) {
+    if (message.grouped) {
       Drawable bubbleDrawable =
           DisplayUtils.INSTANCE.getMessageSelector(
               resources.getColor(R.color.bg_message_list_outcoming_bubble),

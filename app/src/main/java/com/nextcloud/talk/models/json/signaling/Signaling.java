@@ -32,8 +32,8 @@ import lombok.Data;
 @JsonObject
 public class Signaling {
   @JsonField(name = "type")
-  String type;
+  public String type;
   //can be NCMessageWrapper or List<HashMap<String,String>>
   @JsonField(name = "data")
-  Object messageWrapper;
+  public Object messageWrapper;
 }

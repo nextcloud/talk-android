@@ -26,9 +26,9 @@ import org.webrtc.MediaStream;
 
 @Data
 public class MediaStreamEvent {
-  private final MediaStream mediaStream;
-  private final String session;
-  private final String videoStreamType;
+  public final MediaStream mediaStream;
+  public final String session;
+  public final String videoStreamType;
 
   public MediaStreamEvent(@Nullable MediaStream mediaStream, String session,
       String videoStreamType) {

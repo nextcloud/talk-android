@@ -30,12 +30,12 @@ import org.parceler.Parcel;
 @JsonObject
 public class PushRegistration {
   @JsonField(name = "publicKey")
-  String publicKey;
+  public String publicKey;
 
   @JsonField(name = "deviceIdentifier")
-  String deviceIdentifier;
+  public String deviceIdentifier;
 
   @JsonField(name = "signature")
-  String signature;
+  public String signature;
 }
 

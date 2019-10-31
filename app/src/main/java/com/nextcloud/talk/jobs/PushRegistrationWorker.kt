@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,23 +18,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.data.repository.offline
+package com.nextcloud.talk.jobs
 
-import androidx.lifecycle.LiveData
+import android.content.Context
+import androidx.work.ListenableWorker.Result
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
-import com.nextcloud.talk.newarch.local.dao.UsersDao
-import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.utils.PushUtils
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class UsersRepositoryImpl(val usersDao: UsersDao): UsersRepository {
-  override fun getActiveUserLiveData(): LiveData<UserNgEntity> {
-    return usersDao.getActiveUserLiveData()
+class PushRegistrationWorker(
+  context: Context,
+  workerParams: WorkerParameters
+) : Worker(context, workerParams), KoinComponent {
+
+  val usersRepository: UsersRepository by inject()
+
+  override fun doWork(): Result {
+    val pushUtils = PushUtils(usersRepository)
+    pushUtils.generateRsa2048KeyPair()
+    pushUtils.pushRegistrationToServer()
+    return Result.success()
   }
 
-  override fun getActiveUser(): UserNgEntity {
-    return usersDao.getActiveUser()
-  }
-
-  override fun getUsers(): List<UserNgEntity> {
-    return usersDao.getUsers()
+  companion object {
+    const val TAG = "PushRegistrationWorker"
   }
 }

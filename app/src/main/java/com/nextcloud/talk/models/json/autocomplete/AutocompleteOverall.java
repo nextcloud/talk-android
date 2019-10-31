@@ -30,5 +30,5 @@ import org.parceler.Parcel;
 @JsonObject
 public class AutocompleteOverall {
   @JsonField(name = "ocs")
-  AutocompleteOCS ocs;
+  public AutocompleteOCS ocs;
 }

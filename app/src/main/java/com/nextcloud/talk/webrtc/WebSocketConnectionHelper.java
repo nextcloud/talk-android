@@ -36,6 +36,7 @@ import com.nextcloud.talk.models.json.websocket.RequestOfferSignalingMessage;
 import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.SignalingDataWebSocketMessageForOffer;
+import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import com.nextcloud.talk.utils.ApiUtils;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class WebSocketConnectionHelper {
   }
 
   public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(
-      String url, UserEntity userEntity, String webSocketTicket, boolean isGuest) {
+      String url, UserNgEntity userEntity, String webSocketTicket, boolean isGuest) {
     String generatedURL = url.replace("https://", "wss://").replace("http://", "ws://");
 
     if (generatedURL.endsWith("/")) {
@@ -102,7 +103,7 @@ public class WebSocketConnectionHelper {
     }
   }
 
-  HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity userEntity, String ticket) {
+  HelloOverallWebSocketMessage getAssembledHelloModel(UserNgEntity userEntity, String ticket) {
     HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
     helloOverallWebSocketMessage.setType("hello");
     HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();

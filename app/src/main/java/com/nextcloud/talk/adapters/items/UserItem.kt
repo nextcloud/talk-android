@@ -35,6 +35,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ApiUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -51,7 +52,7 @@ class UserItem(
    */
 
   val model: Participant,
-  val entity: UserEntity,
+  val entity: UserNgEntity,
   private var header: GenericTextHeaderItem?,
   private val activityContext: Context
 ) : AbstractFlexibleItem<UserItem.UserItemViewHolder>(),

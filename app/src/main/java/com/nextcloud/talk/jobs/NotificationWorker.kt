@@ -76,6 +76,10 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.notifications.NotificationOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.models.json.push.NotificationUser
+import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.local.models.hasSpreedFeatureCapability
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
@@ -101,11 +105,12 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import org.parceler.Parcels
 import retrofit2.Retrofit
 import java.io.IOException
@@ -124,19 +129,16 @@ import javax.inject.Inject
 class NotificationWorker(
   context: Context,
   workerParams: WorkerParameters
-) : Worker(context, workerParams) {
-  @JvmField
-  @Inject
-  var appPreferences: AppPreferences? = null
+) : Worker(context, workerParams), KoinComponent {
+
+  val appPreferences: AppPreferences by inject()
+  val retrofit: Retrofit by inject()
+  val okHttpClient: OkHttpClient by inject()
+  val usersRepository: UsersRepository by inject()
+
   @JvmField
   @Inject
   var arbitraryStorageUtils: ArbitraryStorageUtils? = null
-  @JvmField
-  @Inject
-  var retrofit: Retrofit? = null
-  @JvmField
-  @Inject
-  var okHttpClient: OkHttpClient? = null
   private var ncApi: NcApi? = null
   private var decryptedPushMessage: DecryptedPushMessage? = null
   private var context: Context? = null
@@ -148,7 +150,7 @@ class NotificationWorker(
 
 
   private fun showNotificationForCallWithNoPing(intent: Intent) {
-    val userEntity: UserEntity =
+    val userEntity: UserNgEntity =
       signatureVerification!!.userEntity
     var arbitraryStorageEntity: ArbitraryStorageEntity?
 
@@ -224,7 +226,7 @@ class NotificationWorker(
   }
 
   private fun showNotificationWithObjectData(intent: Intent) {
-    val userEntity: UserEntity =
+    val userEntity: UserNgEntity =
       signatureVerification!!.userEntity
     ncApi!!.getNotification(
         credentials, ApiUtils.getUrlForNotificationWithId(
@@ -575,8 +577,7 @@ class NotificationWorker(
         }
       }
 
-      if (soundUri != null && !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
-          (shouldPlaySound(importantConversation))
+      if (soundUri != null && (shouldPlaySound(importantConversation))
       ) {
         val audioAttributesBuilder: AudioAttributes.Builder =
           AudioAttributes.Builder()
@@ -630,7 +631,7 @@ class NotificationWorker(
       data.getString(KEY_NOTIFICATION_SIGNATURE)
     val base64DecodedSubject: ByteArray = Base64.decode(subject, Base64.DEFAULT)
     val base64DecodedSignature: ByteArray = Base64.decode(signature, Base64.DEFAULT)
-    val pushUtils = PushUtils()
+    val pushUtils = PushUtils(usersRepository)
     val privateKey = pushUtils.readKeyFromFile(false) as PrivateKey
     try {
       signatureVerification = pushUtils.verifySignature(

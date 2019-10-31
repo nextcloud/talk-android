@@ -30,5 +30,5 @@ import lombok.Data;
 @JsonObject
 public class SignalingOCS extends GenericOCS {
   @JsonField(name = "data")
-  List<Signaling> signalings;
+  public List<Signaling> signalings;
 }

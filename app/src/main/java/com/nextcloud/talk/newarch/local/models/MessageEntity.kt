@@ -20,9 +20,13 @@
 
 package com.nextcloud.talk.newarch.local.models
 
+import android.os.Parcel
+import android.os.Parcelable
+import android.os.Parcelable.Creator
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.RoomWarnings
@@ -31,18 +35,18 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType
 
 @Entity(
     tableName = "messages",
-    indices = [Index(value = ["conversation"]), Index(value = ["user", "conversation"])],
+    indices = [Index(value = ["conversation"])],
     foreignKeys = [ForeignKey(
         entity = ConversationEntity::class,
         parentColumns = arrayOf("id"),
         childColumns = arrayOf("conversation"),
-        onDelete = ForeignKey.CASCADE,
+        onDelete = CASCADE,
+        onUpdate = CASCADE,
         deferred = true
     )]
 )
 data class MessageEntity(
   @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long? = null,
-  @ColumnInfo(name = "user") var user: Long? = 0,
   @ColumnInfo(name = "conversation") var conversation: Long? = null,
   @ColumnInfo(name = "message_id") var messageId: Long = 0,
   @ColumnInfo(name = "actor_id") var actorId: String? = null,
@@ -59,7 +63,6 @@ data class MessageEntity(
 fun MessageEntity.toChatMessage(): ChatMessage {
   val chatMessage = ChatMessage()
   chatMessage.internalMessageId = this.id
-  chatMessage.internalUserId = this.user
   chatMessage.internalConversationId = this.conversation
   chatMessage.jsonMessageId = this.messageId
   chatMessage.actorType = this.actorType
@@ -74,9 +77,7 @@ fun MessageEntity.toChatMessage(): ChatMessage {
 
 @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 fun ChatMessage.toMessageEntity(): MessageEntity {
-  val messageEntity = MessageEntity()
-  messageEntity.id = this.internalMessageId
-  messageEntity.user = this.internalUserId
+  val messageEntity = MessageEntity(this.internalMessageId)
   messageEntity.conversation = this.internalConversationId
   messageEntity.messageId = this.jsonMessageId
   messageEntity.actorType = this.actorType

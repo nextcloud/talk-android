@@ -30,17 +30,17 @@ import org.parceler.Parcel;
 @Parcel
 public class NCSignalingMessage {
   @JsonField(name = "from")
-  String from;
+  public String from;
   @JsonField(name = "to")
-  String to;
+  public String to;
   @JsonField(name = "type")
-  String type;
+  public String type;
   @JsonField(name = "payload")
-  NCMessagePayload payload;
+  public NCMessagePayload payload;
   @JsonField(name = "roomType")
-  String roomType;
+  public String roomType;
   @JsonField(name = "sid")
-  String sid;
+  public String sid;
   @JsonField(name = "prefix")
-  String prefix;
+  public String prefix;
 }

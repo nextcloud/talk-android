@@ -24,6 +24,7 @@ import android.os.Handler;
 import androidx.annotation.Nullable;
 import com.nextcloud.talk.components.filebrowser.interfaces.ListingInterface;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import okhttp3.OkHttpClient;
 
 public abstract class ListingAbstractClass {
@@ -35,7 +36,7 @@ public abstract class ListingAbstractClass {
     this.listingInterface = listingInterface;
   }
 
-  public abstract void getFiles(String path, UserEntity currentUser,
+  public abstract void getFiles(String path, UserNgEntity currentUser,
       @Nullable OkHttpClient okHttpClient);
 
   public void cancelAllJobs() {

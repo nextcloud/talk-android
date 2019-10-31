@@ -28,6 +28,7 @@ import com.facebook.widget.text.span.BetterImageSpan;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.mention.Mention;
+import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.MagicCharPolicy;
 import com.nextcloud.talk.utils.text.Spans;
@@ -37,10 +38,10 @@ import com.vanniktech.emoji.EmojiUtils;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
   private Context context;
-  private UserEntity conversationUser;
+  private UserNgEntity conversationUser;
   private EditText editText;
 
-  public MentionAutocompleteCallback(Context context, UserEntity conversationUser,
+  public MentionAutocompleteCallback(Context context, UserNgEntity conversationUser,
       EditText editText) {
     this.context = context;
     this.conversationUser = conversationUser;

@@ -23,14 +23,15 @@ package com.nextcloud.talk.utils.preferences.preferencestorage;
 import android.content.Context;
 import com.nextcloud.talk.interfaces.ConversationInfoInterface;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import com.yarolegovich.mp.io.StorageModule;
 
 public class DatabaseStorageFactory implements StorageModule.Factory {
-  private UserEntity conversationUser;
+  private UserNgEntity conversationUser;
   private String conversationToken;
   private ConversationInfoInterface conversationInfoInterface;
 
-  public DatabaseStorageFactory(UserEntity conversationUser, String conversationToken,
+  public DatabaseStorageFactory(UserNgEntity conversationUser, String conversationToken,
       ConversationInfoInterface conversationInfoInterface) {
     this.conversationUser = conversationUser;
     this.conversationToken = conversationToken;

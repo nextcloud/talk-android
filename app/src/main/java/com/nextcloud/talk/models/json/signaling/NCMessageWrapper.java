@@ -30,12 +30,12 @@ import org.parceler.Parcel;
 @Parcel
 public class NCMessageWrapper {
   @JsonField(name = "fn")
-  NCSignalingMessage signalingMessage;
+  public NCSignalingMessage signalingMessage;
 
   // always a "message"
   @JsonField(name = "ev")
-  String ev;
+  public String ev;
 
   @JsonField(name = "sessionId")
-  String sessionId;
+  public String sessionId;
 }

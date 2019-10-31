@@ -73,7 +73,6 @@ import com.nextcloud.talk.components.filebrowser.controllers.BrowserController
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -81,8 +80,10 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.local.models.maxMessageLength
 import com.nextcloud.talk.newarch.utils.Images
-import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
@@ -94,7 +95,6 @@ import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.UserUtils
-import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
@@ -161,7 +161,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
   @JvmField
   var conversationLobbyText: TextView? = null
   var roomToken: String? = null
-  val conversationUser: UserEntity?
+  val conversationUser: UserNgEntity?
   val roomPassword: String
   var credentials: String? = null
   var currentConversation: Conversation? = null
@@ -459,7 +459,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     })
 
     val filters = arrayOfNulls<InputFilter>(1)
-    val lengthFilter = conversationUser?.messageMaxLength ?: 1000
+    val lengthFilter = conversationUser?.maxMessageLength() ?: 1000
 
 
     filters[0] = InputFilter.LengthFilter(lengthFilter)
@@ -627,7 +627,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     bundle.putParcelable(
         BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap<BrowserController.BrowserType>(browserType)
     )
-    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap<UserEntity>(conversationUser))
+    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap<UserNgEntity>(conversationUser))
     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
     router.pushController(
         RouterTransaction.with(BrowserController(bundle))
@@ -682,14 +682,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     }
 
     isLeavingForConversation = false
-    ApplicationWideCurrentRoomHolder.getInstance()
-        .currentRoomId = roomId
-    ApplicationWideCurrentRoomHolder.getInstance()
-        .currentRoomToken = roomId
-    ApplicationWideCurrentRoomHolder.getInstance()
-        .isInCall = false
-    ApplicationWideCurrentRoomHolder.getInstance()
-        .userInRoom = conversationUser
 
     isLinkPreviewAllowed = appPreferences.areLinkPreviewsAllowed
 
@@ -745,8 +737,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
   override fun onDetach(view: View) {
     eventBus.unregister(this)
-    ApplicationWideCurrentRoomHolder.getInstance()
-        .clear()
 
     if (activity != null) {
       activity?.findViewById<View>(R.id.toolbar)
@@ -850,10 +840,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
             override fun onNext(roomOverall: RoomOverall) {
               inConversation = true
               currentConversation?.sessionId = roomOverall.ocs.data.sessionId
-
-              ApplicationWideCurrentRoomHolder.getInstance()
-                  .session =
-                currentConversation?.sessionId
               startPing()
 
               setupWebsocket()
@@ -886,8 +872,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
           })
     } else {
       inConversation = true
-      ApplicationWideCurrentRoomHolder.getInstance()
-          .session = currentConversation?.sessionId
       if (magicWebSocketInstance != null) {
         magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
             roomToken,
@@ -1198,7 +1182,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                     chatMessageList[i + 1].createdAt
                 )
             ) {
-              chatMessageList[i].isGrouped = true
+              chatMessageList[i].grouped = true
               countGroupedMessages++
             } else {
               countGroupedMessages = 0
@@ -1206,7 +1190,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
           }
 
           val chatMessage = chatMessageList[i]
-          chatMessage.isOneToOneConversation =
+          chatMessage.oneToOneConversation =
             currentConversation?.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
           chatMessage.isLinkPreviewAllowed = isLinkPreviewAllowed
           chatMessage.activeUser = conversationUser
@@ -1272,11 +1256,11 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
           }
 
           if (adapter != null) {
-            chatMessage.isGrouped = (adapter!!.isPreviousSameAuthor(
+            chatMessage.grouped = (adapter!!.isPreviousSameAuthor(
                 chatMessage
                     .actorId, -1
             ) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) % 5 > 0)
-            chatMessage.isOneToOneConversation =
+            chatMessage.oneToOneConversation =
               (currentConversation?.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION)
             adapter?.addToStart(chatMessage, shouldScroll)
           }

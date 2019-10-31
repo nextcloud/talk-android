@@ -30,5 +30,5 @@ import org.parceler.Parcel;
 @JsonObject
 public class CapabilitiesList {
   @JsonField(name = "capabilities")
-  Capabilities capabilities;
+  public Capabilities capabilities;
 }

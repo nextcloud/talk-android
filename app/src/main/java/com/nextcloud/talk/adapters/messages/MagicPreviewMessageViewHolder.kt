@@ -43,12 +43,12 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile
 import com.nextcloud.talk.components.filebrowser.models.DavResponse
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE
 import com.nextcloud.talk.models.json.chat.ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE
 import com.nextcloud.talk.models.json.chat.ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE
 import com.nextcloud.talk.models.json.chat.ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.DisplayUtils.setClickableString
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
@@ -80,8 +80,8 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
   override fun onBind(message: ChatMessage) {
     super.onBind(message)
     if (userAvatar != null) {
-      if (message.isGrouped || message.isOneToOneConversation) {
-        if (message.isOneToOneConversation) {
+      if (message.grouped || message.oneToOneConversation) {
+        if (message.oneToOneConversation) {
           userAvatar.visibility = View.GONE
         } else {
           userAvatar.visibility = View.INVISIBLE
@@ -183,7 +183,7 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
 
   private fun fetchFileInformation(
     url: String,
-    activeUser: UserEntity?
+    activeUser: UserNgEntity?
   ) {
     Single.fromCallable {
       ReadFilesystemOperation(

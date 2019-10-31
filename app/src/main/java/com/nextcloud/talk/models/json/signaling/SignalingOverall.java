@@ -28,5 +28,5 @@ import lombok.Data;
 @Data
 public class SignalingOverall {
   @JsonField(name = "ocs")
-  SignalingOCS ocs;
+  public SignalingOCS ocs;
 }

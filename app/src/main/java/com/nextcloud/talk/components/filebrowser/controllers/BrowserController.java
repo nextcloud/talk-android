@@ -50,6 +50,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.interfaces.SelectionInterface;
 import com.nextcloud.talk.jobs.ShareOperationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import eu.davidea.fastscroller.FastScroller;
@@ -73,8 +74,6 @@ import org.parceler.Parcels;
 public class BrowserController extends BaseController implements ListingInterface,
     FlexibleAdapter.OnItemClickListener, SelectionInterface {
   private final Set<String> selectedPaths;
-  @Inject
-  UserUtils userUtils;
   @BindView(R.id.recyclerView)
   RecyclerView recyclerView;
   @BindView(R.id.fast_scroller)
@@ -97,7 +96,7 @@ public class BrowserController extends BaseController implements ListingInterfac
   private ListingAbstractClass listingAbstractClass;
   private BrowserType browserType;
   private String currentPath;
-  private UserEntity activeUser;
+  private UserNgEntity activeUser;
   private String roomToken;
 
   public BrowserController(Bundle args) {

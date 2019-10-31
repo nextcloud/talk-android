@@ -1,0 +1,207 @@
+/*
+ * Nextcloud Talk application
+ *
+ * @author Mario Danic
+ * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.nextcloud.talk.adapters.messages
+
+import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
+import android.net.Uri
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextUtils
+import android.util.TypedValue
+import android.view.View
+import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.emoji.widget.EmojiTextView
+import autodagger.AutoInjector
+import butterknife.BindView
+import butterknife.ButterKnife
+import com.amulyakhare.textdrawable.TextDrawable
+import com.facebook.drawee.view.SimpleDraweeView
+import com.google.android.flexbox.FlexboxLayout
+import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.TextMatchers
+import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.stfalcon.chatkit.messages.MessageHolders
+import org.koin.core.KoinComponent
+import org.koin.core.inject
+import javax.inject.Inject
+
+@AutoInjector(NextcloudTalkApplication::class)
+class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
+.IncomingTextMessageViewHolder<ChatMessage>(incomingView), KoinComponent {
+
+  @JvmField
+  @BindView(R.id.messageAuthor)
+  var messageAuthor: EmojiTextView? = null
+
+  @JvmField
+  @BindView(R.id.messageText)
+  var messageText: EmojiTextView? = null
+
+  @JvmField
+  @BindView(R.id.messageUserAvatar)
+  var messageUserAvatarView: SimpleDraweeView? = null
+
+  @JvmField
+  @BindView(R.id.messageTime)
+  var messageTimeView: TextView? = null
+
+  @JvmField
+  @Inject
+  var context: Context? = null
+
+  val appPreferences: AppPreferences by inject()
+
+  init {
+    ButterKnife.bind(
+        this,
+        itemView
+    )
+    NextcloudTalkApplication.sharedApplication!!
+        .componentApplication
+        .inject(this)
+  }
+
+  override fun onBind(message: ChatMessage) {
+    super.onBind(message)
+    val author: String = message.actorDisplayName
+    if (!TextUtils.isEmpty(author)) {
+      messageAuthor!!.text = author
+    } else {
+      messageAuthor!!.setText(R.string.nc_nick_guest)
+    }
+
+    if (!message.grouped && !message.oneToOneConversation) {
+      messageUserAvatarView!!.visibility = View.VISIBLE
+      if (message.actorType == "guests") {
+        // do nothing, avatar is set
+      } else if (message.actorType == "bots" && message.actorType == "changelog") {
+        messageUserAvatarView!!.controller = null
+        val layers = arrayOfNulls<Drawable>(2)
+        layers[0] = context!!.getDrawable(R.drawable.ic_launcher_background)
+        layers[1] = context!!.getDrawable(R.drawable.ic_launcher_foreground)
+        val layerDrawable = LayerDrawable(layers)
+
+        messageUserAvatarView!!.hierarchy
+            .setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
+      } else if (message.actorType == "bots") {
+        messageUserAvatarView!!.controller = null
+        val drawable = TextDrawable.builder()
+            .beginConfig()
+            .bold()
+            .endConfig()
+            .buildRound(
+                ">",
+                context!!.resources.getColor(R.color.black)
+            )
+        messageUserAvatarView!!.visibility = View.VISIBLE
+        messageUserAvatarView!!.hierarchy.setPlaceholderImage(drawable)
+      }
+    } else {
+      if (message.oneToOneConversation) {
+        messageUserAvatarView!!.visibility = View.GONE
+      } else {
+        messageUserAvatarView!!.visibility = View.INVISIBLE
+      }
+      messageAuthor!!.visibility = View.GONE
+    }
+
+    val resources = itemView.getResources()
+
+    val bg_bubble_color = resources.getColor(R.color.bg_message_list_incoming_bubble)
+
+    var bubbleResource = R.drawable.shape_incoming_message
+
+    if (message.grouped) {
+      bubbleResource = R.drawable.shape_grouped_incoming_message
+    }
+
+    val bubbleDrawable = DisplayUtils.getMessageSelector(
+        bg_bubble_color,
+        resources.getColor(R.color.transparent),
+        bg_bubble_color, bubbleResource
+    )
+    ViewCompat.setBackground(bubble, bubbleDrawable)
+
+    val messageParameters = message.messageParameters
+
+    itemView.setSelected(false)
+    messageTimeView!!.setTextColor(context!!.resources.getColor(R.color.warm_grey_four))
+
+    val layoutParams = messageTimeView!!.layoutParams as FlexboxLayout.LayoutParams
+    layoutParams.isWrapBefore = false
+
+    var messageString: Spannable = SpannableString(message.text)
+
+    var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
+
+    if (messageParameters != null && messageParameters.size > 0) {
+      for (key in messageParameters.keys) {
+        val individualHashMap = message.messageParameters[key]
+        if (individualHashMap != null) {
+          if (individualHashMap["type"] == "user" || individualHashMap["type"] == "guest" || individualHashMap["type"] == "call") {
+            if (individualHashMap["id"] == message.activeUser.userId) {
+              messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
+                  messageText!!.context,
+                  messageString,
+                  individualHashMap["id"]!!,
+                  individualHashMap["name"]!!,
+                  individualHashMap["type"]!!,
+                  message.activeUser,
+                  R.xml.chip_you
+              )
+            } else {
+              messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
+                  messageText!!.context,
+                  messageString,
+                  individualHashMap["id"]!!,
+                  individualHashMap["name"]!!,
+                  individualHashMap["type"]!!,
+                  message.activeUser,
+                  R.xml.chip_others
+              )
+            }
+          } else if (individualHashMap["type"] == "file") {
+            itemView.setOnClickListener({ v ->
+              val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
+              context!!.startActivity(browserIntent)
+            })
+          }
+        }
+      }
+    } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
+      textSize = (textSize * 2.5).toFloat()
+      layoutParams.isWrapBefore = true
+      itemView.setSelected(true)
+      messageAuthor!!.visibility = View.GONE
+    }
+
+    messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+    messageTimeView!!.layoutParams = layoutParams
+    messageText!!.text = messageString
+  }
+}

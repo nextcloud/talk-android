@@ -73,6 +73,9 @@ import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.local.models.hasSpreedFeatureCapability
 import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
@@ -174,7 +177,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
   lateinit var userUtils: UserUtils
 
   private val conversationToken: String?
-  private val conversationUser: UserEntity?
+  private val conversationUser: UserNgEntity?
   private val credentials: String?
   private var roomDisposable: Disposable? = null
   private var participantsDisposable: Disposable? = null
@@ -245,7 +248,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
     if (databaseStorageModule == null) {
       databaseStorageModule = DatabaseStorageModule(
-          conversationUser, conversationToken, this)
+          conversationUser!!, conversationToken!!, this)
     }
 
     notificationsPreferenceScreen.setStorageModule(databaseStorageModule)

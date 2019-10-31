@@ -18,19 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.models;
+package com.nextcloud.talk.models
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
-import org.parceler.Parcel;
+import android.os.Parcelable
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.android.parcel.Parcelize
+import lombok.Data
+import org.parceler.Parcel
 
 @Data
 @Parcel
 @JsonObject
-public class ExternalSignalingServer {
-  @JsonField(name = "externalSignalingServer")
-  public String externalSignalingServer;
-  @JsonField(name = "externalSignalingTicket")
-  public String externalSignalingTicket;
-}
+@Parcelize
+data class ExternalSignalingServer(
+  @JsonField(name = ["externalSignalingServer"])
+  var externalSignalingServer: String? = null,
+  @JsonField(name = ["externalSignalingTicket"])
+  var externalSignalingTicket: String? = null
+): Parcelable

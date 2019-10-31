@@ -34,6 +34,7 @@ import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ApiUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -54,7 +55,7 @@ import java.util.regex.Pattern
 
 class ConversationItem(
   val model: Conversation,
-  private val userEntity: UserEntity,
+  private val user: UserNgEntity,
   private val context: Context
 ) : AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder>(), IFilterable<String> {
 
@@ -74,7 +75,7 @@ class ConversationItem(
           && model.unreadMention == comparedConversation.unreadMention
           && model.objectType == comparedConversation.objectType
           && model.changing == comparedConversation.changing
-          && userEntity.id == inItem.userEntity.id)
+          && user.id == inItem.user.id)
     }
     return false
   }
@@ -82,7 +83,7 @@ class ConversationItem(
   override fun hashCode(): Int {
     return Objects.hash(
         model.conversationId, model.token,
-        userEntity.id
+        user.id
     )
   }
 
@@ -168,13 +169,13 @@ class ConversationItem(
         holder.itemView.dialogLastMessage!!.text = model.lastMessage!!.text
       } else {
         var authorDisplayName = ""
-        model.lastMessage!!.activeUser = userEntity
+        model.lastMessage!!.activeUser = user
         val text: String
         if (model.lastMessage!!
                 .messageType == ChatMessage.MessageType.REGULAR_TEXT_MESSAGE && (!(ONE_TO_ONE_CONVERSATION).equals(
-                model.type) || model.lastMessage!!.actorId == userEntity.userId)
+                model.type) || model.lastMessage!!.actorId == user.userId)
         ) {
-          if (model.lastMessage!!.actorId == userEntity.userId) {
+          if (model.lastMessage!!.actorId == user.userId) {
             text = String.format(
                 appContext.getString(R.string.nc_formatted_message_you),
                 model.lastMessage!!.lastMessageDisplayText
@@ -248,7 +249,7 @@ class ConversationItem(
         ) {
           holder.itemView.dialogAvatar.load(
               ApiUtils.getUrlForAvatarWithName(
-                  userEntity.baseUrl,
+                  user.baseUrl,
                   model.name, R.dimen.avatar_size
               )
           ) {

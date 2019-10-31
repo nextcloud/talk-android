@@ -246,15 +246,25 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
       var userNg: UserNgEntity
       val newUsers = mutableListOf<UserNgEntity>()
       for (user in users) {
-        userNg = UserNgEntity()
-        userNg.userId = user.userId
-        userNg.username = user.username
+        userNg = UserNgEntity(user.id, user.userId, user.username, user.baseUrl)
         userNg.token = user.token
         userNg.displayName = user.displayName
-        userNg.pushConfiguration = LoganSquare.parse(user.pushConfigurationState, PushConfigurationState::class.java)
-        userNg.capabilities = LoganSquare.parse(user.capabilities, Capabilities::class.java)
+        try {
+          userNg.pushConfiguration =
+            LoganSquare.parse(user.pushConfigurationState, PushConfigurationState::class.java)
+        } catch (e: Exception) {
+          // no push
+        }
+        if (user.capabilities != null) {
+          userNg.capabilities = LoganSquare.parse(user.capabilities, Capabilities::class.java)
+        }
         userNg.clientCertificate = user.clientCertificate
-        userNg.externalSignaling = LoganSquare.parse(user.externalSignalingServer, ExternalSignalingServer::class.java)
+        try {
+          userNg.externalSignaling =
+            LoganSquare.parse(user.externalSignalingServer, ExternalSignalingServer::class.java)
+        } catch (e: Exception) {
+          // no external signaling
+        }
         if (user.current) {
           userNg.status = ACTIVE
         } else {

@@ -37,17 +37,18 @@ import java.util.HashMap
 
 @Entity(
     tableName = "conversations",
-    indices = [Index(value = ["user"])],
+    indices = [Index(value = ["user", "conversation_id"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = UserNgEntity::class,
         parentColumns = arrayOf("id"),
         childColumns = arrayOf("user"),
         onDelete = CASCADE,
+        onUpdate = CASCADE,
         deferred = true
     )]
 )
 data class ConversationEntity(
-  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long? = null,
+  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long? = 0,
   @ColumnInfo(name = "user") var user: Long?,
   @ColumnInfo(name = "conversation_id") var conversationId: String?,
   @ColumnInfo(name = "token") var token: String? = null,
@@ -77,7 +78,7 @@ data class ConversationEntity(
   ) var conversationReadOnlyState: ConversationReadOnlyState? = null,
   @ColumnInfo(name = "lobby_state") var lobbyState: LobbyState? = null,
   @ColumnInfo(name = "lobby_timer") var lobbyTimer: Long? = null,
-  @ColumnInfo(name = "last_read_message_id") var lastReadMessageId: Long = 0,
+  @ColumnInfo(name = "last_read_message") var lastReadMessageId: Long = 0,
   @ColumnInfo(name = "modified_at") var modifiedAt: Long? = null,
   @ColumnInfo(name = "changing") var changing: Boolean = false
 )
@@ -116,8 +117,7 @@ fun ConversationEntity.toConversation(): Conversation {
 }
 
 fun Conversation.toConversationEntity(): ConversationEntity {
-  val conversationEntity =
-    ConversationEntity(this.internalId, this.internalUserId, this.conversationId)
+  val conversationEntity = ConversationEntity(null, this.internalUserId, this.conversationId)
   conversationEntity.token = this.token
   conversationEntity.name = this.name
   conversationEntity.displayName = this.displayName

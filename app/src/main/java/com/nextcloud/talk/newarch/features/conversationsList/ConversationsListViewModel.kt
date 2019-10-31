@@ -22,7 +22,7 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.Application
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
@@ -30,17 +30,18 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.R.drawable
 import com.nextcloud.talk.R.string
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
+import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.utils.ViewState.LOADING
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
@@ -54,25 +55,17 @@ class ConversationsListViewModel constructor(
   private val leaveConversationUseCase: LeaveConversationUseCase,
   private val deleteConversationUseCase: DeleteConversationUseCase,
   private val userUtils: UserUtils,
-  private val offlineRepository: ConversationsRepository
+  private val conversationsRepository: ConversationsRepository,
+  usersRepository: UsersRepository
 ) : BaseViewModel<ConversationsListView>(application) {
 
   val viewState = MutableLiveData(LOADING)
   var messageData: String? = null
   val searchQuery = MutableLiveData<String>()
-  val currentUserLiveData: MutableLiveData<UserEntity> = MutableLiveData()
+  val currentUserLiveData = usersRepository.getActiveUserLiveData()
   val conversationsLiveData = Transformations.switchMap(currentUserLiveData) {
-    offlineRepository.getConversationsForUser(it.id)
+    conversationsRepository.getConversationsForUser(it.id)
   }
-
-  var currentUserAvatar: MutableLiveData<Drawable> = MutableLiveData()
-    get() {
-      if (field.value == null) {
-        field.value = context.resources.getDrawable(drawable.ic_settings_white_24dp)
-      }
-
-      return field
-    }
 
   fun leaveConversation(conversation: Conversation) {
     viewModelScope.launch {
@@ -85,7 +78,7 @@ class ConversationsListViewModel constructor(
     ),
         object : UseCaseResponse<GenericOverall> {
           override suspend fun onSuccess(result: GenericOverall) {
-            offlineRepository.deleteConversation(
+            conversationsRepository.deleteConversation(
                 currentUserLiveData.value!!.id, conversation
                 .conversationId!!
             )
@@ -114,7 +107,7 @@ class ConversationsListViewModel constructor(
     ),
         object : UseCaseResponse<GenericOverall> {
           override suspend fun onSuccess(result: GenericOverall) {
-            offlineRepository.deleteConversation(
+            conversationsRepository.deleteConversation(
                 currentUserLiveData.value!!.id, conversation
                 .conversationId!!
             )
@@ -145,7 +138,7 @@ class ConversationsListViewModel constructor(
     ),
         object : UseCaseResponse<GenericOverall> {
           override suspend fun onSuccess(result: GenericOverall) {
-            offlineRepository.setFavoriteValueForConversation(
+            conversationsRepository.setFavoriteValueForConversation(
                 currentUserLiveData.value!!.id,
                 conversation.conversationId!!, favorite
             )
@@ -161,22 +154,18 @@ class ConversationsListViewModel constructor(
   }
 
   fun loadConversations() {
-    val userChanged = !(currentUserLiveData.value?.equals(userUtils.currentUser) ?: false)
-
-    if (userChanged) {
-      currentUserLiveData.value = userUtils.currentUser
-      viewState.value = LOADING
-    }
-
     getConversationsUseCase.invoke(viewModelScope, parametersOf(currentUserLiveData.value), object :
         UseCaseResponse<List<Conversation>> {
       override suspend fun onSuccess(result: List<Conversation>) {
         val mutableList = result.toMutableList()
+        val internalUserId = currentUserLiveData.value!!.id
         mutableList.forEach {
-          it.internalUserId = currentUserLiveData.value!!.id
+          it.internalUserId = internalUserId
         }
 
-        offlineRepository.saveConversationsForUser(currentUserLiveData.value!!.id, mutableList)
+        conversationsRepository.saveConversationsForUser(
+            internalUserId,
+            mutableList)
         messageData = ""
       }
 
@@ -266,7 +255,7 @@ class ConversationsListViewModel constructor(
     conversation: Conversation,
     value: Boolean
   ) {
-    offlineRepository.setChangingValueForConversation(
+    conversationsRepository.setChangingValueForConversation(
         currentUserLiveData.value!!.id, conversation
         .conversationId!!, value
     )

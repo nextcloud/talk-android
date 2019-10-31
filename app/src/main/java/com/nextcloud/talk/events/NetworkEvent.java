@@ -24,7 +24,7 @@ import lombok.Data;
 
 @Data
 public class NetworkEvent {
-  private final NetworkConnectionEvent networkConnectionEvent;
+  public final NetworkConnectionEvent networkConnectionEvent;
 
   public NetworkEvent(NetworkConnectionEvent networkConnectionEvent) {
     this.networkConnectionEvent = networkConnectionEvent;

@@ -34,6 +34,8 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumReadOnlyConversationConverter
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.hasSpreedFeatureCapability
 import lombok.Data
 import org.parceler.Parcel
 import org.parceler.ParcelConstructor
@@ -120,36 +122,36 @@ class Conversation {
       return resources.getString(R.string.nc_delete_conversation_default)
     }
 
-  private fun isLockedOneToOne(conversationUser: UserEntity): Boolean {
+  private fun isLockedOneToOne(conversationUser: UserNgEntity): Boolean {
     return type == ConversationType.ONE_TO_ONE_CONVERSATION && conversationUser
         .hasSpreedFeatureCapability(
             "locked-one-to-one-rooms"
         )
   }
 
-  fun canModerate(conversationUser: UserEntity): Boolean {
+  fun canModerate(conversationUser: UserNgEntity): Boolean {
     return (Participant.ParticipantType.OWNER == participantType || Participant.ParticipantType.MODERATOR == participantType) && !isLockedOneToOne(
         conversationUser
     )
   }
 
-  fun shouldShowLobby(conversationUser: UserEntity): Boolean {
+  fun shouldShowLobby(conversationUser: UserNgEntity): Boolean {
     return LobbyState.LOBBY_STATE_MODERATORS_ONLY == lobbyState && !canModerate(
         conversationUser
     )
   }
 
-  fun isLobbyViewApplicable(conversationUser: UserEntity): Boolean {
+  fun isLobbyViewApplicable(conversationUser: UserNgEntity): Boolean {
     return !canModerate(
         conversationUser
     ) && (type == ConversationType.GROUP_CONVERSATION || type == ConversationType.PUBLIC_CONVERSATION)
   }
 
-  fun isNameEditable(conversationUser: UserEntity): Boolean {
+  fun isNameEditable(conversationUser: UserNgEntity): Boolean {
     return canModerate(conversationUser) && ConversationType.ONE_TO_ONE_CONVERSATION != type
   }
 
-  fun canLeave(conversationUser: UserEntity): Boolean {
+  fun canLeave(conversationUser: UserNgEntity): Boolean {
     return !canModerate(
         conversationUser
     ) || type != ConversationType.ONE_TO_ONE_CONVERSATION && participants!!.size > 1

@@ -24,11 +24,11 @@ import lombok.Data;
 
 @Data
 public class BottomSheetLockEvent {
-  private final boolean cancelable;
-  private final int delay;
-  private final boolean shouldRefreshData;
-  private final boolean cancel;
-  private boolean dismissView;
+  public final boolean cancelable;
+  public final int delay;
+  public final boolean shouldRefreshData;
+  public final boolean cancel;
+  public boolean dismissView;
 
   public BottomSheetLockEvent(boolean cancelable, int delay, boolean shouldRefreshData,
       boolean cancel) {

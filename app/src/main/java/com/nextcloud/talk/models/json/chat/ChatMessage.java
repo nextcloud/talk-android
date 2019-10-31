@@ -29,6 +29,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
+import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.TextMatchers;
 import com.stfalcon.chatkit.commons.models.IMessage;
@@ -48,13 +49,13 @@ import org.parceler.Parcel;
 public class ChatMessage implements IMessage, MessageContentType, MessageContentType.Image {
   @JsonIgnore
   @Ignore
-  public boolean isGrouped;
+  public boolean grouped;
   @JsonIgnore
   @Ignore
-  public boolean isOneToOneConversation;
+  public boolean oneToOneConversation;
   @JsonIgnore
   @Ignore
-  public UserEntity activeUser;
+  public UserNgEntity activeUser;
   @JsonIgnore
   @Ignore
   public Map<String, String> selectedIndividualHashMap;

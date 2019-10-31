@@ -31,11 +31,11 @@ import org.parceler.ParcelPropertyConverter;
 @JsonObject
 public class DataChannelMessageNick {
   @JsonField(name = "type")
-  String type;
+  public String type;
 
   @ParcelPropertyConverter(ObjectParcelConverter.class)
   @JsonField(name = "payload")
-  HashMap<String, String> payload;
+  public HashMap<String, String> payload;
 
   public DataChannelMessageNick(String type) {
     this.type = type;

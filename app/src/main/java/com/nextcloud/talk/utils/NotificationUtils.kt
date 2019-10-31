@@ -30,6 +30,7 @@ import android.os.Build
 import android.service.notification.StatusBarNotification
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 
 object NotificationUtils {
@@ -91,7 +92,7 @@ object NotificationUtils {
 
   fun cancelAllNotificationsForAccount(
     context: Context?,
-    conversationUser: UserEntity
+    conversationUser: UserNgEntity
   ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L && context != null) {
 
@@ -115,7 +116,7 @@ object NotificationUtils {
 
   fun cancelExistingNotificationWithId(
     context: Context?,
-    conversationUser: UserEntity,
+    conversationUser: UserNgEntity,
     notificationId: Long
   ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
@@ -144,7 +145,7 @@ object NotificationUtils {
 
   fun findNotificationForRoom(
     context: Context?,
-    conversationUser: UserEntity,
+    conversationUser: UserNgEntity,
     roomTokenOrId: String
   ): StatusBarNotification? {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
@@ -177,7 +178,7 @@ object NotificationUtils {
 
   fun cancelExistingNotificationsForRoom(
     context: Context?,
-    conversationUser: UserEntity,
+    conversationUser: UserNgEntity,
     roomTokenOrId: String
   ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&

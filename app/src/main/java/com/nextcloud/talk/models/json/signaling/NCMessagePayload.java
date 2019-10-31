@@ -30,17 +30,17 @@ import org.parceler.Parcel;
 @Parcel
 public class NCMessagePayload {
   @JsonField(name = "type")
-  String type;
+  public String type;
 
   @JsonField(name = "sdp")
-  String sdp;
+  public String sdp;
 
   @JsonField(name = "nick")
-  String nick;
+  public String nick;
 
   @JsonField(name = "candidate")
-  NCIceCandidate iceCandidate;
+  public NCIceCandidate iceCandidate;
 
   @JsonField(name = "name")
-  String name;
+  public String name;
 }

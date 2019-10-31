@@ -30,11 +30,11 @@ import org.parceler.Parcel;
 @Parcel
 public class NCIceCandidate {
   @JsonField(name = "sdpMLineIndex")
-  int sdpMLineIndex;
+  public int sdpMLineIndex;
 
   @JsonField(name = "sdpMid")
-  String sdpMid;
+  public String sdpMid;
 
   @JsonField(name = "candidate")
-  String candidate;
+  public String candidate;
 }

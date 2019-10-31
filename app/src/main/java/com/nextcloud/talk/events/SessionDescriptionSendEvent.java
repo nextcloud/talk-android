@@ -28,12 +28,12 @@ import org.webrtc.SessionDescription;
 @Data
 public class SessionDescriptionSendEvent {
   @Nullable
-  private final SessionDescription sessionDescription;
-  private final String peerId;
-  private final String type;
+  public final SessionDescription sessionDescription;
+  public final String peerId;
+  public final String type;
   @Nullable
-  private final NCIceCandidate ncIceCandidate;
-  private final String videoStreamType;
+  public final NCIceCandidate ncIceCandidate;
+  public final String videoStreamType;
 
   public SessionDescriptionSendEvent(@Nullable SessionDescription sessionDescription, String peerId,
       String type,

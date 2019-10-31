@@ -20,6 +20,11 @@
 
 package com.nextcloud.talk.newarch.domain.repository.offline
 
-interface UsersRepository {
+import androidx.lifecycle.LiveData
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
+interface UsersRepository {
+  fun getActiveUserLiveData(): LiveData<UserNgEntity>
+  fun getActiveUser(): UserNgEntity
+  fun getUsers(): List<UserNgEntity>
 }

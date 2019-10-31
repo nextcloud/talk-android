@@ -25,6 +25,7 @@ import com.nextcloud.talk.components.filebrowser.interfaces.ListingInterface;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
@@ -40,7 +41,7 @@ public class DavListing extends ListingAbstractClass {
   }
 
   @Override
-  public void getFiles(String path, UserEntity currentUser, @Nullable OkHttpClient okHttpClient) {
+  public void getFiles(String path, UserNgEntity currentUser, @Nullable OkHttpClient okHttpClient) {
     Single.fromCallable(new Callable<ReadFilesystemOperation>() {
       @Override
       public ReadFilesystemOperation call() {

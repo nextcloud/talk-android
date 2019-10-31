@@ -23,22 +23,23 @@ package com.nextcloud.talk.newarch.domain.repository.online
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 interface NextcloudTalkRepository {
-  suspend fun getConversationsForUser(user: UserEntity): List<Conversation>
+  suspend fun getConversationsForUser(user: UserNgEntity): List<Conversation>
   suspend fun setFavoriteValueForConversation(
-    user: UserEntity,
+    user: UserNgEntity,
     conversation: Conversation,
     favorite: Boolean
   ): GenericOverall
 
   suspend fun deleteConversationForUser(
-    user: UserEntity,
+    user: UserNgEntity,
     conversation: Conversation
   ): GenericOverall
 
   suspend fun leaveConversationForUser(
-    userEntity: UserEntity,
+    userEntity: UserNgEntity,
     conversation: Conversation
   ): GenericOverall
 }

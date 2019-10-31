@@ -20,14 +20,24 @@
 
 package com.nextcloud.talk.newarch.local.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.newarch.local.models.ConversationEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 @Dao
 abstract class UsersDao {
+  // get active user
+  @Query("SELECT * FROM users where status = 1")
+  abstract fun getActiveUser(): UserNgEntity
+
+  @Query("SELECT * FROM users WHERE status = 1")
+  abstract fun getActiveUserLiveData(): LiveData<UserNgEntity>
+
   @Query("DELETE FROM users WHERE id = :userId")
   abstract fun deleteUserForId(userId: Long)
 
@@ -40,6 +50,7 @@ abstract class UsersDao {
   // get all users not scheduled for deletion
   @Query("SELECT * FROM users where status != 2")
   abstract fun getUsers(): List<UserNgEntity>
+
 
   @Query("SELECT * FROM users where status = 2")
   abstract fun getUsersScheduledForDeletion(): List<UserNgEntity>

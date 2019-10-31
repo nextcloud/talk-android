@@ -18,29 +18,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.models.json.push;
+package com.nextcloud.talk.models.json.push
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
-import org.parceler.Parcel;
+import android.os.Parcelable
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.android.parcel.Parcelize
+import lombok.Data
+import org.parceler.Parcel
 
 @Parcel
 @Data
 @JsonObject
-public class PushConfigurationState {
-  @JsonField(name = "pushToken")
-  public String pushToken;
-
-  @JsonField(name = "deviceIdentifier")
-  public String deviceIdentifier;
-
-  @JsonField(name = "deviceIdentifierSignature")
-  public String deviceIdentifierSignature;
-
-  @JsonField(name = "userPublicKey")
-  public String userPublicKey;
-
-  @JsonField(name = "usesRegularPass")
-  public boolean usesRegularPass;
-}
+@Parcelize
+class PushConfigurationState(
+  @JsonField(name = ["pushToken"])
+  var pushToken: String? = null,
+  @JsonField(name = ["deviceIdentifier"])
+  var deviceIdentifier: String? = null,
+  @JsonField(name = ["deviceIdentifierSignature"])
+  var deviceIdentifierSignature: String? = null,
+  @JsonField(name = ["userPublicKey"])
+  var userPublicKey: String? = null,
+  @JsonField(name = ["usesRegularPass"])
+  var usesRegularPass: Boolean = false
+): Parcelable

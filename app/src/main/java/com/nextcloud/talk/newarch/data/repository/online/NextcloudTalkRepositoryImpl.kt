@@ -25,12 +25,14 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 
 class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : NextcloudTalkRepository {
   override suspend fun deleteConversationForUser(
-    user: UserEntity,
+    user: UserNgEntity,
     conversation: Conversation
   ): GenericOverall {
     return apiService.deleteConversation(
@@ -39,7 +41,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
   }
 
   override suspend fun leaveConversationForUser(
-    user: UserEntity,
+    user: UserNgEntity,
     conversation: Conversation
   ): GenericOverall {
     return apiService.leaveConversation(
@@ -51,7 +53,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
   }
 
   override suspend fun setFavoriteValueForConversation(
-    user: UserEntity,
+    user: UserNgEntity,
     conversation: Conversation,
     favorite: Boolean
   ): GenericOverall {
@@ -68,7 +70,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
     }
   }
 
-  override suspend fun getConversationsForUser(user: UserEntity): List<Conversation> {
+  override suspend fun getConversationsForUser(user: UserNgEntity): List<Conversation> {
     return apiService.getConversations(
         user.getCredentials(),
         ApiUtils.getUrlForGetRooms(user.baseUrl)

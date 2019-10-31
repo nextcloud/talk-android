@@ -27,6 +27,8 @@ import coil.request.LoadRequest
 import coil.target.Target
 import coil.transform.Transformation
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
 
 class Images {
   fun getRequestForUrl(
@@ -34,7 +36,7 @@ class Images {
     context: Context,
     url: String,
     userEntity:
-    UserEntity?,
+    UserNgEntity?,
     target: Target?,
     lifecycleOwner: LifecycleOwner?,
     vararg transformations: Transformation

@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.newarch.local.models
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -27,17 +28,68 @@ import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
+import com.nextcloud.talk.utils.ApiUtils
+import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
+import kotlinx.android.parcel.WriteWith
 
+@Parcelize
 @Entity(tableName = "users")
 data class UserNgEntity(
-  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long? = null,
-  @ColumnInfo(name = "user_id") var userId: String? = null,
-  @ColumnInfo(name = "username") var username: String? = null,
+  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long,
+  @ColumnInfo(name = "user_id") var userId: String,
+  @ColumnInfo(name = "username") var username: String,
+  @ColumnInfo(name = "base_url") var baseUrl: String,
   @ColumnInfo(name = "token") var token: String? = null,
   @ColumnInfo(name = "display_name") var displayName: String? = null,
-  @ColumnInfo(name = "push_configuration") var pushConfiguration: PushConfigurationState? = null,
-  @ColumnInfo(name = "capabilities") var capabilities: Capabilities? = null,
+  @ColumnInfo(
+      name = "push_configuration"
+  ) var pushConfiguration: PushConfigurationState? = null,
+  @ColumnInfo(name = "capabilities") var capabilities: @RawValue Capabilities? = null,
   @ColumnInfo(name = "client_auth_cert") var clientCertificate: String? = null,
-  @ColumnInfo(name = "external_signaling") var externalSignaling: ExternalSignalingServer? = null,
+  @ColumnInfo(
+      name = "external_signaling"
+  ) var externalSignaling: ExternalSignalingServer? = null,
   @ColumnInfo(name = "status") var status: UserStatus? = null
-)
+) : Parcelable {
+  fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
+    val capabilityExists = capabilities?.spreedCapability?.features?.contains(capabilityName)
+    if (capabilityExists != null) {
+      return capabilityExists
+    } else {
+      return false
+    }
+
+  }
+}
+
+fun UserNgEntity.getCredentials() = ApiUtils.getCredentials(username, token)
+
+fun UserNgEntity.hasExternalCapability(capabilityName: String): Boolean {
+  val capabilityExists = capabilities?.externalCapability?.get("v1")
+      ?.contains(capabilityName)
+  if (capabilityExists != null) {
+    return capabilityExists
+  } else {
+    return false
+  }
+}
+
+fun UserNgEntity.hasSpreedFeatureCapability(capabilityName: String): Boolean {
+  val capabilityExists = capabilities?.spreedCapability?.features?.contains(capabilityName)
+  if (capabilityExists != null) {
+    return capabilityExists
+  } else {
+    return false
+  }
+}
+
+fun UserNgEntity.maxMessageLength(): Int {
+  val maxLength = capabilities?.spreedCapability?.config?.get("chat")
+      ?.get("max-length")
+  if (maxLength != null) {
+    return maxLength.toInt()
+  } else {
+    return 1000
+  }
+}

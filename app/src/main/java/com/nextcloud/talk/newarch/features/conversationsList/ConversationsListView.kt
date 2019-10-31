@@ -310,11 +310,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         recyclerViewAdapter.setFilter(it)
         recyclerViewAdapter.filterItems(500)
       })
-
-
-      currentUserAvatar.observe(this@ConversationsListView, Observer {
-        settingsItem?.icon = it
-      })
     }
 
     return super.onCreateView(inflater, container)
@@ -452,12 +447,12 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
       val conversation = (clickedItem as ConversationItem).model
 
       val bundle = Bundle()
-      bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, viewModel.currentUserLiveData.value)
+      bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(viewModel.currentUserLiveData.value))
       bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
       bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.conversationId)
       bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
       ConductorRemapping.remapChatController(
-          router, viewModel.currentUserLiveData.value!!.id, conversation!!.token!!,
+          router, viewModel.currentUserLiveData.value!!.id!!, conversation.token!!,
           bundle, false
       )
     }

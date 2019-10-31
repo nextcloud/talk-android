@@ -30,5 +30,5 @@ import org.parceler.Parcel;
 @JsonObject
 public class PushRegistrationOverall {
   @JsonField(name = "ocs")
-  PushRegistrationOCS ocs;
+  public PushRegistrationOCS ocs;
 }

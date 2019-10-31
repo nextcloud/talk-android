@@ -35,6 +35,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile
 import com.nextcloud.talk.interfaces.SelectionInterface
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
@@ -49,7 +51,7 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class BrowserFileItem(
   val model: BrowserFile,
-  private val activeUser: UserEntity,
+  private val activeUser: UserNgEntity,
   private val selectionInterface: SelectionInterface
 ) : AbstractFlexibleItem<BrowserFileItem.ViewHolder>(), IFilterable<String> {
   @JvmField
@@ -63,9 +65,9 @@ class BrowserFileItem(
         .inject(this)
   }
 
-  override fun equals(o: Any?): Boolean {
-    if (o is BrowserFileItem) {
-      val inItem = o as BrowserFileItem?
+  override fun equals(other: Any?): Boolean {
+    if (other is BrowserFileItem) {
+      val inItem = other as BrowserFileItem?
       return model.path == inItem!!.model.path
     }
 

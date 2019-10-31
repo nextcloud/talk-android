@@ -76,7 +76,7 @@ class MagicCallActivity : BaseActivity() {
         )
       } else {
         router!!.setRoot(
-            RouterTransaction.with(CallController(intent.extras))
+            RouterTransaction.with(CallController(intent.extras!!))
                 .pushChangeHandler(HorizontalChangeHandler())
                 .popChangeHandler(HorizontalChangeHandler())
         )

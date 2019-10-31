@@ -21,6 +21,7 @@
 package com.nextcloud.talk.newarch.utils
 
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ApiUtils
 
 fun UserEntity.getCredentials() = ApiUtils.getCredentials(username, token)

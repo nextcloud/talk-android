@@ -72,6 +72,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.text.Spans
 import org.greenrobot.eventbus.EventBus
@@ -200,7 +201,7 @@ object DisplayUtils {
     context: Context,
     id: String,
     label: CharSequence,
-    conversationUser: UserEntity,
+    conversationUser: UserNgEntity,
     type: String,
     @XmlRes chipResource: Int,
     emojiEditText: EditText?
@@ -278,7 +279,7 @@ object DisplayUtils {
     id: String,
     label: String,
     type: String,
-    conversationUser: UserEntity,
+    conversationUser: UserNgEntity,
     @XmlRes chipXmlRes: Int
   ): Spannable {
 
