@@ -94,7 +94,6 @@ public class ApiUtils {
         retrofitBucket.setUrl(baseUrl + ocsApiVersion + "/core/autocomplete/get");
 
         retrofitBucket.getQueryMap().put("itemId", "new");
-        retrofitBucket.getQueryMap().put("limit", "50");
 
         return retrofitBucket;
     }
