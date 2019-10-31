@@ -296,4 +296,10 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
 
     <string name="nc_general_settings">Algemeen</string>
     <string name="nc_allow_guests">Laat gasten toe</string>
+    <string name="nc_last_moderator_title">Kon het gesprek niet verlaten</string>
+    <string name="nc_last_moderator">Je moet eerst een nieuwe moderator kiezen voordat je het gesprek kan verlaten %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+
     </resources>

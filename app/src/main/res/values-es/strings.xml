@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_username">Nombre de usuario</string>
     <string name="nc_password">Contraseña</string>
+    <string name="nc_password_redacted">Redactado por razones de privacidad</string>
     <string name="nc_conversation_link">Enlace a la llamada</string>
     <string name="nc_new_password">Nueva contraseña</string>
     <string name="nc_wrong_password">Contraseña errónea</string>
@@ -128,6 +129,8 @@
     <string name="nc_start_conversation">Comienza una conversación</string>
     <string name="nc_configure_room">Configura la conversación</string>
     <string name="nc_leave">Abandonar conversación</string>
+    <string name="nc_leave_message">Por favor confirma tu intento de salir de esta conversación</string>
+    <string name="nc_simple_leave">Salir</string>
     <string name="nc_rename">Renombrar conversación</string>
     <string name="nc_set_password">Configura una contraseña</string>
     <string name="nc_change_password">Cambiar contraseña</string>
@@ -138,11 +141,18 @@
     <string name="nc_make_call_private">Hacer privada la conversación</string>
     <string name="nc_delete_call">Eliminar conversación</string>
     <string name="nc_delete">Borrar</string>
+    <string name="nc_delete_conversation_default">Por favor confirma tu intento de eliminar esta conversación</string>
+    <string name="nc_delete_conversation_one2one">Si tú eliminas la conversación también se eliminará para %1$s</string>
+    <string name="nc_delete_conversation_more">Si tú eliminas esta conversación también sera eliminada para todos los otros participantes</string>
+
     <string name="nc_new_conversation">Nueva conversación</string>
     <string name="nc_join_via_link">Unirse con un enlace</string>
     <string name="nc_join_via_web">Unirse vía web</string>
+    <string name="nc_favorite_conversation">Conversación favorita</string>
     <string name="nc_add_to_favorites">Añadir a favoritos</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
+    <string name="nc_favorites_explanation">La conversación será colocada en la parte superior de la lista de conversaciones</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Seleccionar contactos</string>
     <string name="nc_contacts_done">Hecho</string>
@@ -272,5 +282,21 @@
     <string name="nc_lobby_waiting_with_date">Ahora estás esperando en el recibidor.\n Esta
         reunión está planificada para %1$s.</string>
     <string name="nc_manual">No configurado</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">No hay conexión</string>
+    <string name="nc_bad_response_error">Mala respuesta</string>
+    <string name="nc_timeout_error">Tiempo de espera agotado</string>
+    <string name="nc_empty_response_error">Respuesta vacía</string>
+    <string name="nc_not_defined_error">Error desconocido</string>
+    <string name="nc_unauthorized_error">Desautorizado</string>
+
+    <string name="nc_general_settings">General</string>
+    <string name="nc_allow_guests">Permitir invitados</string>
+    <string name="nc_last_moderator_title">No puedes dejar la conversación</string>
+    <string name="nc_last_moderator">Necesitas establecer a un nuevo moderador antes de salir %1$s</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
 
     </resources>
