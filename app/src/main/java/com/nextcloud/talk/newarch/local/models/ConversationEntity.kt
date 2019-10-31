@@ -48,9 +48,9 @@ import java.util.HashMap
     )]
 )
 data class ConversationEntity(
-  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long? = 0,
-  @ColumnInfo(name = "user") var user: Long?,
-  @ColumnInfo(name = "conversation_id") var conversationId: String?,
+  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long? = null,
+  @ColumnInfo(name = "user") var user: Long? = null,
+  @ColumnInfo(name = "conversation_id") var conversationId: String? = null,
   @ColumnInfo(name = "token") var token: String? = null,
   @ColumnInfo(name = "name") var name: String? = null,
   @ColumnInfo(name = "display_name") var displayName: String? = null,
@@ -117,7 +117,9 @@ fun ConversationEntity.toConversation(): Conversation {
 }
 
 fun Conversation.toConversationEntity(): ConversationEntity {
-  val conversationEntity = ConversationEntity(null, this.internalUserId, this.conversationId)
+  val conversationEntity = ConversationEntity()
+  conversationEntity.user = this.internalUserId
+  conversationEntity.conversationId = this.conversationId
   conversationEntity.token = this.token
   conversationEntity.name = this.name
   conversationEntity.displayName = this.displayName

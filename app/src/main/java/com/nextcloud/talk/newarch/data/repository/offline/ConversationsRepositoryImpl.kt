@@ -21,6 +21,7 @@
 package com.nextcloud.talk.newarch.data.repository.offline
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
@@ -57,13 +58,14 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
   }
 
   override fun getConversationsForUser(userId: Long): LiveData<List<Conversation>> {
-    return conversationsDao
+    return Transformations.distinctUntilChanged(conversationsDao
         .getConversationsForUser(userId)
         .map { data ->
           data.map {
             it.toConversation()
           }
         }
+    )
   }
 
   override suspend fun clearConversationsForUser(userId: Long) {
@@ -75,12 +77,14 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
     userId: Long,
     conversations: List<Conversation>
   ) {
+    val map = conversations.map {
+      it.toConversationEntity()
+    }
+
     conversationsDao
         .updateConversationsForUser(
             userId,
-            conversations.map {
-              it.toConversationEntity()
-            }.toTypedArray()
+            map.toTypedArray()
         )
   }
 

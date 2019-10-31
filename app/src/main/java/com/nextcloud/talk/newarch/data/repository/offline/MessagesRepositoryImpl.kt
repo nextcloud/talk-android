@@ -27,7 +27,6 @@ import com.nextcloud.talk.newarch.local.dao.MessagesDao
 
 class MessagesRepositoryImpl(val messagesDao: MessagesDao): MessagesRepository {
   override fun getMessagesWithUserForConversation(
-    userId: Int,
     conversationId: String
   ): LiveData<List<ChatMessage>> {
     TODO(

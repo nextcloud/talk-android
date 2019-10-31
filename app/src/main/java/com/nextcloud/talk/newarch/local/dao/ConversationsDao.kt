@@ -31,10 +31,11 @@ import com.nextcloud.talk.newarch.local.models.ConversationEntity
 
 @Dao
 abstract class ConversationsDao {
-  @Query("SELECT * FROM conversations WHERE id = :userId")
+
+  @Query("SELECT * FROM conversations WHERE user = :userId ORDER BY favorite DESC, last_activity DESC")
   abstract fun getConversationsForUser(userId: Long): LiveData<List<ConversationEntity>>
 
-  @Query("DELETE FROM conversations WHERE id = :userId")
+  @Query("DELETE FROM conversations WHERE user = :userId")
   abstract suspend fun clearConversationsForUser(userId: Long)
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -50,7 +51,7 @@ abstract class ConversationsDao {
   abstract suspend fun saveConversations(vararg conversations: ConversationEntity)
 
   @Query(
-      "UPDATE conversations SET changing = :changing WHERE id = :userId AND conversation_id = :conversationId"
+      "UPDATE conversations SET changing = :changing WHERE user = :userId AND conversation_id = :conversationId"
   )
   abstract suspend fun updateChangingValueForConversation(
     userId: Long,
@@ -59,7 +60,7 @@ abstract class ConversationsDao {
   )
 
   @Query(
-      "UPDATE conversations SET favorite = :favorite, changing = 0 WHERE id = :userId AND conversation_id = :conversationId"
+      "UPDATE conversations SET favorite = :favorite, changing = 0 WHERE user = :userId AND conversation_id = :conversationId"
   )
   abstract suspend fun updateFavoriteValueForConversation(
     userId: Long,
@@ -67,7 +68,7 @@ abstract class ConversationsDao {
     favorite: Boolean
   )
 
-  @Query("DELETE FROM conversations WHERE id = :userId AND conversation_id = :conversationId")
+  @Query("DELETE FROM conversations WHERE user = :userId AND conversation_id = :conversationId")
   abstract suspend fun deleteConversation(
     userId: Long,
     conversationId: String
@@ -76,7 +77,7 @@ abstract class ConversationsDao {
   @Delete
   abstract suspend fun deleteConversations(vararg conversation: ConversationEntity)
 
-  @Query("DELETE FROM conversations WHERE id = :userId AND modified_at < :timestamp")
+  @Query("DELETE FROM conversations WHERE user = :userId AND modified_at < :timestamp")
   abstract suspend fun deleteConversationsForUserWithTimestamp(
     userId: Long,
     timestamp: Long
@@ -94,9 +95,8 @@ abstract class ConversationsDao {
       it.modifiedAt = System.currentTimeMillis()
       it
     }
-        .toTypedArray()
 
-    saveConversations(*conversationsWithTimestampApplied)
+    saveConversations(*conversationsWithTimestampApplied.toTypedArray())
     deleteConversationsForUserWithTimestamp(userId, timestamp)
   }
 }

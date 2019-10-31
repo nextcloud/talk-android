@@ -81,7 +81,6 @@ import kotlinx.android.synthetic.main.view_states.view.errorStateImageView
 import kotlinx.android.synthetic.main.view_states.view.errorStateTextView
 import kotlinx.android.synthetic.main.view_states.view.loadingStateView
 import kotlinx.android.synthetic.main.view_states.view.stateWithMessageView
-import org.apache.commons.lang3.builder.CompareToBuilder
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
 import java.util.ArrayList
@@ -281,17 +280,9 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         } else {
           viewState.value = LOADED
         }
-        val sortedConversationsList = it.toMutableList()
-
-        sortedConversationsList.sortWith(Comparator { conversation1, conversation2 ->
-          CompareToBuilder()
-              .append(conversation2.favorite, conversation1.favorite)
-              .append(conversation2.lastActivity, conversation1.lastActivity)
-              .toComparison()
-        })
 
         val newConversations = mutableListOf<ConversationItem>()
-        for (conversation in sortedConversationsList) {
+        for (conversation in it) {
           newConversations.add(
               ConversationItem(
                   conversation, viewModel.currentUserLiveData.value!!,
@@ -447,12 +438,12 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
       val conversation = (clickedItem as ConversationItem).model
 
       val bundle = Bundle()
-      bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap(viewModel.currentUserLiveData.value))
+      bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, viewModel.currentUserLiveData.value)
       bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
       bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.conversationId)
       bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
       ConductorRemapping.remapChatController(
-          router, viewModel.currentUserLiveData.value!!.id!!, conversation.token!!,
+          router, viewModel.currentUserLiveData.value!!.id, conversation.token!!,
           bundle, false
       )
     }

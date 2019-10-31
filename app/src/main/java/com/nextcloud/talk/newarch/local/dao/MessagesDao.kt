@@ -29,8 +29,9 @@ import com.nextcloud.talk.newarch.local.models.MessageEntity
 
 @Dao
 abstract class MessagesDao {
-  @Query("SELECT * FROM messages WHERE id = :userId AND conversation = :conversationId")
-  abstract fun getMessagesWithUserForConversation(userId: Long, conversationId: String): LiveData<List<MessageEntity>>
+  @Query("SELECT * FROM messages WHERE conversation = :conversationId")
+  abstract fun getMessagesWithUserForConversation(conversationId: String):
+      LiveData<List<MessageEntity>>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   abstract suspend fun saveMessages(vararg messages: MessageEntity)
