@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Aucun proxy</string>
     <string name="nc_username">Nom d\'utilisateur</string>
     <string name="nc_password">Mot de passe</string>
+    <string name="nc_password_redacted">Rédigé pour des raisons de confidentialité</string>
     <string name="nc_conversation_link">Lien de conversation</string>
     <string name="nc_new_password">Nouveau mot de passe</string>
     <string name="nc_wrong_password">Mot de passe incorrect</string>
@@ -284,7 +285,9 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
 
     <!-- Errors -->
     <string name="nc_no_connection_error">Aucune connexion</string>
+    <string name="nc_bad_response_error">Mauvaise réponse</string>
     <string name="nc_timeout_error">Délai d\'attente</string>
+    <string name="nc_empty_response_error">Réponse vide</string>
     <string name="nc_not_defined_error">Erreur inconnue </string>
     <string name="nc_unauthorized_error">Interdit</string>
 
@@ -292,5 +295,8 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_allow_guests">Autoriser les invités</string>
     <string name="nc_last_moderator_title">Impossible de quitter la conversation</string>
     <string name="nc_last_moderator">Vous devez désigner un nouveau modérateur avant de quitter %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
 
     </resources>
