@@ -135,7 +135,7 @@
     <string name="nc_set_password">Bir parola ayarlayın</string>
     <string name="nc_change_password">Parolayı değiştir</string>
     <string name="nc_clear_password">Parolayı temizle</string>
-    <string name="nc_share_link">Bağlantıyı paylaş</string>
+    <string name="nc_share_link">Paylaşım bağlantısı</string>
     <string name="nc_share_link_via">Bağlantıyı şununla paylaş</string>
     <string name="nc_make_call_public">Görüşmeyi herkese açık yap</string>
     <string name="nc_make_call_private">Görüşmeyi özel yap</string>
