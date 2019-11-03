@@ -37,7 +37,7 @@
     <string name="nc_get_from_provider">Har du inte en server än?\nKlicka här för att få en från en leverantör</string>
 
     <!-- Account verification -->
-    <string name="nc_push_disabled">Push-meddelanden inaktiverade</string>
+    <string name="nc_push_disabled">Push-aviseringar inaktiverade</string>
     <string name="nc_capabilities_failed">Misslyckades att hämta funktioner, avbryter</string>
     <string name="nc_external_server_failed">Misslyckades med att hämta signaleringsinställningar</string>
     <string name="nc_display_name_not_fetched">Visningsnamn kunde inte hämtas, avbryter</string>
