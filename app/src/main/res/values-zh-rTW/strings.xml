@@ -183,4 +183,5 @@
     <string name="nc_select_files">選取檔案</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">重新整理</string>
+    <string name="nc_allow_guests">允許訪客</string>
     </resources>

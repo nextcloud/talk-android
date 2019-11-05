@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">无代理</string>
     <string name="nc_username">用户名</string>
     <string name="nc_password">密码</string>
+    <string name="nc_password_redacted">出于隐私原因被删除</string>
     <string name="nc_conversation_link">对话连接</string>
     <string name="nc_new_password">新密码</string>
     <string name="nc_wrong_password">错误的密码</string>
@@ -149,8 +150,11 @@
     <string name="nc_new_conversation">新的会话</string>
     <string name="nc_join_via_link">使用链接加入</string>
     <string name="nc_join_via_web">通过网页加入</string>
+    <string name="nc_favorite_conversation">收藏的会话</string>
     <string name="nc_add_to_favorites">添加收藏</string>
     <string name="nc_remove_from_favorites">取消收藏</string>
+    <string name="nc_favorites_explanation">会话将在会话列表中置顶</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">选择联系人</string>
     <string name="nc_contacts_done">完成</string>
@@ -287,5 +291,10 @@
     <string name="nc_empty_response_error">空的响应</string>
     <string name="nc_not_defined_error">未知错误</string>
     <string name="nc_unauthorized_error">未经授权</string>
+
+    <string name="nc_general_settings">通用</string>
+    <string name="nc_allow_guests">允许访客</string>
+    <string name="nc_last_moderator_title">无法离开会话</string>
+    <string name="nc_last_moderator">在您离开%1$s之前您需要推举一位新的主持人。</string>
 
     </resources>
