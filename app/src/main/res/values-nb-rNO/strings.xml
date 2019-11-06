@@ -66,6 +66,7 @@
     <string name="nc_settings_remove">Fjern</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
     <string name="nc_settings_add_account">Legg til ny konto</string>
+    <string name="nc_add">Legg til</string>
     <string name="nc_settings_wrong_account">Bare gjeldende konto kan reautoriseres</string>
     <string name="nc_settings_no_talk_installed">Samtale-appen er ikke installert på serveren du forsøkte å autentisere mot</string>
     <string name="nc_settings_account_updated">Din allerede eksisterende konto ble oppdatert, istedenfor å legge til en ny</string>
@@ -75,10 +76,30 @@
     <string name="nc_settings_other_notifications_ringtone">Annet</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
     <string name="nc_settings_vibrate">Vibrer</string>
+    <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_theme_key">tema</string>
+    <string name="nc_settings_theme_follow_system">Bruk systemets standard</string>
+    <string name="nc_settings_theme_light">Lys</string>
+    <string name="nc_settings_theme_dark">Mørk</string>
     <string name="nc_settings_privacy">Personvern</string>
+    <string name="nc_settings_screen_lock_title">Skjermlås</string>
+    <string name="nc_settings_screen_lock_timeout_title">Skjermlås forsinkelse</string>
+    <string name="nc_none">Ingen</string>
+    <string name="nc_settings_screen_security_title">Skjerm sikkerhet</string>
+    <string name="nc_settings_link_previews_title">Vis forhåndsvisning av lenker</string>
+    <string name="nc_locked">Trykk for å låse opp</string>
+
+    <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_60">1 minutt</string>
     <string name="nc_screen_lock_timeout_300">5 minutter</string>
     <string name="nc_screen_lock_timeout_600">10 minutter</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_cancel">Avbryt</string>
+
     <string name="nc_no_proxy">Ingen mellomserver</string>
     <string name="nc_username">Brukernavn</string>
     <string name="nc_password">Passord</string>
@@ -97,6 +118,7 @@
     <string name="nc_start_conversation">Start en samtale</string>
     <string name="nc_configure_room">Konfigurer samtale</string>
     <string name="nc_leave">Forlat samtale</string>
+    <string name="nc_simple_leave">Forlat</string>
     <string name="nc_rename">Endre navn på samtale</string>
     <string name="nc_set_password">Sett et passord</string>
     <string name="nc_change_password">Endre passord</string>
@@ -109,8 +131,12 @@
     <string name="nc_delete">Slett</string>
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_join_via_web">Bli med via nett</string>
+    <string name="nc_favorite_conversation">Favoritt samtale</string>
     <string name="nc_add_to_favorites">Legg til favoritter</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
+    <string name="nc_favorites_explanation">Samtalen vil bli festet på toppen av
+        samtalelisten</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Velg kontakter</string>
     <string name="nc_contacts_done">Ferdig</string>
@@ -122,10 +148,15 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">Kobler til...</string>
+    <string name="nc_calling">Ringer...</string>
     <string name="nc_incoming_call">Innkommende samtale fra</string>
     <string name="nc_nick_guest">Gjest</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
     <string name="nc_public_call_explanation">Offentlige samtaler lar deg invitere personer fra utsiden gjennom en spesialdesignet lenke.</string>
+    <string name="nc_call_timeout">Ingen svar på 45 sekunder, trykk for å prøve igjen</string>
+    <string name="nc_offline">Offline, vennligst sjekk din nett forbindelse</string>
+    <string name="nc_leaving_call">Forlater samtalen...</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s merknadskanal</string>
     <string name="nc_notification_channel_calls">Innringingsnotfikasjonskanal</string>
@@ -137,6 +168,8 @@
     <string name="nc_notify_me_mention">Varsle når nevnt</string>
     <string name="nc_notify_me_never">Aldri varsle</string>
     <string name="nc_mute_calls">Slå av samtaler</string>
+    <string name="nc_mute_calls_desc">Innkommende samtaler vil bli ignorert</string>
+    <string name="nc_important_conversation">Viktig samtale</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
     <string name="nc_failed_signaling_settings">Målserveren støtter ikke å bli med i offentlige samtaler via mobil
@@ -157,6 +190,11 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_configure_cert_auth">Velg sertifikat for autentisering</string>
     <string name="nc_change_cert_auth">Endre sertifikat for autentisering</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Fjern moderatorstatus</string>
+    <string name="nc_promote">Gi moderatorstatus</string>
+    <string name="nc_remove_participant">Fjern deltaker</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Skriv en melding …</string>
     <string name="nc_date_header_yesterday">I går</string>
@@ -164,6 +202,7 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_conversation_menu_voice_call">Samtale</string>
     <string name="nc_conversation_menu_video_call">Videosamtale</string>
     <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
+    <string name="nc_new_messages">Uleste meldinger</string>
     <string name="nc_no_messages_yet">Ingen meldiner enda</string>
     <string name="nc_sent_a_link" formatted="true">%1$s sendte en lenke.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sendte en GIF.</string>
@@ -196,6 +235,8 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_conversations_empty">Bli med i en samtale eller start en ny\n Si hei til dine venner og kolleger!</string>
     <string name="nc_hello">Hallo</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">%s grensen for maks antall tegn er nådd</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_participants">Deltakere</string>
 
@@ -204,5 +245,31 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_user">Bruker</string>
     <string name="nc_guest">Gjest</string>
     <string name="nc_following_link">Bruker følger en offentlig lenke</string>
+
+    <!-- Browser component -->
+    <string name="nc_file_browser">Fil utforsker\"</string>
+    <string name="nc_select_files">Velg filer</string>
+    <string name="nc_file_browser_back">Tilbake</string>
+    <string name="nc_file_browser_refresh">Oppdater</string>
+    <string name="nc_last_modified">%1$s | Sist endret: %2$s</string>
+
+    <string name="nc_start_time">Start tidspunkt</string>
+    <string name="nc_manual">Ikke satt</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Ingen forbindelse</string>
+    <string name="nc_bad_response_error">Feilaktig svar</string>
+    <string name="nc_timeout_error">Tidsavbrudd</string>
+    <string name="nc_empty_response_error">Ingen tilbakemelding</string>
+    <string name="nc_not_defined_error">Ukjent feil</string>
+    <string name="nc_unauthorized_error">Uautorisert</string>
+
+    <string name="nc_general_settings">Generell</string>
+    <string name="nc_allow_guests">Tillat gjester</string>
+    <string name="nc_last_moderator_title">Kunne ikke forlate samtalen</string>
+    <string name="nc_last_moderator">Du må utnevne en ny moderator før du kan forlate %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
 
     </resources>
