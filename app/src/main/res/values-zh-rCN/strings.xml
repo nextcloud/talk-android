@@ -297,4 +297,7 @@
     <string name="nc_last_moderator_title">无法离开会话</string>
     <string name="nc_last_moderator">在您离开%1$s之前您需要推举一位新的主持人。</string>
 
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+
     </resources>
