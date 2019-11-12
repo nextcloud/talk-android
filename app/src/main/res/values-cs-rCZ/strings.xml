@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Uživatelské jméno</string>
     <string name="nc_password">Heslo</string>
+    <string name="nc_password_redacted">Redigováno z důvodu ochrany soukromí</string>
     <string name="nc_conversation_link">Odkaz na konverzaci</string>
     <string name="nc_new_password">Nové heslo</string>
     <string name="nc_wrong_password">Chybné heslo</string>
@@ -128,6 +129,7 @@
     <string name="nc_start_conversation">Začněte konverzaci</string>
     <string name="nc_configure_room">Nastavení konverzace</string>
     <string name="nc_leave">Opustit konverzaci</string>
+    <string name="nc_leave_message">Prosím potvrďte váš záměr opustit tuto konverzaci</string>
     <string name="nc_simple_leave">Opustit</string>
     <string name="nc_rename">Přejmenovat konverzaci</string>
     <string name="nc_set_password">Nastavit heslo</string>
@@ -149,8 +151,11 @@
     <string name="nc_new_conversation">Nová konverzace</string>
     <string name="nc_join_via_link">Připojit se s odkazem</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
+    <string name="nc_favorite_conversation">Oblíbená konverzace</string>
     <string name="nc_add_to_favorites">Přidat do oblíbených</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
+    <string name="nc_favorites_explanation">Konverzace bude připnuta na vrchol seznamu konverzací</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Vybrat kontakty</string>
     <string name="nc_contacts_done">Hotovo</string>
@@ -186,6 +191,8 @@
     <string name="nc_mute_calls">Ztišit hovory</string>
     <string name="nc_mute_calls_desc">Příchozí volání budou ignorována</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
+    <string name="nc_important_conversation_desc">Upozornění na hovory a zprávy budou zobrazena i v režimu Nerušit (řídí se nastavením \"Povolit pouze prioritní přerušení\")</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
     <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování veřejných konverzací prostřednictvím mobilních
@@ -269,9 +276,18 @@
     <string name="nc_file_browser_refresh">Načíst znovu</string>
     <string name="nc_last_modified">%1$s | Naposledy upraveno: %2$s</string>
 
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinář</string>
+    <string name="nc_lobby">Lobby</string>
     <string name="nc_start_time">Čas zahájení</string>
+    <string name="nc_lobby_waiting">Momentálně čeká v lobby.</string>
+    <string name="nc_lobby_waiting_with_date">Momentálně čeká v lobby.\n Toto
+        setkání je naplánováno na %1$s.</string>
     <string name="nc_manual">Nenastaveno</string>
 
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Žádné spojení</string>
     <string name="nc_bad_response_error">Nesprávná odpověď</string>
     <string name="nc_timeout_error">Časový limit</string>
     <string name="nc_empty_response_error">Prázdná odpověď</string>
@@ -281,6 +297,8 @@
     <string name="nc_general_settings">Obecné</string>
     <string name="nc_allow_guests">Umožnit hosty</string>
     <string name="nc_last_moderator_title">Konverzaci se nedaří opustit</string>
+    <string name="nc_last_moderator">Než budete moci opustit %1$s, je třeba předat někomu roli moderátora.</string>
+
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
 
