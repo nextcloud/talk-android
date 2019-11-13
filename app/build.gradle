@@ -137,7 +137,7 @@ android {
     ignoreFailures = false
     effort = "max"
     reportLevel = "medium"
-    classes = fileTree("$project.buildDir/intermediates/classes/gplay/debug/com/nextcloud")
+    classes = fileTree("$project.buildDir/intermediates/javac/gplayDebug/classes/com/nextcloud")
     excludeFilter = file("${project.rootDir}/findbugs-filter.xml")
     source = fileTree('src/main/java')
     pluginClasspath = project.configurations.findbugsPlugins
