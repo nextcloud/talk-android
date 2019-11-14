@@ -217,6 +217,9 @@
     <string name="nc_description_more_menu_group">Meni za javen pogovor %1$s</string>
     <string name="nc_description_send_message_button">Pošlji sporočilo</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Pridružite se pogovoru, ali pa začnite novega.
+Pozdravite prijatelje in znance.</string>
     <string name="nc_hello">Pozdravljeni</string>
 
     <string name="nc_groups">Skupine</string>

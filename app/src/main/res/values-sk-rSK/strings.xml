@@ -41,7 +41,7 @@
     <string name="nc_capabilities_failed">Nepodarilo sa načítať funkcie, prerušujem</string>
     <string name="nc_external_server_failed">Nepodarilo sa načítať nastavenia signalizácie</string>
     <string name="nc_display_name_not_fetched">Zobrazované meno sa nedalo načítať, ruším</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Aplikácia %1$snie je nainštalovaná na servri, ruším</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Aplikácia %1$s nie je na serveri nainštalovaná, ruší sa</string>
     <string name="nc_display_name_not_stored">Nedá sa uložiť zobrazované meno, ruším</string>
 
     <string name="nc_never">Nikdy nepridaný</string>
