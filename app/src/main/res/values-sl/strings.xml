@@ -69,6 +69,7 @@
     <string name="nc_settings_add_account">Dodaj račun</string>
     <string name="nc_add">Dodaj</string>
     <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
+    <string name="nc_settings_no_talk_installed">Program Talk na strežniku, s katerim ga skušate overiti, ni nameščen.</string>
     <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>
     <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
     <string name="nc_settings_notification_sounds">Obvestilni zvoki</string>
@@ -89,6 +90,8 @@
     <string name="nc_none">Brez</string>
     <string name="nc_settings_screen_security_title">Varnost zaslona</string>
     <string name="nc_settings_screen_security_desc">Prepreči ustvarjanje zaslonskih slik v seznamu nedavnih pogovorov in znotraj programa</string>
+    <string name="nc_settings_incognito_keyboard_title">Skrito tipkanje</string>
+    <string name="nc_settings_incognito_keyboard_desc">Nastavi določilo za onemogočanje osebnega učenja (brez vsakršnih zagotovil)</string>
     <string name="nc_settings_link_previews_title">Pokaži predoglede povezav</string>
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
@@ -199,6 +202,7 @@
     <string name="nc_conversation_menu_conversation_info">Podrobnosti pogovora</string>
     <string name="nc_new_messages">Neprebrana sporočila</string>
     <string name="nc_no_messages_yet">Ni še sporočil</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s pošlje povezavo.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Pošljete povezavo</string>
     <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Pošljete sličico GIF</string>
     <string name="nc_sent_an_attachment_you">Pošljete prilogo</string>
@@ -226,11 +230,16 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_participants">Udeleženci</string>
 
     <string name="nc_owner">Lastnik</string>
+    <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Uporabnik</string>
     <string name="nc_guest">Gost</string>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Brskalnik datotek\"</string>
     <string name="nc_select_files">Izbor datotek</string>
     <string name="nc_file_browser_back">Nazaj</string>
     <string name="nc_file_browser_refresh">Osveži</string>
+    <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
+
     <string name="nc_manual">Ni nastavljeno</string>
 
     <!-- Errors -->
@@ -243,4 +252,8 @@ Pozdravite prijatelje in znance.</string>
 
     <string name="nc_general_settings">Splošno</string>
     <string name="nc_allow_guests">Dovoli povezave z gosti</string>
+    <string name="nc_last_moderator_title">Pogovora ni mogoče zapustiti</string>
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+
     </resources>
