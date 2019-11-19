@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Sense proxy</string>
     <string name="nc_username">Nom d\'usuari</string>
     <string name="nc_password">Contrasenya</string>
+    <string name="nc_password_redacted">Ocult per motius de privadesa</string>
     <string name="nc_conversation_link">Enllaç de conversa</string>
     <string name="nc_new_password">Nova contrasenya</string>
     <string name="nc_wrong_password">Contrasenya incorrecta</string>
@@ -128,6 +129,8 @@
     <string name="nc_start_conversation">Enceta una conversa</string>
     <string name="nc_configure_room">Configura la conversa</string>
     <string name="nc_leave">Surt de la conversa</string>
+    <string name="nc_leave_message">Confirmeu que voleu deixar la conversa.</string>
+    <string name="nc_simple_leave">Deixa</string>
     <string name="nc_rename">Reanomena la conversa</string>
     <string name="nc_set_password">Configura una contrasenya</string>
     <string name="nc_change_password">Canvia la contrasenya</string>
@@ -138,11 +141,22 @@
     <string name="nc_make_call_private">Fes que la conversa sigui privada</string>
     <string name="nc_delete_call">Suprimeix la conversa</string>
     <string name="nc_delete">Suprimeix</string>
+    <string name="nc_delete_conversation_default">Confirmeu que voleu suprimir
+la conversa.</string>
+    <string name="nc_delete_conversation_one2one">Si suprimiu la conversa, també se
+suprimirà per %1$s.</string>
+    <string name="nc_delete_conversation_more">Si suprimiu la conversa, també se
+suprimirà per la resta de participants.</string>
+
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Uniu-vos amb un enllaç</string>
     <string name="nc_join_via_web">Uniu-vos via web</string>
+    <string name="nc_favorite_conversation">Conversa preferida</string>
     <string name="nc_add_to_favorites">Afegeix a favorits</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>
+    <string name="nc_favorites_explanation">La conversa es fixarà a dalt de la
+llista de converses</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Selecciona els contactes</string>
     <string name="nc_contacts_done">Fet</string>
@@ -272,5 +286,21 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_lobby_waiting_with_date">Actualment esteu esperant al vestíbul.\n Aquesta
 trobada està prevista per a les %1$s.</string>
     <string name="nc_manual">No establert</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Sense connexió</string>
+    <string name="nc_bad_response_error">Resposta incorrecta</string>
+    <string name="nc_timeout_error">Temps d\'espera excedit</string>
+    <string name="nc_empty_response_error">Resposta buida</string>
+    <string name="nc_not_defined_error">Error desconegut</string>
+    <string name="nc_unauthorized_error">No autoritzat</string>
+
+    <string name="nc_general_settings">General</string>
+    <string name="nc_allow_guests">Permet visitants</string>
+    <string name="nc_last_moderator_title">No s\'ha pogut abandonar la conversa</string>
+    <string name="nc_last_moderator">Heu de designar un nou moderador abans de deixar %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
 
     </resources>

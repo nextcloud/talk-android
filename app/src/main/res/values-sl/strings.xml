@@ -123,6 +123,7 @@
     <string name="nc_start_conversation">Začni s pogovorom</string>
     <string name="nc_configure_room">Nastavitev pogovora</string>
     <string name="nc_leave">Zapusti pogovor</string>
+    <string name="nc_leave_message">Potrdite zahtevo, da želite zapustiti pogovor.</string>
     <string name="nc_simple_leave">Zapusti</string>
     <string name="nc_rename">Preimenuj pogovor</string>
     <string name="nc_set_password">Nastavi geslo</string>
@@ -134,6 +135,12 @@
     <string name="nc_make_call_private">Nastavi pogovor kot zaseben</string>
     <string name="nc_delete_call">Izbriši pogovor</string>
     <string name="nc_delete">Izbriši</string>
+    <string name="nc_delete_conversation_default">Potrdite zahtevo, da želite izbrisati pogovor.</string>
+    <string name="nc_delete_conversation_one2one">Če izbrišete pogovor, bo ta izbrisan
+        tudi za %1$s.</string>
+    <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan
+        za vse udeležence.</string>
+
     <string name="nc_new_conversation">Nov pogovor</string>
     <string name="nc_join_via_link">Pridruži se prek povezave</string>
     <string name="nc_join_via_web">Pridruži se prek spleta</string>
@@ -203,12 +210,20 @@
     <string name="nc_new_messages">Neprebrana sporočila</string>
     <string name="nc_no_messages_yet">Ni še sporočil</string>
     <string name="nc_sent_a_link" formatted="true">%1$s pošlje povezavo.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s pošlje sličico GIF.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s pošlje prilogo.</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s pošlje zvočno datoteko.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s pošlje video datoteko.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s pošlje sliko.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Pošljete povezavo</string>
     <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Pošljete sličico GIF</string>
     <string name="nc_sent_an_attachment_you">Pošljete prilogo</string>
     <string name="nc_sent_an_audio_you">Pošljete zvočno sporočilo</string>
     <string name="nc_sent_a_video_you">Pošljete video sporočilo</string>
     <string name="nc_sent_an_image_you">Pošljete sliko</string>
+    <!-- When translating to German, please use non-formal variant -->
+    <string name="nc_formatted_message_you">→ %1$s</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Ni več predmetov za nalaganje. Osvežite seznam in poskusite znova.</string>
     <string name="nc_endless_disabled">Ni mogoče naložiti novih predmetov (dosežena je dovoljena omejitev).</string>
@@ -226,6 +241,8 @@
 Pozdravite prijatelje in znance.</string>
     <string name="nc_hello">Pozdravljeni</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
     <string name="nc_groups">Skupine</string>
     <string name="nc_participants">Udeleženci</string>
 
@@ -233,6 +250,8 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Uporabnik</string>
     <string name="nc_guest">Gost</string>
+    <string name="nc_following_link">Uporabnik, ki je sledil javni povezavi</string>
+
     <!-- Browser component -->
     <string name="nc_file_browser">Brskalnik datotek\"</string>
     <string name="nc_select_files">Izbor datotek</string>
@@ -240,6 +259,14 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_file_browser_refresh">Osveži</string>
     <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
 
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Spletinar</string>
+    <string name="nc_lobby">Spletna avla</string>
+    <string name="nc_start_time">Čas začetka</string>
+    <string name="nc_lobby_waiting">Trenutno še čakate v spletni avli.</string>
+    <string name="nc_lobby_waiting_with_date">Trenutno še čakate v spletni avli.\n
+        sestanek je načrtovan za %1$s.</string>
     <string name="nc_manual">Ni nastavljeno</string>
 
     <!-- Errors -->
@@ -253,6 +280,8 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_general_settings">Splošno</string>
     <string name="nc_allow_guests">Dovoli povezave z gosti</string>
     <string name="nc_last_moderator_title">Pogovora ni mogoče zapustiti</string>
+    <string name="nc_last_moderator">Pred odhodom iz %1$s morate nekoga določiti za moderatorja.</string>
+
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
 
