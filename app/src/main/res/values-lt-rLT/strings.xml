@@ -89,6 +89,8 @@
     <string name="nc_share_link_via">Dalintis nuoroda per</string>
     <string name="nc_delete_call">Ištrinti pokalbį</string>
     <string name="nc_delete">Ištrinti</string>
+    <string name="nc_delete_conversation_default">Patvirtinkite savo ketinimą ištrinti šį
+        pokalbį.</string>
     <string name="nc_new_conversation">Naujas pokalbis</string>
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
     <string name="nc_remove_from_favorites">Šalinti iš mėgstamų</string>
