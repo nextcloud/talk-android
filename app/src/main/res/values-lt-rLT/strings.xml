@@ -85,7 +85,7 @@
     <string name="nc_set_password">Nustatyti slaptažodį</string>
     <string name="nc_change_password">Pakeisti slaptažodį</string>
     <string name="nc_clear_password">Išvalyti slaptažodį</string>
-    <string name="nc_share_link">Dalinimosi nuoroda</string>
+    <string name="nc_share_link">Bendrinimo nuoroda</string>
     <string name="nc_share_link_via">Dalintis nuoroda per</string>
     <string name="nc_delete_call">Ištrinti pokalbį</string>
     <string name="nc_delete">Ištrinti</string>

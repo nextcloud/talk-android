@@ -127,7 +127,7 @@
 
     <!-- ConversationEntity menu -->
     <string name="nc_start_conversation">Začněte konverzaci</string>
-    <string name="nc_configure_room">Nastavení konverzace</string>
+    <string name="nc_configure_room">Nastavit konverzaci</string>
     <string name="nc_leave">Opustit konverzaci</string>
     <string name="nc_leave_message">Prosím potvrďte váš záměr opustit tuto konverzaci</string>
     <string name="nc_simple_leave">Opustit</string>
