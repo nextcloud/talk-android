@@ -108,6 +108,7 @@
     <string name="nc_no_proxy">Brez posredniškega strežnika</string>
     <string name="nc_username">Uporabniško ime</string>
     <string name="nc_password">Geslo</string>
+    <string name="nc_password_redacted">Predelano za zagotavljanje zasebnosti</string>
     <string name="nc_conversation_link">Povezava pogovora</string>
     <string name="nc_new_password">Novo geslo</string>
     <string name="nc_wrong_password">Napačno geslo</string>
@@ -147,6 +148,9 @@
     <string name="nc_favorite_conversation">Priljubljen pogovor</string>
     <string name="nc_add_to_favorites">Dodaj med priljubljene</string>
     <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
+    <string name="nc_favorites_explanation">Pogovor bo pripet na vrh
+        seznama pogovorov</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Izbor stikov</string>
     <string name="nc_contacts_done">Začni pogovor</string>

@@ -68,7 +68,7 @@
     <string name="nc_settings_remove_account">Fiók eltávolítása</string>
     <string name="nc_settings_add_account">Új fiók hozzáadása</string>
     <string name="nc_settings_wrong_account">Csak az aktuális fiókot lehet újraengedélyezni</string>
-    <string name="nc_settings_no_talk_installed">A Talk alkalmazás nincs telepítve azon a kiszolgálón, ahol hitelesíteni szeretne</string>
+    <string name="nc_settings_no_talk_installed">A Beszélgetés alkalmazás nincs telepítve azon a kiszolgálón, ahol hitelesíteni szeretne</string>
     <string name="nc_settings_account_updated">Új fiók hozzáadása helyett, a már létező fiókja lett frissítve</string>
     <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
     <string name="nc_settings_notification_sounds">Értesítési hang</string>

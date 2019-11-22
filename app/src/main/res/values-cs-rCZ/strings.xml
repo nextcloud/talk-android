@@ -256,7 +256,7 @@
 
     <!-- Empty states -->
     <string name="nc_conversations_empty">Připojte se k rozhovoru nebo začněte nový\n Pozdravte své přátele a kolegy!</string>
-    <string name="nc_hello">Ahoj</string>
+    <string name="nc_hello">Zdravím</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">byl dosažen limit %s</string>
