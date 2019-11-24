@@ -128,6 +128,8 @@
     <string name="nc_start_conversation">Започни разговор</string>
     <string name="nc_configure_room">Подеси разговор</string>
     <string name="nc_leave">Напусти разговор</string>
+    <string name="nc_leave_message">Потврдите да желите да напустите разговор.</string>
+    <string name="nc_simple_leave">Напусти</string>
     <string name="nc_rename">Преименуј разговор</string>
     <string name="nc_set_password">Постави лозинку</string>
     <string name="nc_change_password">Измени лозинку</string>
@@ -138,11 +140,22 @@
     <string name="nc_make_call_private">Учини разговор приватним</string>
     <string name="nc_delete_call">Обриши разговор</string>
     <string name="nc_delete">Обриши</string>
+    <string name="nc_delete_conversation_default">Потврдите да желите да уклоните
+ разговор.</string>
+    <string name="nc_delete_conversation_one2one">Уколико обришете разговор, он ће такође
+        бити уклоњен и за %1$s.</string>
+    <string name="nc_delete_conversation_more">Ако обришете разговор, он ће такође бити
+ обрисан и за све друге учеснике.</string>
+
     <string name="nc_new_conversation">Нови разговор</string>
     <string name="nc_join_via_link">Придружи се преко везе</string>
     <string name="nc_join_via_web">Придружи се преко веба</string>
+    <string name="nc_favorite_conversation">Омиљен разговор</string>
     <string name="nc_add_to_favorites">Додај у омиљене</string>
     <string name="nc_remove_from_favorites">Уклони из омиљених</string>
+    <string name="nc_favorites_explanation">Разговор ће бити закачен на врх
+листе разговора</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">Одаберите контакт</string>
     <string name="nc_contacts_done">Готово</string>
@@ -272,5 +285,21 @@
     <string name="nc_lobby_waiting_with_date">Тренутно чекате у лобију.\nОвај
         састанак је заказан за %1$s.</string>
     <string name="nc_manual">Није постављено</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Нема мрежне везе</string>
+    <string name="nc_bad_response_error">Лош одговор</string>
+    <string name="nc_timeout_error">Истек времена</string>
+    <string name="nc_empty_response_error">Празан одговор</string>
+    <string name="nc_not_defined_error">Непозната грешка</string>
+    <string name="nc_unauthorized_error">Неовлашћено</string>
+
+    <string name="nc_general_settings">Опште</string>
+    <string name="nc_allow_guests">Дозволи госте</string>
+    <string name="nc_last_moderator_title">Не могу напустити разговор</string>
+    <string name="nc_last_moderator">Морате унапредити новог модератора пре него што напустите %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
 
     </resources>
