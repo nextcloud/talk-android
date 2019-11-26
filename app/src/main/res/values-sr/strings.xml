@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Без посредника</string>
     <string name="nc_username">Корисничко име</string>
     <string name="nc_password">Лозинка</string>
+    <string name="nc_password_redacted">Уклоњено због приватности</string>
     <string name="nc_conversation_link">Веза ка разговору</string>
     <string name="nc_new_password">Нова лозинка</string>
     <string name="nc_wrong_password">Погрешна лозинка</string>

@@ -116,7 +116,7 @@
     <string name="nc_password_redacted">Redigováno z důvodu ochrany soukromí</string>
     <string name="nc_conversation_link">Odkaz na konverzaci</string>
     <string name="nc_new_password">Nové heslo</string>
-    <string name="nc_wrong_password">Chybné heslo</string>
+    <string name="nc_wrong_password">Nesprávné heslo</string>
     <string name="nc_about">O aplikaci</string>
     <string name="nc_privacy">Soukromí</string>
     <string name="nc_get_source_code">Získat zdrojové kódy</string>
