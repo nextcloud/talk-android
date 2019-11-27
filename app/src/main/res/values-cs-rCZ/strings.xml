@@ -94,7 +94,7 @@
     <string name="nc_settings_screen_security_desc">Brání snímkům obrazovky v seznamu nedávných a uvnitř aplikace</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klávesnice</string>
     <string name="nc_settings_incognito_keyboard_desc">Sdělit klávesnici že má vypnout přizpůsobené učení (bez záruky)</string>
-    <string name="nc_settings_link_previews_title">Zobrazit náhledy odkazu</string>
+    <string name="nc_settings_link_previews_title">Zobrazovat náhledy odkazů</string>
     <string name="nc_settings_link_previews_desc">U podporovaných služeb umožňuje náhledy obsahu z obdržených odkazů</string>
     <string name="nc_locked">Odemkněte ťuknutím</string>
 
@@ -146,7 +146,7 @@
     <string name="nc_delete_conversation_one2one">Pokud konverzaci smažete, bude také
         smazána pro %1$s.</string>
     <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude také
-        smazána pro všechny ostatní účastníky.</string>
+        smazána pro všechny ostatní její účastníky.</string>
 
     <string name="nc_new_conversation">Nová konverzace</string>
     <string name="nc_join_via_link">Připojit se s odkazem</string>
