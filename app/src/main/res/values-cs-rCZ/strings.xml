@@ -27,7 +27,7 @@
     <string name="nc_server_not_installed">Dokončete instalaci %1$s</string>
     <string name="nc_server_db_upgrade_needed">Přejděte na novější verzi databáze %1$s</string>
     <string name="nc_server_maintenance">Přepněte svůj %1$s zpět z režimu údržby</string>
-    <string name="nc_server_version">%1$s funguje pouze s %2$s 13 a novější</string>
+    <string name="nc_server_version">%1$s funguje pouze s %2$s 13 a novějším</string>
     <string name="nc_server_import_account_plain">Importovat účet</string>
     <string name="nc_server_import_accounts_plain">Importovat účty</string>
     <string name="nc_server_import_account">Importovat účet z aplikace %1$s</string>
@@ -37,7 +37,7 @@
     <string name="nc_get_from_provider">Nemáte ještě server?\nKliknutím sem ho získejte od poskytovatele</string>
 
     <!-- Account verification -->
-    <string name="nc_push_disabled">Vyskakovací upozornění zakázána</string>
+    <string name="nc_push_disabled">Vyskakovací (push) upozornění zakázána</string>
     <string name="nc_capabilities_failed">Nepodařilo se získat schopnosti, ukončuje se</string>
     <string name="nc_external_server_failed">Nepodařilo se získat nastavení signalizace</string>
     <string name="nc_display_name_not_fetched">Nepodařilo se získat zobrazované jméno, přerušuje se</string>
@@ -68,7 +68,7 @@
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
     <string name="nc_add">Přidat</string>
-    <string name="nc_settings_wrong_account">Reautorizován může být pouze aktuální účet</string>
+    <string name="nc_settings_wrong_account">Znovu pověřen může být pouze stávající účet</string>
     <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
     <string name="nc_settings_account_updated">Váš už existující účet byl aktualizován, namísto přidání nového</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánován ke smazání a není možné ho změnit</string>
@@ -191,7 +191,7 @@
     <string name="nc_mute_calls">Ztišit hovory</string>
     <string name="nc_mute_calls_desc">Příchozí volání budou ignorována</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
-    <string name="nc_important_conversation_desc">Upozornění na hovory a zprávy budou zobrazena i v režimu Nerušit (řídí se nastavením \"Povolit pouze prioritní přerušení\")</string>
+    <string name="nc_important_conversation_desc">Upozornění na hovory a zprávy budou zobrazena i v režimu Nerušit (řídí se nastavením „Povolit pouze prioritní přerušení“)</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
