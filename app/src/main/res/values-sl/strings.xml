@@ -121,7 +121,7 @@
     <string name="nc_select_an_account">Izbor računa</string>
 
     <!-- ConversationEntity menu -->
-    <string name="nc_start_conversation">Začni s pogovorom</string>
+    <string name="nc_start_conversation">Začni pogovor</string>
     <string name="nc_configure_room">Nastavitev pogovora</string>
     <string name="nc_leave">Zapusti pogovor</string>
     <string name="nc_leave_message">Potrdite zahtevo, da želite zapustiti pogovor.</string>
