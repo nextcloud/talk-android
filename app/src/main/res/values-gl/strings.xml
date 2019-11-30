@@ -41,8 +41,8 @@
 </string>
     <string name="nc_capabilities_failed">Produciuse un fallo ao recuperar funcionalidades. Interrompendo.</string>
     <string name="nc_external_server_failed">
-Produciuse un fallo aorecuperar os axustes da sinalización</string>
-    <string name="nc_display_name_not_fetched">Non foi posíbel obter o nome para amosar, interrompendo</string>
+Produciuse un fallo ao recuperar os axustes da sinalización</string>
+    <string name="nc_display_name_not_fetched">Non foi posíbel recuperar o nome para amosar, interrompendo</string>
     <string name="nc_nextcloud_talk_app_not_installed">A aplicación %1$s non está instalado no servidor, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
 
