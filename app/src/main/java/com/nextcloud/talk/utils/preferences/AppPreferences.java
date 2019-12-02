@@ -287,6 +287,17 @@ public interface AppPreferences {
   @UnregisterChangeListenerMethod
   void unregisterThemeChangeListener(OnPreferenceValueChangedListener<String> listener);
 
+  @KeyByString("migration_to_room")
+  @DefaultValue(R.bool.value_false)
+  boolean getMigrationToRoomFinished();
+
+  @KeyByString("migration_to_room")
+  void setMigrationToRoomFinished(boolean value);
+
+  @KeyByString("migration_to_room")
+  @RemoveMethod
+  void removeMigrationToRoomFinished();
+
   @ClearMethod
   void clear();
 }

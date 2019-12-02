@@ -31,7 +31,6 @@ import com.nextcloud.talk.newarch.local.models.other.UserStatus
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
-import kotlinx.android.parcel.WriteWith
 
 @Parcelize
 @Entity(tableName = "users")

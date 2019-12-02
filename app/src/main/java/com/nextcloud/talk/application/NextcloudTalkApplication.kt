@@ -63,6 +63,7 @@ import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.ACTIVE
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.DORMANT
+import com.nextcloud.talk.newarch.local.models.other.UserStatus.PENDING_DELETE
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache
@@ -241,38 +242,47 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
   }
 
   fun migrateUsers() {
-    GlobalScope.launch {
-      val users: List<UserEntity> = userUtils.users as List<UserEntity>
-      var userNg: UserNgEntity
-      val newUsers = mutableListOf<UserNgEntity>()
-      for (user in users) {
-        userNg = UserNgEntity(user.id, user.userId, user.username, user.baseUrl)
-        userNg.token = user.token
-        userNg.displayName = user.displayName
-        try {
-          userNg.pushConfiguration =
-            LoganSquare.parse(user.pushConfigurationState, PushConfigurationState::class.java)
-        } catch (e: Exception) {
-          // no push
+    if (!appPreferences.migrationToRoomFinished) {
+      GlobalScope.launch {
+        val users: List<UserEntity> = userUtils.users as List<UserEntity>
+        var userNg: UserNgEntity
+        val newUsers = mutableListOf<UserNgEntity>()
+        for (user in users) {
+          userNg = UserNgEntity(user.id, user.userId, user.username, user.baseUrl)
+          userNg.token = user.token
+          userNg.displayName = user.displayName
+          try {
+            userNg.pushConfiguration =
+              LoganSquare.parse(user.pushConfigurationState, PushConfigurationState::class.java)
+          } catch (e: Exception) {
+            // no push
+          }
+          if (user.capabilities != null) {
+            userNg.capabilities = LoganSquare.parse(user.capabilities, Capabilities::class.java)
+          }
+          userNg.clientCertificate = user.clientCertificate
+          try {
+            userNg.externalSignaling =
+              LoganSquare.parse(user.externalSignalingServer, ExternalSignalingServer::class.java)
+          } catch (e: Exception) {
+            // no external signaling
+          }
+          if (user.current) {
+            userNg.status = ACTIVE
+          } else {
+            if (user.scheduledForDeletion) {
+              userNg.status = PENDING_DELETE
+            } else {
+              userNg.status = DORMANT
+            }
+          }
+
+
+          newUsers.add(userNg)
         }
-        if (user.capabilities != null) {
-          userNg.capabilities = LoganSquare.parse(user.capabilities, Capabilities::class.java)
-        }
-        userNg.clientCertificate = user.clientCertificate
-        try {
-          userNg.externalSignaling =
-            LoganSquare.parse(user.externalSignalingServer, ExternalSignalingServer::class.java)
-        } catch (e: Exception) {
-          // no external signaling
-        }
-        if (user.current) {
-          userNg.status = ACTIVE
-        } else {
-          userNg.status = DORMANT
-        }
-        newUsers.add(userNg)
+        usersDao.saveUsers(*newUsers.toTypedArray())
+        appPreferences.migrationToRoomFinished = true
       }
-      usersDao.saveUsers(*newUsers.toTypedArray())
     }
   }
 
