@@ -160,7 +160,7 @@ ext {
   koin_version = "2.1.0-alpha-1"
   lifecycle_version = "2.2.0-rc01"
   coil_version = "0.8.0"
-  room_version = "2.2.0"
+  room_version = "2.2.2"
 }
 
 configurations.all {
@@ -199,8 +199,6 @@ dependencies {
   implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
   implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
-
-
   // optional - ReactiveStreams support for LiveData
   implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version"
 
@@ -228,7 +226,7 @@ dependencies {
   androidTestImplementation "androidx.work:work-testing:$work_version"
 
   implementation 'androidx.appcompat:appcompat:1.1.0'
-  implementation 'com.google.android.material:material:1.2.0-alpha01'
+  implementation 'com.google.android.material:material:1.2.0-alpha02'
   implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
   implementation 'com.github.vanniktech:Emoji:0.6.0'
   implementation group: 'androidx.emoji', name: 'emoji-bundled', version: '1.0.0'
@@ -239,7 +237,7 @@ dependencies {
 
   implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 
-  implementation 'androidx.biometric:biometric:1.0.0-rc02'
+  implementation 'androidx.biometric:biometric:1.0.0'
   implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
 
   implementation 'androidx.multidex:multidex:2.0.1'
