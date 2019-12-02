@@ -41,12 +41,6 @@ abstract class ConversationsDao {
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   abstract suspend fun saveConversation(conversation: ConversationEntity)
 
-  suspend fun saveConversationWithTimestamp(conversation: ConversationEntity) {
-    saveConversation(conversation.apply {
-      modifiedAt = System.currentTimeMillis()
-    })
-  }
-
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   abstract suspend fun saveConversations(vararg conversations: ConversationEntity)
 
