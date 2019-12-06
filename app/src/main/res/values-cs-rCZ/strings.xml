@@ -259,7 +259,7 @@
     <string name="nc_hello">Zdravím</string>
 
     <!-- Other -->
-    <string name="nc_limit_hit">byl dosažen limit %s</string>
+    <string name="nc_limit_hit">byl dosažen limit %s znaků</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_participants">Účastníci</string>
 

@@ -77,6 +77,12 @@
     <string name="nc_settings_no_ringtone">Ekkert hljóð</string>
     <string name="nc_settings_vibrate">Titringur</string>
     <string name="nc_settings_vibrate_desc">Síminn þinn mun titra nema hann sé á hljóðlausi stillingu</string>
+    <string name="nc_settings_appearance">Útlit</string>
+    <string name="nc_settings_theme_title">Þema</string>
+    <string name="nc_settings_theme_key">þema</string>
+    <string name="nc_settings_theme_follow_system">Nota sjálfgefið á kerfi</string>
+    <string name="nc_settings_theme_light">Ljóst</string>
+    <string name="nc_settings_theme_dark">Dökkt</string>
     <string name="nc_settings_privacy">Gagnaleynd</string>
     <string name="nc_settings_screen_lock_title">Skjálæsing</string>
     <string name="nc_settings_screen_lock_timeout_title">Tímamörk skjálæsingar við aðgerðaleysi</string>
