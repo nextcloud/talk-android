@@ -167,17 +167,17 @@
     <string name="nc_permissions_settings">Ayarları aç</string>
 
     <!-- Call -->
-    <string name="nc_connecting_call">Bağlantı kuruluyor…</string>
-    <string name="nc_calling">Aranıyor…</string>
+    <string name="nc_connecting_call">Bağlantı kuruluyor …</string>
+    <string name="nc_calling">Aranıyor …</string>
     <string name="nc_incoming_call">Gelen görüşme çağrısı</string>
     <string name="nc_nick_guest">Konuk</string>
     <string name="nc_public_call">Herkese açık görüşme ekle</string>
     <string name="nc_public_call_explanation">Herkese açık görüşmelere dışarıdan kişiler özel oluşturulmuş bir bağlantı
         ile katılabilir.</string>
     <string name="nc_call_timeout">45 saniye içinde yanıt alınamadı, yeniden denemek için dokunun</string>
-    <string name="nc_call_reconnecting">Yeniden bağlantı kuruluyor…</string>
+    <string name="nc_call_reconnecting">Yeniden bağlantı kuruluyor …</string>
     <string name="nc_offline">Şu anda çevrimdışı, lütfen bağlantınızı denetleyin</string>
-    <string name="nc_leaving_call">Arama sonlandırılıyor…</string>
+    <string name="nc_leaving_call">Arama sonlandırılıyor …</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
@@ -220,7 +220,7 @@
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>
 
     <!-- Chat -->
-    <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
+    <string name="nc_hint_enter_a_message">Bir ileti yazın …</string>
     <string name="nc_date_header_yesterday">Dün</string>
     <string name="nc_date_header_today">Bugün</string>
     <string name="nc_conversation_menu_voice_call">Sesli görüşme</string>
