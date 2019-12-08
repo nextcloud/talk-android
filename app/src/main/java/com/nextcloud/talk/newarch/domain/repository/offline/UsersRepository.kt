@@ -32,4 +32,5 @@ interface UsersRepository {
   suspend fun updateUser(user: UserNgEntity): Int
   suspend fun setUserAsActiveWithId(id: Long)
   suspend fun deleteUserWithId(id: Long)
+  suspend fun setAnyUserAsActive(): Boolean
 }

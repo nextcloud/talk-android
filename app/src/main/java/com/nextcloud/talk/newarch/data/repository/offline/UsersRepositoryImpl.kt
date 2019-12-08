@@ -61,4 +61,8 @@ class UsersRepositoryImpl(val usersDao: UsersDao): UsersRepository {
     usersDao.deleteUserWithId(id)
   }
 
+  override suspend fun setAnyUserAsActive(): Boolean {
+    return usersDao.setAnyUserAsActive()
+  }
+
 }
