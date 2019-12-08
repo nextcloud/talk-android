@@ -297,7 +297,7 @@ class PushUtils(val usersRepository: UsersRepository) {
                                       override fun onError(e: Throwable) {
                                         eventBus!!.post(
                                             EventStatus(
-                                                userEntity.id,
+                                                userEntity.id!!,
                                                 PUSH_REGISTRATION, false
                                             )
                                         )
@@ -313,7 +313,7 @@ class PushUtils(val usersRepository: UsersRepository) {
                             override fun onError(e: Throwable) {
                               eventBus!!.post(
                                   EventStatus(
-                                      userEntity.id,
+                                      userEntity.id!!,
                                       PUSH_REGISTRATION,
                                       false
                                   )
@@ -327,7 +327,7 @@ class PushUtils(val usersRepository: UsersRepository) {
                     override fun onError(e: Throwable) {
                       eventBus!!.post(
                           EventStatus(
-                              userEntity.id,
+                              userEntity.id!!,
                               PUSH_REGISTRATION,
                               false
                           )

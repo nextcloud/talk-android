@@ -192,7 +192,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
       if (!TextUtils.isEmpty(conversationToken) && conversationUser != null) {
         val data = Data.Builder()
         data.putString(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
-        data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id)
+        data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id!!)
         return data.build()
       }
 

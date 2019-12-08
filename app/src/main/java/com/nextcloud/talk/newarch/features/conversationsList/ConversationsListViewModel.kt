@@ -54,7 +54,6 @@ class ConversationsListViewModel constructor(
   private val setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
   private val leaveConversationUseCase: LeaveConversationUseCase,
   private val deleteConversationUseCase: DeleteConversationUseCase,
-  private val userUtils: UserUtils,
   private val conversationsRepository: ConversationsRepository,
   usersRepository: UsersRepository
 ) : BaseViewModel<ConversationsListView>(application) {
@@ -64,10 +63,7 @@ class ConversationsListViewModel constructor(
   val searchQuery = MutableLiveData<String>()
   val currentUserLiveData: LiveData<UserNgEntity> = usersRepository.getActiveUserLiveData()
   val conversationsLiveData = Transformations.switchMap(currentUserLiveData) {
-    if (LOADING != viewState.value) {
-      viewState.value = LOADING
-    }
-    conversationsRepository.getConversationsForUser(it.id)
+    conversationsRepository.getConversationsForUser(it.id!!)
   }
 
   fun leaveConversation(conversation: Conversation) {
@@ -82,7 +78,7 @@ class ConversationsListViewModel constructor(
         object : UseCaseResponse<GenericOverall> {
           override suspend fun onSuccess(result: GenericOverall) {
             conversationsRepository.deleteConversation(
-                currentUserLiveData.value!!.id, conversation
+                currentUserLiveData.value!!.id!!, conversation
                 .conversationId!!
             )
           }
@@ -111,7 +107,7 @@ class ConversationsListViewModel constructor(
         object : UseCaseResponse<GenericOverall> {
           override suspend fun onSuccess(result: GenericOverall) {
             conversationsRepository.deleteConversation(
-                currentUserLiveData.value!!.id, conversation
+                currentUserLiveData.value!!.id!!, conversation
                 .conversationId!!
             )
           }
@@ -142,7 +138,7 @@ class ConversationsListViewModel constructor(
         object : UseCaseResponse<GenericOverall> {
           override suspend fun onSuccess(result: GenericOverall) {
             conversationsRepository.setFavoriteValueForConversation(
-                currentUserLiveData.value!!.id,
+                currentUserLiveData.value!!.id!!,
                 conversation.conversationId!!, favorite
             )
           }
@@ -167,7 +163,7 @@ class ConversationsListViewModel constructor(
         }
 
         conversationsRepository.saveConversationsForUser(
-            internalUserId,
+            internalUserId!!,
             mutableList)
         messageData = ""
       }
@@ -258,7 +254,7 @@ class ConversationsListViewModel constructor(
     value: Boolean
   ) {
     conversationsRepository.setChangingValueForConversation(
-        currentUserLiveData.value!!.id, conversation
+        currentUserLiveData.value!!.id!!, conversation
         .conversationId!!, value
     )
   }

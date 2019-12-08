@@ -275,6 +275,6 @@ class DatabaseStorageModule(
     sharedApplication!!
         .componentApplication
         .inject(this)
-    accountIdentifier = conversationUser.id
+    accountIdentifier = conversationUser.id!!
   }
 }

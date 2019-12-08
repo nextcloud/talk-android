@@ -1017,11 +1017,11 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
   private fun setupWebsocket() {
     if (conversationUser != null) {
       if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(
-              conversationUser.id
+              conversationUser.id!!
           ) != null
       ) {
         magicWebSocketInstance =
-          WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id)
+          WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
       } else {
         magicWebSocketInstance = null
       }
@@ -1489,7 +1489,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                       null && roomOverall.ocs.data.token != null
                   ) {
                     ConductorRemapping.remapChatController(
-                        router, conversationUser.id,
+                        router, conversationUser.id!!,
                         roomOverall.ocs.data.token!!, bundle, false
                     )
                   }

@@ -37,7 +37,6 @@ class ConversationListViewModelFactory constructor(
   private val setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
   private val leaveConversationUseCase: LeaveConversationUseCase,
   private val deleteConversationUseCase: DeleteConversationUseCase,
-  private val userUtils: UserUtils,
   private val conversationsRepository: ConversationsRepository,
   private val usersRepository: UsersRepository
 ) : ViewModelProvider.Factory {
@@ -46,7 +45,7 @@ class ConversationListViewModelFactory constructor(
     return ConversationsListViewModel(
         application, conversationsUseCase,
         setConversationFavoriteValueUseCase, leaveConversationUseCase, deleteConversationUseCase,
-        userUtils, conversationsRepository, usersRepository
+        conversationsRepository, usersRepository
     ) as T
   }
 }

@@ -42,6 +42,7 @@ import com.nextcloud.talk.controllers.CallNotificationController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
+import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListView
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.SecurityUtils
@@ -50,6 +51,9 @@ import com.nextcloud.talk.utils.database.user.UserUtils
 import io.requery.Persistable
 import io.requery.android.sqlcipher.SqlCipherDatabaseSource
 import io.requery.reactivex.ReactiveEntityStore
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -60,10 +64,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
   @BindView(R.id.controller_container)
   lateinit var container: ViewGroup
 
-  @Inject
-  lateinit var userUtils: UserUtils
-  @Inject
-  lateinit var dataStore: ReactiveEntityStore<Persistable>
+  val usersRepository: UsersRepository by inject()
+
   @Inject
   lateinit var sqlCipherDatabaseSource: SqlCipherDatabaseSource
 
@@ -89,6 +91,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
       hasDb = false
     }
 
+
     if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
       if (!router!!.hasRootController()) {
         router!!.setRoot(
@@ -100,18 +103,26 @@ class MainActivity : BaseActivity(), ActionBarProvider {
       onNewIntent(intent)
     } else if (!router!!.hasRootController()) {
       if (hasDb) {
-        if (userUtils.anyUserExists()) {
-          router!!.setRoot(
-              RouterTransaction.with(ConversationsListView())
-                  .pushChangeHandler(HorizontalChangeHandler())
-                  .popChangeHandler(HorizontalChangeHandler())
-          )
-        } else {
-          router!!.setRoot(
-              RouterTransaction.with(ServerSelectionController())
-                  .pushChangeHandler(HorizontalChangeHandler())
-                  .popChangeHandler(HorizontalChangeHandler())
-          )
+        GlobalScope.launch {
+          if (usersRepository.getUsers().count() > 0) {
+            runOnUiThread {
+              router!!.setRoot(
+                      RouterTransaction.with(ConversationsListView())
+                              .pushChangeHandler(HorizontalChangeHandler())
+                              .popChangeHandler(HorizontalChangeHandler())
+              )
+
+            }
+          } else {
+            runOnUiThread {
+              router!!.setRoot(
+                      RouterTransaction.with(ServerSelectionController())
+                              .pushChangeHandler(HorizontalChangeHandler())
+                              .popChangeHandler(HorizontalChangeHandler())
+              )
+            }
+          }
+
         }
       } else {
         router!!.setRoot(

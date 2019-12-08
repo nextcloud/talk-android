@@ -332,7 +332,7 @@ class ContactsController : BaseController,
 
                           ConductorRemapping.remapChatController(
                               router,
-                              currentUser!!.id,
+                              currentUser!!.id!!,
                               roomOverall.ocs.data.token!!, bundle, true
                           )
                         }
@@ -389,7 +389,7 @@ class ContactsController : BaseController,
       val groupIdsArray = selectedGroupIds.toTypedArray()
 
       val data = Data.Builder()
-      data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
+      data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id!!)
       data.putString(BundleKeys.KEY_TOKEN, conversationToken)
       data.putStringArray(BundleKeys.KEY_SELECTED_USERS, userIdsArray)
       data.putStringArray(BundleKeys.KEY_SELECTED_GROUPS, groupIdsArray)
@@ -893,7 +893,7 @@ class ContactsController : BaseController,
 
                     ConductorRemapping.remapChatController(
                         router,
-                        currentUser!!.id,
+                        currentUser!!.id!!,
                         roomOverall.ocs.data.token!!, bundle, true
                     )
                   } else {

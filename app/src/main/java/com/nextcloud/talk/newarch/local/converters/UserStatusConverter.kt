@@ -28,16 +28,20 @@ import com.nextcloud.talk.newarch.local.models.other.UserStatus.PENDING_DELETE
 
 class UserStatusConverter {
   @TypeConverter
-  fun fromUserStatusToInt(userStatus: UserStatus): Int {
+  fun fromUserStatusToInt(userStatus: UserStatus?): Int {
+    if (userStatus == null) {
+      return DORMANT.ordinal
+    }
+
     return userStatus.ordinal
   }
 
   @TypeConverter
-  fun fromIntToUserStatus(value: Int): UserStatus {
-    when (value) {
-      0 -> return DORMANT
-      1 -> return ACTIVE
-      else -> return PENDING_DELETE
+  fun fromIntToUserStatus(value: Int): UserStatus? {
+    return when (value) {
+      0 -> DORMANT
+      1 -> ACTIVE
+      else -> PENDING_DELETE
     }
   }
 }

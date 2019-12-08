@@ -42,7 +42,7 @@ val ConversationsListModule = module {
   //viewModel { ConversationsListViewModel(get(), get()) }
   factory {
     createConversationListViewModelFactory(
-        androidApplication(), get(), get(), get(), get
+        androidApplication(), get(), get(), get
     (), get(), get(), get()
     )
   }
@@ -83,13 +83,12 @@ fun createConversationListViewModelFactory(
   setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
   leaveConversationUseCase: LeaveConversationUseCase,
   deleteConversationUseCase: DeleteConversationUseCase,
-  userUtils: UserUtils,
   conversationsRepository: ConversationsRepository,
   usersRepository: UsersRepository
 ): ConversationListViewModelFactory {
   return ConversationListViewModelFactory(
       application, getConversationsUseCase,
       setConversationFavoriteValueUseCase, leaveConversationUseCase, deleteConversationUseCase,
-      userUtils, conversationsRepository, usersRepository
+      conversationsRepository, usersRepository
   )
 }

@@ -53,4 +53,12 @@ class UsersRepositoryImpl(val usersDao: UsersDao): UsersRepository {
     return usersDao.updateUser(user)
   }
 
+  override suspend fun setUserAsActiveWithId(id: Long) {
+    usersDao.setUserAsActiveWithId(id)
+  }
+
+  override suspend fun deleteUserWithId(id: Long) {
+    usersDao.deleteUserWithId(id)
+  }
+
 }

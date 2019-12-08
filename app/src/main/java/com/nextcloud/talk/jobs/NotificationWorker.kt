@@ -154,7 +154,7 @@ class NotificationWorker(
     var arbitraryStorageEntity: ArbitraryStorageEntity?
 
     arbitraryStorageEntity = arbitraryStorageUtils!!.getStorageSetting(
-        userEntity.id,
+        userEntity.id!!,
         "mute_calls",
         intent.extras!!.getString(KEY_ROOM_TOKEN)
     )
@@ -164,7 +164,7 @@ class NotificationWorker(
     }
 
     arbitraryStorageEntity = arbitraryStorageUtils!!.getStorageSetting(
-        userEntity.id,
+        userEntity.id!!,
         "important_conversation",
         intent.extras!!.getString(KEY_ROOM_TOKEN)
     )
@@ -366,7 +366,7 @@ class NotificationWorker(
     val notificationInfo = Bundle()
     notificationInfo.putLong(
         KEY_INTERNAL_USER_ID,
-        signatureVerification!!.userEntity.id
+        signatureVerification!!.userEntity.id!!
     )
     // could be an ID or a TOKEN
 

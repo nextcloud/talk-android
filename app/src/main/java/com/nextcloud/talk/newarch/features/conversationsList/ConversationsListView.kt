@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -117,14 +118,18 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
     }
 
     settingsItem = menu.findItem(R.id.action_settings)
+    loadAvatar()
+  }
+
+  private fun loadAvatar() {
     val iconSize = settingsItem?.icon?.intrinsicHeight?.toFloat()
-        ?.let {
-          DisplayUtils.convertDpToPixel(
-              it,
-              activity!!
-          )
-              .toInt()
-        }
+            ?.let {
+              DisplayUtils.convertDpToPixel(
+                      it,
+                      activity!!
+              )
+                      .toInt()
+            }
 
     iconSize?.let {
       val target = object : Target {
@@ -141,9 +146,9 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
       viewModel.currentUserLiveData.value?.let {
         val avatarRequest = Images().getRequestForUrl(
-            imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
-            it.baseUrl,
-            it.userId, iconSize
+                imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
+                it.baseUrl,
+                it.userId, iconSize
         ), it, target, this, CircleCropTransformation()
         )
 
@@ -214,6 +219,10 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
     viewModel = viewModelProvider(factory).get(ConversationsListViewModel::class.java)
     viewModel.apply {
+      currentUserLiveData.observe(this@ConversationsListView, Observer { value ->
+        loadAvatar()
+      })
+
       viewState.observe(this@ConversationsListView, Observer { value ->
         when (value) {
           LOADING -> {
@@ -363,8 +372,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
       displayName
     }
-
-    viewModel.loadConversations()
   }
 
   override fun onItemLongClick(position: Int) {
@@ -443,7 +450,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
       bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.conversationId)
       bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
       ConductorRemapping.remapChatController(
-          router, viewModel.currentUserLiveData.value!!.id, conversation.token!!,
+          router, viewModel.currentUserLiveData.value!!.id!!, conversation.token!!,
           bundle, false
       )
     }

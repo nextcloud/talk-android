@@ -20,33 +20,29 @@
 package com.nextcloud.talk.jobs
 
 import android.content.Context
-import android.util.Log
-import androidx.work.*
+import androidx.work.CoroutineWorker
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import autodagger.AutoInjector
-import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.models.ExternalSignalingServer
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
-import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
@@ -63,7 +59,7 @@ class SignalingSettingsWorker(context: Context, workerParams: WorkerParameters) 
                 ?.inject(this)
         val data = inputData
         val internalUserId = data.getLong(KEY_INTERNAL_USER_ID, -1)
-        var userEntityList: MutableList<UserNgEntity?> = ArrayList<UserNgEntity?>()
+        var userEntityList: MutableList<UserNgEntity?> = ArrayList()
         var userEntity: UserNgEntity?
         if (internalUserId == -1L || usersRepository.getUserWithId(internalUserId) == null) {
             userEntityList = usersRepository.getUsers().toMutableList()
@@ -84,18 +80,18 @@ class SignalingSettingsWorker(context: Context, workerParams: WorkerParameters) 
                             externalSignalingServer = ExternalSignalingServer()
                             externalSignalingServer.externalSignalingServer = signalingSettingsOverall.ocs.settings.externalSignalingServer
                             externalSignalingServer.externalSignalingTicket = signalingSettingsOverall.ocs.settings.externalSignalingTicket
-                            val user = usersRepository.getUserWithId(userEntity.id)
+                            val user = usersRepository.getUserWithId(userEntity.id!!)
                             user.externalSignaling = externalSignalingServer
                             runBlocking {
                                 val result = usersRepository.updateUser(user)
-                                eventBus.post(EventStatus(user.id,
+                                eventBus.post(EventStatus(user.id!!,
                                         EventStatus.EventType.SIGNALING_SETTINGS, result > 0))
                             }
 
                         }
 
                         override fun onError(e: Throwable) {
-                            eventBus.post(EventStatus(finalUserEntity!!.id,
+                            eventBus.post(EventStatus(finalUserEntity!!.id!!,
                                     EventStatus.EventType.SIGNALING_SETTINGS, false))
                         }
 

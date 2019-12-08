@@ -35,7 +35,7 @@ import kotlinx.android.parcel.RawValue
 @Parcelize
 @Entity(tableName = "users")
 data class UserNgEntity(
-  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long,
+  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long?,
   @ColumnInfo(name = "user_id") var userId: String,
   @ColumnInfo(name = "username") var username: String,
   @ColumnInfo(name = "base_url") var baseUrl: String,

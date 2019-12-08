@@ -55,7 +55,7 @@ class CapabilitiesWorker(context: Context, workerParams: WorkerParameters) : Cor
         internalUserEntity.capabilities = capabilitiesOverall.ocs.data.capabilities
         runBlocking {
             val result = usersRepository.updateUser(internalUserEntity)
-            eventBus!!.post(EventStatus(internalUserEntity.id,
+            eventBus!!.post(EventStatus(internalUserEntity.id!!,
                     EventStatus.EventType.CAPABILITIES_FETCH, result > 0))
         }
 
@@ -87,7 +87,7 @@ class CapabilitiesWorker(context: Context, workerParams: WorkerParameters) : Cor
                         }
 
                         override fun onError(e: Throwable) {
-                            eventBus.post(EventStatus(internalUserEntity.id,
+                            eventBus.post(EventStatus(internalUserEntity.id!!,
                                     EventStatus.EventType.CAPABILITIES_FETCH, false))
                         }
 

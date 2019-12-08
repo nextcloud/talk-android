@@ -21,47 +21,68 @@
 package com.nextcloud.talk.newarch.local.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.newarch.local.models.ConversationEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.other.UserStatus
 
 @Dao
 abstract class UsersDao {
-  // get active user
-  @Query("SELECT * FROM users where status = 1")
-  abstract fun getActiveUser(): UserNgEntity
+    // get active user
+    @Query("SELECT * FROM users where status = 1")
+    abstract fun getActiveUser(): UserNgEntity
 
-  @Query("SELECT * FROM users WHERE status = 1")
-  abstract fun getActiveUserLiveData(): LiveData<UserNgEntity>
+    @Query("SELECT * FROM users WHERE status = 1")
+    abstract fun getActiveUserLiveData(): LiveData<UserNgEntity>
 
-  @Query("DELETE FROM users WHERE id = :userId")
-  abstract fun deleteUserForId(userId: Long)
+    @Query("DELETE FROM users WHERE id = :id")
+    abstract suspend fun deleteUserWithId(id: Long)
 
-  @Update
-  abstract suspend fun updateUser(user: UserNgEntity): Int
+    @Update
+    abstract suspend fun updateUser(user: UserNgEntity): Int
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  abstract fun saveUser(user: UserNgEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun saveUser(user: UserNgEntity): Long
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  abstract suspend fun saveUsers(vararg users: UserNgEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun saveUsers(vararg users: UserNgEntity)
 
-  // get all users not scheduled for deletion
-  @Query("SELECT * FROM users where status != 2")
-  abstract fun getUsers(): List<UserNgEntity>
+    // get all users not scheduled for deletion
+    @Query("SELECT * FROM users where status != 2")
+    abstract fun getUsers(): List<UserNgEntity>
 
-  @Query("SELECT * FROM users where id = :id")
-  abstract fun getUserWithId(id: Long): UserNgEntity
+    @Query("SELECT * FROM users where id = :id")
+    abstract fun getUserWithId(id: Long): UserNgEntity
 
-  @Query("SELECT * FROM users where status = 2")
-  abstract fun getUsersScheduledForDeletion(): List<UserNgEntity>
+    @Query("SELECT * FROM users where status = 2")
+    abstract fun getUsersScheduledForDeletion(): List<UserNgEntity>
 
-  @Query("SELECT * FROM users WHERE username = :username AND base_url = :server")
-  abstract suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
+    @Query("SELECT * FROM users WHERE username = :username AND base_url = :server")
+    abstract suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
 
+    @Transaction
+    open suspend fun setUserAsActiveWithId(id: Long) {
+        val users = getUsers()
+        for (user in users) {
+            if (user.id != id && UserStatus.ACTIVE == user.status) {
+                user.status = UserStatus.DORMANT
+                updateUser(user)
+            } else if (user.id == id && UserStatus.ACTIVE != user.status) {
+                user.status = UserStatus.ACTIVE
+                updateUser(user)
+            }
+        }
+    }
+
+    @Transaction
+    open suspend fun setAnyUserAsActive(): Boolean {
+        val users = getUsers()
+        for (user in users) {
+            user.status = UserStatus.ACTIVE
+            return true
+        }
+
+        return false
+    }
 }

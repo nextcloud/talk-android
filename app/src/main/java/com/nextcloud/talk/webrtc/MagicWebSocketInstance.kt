@@ -253,7 +253,7 @@ class MagicWebSocketInstance internal constructor(
                             HashMap<String, String?>()
                           refreshChatHashMap[KEY_ROOM_TOKEN] = messageHashMap["roomid"] as String?
                           refreshChatHashMap[KEY_INTERNAL_USER_ID] =
-                            java.lang.Long.toString(conversationUser.id)
+                            java.lang.Long.toString(conversationUser.id!!)
                           eventBus.post(
                               WebSocketCommunicationEvent("refreshChat", refreshChatHashMap)
                           )

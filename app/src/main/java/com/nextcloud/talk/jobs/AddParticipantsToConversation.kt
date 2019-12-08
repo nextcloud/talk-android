@@ -74,7 +74,7 @@ class AddParticipantsToConversation(context: Context,
                     .subscribeOn(Schedulers.io())
                     .blockingSubscribe()
         }
-        eventBus.post(EventStatus(user.id, EventStatus.EventType.PARTICIPANTS_UPDATE, true))
+        eventBus.post(EventStatus(user.id!!, EventStatus.EventType.PARTICIPANTS_UPDATE, true))
         return Result.success()
     }
 
