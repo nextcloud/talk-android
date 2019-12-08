@@ -64,7 +64,7 @@ class ConversationsListViewModel constructor(
   val searchQuery = MutableLiveData<String>()
   val currentUserLiveData: LiveData<UserNgEntity> = usersRepository.getActiveUserLiveData()
   val conversationsLiveData = Transformations.switchMap(currentUserLiveData) {
-    if (!LOADING.equals(viewState.value)) {
+    if (LOADING != viewState.value) {
       viewState.value = LOADING
     }
     conversationsRepository.getConversationsForUser(it.id)
@@ -192,8 +192,7 @@ class ConversationsListViewModel constructor(
       // TODO, make sure we ask for password if needed
       putExtra(
           Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(
-          context, null,
-          userUtils, conversation
+          context, null, conversation
       )
       )
 

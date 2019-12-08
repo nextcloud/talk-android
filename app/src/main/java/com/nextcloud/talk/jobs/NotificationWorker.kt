@@ -67,7 +67,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.GROUP_CONVERSATION

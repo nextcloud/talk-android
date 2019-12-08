@@ -27,6 +27,7 @@ import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ApiUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -39,7 +40,7 @@ class MentionAutocompleteItem(
   val objectId: String?,
   val displayName: String?,
   var source: String?,
-  private val currentUser: UserEntity
+  private val currentUser: UserNgEntity
 ) : AbstractFlexibleItem<UserItem.UserItemViewHolder>(), IFilterable<String> {
 
   override fun equals(other: Any?): Boolean {

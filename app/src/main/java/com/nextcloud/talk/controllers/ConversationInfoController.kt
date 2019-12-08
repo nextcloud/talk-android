@@ -756,8 +756,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
           putExtra(
               Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(
-              context, conversation!!.password,
-              userUtils, conversation
+              context, conversation!!.password, conversation!!
           )
           )
 

@@ -29,12 +29,12 @@ import org.parceler.Parcel;
 @JsonObject
 public class Mention {
   @JsonField(name = "id")
-  String id;
+  public String id;
 
   @JsonField(name = "label")
-  String label;
+  public String label;
 
   // type of user (guests or users or calls)
   @JsonField(name = "source")
-  String source;
+  public String source;
 }

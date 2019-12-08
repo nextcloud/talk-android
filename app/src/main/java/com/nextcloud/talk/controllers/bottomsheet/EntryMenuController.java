@@ -173,7 +173,7 @@ public class EntryMenuController extends BaseController {
     } else if (operationCode == 7) {
       if (getActivity() != null) {
         shareIntent.putExtra(Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(getActivity(),
-            editText.getText().toString(), userUtils, conversation));
+            editText.getText().toString(), conversation));
         Intent intent = new Intent(shareIntent);
         intent.setComponent(new ComponentName(packageName, name));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

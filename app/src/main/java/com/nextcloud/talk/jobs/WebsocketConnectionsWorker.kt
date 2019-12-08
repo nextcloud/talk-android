@@ -62,7 +62,7 @@ class WebsocketConnectionsWorker(
           if (!userEntity.externalSignaling!!.externalSignalingServer.isNullOrEmpty() &&
               !userEntity.externalSignaling!!.externalSignalingTicket.isNullOrEmpty()) {
             WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
-                userEntity.externalSignaling!!.externalSignalingServer,
+                userEntity.externalSignaling!!.externalSignalingServer!!,
                 userEntity, userEntity.externalSignaling!!.externalSignalingTicket,
                 false
             )

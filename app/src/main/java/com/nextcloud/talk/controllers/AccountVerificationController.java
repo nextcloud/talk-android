@@ -309,18 +309,14 @@ public class AccountVerificationController extends BaseController {
           @Override
           public void onNext(UserProfileOverall userProfileOverall) {
             String displayName = null;
-            if (!TextUtils.isEmpty(userProfileOverall.getOcs().getData()
-                .getDisplayName())) {
-              displayName = userProfileOverall.getOcs().getData()
-                  .getDisplayName();
-            } else if (!TextUtils.isEmpty(userProfileOverall.getOcs().getData()
-                .getDisplayNameAlt())) {
-              displayName = userProfileOverall.getOcs().getData()
-                  .getDisplayNameAlt();
+            if (!TextUtils.isEmpty(userProfileOverall.ocs.data.displayName)) {
+              displayName = userProfileOverall.ocs.data.displayName;
+            } else if (!TextUtils.isEmpty(userProfileOverall.ocs.data.displayNameAlt)) {
+              displayName = userProfileOverall.ocs.data.displayNameAlt;
             }
 
             if (!TextUtils.isEmpty(displayName)) {
-              storeProfile(displayName, userProfileOverall.getOcs().getData().getUserId());
+              storeProfile(displayName, userProfileOverall.ocs.data.userId);
             } else {
               if (getActivity() != null) {
                 getActivity().runOnUiThread(
@@ -356,28 +352,28 @@ public class AccountVerificationController extends BaseController {
 
   @Subscribe(threadMode = ThreadMode.BACKGROUND)
   public void onMessageEvent(EventStatus eventStatus) {
-    if (eventStatus.getEventType().equals(EventStatus.EventType.PUSH_REGISTRATION)) {
-      if (internalAccountId == eventStatus.getUserId()
-          && !eventStatus.isAllGood()
+    if (EventStatus.EventType.PUSH_REGISTRATION == eventStatus.eventType) {
+      if (internalAccountId == eventStatus.userId
+          && !eventStatus.allGood
           && getActivity() != null) {
         getActivity().runOnUiThread(
             () -> progressText.setText(progressText.getText().toString() + "\n" +
                 getResources().getString(R.string.nc_push_disabled)));
       }
       fetchAndStoreCapabilities();
-    } else if (eventStatus.getEventType().equals(EventStatus.EventType.CAPABILITIES_FETCH)) {
-      if (internalAccountId == eventStatus.getUserId() && !eventStatus.isAllGood()) {
+    } else if (EventStatus.EventType.CAPABILITIES_FETCH == eventStatus.eventType) {
+      if (internalAccountId == eventStatus.userId && !eventStatus.allGood) {
         if (getActivity() != null) {
           getActivity().runOnUiThread(
               () -> progressText.setText(progressText.getText().toString() + "\n" +
                   getResources().getString(R.string.nc_capabilities_failed)));
         }
         abortVerification();
-      } else if (internalAccountId == eventStatus.getUserId() && eventStatus.isAllGood()) {
+      } else if (internalAccountId == eventStatus.userId && eventStatus.allGood) {
         fetchAndStoreExternalSignalingSettings();
       }
-    } else if (eventStatus.getEventType().equals(EventStatus.EventType.SIGNALING_SETTINGS)) {
-      if (internalAccountId == eventStatus.getUserId() && !eventStatus.isAllGood()) {
+    } else if (EventStatus.EventType.SIGNALING_SETTINGS == eventStatus.eventType) {
+      if (internalAccountId == eventStatus.userId && !eventStatus.allGood) {
         if (getActivity() != null) {
           getActivity().runOnUiThread(
               () -> progressText.setText(progressText.getText().toString() + "\n" +

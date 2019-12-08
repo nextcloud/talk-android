@@ -1259,8 +1259,8 @@ class CallController(args: Bundle) : BaseController() {
 
     if (webSocketClient == null) {
       webSocketClient = WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
-          externalSignalingServer!!.externalSignalingServer,
-          conversationUser, externalSignalingServer!!.externalSignalingTicket,
+          externalSignalingServer!!.externalSignalingServer!!,
+          conversationUser!!, externalSignalingServer!!.externalSignalingTicket,
           TextUtils.isEmpty(credentials)
       )
     } else {

@@ -29,5 +29,5 @@ import org.parceler.Parcel;
 @JsonObject
 public class MentionOverall {
   @JsonField(name = "ocs")
-  MentionOCS ocs;
+  public MentionOCS ocs;
 }

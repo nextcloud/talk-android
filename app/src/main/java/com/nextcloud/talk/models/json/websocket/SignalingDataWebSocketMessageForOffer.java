@@ -30,8 +30,8 @@ import org.parceler.Parcel;
 @Parcel
 public class SignalingDataWebSocketMessageForOffer {
   @JsonField(name = "type")
-  String type;
+  public String type;
 
   @JsonField(name = "roomType")
-  String roomType;
+  public String roomType;
 }

@@ -30,8 +30,8 @@ import org.parceler.Parcel;
 @Parcel
 public class RequestOfferSignalingMessage {
   @JsonField(name = "recipient")
-  ActorWebSocketMessage actorWebSocketMessage;
+  public ActorWebSocketMessage actorWebSocketMessage;
 
   @JsonField(name = "data")
-  SignalingDataWebSocketMessageForOffer signalingDataWebSocketMessageForOffer;
+  public SignalingDataWebSocketMessageForOffer signalingDataWebSocketMessageForOffer;
 }

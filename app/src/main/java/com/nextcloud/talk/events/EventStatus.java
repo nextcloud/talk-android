@@ -24,9 +24,9 @@ import lombok.Data;
 
 @Data
 public class EventStatus {
-  private long userId;
-  private EventType eventType;
-  private boolean allGood;
+  public long userId;
+  public EventType eventType;
+  public boolean allGood;
 
   public EventStatus(long userId, EventType eventType, boolean allGood) {
     this.userId = userId;

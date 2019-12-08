@@ -30,8 +30,8 @@ import org.parceler.Parcel;
 @Parcel
 public class AuthParametersWebSocketMessage {
   @JsonField(name = "userid")
-  String userid;
+  public String userid;
 
   @JsonField(name = "ticket")
-  String ticket;
+  public String ticket;
 }
