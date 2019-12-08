@@ -25,6 +25,9 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 interface UsersRepository {
   fun getActiveUserLiveData(): LiveData<UserNgEntity>
-  fun getActiveUser(): UserNgEntity
+  fun getActiveUser(): UserNgEntity?
   fun getUsers(): List<UserNgEntity>
+  fun getUserWithId(id: Long): UserNgEntity
+  suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
+  suspend fun updateUser(user: UserNgEntity): Int
 }

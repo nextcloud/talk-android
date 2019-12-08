@@ -31,7 +31,7 @@ import org.parceler.Parcel;
 @JsonObject
 public class EventOverallWebSocketMessage extends BaseWebSocketMessage {
   @JsonField(name = "type")
-  String type;
+  public String type;
   @JsonField(name = "event")
-  HashMap<String, Object> eventMap;
+  public HashMap<String, Object> eventMap;
 }

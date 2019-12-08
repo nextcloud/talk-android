@@ -30,5 +30,5 @@ import org.parceler.Parcel;
 @JsonObject
 public class ErrorOverallWebSocketMessage extends BaseWebSocketMessage {
   @JsonField(name = "error")
-  ErrorWebSocketMessage errorWebSocketMessage;
+  public ErrorWebSocketMessage errorWebSocketMessage;
 }

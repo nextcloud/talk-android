@@ -37,4 +37,20 @@ class UsersRepositoryImpl(val usersDao: UsersDao): UsersRepository {
   override fun getUsers(): List<UserNgEntity> {
     return usersDao.getUsers()
   }
+
+  override fun getUserWithId(id: Long): UserNgEntity {
+    return usersDao.getUserWithId(id)
+  }
+
+  override suspend fun getUserWithUsernameAndServer(
+    username: String,
+    server: String
+  ): UserNgEntity? {
+    return usersDao.getUserWithUsernameAndServer(username, server)
+  }
+
+  override suspend fun updateUser(user: UserNgEntity): Int {
+    return usersDao.updateUser(user)
+  }
+
 }

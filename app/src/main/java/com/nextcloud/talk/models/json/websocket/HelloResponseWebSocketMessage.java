@@ -30,13 +30,13 @@ import org.parceler.Parcel;
 @Parcel
 public class HelloResponseWebSocketMessage {
   @JsonField(name = "resumeid")
-  String resumeId;
+  public String resumeId;
 
   @JsonField(name = "sessionid")
-  String sessionId;
+  public String sessionId;
 
   @JsonField(name = "server")
-  ServerHelloResponseFeaturesWebSocketMessage serverHelloResponseFeaturesWebSocketMessage;
+  public ServerHelloResponseFeaturesWebSocketMessage serverHelloResponseFeaturesWebSocketMessage;
 
   public boolean serverHasMCUSupport() {
     return serverHelloResponseFeaturesWebSocketMessage != null

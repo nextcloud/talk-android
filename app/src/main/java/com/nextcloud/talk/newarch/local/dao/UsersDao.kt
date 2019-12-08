@@ -25,6 +25,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.newarch.local.models.ConversationEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
@@ -41,6 +42,9 @@ abstract class UsersDao {
   @Query("DELETE FROM users WHERE id = :userId")
   abstract fun deleteUserForId(userId: Long)
 
+  @Update
+  abstract suspend fun updateUser(user: UserNgEntity): Int
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   abstract fun saveUser(user: UserNgEntity)
 
@@ -51,8 +55,13 @@ abstract class UsersDao {
   @Query("SELECT * FROM users where status != 2")
   abstract fun getUsers(): List<UserNgEntity>
 
+  @Query("SELECT * FROM users where id = :id")
+  abstract fun getUserWithId(id: Long): UserNgEntity
 
   @Query("SELECT * FROM users where status = 2")
   abstract fun getUsersScheduledForDeletion(): List<UserNgEntity>
+
+  @Query("SELECT * FROM users WHERE username = :username AND base_url = :server")
+  abstract suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
 
 }

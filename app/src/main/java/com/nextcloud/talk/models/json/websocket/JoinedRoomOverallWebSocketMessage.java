@@ -30,5 +30,5 @@ import org.parceler.Parcel;
 @Parcel
 public class JoinedRoomOverallWebSocketMessage extends BaseWebSocketMessage {
   @JsonField(name = "room")
-  RoomWebSocketMessage roomWebSocketMessage;
+  public RoomWebSocketMessage roomWebSocketMessage;
 }

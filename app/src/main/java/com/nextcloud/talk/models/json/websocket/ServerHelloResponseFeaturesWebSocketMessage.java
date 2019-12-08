@@ -31,5 +31,5 @@ import org.parceler.Parcel;
 @Data
 public class ServerHelloResponseFeaturesWebSocketMessage {
   @JsonField(name = "features")
-  List<String> features;
+  public List<String> features;
 }

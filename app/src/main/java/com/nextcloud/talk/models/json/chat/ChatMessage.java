@@ -65,9 +65,9 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
   @JsonIgnore
   public Long internalUserId = null;
   @JsonIgnore
-  public Long internalMessageId = null;
+  public String internalMessageId = null;
   @JsonIgnore
-  public Long internalConversationId = null;
+  public String internalConversationId = null;
   @JsonField(name = "id")
   @Ignore
   public Long jsonMessageId;

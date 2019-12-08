@@ -29,4 +29,10 @@ public class WebSocketCommunicationEvent {
   public final String type;
   @Nullable
   public final HashMap<String, String> hashMap;
+
+  public WebSocketCommunicationEvent(String type,
+      @Nullable HashMap<String, String> hashMap) {
+    this.type = type;
+    this.hashMap = hashMap;
+  }
 }

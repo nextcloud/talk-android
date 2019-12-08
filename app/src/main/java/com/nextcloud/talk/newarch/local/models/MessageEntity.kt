@@ -46,8 +46,8 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType
     )]
 )
 data class MessageEntity(
-  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long? = null,
-  @ColumnInfo(name = "conversation") var conversation: Long? = null,
+  @PrimaryKey @ColumnInfo(name = "id") var id: String,
+  @ColumnInfo(name = "conversation") var conversation: String,
   @ColumnInfo(name = "message_id") var messageId: Long = 0,
   @ColumnInfo(name = "actor_id") var actorId: String? = null,
   @ColumnInfo(name = "actor_type") var actorType: String? = null,
@@ -77,8 +77,7 @@ fun MessageEntity.toChatMessage(): ChatMessage {
 
 @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 fun ChatMessage.toMessageEntity(): MessageEntity {
-  val messageEntity = MessageEntity(this.internalMessageId)
-  messageEntity.conversation = this.internalConversationId
+  val messageEntity = MessageEntity(this.internalConversationId + "@" + this.jsonMessageId, this.activeUser.id.toString() + "@" + this.internalConversationId)
   messageEntity.messageId = this.jsonMessageId
   messageEntity.actorType = this.actorType
   messageEntity.actorId = this.actorId

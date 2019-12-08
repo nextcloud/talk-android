@@ -18,15 +18,17 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models;
+package com.nextcloud.talk.models
 
-import lombok.Data;
-import org.parceler.Parcel;
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+import lombok.Data
+import org.parceler.Parcel
 
-@Parcel
-@Data
-public class LoginData {
-  String serverUrl;
-  String username;
-  String token;
-}
+@Parcelize
+data class LoginData (
+  var serverUrl: String? = null,
+  var username: String? = null,
+  var token: String? = null
+): Parcelable
+

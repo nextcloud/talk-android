@@ -30,5 +30,5 @@ import org.parceler.Parcel;
 @Parcel
 public class CallOverallWebSocketMessage extends BaseWebSocketMessage {
   @JsonField(name = "message")
-  CallWebSocketMessage callWebSocketMessage;
+  public CallWebSocketMessage callWebSocketMessage;
 }

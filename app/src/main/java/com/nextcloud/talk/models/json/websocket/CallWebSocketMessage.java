@@ -31,11 +31,11 @@ import org.parceler.Parcel;
 @Parcel
 public class CallWebSocketMessage {
   @JsonField(name = "recipient")
-  ActorWebSocketMessage recipientWebSocketMessage;
+  public ActorWebSocketMessage recipientWebSocketMessage;
 
   @JsonField(name = "sender")
-  ActorWebSocketMessage senderWebSocketMessage;
+  public ActorWebSocketMessage senderWebSocketMessage;
 
   @JsonField(name = "data")
-  NCSignalingMessage ncSignalingMessage;
+  public NCSignalingMessage ncSignalingMessage;
 }

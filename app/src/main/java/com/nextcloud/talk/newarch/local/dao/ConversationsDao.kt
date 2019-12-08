@@ -27,6 +27,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.nextcloud.talk.newarch.local.models.ConversationEntity
 
 @Dao
@@ -39,10 +40,10 @@ abstract class ConversationsDao {
   abstract suspend fun clearConversationsForUser(userId: Long)
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  abstract suspend fun saveConversation(conversation: ConversationEntity)
+  abstract suspend fun saveConversationWithInsert(conversation: ConversationEntity): Long
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  abstract suspend fun saveConversations(vararg conversations: ConversationEntity)
+  abstract suspend fun saveConversationsWithInsert(vararg conversations: ConversationEntity): List<Long>
 
   @Query(
       "UPDATE conversations SET changing = :changing WHERE user = :userId AND conversation_id = :conversationId"
@@ -80,17 +81,16 @@ abstract class ConversationsDao {
   @Transaction
   open suspend fun updateConversationsForUser(
     userId: Long,
-    newConversations:
-    Array<ConversationEntity>
+    newConversations: Array<ConversationEntity>
   ) {
     val timestamp = System.currentTimeMillis()
 
     val conversationsWithTimestampApplied = newConversations.map {
-      it.modifiedAt = System.currentTimeMillis()
+      it.modifiedAt = timestamp
       it
     }
 
-    saveConversations(*conversationsWithTimestampApplied.toTypedArray())
+    saveConversationsWithInsert(*conversationsWithTimestampApplied.toTypedArray())
     deleteConversationsForUserWithTimestamp(userId, timestamp)
   }
 }

@@ -118,6 +118,7 @@ import org.apache.commons.lang3.StringEscapeUtils
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.koin.android.ext.android.inject
 import org.parceler.Parcel
 import org.webrtc.AudioSource
 import org.webrtc.AudioTrack
@@ -194,10 +195,8 @@ class CallController(args: Bundle) : BaseController() {
   @JvmField
   @Inject
   var userUtils: UserUtils? = null
-  @JvmField
-  @Inject
-  var cookieManager: CookieManager? = null
 
+  val cookieManager: CookieManager by inject()
   private var peerConnectionFactory: PeerConnectionFactory? = null
   private var audioConstraints: MediaConstraints? = null
   private var videoConstraints: MediaConstraints? = null
@@ -214,7 +213,7 @@ class CallController(args: Bundle) : BaseController() {
   private var pingDisposable: Disposable? = null
   private var iceServers: MutableList<PeerConnection.IceServer>? = null
   private var cameraEnumerator: CameraEnumerator? = null
-  private var roomToken: String? = null
+  private var roomToken: String
   private val conversationUser: UserNgEntity?
   private var callSession: String? = null
   private var localMediaStream: MediaStream? = null
@@ -416,7 +415,7 @@ class CallController(args: Bundle) : BaseController() {
           override fun onNext(roomsOverall: RoomsOverall) {
             for (conversation in roomsOverall.ocs.data) {
               if (roomId == conversation.conversationId) {
-                roomToken = conversation.token
+                roomToken = conversation.token.toString()
                 break
               }
             }
@@ -1321,9 +1320,11 @@ class CallController(args: Bundle) : BaseController() {
               Integer.valueOf(webSocketCommunicationEvent.hashMap!!["jobId"]!!)
           ) as NCSignalingMessage
       )
-      "peerReadyForRequestingOffer" -> webSocketClient!!.requestOfferForSessionIdWithType(
-          webSocketCommunicationEvent.hashMap!!["sessionId"], "video"
-      )
+      "peerReadyForRequestingOffer" -> webSocketCommunicationEvent.hashMap!!["sessionId"]?.let {
+        webSocketClient!!.requestOfferForSessionIdWithType(
+            it, "video"
+        )
+      }
     }
   }
 
@@ -2166,7 +2167,7 @@ class CallController(args: Bundle) : BaseController() {
     var sessionOrUserId = sessionOrUserId
     if (isFromAnEvent && hasExternalSignalingServer) {
       // get session based on userId
-      sessionOrUserId = webSocketClient!!.getSessionForUserId(sessionOrUserId)
+      sessionOrUserId = webSocketClient!!.getSessionForUserId(sessionOrUserId).toString()
     }
 
     sessionOrUserId += "+$type"

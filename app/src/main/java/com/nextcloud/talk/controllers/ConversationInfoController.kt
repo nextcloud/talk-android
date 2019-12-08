@@ -61,7 +61,6 @@ import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.interfaces.ConversationInfoInterface
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.GROUP_CONVERSATION
@@ -75,8 +74,6 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
-import com.nextcloud.talk.newarch.local.models.hasSpreedFeatureCapability
-import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils

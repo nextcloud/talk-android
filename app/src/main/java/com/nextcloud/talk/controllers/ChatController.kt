@@ -852,8 +852,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
               }
 
               if (magicWebSocketInstance != null) {
-                magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
-                    roomToken, currentConversation?.sessionId
+                magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(roomToken!!,
+                    currentConversation?.sessionId
                 )
               }
               if (startCallFromNotification != null && startCallFromNotification == true) {
@@ -874,7 +874,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
       inConversation = true
       if (magicWebSocketInstance != null) {
         magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(
-            roomToken,
+            roomToken!!,
             currentConversation?.sessionId
         )
       }

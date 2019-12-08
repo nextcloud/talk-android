@@ -2,17 +2,17 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c81b4edb8abdd29b77836d16a7d991c2",
+    "identityHash": "c7b1b47572d7ace1b422d0a3887a54e1",
     "entities": [
       {
         "tableName": "conversations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `user` INTEGER, `conversation_id` TEXT, `token` TEXT, `name` TEXT, `display_name` TEXT, `type` INTEGER, `count` INTEGER NOT NULL, `number_of_guests` INTEGER NOT NULL, `participants_count` INTEGER NOT NULL, `participant_type` INTEGER, `has_password` INTEGER NOT NULL, `session_id` TEXT, `favorite` INTEGER NOT NULL, `last_activity` INTEGER NOT NULL, `unread_messages` INTEGER NOT NULL, `unread_mention` INTEGER NOT NULL, `last_message` TEXT, `object_type` TEXT, `notification_level` INTEGER, `read_only_state` INTEGER, `lobby_state` INTEGER, `lobby_timer` INTEGER, `last_read_message` INTEGER NOT NULL, `modified_at` INTEGER, `changing` INTEGER NOT NULL, FOREIGN KEY(`user`) REFERENCES `users`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user` INTEGER, `conversation_id` TEXT, `token` TEXT, `name` TEXT, `display_name` TEXT, `type` INTEGER, `count` INTEGER NOT NULL, `number_of_guests` INTEGER NOT NULL, `participants_count` INTEGER NOT NULL, `participant_type` INTEGER, `has_password` INTEGER NOT NULL, `session_id` TEXT, `favorite` INTEGER NOT NULL, `last_activity` INTEGER NOT NULL, `unread_messages` INTEGER NOT NULL, `unread_mention` INTEGER NOT NULL, `last_message` TEXT, `object_type` TEXT, `notification_level` INTEGER, `read_only_state` INTEGER, `lobby_state` INTEGER, `lobby_timer` INTEGER, `last_read_message` INTEGER NOT NULL, `modified_at` INTEGER, `changing` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user`) REFERENCES `users`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "user",
@@ -169,7 +169,7 @@
           "columnNames": [
             "id"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [
           {
@@ -198,19 +198,19 @@
       },
       {
         "tableName": "messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `conversation` INTEGER, `message_id` INTEGER NOT NULL, `actor_id` TEXT, `actor_type` TEXT, `actor_display_name` TEXT, `timestamp` INTEGER NOT NULL, `message` TEXT, `system_message_type` TEXT, FOREIGN KEY(`conversation`) REFERENCES `conversations`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `conversation` TEXT NOT NULL, `message_id` INTEGER NOT NULL, `actor_id` TEXT, `actor_type` TEXT, `actor_display_name` TEXT, `timestamp` INTEGER NOT NULL, `message` TEXT, `system_message_type` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`conversation`) REFERENCES `conversations`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "conversation",
             "columnName": "conversation",
-            "affinity": "INTEGER",
-            "notNull": false
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "messageId",
@@ -259,7 +259,7 @@
           "columnNames": [
             "id"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [
           {
@@ -369,7 +369,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c81b4edb8abdd29b77836d16a7d991c2')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c7b1b47572d7ace1b422d0a3887a54e1')"
     ]
   }
 }

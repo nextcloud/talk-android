@@ -25,6 +25,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
+import com.nextcloud.talk.newarch.local.models.ConversationEntity
 import com.nextcloud.talk.newarch.local.models.MessageEntity
 
 @Dao
@@ -34,5 +37,5 @@ abstract class MessagesDao {
       LiveData<List<MessageEntity>>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  abstract suspend fun saveMessages(vararg messages: MessageEntity)
+  abstract suspend fun saveMessagesWithInsert(vararg messages: MessageEntity): List<Long>
 }
