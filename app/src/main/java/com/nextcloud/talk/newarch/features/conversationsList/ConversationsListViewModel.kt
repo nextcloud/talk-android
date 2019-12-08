@@ -63,6 +63,9 @@ class ConversationsListViewModel constructor(
   val searchQuery = MutableLiveData<String>()
   val currentUserLiveData: LiveData<UserNgEntity> = usersRepository.getActiveUserLiveData()
   val conversationsLiveData = Transformations.switchMap(currentUserLiveData) {
+    if (viewState.value != LOADING) {
+      viewState.value = LOADING
+    }
     conversationsRepository.getConversationsForUser(it.id!!)
   }
 
