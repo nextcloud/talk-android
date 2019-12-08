@@ -53,7 +53,10 @@
     <string name="nc_settings_theme_title">Apipavidalinimas</string>
     <string name="nc_settings_theme_key">apipavidalinimas</string>
     <string name="nc_settings_privacy">Privatumas</string>
+    <string name="nc_settings_screen_lock_title">Ekrano užraktas</string>
+    <string name="nc_none">Nėra</string>
     <string name="nc_settings_screen_security_title">Ekrano saugumas</string>
+    <string name="nc_settings_screen_security_desc">Neleidžia daryti ekrano kopijų paskiausiųjų sąraše ir programėlės viduje</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klaviatūra</string>
     <string name="nc_settings_link_previews_title">Rodyti nuorodų peržiūras</string>
     <string name="nc_locked">Bakstelėkite, norėdami atrakinti</string>
@@ -107,6 +110,7 @@
     <string name="nc_public_call">Naujas viešas pokalbis</string>
     <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
     <string name="nc_notification_settings">Pranešimų nustatymai</string>
+    <string name="nc_mute_calls_desc">Gaunamųjų skambučių bus nepaisoma</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Atleiskite, kažkas nutiko!</string>
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
@@ -118,6 +122,11 @@
     <string name="nc_share_subject">%1$s pakvietimas</string>
     <string name="nc_share_text_pass">\nSlaptažodis: %1$s</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Pažeminti iš moderatorių</string>
+    <string name="nc_promote">Paaukštinti į moderatorius</string>
+    <string name="nc_remove_participant">Šalinti dalyvį</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Įveskite žinutę…</string>
     <string name="nc_date_header_yesterday">Vakar</string>
@@ -125,6 +134,7 @@
     <string name="nc_conversation_menu_voice_call">Balso skambutis</string>
     <string name="nc_conversation_menu_video_call">Vaizdo skambutis</string>
     <string name="nc_conversation_menu_conversation_info">Pokalbio informacija</string>
+    <string name="nc_new_messages">Neskaitytos žinutės</string>
     <string name="nc_no_messages_yet">Kol kas žinučių nėra</string>
     <string name="nc_sent_a_link" formatted="true">%1$s išsiuntė nuorodą.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s išsiuntė GIF paveikslą.</string>
@@ -159,4 +169,14 @@
     <string name="nc_guest">Svečias</string>
     <string name="nc_file_browser_back">Atgal</string>
     <string name="nc_file_browser_refresh">Įkelti iš naujo</string>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Internetinis seminaras</string>
+    <string name="nc_lobby">Laukimo salė</string>
+    <string name="nc_start_time">Pradžios laikas</string>
+    <string name="nc_lobby_waiting">Šiuo metu laukiate laukimo salėje.</string>
+    <string name="nc_lobby_waiting_with_date">Šiuo metu laukiate laukimo salėje.\n Šio
+        susitikimo pradžia yra suplanuota %1$s.</string>
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Nėra ryšio</string>
     </resources>
