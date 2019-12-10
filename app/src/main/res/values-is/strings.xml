@@ -67,6 +67,7 @@
     <string name="nc_settings_remove_confirmation">Endilega staðfestu að þú viljir fjarlægja þennan aðgang.</string>
     <string name="nc_settings_remove_account">Fjarlægja notandaaðgang</string>
     <string name="nc_settings_add_account">Bæta við nýjum notandaaðgangi</string>
+    <string name="nc_add">Bæta við</string>
     <string name="nc_settings_wrong_account">Aðeins er hægt að endurauðkenna núverandi notandaaðgang</string>
     <string name="nc_settings_no_talk_installed">Talk-forritið er ekki uppsett á þjóninum sem þú reyndir að auðkenna hjá</string>
     <string name="nc_settings_account_updated">Fyrirliggjandi notandaaðgangur þinn var uppfærður í stað þess að bæta við nýjum</string>
@@ -120,6 +121,7 @@
     <string name="nc_start_conversation">Hefja samtal</string>
     <string name="nc_configure_room">Stilla samtal</string>
     <string name="nc_leave">Hætta í samtali</string>
+    <string name="nc_simple_leave">Fara</string>
     <string name="nc_rename">Endurnefna samtal</string>
     <string name="nc_set_password">Setja lykilorð</string>
     <string name="nc_change_password">Breyta lykilorði</string>
@@ -228,5 +230,24 @@
     <string name="nc_user">Notandi</string>
     <string name="nc_guest">Gestur</string>
     <string name="nc_following_link">Notandi sem fylgdi almenningstengli</string>
+
+    <string name="nc_select_files">Veldu skrár</string>
+    <string name="nc_file_browser_back">Til baka</string>
+    <string name="nc_file_browser_refresh">Endurlesa</string>
+    <string name="nc_last_modified">%1$s | Síðast breytt: %2$s</string>
+
+    <string name="nc_start_time">Upphafstími</string>
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Engin tenging</string>
+    <string name="nc_bad_response_error">Rangt svar</string>
+    <string name="nc_timeout_error">Rann út á tímamörkum</string>
+    <string name="nc_not_defined_error">Óþekkt villa</string>
+    <string name="nc_unauthorized_error">Ekki heimilað</string>
+
+    <string name="nc_general_settings">Almennt</string>
+    <string name="nc_allow_guests">Leyfa gesti</string>
+    <string name="nc_last_moderator_title">Gat ekki hætt í samtali</string>
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
 
     </resources>
