@@ -1,0 +1,177 @@
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Ezarpenak</string>
+
+    <!-- Server selection -->
+    <string name="nc_server_url">Zerbitzariaren helbidea</string>
+    <string name="nc_server_not_installed">Mesedez bukatu zure %1$s instalazioa</string>
+    <string name="nc_server_db_upgrade_needed">Mesedez eguneratu zure %1$s datu-basea</string>
+    <string name="nc_server_import_account_plain">Inportatu kontua</string>
+    <string name="nc_server_import_accounts_plain">Inportatu kontuak</string>
+    <string name="nc_never">Ez da inoiz elkartu</string>
+    <string name="nc_search">Bilatu</string>
+
+    <string name="nc_yes">Bai</string>
+    <string name="nc_no">Ez</string>
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_title">Proxy mota</string>
+    <string name="nc_settings_proxy_host_title">Proxy ostalaria</string>
+    <string name="nc_settings_proxy_port_title">Proxy portua</string>
+    <string name="nc_settings_use_credentials_title">Erabili kredentzialak</string>
+    <string name="nc_settings_switch_account">Aldatu kontuen artean</string>
+    <string name="nc_client_cert_change">Aldatu bezeroaren ziurtagiria</string>
+    <string name="nc_settings_remove">Ezabatu</string>
+    <string name="nc_settings_remove_account">Ezabatu kontua</string>
+    <string name="nc_settings_add_account">Kontu berria gehitu</string>
+    <string name="nc_add">Gehitu</string>
+    <string name="nc_settings_notification_sounds">Jakinarazpen soinuak</string>
+    <string name="nc_settings_no_ringtone">Soinurik ez</string>
+    <string name="nc_settings_vibrate">Bibratu</string>
+    <string name="nc_settings_appearance">Itxura</string>
+    <string name="nc_settings_theme_title">Gaia</string>
+    <string name="nc_settings_theme_key">Gaia</string>
+    <string name="nc_settings_theme_follow_system">Erabili sistemaren lehenetsia</string>
+    <string name="nc_settings_theme_battery_saver">Bateria aurrezleak ezarrita</string>
+    <string name="nc_settings_theme_light">Argia</string>
+    <string name="nc_settings_theme_dark">Iluna</string>
+    <string name="nc_settings_privacy">Pribatutasuna</string>
+    <string name="nc_none">Bat ere ez</string>
+    <string name="nc_settings_screen_security_title">Pantailaren segurtasuna</string>
+    <string name="nc_screen_lock_timeout_30">30 segundu</string>
+    <string name="nc_screen_lock_timeout_60">Minutu 1</string>
+    <string name="nc_screen_lock_timeout_300">5 minutu</string>
+    <string name="nc_screen_lock_timeout_600">10 minutu</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+
+    <string name="nc_cancel">Utzi</string>
+
+    <string name="nc_no_proxy">Proxyrik ez</string>
+    <string name="nc_username">Erabiltzaile-izena</string>
+    <string name="nc_password">Pasahitza</string>
+    <string name="nc_new_password">Pasahitz berria</string>
+    <string name="nc_wrong_password">Pasahitz okerra</string>
+    <string name="nc_about">Honi buruz</string>
+    <string name="nc_privacy">Pribatutasuna</string>
+    <string name="nc_get_source_code">Iturburu kodea eskuratu</string>
+    <string name="nc_license_title">Lizentzia</string>
+    <string name="nc_license_summary">GNU General Public Lizentzia, 3. bertsioa</string>
+
+    <string name="nc_select_an_account">Hautatu kontua bat</string>
+
+    <!-- ConversationEntity menu -->
+    <string name="nc_start_conversation">Hasi elkarrizketa bat</string>
+    <string name="nc_simple_leave">Irten</string>
+    <string name="nc_rename">Aldatu izena elkarrizktari</string>
+    <string name="nc_set_password">Ezarri pasahitz bat</string>
+    <string name="nc_change_password">Aldatu pasahitza</string>
+    <string name="nc_clear_password">Garbitu pasahitza</string>
+    <string name="nc_share_link">Partekatu esteka</string>
+    <string name="nc_delete_call">Ezabatu elkarrizketa</string>
+    <string name="nc_delete">Ezabatu</string>
+    <string name="nc_add_to_favorites">Gehitu gogokoetara</string>
+    <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
+    <string name="nc_contacts_done">Egina</string>
+
+    <string name="nc_permissions_settings">Ireki ezarpenak</string>
+
+    <!-- Call -->
+    <string name="nc_connecting_call">Konektatzen…</string>
+    <string name="nc_calling">Deitzen…</string>
+    <string name="nc_incoming_call">Honen sarrerako deia</string>
+    <string name="nc_nick_guest">Gonbidatua</string>
+    <string name="nc_call_reconnecting">Berriro konektatzen...</string>
+    <string name="nc_leaving_call">Deia uzten...</string>
+
+    <string name="nc_notification_settings">Jakinarazpen-ezarpenak</string>
+    <string name="nc_plain_old_messages">Mezuak</string>
+    <string name="nc_notify_me_never">Ez jakinarazi inoiz</string>
+    <string name="nc_mute_calls">Mututu deiak</string>
+    <string name="nc_all_ok_operation">Ados, dena eginda!</string>
+    <string name="nc_ok">Ados</string>
+    <string name="nc_share_subject">Gonbidapen %1$s</string>
+    <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_push_to_talk">Sakatu-hitz-egiteko</string>
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Idatzi mezu bat…</string>
+    <string name="nc_date_header_yesterday">Atzo</string>
+    <string name="nc_date_header_today">Gaur</string>
+    <string name="nc_conversation_menu_voice_call">Ahots-deia</string>
+    <string name="nc_conversation_menu_video_call">Bideo-deia</string>
+    <string name="nc_conversation_menu_conversation_info">Elkarrizketen informazioa</string>
+    <string name="nc_new_messages">Irakurri gabeko mezuak</string>
+    <string name="nc_no_messages_yet">Ez dago mezurik oraindik</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s-k esteka bat bidali du.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s-k GIF bat bidali du.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s-k eranskin bat bidali du.</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s-k audio bat bidali du.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s-k bideoa bidali du.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s-k irudi bat bidali du.</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Esteka bat bidali duzu.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">GIF bat bidali duzu.</string>
+    <string name="nc_sent_an_attachment_you">Eranskin bat bidali duzu.</string>
+    <string name="nc_sent_an_audio_you">Audio bat bidali duzu.</string>
+    <string name="nc_sent_a_video_you">Bideo bat bidali duzu.</string>
+    <string name="nc_sent_an_image_you">Irudi bat bidali duzu.</string>
+    <!-- When translating to German, please use non-formal variant -->
+    <string name="nc_formatted_message_you">Zu: %1$s</string>
+
+    <string name="nc_description_send_message_button">Bidali mezua</string>
+
+    <string name="nc_hello">Kaixo</string>
+
+    <string name="nc_groups">Taldeak</string>
+    <string name="nc_participants">Parte-hartzaileak</string>
+
+    <string name="nc_owner">Jabea</string>
+    <string name="nc_user">Erabiltzailea</string>
+    <string name="nc_guest">Gonbidatua</string>
+    <string name="nc_select_files">Hautatu fitxategiak</string>
+    <string name="nc_file_browser_back">Itzuli</string>
+    <string name="nc_file_browser_refresh">Freskatu</string>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Web-mintegia</string>
+    <string name="nc_lobby">Sarrera</string>
+    <string name="nc_start_time">Hasiera-ordua</string>
+    <string name="nc_manual">Ezarri gabe</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Konexiorik ez</string>
+    <string name="nc_bad_response_error">Emaitza okerra</string>
+    <string name="nc_timeout_error">Denbora-muga</string>
+    <string name="nc_empty_response_error">Erantzun hutsea</string>
+    <string name="nc_not_defined_error">Errore ezezaguna</string>
+    <string name="nc_unauthorized_error">Baimenik gabe</string>
+
+    <string name="nc_general_settings">Orokorra</string>
+    <string name="nc_allow_guests">Gonbidatuak baimendu</string>
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+
+    </resources>
