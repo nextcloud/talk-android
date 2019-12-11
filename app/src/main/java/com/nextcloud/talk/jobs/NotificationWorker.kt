@@ -50,7 +50,6 @@ import androidx.emoji.text.EmojiCompat
 import androidx.work.ListenableWorker.Result
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import autodagger.AutoInjector
 import coil.Coil
 import coil.target.Target
 import coil.transform.CircleCropTransformation
@@ -122,9 +121,7 @@ import java.util.function.Consumer
 import java.util.zip.CRC32
 import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class NotificationWorker(
   context: Context,
   workerParams: WorkerParameters
@@ -134,10 +131,8 @@ class NotificationWorker(
   val retrofit: Retrofit by inject()
   val okHttpClient: OkHttpClient by inject()
   val usersRepository: UsersRepository by inject()
+  val arbitraryStorageUtils: ArbitraryStorageUtils by inject()
 
-  @JvmField
-  @Inject
-  var arbitraryStorageUtils: ArbitraryStorageUtils? = null
   private var ncApi: NcApi? = null
   private var decryptedPushMessage: DecryptedPushMessage? = null
   private var context: Context? = null
@@ -621,7 +616,6 @@ class NotificationWorker(
   }
 
   override fun doWork(): Result {
-    sharedApplication!!.componentApplication.inject(this)
     context = applicationContext
     val data = inputData
     val subject =

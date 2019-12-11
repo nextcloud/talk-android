@@ -23,7 +23,6 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -35,20 +34,14 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SELECTED_GROUPS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SELECTED_USERS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
-import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class AddParticipantsToConversation(context: Context,
                                     workerParams: WorkerParameters) : CoroutineWorker(context, workerParams), KoinComponent {
-    @JvmField
-    @Inject
-    var ncApi: NcApi? = null
-
+    val ncApi: NcApi by inject()
     val eventBus: EventBus by inject()
     val usersRepository: UsersRepository by inject()
 
@@ -63,24 +56,18 @@ class AddParticipantsToConversation(context: Context,
         for (userId in selectedUserIds!!) {
             retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(user.baseUrl, conversationToken,
                     userId)
-            ncApi!!.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
+            ncApi.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
                     .subscribeOn(Schedulers.io())
                     .blockingSubscribe()
         }
         for (groupId in selectedGroupIds!!) {
             retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(user.baseUrl, conversationToken,
                     groupId)
-            ncApi!!.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
+            ncApi.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
                     .subscribeOn(Schedulers.io())
                     .blockingSubscribe()
         }
         eventBus.post(EventStatus(user.id!!, EventStatus.EventType.PARTICIPANTS_UPDATE, true))
         return Result.success()
-    }
-
-    init {
-        sharedApplication
-                ?.componentApplication
-                ?.inject(this)
     }
 }

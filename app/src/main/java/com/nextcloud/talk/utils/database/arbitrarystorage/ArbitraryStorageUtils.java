@@ -32,7 +32,7 @@ import io.requery.reactivex.ReactiveScalar;
 public class ArbitraryStorageUtils {
   private ReactiveEntityStore<Persistable> dataStore;
 
-  ArbitraryStorageUtils(ReactiveEntityStore<Persistable> dataStore) {
+  public ArbitraryStorageUtils(ReactiveEntityStore<Persistable> dataStore) {
     this.dataStore = dataStore;
   }
 

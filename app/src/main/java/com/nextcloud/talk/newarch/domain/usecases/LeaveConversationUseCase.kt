@@ -34,8 +34,8 @@ class LeaveConversationUseCase constructor(
   override suspend fun run(params: Any?): GenericOverall {
     val definitionParameters = params as DefinitionParameters
     return nextcloudTalkRepository.leaveConversationForUser(
-        definitionParameters.get(0),
-        definitionParameters.get(1)
+            definitionParameters[0],
+            definitionParameters[1]
     )
   }
 }

@@ -30,10 +30,12 @@ import coil.decode.SvgDecoder
 import com.github.aurae.retrofit2.LoganSquareConverterFactory
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.newarch.data.repository.online.NextcloudTalkRepositoryImpl
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
+import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.utils.NetworkUtils
 import com.nextcloud.talk.newarch.utils.NetworkUtils.GetProxyRunnable
@@ -73,6 +75,7 @@ import javax.net.ssl.X509KeyManager
 
 val NetworkModule = module {
   single { createService(get()) }
+  single { createLegacyNcApi(get()) }
   single { createRetrofit(get()) }
   single { createProxy(get()) }
   single { createTrustManager() }
@@ -189,7 +192,7 @@ fun createSslSocketFactory(
 
 fun createKeyManager(
   appPreferences: AppPreferences,
-  userUtils: UserUtils
+  usersRepository: UsersRepository
 ): MagicKeyManager? {
   val keyStore: KeyStore?
   try {
@@ -198,7 +201,7 @@ fun createKeyManager(
     val kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
     kmf.init(keyStore, null)
     val origKm = kmf.keyManagers[0] as X509KeyManager
-    return MagicKeyManager(origKm, userUtils, appPreferences)
+    return MagicKeyManager(origKm, usersRepository, appPreferences)
   } catch (e: KeyStoreException) {
     Log.e("NetworkModule", "KeyStoreException " + e.localizedMessage!!)
   } catch (e: CertificateException) {
@@ -253,6 +256,10 @@ fun createApiErrorHandler(): ApiErrorHandler {
 
 fun createService(retrofit: Retrofit): ApiService {
   return retrofit.create(ApiService::class.java)
+}
+
+fun createLegacyNcApi(retrofit: Retrofit): NcApi {
+  return retrofit.create(NcApi::class.java)
 }
 
 fun createImageLoader(

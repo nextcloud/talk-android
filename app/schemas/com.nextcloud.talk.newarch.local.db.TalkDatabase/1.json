@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3cabfd9fea2cd5a25c6c1c8103ef65fb",
+    "identityHash": "95ddaea30271abd3160e1cdc8ab404d5",
     "entities": [
       {
         "tableName": "conversations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user` INTEGER, `conversation_id` TEXT, `token` TEXT, `name` TEXT, `display_name` TEXT, `type` INTEGER, `count` INTEGER NOT NULL, `number_of_guests` INTEGER NOT NULL, `participants_count` INTEGER NOT NULL, `participant_type` INTEGER, `has_password` INTEGER NOT NULL, `session_id` TEXT, `favorite` INTEGER NOT NULL, `last_activity` INTEGER NOT NULL, `unread_messages` INTEGER NOT NULL, `unread_mention` INTEGER NOT NULL, `last_message` TEXT, `object_type` TEXT, `notification_level` INTEGER, `read_only_state` INTEGER, `lobby_state` INTEGER, `lobby_timer` INTEGER, `last_read_message` INTEGER NOT NULL, `modified_at` INTEGER, `changing` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user`) REFERENCES `users`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` INTEGER, `conversation_id` TEXT, `token` TEXT, `name` TEXT, `display_name` TEXT, `type` INTEGER, `count` INTEGER NOT NULL, `number_of_guests` INTEGER NOT NULL, `participants_count` INTEGER NOT NULL, `participant_type` INTEGER, `has_password` INTEGER NOT NULL, `session_id` TEXT, `favorite` INTEGER NOT NULL, `last_activity` INTEGER NOT NULL, `unread_messages` INTEGER NOT NULL, `unread_mention` INTEGER NOT NULL, `last_message` TEXT, `object_type` TEXT, `notification_level` INTEGER, `read_only_state` INTEGER, `lobby_state` INTEGER, `lobby_timer` INTEGER, `last_read_message` INTEGER NOT NULL, `modified_at` INTEGER, `changing` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "id",
@@ -16,7 +16,7 @@
           },
           {
             "fieldPath": "user",
-            "columnName": "user",
+            "columnName": "user_id",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -173,13 +173,13 @@
         },
         "indices": [
           {
-            "name": "index_conversations_user_conversation_id",
+            "name": "index_conversations_user_id_token",
             "unique": true,
             "columnNames": [
-              "user",
-              "conversation_id"
+              "user_id",
+              "token"
             ],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_conversations_user_conversation_id` ON `${TABLE_NAME}` (`user`, `conversation_id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_conversations_user_id_token` ON `${TABLE_NAME}` (`user_id`, `token`)"
           }
         ],
         "foreignKeys": [
@@ -188,7 +188,7 @@
             "onDelete": "CASCADE",
             "onUpdate": "CASCADE",
             "columns": [
-              "user"
+              "user_id"
             ],
             "referencedColumns": [
               "id"
@@ -198,7 +198,7 @@
       },
       {
         "tableName": "messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `conversation` TEXT NOT NULL, `message_id` INTEGER NOT NULL, `actor_id` TEXT, `actor_type` TEXT, `actor_display_name` TEXT, `timestamp` INTEGER NOT NULL, `message` TEXT, `system_message_type` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`conversation`) REFERENCES `conversations`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `conversation_id` TEXT NOT NULL, `message_id` INTEGER NOT NULL, `actor_id` TEXT, `actor_type` TEXT, `actor_display_name` TEXT, `timestamp` INTEGER NOT NULL, `message` TEXT, `system_message_type` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`conversation_id`) REFERENCES `conversations`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "id",
@@ -208,7 +208,7 @@
           },
           {
             "fieldPath": "conversation",
-            "columnName": "conversation",
+            "columnName": "conversation_id",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -261,23 +261,14 @@
           ],
           "autoGenerate": false
         },
-        "indices": [
-          {
-            "name": "index_messages_conversation",
-            "unique": false,
-            "columnNames": [
-              "conversation"
-            ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_messages_conversation` ON `${TABLE_NAME}` (`conversation`)"
-          }
-        ],
+        "indices": [],
         "foreignKeys": [
           {
             "table": "conversations",
             "onDelete": "CASCADE",
             "onUpdate": "CASCADE",
             "columns": [
-              "conversation"
+              "conversation_id"
             ],
             "referencedColumns": [
               "id"
@@ -369,7 +360,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3cabfd9fea2cd5a25c6c1c8103ef65fb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '95ddaea30271abd3160e1cdc8ab404d5')"
     ]
   }
 }

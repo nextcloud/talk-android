@@ -29,7 +29,6 @@ import android.content.Context
 import android.os.Build
 import android.service.notification.StatusBarNotification
 import com.nextcloud.talk.R
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 

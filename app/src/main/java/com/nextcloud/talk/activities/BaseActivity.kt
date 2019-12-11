@@ -28,7 +28,6 @@ import android.util.Log
 import android.view.WindowManager
 import android.webkit.SslErrorHandler
 import androidx.appcompat.app.AppCompatActivity
-import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.CertificateEvent
@@ -39,25 +38,18 @@ import com.yarolegovich.lovelydialog.LovelyStandardDialog
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.koin.android.ext.android.inject
 import java.security.cert.CertificateParsingException
 import java.security.cert.X509Certificate
 import java.text.DateFormat
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 open class BaseActivity : AppCompatActivity() {
 
-  @Inject
-  lateinit var eventBus: EventBus
-
-  @Inject
-  lateinit var appPreferences: AppPreferences
-
-  @Inject
-  lateinit var context: Context
+  val eventBus: EventBus by inject()
+  val appPreferences: AppPreferences by inject()
+  val context: Context by inject()
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
     super.onCreate(savedInstanceState)
   }
 

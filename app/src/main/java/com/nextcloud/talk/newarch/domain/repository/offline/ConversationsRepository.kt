@@ -25,6 +25,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 
 interface ConversationsRepository {
   fun getConversationsForUser(userId: Long): LiveData<List<Conversation>>
+  suspend fun getConversationForUserWithToken(userId: Long, token: String): Conversation?
   suspend fun clearConversationsForUser(userId: Long)
   suspend fun saveConversationsForUser(
     userId: Long,

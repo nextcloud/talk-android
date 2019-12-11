@@ -73,7 +73,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 import retrofit2.HttpException;
 
-@AutoInjector(NextcloudTalkApplication.class)
 public class OperationsMenuController extends BaseController {
 
   @BindView(R.id.progress_bar)
@@ -160,10 +159,6 @@ public class OperationsMenuController extends BaseController {
   @Override
   protected void onViewBound(@NonNull View view) {
     super.onViewBound(view);
-    NextcloudTalkApplication.Companion.getSharedApplication()
-        .getComponentApplication()
-        .inject(this);
-
     processOperation();
   }
 

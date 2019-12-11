@@ -22,6 +22,7 @@ package com.nextcloud.talk.newarch.domain.repository.online
 
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
@@ -42,4 +43,9 @@ interface NextcloudTalkRepository {
     userEntity: UserNgEntity,
     conversation: Conversation
   ): GenericOverall
+
+  suspend fun getRoomForUser(
+    userEntity: UserNgEntity,
+    roomToken: String
+  ): RoomOverall
 }

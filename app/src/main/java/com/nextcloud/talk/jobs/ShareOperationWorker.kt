@@ -22,10 +22,7 @@ package com.nextcloud.talk.jobs
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
@@ -38,17 +35,13 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.util.Collections
-import javax.inject.Inject
+import java.util.*
 
-@AutoInjector(NextcloudTalkApplication::class)
 class ShareOperationWorker(
   context: Context,
   workerParams: WorkerParameters
 ) : Worker(context, workerParams), KoinComponent {
-  @JvmField @Inject
-  var ncApi: NcApi? = null
-
+  val ncApi: NcApi by inject()
   val usersRepository: UsersRepository by inject()
 
   private val userId: Long
@@ -79,9 +72,6 @@ class ShareOperationWorker(
   }
 
   init {
-    sharedApplication
-        ?.componentApplication
-        ?.inject(this)
     val data = workerParams.inputData
     userId = data.getLong(KEY_INTERNAL_USER_ID, 0)
     roomToken = data.getString(KEY_ROOM_TOKEN)

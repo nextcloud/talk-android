@@ -24,11 +24,9 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
-import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R.string
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.events.EventStatus.EventType.PUSH_REGISTRATION
@@ -44,42 +42,21 @@ import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
-import java.security.InvalidKeyException
-import java.security.Key
-import java.security.KeyFactory
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
-import java.security.PublicKey
-import java.security.Signature
-import java.security.SignatureException
+import org.koin.core.KoinComponent
+import org.koin.core.inject
+import java.io.*
+import java.security.*
 import java.security.spec.InvalidKeySpecException
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
-import java.util.HashMap
-import javax.inject.Inject
+import java.util.*
 import kotlin.experimental.and
 
-@AutoInjector(NextcloudTalkApplication::class)
-class PushUtils(val usersRepository: UsersRepository) {
-  @JvmField
-  @Inject
-  var userUtils: UserUtils? = null
-  @JvmField
-  @Inject
-  var appPreferences: AppPreferences? = null
-  @JvmField
-  @Inject
-  var eventBus: EventBus? = null
-  @JvmField
-  @Inject
-  var ncApi: NcApi? = null
+class PushUtils(val usersRepository: UsersRepository): KoinComponent {
+  val userUtils: UserUtils by inject()
+  val appPreferences: AppPreferences by inject()
+  val eventBus: EventBus by inject()
+  val ncApi: NcApi by inject()
   private val keysFile: File
   private val publicKeyFile: File
   private val privateKeyFile: File
@@ -426,9 +403,6 @@ class PushUtils(val usersRepository: UsersRepository) {
   }
 
   init {
-    sharedApplication!!
-        .componentApplication
-        .inject(this)
     keysFile = sharedApplication!!
         .getDir("PushKeyStore", Context.MODE_PRIVATE)
     publicKeyFile = File(

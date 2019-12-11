@@ -33,8 +33,6 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import autodagger.AutoComponent
-import autodagger.AutoInjector
 import coil.Coil
 import coil.ImageLoader
 import com.bluelinelabs.logansquare.LoganSquare
@@ -43,10 +41,6 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
-import com.nextcloud.talk.dagger.modules.BusModule
-import com.nextcloud.talk.dagger.modules.ContextModule
-import com.nextcloud.talk.dagger.modules.DatabaseModule
-import com.nextcloud.talk.dagger.modules.RestModule
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
@@ -61,14 +55,10 @@ import com.nextcloud.talk.newarch.di.module.StorageModule
 import com.nextcloud.talk.newarch.features.conversationsList.di.module.ConversationsListModule
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
-import com.nextcloud.talk.newarch.local.models.other.UserStatus.ACTIVE
-import com.nextcloud.talk.newarch.local.models.other.UserStatus.DORMANT
-import com.nextcloud.talk.newarch.local.models.other.UserStatus.PENDING_DELETE
+import com.nextcloud.talk.newarch.local.models.other.UserStatus.*
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache
-import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
-import com.nextcloud.talk.utils.database.user.UserModule
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils
@@ -89,24 +79,11 @@ import org.webrtc.voiceengine.WebRtcAudioManager
 import org.webrtc.voiceengine.WebRtcAudioUtils
 import java.security.Security
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@AutoComponent(
-    modules = [BusModule::class, ContextModule::class, DatabaseModule::class, RestModule::class, UserModule::class, ArbitraryStorageModule::class]
-)
-@Singleton
-@AutoInjector(NextcloudTalkApplication::class)
 class NextcloudTalkApplication : Application(), LifecycleObserver {
-  //region Fields (components)
-  lateinit var componentApplication: NextcloudTalkApplicationComponent
-    private set
-  //endregion
-
   //region Getters
-  @Inject
-  lateinit var userUtils: UserUtils
 
+  val userUtils: UserUtils by inject()
   val imageLoader: ImageLoader by inject()
   val appPreferences: AppPreferences by inject()
   val okHttpClient: OkHttpClient by inject()
@@ -151,10 +128,9 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
 
     initializeWebRtc()
     DisplayUtils.useCompatVectorIfNeeded()
-    buildComponent()
+    startKoin()
     DavUtils.registerCustomFactories()
 
-    componentApplication.inject(this)
     Coil.setDefaultImageLoader(imageLoader)
     migrateUsers()
 
@@ -219,16 +195,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
   //endregion
 
   //region Protected methods
-  protected fun buildComponent() {
-    componentApplication = DaggerNextcloudTalkApplicationComponent.builder()
-        .busModule(BusModule())
-        .contextModule(ContextModule(applicationContext))
-        .databaseModule(DatabaseModule())
-        .restModule(RestModule(applicationContext))
-        .userModule(UserModule())
-        .arbitraryStorageModule(ArbitraryStorageModule())
-        .build()
-
+  protected fun startKoin() {
     startKoin {
       androidContext(this@NextcloudTalkApplication)
       androidLogger()

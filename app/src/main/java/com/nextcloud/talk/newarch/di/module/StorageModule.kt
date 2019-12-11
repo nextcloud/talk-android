@@ -33,6 +33,7 @@ import com.nextcloud.talk.newarch.local.dao.ConversationsDao
 import com.nextcloud.talk.newarch.local.dao.MessagesDao
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.db.TalkDatabase
+import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.requery.Persistable
@@ -49,10 +50,10 @@ val StorageModule = module {
   single { createPreferences(androidContext()) }
   single { createSqlCipherDatabaseSource(androidContext()) }
   single { createDataStore(get()) }
-  single { createUserUtils(get()) }
   single { createConversationsRepository(get()) }
   single { createMessagesRepository(get()) }
   single { createUsersRepository(get()) }
+  single { createArbitraryStorageUtils(get()) }
 
   single { TalkDatabase.getInstance(androidApplication()) }
   single { get<TalkDatabase>().conversationsDao() }
@@ -89,6 +90,6 @@ fun createDataStore(sqlCipherDatabaseSource: SqlCipherDatabaseSource): ReactiveE
   return ReactiveSupport.toReactiveStore(EntityDataStore(configuration))
 }
 
-fun createUserUtils(dataStore: ReactiveEntityStore<Persistable>): UserUtils {
-  return UserUtils(dataStore)
+fun createArbitraryStorageUtils(dataStore: ReactiveEntityStore<Persistable>): ArbitraryStorageUtils {
+  return ArbitraryStorageUtils(dataStore)
 }

@@ -35,7 +35,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
-import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -57,11 +56,9 @@ import com.vanniktech.emoji.emoji.Emoji;
 import com.vanniktech.emoji.listeners.OnEmojiClickListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener;
 import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener;
-import javax.inject.Inject;
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
-@AutoInjector(NextcloudTalkApplication.class)
 public class EntryMenuController extends BaseController {
 
   @BindView(R.id.ok_button)
@@ -75,12 +72,6 @@ public class EntryMenuController extends BaseController {
 
   @BindView(R.id.smileyButton)
   ImageView smileyButton;
-
-  @Inject
-  EventBus eventBus;
-
-  @Inject
-  UserUtils userUtils;
 
   private int operationCode;
   private Conversation conversation;

@@ -31,7 +31,6 @@ import android.widget.TextView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import autodagger.AutoInjector
 import butterknife.BindView
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
@@ -67,14 +66,10 @@ import org.greenrobot.eventbus.ThreadMode
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.net.CookieManager
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class AccountVerificationController(args: Bundle?) : BaseController(), KoinComponent {
 
-    @JvmField @Inject
-    internal var ncApi: NcApi? = null
-
+    val ncApi: NcApi by inject()
     val cookieManager: CookieManager by inject()
     val usersRepository: UsersRepository by inject()
     val usersDao: UsersDao by inject()
@@ -120,10 +115,6 @@ class AccountVerificationController(args: Bundle?) : BaseController(), KoinCompo
 
     override fun onViewBound(view: View) {
         super.onViewBound(view)
-        NextcloudTalkApplication.sharedApplication!!
-                .componentApplication
-                .inject(this)
-
         if (activity != null) {
             activity!!.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }

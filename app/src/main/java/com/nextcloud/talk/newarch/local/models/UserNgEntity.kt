@@ -86,9 +86,5 @@ fun UserNgEntity.hasSpreedFeatureCapability(capabilityName: String): Boolean {
 fun UserNgEntity.maxMessageLength(): Int {
   val maxLength = capabilities?.spreedCapability?.config?.get("chat")
       ?.get("max-length")
-  if (maxLength != null) {
-    return maxLength.toInt()
-  } else {
-    return 1000
-  }
+  return maxLength?.toInt() ?: 1000
 }

@@ -42,9 +42,8 @@ import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
-import com.nextcloud.talk.newarch.utils.ViewState.LOADING
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListViewState.LOADING
 import com.nextcloud.talk.utils.ShareUtils
-import com.nextcloud.talk.utils.database.user.UserUtils
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 

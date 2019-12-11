@@ -46,17 +46,12 @@ import org.koin.core.inject
 import java.util.*
 import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class SignalingSettingsWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams), KoinComponent {
-    @JvmField @Inject
-    var ncApi: NcApi? = null
+    val ncApi: NcApi by inject()
     val eventBus: EventBus by inject()
     val usersRepository: UsersRepository by inject()
 
     override suspend fun doWork(): Result {
-        sharedApplication
-                ?.componentApplication
-                ?.inject(this)
         val data = inputData
         val internalUserId = data.getLong(KEY_INTERNAL_USER_ID, -1)
         var userEntityList: MutableList<UserNgEntity?> = ArrayList()

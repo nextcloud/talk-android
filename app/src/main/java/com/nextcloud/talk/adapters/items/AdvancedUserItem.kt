@@ -22,11 +22,7 @@ package com.nextcloud.talk.adapters.items
 
 import android.accounts.Account
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import butterknife.BindView
@@ -35,8 +31,8 @@ import coil.api.load
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ApiUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -52,7 +48,7 @@ class AdvancedUserItem(
    */
 
   val model: Participant,
-  val entity: UserEntity?,
+  val entity: UserNgEntity?,
   val account: Account?
 ) : AbstractFlexibleItem<AdvancedUserItem.UserItemViewHolder>(), IFilterable<String> {
   override fun bindViewHolder(

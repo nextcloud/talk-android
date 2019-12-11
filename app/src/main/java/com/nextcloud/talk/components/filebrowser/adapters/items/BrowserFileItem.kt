@@ -26,7 +26,6 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
-import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.ButterKnife
 import coil.api.load
@@ -34,7 +33,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile
 import com.nextcloud.talk.interfaces.SelectionInterface
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.utils.getCredentials
@@ -46,24 +44,16 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFilterable
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
-import javax.inject.Inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class BrowserFileItem(
   val model: BrowserFile,
   private val activeUser: UserNgEntity,
   private val selectionInterface: SelectionInterface
-) : AbstractFlexibleItem<BrowserFileItem.ViewHolder>(), IFilterable<String> {
-  @JvmField
-  @Inject
-  var context: Context? = null
+) : AbstractFlexibleItem<BrowserFileItem.ViewHolder>(), IFilterable<String>, KoinComponent {
+  val context: Context by inject()
   var isSelected: Boolean = false
-
-  init {
-    NextcloudTalkApplication.sharedApplication!!
-        .componentApplication
-        .inject(this)
-  }
 
   override fun equals(other: Any?): Boolean {
     if (other is BrowserFileItem) {

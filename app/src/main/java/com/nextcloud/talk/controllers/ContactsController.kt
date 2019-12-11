@@ -101,7 +101,6 @@ import java.util.HashMap
 import java.util.HashSet
 import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class ContactsController : BaseController,
     SearchView.OnQueryTextListener,
     FlexibleAdapter.OnItemClickListener,
@@ -109,7 +108,7 @@ class ContactsController : BaseController,
     FlexibleAdapter.EndlessScrollListener {
 
   val usersRepository: UsersRepository by inject()
-
+  val ncApi: NcApi by inject()
   @JvmField
   @BindView(R.id.initial_relative_layout)
   var initialRelativeLayout: RelativeLayout? = null
@@ -143,9 +142,6 @@ class ContactsController : BaseController,
   @BindView(R.id.generic_rv_layout)
   var genericRvLayout: CoordinatorLayout? = null
 
-  @JvmField
-  @Inject
-  var ncApi: NcApi? = null
   private var credentials: String? = null
   private var currentUser: UserNgEntity? = null
   private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null

@@ -99,7 +99,6 @@ import java.util.Locale
 import java.util.Objects
 import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class SettingsController : BaseController() {
     @JvmField
     @BindView(R.id.settings_screen)
@@ -178,8 +177,7 @@ class SettingsController : BaseController() {
     @BindView(R.id.message_text)
     var messageText: TextView? = null
     @JvmField
-    @Inject
-    var ncApi: NcApi? = null
+    val ncApi: NcApi by inject()
     val usersRepository: UsersRepository by inject()
     private var saveStateHandler: LovelySaveStateHandler? = null
     private var currentUser: UserNgEntity? = null
@@ -203,9 +201,6 @@ class SettingsController : BaseController() {
         setHasOptionsMenu(true)
 
         ViewCompat.setTransitionName(avatarImageView!!, "userAvatar.transitionTag")
-        NextcloudTalkApplication.sharedApplication!!
-                .componentApplication
-                .inject(this)
 
         if (saveStateHandler == null) {
             saveStateHandler = LovelySaveStateHandler()

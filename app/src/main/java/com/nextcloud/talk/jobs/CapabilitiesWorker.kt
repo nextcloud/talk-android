@@ -55,7 +55,7 @@ class CapabilitiesWorker(context: Context, workerParams: WorkerParameters) : Cor
         internalUserEntity.capabilities = capabilitiesOverall.ocs.data.capabilities
         runBlocking {
             val result = usersRepository.updateUser(internalUserEntity)
-            eventBus!!.post(EventStatus(internalUserEntity.id!!,
+            eventBus.post(EventStatus(internalUserEntity.id!!,
                     EventStatus.EventType.CAPABILITIES_FETCH, result > 0))
         }
 
@@ -64,7 +64,7 @@ class CapabilitiesWorker(context: Context, workerParams: WorkerParameters) : Cor
     override suspend fun doWork(): Result {
         val data = inputData
         val internalUserId = data.getLong(KEY_INTERNAL_USER_ID, -1)
-        var userEntity: UserNgEntity?
+        val userEntity: UserNgEntity?
         var userEntityObjectList: MutableList<UserNgEntity> = ArrayList()
         if (internalUserId == -1L || usersRepository.getUserWithId(internalUserId) == null) {
             userEntityObjectList = usersRepository.getUsers().toMutableList()
@@ -74,20 +74,19 @@ class CapabilitiesWorker(context: Context, workerParams: WorkerParameters) : Cor
         }
 
         for (userEntityObject in userEntityObjectList) {
-            val internalUserEntity = userEntityObject
             ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
-            ncApi!!.getCapabilities(ApiUtils.getCredentials(internalUserEntity.username,
-                    internalUserEntity.token),
-                    ApiUtils.getUrlForCapabilities(internalUserEntity.baseUrl))
+            ncApi!!.getCapabilities(ApiUtils.getCredentials(userEntityObject.username,
+                    userEntityObject.token),
+                    ApiUtils.getUrlForCapabilities(userEntityObject.baseUrl))
                     .retry(3)
                     .blockingSubscribe(object : Observer<CapabilitiesOverall> {
                         override fun onSubscribe(d: Disposable) {}
                         override fun onNext(capabilitiesOverall: CapabilitiesOverall) {
-                            updateUser(capabilitiesOverall, internalUserEntity)
+                            updateUser(capabilitiesOverall, userEntityObject)
                         }
 
                         override fun onError(e: Throwable) {
-                            eventBus.post(EventStatus(internalUserEntity.id!!,
+                            eventBus.post(EventStatus(userEntityObject.id!!,
                                     EventStatus.EventType.CAPABILITIES_FETCH, false))
                         }
 

@@ -26,7 +26,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -59,10 +58,10 @@ import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.Images
-import com.nextcloud.talk.newarch.utils.ViewState.FAILED
-import com.nextcloud.talk.newarch.utils.ViewState.LOADED
-import com.nextcloud.talk.newarch.utils.ViewState.LOADED_EMPTY
-import com.nextcloud.talk.newarch.utils.ViewState.LOADING
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListViewState.FAILED
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListViewState.LOADED
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListViewState.LOADED_EMPTY
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListViewState.LOADING
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils

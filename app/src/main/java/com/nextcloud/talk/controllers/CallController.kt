@@ -141,7 +141,6 @@ import org.webrtc.VideoSource
 import org.webrtc.VideoTrack
 import pub.devrel.easypermissions.AfterPermissionGranted
 
-@AutoInjector(NextcloudTalkApplication::class)
 class CallController(args: Bundle) : BaseController() {
 
   @JvmField
@@ -189,13 +188,8 @@ class CallController(args: Bundle) : BaseController() {
   @BindView(R.id.progress_bar)
   var progressBar: ProgressBar? = null
 
-  @JvmField
-  @Inject
-  var ncApi: NcApi? = null
-  @JvmField
-  @Inject
-  var userUtils: UserUtils? = null
-
+  val userUtils: UserUtils by inject()
+  val ncApi: NcApi by inject()
   val cookieManager: CookieManager by inject()
   private var peerConnectionFactory: PeerConnectionFactory? = null
   private var audioConstraints: MediaConstraints? = null
@@ -259,10 +253,6 @@ class CallController(args: Bundle) : BaseController() {
     get() = currentCallStatus == CallStatus.ESTABLISHED || currentCallStatus == CallStatus.IN_CONVERSATION
 
   init {
-    NextcloudTalkApplication.sharedApplication!!
-        .componentApplication
-        .inject(this)
-
     roomId = args.getString(BundleKeys.KEY_ROOM_ID, "")
     roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "")
     conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY)

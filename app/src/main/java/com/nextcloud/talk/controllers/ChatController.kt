@@ -49,7 +49,6 @@ import androidx.emoji.text.EmojiCompat
 import androidx.emoji.widget.EmojiEditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.OnClick
 import coil.api.load
@@ -123,19 +122,14 @@ import java.util.Date
 import java.util.HashMap
 import java.util.Objects
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 .OnLoadMoreListener, MessagesListAdapter.Formatter<Date>, MessagesListAdapter
 .OnMessageLongClickListener<IMessage>, MessageHolders.ContentChecker<IMessage> {
 
-  @Inject
-  @JvmField
-  var ncApi: NcApi? = null
-  @Inject
-  @JvmField
-  var userUtils: UserUtils? = null
+  val ncApi: NcApi by inject()
+  val userUtils: UserUtils by inject()
+
   @BindView(R.id.messagesListView)
   @JvmField
   var messagesListView: MessagesList? = null
@@ -199,7 +193,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
   init {
     setHasOptionsMenu(true)
-    NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
     this.conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY)
     this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "")
@@ -1517,7 +1510,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
   companion object {
     private val TAG = "ChatController"
-    private val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
-    private val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
+    val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
+    val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
   }
 }

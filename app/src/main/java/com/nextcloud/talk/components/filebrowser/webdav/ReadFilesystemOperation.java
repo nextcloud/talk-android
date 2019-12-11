@@ -20,18 +20,19 @@
 
 package com.nextcloud.talk.components.filebrowser.webdav;
 
-import at.bitfire.dav4jvm.DavResource;
-import at.bitfire.dav4jvm.Response;
-import at.bitfire.dav4jvm.exception.DavException;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.dagger.modules.RestModule;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import com.nextcloud.talk.utils.ApiUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import at.bitfire.dav4jvm.DavResource;
+import at.bitfire.dav4jvm.Response;
+import at.bitfire.dav4jvm.exception.DavException;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 import okhttp3.HttpUrl;
@@ -68,7 +69,7 @@ public class ReadFilesystemOperation {
           new Function2<Response, Response.HrefRelation, Unit>() {
             @Override
             public Unit invoke(Response response, Response.HrefRelation hrefRelation) {
-              davResponse.setResponse(response);
+              davResponse.data = response;
               switch (hrefRelation) {
                 case MEMBER:
                   memberElements.add(response);
@@ -95,7 +96,7 @@ public class ReadFilesystemOperation {
           memberElement.getHref().toString().substring(basePath.length())));
     }
 
-    davResponse.setData(remoteFiles);
+    davResponse.data = remoteFiles;
     return davResponse;
   }
 }

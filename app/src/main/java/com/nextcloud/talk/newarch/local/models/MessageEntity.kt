@@ -39,7 +39,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType
     foreignKeys = [ForeignKey(
         entity = ConversationEntity::class,
         parentColumns = arrayOf("id"),
-        childColumns = arrayOf("conversation"),
+        childColumns = arrayOf("conversation_id"),
         onDelete = CASCADE,
         onUpdate = CASCADE,
         deferred = true
@@ -47,7 +47,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType
 )
 data class MessageEntity(
   @PrimaryKey @ColumnInfo(name = "id") var id: String,
-  @ColumnInfo(name = "conversation") var conversation: String,
+  @ColumnInfo(name = "conversation_id") var conversation: String,
   @ColumnInfo(name = "message_id") var messageId: Long = 0,
   @ColumnInfo(name = "actor_id") var actorId: String? = null,
   @ColumnInfo(name = "actor_type") var actorType: String? = null,

@@ -20,13 +20,10 @@
 
 package com.nextcloud.talk.newarch.data.source.remote
 
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Url
+import retrofit2.http.*
 
 interface ApiService {
 
@@ -64,4 +61,6 @@ interface ApiService {
     @Url url: String
   ): GenericOverall
 
+  @GET
+  suspend fun getRoom(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
 }

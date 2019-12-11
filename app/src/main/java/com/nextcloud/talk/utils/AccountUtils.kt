@@ -32,6 +32,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.ImportAccount
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import java.util.ArrayList
 import java.util.Arrays
 
@@ -39,14 +40,14 @@ object AccountUtils {
 
   private val TAG = "AccountUtils"
 
-  fun findAccounts(userEntitiesList: List<UserEntity>): List<Account> {
+  fun findAccounts(userEntitiesList: List<UserNgEntity>): List<Account> {
     val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
     val accMgr = AccountManager.get(context)
     val accounts = accMgr.getAccountsByType(context.getString(R.string.nc_import_account_type))
 
     val accountsAvailable = ArrayList<Account>()
     var importAccount: ImportAccount
-    var internalUserEntity: UserEntity
+    var internalUserEntity: UserNgEntity
     var accountFound: Boolean
     for (account in accounts) {
       accountFound = false

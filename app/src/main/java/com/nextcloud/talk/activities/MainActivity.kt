@@ -27,7 +27,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.bluelinelabs.conductor.Conductor
@@ -37,7 +36,6 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.appbar.MaterialToolbar
 import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.CallNotificationController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
@@ -47,16 +45,11 @@ import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListVi
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.UserUtils
-import io.requery.Persistable
 import io.requery.android.sqlcipher.SqlCipherDatabaseSource
-import io.requery.reactivex.ReactiveEntityStore
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class MainActivity : BaseActivity(), ActionBarProvider {
 
   @BindView(R.id.toolbar)
@@ -65,9 +58,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
   lateinit var container: ViewGroup
 
   val usersRepository: UsersRepository by inject()
-
-  @Inject
-  lateinit var sqlCipherDatabaseSource: SqlCipherDatabaseSource
+  val sqlCipherDatabaseSource: SqlCipherDatabaseSource by inject()
 
   private var router: Router? = null
 
@@ -76,7 +67,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     setContentView(R.layout.activity_main)
 
-    NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
     ButterKnife.bind(this)
 
     setSupportActionBar(toolbar)

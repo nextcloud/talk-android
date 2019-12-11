@@ -27,27 +27,21 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
-import autodagger.AutoInjector
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import javax.inject.Inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-@AutoInjector(NextcloudTalkApplication::class)
-class PackageReplacedReceiver : BroadcastReceiver() {
+class PackageReplacedReceiver : BroadcastReceiver(), KoinComponent {
 
-  @Inject
-  lateinit var userUtils: UserUtils
-
-  @Inject
-  lateinit var appPreferences: AppPreferences
+  val userUtils: UserUtils by inject()
+  val appPreferences: AppPreferences by inject()
 
   override fun onReceive(
     context: Context,
     intent: Intent?
   ) {
-    NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
     if (intent != null && intent.action != null &&
         intent.action == "android.intent.action.MY_PACKAGE_REPLACED"

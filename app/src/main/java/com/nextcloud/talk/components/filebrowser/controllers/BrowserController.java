@@ -70,7 +70,6 @@ import okhttp3.OkHttpClient;
 import org.parceler.Parcel;
 import org.parceler.Parcels;
 
-@AutoInjector(NextcloudTalkApplication.class)
 public class BrowserController extends BaseController implements ListingInterface,
     FlexibleAdapter.OnItemClickListener, SelectionInterface {
   private final Set<String> selectedPaths;
@@ -82,8 +81,6 @@ public class BrowserController extends BaseController implements ListingInterfac
   BottomNavigationItemView backMenuItem;
   @BindView(R.id.action_refresh)
   BottomNavigationItemView actionRefreshMenuItem;
-  @Inject
-  Context context;
   @Inject
   OkHttpClient okHttpClient;
 
@@ -102,9 +99,6 @@ public class BrowserController extends BaseController implements ListingInterfac
   public BrowserController(Bundle args) {
     super();
     setHasOptionsMenu(true);
-    NextcloudTalkApplication.Companion.getSharedApplication()
-        .getComponentApplication()
-        .inject(this);
     browserType = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_BROWSER_TYPE()));
     activeUser = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY()));
     roomToken = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());

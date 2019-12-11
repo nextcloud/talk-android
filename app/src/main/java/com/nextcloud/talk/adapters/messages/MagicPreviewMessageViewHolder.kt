@@ -30,24 +30,16 @@ import android.net.Uri
 import android.os.Handler
 import android.view.View
 import androidx.emoji.widget.EmojiTextView
-import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.ButterKnife
 import coil.api.load
 import coil.transform.CircleCropTransformation
-import com.nextcloud.talk.R.drawable
-import com.nextcloud.talk.R.id
-import com.nextcloud.talk.R.string
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.R.*
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile
 import com.nextcloud.talk.components.filebrowser.models.DavResponse
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.models.json.chat.ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE
-import com.nextcloud.talk.models.json.chat.ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE
-import com.nextcloud.talk.models.json.chat.ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE
-import com.nextcloud.talk.models.json.chat.ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
+import com.nextcloud.talk.models.json.chat.ChatMessage.MessageType.*
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.DisplayUtils.setClickableString
@@ -60,21 +52,17 @@ import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
-import javax.inject.Inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewHolder<ChatMessage>(
     itemView
-) {
+), KoinComponent {
   @JvmField
   @BindView(id.messageText)
   var messageText: EmojiTextView? = null
-  @JvmField
-  @Inject
-  var context: Context? = null
-  @JvmField
-  @Inject
-  var okHttpClient: OkHttpClient? = null
+  val context: Context by inject()
+  val okHttpClient: OkHttpClient by inject()
 
   @SuppressLint("SetTextI18n")
   override fun onBind(message: ChatMessage) {
@@ -223,6 +211,5 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
 
   init {
     ButterKnife.bind(this, itemView!!)
-    sharedApplication!!.componentApplication.inject(this)
   }
 }

@@ -33,7 +33,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.emoji.widget.EmojiTextView
-import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.amulyakhare.textdrawable.TextDrawable
@@ -48,9 +47,7 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 .IncomingTextMessageViewHolder<ChatMessage>(incomingView), KoinComponent {
 
@@ -70,9 +67,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
   @BindView(R.id.messageTime)
   var messageTimeView: TextView? = null
 
-  @JvmField
-  @Inject
-  var context: Context? = null
+  val context: Context by inject()
 
   val appPreferences: AppPreferences by inject()
 
@@ -81,9 +76,6 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
         this,
         itemView
     )
-    NextcloudTalkApplication.sharedApplication!!
-        .componentApplication
-        .inject(this)
   }
 
   override fun onBind(message: ChatMessage) {

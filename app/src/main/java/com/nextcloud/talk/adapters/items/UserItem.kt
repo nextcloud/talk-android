@@ -32,7 +32,6 @@ import coil.api.load
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.local.models.UserNgEntity

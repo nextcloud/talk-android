@@ -22,7 +22,6 @@ package com.nextcloud.talk.utils.preferences.preferencestorage
 
 import android.os.Bundle
 import android.text.TextUtils
-import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -37,21 +36,16 @@ import com.yarolegovich.mp.io.StorageModule
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class DatabaseStorageModule(
   private val conversationUser: UserNgEntity,
   private val conversationToken: String,
   private val conversationInfoInterface: ConversationInfoInterface
-) : StorageModule {
-  @JvmField
-  @Inject
-  var arbitraryStorageUtils: ArbitraryStorageUtils? =
-    null
-  @JvmField
-  @Inject
-  var ncApi: NcApi? = null
+) : StorageModule, KoinComponent {
+  val arbitraryStorageUtils: ArbitraryStorageUtils by inject()
+  val ncApi: NcApi by inject()
   private val accountIdentifier: Long
   private var lobbyValue = false
   private var favoriteConversationValue = false
@@ -272,9 +266,6 @@ class DatabaseStorageModule(
   override fun onRestoreInstanceState(savedState: Bundle) {}
 
   init {
-    sharedApplication!!
-        .componentApplication
-        .inject(this)
     accountIdentifier = conversationUser.id!!
   }
 }

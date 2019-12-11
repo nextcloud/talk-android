@@ -37,11 +37,11 @@ import java.util.HashMap
 
 @Entity(
     tableName = "conversations",
-    indices = [Index(value = ["user", "conversation_id"], unique = true)],
+    indices = [Index(value = ["user_id", "token"], unique = true)],
     foreignKeys = [ForeignKey(
         entity = UserNgEntity::class,
         parentColumns = arrayOf("id"),
-        childColumns = arrayOf("user"),
+        childColumns = arrayOf("user_id"),
         onDelete = CASCADE,
         onUpdate = CASCADE,
         deferred = true
@@ -49,7 +49,7 @@ import java.util.HashMap
 )
 data class ConversationEntity(
   @PrimaryKey @ColumnInfo(name = "id") var id: String,
-  @ColumnInfo(name = "user") var user: Long? = null,
+  @ColumnInfo(name = "user_id") var user: Long? = null,
   @ColumnInfo(name = "conversation_id") var conversationId: String? = null,
   @ColumnInfo(name = "token") var token: String? = null,
   @ColumnInfo(name = "name") var name: String? = null,
@@ -117,7 +117,7 @@ fun ConversationEntity.toConversation(): Conversation {
 }
 
 fun Conversation.toConversationEntity(): ConversationEntity {
-  val conversationEntity = ConversationEntity(this.internalUserId.toString() + "@" + this.conversationId)
+  val conversationEntity = ConversationEntity(this.internalUserId.toString() + "@" + this.token)
   conversationEntity.user = this.internalUserId
   conversationEntity.conversationId = this.conversationId
   conversationEntity.token = this.token

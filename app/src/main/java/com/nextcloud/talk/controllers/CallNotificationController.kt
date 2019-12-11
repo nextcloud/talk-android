@@ -42,7 +42,6 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.OnClick
 import coil.api.load
@@ -79,21 +78,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.koin.android.ext.android.inject
 import org.michaelevans.colorart.library.ColorArt
 import org.parceler.Parcels
 import java.io.IOException
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class CallNotificationController(private val originalBundle: Bundle) : BaseController() {
 
-  @JvmField
-  @Inject
-  internal var ncApi: NcApi? = null
-
-  @JvmField
-  @Inject
-  internal var arbitraryStorageUtils: ArbitraryStorageUtils? = null
+  val ncApi: NcApi by inject()
+  val arbitraryStorageUtils: ArbitraryStorageUtils by inject()
 
   @JvmField
   @BindView(R.id.conversationNameTextView)
@@ -128,10 +121,6 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
   private var handler: Handler? = null
 
   init {
-    NextcloudTalkApplication.sharedApplication!!
-        .componentApplication
-        .inject(this)
-
     this.roomId = originalBundle.getString(BundleKeys.KEY_ROOM_ID, "")
     this.currentConversation = Parcels.unwrap(originalBundle.getParcelable(BundleKeys.KEY_ROOM))
     this.userBeingCalled = originalBundle.getParcelable(BundleKeys.KEY_USER_ENTITY)
@@ -296,7 +285,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     }
 
     var importantConversation = false
-    val arbitraryStorageEntity: ArbitraryStorageEntity? = arbitraryStorageUtils!!.getStorageSetting(
+    val arbitraryStorageEntity: ArbitraryStorageEntity? = arbitraryStorageUtils.getStorageSetting(
         userBeingCalled!!.id,
         "important_conversation",
         currentConversation!!.token

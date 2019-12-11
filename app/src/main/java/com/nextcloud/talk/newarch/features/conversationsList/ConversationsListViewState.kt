@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.utils
+package com.nextcloud.talk.newarch.features.conversationsList
 
-enum class ViewState {
+enum class ConversationsListViewState {
   LOADING,
   LOADED_EMPTY,
   LOADED,

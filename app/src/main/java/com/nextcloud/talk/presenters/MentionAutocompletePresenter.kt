@@ -22,7 +22,6 @@ package com.nextcloud.talk.presenters
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import autodagger.AutoInjector
 import com.nextcloud.talk.adapters.items.MentionAutocompleteItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -42,13 +41,9 @@ import io.reactivex.schedulers.Schedulers
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.util.*
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class MentionAutocompletePresenter : RecyclerViewPresenter<Mention?>, FlexibleAdapter.OnItemClickListener, KoinComponent {
-    @JvmField @Inject
-    var ncApi: NcApi? = null
-
+    val ncApi: NcApi by inject()
     val usersRepository: UsersRepository by inject()
     private var currentUser: UserNgEntity?
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
@@ -58,18 +53,12 @@ class MentionAutocompletePresenter : RecyclerViewPresenter<Mention?>, FlexibleAd
 
     constructor(context: Context) : super(context) {
         this.internalContext = context
-        sharedApplication
-                ?.componentApplication
-                ?.inject(this)
         currentUser = usersRepository.getActiveUser()
     }
 
     constructor(context: Context, roomToken: String?) : super(context) {
         this.roomToken = roomToken
         this.internalContext = context
-        sharedApplication
-                ?.componentApplication
-                ?.inject(this)
         currentUser = usersRepository.getActiveUser()
     }
 

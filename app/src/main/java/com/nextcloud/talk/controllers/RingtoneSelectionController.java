@@ -21,7 +21,6 @@
 package com.nextcloud.talk.controllers;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
@@ -34,29 +33,28 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import autodagger.AutoInjector;
-import butterknife.BindView;
+
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.NotificationSoundItem;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
-import com.nextcloud.talk.utils.preferences.AppPreferences;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.SelectableAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 
-@AutoInjector(NextcloudTalkApplication.class)
 public class RingtoneSelectionController extends BaseController
     implements FlexibleAdapter.OnItemClickListener {
 
@@ -67,12 +65,6 @@ public class RingtoneSelectionController extends BaseController
 
   @BindView(R.id.swipe_refresh_layout)
   SwipeRefreshLayout swipeRefreshLayout;
-
-  @Inject
-  AppPreferences appPreferences;
-
-  @Inject
-  Context context;
 
   private FlexibleAdapter adapter;
   private RecyclerView.AdapterDataObserver adapterDataObserver;
@@ -97,9 +89,6 @@ public class RingtoneSelectionController extends BaseController
   @Override
   protected void onViewBound(@NonNull View view) {
     super.onViewBound(view);
-    NextcloudTalkApplication.Companion.getSharedApplication()
-        .getComponentApplication()
-        .inject(this);
 
     if (adapter == null) {
       adapter = new FlexibleAdapter<>(abstractFlexibleItemList, getActivity(), false);
