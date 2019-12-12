@@ -220,7 +220,7 @@
     <string name="nc_remove_participant">Rimuovi partecipante</string>
 
     <!-- Chat -->
-    <string name="nc_hint_enter_a_message">Digita un messaggio</string>
+    <string name="nc_hint_enter_a_message">Digita un messaggio…</string>
     <string name="nc_date_header_yesterday">Ieri</string>
     <string name="nc_date_header_today">Oggi</string>
     <string name="nc_conversation_menu_voice_call">Chiamata vocale</string>
