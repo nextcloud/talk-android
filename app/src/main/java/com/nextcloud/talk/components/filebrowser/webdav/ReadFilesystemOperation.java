@@ -22,8 +22,8 @@ package com.nextcloud.talk.components.filebrowser.webdav;
 
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
-import com.nextcloud.talk.dagger.modules.RestModule;
 import com.nextcloud.talk.newarch.local.models.UserNgEntity;
+import com.nextcloud.talk.newarch.utils.NetworkUtils;
 import com.nextcloud.talk.utils.ApiUtils;
 
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class ReadFilesystemOperation {
     OkHttpClient.Builder okHttpClientBuilder = okHttpClient.newBuilder();
     okHttpClientBuilder.followRedirects(false);
     okHttpClientBuilder.followSslRedirects(false);
-    okHttpClientBuilder.authenticator(new RestModule.MagicAuthenticator(
+    okHttpClientBuilder.authenticator(new NetworkUtils.MagicAuthenticator(
         ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
         "Authorization"));
     this.okHttpClient = okHttpClientBuilder.build();

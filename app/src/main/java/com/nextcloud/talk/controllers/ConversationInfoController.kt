@@ -38,7 +38,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import autodagger.AutoInjector
+
 import butterknife.BindView
 import butterknife.OnClick
 import coil.api.load
@@ -99,11 +99,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.koin.android.ext.android.inject
 import java.util.ArrayList
 import java.util.Calendar
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class ConversationInfoController(args: Bundle) : BaseController(),
     FlexibleAdapter.OnItemClickListener, ConversationInfoInterface {
 
@@ -168,10 +167,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
   @BindView(R.id.shareAction)
   lateinit var shareAction: MaterialStandardPreference
 
-  @set:Inject
-  lateinit var ncApi: NcApi
-  @set:Inject
-  lateinit var userUtils: UserUtils
+  val ncApi: NcApi by inject()
 
   private val conversationToken: String?
   private val conversationUser: UserNgEntity?
@@ -201,7 +197,6 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
   init {
     setHasOptionsMenu(true)
-    NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
     conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY)
     conversationToken = args.getString(BundleKeys.KEY_ROOM_TOKEN)
     credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token)

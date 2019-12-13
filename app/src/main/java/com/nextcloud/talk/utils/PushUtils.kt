@@ -215,7 +215,7 @@ class PushUtils(val usersRepository: UsersRepository): KoinComponent {
                   userEntity.username, userEntity.token
               )
               val finalCredentials = credentials
-              ncApi!!.registerDeviceForNotificationsWithNextcloud(
+              ncApi.registerDeviceForNotificationsWithNextcloud(
                   credentials,
                   ApiUtils.getUrlNextcloudPush(userEntity.baseUrl),
                   queryMap
@@ -232,7 +232,7 @@ class PushUtils(val usersRepository: UsersRepository): KoinComponent {
                           .data.signature
                       proxyMap["userPublicKey"] = pushRegistrationOverall.ocs
                           .data.publicKey
-                      ncApi!!.registerDeviceForNotificationsWithProxy(
+                      ncApi.registerDeviceForNotificationsWithProxy(
                           ApiUtils.getUrlPushProxy(), proxyMap
                       )
                           .subscribeOn(Schedulers.io())

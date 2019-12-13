@@ -24,9 +24,8 @@ import android.text.TextUtils;
 import androidx.annotation.Nullable;
 import com.nextcloud.talk.models.database.User;
 import com.nextcloud.talk.models.database.UserEntity;
-import io.reactivex.Completable;
+
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.requery.Persistable;
 import io.requery.query.Result;
@@ -52,29 +51,6 @@ public class UserUtils {
     return findUsersQueryResult.toList();
   }
 
-  public List getUsersScheduledForDeletion() {
-    Result findUsersQueryResult =
-        dataStore.select(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.eq(true))
-            .get();
-
-    return findUsersQueryResult.toList();
-  }
-
-  public UserEntity getAnyUserAndSetAsActive() {
-    Result findUserQueryResult = dataStore.select(User.class)
-        .where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true))
-        .limit(1).get();
-
-    UserEntity userEntity;
-    if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
-      userEntity.setCurrent(true);
-      dataStore.update(userEntity).blockingGet();
-      return userEntity;
-    }
-
-    return null;
-  }
-
   public UserEntity getCurrentUser() {
     Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.CURRENT.eq(true)
         .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true)))
@@ -83,33 +59,6 @@ public class UserUtils {
     return (UserEntity) findUserQueryResult.firstOrNull();
   }
 
-  public Completable deleteUser(long internalId) {
-    Result findUserQueryResult =
-        dataStore.select(User.class).where(UserEntity.ID.eq(internalId)).limit(1).get();
-
-    UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
-
-    return dataStore.delete(user)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread());
-  }
-
-  public Completable deleteUserWithId(long id) {
-    Result findUserQueryResult =
-        dataStore.select(User.class).where(UserEntity.ID.eq(id)).limit(1).get();
-
-    UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
-
-    return dataStore.delete(user)
-        .subscribeOn(Schedulers.io());
-  }
-
-  public UserEntity getUserById(String id) {
-    Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USER_ID.eq(id))
-        .limit(1).get();
-
-    return (UserEntity) findUserQueryResult.firstOrNull();
-  }
 
   public UserEntity getUserWithId(long id) {
     Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id))
@@ -118,72 +67,17 @@ public class UserUtils {
     return (UserEntity) findUserQueryResult.firstOrNull();
   }
 
-  public void disableAllUsersWithoutId(long userId) {
-    Result findUserQueryResult =
-        dataStore.select(User.class).where(UserEntity.ID.notEqual(userId)).get();
-
-    for (Object object : findUserQueryResult) {
-      UserEntity userEntity = (UserEntity) object;
-      userEntity.setCurrent(false);
-      dataStore.update(userEntity).blockingGet();
-    }
-  }
-
-  public boolean checkIfUserIsScheduledForDeletion(String username, String server) {
-    Result findUserQueryResult =
-        dataStore.select(User.class).where(UserEntity.USERNAME.eq(username))
-            .and(UserEntity.BASE_URL.eq(server))
-            .limit(1).get();
-
-    UserEntity userEntity;
-    if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
-      return userEntity.getScheduledForDeletion();
-    }
-
-    return false;
-  }
-
-  public UserEntity getUserWithInternalId(long internalId) {
-    Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)
-        .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true)))
-        .limit(1).get();
-
-    return (UserEntity) findUserQueryResult.firstOrNull();
-  }
-
-  public boolean getIfUserWithUsernameAndServer(String username, String server) {
-    Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username)
-        .and(UserEntity.BASE_URL.eq(server)))
-        .limit(1).get();
-
-    return findUserQueryResult.firstOrNull() != null;
-  }
-
-  public boolean scheduleUserForDeletionWithId(long id) {
-    Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(id))
-        .limit(1).get();
-
-    UserEntity userEntity;
-    if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
-      userEntity.setScheduledForDeletion(true);
-      userEntity.setCurrent(false);
-      dataStore.update(userEntity).blockingGet();
-    }
-
-    return getAnyUserAndSetAsActive() != null;
-  }
-
   public Observable<UserEntity> createOrUpdateUser(@Nullable String username,
-      @Nullable String token,
-      @Nullable String serverUrl,
-      @Nullable String displayName,
-      @Nullable String pushConfigurationState,
-      @Nullable Boolean currentUser,
-      @Nullable String userId,
-      @Nullable Long internalId,
-      @Nullable String capabilities,
-      @Nullable String certificateAlias,
-      @Nullable String externalSignalingServer) {
+                                                   @Nullable String token,
+                                                   @Nullable String serverUrl,
+                                                   @Nullable String displayName,
+                                                   @Nullable String pushConfigurationState,
+                                                   @Nullable Boolean currentUser,
+                                                   @Nullable String userId,
+                                                   @Nullable Long internalId,
+                                                   @Nullable String capabilities,
+                                                   @Nullable String certificateAlias,
+                                                   @Nullable String externalSignalingServer) {
     Result findUserQueryResult;
     if (internalId == null) {
       findUserQueryResult = dataStore.select(User.class).where(UserEntity.USERNAME.eq(username).

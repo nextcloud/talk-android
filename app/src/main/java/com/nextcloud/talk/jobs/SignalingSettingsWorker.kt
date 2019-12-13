@@ -24,7 +24,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -44,7 +43,6 @@ import org.greenrobot.eventbus.EventBus
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.util.*
-import javax.inject.Inject
 
 class SignalingSettingsWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams), KoinComponent {
     val ncApi: NcApi by inject()
@@ -65,7 +63,7 @@ class SignalingSettingsWorker(context: Context, workerParams: WorkerParameters) 
         for (i in userEntityList.indices) {
             userEntity = userEntityList[i]
             val finalUserEntity: UserNgEntity? = userEntity
-            ncApi!!.getSignalingSettings(
+            ncApi.getSignalingSettings(
                     userEntity!!.getCredentials(),
                     ApiUtils.getUrlForSignalingSettings(userEntity.baseUrl))
                     .blockingSubscribe(object : Observer<SignalingSettingsOverall> {

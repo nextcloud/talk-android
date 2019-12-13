@@ -62,5 +62,5 @@ interface ApiService {
   ): GenericOverall
 
   @GET
-  suspend fun getRoom(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
+  suspend fun getConversation(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
 }

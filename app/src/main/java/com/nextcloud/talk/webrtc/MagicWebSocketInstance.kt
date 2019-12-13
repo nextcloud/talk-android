@@ -22,7 +22,6 @@ package com.nextcloud.talk.webrtc
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
-import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R.string
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -58,9 +57,7 @@ import org.koin.core.inject
 import java.io.IOException
 import java.util.ArrayList
 import java.util.HashMap
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class MagicWebSocketInstance internal constructor(
   conversationUser: UserNgEntity,
   connectionUrl: String,
@@ -513,9 +510,6 @@ class MagicWebSocketInstance internal constructor(
   }
 
   init {
-    sharedApplication
-        ?.componentApplication
-        ?.inject(this)
     this.connectionUrl = connectionUrl
     this.conversationUser = conversationUser
     this.webSocketTicket = webSocketTicket

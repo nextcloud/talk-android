@@ -46,7 +46,7 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import autodagger.AutoInjector
+
 import butterknife.BindView
 import butterknife.OnClick
 import butterknife.OnLongClick
@@ -110,7 +110,6 @@ import java.util.HashMap
 import java.util.HashSet
 import java.util.Objects
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions
 import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment
@@ -393,7 +392,7 @@ class CallController(args: Bundle) : BaseController() {
   }
 
   private fun handleFromNotification() {
-    ncApi!!.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
+    ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
         .retry(3)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -943,7 +942,7 @@ class CallController(args: Bundle) : BaseController() {
   }
 
   private fun fetchSignalingSettings() {
-    ncApi!!.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
+    ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
         .subscribeOn(Schedulers.io())
         .retry(3)
         .observeOn(AndroidSchedulers.mainThread())
@@ -1046,7 +1045,7 @@ class CallController(args: Bundle) : BaseController() {
   }
 
   private fun checkCapabilities() {
-    ncApi!!.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
+    ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
         .retry(3)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -1092,7 +1091,7 @@ class CallController(args: Bundle) : BaseController() {
   }
 
   private fun joinRoomAndCall() {
-    ncApi!!.joinRoom(
+    ncApi.joinRoom(
         credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(
         baseUrl,
         roomToken
@@ -1131,7 +1130,7 @@ class CallController(args: Bundle) : BaseController() {
   }
 
   private fun performCall() {
-    ncApi!!.joinCall(
+    ncApi.joinCall(
         credentials,
         ApiUtils.getUrlForCall(baseUrl, roomToken)
     )
@@ -1148,7 +1147,7 @@ class CallController(args: Bundle) : BaseController() {
               setCallState(CallStatus.ESTABLISHED)
 
               if (needsPing) {
-                ncApi!!.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
+                ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .repeatWhen { observable -> observable.delay(5000, TimeUnit.MILLISECONDS) }
@@ -1193,7 +1192,7 @@ class CallController(args: Bundle) : BaseController() {
               }
 
               if (!hasExternalSignalingServer) {
-                ncApi!!.pullSignalingMessages(
+                ncApi.pullSignalingMessages(
                     credentials,
                     ApiUtils.getUrlForSignaling(baseUrl, urlToken)
                 )
@@ -1393,7 +1392,7 @@ class CallController(args: Bundle) : BaseController() {
             )
 
             if (magicPeerConnectionWrapper.peerConnection != null) {
-              magicPeerConnectionWrapper.peerConnection
+              magicPeerConnectionWrapper.peerConnection!!
                   .setRemoteDescription(
                       magicPeerConnectionWrapper
                           .magicSdpObserver, sessionDescriptionWithPreferredCodec
@@ -1474,7 +1473,7 @@ class CallController(args: Bundle) : BaseController() {
   }
 
   private fun hangupNetworkCalls(shutDownView: Boolean) {
-    ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
+    ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(object : Observer<GenericOverall> {
@@ -1509,7 +1508,7 @@ class CallController(args: Bundle) : BaseController() {
   }
 
   private fun leaveRoom(shutDownView: Boolean) {
-    ncApi!!.leaveRoom(
+    ncApi.leaveRoom(
         credentials,
         ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken)
     )
@@ -1603,7 +1602,7 @@ class CallController(args: Bundle) : BaseController() {
   }
 
   private fun getPeersForCall() {
-    ncApi!!.getPeersForCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
+    ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
         .subscribeOn(Schedulers.io())
         .subscribe(object : Observer<ParticipantsOverall> {
           override fun onSubscribe(d: Disposable) {
@@ -1660,25 +1659,25 @@ class CallController(args: Bundle) : BaseController() {
       if (hasMCU && publisher) {
         magicPeerConnectionWrapper = MagicPeerConnectionWrapper(
             peerConnectionFactory!!,
-            iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, true, true,
+            iceServers, sdpConstraintsForMCU!!, sessionId, callSession, localMediaStream, true, true,
             type
         )
       } else if (hasMCU) {
         magicPeerConnectionWrapper = MagicPeerConnectionWrapper(
             peerConnectionFactory!!,
-            iceServers, sdpConstraints, sessionId, callSession, null, false, true, type
+            iceServers, sdpConstraints!!, sessionId, callSession, null, false, true, type
         )
       } else {
         if ("screen" != type) {
           magicPeerConnectionWrapper = MagicPeerConnectionWrapper(
               peerConnectionFactory!!,
-              iceServers, sdpConstraints, sessionId, callSession, localMediaStream, false, false,
+              iceServers, sdpConstraints!!, sessionId, callSession, localMediaStream, false, false,
               type
           )
         } else {
           magicPeerConnectionWrapper = MagicPeerConnectionWrapper(
               peerConnectionFactory!!,
-              iceServers, sdpConstraints, sessionId, callSession, null, false, false, type
+              iceServers, sdpConstraints!!, sessionId, callSession, null, false, false, type
           )
         }
       }
@@ -1943,7 +1942,7 @@ class CallController(args: Bundle) : BaseController() {
         urlToken = roomToken
       }
 
-      ncApi!!.sendSignalingMessages(
+      ncApi.sendSignalingMessages(
           credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken),
           strings.toString()
       )
@@ -2134,7 +2133,7 @@ class CallController(args: Bundle) : BaseController() {
         } else {
           gotNick(
               session,
-              getPeerConnectionWrapperForSessionIdAndType(session, type, false).nick, false,
+              getPeerConnectionWrapperForSessionIdAndType(session, type, false).nick!!, false,
               type
           )
         }

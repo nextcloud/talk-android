@@ -32,7 +32,7 @@ import com.nextcloud.talk.newarch.local.models.MessageEntity
 
 @Dao
 abstract class MessagesDao {
-  @Query("SELECT * FROM messages WHERE conversation = :conversationId")
+  @Query("SELECT * FROM messages WHERE conversation_id = :conversationId")
   abstract fun getMessagesWithUserForConversation(conversationId: String):
       LiveData<List<MessageEntity>>
 

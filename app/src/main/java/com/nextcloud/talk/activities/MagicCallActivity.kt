@@ -26,7 +26,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.bluelinelabs.conductor.Conductor
@@ -40,7 +39,6 @@ import com.nextcloud.talk.controllers.CallNotificationController
 import com.nextcloud.talk.events.ConfigurationChangeEvent
 import com.nextcloud.talk.utils.bundle.BundleKeys
 
-@AutoInjector(NextcloudTalkApplication::class)
 class MagicCallActivity : BaseActivity() {
 
   @BindView(R.id.controller_container)
@@ -50,7 +48,6 @@ class MagicCallActivity : BaseActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
     requestWindowFeature(Window.FEATURE_NO_TITLE)
     window.addFlags(

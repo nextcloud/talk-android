@@ -52,7 +52,7 @@ class ShareOperationWorker(
   private val baseUrl: String
   override fun doWork(): Result {
     for (i in filesArray.indices) {
-      ncApi!!.createRemoteShare(
+      ncApi.createRemoteShare(
           credentials,
           ApiUtils.getSharingUrl(baseUrl),
           filesArray[i],

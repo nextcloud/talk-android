@@ -33,7 +33,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
-import autodagger.AutoInjector
+
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.AccountVerificationController
@@ -47,7 +47,6 @@ import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.android.inject
 import java.util.ArrayList
 
-@AutoInjector(NextcloudTalkApplication::class)
 abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
   val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)

@@ -35,7 +35,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
 import android.widget.TextView
-import autodagger.AutoInjector
+
 import butterknife.BindView
 import butterknife.OnClick
 import com.bluelinelabs.conductor.RouterTransaction
@@ -55,13 +55,15 @@ import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.uber.autodispose.AutoDispose
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes
 import java.security.cert.CertificateException
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class ServerSelectionController : BaseController() {
     @JvmField
     @BindView(R.id.extended_edit_text)
@@ -119,65 +121,70 @@ class ServerSelectionController : BaseController() {
                 && TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type))) {
             providersTextView!!.visibility = View.INVISIBLE
         } else {
-            val users = usersRepository.getUsers()
-            val usersSize = users.count()
-            if ((TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type)) ||
-                            findAccounts(users).isEmpty()) &&
-                    usersSize == 0) {
-                providersTextView!!.setText(R.string.nc_get_from_provider)
-                providersTextView!!.setOnClickListener { view12: View? ->
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(resources!!
-                            .getString(R.string.nc_providers_url)))
-                    startActivity(browserIntent)
-                }
-            } else if (findAccounts(users).isNotEmpty()) {
-                if (!TextUtils.isEmpty(getAppNameBasedOnPackage(resources!!
-                                .getString(R.string.nc_import_accounts_from)))) {
-                    if (findAccounts(users).size > 1) {
-                        providersTextView!!.text = String.format(resources!!.getString(R.string.nc_server_import_accounts),
-                                getAppNameBasedOnPackage(resources!!
-                                        .getString(R.string.nc_import_accounts_from)))
+            GlobalScope.launch {
+                val users = usersRepository.getUsers()
+                val usersSize = users.count()
+
+                withContext(Dispatchers.Main) {
+                    if ((TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type)) ||
+                                    findAccounts(users).isEmpty()) &&
+                            usersSize == 0) {
+                        providersTextView!!.setText(R.string.nc_get_from_provider)
+                        providersTextView!!.setOnClickListener { view12: View? ->
+                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(resources!!
+                                    .getString(R.string.nc_providers_url)))
+                            startActivity(browserIntent)
+                        }
+                    } else if (findAccounts(users).isNotEmpty()) {
+                        if (!TextUtils.isEmpty(getAppNameBasedOnPackage(resources!!
+                                        .getString(R.string.nc_import_accounts_from)))) {
+                            if (findAccounts(users).size > 1) {
+                                providersTextView!!.text = String.format(resources!!.getString(R.string.nc_server_import_accounts),
+                                        getAppNameBasedOnPackage(resources!!
+                                                .getString(R.string.nc_import_accounts_from)))
+                            } else {
+                                providersTextView!!.text = String.format(resources!!.getString(R.string.nc_server_import_account),
+                                        getAppNameBasedOnPackage(resources!!
+                                                .getString(R.string.nc_import_accounts_from)))
+                            }
+                        } else {
+                            if (findAccounts(users).size > 1) {
+                                providersTextView!!.text = resources!!.getString(R.string.nc_server_import_accounts_plain)
+                            } else {
+                                providersTextView!!.text = resources!!.getString(R.string.nc_server_import_account_plain)
+                            }
+                        }
+                        providersTextView!!.setOnClickListener { view13: View? ->
+                            val bundle = Bundle()
+                            bundle.putBoolean(KEY_IS_ACCOUNT_IMPORT, true)
+                            router.pushController(RouterTransaction.with(
+                                    SwitchAccountController(bundle))
+                                    .pushChangeHandler(HorizontalChangeHandler())
+                                    .popChangeHandler(HorizontalChangeHandler()))
+                        }
                     } else {
-                        providersTextView!!.text = String.format(resources!!.getString(R.string.nc_server_import_account),
-                                getAppNameBasedOnPackage(resources!!
-                                        .getString(R.string.nc_import_accounts_from)))
-                    }
-                } else {
-                    if (findAccounts(users).size > 1) {
-                        providersTextView!!.text = resources!!.getString(R.string.nc_server_import_accounts_plain)
-                    } else {
-                        providersTextView!!.text = resources!!.getString(R.string.nc_server_import_account_plain)
+                        providersTextView!!.visibility = View.INVISIBLE
                     }
                 }
-                providersTextView!!.setOnClickListener { view13: View? ->
-                    val bundle = Bundle()
-                    bundle.putBoolean(KEY_IS_ACCOUNT_IMPORT, true)
-                    router.pushController(RouterTransaction.with(
-                            SwitchAccountController(bundle))
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler()))
-                }
-            } else {
-                providersTextView!!.visibility = View.INVISIBLE
-            }
-        }
-        serverEntry!!.requestFocus()
-        serverEntry!!.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-            override fun afterTextChanged(editable: Editable) {
-                if (!textFieldBoxes!!.isOnError && !TextUtils.isEmpty(serverEntry!!.text)) {
-                    toggleProceedButton(true)
-                } else {
-                    toggleProceedButton(false)
+                serverEntry!!.requestFocus()
+                serverEntry!!.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+                    override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+                    override fun afterTextChanged(editable: Editable) {
+                        if (!textFieldBoxes!!.isOnError && !TextUtils.isEmpty(serverEntry!!.text)) {
+                            toggleProceedButton(true)
+                        } else {
+                            toggleProceedButton(false)
+                        }
+                    }
+                })
+                serverEntry!!.setOnEditorActionListener { textView: TextView?, i: Int, keyEvent: KeyEvent? ->
+                    if (i == EditorInfo.IME_ACTION_DONE) {
+                        checkServerAndProceed()
+                    }
+                    false
                 }
             }
-        })
-        serverEntry!!.setOnEditorActionListener { textView: TextView?, i: Int, keyEvent: KeyEvent? ->
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                checkServerAndProceed()
-            }
-            false
         }
     }
 
@@ -210,7 +217,7 @@ class ServerSelectionController : BaseController() {
     }
 
     private fun checkServer(queryUrl: String, checkForcedHttps: Boolean) {
-        ncApi!!.getServerStatus(queryUrl)
+        ncApi.getServerStatus(queryUrl)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .`as`(AutoDispose.autoDisposable(scopeProvider))

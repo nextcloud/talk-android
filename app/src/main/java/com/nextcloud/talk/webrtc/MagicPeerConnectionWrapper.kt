@@ -54,7 +54,7 @@ class MagicPeerConnectionWrapper(peerConnectionFactory: PeerConnectionFactory,
     var peerConnection: PeerConnection?
         private set
     var sessionId: String
-    private var nick: String? = null
+    public var nick: String? = null
     private val sdpConstraints: MediaConstraints
     private var magicDataChannel: DataChannel? = null
     val magicSdpObserver: MagicSdpObserver
@@ -129,18 +129,6 @@ class MagicPeerConnectionWrapper(peerConnectionFactory: PeerConnectionFactory,
         }
     }
 
-    fun getNick(): String? {
-        return if (!TextUtils.isEmpty(nick)) {
-            nick
-        } else {
-            context.resources.getString(R.string.nc_nick_guest)
-        }
-    }
-
-    fun setNick(nick: String?) {
-        this.nick = nick
-    }
-
     private fun sendInitialMediaStatus() {
         if (localMediaStream != null) {
             if (localMediaStream.videoTracks.size == 1 && localMediaStream.videoTracks[0]
@@ -201,9 +189,9 @@ class MagicPeerConnectionWrapper(peerConnectionFactory: PeerConnectionFactory,
                     if (dataChannelMessage.payload is String) {
                         internalNick = dataChannelMessage.payload as String
                         if (internalNick != nick) {
-                            setNick(nick)
+                            nick = internalNick
                             EventBus.getDefault()
-                                    .post(PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE, sessionId, getNick(), null, videoStreamType))
+                                    .post(PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE, sessionId, nick, null, videoStreamType))
                         }
                     } else {
                         if (dataChannelMessage.payload != null) {

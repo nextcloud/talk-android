@@ -54,7 +54,7 @@ val StorageModule = module {
   single { createMessagesRepository(get()) }
   single { createUsersRepository(get()) }
   single { createArbitraryStorageUtils(get()) }
-
+  single { createUserUtils(get()) }
   single { TalkDatabase.getInstance(androidApplication()) }
   single { get<TalkDatabase>().conversationsDao() }
   single { get<TalkDatabase>().messagesDao() }
@@ -92,4 +92,8 @@ fun createDataStore(sqlCipherDatabaseSource: SqlCipherDatabaseSource): ReactiveE
 
 fun createArbitraryStorageUtils(dataStore: ReactiveEntityStore<Persistable>): ArbitraryStorageUtils {
   return ArbitraryStorageUtils(dataStore)
+}
+
+fun createUserUtils(dataStore: ReactiveEntityStore<Persistable>): UserUtils {
+  return UserUtils(dataStore)
 }

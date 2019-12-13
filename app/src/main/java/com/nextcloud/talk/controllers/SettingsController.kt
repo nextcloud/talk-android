@@ -43,7 +43,7 @@ import androidx.core.view.ViewCompat
 import androidx.emoji.widget.EmojiTextView
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import autodagger.AutoInjector
+
 import butterknife.BindView
 import butterknife.OnClick
 import coil.api.load
@@ -97,7 +97,6 @@ import java.util.ArrayList
 import java.util.Arrays
 import java.util.Locale
 import java.util.Objects
-import javax.inject.Inject
 
 class SettingsController : BaseController() {
     @JvmField
@@ -176,7 +175,6 @@ class SettingsController : BaseController() {
     @JvmField
     @BindView(R.id.message_text)
     var messageText: TextView? = null
-    @JvmField
     val ncApi: NcApi by inject()
     val usersRepository: UsersRepository by inject()
     private var saveStateHandler: LovelySaveStateHandler? = null
@@ -599,7 +597,7 @@ class SettingsController : BaseController() {
 
                     loadAvatarImage()
 
-                    ncApi!!.getUserProfile(
+                    ncApi.getUserProfile(
                             credentials,
                             ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl)
                     )

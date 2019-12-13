@@ -6,12 +6,12 @@ import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkReposito
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
 import org.koin.core.parameter.DefinitionParameters
 
-class GetRoomUseCase constructor(
+class GetConversationUseCase constructor(
         private val nextcloudTalkRepository: NextcloudTalkRepository,
         apiErrorHandler: ApiErrorHandler?
 ) : UseCase<RoomOverall, Any?>(apiErrorHandler) {
     override suspend fun run(params: Any?): RoomOverall {
         val definitionParameters = params as DefinitionParameters
-        return nextcloudTalkRepository.getRoomForUser(definitionParameters[0], definitionParameters[1])
+        return nextcloudTalkRepository.getConversationForUser(definitionParameters[0], definitionParameters[1])
     }
 }

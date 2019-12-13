@@ -97,7 +97,7 @@ class DatabaseStorageModule(
               "always" -> 1
               else -> 0
             }
-            ncApi!!.setNotificationLevel(
+            ncApi.setNotificationLevel(
                 ApiUtils.getCredentials(
                     conversationUser.username,
                     conversationUser.token
@@ -124,7 +124,7 @@ class DatabaseStorageModule(
         }
       } else if (key == "conversation_password") {
         if (hasPassword != null) {
-          ncApi!!.setPassword(
+          ncApi.setPassword(
               ApiUtils.getCredentials(
                   conversationUser.username,
                   conversationUser.token
@@ -153,7 +153,7 @@ class DatabaseStorageModule(
                 conversationNameValue
             ) && conversationNameValue != value
         ) {
-          ncApi!!.renameRoom(
+          ncApi.renameRoom(
               ApiUtils.getCredentials(
                   conversationUser.username,
                   conversationUser.token

@@ -27,11 +27,9 @@ import android.util.Log
 import androidx.work.ListenableWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.ExternalSignalingServer
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.database.user.UserUtils
@@ -39,9 +37,7 @@ import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.io.IOException
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
 class WebsocketConnectionsWorker(
   context: Context,
   workerParams: WorkerParameters
@@ -50,10 +46,6 @@ class WebsocketConnectionsWorker(
   val usersRepository: UsersRepository by inject()
 
   override fun doWork(): Result {
-    NextcloudTalkApplication.sharedApplication!!
-        .componentApplication
-        .inject(this)
-
     val userEntityList = usersRepository.getUsers()
     var userEntity: UserNgEntity
     for (i in userEntityList.indices) {

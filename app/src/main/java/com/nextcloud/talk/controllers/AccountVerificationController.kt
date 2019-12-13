@@ -151,7 +151,7 @@ class AccountVerificationController(args: Bundle?) : BaseController(), KoinCompo
             queryUrl = "http://" + baseUrl + ApiUtils.getUrlPostfixForStatus()
         }
 
-        ncApi!!.getServerStatus(queryUrl)
+        ncApi.getServerStatus(queryUrl)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .`as`<ObservableSubscribeProxy<Status>>(AutoDispose.autoDisposable(scopeProvider))
@@ -194,7 +194,7 @@ class AccountVerificationController(args: Bundle?) : BaseController(), KoinCompo
     }
 
     private fun findServerTalkApp(credentials: String?) {
-        ncApi!!.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
+        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
                 .subscribeOn(Schedulers.io())
                 .`as`<ObservableSubscribeProxy<RoomsOverall>>(AutoDispose.autoDisposable(scopeProvider))
                 .subscribe(object : Observer<RoomsOverall> {
@@ -250,7 +250,7 @@ class AccountVerificationController(args: Bundle?) : BaseController(), KoinCompo
     }
 
     private fun fetchProfile(credentials: String?) {
-        ncApi!!.getUserProfile(credentials,
+        ncApi.getUserProfile(credentials,
                 ApiUtils.getUrlForUserProfile(baseUrl))
                 .subscribeOn(Schedulers.io())
                 .`as`<ObservableSubscribeProxy<UserProfileOverall>>(AutoDispose.autoDisposable(scopeProvider))

@@ -22,7 +22,6 @@ package com.nextcloud.talk.jobs
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.EventStatus
@@ -44,7 +43,6 @@ import org.koin.core.inject
 import retrofit2.Retrofit
 import java.net.CookieManager
 
-@AutoInjector(NextcloudTalkApplication::class)
 class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
     val retrofit: Retrofit by inject()
     val okHttpClient: OkHttpClient by inject()

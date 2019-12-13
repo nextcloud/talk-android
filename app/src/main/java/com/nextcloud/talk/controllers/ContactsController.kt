@@ -46,7 +46,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import autodagger.AutoInjector
+
 import butterknife.BindView
 import butterknife.OnClick
 import butterknife.Optional
@@ -99,7 +99,6 @@ import java.util.ArrayList
 import java.util.Collections
 import java.util.HashMap
 import java.util.HashSet
-import javax.inject.Inject
 
 class ContactsController : BaseController,
     SearchView.OnQueryTextListener,
@@ -222,9 +221,6 @@ class ContactsController : BaseController,
 
   override fun onViewBound(view: View) {
     super.onViewBound(view)
-    NextcloudTalkApplication.sharedApplication!!
-        .componentApplication
-        .inject(this)
 
     currentUser = usersRepository.getActiveUser()
 
@@ -278,7 +274,7 @@ class ContactsController : BaseController,
             currentUser!!.baseUrl, roomType,
             userId, null
         )
-        ncApi!!.createRoom(
+        ncApi.createRoom(
             credentials,
             retrofitBucket.url, retrofitBucket.queryMap
         )
@@ -304,7 +300,7 @@ class ContactsController : BaseController,
                 )
 
                 if (currentUser!!.hasSpreedFeatureCapability("chat-v2")) {
-                  ncApi!!.getRoom(
+                  ncApi.getRoom(
                       credentials,
                       ApiUtils.getRoom(
                           currentUser!!.baseUrl,
@@ -509,7 +505,7 @@ class ContactsController : BaseController,
     }
 
     val finalServerIs14OrUp = serverIs14OrUp
-    ncApi!!.getContactsWithSearchParam(
+    ncApi.getContactsWithSearchParam(
         credentials,
         retrofitBucket.url, shareTypesList, modifiedQueryMap
     )
@@ -854,7 +850,7 @@ class ContactsController : BaseController,
             userItem.model.userId, null
         )
 
-        ncApi!!.createRoom(
+        ncApi.createRoom(
             credentials,
             retrofitBucket.url, retrofitBucket.queryMap
         )

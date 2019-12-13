@@ -184,7 +184,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
   }
 
   private fun checkIfAnyParticipantsRemainInRoom() {
-    ncApi!!.getPeersForCall(
+    ncApi.getPeersForCall(
         credentials, ApiUtils.getUrlForParticipants(
         userBeingCalled!!.baseUrl,
         currentConversation!!.token
@@ -232,7 +232,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
   }
 
   private fun handleFromNotification() {
-    ncApi!!.getRooms(credentials, ApiUtils.getUrlForGetRooms(userBeingCalled!!.baseUrl))
+    ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(userBeingCalled!!.baseUrl))
         .subscribeOn(Schedulers.io())
         .retry(3)
         .observeOn(AndroidSchedulers.mainThread())
@@ -401,8 +401,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
           transformations(CircleCropTransformation())
           listener(onSuccess = { data, dataSource ->
             GlobalScope.launch {
-              if ((AvatarStatusCodeHolder.getInstance().statusCode == 200 || AvatarStatusCodeHolder.getInstance().statusCode == 0)
-                  && userBeingCalled.hasSpreedFeatureCapability("no-ping")) {
+              if ((AvatarStatusCodeHolder.getInstance().statusCode == 200 || AvatarStatusCodeHolder.getInstance().statusCode == 0)) {
 
                 if (activity != null) {
                   val newBitmap = BlurTransformation(activity!!, 5f).transform(

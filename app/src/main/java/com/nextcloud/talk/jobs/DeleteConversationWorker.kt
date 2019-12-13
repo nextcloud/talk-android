@@ -22,7 +22,6 @@ package com.nextcloud.talk.jobs
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -45,7 +44,6 @@ import org.koin.core.inject
 import retrofit2.Retrofit
 import java.net.CookieManager
 
-@AutoInjector(NextcloudTalkApplication::class)
 class DeleteConversationWorker(context: Context,
                                workerParams: WorkerParameters) : CoroutineWorker(context, workerParams), KoinComponent {
     val retrofit: Retrofit by inject()
@@ -83,11 +81,5 @@ class DeleteConversationWorker(context: Context,
                     })
         }
         return Result.success()
-    }
-
-    init {
-        sharedApplication
-                ?.componentApplication
-                ?.inject(this)
     }
 }

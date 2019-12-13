@@ -44,8 +44,8 @@ interface NextcloudTalkRepository {
     conversation: Conversation
   ): GenericOverall
 
-  suspend fun getRoomForUser(
+  suspend fun getConversationForUser(
     userEntity: UserNgEntity,
-    roomToken: String
+    conversationToken: String
   ): RoomOverall
 }

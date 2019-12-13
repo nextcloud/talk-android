@@ -22,6 +22,7 @@ package com.nextcloud.talk.newarch.data.repository.online
 
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
@@ -50,6 +51,10 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
             .baseUrl, conversation.token
     )
     )
+  }
+
+  override suspend fun getConversationForUser(userEntity: UserNgEntity, conversationToken: String): RoomOverall {
+    return apiService.getConversation(userEntity.getCredentials(), conversationToken)
   }
 
   override suspend fun setFavoriteValueForConversation(

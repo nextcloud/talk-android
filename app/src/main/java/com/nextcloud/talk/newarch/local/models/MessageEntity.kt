@@ -35,7 +35,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType
 
 @Entity(
     tableName = "messages",
-    indices = [Index(value = ["conversation"])],
+    indices = [Index(value = ["conversation_id"])],
     foreignKeys = [ForeignKey(
         entity = ConversationEntity::class,
         parentColumns = arrayOf("id"),
