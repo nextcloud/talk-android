@@ -51,12 +51,11 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     @JvmField
     @BindView(R.id.messageTime)
     var messageTimeView: TextView? = null
-    val userUtils: UserUtils by inject()
     val context: Context by inject()
     private val realView: View
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
-        val messageParameters: HashMap<String, HashMap<String, String>> = message.messageParameters
+        val messageParameters: HashMap<String, HashMap<String, String>>? = message.messageParameters
         var messageString: Spannable = SpannableString(message.text)
         realView.isSelected = false
         messageTimeView!!.setTextColor(context.resources.getColor(R.color.white60))

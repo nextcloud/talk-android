@@ -36,6 +36,8 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.util.*
@@ -43,7 +45,7 @@ import java.util.*
 class MentionAutocompletePresenter : RecyclerViewPresenter<Mention?>, FlexibleAdapter.OnItemClickListener, KoinComponent {
     val ncApi: NcApi by inject()
     val usersRepository: UsersRepository by inject()
-    private var currentUser: UserNgEntity?
+    private var currentUser: UserNgEntity? = null
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
     private var internalContext: Context
     private var roomToken: String? = null
@@ -57,7 +59,9 @@ class MentionAutocompletePresenter : RecyclerViewPresenter<Mention?>, FlexibleAd
     constructor(context: Context, roomToken: String?) : super(context) {
         this.roomToken = roomToken
         this.internalContext = context
-        currentUser = usersRepository.getActiveUser()
+        GlobalScope.launch {
+            currentUser = usersRepository.getActiveUser()
+        }
     }
 
     override fun instantiateAdapter(): RecyclerView.Adapter<*> {
