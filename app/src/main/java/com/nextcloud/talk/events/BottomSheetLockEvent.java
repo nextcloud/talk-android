@@ -24,28 +24,28 @@ import lombok.Data;
 
 @Data
 public class BottomSheetLockEvent {
-  public final boolean cancelable;
-  public final int delay;
-  public final boolean shouldRefreshData;
-  public final boolean cancel;
-  public boolean dismissView;
+    public final boolean cancelable;
+    public final int delay;
+    public final boolean shouldRefreshData;
+    public final boolean cancel;
+    public boolean dismissView;
 
-  public BottomSheetLockEvent(boolean cancelable, int delay, boolean shouldRefreshData,
-      boolean cancel) {
-    this.cancelable = cancelable;
-    this.delay = delay;
-    this.shouldRefreshData = shouldRefreshData;
-    this.cancel = cancel;
-    this.dismissView = true;
-  }
+    public BottomSheetLockEvent(boolean cancelable, int delay, boolean shouldRefreshData,
+                                boolean cancel) {
+        this.cancelable = cancelable;
+        this.delay = delay;
+        this.shouldRefreshData = shouldRefreshData;
+        this.cancel = cancel;
+        this.dismissView = true;
+    }
 
-  public BottomSheetLockEvent(boolean cancelable, int delay, boolean shouldRefreshData,
-      boolean cancel, boolean
-      dismissView) {
-    this.cancelable = cancelable;
-    this.delay = delay;
-    this.shouldRefreshData = shouldRefreshData;
-    this.cancel = cancel;
-    this.dismissView = dismissView;
-  }
+    public BottomSheetLockEvent(boolean cancelable, int delay, boolean shouldRefreshData,
+                                boolean cancel, boolean
+                                        dismissView) {
+        this.cancelable = cancelable;
+        this.delay = delay;
+        this.shouldRefreshData = shouldRefreshData;
+        this.cancel = cancel;
+        this.dismissView = dismissView;
+    }
 }

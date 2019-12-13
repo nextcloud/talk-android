@@ -41,247 +41,239 @@ import eu.davidea.flexibleadapter.items.IFilterable
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.flexibleadapter.utils.FlexibleUtils
 import eu.davidea.viewholders.FlexibleViewHolder
-import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.actionProgressBar
-import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.dialogAvatar
-import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.dialogDate
-import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.dialogLastMessage
-import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.dialogName
-import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.dialogUnreadBubble
-import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.favoriteConversationImageView
-import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.passwordProtectedRoomImageView
-import java.util.Objects
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.*
+import java.util.*
 import java.util.regex.Pattern
 
 class ConversationItem(
-  val model: Conversation,
-  private val user: UserNgEntity,
-  private val context: Context
+        val model: Conversation,
+        private val user: UserNgEntity,
+        private val context: Context
 ) : AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder>(), IFilterable<String> {
 
-  override fun equals(other: Any?): Boolean {
-    if (other is ConversationItem) {
-      val inItem = other as ConversationItem?
-      val comparedConversation = inItem!!.model
-      return (model.conversationId == comparedConversation.conversationId
-          && model.token == comparedConversation.token
-          && model.name == comparedConversation.name
-          && model.displayName == comparedConversation.displayName
-          && model.type == comparedConversation.type
-          && model.lastMessage == comparedConversation.lastMessage
-          && model.favorite == comparedConversation.favorite
-          && model.hasPassword == comparedConversation.hasPassword
-          && model.unreadMessages == comparedConversation.unreadMessages
-          && model.unreadMention == comparedConversation.unreadMention
-          && model.objectType == comparedConversation.objectType
-          && model.changing == comparedConversation.changing
-          && user.id == inItem.user.id)
-    }
-    return false
-  }
-
-  override fun hashCode(): Int {
-    return Objects.hash(
-        model.conversationId, model.token,
-        user.id
-    )
-  }
-
-  override fun getLayoutRes(): Int {
-    return R.layout.rv_item_conversation_with_last_message
-  }
-
-  override fun createViewHolder(
-    view: View,
-    adapter: FlexibleAdapter<IFlexible<*>>
-  ): ConversationItemViewHolder {
-    return ConversationItemViewHolder(view, adapter)
-  }
-
-  override fun bindViewHolder(
-    adapter: FlexibleAdapter<IFlexible<*>>,
-    holder: ConversationItemViewHolder,
-    position: Int,
-    payloads: List<Any>
-  ) {
-    val appContext = NextcloudTalkApplication.sharedApplication!!.applicationContext
-
-    if (model.changing) {
-      holder.itemView.actionProgressBar!!.visibility = View.VISIBLE
-    } else {
-      holder.itemView.actionProgressBar!!.visibility = View.GONE
+    override fun equals(other: Any?): Boolean {
+        if (other is ConversationItem) {
+            val inItem = other as ConversationItem?
+            val comparedConversation = inItem!!.model
+            return (model.conversationId == comparedConversation.conversationId
+                    && model.token == comparedConversation.token
+                    && model.name == comparedConversation.name
+                    && model.displayName == comparedConversation.displayName
+                    && model.type == comparedConversation.type
+                    && model.lastMessage == comparedConversation.lastMessage
+                    && model.favorite == comparedConversation.favorite
+                    && model.hasPassword == comparedConversation.hasPassword
+                    && model.unreadMessages == comparedConversation.unreadMessages
+                    && model.unreadMention == comparedConversation.unreadMention
+                    && model.objectType == comparedConversation.objectType
+                    && model.changing == comparedConversation.changing
+                    && user.id == inItem.user.id)
+        }
+        return false
     }
 
-    if (adapter.hasFilter()) {
-      FlexibleUtils.highlightText(
-          holder.itemView.dialogName!!, model.displayName,
-          adapter.getFilter(String::class.java).toString(),
-          NextcloudTalkApplication.sharedApplication!!
-              .resources.getColor(R.color.colorPrimary)
-      )
-    } else {
-      holder.itemView.dialogName!!.text = model.displayName
+    override fun hashCode(): Int {
+        return Objects.hash(
+                model.conversationId, model.token,
+                user.id
+        )
     }
 
-    if (model.unreadMessages > 0) {
-      holder.itemView.dialogUnreadBubble!!.visibility = View.VISIBLE
-      if (model.unreadMessages < 100) {
-        holder.itemView.dialogUnreadBubble!!.text = model.unreadMessages.toLong()
-            .toString()
-      } else {
-        holder.itemView.dialogUnreadBubble!!.text = context.getString(R.string.nc_99_plus)
-      }
-
-      if (model.unreadMention) {
-        holder.itemView.dialogUnreadBubble!!.background =
-          context.getDrawable(R.drawable.bubble_circle_unread_mention)
-      } else {
-        holder.itemView.dialogUnreadBubble!!.background =
-          context.getDrawable(R.drawable.bubble_circle_unread)
-      }
-    } else {
-      holder.itemView.dialogUnreadBubble!!.visibility = View.GONE
+    override fun getLayoutRes(): Int {
+        return R.layout.rv_item_conversation_with_last_message
     }
 
-    if (model.hasPassword) {
-      holder.itemView.passwordProtectedRoomImageView!!.visibility = View.VISIBLE
-    } else {
-      holder.itemView.passwordProtectedRoomImageView!!.visibility = View.GONE
+    override fun createViewHolder(
+            view: View,
+            adapter: FlexibleAdapter<IFlexible<*>>
+    ): ConversationItemViewHolder {
+        return ConversationItemViewHolder(view, adapter)
     }
 
-    if (model.favorite) {
-      holder.itemView.favoriteConversationImageView!!.visibility = View.VISIBLE
-    } else {
-      holder.itemView.favoriteConversationImageView!!.visibility = View.GONE
-    }
+    override fun bindViewHolder(
+            adapter: FlexibleAdapter<IFlexible<*>>,
+            holder: ConversationItemViewHolder,
+            position: Int,
+            payloads: List<Any>
+    ) {
+        val appContext = NextcloudTalkApplication.sharedApplication!!.applicationContext
 
-    if (model.lastMessage != null) {
-      holder.itemView.dialogDate!!.visibility = View.VISIBLE
-      holder.itemView.dialogDate!!.text = DateUtils.getRelativeTimeSpanString(
-          model.lastActivity * 1000L,
-          System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE
-      )
-
-      if (!TextUtils.isEmpty(
-              model.lastMessage!!.systemMessage
-          ) || Conversation.ConversationType.SYSTEM_CONVERSATION == model.type
-      ) {
-        holder.itemView.dialogLastMessage!!.text = model.lastMessage!!.text
-      } else {
-        var authorDisplayName = ""
-        model.lastMessage!!.activeUser = user
-        val text: String
-        if (model.lastMessage!!
-                .messageType == ChatMessage.MessageType.REGULAR_TEXT_MESSAGE && (!(ONE_TO_ONE_CONVERSATION).equals(
-                model.type) || model.lastMessage!!.actorId == user.userId)
-        ) {
-          if (model.lastMessage!!.actorId == user.userId) {
-            text = String.format(
-                appContext.getString(R.string.nc_formatted_message_you),
-                model.lastMessage!!.lastMessageDisplayText
-            )
-          } else {
-            authorDisplayName = if (!TextUtils.isEmpty(model.lastMessage!!.actorDisplayName))
-              model.lastMessage!!.actorDisplayName
-            else if ("guests" == model.lastMessage!!.actorType)
-              appContext.getString(R.string.nc_guest)
-            else
-              ""
-            text = String.format(
-                appContext.getString(R.string.nc_formatted_message),
-                authorDisplayName,
-                model.lastMessage!!.lastMessageDisplayText
-            )
-          }
+        if (model.changing) {
+            holder.itemView.actionProgressBar!!.visibility = View.VISIBLE
         } else {
-          text = model.lastMessage!!.lastMessageDisplayText
+            holder.itemView.actionProgressBar!!.visibility = View.GONE
         }
 
-        holder.itemView.dialogLastMessage.text = text
-      }
-    } else {
-      holder.itemView.dialogDate.visibility = View.GONE
-      holder.itemView.dialogLastMessage.setText(R.string.nc_no_messages_yet)
-    }
-
-    holder.itemView.dialogAvatar.visibility = View.VISIBLE
-
-    var shouldLoadAvatar = true
-    val objectType: String? = model.objectType
-    if (!TextUtils.isEmpty(objectType)) {
-      when (objectType) {
-        "share:password" -> {
-          shouldLoadAvatar = false
-          holder.itemView.dialogAvatar.load(R.drawable.ic_file_password_request) {
-            transformations(CircleCropTransformation())
-          }
-        }
-        "file" -> {
-          shouldLoadAvatar = false
-          holder.itemView.dialogAvatar.load(R.drawable.ic_file_icon) {
-            transformations(CircleCropTransformation())
-          }
-
-        }
-        else -> {
-        }
-      }
-    }
-
-    if (Conversation.ConversationType.SYSTEM_CONVERSATION == model.type) {
-      val layers = arrayOfNulls<Drawable>(2)
-      layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
-      layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
-      val layerDrawable = LayerDrawable(layers)
-
-      holder.itemView.dialogAvatar.load(layerDrawable) {
-        transformations(CircleCropTransformation())
-      }
-
-      shouldLoadAvatar = false
-    }
-
-    if (shouldLoadAvatar) {
-      when (model.type) {
-        ONE_TO_ONE_CONVERSATION -> if (!TextUtils.isEmpty(
-                model.name
+        if (adapter.hasFilter()) {
+            FlexibleUtils.highlightText(
+                    holder.itemView.dialogName!!, model.displayName,
+                    adapter.getFilter(String::class.java).toString(),
+                    NextcloudTalkApplication.sharedApplication!!
+                            .resources.getColor(R.color.colorPrimary)
             )
-        ) {
-          holder.itemView.dialogAvatar.load(
-              ApiUtils.getUrlForAvatarWithName(
-                  user.baseUrl,
-                  model.name, R.dimen.avatar_size
-              )
-          ) {
-            transformations(CircleCropTransformation())
-          }
-
         } else {
-          holder.itemView.dialogAvatar.visibility = View.GONE
+            holder.itemView.dialogName!!.text = model.displayName
         }
-        Conversation.ConversationType.GROUP_CONVERSATION ->
-          holder.itemView.dialogAvatar.load(R.drawable.ic_people_group_white_24px) {
-            transformations(CircleCropTransformation())
-          }
-        Conversation.ConversationType.PUBLIC_CONVERSATION ->
-          holder.itemView.dialogAvatar.load(R.drawable.ic_link_white_24px) {
-            transformations(CircleCropTransformation())
-          }
-        else -> holder.itemView.dialogAvatar.visibility = View.GONE
-      }
+
+        if (model.unreadMessages > 0) {
+            holder.itemView.dialogUnreadBubble!!.visibility = View.VISIBLE
+            if (model.unreadMessages < 100) {
+                holder.itemView.dialogUnreadBubble!!.text = model.unreadMessages.toLong()
+                        .toString()
+            } else {
+                holder.itemView.dialogUnreadBubble!!.text = context.getString(R.string.nc_99_plus)
+            }
+
+            if (model.unreadMention) {
+                holder.itemView.dialogUnreadBubble!!.background =
+                        context.getDrawable(R.drawable.bubble_circle_unread_mention)
+            } else {
+                holder.itemView.dialogUnreadBubble!!.background =
+                        context.getDrawable(R.drawable.bubble_circle_unread)
+            }
+        } else {
+            holder.itemView.dialogUnreadBubble!!.visibility = View.GONE
+        }
+
+        if (model.hasPassword) {
+            holder.itemView.passwordProtectedRoomImageView!!.visibility = View.VISIBLE
+        } else {
+            holder.itemView.passwordProtectedRoomImageView!!.visibility = View.GONE
+        }
+
+        if (model.favorite) {
+            holder.itemView.favoriteConversationImageView!!.visibility = View.VISIBLE
+        } else {
+            holder.itemView.favoriteConversationImageView!!.visibility = View.GONE
+        }
+
+        if (model.lastMessage != null) {
+            holder.itemView.dialogDate!!.visibility = View.VISIBLE
+            holder.itemView.dialogDate!!.text = DateUtils.getRelativeTimeSpanString(
+                    model.lastActivity * 1000L,
+                    System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE
+            )
+
+            if (!TextUtils.isEmpty(
+                            model.lastMessage!!.systemMessage
+                    ) || Conversation.ConversationType.SYSTEM_CONVERSATION == model.type
+            ) {
+                holder.itemView.dialogLastMessage!!.text = model.lastMessage!!.text
+            } else {
+                var authorDisplayName = ""
+                model.lastMessage!!.activeUser = user
+                val text: String
+                if (model.lastMessage!!
+                                .messageType == ChatMessage.MessageType.REGULAR_TEXT_MESSAGE && (!(ONE_TO_ONE_CONVERSATION).equals(
+                                model.type) || model.lastMessage!!.actorId == user.userId)
+                ) {
+                    if (model.lastMessage!!.actorId == user.userId) {
+                        text = String.format(
+                                appContext.getString(R.string.nc_formatted_message_you),
+                                model.lastMessage!!.lastMessageDisplayText
+                        )
+                    } else {
+                        authorDisplayName = if (!TextUtils.isEmpty(model.lastMessage!!.actorDisplayName))
+                            model.lastMessage!!.actorDisplayName
+                        else if ("guests" == model.lastMessage!!.actorType)
+                            appContext.getString(R.string.nc_guest)
+                        else
+                            ""
+                        text = String.format(
+                                appContext.getString(R.string.nc_formatted_message),
+                                authorDisplayName,
+                                model.lastMessage!!.lastMessageDisplayText
+                        )
+                    }
+                } else {
+                    text = model.lastMessage!!.lastMessageDisplayText
+                }
+
+                holder.itemView.dialogLastMessage.text = text
+            }
+        } else {
+            holder.itemView.dialogDate.visibility = View.GONE
+            holder.itemView.dialogLastMessage.setText(R.string.nc_no_messages_yet)
+        }
+
+        holder.itemView.dialogAvatar.visibility = View.VISIBLE
+
+        var shouldLoadAvatar = true
+        val objectType: String? = model.objectType
+        if (!TextUtils.isEmpty(objectType)) {
+            when (objectType) {
+                "share:password" -> {
+                    shouldLoadAvatar = false
+                    holder.itemView.dialogAvatar.load(R.drawable.ic_file_password_request) {
+                        transformations(CircleCropTransformation())
+                    }
+                }
+                "file" -> {
+                    shouldLoadAvatar = false
+                    holder.itemView.dialogAvatar.load(R.drawable.ic_file_icon) {
+                        transformations(CircleCropTransformation())
+                    }
+
+                }
+                else -> {
+                }
+            }
+        }
+
+        if (Conversation.ConversationType.SYSTEM_CONVERSATION == model.type) {
+            val layers = arrayOfNulls<Drawable>(2)
+            layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
+            layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
+            val layerDrawable = LayerDrawable(layers)
+
+            holder.itemView.dialogAvatar.load(layerDrawable) {
+                transformations(CircleCropTransformation())
+            }
+
+            shouldLoadAvatar = false
+        }
+
+        if (shouldLoadAvatar) {
+            when (model.type) {
+                ONE_TO_ONE_CONVERSATION -> if (!TextUtils.isEmpty(
+                                model.name
+                        )
+                ) {
+                    holder.itemView.dialogAvatar.load(
+                            ApiUtils.getUrlForAvatarWithName(
+                                    user.baseUrl,
+                                    model.name, R.dimen.avatar_size
+                            )
+                    ) {
+                        transformations(CircleCropTransformation())
+                    }
+
+                } else {
+                    holder.itemView.dialogAvatar.visibility = View.GONE
+                }
+                Conversation.ConversationType.GROUP_CONVERSATION ->
+                    holder.itemView.dialogAvatar.load(R.drawable.ic_people_group_white_24px) {
+                        transformations(CircleCropTransformation())
+                    }
+                Conversation.ConversationType.PUBLIC_CONVERSATION ->
+                    holder.itemView.dialogAvatar.load(R.drawable.ic_link_white_24px) {
+                        transformations(CircleCropTransformation())
+                    }
+                else -> holder.itemView.dialogAvatar.visibility = View.GONE
+            }
+        }
     }
-  }
 
-  override fun filter(constraint: String): Boolean {
-    return model.displayName != null && Pattern.compile(
-        constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL
-    )
-        .matcher(model.displayName!!.trim { it <= ' ' })
-        .find()
-  }
+    override fun filter(constraint: String): Boolean {
+        return model.displayName != null && Pattern.compile(
+                constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL
+        )
+                .matcher(model.displayName!!.trim { it <= ' ' })
+                .find()
+    }
 
-  class ConversationItemViewHolder(
-    view: View,
-    adapter: FlexibleAdapter<*>
-  ) : FlexibleViewHolder(view, adapter) {
-  }
+    class ConversationItemViewHolder(
+            view: View,
+            adapter: FlexibleAdapter<*>
+    ) : FlexibleViewHolder(view, adapter)
 }

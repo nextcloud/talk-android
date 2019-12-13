@@ -33,176 +33,176 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 
 object NotificationUtils {
-  val NOTIFICATION_CHANNEL_CALLS = "NOTIFICATION_CHANNEL_CALLS"
-  val NOTIFICATION_CHANNEL_MESSAGES = "NOTIFICATION_CHANNEL_MESSAGES"
-  val NOTIFICATION_CHANNEL_CALLS_V2 = "NOTIFICATION_CHANNEL_CALLS_V2"
-  val NOTIFICATION_CHANNEL_MESSAGES_V2 = "NOTIFICATION_CHANNEL_MESSAGES_V2"
-  val NOTIFICATION_CHANNEL_MESSAGES_V3 = "NOTIFICATION_CHANNEL_MESSAGES_V3"
-  val NOTIFICATION_CHANNEL_CALLS_V3 = "NOTIFICATION_CHANNEL_CALLS_V3"
+    val NOTIFICATION_CHANNEL_CALLS = "NOTIFICATION_CHANNEL_CALLS"
+    val NOTIFICATION_CHANNEL_MESSAGES = "NOTIFICATION_CHANNEL_MESSAGES"
+    val NOTIFICATION_CHANNEL_CALLS_V2 = "NOTIFICATION_CHANNEL_CALLS_V2"
+    val NOTIFICATION_CHANNEL_MESSAGES_V2 = "NOTIFICATION_CHANNEL_MESSAGES_V2"
+    val NOTIFICATION_CHANNEL_MESSAGES_V3 = "NOTIFICATION_CHANNEL_MESSAGES_V3"
+    val NOTIFICATION_CHANNEL_CALLS_V3 = "NOTIFICATION_CHANNEL_CALLS_V3"
 
-  @TargetApi(Build.VERSION_CODES.O)
-  fun createNotificationChannel(
-    context: Context,
-    channelId: String,
-    channelName: String,
-    channelDescription: String,
-    enableLights: Boolean,
-    importance: Int
-  ) {
-
-    val notificationManager =
-      context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-    if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && notificationManager.getNotificationChannel(
-            channelId
-        ) == null
+    @TargetApi(Build.VERSION_CODES.O)
+    fun createNotificationChannel(
+            context: Context,
+            channelId: String,
+            channelName: String,
+            channelDescription: String,
+            enableLights: Boolean,
+            importance: Int
     ) {
 
-      val channel = NotificationChannel(
-          channelId, channelName,
-          importance
-      )
+        val notificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-      channel.description = channelDescription
-      channel.enableLights(enableLights)
-      channel.lightColor = R.color.colorPrimary
-      channel.setSound(null, null)
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && notificationManager.getNotificationChannel(
+                        channelId
+                ) == null
+        ) {
 
-      notificationManager.createNotificationChannel(channel)
-    }
-  }
+            val channel = NotificationChannel(
+                    channelId, channelName,
+                    importance
+            )
 
-  @TargetApi(Build.VERSION_CODES.O)
-  fun createNotificationChannelGroup(
-    context: Context,
-    groupId: String,
-    groupName: CharSequence
-  ) {
-    if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-      val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            channel.description = channelDescription
+            channel.enableLights(enableLights)
+            channel.lightColor = R.color.colorPrimary
+            channel.setSound(null, null)
 
-      val notificationChannelGroup = NotificationChannelGroup(groupId, groupName)
-      if (!notificationManager.notificationChannelGroups.contains(notificationChannelGroup)) {
-        notificationManager.createNotificationChannelGroup(notificationChannelGroup)
-      }
-    }
-  }
-
-  fun cancelAllNotificationsForAccount(
-    context: Context?,
-    conversationUser: UserNgEntity
-  ) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L && context != null) {
-
-      val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-      val statusBarNotifications = notificationManager.activeNotifications
-      var notification: Notification?
-      for (statusBarNotification in statusBarNotifications) {
-        notification = statusBarNotification.notification
-
-        if (notification != null && !notification.extras.isEmpty) {
-          if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)) {
-            notificationManager.cancel(statusBarNotification.id)
-          }
+            notificationManager.createNotificationChannel(channel)
         }
-      }
     }
 
-  }
-
-  fun cancelExistingNotificationWithId(
-    context: Context?,
-    conversationUser: UserNgEntity,
-    notificationId: Long
-  ) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
-        context != null
+    @TargetApi(Build.VERSION_CODES.O)
+    fun createNotificationChannelGroup(
+            context: Context,
+            groupId: String,
+            groupName: CharSequence
     ) {
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            val notificationManager =
+                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-      val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-      val statusBarNotifications = notificationManager.activeNotifications
-      var notification: Notification?
-      for (statusBarNotification in statusBarNotifications) {
-        notification = statusBarNotification.notification
-
-        if (notification != null && !notification.extras.isEmpty) {
-          if (conversationUser.id == notification.extras.getLong(
-                  BundleKeys.KEY_INTERNAL_USER_ID
-              ) && notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)
-          ) {
-            notificationManager.cancel(statusBarNotification.id)
-          }
+            val notificationChannelGroup = NotificationChannelGroup(groupId, groupName)
+            if (!notificationManager.notificationChannelGroups.contains(notificationChannelGroup)) {
+                notificationManager.createNotificationChannelGroup(notificationChannelGroup)
+            }
         }
-      }
     }
-  }
 
-  fun findNotificationForRoom(
-    context: Context?,
-    conversationUser: UserNgEntity,
-    roomTokenOrId: String
-  ): StatusBarNotification? {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
-        context != null
+    fun cancelAllNotificationsForAccount(
+            context: Context?,
+            conversationUser: UserNgEntity
     ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L && context != null) {
 
-      val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager =
+                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-      val statusBarNotifications = notificationManager.activeNotifications
-      var notification: Notification?
-      for (statusBarNotification in statusBarNotifications) {
-        notification = statusBarNotification.notification
+            val statusBarNotifications = notificationManager.activeNotifications
+            var notification: Notification?
+            for (statusBarNotification in statusBarNotifications) {
+                notification = statusBarNotification.notification
 
-        if (notification != null && !notification.extras.isEmpty) {
-          if (conversationUser.id == notification.extras.getLong(
-                  BundleKeys.KEY_INTERNAL_USER_ID
-              ) && roomTokenOrId == statusBarNotification.notification.extras.getString(
-                  BundleKeys.KEY_ROOM_TOKEN
-              )
-          ) {
-            return statusBarNotification
-          }
+                if (notification != null && !notification.extras.isEmpty) {
+                    if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)) {
+                        notificationManager.cancel(statusBarNotification.id)
+                    }
+                }
+            }
         }
-      }
+
     }
 
-    return null
-  }
-
-  fun cancelExistingNotificationsForRoom(
-    context: Context?,
-    conversationUser: UserNgEntity,
-    roomTokenOrId: String
-  ) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
-        context != null
+    fun cancelExistingNotificationWithId(
+            context: Context?,
+            conversationUser: UserNgEntity,
+            notificationId: Long
     ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
+                context != null
+        ) {
 
-      val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager =
+                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-      val statusBarNotifications = notificationManager.activeNotifications
-      var notification: Notification?
-      for (statusBarNotification in statusBarNotifications) {
-        notification = statusBarNotification.notification
+            val statusBarNotifications = notificationManager.activeNotifications
+            var notification: Notification?
+            for (statusBarNotification in statusBarNotifications) {
+                notification = statusBarNotification.notification
 
-        if (notification != null && !notification.extras.isEmpty) {
-          if (conversationUser.id == notification.extras.getLong(
-                  BundleKeys.KEY_INTERNAL_USER_ID
-              ) && roomTokenOrId == statusBarNotification.notification.extras.getString(
-                  BundleKeys.KEY_ROOM_TOKEN
-              )
-          ) {
-            notificationManager.cancel(statusBarNotification.id)
-          }
+                if (notification != null && !notification.extras.isEmpty) {
+                    if (conversationUser.id == notification.extras.getLong(
+                                    BundleKeys.KEY_INTERNAL_USER_ID
+                            ) && notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)
+                    ) {
+                        notificationManager.cancel(statusBarNotification.id)
+                    }
+                }
+            }
         }
-      }
     }
-  }
+
+    fun findNotificationForRoom(
+            context: Context?,
+            conversationUser: UserNgEntity,
+            roomTokenOrId: String
+    ): StatusBarNotification? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
+                context != null
+        ) {
+
+            val notificationManager =
+                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            val statusBarNotifications = notificationManager.activeNotifications
+            var notification: Notification?
+            for (statusBarNotification in statusBarNotifications) {
+                notification = statusBarNotification.notification
+
+                if (notification != null && !notification.extras.isEmpty) {
+                    if (conversationUser.id == notification.extras.getLong(
+                                    BundleKeys.KEY_INTERNAL_USER_ID
+                            ) && roomTokenOrId == statusBarNotification.notification.extras.getString(
+                                    BundleKeys.KEY_ROOM_TOKEN
+                            )
+                    ) {
+                        return statusBarNotification
+                    }
+                }
+            }
+        }
+
+        return null
+    }
+
+    fun cancelExistingNotificationsForRoom(
+            context: Context?,
+            conversationUser: UserNgEntity,
+            roomTokenOrId: String
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
+                context != null
+        ) {
+
+            val notificationManager =
+                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            val statusBarNotifications = notificationManager.activeNotifications
+            var notification: Notification?
+            for (statusBarNotification in statusBarNotifications) {
+                notification = statusBarNotification.notification
+
+                if (notification != null && !notification.extras.isEmpty) {
+                    if (conversationUser.id == notification.extras.getLong(
+                                    BundleKeys.KEY_INTERNAL_USER_ID
+                            ) && roomTokenOrId == statusBarNotification.notification.extras.getString(
+                                    BundleKeys.KEY_ROOM_TOKEN
+                            )
+                    ) {
+                        notificationManager.cancel(statusBarNotification.id)
+                    }
+                }
+            }
+        }
+    }
 }

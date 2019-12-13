@@ -30,65 +30,64 @@ import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
 import com.nextcloud.talk.newarch.features.conversationsList.ConversationListViewModelFactory
-import com.nextcloud.talk.utils.database.user.UserUtils
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
 val ConversationsListModule = module {
-  single { createGetConversationsUseCase(get(), get()) }
-  single { createSetConversationFavoriteValueUseCase(get(), get()) }
-  single { createLeaveConversationUseCase(get(), get()) }
-  single { createDeleteConversationuseCase(get(), get()) }
-  //viewModel { ConversationsListViewModel(get(), get()) }
-  factory {
-    createConversationListViewModelFactory(
-        androidApplication(), get(), get(), get
-    (), get(), get(), get()
-    )
-  }
+    single { createGetConversationsUseCase(get(), get()) }
+    single { createSetConversationFavoriteValueUseCase(get(), get()) }
+    single { createLeaveConversationUseCase(get(), get()) }
+    single { createDeleteConversationuseCase(get(), get()) }
+    //viewModel { ConversationsListViewModel(get(), get()) }
+    factory {
+        createConversationListViewModelFactory(
+                androidApplication(), get(), get(), get
+        (), get(), get(), get()
+        )
+    }
 }
 
 fun createSetConversationFavoriteValueUseCase(
-  nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler
+        nextcloudTalkRepository: NextcloudTalkRepository,
+        apiErrorHandler: ApiErrorHandler
 ): SetConversationFavoriteValueUseCase {
-  return SetConversationFavoriteValueUseCase(nextcloudTalkRepository, apiErrorHandler)
+    return SetConversationFavoriteValueUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createGetConversationsUseCase(
-  nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler
+        nextcloudTalkRepository: NextcloudTalkRepository,
+        apiErrorHandler: ApiErrorHandler
 ): GetConversationsUseCase {
-  return GetConversationsUseCase(nextcloudTalkRepository, apiErrorHandler)
+    return GetConversationsUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createLeaveConversationUseCase(
-  nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler
+        nextcloudTalkRepository: NextcloudTalkRepository,
+        apiErrorHandler: ApiErrorHandler
 ): LeaveConversationUseCase {
-  return LeaveConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
+    return LeaveConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createDeleteConversationuseCase(
-  nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler
+        nextcloudTalkRepository: NextcloudTalkRepository,
+        apiErrorHandler: ApiErrorHandler
 ): DeleteConversationUseCase {
-  return DeleteConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
+    return DeleteConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createConversationListViewModelFactory(
-  application: Application,
-  getConversationsUseCase:
-  GetConversationsUseCase,
-  setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
-  leaveConversationUseCase: LeaveConversationUseCase,
-  deleteConversationUseCase: DeleteConversationUseCase,
-  conversationsRepository: ConversationsRepository,
-  usersRepository: UsersRepository
+        application: Application,
+        getConversationsUseCase:
+        GetConversationsUseCase,
+        setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
+        leaveConversationUseCase: LeaveConversationUseCase,
+        deleteConversationUseCase: DeleteConversationUseCase,
+        conversationsRepository: ConversationsRepository,
+        usersRepository: UsersRepository
 ): ConversationListViewModelFactory {
-  return ConversationListViewModelFactory(
-      application, getConversationsUseCase,
-      setConversationFavoriteValueUseCase, leaveConversationUseCase, deleteConversationUseCase,
-      conversationsRepository, usersRepository
-  )
+    return ConversationListViewModelFactory(
+            application, getConversationsUseCase,
+            setConversationFavoriteValueUseCase, leaveConversationUseCase, deleteConversationUseCase,
+            conversationsRepository, usersRepository
+    )
 }

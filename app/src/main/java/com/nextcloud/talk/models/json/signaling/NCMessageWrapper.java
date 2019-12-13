@@ -22,20 +22,22 @@ package com.nextcloud.talk.models.json.signaling;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @JsonObject
 @Parcel
 public class NCMessageWrapper {
-  @JsonField(name = "fn")
-  public NCSignalingMessage signalingMessage;
+    @JsonField(name = "fn")
+    public NCSignalingMessage signalingMessage;
 
-  // always a "message"
-  @JsonField(name = "ev")
-  public String ev;
+    // always a "message"
+    @JsonField(name = "ev")
+    public String ev;
 
-  @JsonField(name = "sessionId")
-  public String sessionId;
+    @JsonField(name = "sessionId")
+    public String sessionId;
 }

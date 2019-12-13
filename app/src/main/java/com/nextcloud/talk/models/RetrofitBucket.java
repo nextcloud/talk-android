@@ -19,13 +19,15 @@
  */
 package com.nextcloud.talk.models;
 
-import java.util.Map;
-import lombok.Data;
 import org.parceler.Parcel;
+
+import java.util.Map;
+
+import lombok.Data;
 
 @Parcel
 @Data
 public class RetrofitBucket {
-  public String url;
-  public Map<String, String> queryMap;
+    public String url;
+    public Map<String, String> queryMap;
 }

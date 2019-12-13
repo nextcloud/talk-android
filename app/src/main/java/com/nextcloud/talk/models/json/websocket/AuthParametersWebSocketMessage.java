@@ -22,16 +22,18 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @JsonObject
 @Parcel
 public class AuthParametersWebSocketMessage {
-  @JsonField(name = "userid")
-  public String userid;
+    @JsonField(name = "userid")
+    public String userid;
 
-  @JsonField(name = "ticket")
-  public String ticket;
+    @JsonField(name = "ticket")
+    public String ticket;
 }

@@ -20,45 +20,42 @@
 package com.nextcloud.talk.models.database;
 
 import android.os.Parcelable;
-import android.util.Log;
-import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.models.json.capabilities.Capabilities;
+
+import java.io.Serializable;
+
 import io.requery.Entity;
 import io.requery.Generated;
 import io.requery.Key;
 import io.requery.Persistable;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
 
 @Entity
 public interface User extends Parcelable, Persistable, Serializable {
-  String TAG = "UserEntity";
+    String TAG = "UserEntity";
 
-  @Key
-  @Generated
-  long getId();
+    @Key
+    @Generated
+    long getId();
 
-  String getUserId();
+    String getUserId();
 
-  String getUsername();
+    String getUsername();
 
-  String getBaseUrl();
+    String getBaseUrl();
 
-  String getToken();
+    String getToken();
 
-  String getDisplayName();
+    String getDisplayName();
 
-  String getPushConfigurationState();
+    String getPushConfigurationState();
 
-  String getCapabilities();
+    String getCapabilities();
 
-  String getClientCertificate();
+    String getClientCertificate();
 
-  String getExternalSignalingServer();
+    String getExternalSignalingServer();
 
-  boolean getCurrent();
+    boolean getCurrent();
 
-  boolean getScheduledForDeletion();
+    boolean getScheduledForDeletion();
 }
 

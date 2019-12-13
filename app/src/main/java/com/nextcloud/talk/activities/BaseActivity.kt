@@ -29,7 +29,6 @@ import android.view.WindowManager
 import android.webkit.SslErrorHandler
 import androidx.appcompat.app.AppCompatActivity
 import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -45,105 +44,101 @@ import java.text.DateFormat
 
 open class BaseActivity : AppCompatActivity() {
 
-  val eventBus: EventBus by inject()
-  val appPreferences: AppPreferences by inject()
-  val context: Context by inject()
+    val eventBus: EventBus by inject()
+    val appPreferences: AppPreferences by inject()
+    val context: Context by inject()
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-  }
-
-  public override fun onResume() {
-    super.onResume()
-    if (appPreferences.isScreenSecured) {
-      window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-    } else {
-      window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-    }
-
-    if (appPreferences.isScreenLocked) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        SecurityUtils.createKey(appPreferences.screenLockTimeout)
-      }
-    }
-  }
-
-  fun showCertificateDialog(
-    cert: X509Certificate,
-    magicTrustManager: MagicTrustManager,
-    sslErrorHandler: SslErrorHandler?
-  ) {
-    val formatter = DateFormat.getDateInstance(DateFormat.LONG)
-    val validFrom = formatter.format(cert.notBefore)
-    val validUntil = formatter.format(cert.notAfter)
-
-    val issuedBy = cert.issuerDN.toString()
-    val issuedFor: String
-
-    try {
-      if (cert.subjectAlternativeNames != null) {
-        val stringBuilder = StringBuilder()
-        for (o in cert.subjectAlternativeNames) {
-          val list = o as List<*>
-          val type = list[0] as Int
-          if (type == 2) {
-            val name = list[1] as String
-            stringBuilder.append("[")
-                .append(type)
-                .append("]")
-                .append(name)
-                .append(" ")
-          }
+    public override fun onResume() {
+        super.onResume()
+        if (appPreferences.isScreenSecured) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
-        issuedFor = stringBuilder.toString()
-      } else {
-        issuedFor = cert.subjectDN.name
-      }
 
-      @SuppressLint("StringFormatMatches") val dialogText = String.format(
-          resources
-              .getString(R.string.nc_certificate_dialog_text),
-          issuedBy, issuedFor, validFrom, validUntil
-      )
-
-      LovelyStandardDialog(this)
-          .setTopColorRes(R.color.nc_darkRed)
-          .setNegativeButtonColorRes(R.color.nc_darkRed)
-          .setPositiveButtonColorRes(R.color.colorPrimaryDark)
-          .setIcon(R.drawable.ic_security_white_24dp)
-          .setTitle(R.string.nc_certificate_dialog_title)
-          .setMessage(dialogText)
-          .setPositiveButton(R.string.nc_yes) { v ->
-            magicTrustManager.addCertInTrustStore(cert)
-            sslErrorHandler?.proceed()
-          }
-          .setNegativeButton(R.string.nc_no) { view1 ->
-            sslErrorHandler?.cancel()
-          }
-          .show()
-
-    } catch (e: CertificateParsingException) {
-      Log.d(TAG, "Failed to parse the certificate")
+        if (appPreferences.isScreenLocked) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                SecurityUtils.createKey(appPreferences.screenLockTimeout)
+            }
+        }
     }
 
-  }
+    fun showCertificateDialog(
+            cert: X509Certificate,
+            magicTrustManager: MagicTrustManager,
+            sslErrorHandler: SslErrorHandler?
+    ) {
+        val formatter = DateFormat.getDateInstance(DateFormat.LONG)
+        val validFrom = formatter.format(cert.notBefore)
+        val validUntil = formatter.format(cert.notAfter)
 
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  fun onMessageEvent(event: CertificateEvent) {
-    showCertificateDialog(event.x509Certificate, event.magicTrustManager, event.sslErrorHandler)
-  }
+        val issuedBy = cert.issuerDN.toString()
+        val issuedFor: String
 
-  public override fun onStart() {
-    super.onStart()
-    eventBus.register(this)
-  }
+        try {
+            if (cert.subjectAlternativeNames != null) {
+                val stringBuilder = StringBuilder()
+                for (o in cert.subjectAlternativeNames) {
+                    val list = o as List<*>
+                    val type = list[0] as Int
+                    if (type == 2) {
+                        val name = list[1] as String
+                        stringBuilder.append("[")
+                                .append(type)
+                                .append("]")
+                                .append(name)
+                                .append(" ")
+                    }
+                }
+                issuedFor = stringBuilder.toString()
+            } else {
+                issuedFor = cert.subjectDN.name
+            }
 
-  public override fun onStop() {
-    super.onStop()
-    eventBus.unregister(this)
-  }
+            @SuppressLint("StringFormatMatches") val dialogText = String.format(
+                    resources
+                            .getString(R.string.nc_certificate_dialog_text),
+                    issuedBy, issuedFor, validFrom, validUntil
+            )
 
-  companion object {
-    private val TAG = "BaseActivity"
-  }
+            LovelyStandardDialog(this)
+                    .setTopColorRes(R.color.nc_darkRed)
+                    .setNegativeButtonColorRes(R.color.nc_darkRed)
+                    .setPositiveButtonColorRes(R.color.colorPrimaryDark)
+                    .setIcon(R.drawable.ic_security_white_24dp)
+                    .setTitle(R.string.nc_certificate_dialog_title)
+                    .setMessage(dialogText)
+                    .setPositiveButton(R.string.nc_yes) { v ->
+                        magicTrustManager.addCertInTrustStore(cert)
+                        sslErrorHandler?.proceed()
+                    }
+                    .setNegativeButton(R.string.nc_no) { view1 ->
+                        sslErrorHandler?.cancel()
+                    }
+                    .show()
+
+        } catch (e: CertificateParsingException) {
+            Log.d(TAG, "Failed to parse the certificate")
+        }
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: CertificateEvent) {
+        showCertificateDialog(event.x509Certificate, event.magicTrustManager, event.sslErrorHandler)
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        eventBus.register(this)
+    }
+
+    public override fun onStop() {
+        super.onStop()
+        eventBus.unregister(this)
+    }
+
+    companion object {
+        private val TAG = "BaseActivity"
+    }
 }

@@ -22,6 +22,6 @@ package com.nextcloud.talk.interfaces
 
 interface ClosedInterface {
 
-  val isGooglePlayServicesAvailable: Boolean
-  fun providerInstallerInstallIfNeededAsync()
+    val isGooglePlayServicesAvailable: Boolean
+    fun providerInstallerInstallIfNeededAsync()
 }

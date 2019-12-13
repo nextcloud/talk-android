@@ -26,17 +26,17 @@ import com.nextcloud.talk.models.json.conversations.Conversation.ConversationRea
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationReadOnlyState.CONVERSATION_READ_WRITE
 
 class ConversationReadOnlyStateConverter {
-  @TypeConverter
-  fun fromConversationReadOnlyStateToInt(conversationReadOnlyState: ConversationReadOnlyState):
-      Int {
-    return conversationReadOnlyState.ordinal
-  }
-
-  @TypeConverter
-  fun fromIntToConversationType(value: Int): ConversationReadOnlyState {
-    when (value) {
-      0 -> return CONVERSATION_READ_WRITE
-      else -> return CONVERSATION_READ_ONLY
+    @TypeConverter
+    fun fromConversationReadOnlyStateToInt(conversationReadOnlyState: ConversationReadOnlyState):
+            Int {
+        return conversationReadOnlyState.ordinal
     }
-  }
+
+    @TypeConverter
+    fun fromIntToConversationType(value: Int): ConversationReadOnlyState {
+        when (value) {
+            0 -> return CONVERSATION_READ_WRITE
+            else -> return CONVERSATION_READ_ONLY
+        }
+    }
 }

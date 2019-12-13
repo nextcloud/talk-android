@@ -29,7 +29,7 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-object ShareUtils: KoinComponent {
+object ShareUtils : KoinComponent {
     val usersRepository: UsersRepository by inject()
 
     @JvmStatic

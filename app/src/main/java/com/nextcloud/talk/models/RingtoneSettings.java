@@ -21,20 +21,24 @@
 package com.nextcloud.talk.models;
 
 import android.net.Uri;
+
 import androidx.annotation.Nullable;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.UriTypeConverter;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Parcel
 @JsonObject
 @Data
 public class RingtoneSettings {
-  @JsonField(name = "ringtoneUri", typeConverter = UriTypeConverter.class)
-  @Nullable
-  public Uri ringtoneUri;
-  @JsonField(name = "ringtoneName")
-  public String ringtoneName;
+    @JsonField(name = "ringtoneUri", typeConverter = UriTypeConverter.class)
+    @Nullable
+    public Uri ringtoneUri;
+    @JsonField(name = "ringtoneName")
+    public String ringtoneName;
 }

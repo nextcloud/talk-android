@@ -22,31 +22,33 @@ package com.nextcloud.talk.models.json.generic;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
 public class Status {
-  @JsonField(name = "installed")
-  public boolean installed;
+    @JsonField(name = "installed")
+    public boolean installed;
 
-  @JsonField(name = "maintenance")
-  public boolean maintenance;
+    @JsonField(name = "maintenance")
+    public boolean maintenance;
 
-  @JsonField(name = "upgrade")
-  public boolean needsUpgrade;
+    @JsonField(name = "upgrade")
+    public boolean needsUpgrade;
 
-  @JsonField(name = "version")
-  public String version;
+    @JsonField(name = "version")
+    public String version;
 
-  @JsonField(name = "versionstring")
-  public String versionString;
+    @JsonField(name = "versionstring")
+    public String versionString;
 
-  @JsonField(name = "edition")
-  public String edition;
+    @JsonField(name = "edition")
+    public String edition;
 
-  @JsonField(name = "productname")
-  public String productName;
+    @JsonField(name = "productname")
+    public String productName;
 }

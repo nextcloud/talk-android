@@ -38,49 +38,49 @@ import org.koin.core.inject
 import java.util.*
 
 class ShareOperationWorker(
-  context: Context,
-  workerParams: WorkerParameters
+        context: Context,
+        workerParams: WorkerParameters
 ) : Worker(context, workerParams), KoinComponent {
-  val ncApi: NcApi by inject()
-  val usersRepository: UsersRepository by inject()
+    val ncApi: NcApi by inject()
+    val usersRepository: UsersRepository by inject()
 
-  private val userId: Long
-  private val operationsUser: UserNgEntity
-  private val roomToken: String?
-  private val filesArray = mutableListOf<String>()
-  private val credentials: String
-  private val baseUrl: String
-  override fun doWork(): Result {
-    for (i in filesArray.indices) {
-      ncApi.createRemoteShare(
-          credentials,
-          ApiUtils.getSharingUrl(baseUrl),
-          filesArray[i],
-          roomToken,
-          "10"
-      )
-          .subscribeOn(Schedulers.io())
-          .blockingSubscribe(object : Observer<Void?> {
-            override fun onSubscribe(d: Disposable) {}
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {}
-            override fun onNext(t: Void) {
-            }
-          })
+    private val userId: Long
+    private val operationsUser: UserNgEntity
+    private val roomToken: String?
+    private val filesArray = mutableListOf<String>()
+    private val credentials: String
+    private val baseUrl: String
+    override fun doWork(): Result {
+        for (i in filesArray.indices) {
+            ncApi.createRemoteShare(
+                    credentials,
+                    ApiUtils.getSharingUrl(baseUrl),
+                    filesArray[i],
+                    roomToken,
+                    "10"
+            )
+                    .subscribeOn(Schedulers.io())
+                    .blockingSubscribe(object : Observer<Void?> {
+                        override fun onSubscribe(d: Disposable) {}
+                        override fun onError(e: Throwable) {}
+                        override fun onComplete() {}
+                        override fun onNext(t: Void) {
+                        }
+                    })
+        }
+        return Result.success()
     }
-    return Result.success()
-  }
 
-  init {
-    val data = workerParams.inputData
-    userId = data.getLong(KEY_INTERNAL_USER_ID, 0)
-    roomToken = data.getString(KEY_ROOM_TOKEN)
+    init {
+        val data = workerParams.inputData
+        userId = data.getLong(KEY_INTERNAL_USER_ID, 0)
+        roomToken = data.getString(KEY_ROOM_TOKEN)
 
-    Collections.addAll(
-        filesArray, *data.getStringArray(KEY_FILE_PATHS)
-    )
-    operationsUser = usersRepository.getUserWithId(userId)
-    credentials = operationsUser.getCredentials()
-    baseUrl = operationsUser.baseUrl
-  }
+        Collections.addAll(
+                filesArray, *data.getStringArray(KEY_FILE_PATHS)
+        )
+        operationsUser = usersRepository.getUserWithId(userId)
+        credentials = operationsUser.getCredentials()
+        baseUrl = operationsUser.baseUrl
+    }
 }

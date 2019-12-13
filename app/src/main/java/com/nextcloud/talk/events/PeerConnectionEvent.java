@@ -21,27 +21,28 @@
 package com.nextcloud.talk.events;
 
 import androidx.annotation.Nullable;
+
 import lombok.Data;
 
 @Data
 public class PeerConnectionEvent {
-  public final PeerConnectionEventType peerConnectionEventType;
-  public final String sessionId;
-  public final String nick;
-  public final Boolean changeValue;
-  public final String videoStreamType;
+    public final PeerConnectionEventType peerConnectionEventType;
+    public final String sessionId;
+    public final String nick;
+    public final Boolean changeValue;
+    public final String videoStreamType;
 
-  public PeerConnectionEvent(PeerConnectionEventType peerConnectionEventType,
-      @Nullable String sessionId,
-      @Nullable String nick, Boolean changeValue, @Nullable String videoStreamType) {
-    this.peerConnectionEventType = peerConnectionEventType;
-    this.nick = nick;
-    this.changeValue = changeValue;
-    this.sessionId = sessionId;
-    this.videoStreamType = videoStreamType;
-  }
+    public PeerConnectionEvent(PeerConnectionEventType peerConnectionEventType,
+                               @Nullable String sessionId,
+                               @Nullable String nick, Boolean changeValue, @Nullable String videoStreamType) {
+        this.peerConnectionEventType = peerConnectionEventType;
+        this.nick = nick;
+        this.changeValue = changeValue;
+        this.sessionId = sessionId;
+        this.videoStreamType = videoStreamType;
+    }
 
-  public enum PeerConnectionEventType {
-    PEER_CONNECTED, PEER_CLOSED, SENSOR_FAR, SENSOR_NEAR, NICK_CHANGE, AUDIO_CHANGE, VIDEO_CHANGE, PUBLISHER_FAILED
-  }
+    public enum PeerConnectionEventType {
+        PEER_CONNECTED, PEER_CLOSED, SENSOR_FAR, SENSOR_NEAR, NICK_CHANGE, AUDIO_CHANGE, VIDEO_CHANGE, PUBLISHER_FAILED
+    }
 }

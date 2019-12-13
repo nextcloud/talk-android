@@ -22,19 +22,21 @@ package com.nextcloud.talk.models.json.sharees;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
 public class Sharee {
-  @JsonField(name = "id")
-  String id;
+    @JsonField(name = "id")
+    String id;
 
-  @JsonField(name = "value")
-  Value value;
+    @JsonField(name = "value")
+    Value value;
 
-  @JsonField(name = "label")
-  String label;
+    @JsonField(name = "label")
+    String label;
 }

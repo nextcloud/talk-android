@@ -22,19 +22,21 @@ package com.nextcloud.talk.models.json.userprofile;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
 public class UserProfileData {
-  @JsonField(name = "display-name")
-  public String displayName;
+    @JsonField(name = "display-name")
+    public String displayName;
 
-  @JsonField(name = "displayname")
-  public String displayNameAlt;
+    @JsonField(name = "displayname")
+    public String displayNameAlt;
 
-  @JsonField(name = "id")
-  public String userId;
+    @JsonField(name = "id")
+    public String userId;
 }

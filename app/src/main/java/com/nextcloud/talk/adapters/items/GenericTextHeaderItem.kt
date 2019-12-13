@@ -33,62 +33,62 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
 
 class GenericTextHeaderItem(val model: String) : AbstractHeaderItem<GenericTextHeaderItem.HeaderViewHolder>() {
-  override fun createViewHolder(
-    view: View,
-    adapter: FlexibleAdapter<IFlexible<ViewHolder>>
-  ): HeaderViewHolder {
-    return HeaderViewHolder(view, adapter)
-  }
-
-  init {
-    isHidden = false
-    isSelectable = false
-  }
-
-  override fun equals(other: Any?): Boolean {
-    if (other is GenericTextHeaderItem) {
-      val inItem = other as GenericTextHeaderItem?
-      return model == inItem!!.model
+    override fun createViewHolder(
+            view: View,
+            adapter: FlexibleAdapter<IFlexible<ViewHolder>>
+    ): HeaderViewHolder {
+        return HeaderViewHolder(view, adapter)
     }
-    return false
-  }
-
-  override fun getLayoutRes(): Int {
-    return R.layout.rv_item_title_header
-  }
-
-  override fun bindViewHolder(
-    adapter: FlexibleAdapter<IFlexible<*>>,
-    holder: HeaderViewHolder,
-    position: Int,
-    payloads: List<Any>
-  ) {
-    if (payloads.size > 0) {
-      Log.d(TAG, "We have payloads, so ignoring!")
-    } else {
-      holder.titleTextView!!.text = model
-    }
-  }
-
-  class HeaderViewHolder
-  /**
-   * Default constructor.
-   */
-  (
-    view: View,
-    adapter: FlexibleAdapter<*>
-  ) : FlexibleViewHolder(view, adapter, true) {
-
-    @JvmField
-    @BindView(R.id.title_text_view)
-    var titleTextView: TextView? = null
 
     init {
-      ButterKnife.bind(this, view)
+        isHidden = false
+        isSelectable = false
     }
-  }
 
-  companion object {
-    private val TAG = "GenericTextHeaderItem"
-  }
+    override fun equals(other: Any?): Boolean {
+        if (other is GenericTextHeaderItem) {
+            val inItem = other as GenericTextHeaderItem?
+            return model == inItem!!.model
+        }
+        return false
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.rv_item_title_header
+    }
+
+    override fun bindViewHolder(
+            adapter: FlexibleAdapter<IFlexible<*>>,
+            holder: HeaderViewHolder,
+            position: Int,
+            payloads: List<Any>
+    ) {
+        if (payloads.size > 0) {
+            Log.d(TAG, "We have payloads, so ignoring!")
+        } else {
+            holder.titleTextView!!.text = model
+        }
+    }
+
+    class HeaderViewHolder
+    /**
+     * Default constructor.
+     */
+    (
+            view: View,
+            adapter: FlexibleAdapter<*>
+    ) : FlexibleViewHolder(view, adapter, true) {
+
+        @JvmField
+        @BindView(R.id.title_text_view)
+        var titleTextView: TextView? = null
+
+        init {
+            ButterKnife.bind(this, view)
+        }
+    }
+
+    companion object {
+        private val TAG = "GenericTextHeaderItem"
+    }
 }

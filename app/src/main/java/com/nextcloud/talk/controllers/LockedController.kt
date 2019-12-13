@@ -38,8 +38,6 @@ import butterknife.OnClick
 import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.utils.SecurityUtils
-import com.nextcloud.talk.utils.preferences.AppPreferences
-import org.koin.android.ext.android.inject
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -111,8 +109,8 @@ class LockedController : BaseController() {
         if (activity != null) {
             val keyguardManager = activity!!.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
             if (keyguardManager != null && keyguardManager.isKeyguardSecure
-                    && appPreferences!!.isScreenLocked) {
-                if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences!!.screenLockTimeout)) {
+                    && appPreferences.isScreenLocked) {
+                if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
                     showBiometricDialog()
                 } else {
                     router.popCurrentController()
@@ -134,7 +132,7 @@ class LockedController : BaseController() {
         if (requestCode == REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
             if (resultCode == Activity.RESULT_OK) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (SecurityUtils.checkIfWeAreAuthenticated(appPreferences!!.screenLockTimeout)) {
+                    if (SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
                         Log.d(TAG, "All went well, dismiss locked controller")
                         router.popCurrentController()
                     }

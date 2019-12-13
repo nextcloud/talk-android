@@ -22,24 +22,27 @@ package com.nextcloud.talk.models.json.capabilities;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+
+import org.parceler.Parcel;
+
 import java.util.HashMap;
 import java.util.List;
+
 import lombok.Data;
-import org.parceler.Parcel;
 
 @Parcel
 @Data
 @JsonObject
 public class Capabilities {
-  @JsonField(name = "spreed")
-  public SpreedCapability spreedCapability;
+    @JsonField(name = "spreed")
+    public SpreedCapability spreedCapability;
 
-  @JsonField(name = "notifications")
-  public NotificationsCapability notificationsCapability;
+    @JsonField(name = "notifications")
+    public NotificationsCapability notificationsCapability;
 
-  @JsonField(name = "theming")
-  public ThemingCapability themingCapability;
+    @JsonField(name = "theming")
+    public ThemingCapability themingCapability;
 
-  @JsonField(name = "external")
-  public HashMap<String, List<String>> externalCapability;
+    @JsonField(name = "external")
+    public HashMap<String, List<String>> externalCapability;
 }

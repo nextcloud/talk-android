@@ -26,38 +26,37 @@ import coil.ImageLoader
 import coil.request.LoadRequest
 import coil.target.Target
 import coil.transform.Transformation
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 
 class Images {
-  fun getRequestForUrl(
-    imageLoader: ImageLoader,
-    context: Context,
-    url: String,
-    userEntity:
-    UserNgEntity?,
-    target: Target?,
-    lifecycleOwner: LifecycleOwner?,
-    vararg transformations: Transformation
-  ): LoadRequest {
-    return LoadRequest(context, imageLoader.defaults) {
-      data(url)
-      transformations(*transformations)
-      lifecycleOwner?.let {
-        lifecycle(lifecycleOwner)
-      }
+    fun getRequestForUrl(
+            imageLoader: ImageLoader,
+            context: Context,
+            url: String,
+            userEntity:
+            UserNgEntity?,
+            target: Target?,
+            lifecycleOwner: LifecycleOwner?,
+            vararg transformations: Transformation
+    ): LoadRequest {
+        return LoadRequest(context, imageLoader.defaults) {
+            data(url)
+            transformations(*transformations)
+            lifecycleOwner?.let {
+                lifecycle(lifecycleOwner)
+            }
 
-      target?.let {
-        target(target)
-      }
+            target?.let {
+                target(target)
+            }
 
-      if (userEntity != null && url.startsWith(userEntity.baseUrl) && url.contains(
-              "index.php/core/preview?fileId="
-          )
-      ) {
-        addHeader("Authorization", userEntity.getCredentials())
-      }
+            if (userEntity != null && url.startsWith(userEntity.baseUrl) && url.contains(
+                            "index.php/core/preview?fileId="
+                    )
+            ) {
+                addHeader("Authorization", userEntity.getCredentials())
+            }
+        }
     }
-  }
 }

@@ -25,17 +25,17 @@ import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.models.ExternalSignalingServer
 
 class ExternalSignalingConverter {
-  @TypeConverter
-  fun fromExternalSignalingToString(externalSignalingServer: ExternalSignalingServer?): String {
-    if (externalSignalingServer == null) {
-      return ""
-    } else {
-      return LoganSquare.serialize(externalSignalingServer)
+    @TypeConverter
+    fun fromExternalSignalingToString(externalSignalingServer: ExternalSignalingServer?): String {
+        if (externalSignalingServer == null) {
+            return ""
+        } else {
+            return LoganSquare.serialize(externalSignalingServer)
+        }
     }
-  }
 
-  @TypeConverter
-  fun fromStringToExternalSignaling(value: String): ExternalSignalingServer? {
-    return LoganSquare.parse(value, ExternalSignalingServer::class.java)
-  }
+    @TypeConverter
+    fun fromStringToExternalSignaling(value: String): ExternalSignalingServer? {
+        return LoganSquare.parse(value, ExternalSignalingServer::class.java)
+    }
 }

@@ -22,21 +22,23 @@ package com.nextcloud.talk.models.json.signaling.settings;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import java.util.List;
+
 import lombok.Data;
 
 @Data
 @JsonObject
 public class Settings {
-  @JsonField(name = "stunservers")
-  public List<IceServer> stunServers;
+    @JsonField(name = "stunservers")
+    public List<IceServer> stunServers;
 
-  @JsonField(name = "turnservers")
-  public List<IceServer> turnServers;
+    @JsonField(name = "turnservers")
+    public List<IceServer> turnServers;
 
-  @JsonField(name = "server")
-  public String externalSignalingServer;
+    @JsonField(name = "server")
+    public String externalSignalingServer;
 
-  @JsonField(name = "ticket")
-  public String externalSignalingTicket;
+    @JsonField(name = "ticket")
+    public String externalSignalingTicket;
 }

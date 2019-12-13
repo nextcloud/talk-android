@@ -22,13 +22,15 @@ package com.nextcloud.talk.models.json.sharees;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
 public class ShareesOverall {
-  @JsonField(name = "ocs")
-  ShareesOCS ocs;
+    @JsonField(name = "ocs")
+    ShareesOCS ocs;
 }

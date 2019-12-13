@@ -24,13 +24,13 @@ import lombok.Data;
 
 @Data
 public class NetworkEvent {
-  public final NetworkConnectionEvent networkConnectionEvent;
+    public final NetworkConnectionEvent networkConnectionEvent;
 
-  public NetworkEvent(NetworkConnectionEvent networkConnectionEvent) {
-    this.networkConnectionEvent = networkConnectionEvent;
-  }
+    public NetworkEvent(NetworkConnectionEvent networkConnectionEvent) {
+        this.networkConnectionEvent = networkConnectionEvent;
+    }
 
-  public enum NetworkConnectionEvent {
-    NETWORK_CONNECTED, NETWORK_DISCONNECTED
-  }
+    public enum NetworkConnectionEvent {
+        NETWORK_CONNECTED, NETWORK_DISCONNECTED
+    }
 }

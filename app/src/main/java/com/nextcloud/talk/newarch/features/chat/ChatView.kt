@@ -112,7 +112,7 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
     }
 
     private fun setupViews() {
-        view?.let {view ->
+        view?.let { view ->
             view.recyclerView.initRecyclerView(
                     LinearLayoutManager(view.context), recyclerViewAdapter, false
             )
@@ -241,7 +241,7 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
 
     private fun setupMentionAutocomplete() {
         viewModel.conversation.value?.let { conversation ->
-            view?.let {view ->
+            view?.let { view ->
                 val elevation = 6f
                 val backgroundDrawable = ColorDrawable(resources!!.getColor(R.color.bg_default))
                 val presenter = MentionAutocompletePresenter(context, conversation.token)
@@ -386,7 +386,7 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
                         it.name, avatarSize / 2
                 ), null, target, this,
                         CircleCropTransformation()
-                );
+                )
 
                 imageLoader.load(avatarRequest)
 

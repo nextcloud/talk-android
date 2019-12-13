@@ -22,25 +22,27 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @JsonObject
 @Parcel
 public class HelloResponseWebSocketMessage {
-  @JsonField(name = "resumeid")
-  public String resumeId;
+    @JsonField(name = "resumeid")
+    public String resumeId;
 
-  @JsonField(name = "sessionid")
-  public String sessionId;
+    @JsonField(name = "sessionid")
+    public String sessionId;
 
-  @JsonField(name = "server")
-  public ServerHelloResponseFeaturesWebSocketMessage serverHelloResponseFeaturesWebSocketMessage;
+    @JsonField(name = "server")
+    public ServerHelloResponseFeaturesWebSocketMessage serverHelloResponseFeaturesWebSocketMessage;
 
-  public boolean serverHasMCUSupport() {
-    return serverHelloResponseFeaturesWebSocketMessage != null
-        && serverHelloResponseFeaturesWebSocketMessage.getFeatures() != null
-        && serverHelloResponseFeaturesWebSocketMessage.getFeatures().contains("mcu");
-  }
+    public boolean serverHasMCUSupport() {
+        return serverHelloResponseFeaturesWebSocketMessage != null
+                && serverHelloResponseFeaturesWebSocketMessage.getFeatures() != null
+                && serverHelloResponseFeaturesWebSocketMessage.getFeatures().contains("mcu");
+    }
 }

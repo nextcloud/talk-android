@@ -34,29 +34,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-
+import butterknife.BindView
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.NotificationSoundItem
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.utils.bundle.BundleKeys
-
-import java.io.IOException
-import java.util.ArrayList
-
-import butterknife.BindView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
+import java.io.IOException
+import java.util.*
 
 class RingtoneSelectionController(args: Bundle) : BaseController(), FlexibleAdapter.OnItemClickListener {
 
-    @JvmField @BindView(R.id.recyclerView)
+    @JvmField
+    @BindView(R.id.recyclerView)
     internal var recyclerView: RecyclerView? = null
 
-    @JvmField @BindView(R.id.swipe_refresh_layout)
+    @JvmField
+    @BindView(R.id.swipe_refresh_layout)
     internal var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null

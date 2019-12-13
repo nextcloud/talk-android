@@ -22,19 +22,21 @@ package com.nextcloud.talk.models.json.signaling;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @JsonObject
 @Parcel
 public class NCIceCandidate {
-  @JsonField(name = "sdpMLineIndex")
-  public int sdpMLineIndex;
+    @JsonField(name = "sdpMLineIndex")
+    public int sdpMLineIndex;
 
-  @JsonField(name = "sdpMid")
-  public String sdpMid;
+    @JsonField(name = "sdpMid")
+    public String sdpMid;
 
-  @JsonField(name = "candidate")
-  public String candidate;
+    @JsonField(name = "candidate")
+    public String candidate;
 }

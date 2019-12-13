@@ -22,16 +22,18 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class ErrorWebSocketMessage {
-  @JsonField(name = "code")
-  public String code;
+    @JsonField(name = "code")
+    public String code;
 
-  @JsonField(name = "message")
-  public String message;
+    @JsonField(name = "message")
+    public String message;
 }

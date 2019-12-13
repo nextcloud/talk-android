@@ -24,62 +24,58 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.*
 import butterknife.ButterKnife
 import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.nextcloud.talk.controllers.base.BaseController
 
 abstract class BaseView : BaseController(), LifecycleOwner, ViewModelStoreOwner {
 
-  private val viewModelStore = ViewModelStore()
-  private val lifecycleOwner = ControllerLifecycleOwner(this)
+    private val viewModelStore = ViewModelStore()
+    private val lifecycleOwner = ControllerLifecycleOwner(this)
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup
-  ): View {
-    val view = inflater.inflate(getLayoutId(), container, false)
-    unbinder = ButterKnife.bind(this, view)
-    onViewBound(view)
-    return view
-  }
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup
+    ): View {
+        val view = inflater.inflate(getLayoutId(), container, false)
+        unbinder = ButterKnife.bind(this, view)
+        onViewBound(view)
+        return view
+    }
 
-  override fun inflateView(
-    inflater: LayoutInflater,
-    container: ViewGroup
-  ): View {
-    return inflateView(inflater, container)
-  }
+    override fun inflateView(
+            inflater: LayoutInflater,
+            container: ViewGroup
+    ): View {
+        return inflateView(inflater, container)
+    }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    viewModelStore.clear()
-  }
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModelStore.clear()
+    }
 
-  override fun getLifecycle(): Lifecycle {
-    return lifecycleOwner.lifecycle
-  }
+    override fun getLifecycle(): Lifecycle {
+        return lifecycleOwner.lifecycle
+    }
 
-  fun viewModelProvider(): ViewModelProvider {
-    return viewModelProvider(ViewModelProvider.AndroidViewModelFactory(activity!!.application))
-  }
+    fun viewModelProvider(): ViewModelProvider {
+        return viewModelProvider(ViewModelProvider.AndroidViewModelFactory(activity!!.application))
+    }
 
-  fun viewModelProvider(factory: ViewModelProvider.NewInstanceFactory): ViewModelProvider {
-    return ViewModelProvider(viewModelStore, factory)
-  }
+    fun viewModelProvider(factory: ViewModelProvider.NewInstanceFactory): ViewModelProvider {
+        return ViewModelProvider(viewModelStore, factory)
+    }
 
-  fun viewModelProvider(factory: ViewModelProvider.Factory): ViewModelProvider {
-    return ViewModelProvider(viewModelStore, factory)
-  }
+    fun viewModelProvider(factory: ViewModelProvider.Factory): ViewModelProvider {
+        return ViewModelProvider(viewModelStore, factory)
+    }
 
-  override fun getViewModelStore(): ViewModelStore {
-    return viewModelStore
-  }
+    override fun getViewModelStore(): ViewModelStore {
+        return viewModelStore
+    }
 
-  @LayoutRes
-  protected abstract fun getLayoutId(): Int
+    @LayoutRes
+    protected abstract fun getLayoutId(): Int
 }

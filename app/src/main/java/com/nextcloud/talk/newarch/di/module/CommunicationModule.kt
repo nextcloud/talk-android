@@ -24,9 +24,9 @@ import org.greenrobot.eventbus.EventBus
 import org.koin.dsl.module
 
 val CommunicationModule = module {
-  single { createEventBus() }
+    single { createEventBus() }
 }
 
 fun createEventBus(): EventBus {
-  return EventBus.getDefault()
+    return EventBus.getDefault()
 }

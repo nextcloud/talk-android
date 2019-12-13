@@ -32,11 +32,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.TextUtils
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ClickableSpan
@@ -81,330 +77,331 @@ import java.util.regex.Pattern
 
 object DisplayUtils {
 
-  private val TAG = "DisplayUtils"
+    private val TAG = "DisplayUtils"
 
-  fun setClickableString(
-    string: String,
-    url: String,
-    textView: TextView
-  ) {
-    val spannableString = SpannableString(string)
-    spannableString.setSpan(object : ClickableSpan() {
-      override fun onClick(widget: View) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        NextcloudTalkApplication.sharedApplication!!
-            .applicationContext
-            .startActivity(browserIntent)
-      }
+    fun setClickableString(
+            string: String,
+            url: String,
+            textView: TextView
+    ) {
+        val spannableString = SpannableString(string)
+        spannableString.setSpan(object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                NextcloudTalkApplication.sharedApplication!!
+                        .applicationContext
+                        .startActivity(browserIntent)
+            }
 
-      override fun updateDrawState(ds: TextPaint) {
-        super.updateDrawState(ds)
-        ds.isUnderlineText = false
-      }
-    }, 0, string.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-    textView.text = spannableString
-    textView.movementMethod = LinkMovementMethod.getInstance()
-  }
-
-  private fun updateViewSize(
-    imageInfo: ImageInfo?,
-    draweeView: SimpleDraweeView
-  ) {
-    if (imageInfo != null) {
-      val maxSize = draweeView.context
-          .resources
-          .getDimensionPixelSize(R.dimen.maximum_file_preview_size)
-      draweeView.layoutParams.width = if (imageInfo.width > maxSize) maxSize else imageInfo.width
-      draweeView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-      draweeView.aspectRatio = imageInfo.width.toFloat() / imageInfo.height
-      draweeView.requestLayout()
-    }
-  }
-
-  fun getRoundedDrawable(drawable: Drawable?): Drawable {
-    val bitmap = getBitmap(drawable!!)
-    RoundAsCirclePostprocessor(true).process(bitmap)
-    return BitmapDrawable(bitmap)
-  }
-
-  private fun getBitmap(drawable: Drawable): Bitmap {
-    val bitmap = Bitmap.createBitmap(
-        drawable.intrinsicWidth,
-        drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
-    )
-    val canvas = Canvas(bitmap)
-    drawable.setBounds(0, 0, canvas.width, canvas.height)
-    drawable.draw(canvas)
-    return bitmap
-  }
-
-  fun convertDpToPixel(
-    dp: Float,
-    context: Context
-  ): Float {
-    return Math.round(
-        TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, dp,
-            context.resources.displayMetrics
-        ) + 0.5f
-    )
-        .toFloat()
-  }
-
-  // Solution inspired by https://stackoverflow.com/questions/34936590/why-isnt-my-vector-drawable-scaling-as-expected
-  fun useCompatVectorIfNeeded() {
-    if (Build.VERSION.SDK_INT < 23) {
-      try {
-        @SuppressLint("RestrictedApi") val drawableManager = AppCompatDrawableManager.get()
-        val inflateDelegateClass =
-          Class.forName("android.support.v7.widget.AppCompatDrawableManager\$InflateDelegate")
-        val vdcInflateDelegateClass =
-          Class.forName("android.support.v7.widget.AppCompatDrawableManager\$VdcInflateDelegate")
-
-        val constructor = vdcInflateDelegateClass.getDeclaredConstructor()
-        constructor.isAccessible = true
-        val vdcInflateDelegate = constructor.newInstance()
-
-        val args = arrayOf(String::class.java, inflateDelegateClass)
-        val addDelegate =
-          AppCompatDrawableManager::class.java.getDeclaredMethod("addDelegate", *args)
-        addDelegate.isAccessible = true
-        addDelegate.invoke(drawableManager, "vector", vdcInflateDelegate)
-      } catch (e: ClassNotFoundException) {
-        Log.e(TAG, "Failed to use reflection to enable proper vector scaling")
-      } catch (e: NoSuchMethodException) {
-        Log.e(TAG, "Failed to use reflection to enable proper vector scaling")
-      } catch (e: InstantiationException) {
-        Log.e(TAG, "Failed to use reflection to enable proper vector scaling")
-      } catch (e: InvocationTargetException) {
-        Log.e(TAG, "Failed to use reflection to enable proper vector scaling")
-      } catch (e: IllegalAccessException) {
-        Log.e(TAG, "Failed to use reflection to enable proper vector scaling")
-      }
-
-    }
-  }
-
-  fun getTintedDrawable(
-    res: Resources, @DrawableRes drawableResId: Int,
-    @ColorRes colorResId: Int
-  ): Drawable {
-    val drawable = res.getDrawable(drawableResId)
-    val mutableDrawable = drawable.mutate()
-    val color = res.getColor(colorResId)
-    mutableDrawable.setTint(color)
-    return mutableDrawable
-  }
-
-  fun getDrawableForMentionChipSpan(
-    context: Context,
-    id: String,
-    label: CharSequence,
-    conversationUser: UserNgEntity,
-    type: String,
-    @XmlRes chipResource: Int,
-    emojiEditText: EditText?
-  ): Drawable {
-    val chip = ChipDrawable.createFromResource(context, chipResource)
-    chip.text = EmojiCompat.get()
-        .process(label)
-    chip.ellipsize = TextUtils.TruncateAt.END
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      val config = context.resources.configuration
-      chip.layoutDirection = config.layoutDirection
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+            }
+        }, 0, string.length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        textView.text = spannableString
+        textView.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    val drawable: Int
-
-    val isCall = "call" == type || "calls" == type
-
-    val target = object : Target {
-      override fun onSuccess(result: Drawable) {
-        super.onSuccess(result)
-        chip.chipIcon = result
-
-        // A hack to refresh the chip icon
-        emojiEditText?.post {
-          emojiEditText.setTextKeepState(
-              emojiEditText.text,
-              TextView.BufferType.SPANNABLE
-          )
+    private fun updateViewSize(
+            imageInfo: ImageInfo?,
+            draweeView: SimpleDraweeView
+    ) {
+        if (imageInfo != null) {
+            val maxSize = draweeView.context
+                    .resources
+                    .getDimensionPixelSize(R.dimen.maximum_file_preview_size)
+            draweeView.layoutParams.width = if (imageInfo.width > maxSize) maxSize else imageInfo.width
+            draweeView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            draweeView.aspectRatio = imageInfo.width.toFloat() / imageInfo.height
+            draweeView.requestLayout()
         }
-      }
     }
 
-    if (!isCall) {
-      if (chipResource == R.xml.chip_you) {
-        drawable = R.drawable.mention_chip
-      } else {
-        drawable = R.drawable.accent_circle
-      }
-
-      Coil.load(context, drawable) {
-        target(target)
-      }
-    } else {
-      Coil.load(context, R.drawable.ic_people_group_white_24px) {
-        transformations(CircleCropTransformation())
-        target(target)
-      }
+    fun getRoundedDrawable(drawable: Drawable?): Drawable {
+        val bitmap = getBitmap(drawable!!)
+        RoundAsCirclePostprocessor(true).process(bitmap)
+        return BitmapDrawable(bitmap)
     }
 
-    chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
-
-    if (!isCall) {
-      var url = ApiUtils.getUrlForAvatarWithName(
-          conversationUser.baseUrl, id,
-          R.dimen.avatar_size_big
-      )
-      if ("guests" == type || "guest" == type) {
-        url = ApiUtils.getUrlForAvatarWithNameForGuests(
-            conversationUser.baseUrl,
-            label.toString(), R.dimen.avatar_size_big
+    private fun getBitmap(drawable: Drawable): Bitmap {
+        val bitmap = Bitmap.createBitmap(
+                drawable.intrinsicWidth,
+                drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
         )
-      }
-
-      val request = Images().getRequestForUrl(Coil.loader(), context, url, null, target, null, CircleCropTransformation())
-      Coil.loader().load(request)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
     }
 
-    return chip
-  }
-
-  fun searchAndReplaceWithMentionSpan(
-    context: Context,
-    text: Spannable,
-    id: String,
-    label: String,
-    type: String,
-    conversationUser: UserNgEntity,
-    @XmlRes chipXmlRes: Int
-  ): Spannable {
-
-    val spannableString = SpannableString(text)
-    val stringText = text.toString()
-
-    val m = Pattern.compile(
-        "@$label",
-        Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE
-    )
-        .matcher(spannableString)
-
-    val clickableSpan = object : ClickableSpan() {
-      override fun onClick(widget: View) {
-        EventBus.getDefault()
-            .post(UserMentionClickEvent(id))
-      }
-    }
-
-    var lastStartIndex = -1
-    var mentionChipSpan: Spans.MentionChipSpan
-    while (m.find()) {
-      val start = stringText.indexOf(m.group(), lastStartIndex)
-      val end = start + m.group().length
-      lastStartIndex = end
-      mentionChipSpan = Spans.MentionChipSpan(
-          getDrawableForMentionChipSpan(
-              context,
-              id, label, conversationUser, type, chipXmlRes, null
-          ),
-          BetterImageSpan.ALIGN_CENTER, id,
-          label
-      )
-      spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-      if ("user" == type && conversationUser.userId != id) {
-        spannableString.setSpan(clickableSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-      }
-    }
-
-    return spannableString
-  }
-
-  fun searchAndColor(
-    text: Spannable,
-    searchText: String, @ColorInt color: Int
-  ): Spannable {
-
-    val spannableString = SpannableString(text)
-    val stringText = text.toString()
-    if (TextUtils.isEmpty(text) || TextUtils.isEmpty(searchText)) {
-      return spannableString
-    }
-
-    val m = Pattern.compile(
-        searchText,
-        Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE
-    )
-        .matcher(spannableString)
-
-    val textSize = NextcloudTalkApplication.sharedApplication!!
-        .resources
-        .getDimensionPixelSize(
-            R.dimen
-                .chat_text_size
+    fun convertDpToPixel(
+            dp: Float,
+            context: Context
+    ): Float {
+        return Math.round(
+                TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, dp,
+                        context.resources.displayMetrics
+                ) + 0.5f
         )
-
-    var lastStartIndex = -1
-    while (m.find()) {
-      val start = stringText.indexOf(m.group(), lastStartIndex)
-      val end = start + m.group().length
-      lastStartIndex = end
-      spannableString.setSpan(
-          ForegroundColorSpan(color), start, end,
-          Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-      )
-      spannableString.setSpan(
-          StyleSpan(Typeface.BOLD), start, end,
-          Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-      )
-      spannableString.setSpan(
-          AbsoluteSizeSpan(textSize), start, end,
-          Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-      )
+                .toFloat()
     }
 
-    return spannableString
-  }
+    // Solution inspired by https://stackoverflow.com/questions/34936590/why-isnt-my-vector-drawable-scaling-as-expected
+    fun useCompatVectorIfNeeded() {
+        if (Build.VERSION.SDK_INT < 23) {
+            try {
+                @SuppressLint("RestrictedApi") val drawableManager = AppCompatDrawableManager.get()
+                val inflateDelegateClass =
+                        Class.forName("android.support.v7.widget.AppCompatDrawableManager\$InflateDelegate")
+                val vdcInflateDelegateClass =
+                        Class.forName("android.support.v7.widget.AppCompatDrawableManager\$VdcInflateDelegate")
+
+                val constructor = vdcInflateDelegateClass.getDeclaredConstructor()
+                constructor.isAccessible = true
+                val vdcInflateDelegate = constructor.newInstance()
+
+                val args = arrayOf(String::class.java, inflateDelegateClass)
+                val addDelegate =
+                        AppCompatDrawableManager::class.java.getDeclaredMethod("addDelegate", *args)
+                addDelegate.isAccessible = true
+                addDelegate.invoke(drawableManager, "vector", vdcInflateDelegate)
+            } catch (e: ClassNotFoundException) {
+                Log.e(TAG, "Failed to use reflection to enable proper vector scaling")
+            } catch (e: NoSuchMethodException) {
+                Log.e(TAG, "Failed to use reflection to enable proper vector scaling")
+            } catch (e: InstantiationException) {
+                Log.e(TAG, "Failed to use reflection to enable proper vector scaling")
+            } catch (e: InvocationTargetException) {
+                Log.e(TAG, "Failed to use reflection to enable proper vector scaling")
+            } catch (e: IllegalAccessException) {
+                Log.e(TAG, "Failed to use reflection to enable proper vector scaling")
+            }
+
+        }
+    }
+
+    fun getTintedDrawable(
+            res: Resources, @DrawableRes drawableResId: Int,
+            @ColorRes colorResId: Int
+    ): Drawable {
+        val drawable = res.getDrawable(drawableResId)
+        val mutableDrawable = drawable.mutate()
+        val color = res.getColor(colorResId)
+        mutableDrawable.setTint(color)
+        return mutableDrawable
+    }
+
+    fun getDrawableForMentionChipSpan(
+            context: Context,
+            id: String,
+            label: CharSequence,
+            conversationUser: UserNgEntity,
+            type: String,
+            @XmlRes chipResource: Int,
+            emojiEditText: EditText?
+    ): Drawable {
+        val chip = ChipDrawable.createFromResource(context, chipResource)
+        chip.text = EmojiCompat.get()
+                .process(label)
+        chip.ellipsize = TextUtils.TruncateAt.END
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val config = context.resources.configuration
+            chip.layoutDirection = config.layoutDirection
+        }
+
+        val drawable: Int
+
+        val isCall = "call" == type || "calls" == type
+
+        val target = object : Target {
+            override fun onSuccess(result: Drawable) {
+                super.onSuccess(result)
+                chip.chipIcon = result
+
+                // A hack to refresh the chip icon
+                emojiEditText?.post {
+                    emojiEditText.setTextKeepState(
+                            emojiEditText.text,
+                            TextView.BufferType.SPANNABLE
+                    )
+                }
+            }
+        }
+
+        if (!isCall) {
+            if (chipResource == R.xml.chip_you) {
+                drawable = R.drawable.mention_chip
+            } else {
+                drawable = R.drawable.accent_circle
+            }
+
+            Coil.load(context, drawable) {
+                target(target)
+            }
+        } else {
+            Coil.load(context, R.drawable.ic_people_group_white_24px) {
+                transformations(CircleCropTransformation())
+                target(target)
+            }
+        }
+
+        chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
+
+        if (!isCall) {
+            var url = ApiUtils.getUrlForAvatarWithName(
+                    conversationUser.baseUrl, id,
+                    R.dimen.avatar_size_big
+            )
+            if ("guests" == type || "guest" == type) {
+                url = ApiUtils.getUrlForAvatarWithNameForGuests(
+                        conversationUser.baseUrl,
+                        label.toString(), R.dimen.avatar_size_big
+                )
+            }
+
+            val request = Images().getRequestForUrl(Coil.loader(), context, url, null, target, null, CircleCropTransformation())
+            Coil.loader().load(request)
+        }
+
+        return chip
+    }
+
+    fun searchAndReplaceWithMentionSpan(
+            context: Context,
+            text: Spannable,
+            id: String,
+            label: String,
+            type: String,
+            conversationUser: UserNgEntity,
+            @XmlRes chipXmlRes: Int
+    ): Spannable {
+
+        val spannableString = SpannableString(text)
+        val stringText = text.toString()
+
+        val m = Pattern.compile(
+                "@$label",
+                Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE
+        )
+                .matcher(spannableString)
+
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                EventBus.getDefault()
+                        .post(UserMentionClickEvent(id))
+            }
+        }
+
+        var lastStartIndex = -1
+        var mentionChipSpan: Spans.MentionChipSpan
+        while (m.find()) {
+            val start = stringText.indexOf(m.group(), lastStartIndex)
+            val end = start + m.group().length
+            lastStartIndex = end
+            mentionChipSpan = Spans.MentionChipSpan(
+                    getDrawableForMentionChipSpan(
+                            context,
+                            id, label, conversationUser, type, chipXmlRes, null
+                    ),
+                    BetterImageSpan.ALIGN_CENTER, id,
+                    label
+            )
+            spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if ("user" == type && conversationUser.userId != id) {
+                spannableString.setSpan(clickableSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            }
+        }
+
+        return spannableString
+    }
+
+    fun searchAndColor(
+            text: Spannable,
+            searchText: String, @ColorInt color: Int
+    ): Spannable {
+
+        val spannableString = SpannableString(text)
+        val stringText = text.toString()
+        if (TextUtils.isEmpty(text) || TextUtils.isEmpty(searchText)) {
+            return spannableString
+        }
+
+        val m = Pattern.compile(
+                searchText,
+                Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE
+        )
+                .matcher(spannableString)
+
+        val textSize = NextcloudTalkApplication.sharedApplication!!
+                .resources
+                .getDimensionPixelSize(
+                        R.dimen
+                                .chat_text_size
+                )
+
+        var lastStartIndex = -1
+        while (m.find()) {
+            val start = stringText.indexOf(m.group(), lastStartIndex)
+            val end = start + m.group().length
+            lastStartIndex = end
+            spannableString.setSpan(
+                    ForegroundColorSpan(color), start, end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            spannableString.setSpan(
+                    StyleSpan(Typeface.BOLD), start, end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            spannableString.setSpan(
+                    AbsoluteSizeSpan(textSize), start, end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        return spannableString
+    }
 
     fun getImageRequestForUrl(url: String, userEntity: UserEntity?): ImageRequest {
-    val headers = HashMap<String, String>();
-    if (userEntity != null && url.startsWith(userEntity.getBaseUrl()) && url.contains(
-        "index.php/core/preview?fileId=")) {
-      headers.put("Authorization",
-          ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()));
+        val headers = HashMap<String, String>()
+        if (userEntity != null && url.startsWith(userEntity.baseUrl) && url.contains(
+                        "index.php/core/preview?fileId=")) {
+            headers.put("Authorization",
+                    ApiUtils.getCredentials(userEntity.username, userEntity.token))
+        }
+
+        return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+                .setProgressiveRenderingEnabled(true)
+                .setRotationOptions(RotationOptions.autoRotate())
+                .disableDiskCache()
+                .setHeaders(headers)
+                .build()
     }
 
-    return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
-        .setProgressiveRenderingEnabled(true)
-        .setRotationOptions(RotationOptions.autoRotate())
-        .disableDiskCache()
-        .setHeaders(headers)
-        .build();
-  }
-  fun getMessageSelector(
-    @ColorInt normalColor: Int, @ColorInt selectedColor: Int,
-    @ColorInt pressedColor: Int, @DrawableRes shape: Int
-  ): Drawable {
+    fun getMessageSelector(
+            @ColorInt normalColor: Int, @ColorInt selectedColor: Int,
+            @ColorInt pressedColor: Int, @DrawableRes shape: Int
+    ): Drawable {
 
-    val vectorDrawable = ContextCompat.getDrawable(
-        NextcloudTalkApplication.sharedApplication!!
-            .applicationContext,
-        shape
-    )
-    val drawable = DrawableCompat.wrap(vectorDrawable!!)
-        .mutate()
-    DrawableCompat.setTintList(
-        drawable,
-        ColorStateList(
-            arrayOf(
-                intArrayOf(android.R.attr.state_selected), intArrayOf(android.R.attr.state_pressed),
-                intArrayOf(-android.R.attr.state_pressed, -android.R.attr.state_selected)
-            ),
-            intArrayOf(selectedColor, pressedColor, normalColor)
+        val vectorDrawable = ContextCompat.getDrawable(
+                NextcloudTalkApplication.sharedApplication!!
+                        .applicationContext,
+                shape
         )
-    )
-    return drawable
-  }
+        val drawable = DrawableCompat.wrap(vectorDrawable!!)
+                .mutate()
+        DrawableCompat.setTintList(
+                drawable,
+                ColorStateList(
+                        arrayOf(
+                                intArrayOf(android.R.attr.state_selected), intArrayOf(android.R.attr.state_pressed),
+                                intArrayOf(-android.R.attr.state_pressed, -android.R.attr.state_selected)
+                        ),
+                        intArrayOf(selectedColor, pressedColor, normalColor)
+                )
+        )
+        return drawable
+    }
 }

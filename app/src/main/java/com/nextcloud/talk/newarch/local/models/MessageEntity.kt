@@ -20,72 +20,64 @@
 
 package com.nextcloud.talk.newarch.local.models
 
-import android.os.Parcel
-import android.os.Parcelable
-import android.os.Parcelable.Creator
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import androidx.room.RoomWarnings
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType
 
 @Entity(
-    tableName = "messages",
-    indices = [Index(value = ["conversation_id"])],
-    foreignKeys = [ForeignKey(
-        entity = ConversationEntity::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("conversation_id"),
-        onDelete = CASCADE,
-        onUpdate = CASCADE,
-        deferred = true
-    )]
+        tableName = "messages",
+        indices = [Index(value = ["conversation_id"])],
+        foreignKeys = [ForeignKey(
+                entity = ConversationEntity::class,
+                parentColumns = arrayOf("id"),
+                childColumns = arrayOf("conversation_id"),
+                onDelete = CASCADE,
+                onUpdate = CASCADE,
+                deferred = true
+        )]
 )
 data class MessageEntity(
-  @PrimaryKey @ColumnInfo(name = "id") var id: String,
-  @ColumnInfo(name = "conversation_id") var conversation: String,
-  @ColumnInfo(name = "message_id") var messageId: Long = 0,
-  @ColumnInfo(name = "actor_id") var actorId: String? = null,
-  @ColumnInfo(name = "actor_type") var actorType: String? = null,
-  @ColumnInfo(name = "actor_display_name") var actorDisplayName: String? = null,
-  @ColumnInfo(name = "timestamp") var timestamp: Long = 0,
-  @ColumnInfo(name = "message") var message: String? = null,
-    /*@JsonField(name = "messageParameters")
-    public HashMap<String, HashMap<String, String>> messageParameters;*/
-  @ColumnInfo(name = "system_message_type") var systemMessageType: SystemMessageType? = null
+        @PrimaryKey @ColumnInfo(name = "id") var id: String,
+        @ColumnInfo(name = "conversation_id") var conversation: String,
+        @ColumnInfo(name = "message_id") var messageId: Long = 0,
+        @ColumnInfo(name = "actor_id") var actorId: String? = null,
+        @ColumnInfo(name = "actor_type") var actorType: String? = null,
+        @ColumnInfo(name = "actor_display_name") var actorDisplayName: String? = null,
+        @ColumnInfo(name = "timestamp") var timestamp: Long = 0,
+        @ColumnInfo(name = "message") var message: String? = null,
+        /*@JsonField(name = "messageParameters")
+        public HashMap<String, HashMap<String, String>> messageParameters;*/
+        @ColumnInfo(name = "system_message_type") var systemMessageType: SystemMessageType? = null
 )
 
 @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 fun MessageEntity.toChatMessage(): ChatMessage {
-  val chatMessage = ChatMessage()
-  chatMessage.internalMessageId = this.id
-  chatMessage.internalConversationId = this.conversation
-  chatMessage.jsonMessageId = this.messageId
-  chatMessage.actorType = this.actorType
-  chatMessage.actorId = this.actorId
-  chatMessage.actorDisplayName = this.actorDisplayName
-  chatMessage.timestamp = this.timestamp
-  chatMessage.message = this.message
-  //chatMessage.messageParameters = this.messageParameters
-  chatMessage.systemMessageType = this.systemMessageType
-  return chatMessage
+    val chatMessage = ChatMessage()
+    chatMessage.internalMessageId = this.id
+    chatMessage.internalConversationId = this.conversation
+    chatMessage.jsonMessageId = this.messageId
+    chatMessage.actorType = this.actorType
+    chatMessage.actorId = this.actorId
+    chatMessage.actorDisplayName = this.actorDisplayName
+    chatMessage.timestamp = this.timestamp
+    chatMessage.message = this.message
+    //chatMessage.messageParameters = this.messageParameters
+    chatMessage.systemMessageType = this.systemMessageType
+    return chatMessage
 }
 
 @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 fun ChatMessage.toMessageEntity(): MessageEntity {
-  val messageEntity = MessageEntity(this.internalConversationId + "@" + this.jsonMessageId, this.activeUser.id.toString() + "@" + this.internalConversationId)
-  messageEntity.messageId = this.jsonMessageId
-  messageEntity.actorType = this.actorType
-  messageEntity.actorId = this.actorId
-  messageEntity.actorDisplayName = this.actorDisplayName
-  messageEntity.timestamp = this.timestamp
-  messageEntity.message = this.message
-  messageEntity.systemMessageType = this.systemMessageType
-  //messageEntity.messageParameters = this.messageParameters
+    val messageEntity = MessageEntity(this.internalConversationId + "@" + this.jsonMessageId, this.activeUser.id.toString() + "@" + this.internalConversationId)
+    messageEntity.messageId = this.jsonMessageId
+    messageEntity.actorType = this.actorType
+    messageEntity.actorId = this.actorId
+    messageEntity.actorDisplayName = this.actorDisplayName
+    messageEntity.timestamp = this.timestamp
+    messageEntity.message = this.message
+    messageEntity.systemMessageType = this.systemMessageType
+    //messageEntity.messageParameters = this.messageParameters
 
-  return messageEntity
+    return messageEntity
 }

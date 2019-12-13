@@ -25,44 +25,44 @@ import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
-class UsersRepositoryImpl(val usersDao: UsersDao): UsersRepository {
-  override fun getActiveUserLiveData(): LiveData<UserNgEntity> {
-    return usersDao.getActiveUserLiveData()
-  }
+class UsersRepositoryImpl(val usersDao: UsersDao) : UsersRepository {
+    override fun getActiveUserLiveData(): LiveData<UserNgEntity> {
+        return usersDao.getActiveUserLiveData()
+    }
 
-  override fun getActiveUser(): UserNgEntity {
-    return usersDao.getActiveUser()
-  }
+    override fun getActiveUser(): UserNgEntity {
+        return usersDao.getActiveUser()
+    }
 
-  override fun getUsers(): List<UserNgEntity> {
-    return usersDao.getUsers()
-  }
+    override fun getUsers(): List<UserNgEntity> {
+        return usersDao.getUsers()
+    }
 
-  override fun getUserWithId(id: Long): UserNgEntity {
-    return usersDao.getUserWithId(id)
-  }
+    override fun getUserWithId(id: Long): UserNgEntity {
+        return usersDao.getUserWithId(id)
+    }
 
-  override suspend fun getUserWithUsernameAndServer(
-    username: String,
-    server: String
-  ): UserNgEntity? {
-    return usersDao.getUserWithUsernameAndServer(username, server)
-  }
+    override suspend fun getUserWithUsernameAndServer(
+            username: String,
+            server: String
+    ): UserNgEntity? {
+        return usersDao.getUserWithUsernameAndServer(username, server)
+    }
 
-  override suspend fun updateUser(user: UserNgEntity): Int {
-    return usersDao.updateUser(user)
-  }
+    override suspend fun updateUser(user: UserNgEntity): Int {
+        return usersDao.updateUser(user)
+    }
 
-  override suspend fun setUserAsActiveWithId(id: Long) {
-    usersDao.setUserAsActiveWithId(id)
-  }
+    override suspend fun setUserAsActiveWithId(id: Long) {
+        usersDao.setUserAsActiveWithId(id)
+    }
 
-  override suspend fun deleteUserWithId(id: Long) {
-    usersDao.deleteUserWithId(id)
-  }
+    override suspend fun deleteUserWithId(id: Long) {
+        usersDao.deleteUserWithId(id)
+    }
 
-  override suspend fun setAnyUserAsActive(): Boolean {
-    return usersDao.setAnyUserAsActive()
-  }
+    override suspend fun setAnyUserAsActive(): Boolean {
+        return usersDao.setAnyUserAsActive()
+    }
 
 }

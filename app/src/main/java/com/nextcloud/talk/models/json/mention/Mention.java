@@ -21,20 +21,22 @@ package com.nextcloud.talk.models.json.mention;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
 public class Mention {
-  @JsonField(name = "id")
-  public String id;
+    @JsonField(name = "id")
+    public String id;
 
-  @JsonField(name = "label")
-  public String label;
+    @JsonField(name = "label")
+    public String label;
 
-  // type of user (guests or users or calls)
-  @JsonField(name = "source")
-  public String source;
+    // type of user (guests or users or calls)
+    @JsonField(name = "source")
+    public String source;
 }

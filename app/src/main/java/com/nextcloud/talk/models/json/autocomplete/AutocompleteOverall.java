@@ -22,13 +22,15 @@ package com.nextcloud.talk.models.json.autocomplete;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
 public class AutocompleteOverall {
-  @JsonField(name = "ocs")
-  public AutocompleteOCS ocs;
+    @JsonField(name = "ocs")
+    public AutocompleteOCS ocs;
 }

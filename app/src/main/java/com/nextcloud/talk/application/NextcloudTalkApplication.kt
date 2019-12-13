@@ -81,200 +81,200 @@ import java.security.Security
 import java.util.concurrent.TimeUnit
 
 class NextcloudTalkApplication : Application(), LifecycleObserver {
-  //region Getters
+    //region Getters
 
-  val userUtils: UserUtils by inject()
-  val imageLoader: ImageLoader by inject()
-  val appPreferences: AppPreferences by inject()
-  val okHttpClient: OkHttpClient by inject()
-  val usersDao: UsersDao by inject()
-  //endregion
+    val userUtils: UserUtils by inject()
+    val imageLoader: ImageLoader by inject()
+    val appPreferences: AppPreferences by inject()
+    val okHttpClient: OkHttpClient by inject()
+    val usersDao: UsersDao by inject()
+    //endregion
 
-  //region private methods
-  private fun initializeWebRtc() {
-    try {
-      if (MagicWebRTCUtils.HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
-        WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true)
-      }
-
-      if (!MagicWebRTCUtils.OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
-        WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true)
-      }
-
-      PeerConnectionFactory.initialize(
-          PeerConnectionFactory.InitializationOptions.builder(this)
-              .setEnableVideoHwAcceleration(
-                  MagicWebRTCUtils.shouldEnableVideoHardwareAcceleration()
-              )
-              .createInitializationOptions()
-      )
-    } catch (e: UnsatisfiedLinkError) {
-      Log.w(TAG, e)
-    }
-
-  }
-
-  //endregion
-
-  //region Overridden methods
-  override fun onCreate() {
-    sharedApplication = this
-
-    val securityKeyManager = SecurityKeyManager.getInstance()
-    val securityKeyConfig = SecurityKeyManagerConfig.Builder()
-        .setEnableDebugLogging(BuildConfig.DEBUG)
-        .build()
-    securityKeyManager.init(this, securityKeyConfig)
-
-    initializeWebRtc()
-    DisplayUtils.useCompatVectorIfNeeded()
-    startKoin()
-    DavUtils.registerCustomFactories()
-
-    Coil.setDefaultImageLoader(imageLoader)
-    migrateUsers()
-
-    setAppTheme(appPreferences.theme)
-    super.onCreate()
-
-    val imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
-        .setNetworkFetcher(OkHttpNetworkFetcherWithCache(okHttpClient))
-        .setMainDiskCacheConfig(
-            DiskCacheConfig.newBuilder(this)
-                .setMaxCacheSize(0)
-                .setMaxCacheSizeOnLowDiskSpace(0)
-                .setMaxCacheSizeOnVeryLowDiskSpace(0)
-                .build()
-        )
-        .build()
-
-    Fresco.initialize(this, imagePipelineConfig)
-    Security.insertProviderAt(Conscrypt.newProvider(), 1)
-
-    ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
-
-    val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
-        .build()
-    val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
-        .build()
-    val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
-        CapabilitiesWorker::class.java,
-        12, TimeUnit.HOURS
-    )
-        .build()
-    val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
-        .build()
-    val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
-        .build()
-
-    WorkManager.getInstance()
-        .enqueue(pushRegistrationWork)
-    WorkManager.getInstance()
-        .enqueue(accountRemovalWork)
-    WorkManager.getInstance()
-        .enqueue(capabilitiesUpdateWork)
-    WorkManager.getInstance()
-        .enqueue(signalingSettingsWork)
-    WorkManager.getInstance()
-        .enqueueUniquePeriodicWork(
-            "DailyCapabilitiesUpdateWork", ExistingPeriodicWorkPolicy.REPLACE,
-            periodicCapabilitiesUpdateWork
-        )
-
-    val config = BundledEmojiCompatConfig(this)
-    config.setReplaceAll(true)
-    val emojiCompat = EmojiCompat.init(config)
-
-    EmojiManager.install(GoogleCompatEmojiProvider(emojiCompat))
-  }
-
-  override fun onTerminate() {
-    super.onTerminate()
-    sharedApplication = null
-  }
-  //endregion
-
-  //region Protected methods
-  protected fun startKoin() {
-    startKoin {
-      androidContext(this@NextcloudTalkApplication)
-      androidLogger()
-      modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule))
-    }
-  }
-
-  override fun attachBaseContext(base: Context) {
-    super.attachBaseContext(base)
-    MultiDex.install(this)
-  }
-
-  fun migrateUsers() {
-    if (!appPreferences.migrationToRoomFinished) {
-      GlobalScope.launch {
-        val users: List<UserEntity> = userUtils.users as List<UserEntity>
-        var userNg: UserNgEntity
-        val newUsers = mutableListOf<UserNgEntity>()
-        for (user in users) {
-          userNg = UserNgEntity(user.id, user.userId, user.username, user.baseUrl)
-          userNg.token = user.token
-          userNg.displayName = user.displayName
-          try {
-            userNg.pushConfiguration =
-              LoganSquare.parse(user.pushConfigurationState, PushConfigurationState::class.java)
-          } catch (e: Exception) {
-            // no push
-          }
-          if (user.capabilities != null) {
-            userNg.capabilities = LoganSquare.parse(user.capabilities, Capabilities::class.java)
-          }
-          userNg.clientCertificate = user.clientCertificate
-          try {
-            userNg.externalSignaling =
-              LoganSquare.parse(user.externalSignalingServer, ExternalSignalingServer::class.java)
-          } catch (e: Exception) {
-            // no external signaling
-          }
-          if (user.current) {
-            userNg.status = ACTIVE
-          } else {
-            if (user.scheduledForDeletion) {
-              userNg.status = PENDING_DELETE
-            } else {
-              userNg.status = DORMANT
+    //region private methods
+    private fun initializeWebRtc() {
+        try {
+            if (MagicWebRTCUtils.HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
+                WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true)
             }
-          }
 
+            if (!MagicWebRTCUtils.OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
+                WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true)
+            }
 
-          newUsers.add(userNg)
+            PeerConnectionFactory.initialize(
+                    PeerConnectionFactory.InitializationOptions.builder(this)
+                            .setEnableVideoHwAcceleration(
+                                    MagicWebRTCUtils.shouldEnableVideoHardwareAcceleration()
+                            )
+                            .createInitializationOptions()
+            )
+        } catch (e: UnsatisfiedLinkError) {
+            Log.w(TAG, e)
         }
-        usersDao.saveUsers(*newUsers.toTypedArray())
-        appPreferences.migrationToRoomFinished = true
-      }
+
     }
-  }
 
-  companion object {
-    private val TAG = NextcloudTalkApplication::class.java.simpleName
-    //region Singleton
     //endregion
 
-    var sharedApplication: NextcloudTalkApplication? = null
-      protected set
-    //endregion
+    //region Overridden methods
+    override fun onCreate() {
+        sharedApplication = this
 
-    //region Setters
-    fun setAppTheme(theme: String) {
-      when (theme) {
-        "night_no" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        "night_yes" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        "battery_saver" -> AppCompatDelegate.setDefaultNightMode(
-            AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+        val securityKeyManager = SecurityKeyManager.getInstance()
+        val securityKeyConfig = SecurityKeyManagerConfig.Builder()
+                .setEnableDebugLogging(BuildConfig.DEBUG)
+                .build()
+        securityKeyManager.init(this, securityKeyConfig)
+
+        initializeWebRtc()
+        DisplayUtils.useCompatVectorIfNeeded()
+        startKoin()
+        DavUtils.registerCustomFactories()
+
+        Coil.setDefaultImageLoader(imageLoader)
+        migrateUsers()
+
+        setAppTheme(appPreferences.theme)
+        super.onCreate()
+
+        val imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
+                .setNetworkFetcher(OkHttpNetworkFetcherWithCache(okHttpClient))
+                .setMainDiskCacheConfig(
+                        DiskCacheConfig.newBuilder(this)
+                                .setMaxCacheSize(0)
+                                .setMaxCacheSizeOnLowDiskSpace(0)
+                                .setMaxCacheSizeOnVeryLowDiskSpace(0)
+                                .build()
+                )
+                .build()
+
+        Fresco.initialize(this, imagePipelineConfig)
+        Security.insertProviderAt(Conscrypt.newProvider(), 1)
+
+        ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
+
+        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
+                .build()
+        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+                .build()
+        val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
+                CapabilitiesWorker::class.java,
+                12, TimeUnit.HOURS
         )
-        else ->
-          // will be "follow_system" only for now
-          AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-      }
+                .build()
+        val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
+                .build()
+        val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
+                .build()
+
+        WorkManager.getInstance()
+                .enqueue(pushRegistrationWork)
+        WorkManager.getInstance()
+                .enqueue(accountRemovalWork)
+        WorkManager.getInstance()
+                .enqueue(capabilitiesUpdateWork)
+        WorkManager.getInstance()
+                .enqueue(signalingSettingsWork)
+        WorkManager.getInstance()
+                .enqueueUniquePeriodicWork(
+                        "DailyCapabilitiesUpdateWork", ExistingPeriodicWorkPolicy.REPLACE,
+                        periodicCapabilitiesUpdateWork
+                )
+
+        val config = BundledEmojiCompatConfig(this)
+        config.setReplaceAll(true)
+        val emojiCompat = EmojiCompat.init(config)
+
+        EmojiManager.install(GoogleCompatEmojiProvider(emojiCompat))
     }
-  }
-  //endregion
+
+    override fun onTerminate() {
+        super.onTerminate()
+        sharedApplication = null
+    }
+    //endregion
+
+    //region Protected methods
+    protected fun startKoin() {
+        startKoin {
+            androidContext(this@NextcloudTalkApplication)
+            androidLogger()
+            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule))
+        }
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
+
+    fun migrateUsers() {
+        if (!appPreferences.migrationToRoomFinished) {
+            GlobalScope.launch {
+                val users: List<UserEntity> = userUtils.users as List<UserEntity>
+                var userNg: UserNgEntity
+                val newUsers = mutableListOf<UserNgEntity>()
+                for (user in users) {
+                    userNg = UserNgEntity(user.id, user.userId, user.username, user.baseUrl)
+                    userNg.token = user.token
+                    userNg.displayName = user.displayName
+                    try {
+                        userNg.pushConfiguration =
+                                LoganSquare.parse(user.pushConfigurationState, PushConfigurationState::class.java)
+                    } catch (e: Exception) {
+                        // no push
+                    }
+                    if (user.capabilities != null) {
+                        userNg.capabilities = LoganSquare.parse(user.capabilities, Capabilities::class.java)
+                    }
+                    userNg.clientCertificate = user.clientCertificate
+                    try {
+                        userNg.externalSignaling =
+                                LoganSquare.parse(user.externalSignalingServer, ExternalSignalingServer::class.java)
+                    } catch (e: Exception) {
+                        // no external signaling
+                    }
+                    if (user.current) {
+                        userNg.status = ACTIVE
+                    } else {
+                        if (user.scheduledForDeletion) {
+                            userNg.status = PENDING_DELETE
+                        } else {
+                            userNg.status = DORMANT
+                        }
+                    }
+
+
+                    newUsers.add(userNg)
+                }
+                usersDao.saveUsers(*newUsers.toTypedArray())
+                appPreferences.migrationToRoomFinished = true
+            }
+        }
+    }
+
+    companion object {
+        private val TAG = NextcloudTalkApplication::class.java.simpleName
+        //region Singleton
+        //endregion
+
+        var sharedApplication: NextcloudTalkApplication? = null
+            protected set
+        //endregion
+
+        //region Setters
+        fun setAppTheme(theme: String) {
+            when (theme) {
+                "night_no" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                "night_yes" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                "battery_saver" -> AppCompatDelegate.setDefaultNightMode(
+                        AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                )
+                else ->
+                    // will be "follow_system" only for now
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+        }
+    }
+    //endregion
 }

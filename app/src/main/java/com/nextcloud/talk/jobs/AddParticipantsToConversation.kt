@@ -21,11 +21,8 @@ package com.nextcloud.talk.jobs
 
 import android.content.Context
 import androidx.work.CoroutineWorker
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository

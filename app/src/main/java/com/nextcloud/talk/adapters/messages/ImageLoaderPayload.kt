@@ -26,5 +26,5 @@ import kotlinx.android.parcel.RawValue
 
 @Parcelize
 data class ImageLoaderPayload(
-  val map: @RawValue HashMap<String, Any>?
-): Parcelable
+        val map: @RawValue HashMap<String, Any>?
+) : Parcelable

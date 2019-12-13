@@ -56,160 +56,160 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewHolder<ChatMessage>(
-    itemView
+        itemView
 ), KoinComponent {
-  @JvmField
-  @BindView(id.messageText)
-  var messageText: EmojiTextView? = null
-  val context: Context by inject()
-  val okHttpClient: OkHttpClient by inject()
+    @JvmField
+    @BindView(id.messageText)
+    var messageText: EmojiTextView? = null
+    val context: Context by inject()
+    val okHttpClient: OkHttpClient by inject()
 
-  @SuppressLint("SetTextI18n")
-  override fun onBind(message: ChatMessage) {
-    super.onBind(message)
-    if (userAvatar != null) {
-      if (message.grouped || message.oneToOneConversation) {
-        if (message.oneToOneConversation) {
-          userAvatar.visibility = View.GONE
-        } else {
-          userAvatar.visibility = View.INVISIBLE
-        }
-      } else {
-        userAvatar.visibility = View.VISIBLE
-        if ("bots" == message.actorType && "changelog" == message.actorId) {
-          val layers =
-            arrayOfNulls<Drawable?>(2)
-          layers[0] = context!!.getDrawable(drawable.ic_launcher_background)
-          layers[1] = context!!.getDrawable(drawable.ic_launcher_foreground)
-          val layerDrawable =
-            LayerDrawable(layers)
-          userAvatar.load(layerDrawable) {
-            transformations(CircleCropTransformation())
-          }
-        }
-      }
-    }
-    if (message.messageType == SINGLE_NC_ATTACHMENT_MESSAGE) {
-      // it's a preview for a Nextcloud share
-
-      messageText!!.text = message.getSelectedIndividualHashMap()["name"]
-      setClickableString(
-          message.getSelectedIndividualHashMap()["name"]!!,
-          message.getSelectedIndividualHashMap()["link"]!!, messageText!!
-      )
-
-      if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
-        // we now handle this directly in imageloader
-        //image.load(getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap().get ("mimetype")))
-      } else {
-        fetchFileInformation(
-            "/" + message.getSelectedIndividualHashMap()["path"],
-            message.activeUser
-        )
-      }
-
-      image.setOnClickListener { v: View? ->
-        val accountString =
-          message.activeUser.username + "@" + message.activeUser
-              .baseUrl
-              .replace("https://", "")
-              .replace("http://", "")
-        if (canWeOpenFilesApp(context!!, accountString)) {
-          val filesAppIntent =
-            Intent(Intent.ACTION_VIEW, null)
-          val componentName = ComponentName(
-              context!!.getString(string.nc_import_accounts_from),
-              "com.owncloud.android.ui.activity.FileDisplayActivity"
-          )
-          filesAppIntent.component = componentName
-          filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          filesAppIntent.setPackage(
-              context!!.getString(string.nc_import_accounts_from)
-          )
-          filesAppIntent.putExtra(
-              KEY_ACCOUNT, accountString
-          )
-          filesAppIntent.putExtra(
-              KEY_FILE_ID,
-              message.getSelectedIndividualHashMap()["id"]
-          )
-          context!!.startActivity(filesAppIntent)
-        } else {
-          val browserIntent = Intent(
-              Intent.ACTION_VIEW,
-              Uri.parse(message.getSelectedIndividualHashMap()["link"])
-          )
-          browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          context!!.startActivity(browserIntent)
-        }
-      }
-    } else if (message.messageType == SINGLE_LINK_GIPHY_MESSAGE) {
-      messageText!!.text = "GIPHY"
-      setClickableString(
-          "GIPHY", "https://giphy.com", messageText!!
-      )
-    } else if (message.messageType == SINGLE_LINK_TENOR_MESSAGE) {
-      messageText!!.text = "Tenor"
-      setClickableString(
-          "Tenor", "https://tenor.com", messageText!!
-      )
-    } else {
-      if (message.messageType == SINGLE_LINK_IMAGE_MESSAGE) {
-        image.setOnClickListener { v: View? ->
-          val browserIntent = Intent(
-              Intent.ACTION_VIEW, Uri.parse(message.imageUrl)
-          )
-          browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          context!!.startActivity(browserIntent)
-        }
-      } else {
-        image.setOnClickListener(null)
-      }
-      messageText!!.text = ""
-    }
-  }
-
-  private fun fetchFileInformation(
-    url: String,
-    activeUser: UserNgEntity?
-  ) {
-    Single.fromCallable {
-      ReadFilesystemOperation(
-          okHttpClient, activeUser, url, 0
-      )
-    }
-        .observeOn(Schedulers.io())
-        .subscribe(object : SingleObserver<ReadFilesystemOperation?> {
-          override fun onSubscribe(d: Disposable) {}
-          override fun onSuccess(readFilesystemOperation: ReadFilesystemOperation) {
-            val davResponse: DavResponse =
-              readFilesystemOperation.readRemotePath()
-            if (davResponse.data != null) {
-              val browserFileList =
-                davResponse.data as List<BrowserFile>
-              if (!browserFileList.isEmpty()) {
-                Handler(context!!.mainLooper)
-                    .post {
-                      image.load(getDrawableResourceIdForMimeType(browserFileList[0].mimeType))
+    @SuppressLint("SetTextI18n")
+    override fun onBind(message: ChatMessage) {
+        super.onBind(message)
+        if (userAvatar != null) {
+            if (message.grouped || message.oneToOneConversation) {
+                if (message.oneToOneConversation) {
+                    userAvatar.visibility = View.GONE
+                } else {
+                    userAvatar.visibility = View.INVISIBLE
+                }
+            } else {
+                userAvatar.visibility = View.VISIBLE
+                if ("bots" == message.actorType && "changelog" == message.actorId) {
+                    val layers =
+                            arrayOfNulls<Drawable?>(2)
+                    layers[0] = context.getDrawable(drawable.ic_launcher_background)
+                    layers[1] = context.getDrawable(drawable.ic_launcher_foreground)
+                    val layerDrawable =
+                            LayerDrawable(layers)
+                    userAvatar.load(layerDrawable) {
+                        transformations(CircleCropTransformation())
                     }
-              }
+                }
             }
-          }
+        }
+        if (message.messageType == SINGLE_NC_ATTACHMENT_MESSAGE) {
+            // it's a preview for a Nextcloud share
 
-          override fun onError(e: Throwable) {}
-        })
-  }
+            messageText!!.text = message.getSelectedIndividualHashMap()["name"]
+            setClickableString(
+                    message.getSelectedIndividualHashMap()["name"]!!,
+                    message.getSelectedIndividualHashMap()["link"]!!, messageText!!
+            )
 
-  override fun getPayloadForImageLoader(message: ChatMessage): Any {
-    val map = HashMap<String, Any>()
-    if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
-      map.put("mimetype", message.getSelectedIndividualHashMap().get("mimetype")!!)
+            if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
+                // we now handle this directly in imageloader
+                //image.load(getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap().get ("mimetype")))
+            } else {
+                fetchFileInformation(
+                        "/" + message.getSelectedIndividualHashMap()["path"],
+                        message.activeUser
+                )
+            }
+
+            image.setOnClickListener { v: View? ->
+                val accountString =
+                        message.activeUser.username + "@" + message.activeUser
+                                .baseUrl
+                                .replace("https://", "")
+                                .replace("http://", "")
+                if (canWeOpenFilesApp(context, accountString)) {
+                    val filesAppIntent =
+                            Intent(Intent.ACTION_VIEW, null)
+                    val componentName = ComponentName(
+                            context.getString(string.nc_import_accounts_from),
+                            "com.owncloud.android.ui.activity.FileDisplayActivity"
+                    )
+                    filesAppIntent.component = componentName
+                    filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    filesAppIntent.setPackage(
+                            context.getString(string.nc_import_accounts_from)
+                    )
+                    filesAppIntent.putExtra(
+                            KEY_ACCOUNT, accountString
+                    )
+                    filesAppIntent.putExtra(
+                            KEY_FILE_ID,
+                            message.getSelectedIndividualHashMap()["id"]
+                    )
+                    context.startActivity(filesAppIntent)
+                } else {
+                    val browserIntent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(message.getSelectedIndividualHashMap()["link"])
+                    )
+                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(browserIntent)
+                }
+            }
+        } else if (message.messageType == SINGLE_LINK_GIPHY_MESSAGE) {
+            messageText!!.text = "GIPHY"
+            setClickableString(
+                    "GIPHY", "https://giphy.com", messageText!!
+            )
+        } else if (message.messageType == SINGLE_LINK_TENOR_MESSAGE) {
+            messageText!!.text = "Tenor"
+            setClickableString(
+                    "Tenor", "https://tenor.com", messageText!!
+            )
+        } else {
+            if (message.messageType == SINGLE_LINK_IMAGE_MESSAGE) {
+                image.setOnClickListener { v: View? ->
+                    val browserIntent = Intent(
+                            Intent.ACTION_VIEW, Uri.parse(message.imageUrl)
+                    )
+                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(browserIntent)
+                }
+            } else {
+                image.setOnClickListener(null)
+            }
+            messageText!!.text = ""
+        }
     }
 
-    return ImageLoaderPayload(map)
-  }
+    private fun fetchFileInformation(
+            url: String,
+            activeUser: UserNgEntity?
+    ) {
+        Single.fromCallable {
+            ReadFilesystemOperation(
+                    okHttpClient, activeUser, url, 0
+            )
+        }
+                .observeOn(Schedulers.io())
+                .subscribe(object : SingleObserver<ReadFilesystemOperation?> {
+                    override fun onSubscribe(d: Disposable) {}
+                    override fun onSuccess(readFilesystemOperation: ReadFilesystemOperation) {
+                        val davResponse: DavResponse =
+                                readFilesystemOperation.readRemotePath()
+                        if (davResponse.data != null) {
+                            val browserFileList =
+                                    davResponse.data as List<BrowserFile>
+                            if (!browserFileList.isEmpty()) {
+                                Handler(context.mainLooper)
+                                        .post {
+                                            image.load(getDrawableResourceIdForMimeType(browserFileList[0].mimeType))
+                                        }
+                            }
+                        }
+                    }
 
-  init {
-    ButterKnife.bind(this, itemView!!)
-  }
+                    override fun onError(e: Throwable) {}
+                })
+    }
+
+    override fun getPayloadForImageLoader(message: ChatMessage): Any {
+        val map = HashMap<String, Any>()
+        if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
+            map.put("mimetype", message.getSelectedIndividualHashMap().get("mimetype")!!)
+        }
+
+        return ImageLoaderPayload(map)
+    }
+
+    init {
+        ButterKnife.bind(this, itemView!!)
+    }
 }

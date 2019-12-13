@@ -23,8 +23,6 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
@@ -71,7 +69,7 @@ class DeleteConversationWorker(context: Context,
                         }
 
                         override fun onNext(genericOverall: GenericOverall) {
-                            eventBus!!.postSticky(eventStatus)
+                            eventBus.postSticky(eventStatus)
                         }
 
                         override fun onError(e: Throwable) {}

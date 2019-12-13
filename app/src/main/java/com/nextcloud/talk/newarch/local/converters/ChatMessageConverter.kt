@@ -25,17 +25,17 @@ import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.models.json.chat.ChatMessage
 
 class ChatMessageConverter {
-  @TypeConverter
-  fun fromChatMessageToString(chatMessage: ChatMessage?): String {
-    if (chatMessage == null) {
-      return ""
-    } else {
-      return LoganSquare.serialize(chatMessage)
+    @TypeConverter
+    fun fromChatMessageToString(chatMessage: ChatMessage?): String {
+        if (chatMessage == null) {
+            return ""
+        } else {
+            return LoganSquare.serialize(chatMessage)
+        }
     }
-  }
 
-  @TypeConverter
-  fun fromStringToChatMessage(value: String): ChatMessage? {
-    return LoganSquare.parse(value, ChatMessage::class.java)
-  }
+    @TypeConverter
+    fun fromStringToChatMessage(value: String): ChatMessage? {
+        return LoganSquare.parse(value, ChatMessage::class.java)
+    }
 }

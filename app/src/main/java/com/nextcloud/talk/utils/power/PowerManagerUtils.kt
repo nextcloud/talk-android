@@ -34,7 +34,7 @@ import android.provider.Settings
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-class PowerManagerUtils: KoinComponent {
+class PowerManagerUtils : KoinComponent {
     private val fullLock: WakeLock
     private val partialLock: WakeLock
     private val wifiLock: WifiLock

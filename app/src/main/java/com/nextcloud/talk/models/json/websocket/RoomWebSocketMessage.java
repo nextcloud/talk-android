@@ -22,19 +22,21 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @JsonObject
 @Parcel
 public class RoomWebSocketMessage {
-  @JsonField(name = "roomid")
-  public String roomId;
+    @JsonField(name = "roomid")
+    public String roomId;
 
-  @JsonField(name = "sessionid")
-  public String sessiondId;
+    @JsonField(name = "sessionid")
+    public String sessiondId;
 
-  @JsonField(name = "properties")
-  public RoomPropertiesWebSocketMessage roomPropertiesWebSocketMessage;
+    @JsonField(name = "properties")
+    public RoomPropertiesWebSocketMessage roomPropertiesWebSocketMessage;
 }

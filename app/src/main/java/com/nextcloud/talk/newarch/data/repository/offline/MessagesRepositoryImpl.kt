@@ -25,12 +25,12 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.local.dao.MessagesDao
 
-class MessagesRepositoryImpl(val messagesDao: MessagesDao): MessagesRepository {
-  override fun getMessagesWithUserForConversation(
-    conversationId: String
-  ): LiveData<List<ChatMessage>> {
-    TODO(
-        "not implemented"
-    ) //To change body of created functions use File | Settings | File Templates.
-  }
+class MessagesRepositoryImpl(val messagesDao: MessagesDao) : MessagesRepository {
+    override fun getMessagesWithUserForConversation(
+            conversationId: String
+    ): LiveData<List<ChatMessage>> {
+        TODO(
+                "not implemented"
+        ) //To change body of created functions use File | Settings | File Templates.
+    }
 }

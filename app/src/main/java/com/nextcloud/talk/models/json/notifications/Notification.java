@@ -23,44 +23,47 @@ package com.nextcloud.talk.models.json.notifications;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.LoganSquareJodaTimeConverter;
-import java.util.HashMap;
-import java.util.List;
-import lombok.Data;
+
 import org.joda.time.DateTime;
 import org.parceler.Parcel;
+
+import java.util.HashMap;
+import java.util.List;
+
+import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class Notification {
-  @JsonField(name = "icon")
-  public String icon;
-  @JsonField(name = "notification_id")
-  public int notificationId;
-  @JsonField(name = "app")
-  public String app;
-  @JsonField(name = "user")
-  public String user;
-  @JsonField(name = "datetime", typeConverter = LoganSquareJodaTimeConverter.class)
-  public DateTime datetime;
-  @JsonField(name = "object_type")
-  public String objectType;
-  @JsonField(name = "object_id")
-  public String objectId;
-  @JsonField(name = "subject")
-  public String subject;
-  @JsonField(name = "subjectRich")
-  public String subjectRich;
-  @JsonField(name = "subjectRichParameters")
-  public HashMap<String, HashMap<String, String>> subjectRichParameters;
-  @JsonField(name = "message")
-  public String message;
-  @JsonField(name = "messageRich")
-  public String messageRich;
-  @JsonField(name = "messageRichParameters")
-  public HashMap<String, HashMap<String, String>> messageRichParameters;
-  @JsonField(name = "link")
-  public String link;
-  @JsonField(name = "actions")
-  public List<NotificationAction> actions;
+    @JsonField(name = "icon")
+    public String icon;
+    @JsonField(name = "notification_id")
+    public int notificationId;
+    @JsonField(name = "app")
+    public String app;
+    @JsonField(name = "user")
+    public String user;
+    @JsonField(name = "datetime", typeConverter = LoganSquareJodaTimeConverter.class)
+    public DateTime datetime;
+    @JsonField(name = "object_type")
+    public String objectType;
+    @JsonField(name = "object_id")
+    public String objectId;
+    @JsonField(name = "subject")
+    public String subject;
+    @JsonField(name = "subjectRich")
+    public String subjectRich;
+    @JsonField(name = "subjectRichParameters")
+    public HashMap<String, HashMap<String, String>> subjectRichParameters;
+    @JsonField(name = "message")
+    public String message;
+    @JsonField(name = "messageRich")
+    public String messageRich;
+    @JsonField(name = "messageRichParameters")
+    public HashMap<String, HashMap<String, String>> messageRichParameters;
+    @JsonField(name = "link")
+    public String link;
+    @JsonField(name = "actions")
+    public List<NotificationAction> actions;
 }

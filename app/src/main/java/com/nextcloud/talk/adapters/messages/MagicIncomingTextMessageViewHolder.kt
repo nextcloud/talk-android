@@ -39,7 +39,6 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
@@ -51,149 +50,149 @@ import org.koin.core.inject
 class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 .IncomingTextMessageViewHolder<ChatMessage>(incomingView), KoinComponent {
 
-  @JvmField
-  @BindView(R.id.messageAuthor)
-  var messageAuthor: EmojiTextView? = null
+    @JvmField
+    @BindView(R.id.messageAuthor)
+    var messageAuthor: EmojiTextView? = null
 
-  @JvmField
-  @BindView(R.id.messageText)
-  var messageText: EmojiTextView? = null
+    @JvmField
+    @BindView(R.id.messageText)
+    var messageText: EmojiTextView? = null
 
-  @JvmField
-  @BindView(R.id.messageUserAvatar)
-  var messageUserAvatarView: SimpleDraweeView? = null
+    @JvmField
+    @BindView(R.id.messageUserAvatar)
+    var messageUserAvatarView: SimpleDraweeView? = null
 
-  @JvmField
-  @BindView(R.id.messageTime)
-  var messageTimeView: TextView? = null
+    @JvmField
+    @BindView(R.id.messageTime)
+    var messageTimeView: TextView? = null
 
-  val context: Context by inject()
+    val context: Context by inject()
 
-  val appPreferences: AppPreferences by inject()
+    val appPreferences: AppPreferences by inject()
 
-  init {
-    ButterKnife.bind(
-        this,
-        itemView
-    )
-  }
-
-  override fun onBind(message: ChatMessage) {
-    super.onBind(message)
-    val author: String = message.actorDisplayName
-    if (!TextUtils.isEmpty(author)) {
-      messageAuthor!!.text = author
-    } else {
-      messageAuthor!!.setText(R.string.nc_nick_guest)
+    init {
+        ButterKnife.bind(
+                this,
+                itemView
+        )
     }
 
-    if (!message.grouped && !message.oneToOneConversation) {
-      messageUserAvatarView!!.visibility = View.VISIBLE
-      if (message.actorType == "guests") {
-        // do nothing, avatar is set
-      } else if (message.actorType == "bots" && message.actorType == "changelog") {
-        messageUserAvatarView!!.controller = null
-        val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = context!!.getDrawable(R.drawable.ic_launcher_background)
-        layers[1] = context!!.getDrawable(R.drawable.ic_launcher_foreground)
-        val layerDrawable = LayerDrawable(layers)
-
-        messageUserAvatarView!!.hierarchy
-            .setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
-      } else if (message.actorType == "bots") {
-        messageUserAvatarView!!.controller = null
-        val drawable = TextDrawable.builder()
-            .beginConfig()
-            .bold()
-            .endConfig()
-            .buildRound(
-                ">",
-                context!!.resources.getColor(R.color.black)
-            )
-        messageUserAvatarView!!.visibility = View.VISIBLE
-        messageUserAvatarView!!.hierarchy.setPlaceholderImage(drawable)
-      }
-    } else {
-      if (message.oneToOneConversation) {
-        messageUserAvatarView!!.visibility = View.GONE
-      } else {
-        messageUserAvatarView!!.visibility = View.INVISIBLE
-      }
-      messageAuthor!!.visibility = View.GONE
-    }
-
-    val resources = itemView.getResources()
-
-    val bg_bubble_color = resources.getColor(R.color.bg_message_list_incoming_bubble)
-
-    var bubbleResource = R.drawable.shape_incoming_message
-
-    if (message.grouped) {
-      bubbleResource = R.drawable.shape_grouped_incoming_message
-    }
-
-    val bubbleDrawable = DisplayUtils.getMessageSelector(
-        bg_bubble_color,
-        resources.getColor(R.color.transparent),
-        bg_bubble_color, bubbleResource
-    )
-    ViewCompat.setBackground(bubble, bubbleDrawable)
-
-    val messageParameters = message.messageParameters
-
-    itemView.setSelected(false)
-    messageTimeView!!.setTextColor(context!!.resources.getColor(R.color.warm_grey_four))
-
-    val layoutParams = messageTimeView!!.layoutParams as FlexboxLayout.LayoutParams
-    layoutParams.isWrapBefore = false
-
-    var messageString: Spannable = SpannableString(message.text)
-
-    var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
-
-    if (messageParameters != null && messageParameters.size > 0) {
-      for (key in messageParameters.keys) {
-        val individualHashMap = message.messageParameters[key]
-        if (individualHashMap != null) {
-          if (individualHashMap["type"] == "user" || individualHashMap["type"] == "guest" || individualHashMap["type"] == "call") {
-            if (individualHashMap["id"] == message.activeUser.userId) {
-              messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                  messageText!!.context,
-                  messageString,
-                  individualHashMap["id"]!!,
-                  individualHashMap["name"]!!,
-                  individualHashMap["type"]!!,
-                  message.activeUser,
-                  R.xml.chip_you
-              )
-            } else {
-              messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                  messageText!!.context,
-                  messageString,
-                  individualHashMap["id"]!!,
-                  individualHashMap["name"]!!,
-                  individualHashMap["type"]!!,
-                  message.activeUser,
-                  R.xml.chip_others
-              )
-            }
-          } else if (individualHashMap["type"] == "file") {
-            itemView.setOnClickListener({ v ->
-              val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-              context!!.startActivity(browserIntent)
-            })
-          }
+    override fun onBind(message: ChatMessage) {
+        super.onBind(message)
+        val author: String = message.actorDisplayName
+        if (!TextUtils.isEmpty(author)) {
+            messageAuthor!!.text = author
+        } else {
+            messageAuthor!!.setText(R.string.nc_nick_guest)
         }
-      }
-    } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
-      textSize = (textSize * 2.5).toFloat()
-      layoutParams.isWrapBefore = true
-      itemView.setSelected(true)
-      messageAuthor!!.visibility = View.GONE
-    }
 
-    messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-    messageTimeView!!.layoutParams = layoutParams
-    messageText!!.text = messageString
-  }
+        if (!message.grouped && !message.oneToOneConversation) {
+            messageUserAvatarView!!.visibility = View.VISIBLE
+            if (message.actorType == "guests") {
+                // do nothing, avatar is set
+            } else if (message.actorType == "bots" && message.actorType == "changelog") {
+                messageUserAvatarView!!.controller = null
+                val layers = arrayOfNulls<Drawable>(2)
+                layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
+                layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
+                val layerDrawable = LayerDrawable(layers)
+
+                messageUserAvatarView!!.hierarchy
+                        .setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
+            } else if (message.actorType == "bots") {
+                messageUserAvatarView!!.controller = null
+                val drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .bold()
+                        .endConfig()
+                        .buildRound(
+                                ">",
+                                context.resources.getColor(R.color.black)
+                        )
+                messageUserAvatarView!!.visibility = View.VISIBLE
+                messageUserAvatarView!!.hierarchy.setPlaceholderImage(drawable)
+            }
+        } else {
+            if (message.oneToOneConversation) {
+                messageUserAvatarView!!.visibility = View.GONE
+            } else {
+                messageUserAvatarView!!.visibility = View.INVISIBLE
+            }
+            messageAuthor!!.visibility = View.GONE
+        }
+
+        val resources = itemView.resources
+
+        val bg_bubble_color = resources.getColor(R.color.bg_message_list_incoming_bubble)
+
+        var bubbleResource = R.drawable.shape_incoming_message
+
+        if (message.grouped) {
+            bubbleResource = R.drawable.shape_grouped_incoming_message
+        }
+
+        val bubbleDrawable = DisplayUtils.getMessageSelector(
+                bg_bubble_color,
+                resources.getColor(R.color.transparent),
+                bg_bubble_color, bubbleResource
+        )
+        ViewCompat.setBackground(bubble, bubbleDrawable)
+
+        val messageParameters = message.messageParameters
+
+        itemView.isSelected = false
+        messageTimeView!!.setTextColor(context.resources.getColor(R.color.warm_grey_four))
+
+        val layoutParams = messageTimeView!!.layoutParams as FlexboxLayout.LayoutParams
+        layoutParams.isWrapBefore = false
+
+        var messageString: Spannable = SpannableString(message.text)
+
+        var textSize = context.resources.getDimension(R.dimen.chat_text_size)
+
+        if (messageParameters != null && messageParameters.size > 0) {
+            for (key in messageParameters.keys) {
+                val individualHashMap = message.messageParameters[key]
+                if (individualHashMap != null) {
+                    if (individualHashMap["type"] == "user" || individualHashMap["type"] == "guest" || individualHashMap["type"] == "call") {
+                        if (individualHashMap["id"] == message.activeUser.userId) {
+                            messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
+                                    messageText!!.context,
+                                    messageString,
+                                    individualHashMap["id"]!!,
+                                    individualHashMap["name"]!!,
+                                    individualHashMap["type"]!!,
+                                    message.activeUser,
+                                    R.xml.chip_you
+                            )
+                        } else {
+                            messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
+                                    messageText!!.context,
+                                    messageString,
+                                    individualHashMap["id"]!!,
+                                    individualHashMap["name"]!!,
+                                    individualHashMap["type"]!!,
+                                    message.activeUser,
+                                    R.xml.chip_others
+                            )
+                        }
+                    } else if (individualHashMap["type"] == "file") {
+                        itemView.setOnClickListener({ v ->
+                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
+                            context.startActivity(browserIntent)
+                        })
+                    }
+                }
+            }
+        } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
+            textSize = (textSize * 2.5).toFloat()
+            layoutParams.isWrapBefore = true
+            itemView.isSelected = true
+            messageAuthor!!.visibility = View.GONE
+        }
+
+        messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+        messageTimeView!!.layoutParams = layoutParams
+        messageText!!.text = messageString
+    }
 }

@@ -27,40 +27,40 @@ import retrofit2.http.*
 
 interface ApiService {
 
-  /*
-    Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
- */
-  @GET
-  suspend fun getConversations(
-    @Header(
-        "Authorization"
-    ) authorization: String, @Url url: String
-  ): RoomsOverall
+    /*
+      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
+   */
+    @GET
+    suspend fun getConversations(
+            @Header(
+                    "Authorization"
+            ) authorization: String, @Url url: String
+    ): RoomsOverall
 
-  @POST
-  suspend fun addConversationToFavorites(
-    @Header("Authorization") authorization: String,
-    @Url url: String
-  ): GenericOverall
+    @POST
+    suspend fun addConversationToFavorites(
+            @Header("Authorization") authorization: String,
+            @Url url: String
+    ): GenericOverall
 
-  @DELETE
-  suspend fun removeConversationFromFavorites(
-    @Header("Authorization") authorization: String,
-    @Url url: String
-  ): GenericOverall
+    @DELETE
+    suspend fun removeConversationFromFavorites(
+            @Header("Authorization") authorization: String,
+            @Url url: String
+    ): GenericOverall
 
-  @DELETE
-  suspend fun leaveConversation(
-    @Header("Authorization") authorization: String,
-    @Url url: String
-  ): GenericOverall
+    @DELETE
+    suspend fun leaveConversation(
+            @Header("Authorization") authorization: String,
+            @Url url: String
+    ): GenericOverall
 
-  @DELETE
-  suspend fun deleteConversation(
-    @Header("Authorization") authorization: String,
-    @Url url: String
-  ): GenericOverall
+    @DELETE
+    suspend fun deleteConversation(
+            @Header("Authorization") authorization: String,
+            @Url url: String
+    ): GenericOverall
 
-  @GET
-  suspend fun getConversation(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
+    @GET
+    suspend fun getConversation(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
 }

@@ -41,17 +41,12 @@ import com.nextcloud.talk.newarch.utils.NetworkUtils
 import com.nextcloud.talk.newarch.utils.NetworkUtils.GetProxyRunnable
 import com.nextcloud.talk.newarch.utils.NetworkUtils.MagicAuthenticator
 import com.nextcloud.talk.utils.LoggingUtils
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.ssl.MagicKeyManager
 import com.nextcloud.talk.utils.ssl.MagicTrustManager
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat
 import io.reactivex.schedulers.Schedulers
-import okhttp3.Cache
-import okhttp3.Credentials
-import okhttp3.Dispatcher
-import okhttp3.JavaNetCookieJar
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.internal.tls.OkHostnameVerifier
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Logger
@@ -74,210 +69,210 @@ import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.X509KeyManager
 
 val NetworkModule = module {
-  single { createService(get()) }
-  single { createLegacyNcApi(get()) }
-  single { createRetrofit(get()) }
-  single { createProxy(get()) }
-  single { createTrustManager() }
-  single { createCookieManager() }
-  single { createDispatcher() }
-  single { createKeyManager(get(), get()) }
-  single { createSslSocketFactory(get(), get()) }
-  single { createCache(androidApplication() as NextcloudTalkApplication) }
-  single { createOkHttpClient(androidContext(), get(), get(), get(), get(), get(), get(), get()) }
-  factory { createApiErrorHandler() }
-  single { createNextcloudTalkRepository(get()) }
-  single { createImageLoader(androidApplication(), get()) }
+    single { createService(get()) }
+    single { createLegacyNcApi(get()) }
+    single { createRetrofit(get()) }
+    single { createProxy(get()) }
+    single { createTrustManager() }
+    single { createCookieManager() }
+    single { createDispatcher() }
+    single { createKeyManager(get(), get()) }
+    single { createSslSocketFactory(get(), get()) }
+    single { createCache(androidApplication() as NextcloudTalkApplication) }
+    single { createOkHttpClient(androidContext(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { createApiErrorHandler() }
+    single { createNextcloudTalkRepository(get()) }
+    single { createImageLoader(androidApplication(), get()) }
 
 }
 
 fun createCookieManager(): CookieManager {
-  val cookieManager = CookieManager()
-  cookieManager.setCookiePolicy(ACCEPT_ALL)
-  return cookieManager
+    val cookieManager = CookieManager()
+    cookieManager.setCookiePolicy(ACCEPT_ALL)
+    return cookieManager
 }
 
 fun createOkHttpClient(
-  context: Context,
-  proxy: Proxy,
-  appPreferences: AppPreferences,
-  magicTrustManager: MagicTrustManager,
-  sslSocketFactoryCompat: SSLSocketFactoryCompat,
-  cache: Cache,
-  cookieManager: CookieManager,
-  dispatcher: Dispatcher
+        context: Context,
+        proxy: Proxy,
+        appPreferences: AppPreferences,
+        magicTrustManager: MagicTrustManager,
+        sslSocketFactoryCompat: SSLSocketFactoryCompat,
+        cache: Cache,
+        cookieManager: CookieManager,
+        dispatcher: Dispatcher
 ): OkHttpClient {
-  val httpClient = OkHttpClient.Builder()
+    val httpClient = OkHttpClient.Builder()
 
-  httpClient.retryOnConnectionFailure(true)
-  httpClient.connectTimeout(45, TimeUnit.SECONDS)
-  httpClient.readTimeout(45, TimeUnit.SECONDS)
-  httpClient.writeTimeout(45, TimeUnit.SECONDS)
+    httpClient.retryOnConnectionFailure(true)
+    httpClient.connectTimeout(45, TimeUnit.SECONDS)
+    httpClient.readTimeout(45, TimeUnit.SECONDS)
+    httpClient.writeTimeout(45, TimeUnit.SECONDS)
 
-  httpClient.cookieJar(JavaNetCookieJar(cookieManager))
-  httpClient.cache(cache)
+    httpClient.cookieJar(JavaNetCookieJar(cookieManager))
+    httpClient.cache(cache)
 
-  // Trust own CA and all self-signed certs
-  httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager)
-  httpClient.retryOnConnectionFailure(true)
-  httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE))
+    // Trust own CA and all self-signed certs
+    httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager)
+    httpClient.retryOnConnectionFailure(true)
+    httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE))
 
-  httpClient.dispatcher(dispatcher)
-  if (Proxy.NO_PROXY != proxy) {
-    httpClient.proxy(proxy)
+    httpClient.dispatcher(dispatcher)
+    if (Proxy.NO_PROXY != proxy) {
+        httpClient.proxy(proxy)
 
-    if (appPreferences.proxyCredentials &&
-        !TextUtils.isEmpty(appPreferences.proxyUsername) &&
-        !TextUtils.isEmpty(appPreferences.proxyPassword)
-    ) {
-      httpClient.proxyAuthenticator(
-          MagicAuthenticator(
-              Credentials.basic(
-                  appPreferences.proxyUsername,
-                  appPreferences.proxyPassword
-              ), "Proxy-Authorization"
-          )
-      )
+        if (appPreferences.proxyCredentials &&
+                !TextUtils.isEmpty(appPreferences.proxyUsername) &&
+                !TextUtils.isEmpty(appPreferences.proxyPassword)
+        ) {
+            httpClient.proxyAuthenticator(
+                    MagicAuthenticator(
+                            Credentials.basic(
+                                    appPreferences.proxyUsername,
+                                    appPreferences.proxyPassword
+                            ), "Proxy-Authorization"
+                    )
+            )
+        }
     }
-  }
 
-  httpClient.addInterceptor(NetworkUtils.HeadersInterceptor())
+    httpClient.addInterceptor(NetworkUtils.HeadersInterceptor())
 
-  if (BuildConfig.DEBUG && !context.resources.getBoolean(R.bool.nc_is_debug)) {
-    val loggingInterceptor = HttpLoggingInterceptor()
-    loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-    loggingInterceptor.redactHeader("Authorization")
-    loggingInterceptor.redactHeader("Proxy-Authorization")
-    loggingInterceptor.redactHeader("Cookie")
-    httpClient.addInterceptor(loggingInterceptor)
-  } else if (context.resources.getBoolean(R.bool.nc_is_debug)) {
+    if (BuildConfig.DEBUG && !context.resources.getBoolean(R.bool.nc_is_debug)) {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        loggingInterceptor.redactHeader("Authorization")
+        loggingInterceptor.redactHeader("Proxy-Authorization")
+        loggingInterceptor.redactHeader("Cookie")
+        httpClient.addInterceptor(loggingInterceptor)
+    } else if (context.resources.getBoolean(R.bool.nc_is_debug)) {
 
-    val fileLogger = HttpLoggingInterceptor(object : Logger {
-      override fun log(message: String) {
-        LoggingUtils.writeLogEntryToFile(context, message)
-      }
-    })
+        val fileLogger = HttpLoggingInterceptor(object : Logger {
+            override fun log(message: String) {
+                LoggingUtils.writeLogEntryToFile(context, message)
+            }
+        })
 
-    fileLogger.level = HttpLoggingInterceptor.Level.BODY
-    fileLogger.redactHeader("Authorization")
-    fileLogger.redactHeader("Proxy-Authorization")
-    fileLogger.redactHeader("Cookie")
-    httpClient.addInterceptor(fileLogger)
-  }
+        fileLogger.level = HttpLoggingInterceptor.Level.BODY
+        fileLogger.redactHeader("Authorization")
+        fileLogger.redactHeader("Proxy-Authorization")
+        fileLogger.redactHeader("Cookie")
+        httpClient.addInterceptor(fileLogger)
+    }
 
-  return httpClient.build()
+    return httpClient.build()
 
 }
 
 fun createRetrofit(okHttpClient: OkHttpClient): Retrofit {
-  return Retrofit.Builder()
-      .client(okHttpClient)
-      .baseUrl("https://nextcloud.com")
-      .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-      .addConverterFactory(LoganSquareConverterFactory.create())
-      .build()
+    return Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl("https://nextcloud.com")
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addConverterFactory(LoganSquareConverterFactory.create())
+            .build()
 }
 
 fun createTrustManager(): MagicTrustManager {
-  return MagicTrustManager()
+    return MagicTrustManager()
 }
 
 fun createSslSocketFactory(
-  magicKeyManager: MagicKeyManager,
-  magicTrustManager:
-  MagicTrustManager
+        magicKeyManager: MagicKeyManager,
+        magicTrustManager:
+        MagicTrustManager
 ): SSLSocketFactoryCompat {
-  return SSLSocketFactoryCompat(magicKeyManager, magicTrustManager)
+    return SSLSocketFactoryCompat(magicKeyManager, magicTrustManager)
 }
 
 fun createKeyManager(
-  appPreferences: AppPreferences,
-  usersRepository: UsersRepository
+        appPreferences: AppPreferences,
+        usersRepository: UsersRepository
 ): MagicKeyManager? {
-  val keyStore: KeyStore?
-  try {
-    keyStore = KeyStore.getInstance("AndroidKeyStore")
-    keyStore.load(null)
-    val kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
-    kmf.init(keyStore, null)
-    val origKm = kmf.keyManagers[0] as X509KeyManager
-    return MagicKeyManager(origKm, usersRepository, appPreferences)
-  } catch (e: KeyStoreException) {
-    Log.e("NetworkModule", "KeyStoreException " + e.localizedMessage!!)
-  } catch (e: CertificateException) {
-    Log.e("NetworkModule", "CertificateException " + e.localizedMessage!!)
-  } catch (e: NoSuchAlgorithmException) {
-    Log.e("NetworkModule", "NoSuchAlgorithmException " + e.localizedMessage!!)
-  } catch (e: IOException) {
-    Log.e("NetworkModule", "IOException " + e.localizedMessage!!)
-  } catch (e: UnrecoverableKeyException) {
-    Log.e("NetworkModule", "UnrecoverableKeyException " + e.localizedMessage!!)
-  }
+    val keyStore: KeyStore?
+    try {
+        keyStore = KeyStore.getInstance("AndroidKeyStore")
+        keyStore.load(null)
+        val kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
+        kmf.init(keyStore, null)
+        val origKm = kmf.keyManagers[0] as X509KeyManager
+        return MagicKeyManager(origKm, usersRepository, appPreferences)
+    } catch (e: KeyStoreException) {
+        Log.e("NetworkModule", "KeyStoreException " + e.localizedMessage!!)
+    } catch (e: CertificateException) {
+        Log.e("NetworkModule", "CertificateException " + e.localizedMessage!!)
+    } catch (e: NoSuchAlgorithmException) {
+        Log.e("NetworkModule", "NoSuchAlgorithmException " + e.localizedMessage!!)
+    } catch (e: IOException) {
+        Log.e("NetworkModule", "IOException " + e.localizedMessage!!)
+    } catch (e: UnrecoverableKeyException) {
+        Log.e("NetworkModule", "UnrecoverableKeyException " + e.localizedMessage!!)
+    }
 
-  return null
+    return null
 }
 
 fun createProxy(appPreferences: AppPreferences): Proxy {
-  if (!TextUtils.isEmpty(appPreferences.proxyType) && "No proxy" != appPreferences.proxyType
-      && !TextUtils.isEmpty(appPreferences.proxyHost)
-  ) {
-    val getProxyRunnable = GetProxyRunnable(appPreferences)
-    val getProxyThread = Thread(getProxyRunnable)
-    getProxyThread.start()
-    try {
-      getProxyThread.join()
-      return getProxyRunnable.proxyValue
-    } catch (e: InterruptedException) {
-      Log.e("NetworkModule", "Failed to join the thread while getting proxy: " + e.localizedMessage)
-      return Proxy.NO_PROXY
-    }
+    if (!TextUtils.isEmpty(appPreferences.proxyType) && "No proxy" != appPreferences.proxyType
+            && !TextUtils.isEmpty(appPreferences.proxyHost)
+    ) {
+        val getProxyRunnable = GetProxyRunnable(appPreferences)
+        val getProxyThread = Thread(getProxyRunnable)
+        getProxyThread.start()
+        try {
+            getProxyThread.join()
+            return getProxyRunnable.proxyValue
+        } catch (e: InterruptedException) {
+            Log.e("NetworkModule", "Failed to join the thread while getting proxy: " + e.localizedMessage)
+            return Proxy.NO_PROXY
+        }
 
-  } else {
-    return Proxy.NO_PROXY
-  }
+    } else {
+        return Proxy.NO_PROXY
+    }
 
 }
 
 fun createDispatcher(): Dispatcher {
-  val dispatcher = Dispatcher()
-  dispatcher.maxRequestsPerHost = 100
-  dispatcher.maxRequests = 100
-  return dispatcher
+    val dispatcher = Dispatcher()
+    dispatcher.maxRequestsPerHost = 100
+    dispatcher.maxRequests = 100
+    return dispatcher
 }
 
 fun createCache(androidApplication: Application): Cache {
-  //val cacheSize = 128 * 1024 * 1024 // 128 MB
-  return Cache(androidApplication.cacheDir, Long.MAX_VALUE)
+    //val cacheSize = 128 * 1024 * 1024 // 128 MB
+    return Cache(androidApplication.cacheDir, Long.MAX_VALUE)
 }
 
 fun createApiErrorHandler(): ApiErrorHandler {
-  return ApiErrorHandler()
+    return ApiErrorHandler()
 }
 
 fun createService(retrofit: Retrofit): ApiService {
-  return retrofit.create(ApiService::class.java)
+    return retrofit.create(ApiService::class.java)
 }
 
 fun createLegacyNcApi(retrofit: Retrofit): NcApi {
-  return retrofit.create(NcApi::class.java)
+    return retrofit.create(NcApi::class.java)
 }
 
 fun createImageLoader(
-  androidApplication: Application,
-  okHttpClient: OkHttpClient
+        androidApplication: Application,
+        okHttpClient: OkHttpClient
 ): ImageLoader {
-  return ImageLoader(androidApplication) {
-    availableMemoryPercentage(0.5)
-    bitmapPoolPercentage(0.5)
-    crossfade(true)
-    okHttpClient(okHttpClient)
-    componentRegistry {
-      add(GifDecoder())
-      add(SvgDecoder(androidApplication))
+    return ImageLoader(androidApplication) {
+        availableMemoryPercentage(0.5)
+        bitmapPoolPercentage(0.5)
+        crossfade(true)
+        okHttpClient(okHttpClient)
+        componentRegistry {
+            add(GifDecoder())
+            add(SvgDecoder(androidApplication))
+        }
     }
-  }
 }
 
 fun createNextcloudTalkRepository(apiService: ApiService): NextcloudTalkRepository {
-  return NextcloudTalkRepositoryImpl(apiService)
+    return NextcloudTalkRepositoryImpl(apiService)
 }

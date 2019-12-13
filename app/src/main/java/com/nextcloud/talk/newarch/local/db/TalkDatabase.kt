@@ -25,17 +25,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.nextcloud.talk.newarch.local.converters.CapabilitiesConverter
-import com.nextcloud.talk.newarch.local.converters.ChatMessageConverter
-import com.nextcloud.talk.newarch.local.converters.ConversationReadOnlyStateConverter
-import com.nextcloud.talk.newarch.local.converters.ConversationTypeConverter
-import com.nextcloud.talk.newarch.local.converters.ExternalSignalingConverter
-import com.nextcloud.talk.newarch.local.converters.LobbyStateConverter
-import com.nextcloud.talk.newarch.local.converters.NotificationLevelConverter
-import com.nextcloud.talk.newarch.local.converters.ParticipantTypeConverter
-import com.nextcloud.talk.newarch.local.converters.PushConfigurationConverter
-import com.nextcloud.talk.newarch.local.converters.SystemMessageTypeConverter
-import com.nextcloud.talk.newarch.local.converters.UserStatusConverter
+import com.nextcloud.talk.newarch.local.converters.*
 import com.nextcloud.talk.newarch.local.dao.ConversationsDao
 import com.nextcloud.talk.newarch.local.dao.MessagesDao
 import com.nextcloud.talk.newarch.local.dao.UsersDao
@@ -44,38 +34,38 @@ import com.nextcloud.talk.newarch.local.models.MessageEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 @Database(
-    entities = [ConversationEntity::class, MessageEntity::class, UserNgEntity::class],
-    version = 1,
-    exportSchema = true
+        entities = [ConversationEntity::class, MessageEntity::class, UserNgEntity::class],
+        version = 1,
+        exportSchema = true
 )
 @TypeConverters(
-    ChatMessageConverter::class, LobbyStateConverter::class,
-    ConversationReadOnlyStateConverter::class, NotificationLevelConverter::class,
-    ConversationTypeConverter::class, ParticipantTypeConverter::class,
-    PushConfigurationConverter::class, CapabilitiesConverter::class,
-    ExternalSignalingConverter::class,
-    UserStatusConverter::class, SystemMessageTypeConverter::class
+        ChatMessageConverter::class, LobbyStateConverter::class,
+        ConversationReadOnlyStateConverter::class, NotificationLevelConverter::class,
+        ConversationTypeConverter::class, ParticipantTypeConverter::class,
+        PushConfigurationConverter::class, CapabilitiesConverter::class,
+        ExternalSignalingConverter::class,
+        UserStatusConverter::class, SystemMessageTypeConverter::class
 )
 
 abstract class TalkDatabase : RoomDatabase() {
 
-  abstract fun conversationsDao(): ConversationsDao
-  abstract fun messagesDao(): MessagesDao
-  abstract fun usersDao(): UsersDao
+    abstract fun conversationsDao(): ConversationsDao
+    abstract fun messagesDao(): MessagesDao
+    abstract fun usersDao(): UsersDao
 
-  companion object {
-    private const val DB_NAME = "talk.db"
-    @Volatile
-    private var INSTANCE: TalkDatabase? = null
+    companion object {
+        private const val DB_NAME = "talk.db"
+        @Volatile
+        private var INSTANCE: TalkDatabase? = null
 
-    fun getInstance(context: Context): TalkDatabase =
-      INSTANCE ?: synchronized(this) {
-        INSTANCE ?: build(context).also { INSTANCE = it }
-      }
+        fun getInstance(context: Context): TalkDatabase =
+                INSTANCE ?: synchronized(this) {
+                    INSTANCE ?: build(context).also { INSTANCE = it }
+                }
 
-    private fun build(context: Context) =
-      Room.databaseBuilder(context.applicationContext, TalkDatabase::class.java, DB_NAME)
-          .fallbackToDestructiveMigration()
-          .build()
-  }
+        private fun build(context: Context) =
+                Room.databaseBuilder(context.applicationContext, TalkDatabase::class.java, DB_NAME)
+                        .fallbackToDestructiveMigration()
+                        .build()
+    }
 }

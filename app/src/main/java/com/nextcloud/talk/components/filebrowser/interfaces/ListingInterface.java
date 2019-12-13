@@ -23,5 +23,5 @@ package com.nextcloud.talk.components.filebrowser.interfaces;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 
 public interface ListingInterface {
-  void listingResult(DavResponse davResponse);
+    void listingResult(DavResponse davResponse);
 }

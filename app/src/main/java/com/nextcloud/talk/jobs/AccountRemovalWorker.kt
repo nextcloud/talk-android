@@ -26,8 +26,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.dao.UsersDao
@@ -64,69 +62,69 @@ class AccountRemovalWorker(context: Context, workerParams: WorkerParameters) : C
         for (userEntityObject in usersDao.getUsersScheduledForDeletion()) {
             val userEntity: UserNgEntity = userEntityObject
             val credentials = userEntity.getCredentials()
-                userEntity.pushConfiguration?.let {
-                    ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
-                    ncApi!!.unregisterDeviceForNotificationsWithNextcloud(credentials,
-                            ApiUtils.getUrlNextcloudPush(userEntity.baseUrl))
-                            .blockingSubscribe(object : Observer<GenericOverall> {
-                                override fun onSubscribe(d: Disposable) {}
-                                override fun onNext(genericOverall: GenericOverall) {
-                                    if (genericOverall.ocs.meta.statusCode == 200
-                                            || genericOverall.ocs.meta.statusCode == 202) {
-                                        val queryMap = HashMap<String, String?>()
-                                        queryMap["deviceIdentifier"] = userEntity.pushConfiguration!!.deviceIdentifier
-                                        queryMap["userPublicKey"] = userEntity.pushConfiguration!!.userPublicKey
-                                        queryMap["deviceIdentifierSignature"] = userEntity.pushConfiguration!!.deviceIdentifierSignature
+            userEntity.pushConfiguration?.let {
+                ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
+                ncApi!!.unregisterDeviceForNotificationsWithNextcloud(credentials,
+                        ApiUtils.getUrlNextcloudPush(userEntity.baseUrl))
+                        .blockingSubscribe(object : Observer<GenericOverall> {
+                            override fun onSubscribe(d: Disposable) {}
+                            override fun onNext(genericOverall: GenericOverall) {
+                                if (genericOverall.ocs.meta.statusCode == 200
+                                        || genericOverall.ocs.meta.statusCode == 202) {
+                                    val queryMap = HashMap<String, String?>()
+                                    queryMap["deviceIdentifier"] = userEntity.pushConfiguration!!.deviceIdentifier
+                                    queryMap["userPublicKey"] = userEntity.pushConfiguration!!.userPublicKey
+                                    queryMap["deviceIdentifierSignature"] = userEntity.pushConfiguration!!.deviceIdentifierSignature
 
-                                        ncApi!!.unregisterDeviceForNotificationsWithProxy(ApiUtils.getUrlPushProxy(), queryMap)
-                                                .subscribe(object : Observer<Void> {
-                                                    override fun onSubscribe(d: Disposable) {}
-                                                    override fun onNext(aVoid: Void) {
-                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                            val groupName = java.lang.String.format(applicationContext.resources
-                                                                    .getString(R.string.nc_notification_channel), userEntity.userId,
-                                                                    userEntity.baseUrl)
-                                                            val crc32 = CRC32()
-                                                            crc32.update(groupName.toByteArray())
-                                                            notificationManager.deleteNotificationChannelGroup(java.lang.Long
-                                                                    .toString(crc32.value))
-                                                        }
-                                                        deleteExternalSignalingInstanceForUserEntity(
-                                                                userEntity.id!!)
-                                                        arbitraryStorageUtils!!.deleteAllEntriesForAccountIdentifier(
-                                                                userEntity.id!!).subscribe(object : Observer<Any?> {
-                                                            override fun onSubscribe(d: Disposable) {}
-                                                            override fun onNext(o: Any) {
-                                                                GlobalScope.launch {
-                                                                    val job = async {
-                                                                        usersRepository.deleteUserWithId(userEntity.id!!)
-                                                                    }
-                                                                    job.await()
-                                                                }
-                                                            }
-
-                                                            override fun onError(e: Throwable) {}
-                                                            override fun onComplete() {}
-                                                        })
+                                    ncApi!!.unregisterDeviceForNotificationsWithProxy(ApiUtils.getUrlPushProxy(), queryMap)
+                                            .subscribe(object : Observer<Void> {
+                                                override fun onSubscribe(d: Disposable) {}
+                                                override fun onNext(aVoid: Void) {
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                        val groupName = java.lang.String.format(applicationContext.resources
+                                                                .getString(R.string.nc_notification_channel), userEntity.userId,
+                                                                userEntity.baseUrl)
+                                                        val crc32 = CRC32()
+                                                        crc32.update(groupName.toByteArray())
+                                                        notificationManager.deleteNotificationChannelGroup(java.lang.Long
+                                                                .toString(crc32.value))
                                                     }
+                                                    deleteExternalSignalingInstanceForUserEntity(
+                                                            userEntity.id!!)
+                                                    arbitraryStorageUtils.deleteAllEntriesForAccountIdentifier(
+                                                            userEntity.id!!).subscribe(object : Observer<Any?> {
+                                                        override fun onSubscribe(d: Disposable) {}
+                                                        override fun onNext(o: Any) {
+                                                            GlobalScope.launch {
+                                                                val job = async {
+                                                                    usersRepository.deleteUserWithId(userEntity.id!!)
+                                                                }
+                                                                job.await()
+                                                            }
+                                                        }
 
-                                                    override fun onError(e: Throwable) {}
-                                                    override fun onComplete() {}
-                                                })
-                                    }
+                                                        override fun onError(e: Throwable) {}
+                                                        override fun onComplete() {}
+                                                    })
+                                                }
+
+                                                override fun onError(e: Throwable) {}
+                                                override fun onComplete() {}
+                                            })
                                 }
+                            }
 
-                                override fun onError(e: Throwable) {}
-                                override fun onComplete() {}
-                            })
-                }?: run {
-                    GlobalScope.launch {
-                        val job = async {
-                            usersRepository.deleteUserWithId(userEntity.id!!)
-                        }
-                        job.await()
+                            override fun onError(e: Throwable) {}
+                            override fun onComplete() {}
+                        })
+            } ?: run {
+                GlobalScope.launch {
+                    val job = async {
+                        usersRepository.deleteUserWithId(userEntity.id!!)
                     }
+                    job.await()
                 }
+            }
         }
         return Result.success()
     }

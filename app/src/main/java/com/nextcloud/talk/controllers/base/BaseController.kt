@@ -33,9 +33,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
-
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.AccountVerificationController
 import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SwitchAccountController
@@ -45,120 +43,120 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.android.inject
-import java.util.ArrayList
+import java.util.*
 
 abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
-  val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
+    val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
 
-  val appPreferences: AppPreferences by inject()
-  val context: Context by inject()
-  val eventBus: EventBus by inject()
+    val appPreferences: AppPreferences by inject()
+    val context: Context by inject()
+    val eventBus: EventBus by inject()
 
-  // Note: This is just a quick demo of how an ActionBar *can* be accessed, not necessarily how it *should*
-  // be accessed. In a production app, this would use Dagger instead.
-  protected val actionBar: ActionBar?
-    get() {
-      var actionBarProvider: ActionBarProvider? = null
-      try {
-        actionBarProvider = activity as ActionBarProvider?
-      } catch (exception: Exception) {
-        Log.d(TAG, "Failed to fetch the action bar provider")
-      }
+    // Note: This is just a quick demo of how an ActionBar *can* be accessed, not necessarily how it *should*
+    // be accessed. In a production app, this would use Dagger instead.
+    protected val actionBar: ActionBar?
+        get() {
+            var actionBarProvider: ActionBarProvider? = null
+            try {
+                actionBarProvider = activity as ActionBarProvider?
+            } catch (exception: Exception) {
+                Log.d(TAG, "Failed to fetch the action bar provider")
+            }
 
-      return actionBarProvider?.supportActionBar
+            return actionBarProvider?.supportActionBar
+        }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                router.popCurrentController()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    when (item.itemId) {
-      android.R.id.home -> {
-        router.popCurrentController()
-        return true
-      }
-      else -> return super.onOptionsItemSelected(item)
-    }
-  }
+    private fun cleanTempCertPreference() {
+        val temporaryClassNames = ArrayList<String>()
+        temporaryClassNames.add(ServerSelectionController::class.java.name)
+        temporaryClassNames.add(AccountVerificationController::class.java.name)
+        temporaryClassNames.add(WebViewLoginController::class.java.name)
+        temporaryClassNames.add(SwitchAccountController::class.java.name)
 
-  private fun cleanTempCertPreference() {
-    val temporaryClassNames = ArrayList<String>()
-    temporaryClassNames.add(ServerSelectionController::class.java.name)
-    temporaryClassNames.add(AccountVerificationController::class.java.name)
-    temporaryClassNames.add(WebViewLoginController::class.java.name)
-    temporaryClassNames.add(SwitchAccountController::class.java.name)
+        if (!temporaryClassNames.contains(javaClass.name)) {
+            appPreferences.removeTemporaryClientCertAlias()
+        }
 
-    if (!temporaryClassNames.contains(javaClass.name)) {
-      appPreferences.removeTemporaryClientCertAlias()
     }
 
-  }
-
-  override fun onViewBound(view: View) {
-    super.onViewBound(view)
-    cleanTempCertPreference()
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
-      disableKeyboardPersonalisedLearning(view as ViewGroup)
-    }
-  }
-
-  override fun onAttach(view: View) {
-    super.onAttach(view)
-
-    setTitle()
-    if (actionBar != null) {
-      actionBar!!.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize > 1)
-    }
-  }
-
-  override fun onDetach(view: View) {
-    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.hideSoftInputFromWindow(view.windowToken, 0)
-    super.onDetach(view)
-  }
-
-  protected fun setTitle() {
-    var parentController = parentController
-    while (parentController != null) {
-      if (parentController is BaseController && parentController.getTitle() != null) {
-        return
-      }
-      parentController = parentController.parentController
+    override fun onViewBound(view: View) {
+        super.onViewBound(view)
+        cleanTempCertPreference()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
+            disableKeyboardPersonalisedLearning(view as ViewGroup)
+        }
     }
 
-    val title = getTitle()
-    val actionBar = actionBar
-    if (title != null && actionBar != null) {
-      actionBar.title = title
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+
+        setTitle()
+        if (actionBar != null) {
+            actionBar!!.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize > 1)
+        }
     }
-  }
 
-  @RequiresApi(api = Build.VERSION_CODES.O)
-  private fun disableKeyboardPersonalisedLearning(viewGroup: ViewGroup) {
-    var view: View
-    var editText: EditText
-
-    for (i in 0 until viewGroup.childCount) {
-      view = viewGroup.getChildAt(i)
-      if (view is EditText) {
-        editText = view
-        editText.imeOptions = editText.imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
-      } else if (view is ViewGroup) {
-        disableKeyboardPersonalisedLearning(view)
-      }
+    override fun onDetach(view: View) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+        super.onDetach(view)
     }
-  }
 
-  override fun onLowMemory() {
-  }
+    protected fun setTitle() {
+        var parentController = parentController
+        while (parentController != null) {
+            if (parentController is BaseController && parentController.getTitle() != null) {
+                return
+            }
+            parentController = parentController.parentController
+        }
 
-  override fun onConfigurationChanged(newConfig: Configuration) {
-  }
+        val title = getTitle()
+        val actionBar = actionBar
+        if (title != null && actionBar != null) {
+            actionBar.title = title
+        }
+    }
 
-  companion object {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private fun disableKeyboardPersonalisedLearning(viewGroup: ViewGroup) {
+        var view: View
+        var editText: EditText
 
-    private val TAG = "BaseController"
-  }
+        for (i in 0 until viewGroup.childCount) {
+            view = viewGroup.getChildAt(i)
+            if (view is EditText) {
+                editText = view
+                editText.imeOptions = editText.imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
+            } else if (view is ViewGroup) {
+                disableKeyboardPersonalisedLearning(view)
+            }
+        }
+    }
 
-  open fun getTitle(): String? {
-    return null
-  }
+    override fun onLowMemory() {
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+    }
+
+    companion object {
+
+        private val TAG = "BaseController"
+    }
+
+    open fun getTitle(): String? {
+        return null
+    }
 }

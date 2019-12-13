@@ -22,21 +22,23 @@ package com.nextcloud.talk.models.json.signaling.settings;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import java.util.List;
+
 import lombok.Data;
 
 @Data
 @JsonObject
 public class IceServer {
-  @JsonField(name = "url")
-  public String url;
+    @JsonField(name = "url")
+    public String url;
 
-  @JsonField(name = "urls")
-  public List<String> urls;
+    @JsonField(name = "urls")
+    public List<String> urls;
 
-  @JsonField(name = "username")
-  public String username;
+    @JsonField(name = "username")
+    public String username;
 
-  @JsonField(name = "credential")
-  public String credential;
+    @JsonField(name = "credential")
+    public String credential;
 }

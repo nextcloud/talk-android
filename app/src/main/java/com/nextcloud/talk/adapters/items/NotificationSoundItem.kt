@@ -26,9 +26,7 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import coil.api.load
-import com.nextcloud.talk.R.drawable
-import com.nextcloud.talk.R.id
-import com.nextcloud.talk.R.layout
+import com.nextcloud.talk.R.*
 import com.nextcloud.talk.adapters.items.NotificationSoundItem.NotificationSoundItemViewHolder
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -36,66 +34,66 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.viewholders.FlexibleViewHolder
 
 class NotificationSoundItem(
-  val notificationSoundName: String,
-  val notificationSoundUri: String?
+        val notificationSoundName: String,
+        val notificationSoundUri: String?
 ) : AbstractFlexibleItem<NotificationSoundItemViewHolder>() {
 
-  override fun equals(o: Any?): Boolean {
-    return false
-  }
-
-  override fun getLayoutRes(): Int {
-    return layout.rv_item_notification_sound
-  }
-
-  override fun createViewHolder(
-    view: View,
-    adapter: FlexibleAdapter<IFlexible<*>?>
-  ): NotificationSoundItemViewHolder {
-    return NotificationSoundItemViewHolder(view, adapter)
-  }
-
-  override fun bindViewHolder(
-    adapter: FlexibleAdapter<IFlexible<*>?>,
-    holder: NotificationSoundItemViewHolder,
-    position: Int,
-    payloads: List<Any>
-  ) {
-    holder.notificationName!!.text = notificationSoundName
-    if (adapter.isSelected(position)) {
-      holder.checkedImageView!!.visibility = View.VISIBLE
-    } else {
-      holder.checkedImageView!!.visibility = View.GONE
+    override fun equals(o: Any?): Boolean {
+        return false
     }
 
-    if (position == 0) {
-      holder.imageView!!.load(drawable.ic_stop_white_24dp)
-    } else {
-      holder.imageView!!.load(drawable.ic_play_circle_outline_white_24dp)
+    override fun getLayoutRes(): Int {
+        return layout.rv_item_notification_sound
     }
-  }
 
-  class NotificationSoundItemViewHolder(
-    view: View,
-    adapter: FlexibleAdapter<*>
-  ) : FlexibleViewHolder(view, adapter) {
-    @JvmField
-    @BindView(id.notificationNameTextView)
-    var notificationName: TextView? = null
-    @JvmField
-    @BindView(id.imageView)
-    var imageView: ImageView? = null
-    @JvmField
-    @BindView(id.checkedImageView)
-    var checkedImageView: ImageView? = null
-
-    /**
-     * Default constructor.
-     */
-
-    init {
-      ButterKnife.bind(this, view)
+    override fun createViewHolder(
+            view: View,
+            adapter: FlexibleAdapter<IFlexible<*>?>
+    ): NotificationSoundItemViewHolder {
+        return NotificationSoundItemViewHolder(view, adapter)
     }
-  }
+
+    override fun bindViewHolder(
+            adapter: FlexibleAdapter<IFlexible<*>?>,
+            holder: NotificationSoundItemViewHolder,
+            position: Int,
+            payloads: List<Any>
+    ) {
+        holder.notificationName!!.text = notificationSoundName
+        if (adapter.isSelected(position)) {
+            holder.checkedImageView!!.visibility = View.VISIBLE
+        } else {
+            holder.checkedImageView!!.visibility = View.GONE
+        }
+
+        if (position == 0) {
+            holder.imageView!!.load(drawable.ic_stop_white_24dp)
+        } else {
+            holder.imageView!!.load(drawable.ic_play_circle_outline_white_24dp)
+        }
+    }
+
+    class NotificationSoundItemViewHolder(
+            view: View,
+            adapter: FlexibleAdapter<*>
+    ) : FlexibleViewHolder(view, adapter) {
+        @JvmField
+        @BindView(id.notificationNameTextView)
+        var notificationName: TextView? = null
+        @JvmField
+        @BindView(id.imageView)
+        var imageView: ImageView? = null
+        @JvmField
+        @BindView(id.checkedImageView)
+        var checkedImageView: ImageView? = null
+
+        /**
+         * Default constructor.
+         */
+
+        init {
+            ButterKnife.bind(this, view)
+        }
+    }
 
 }

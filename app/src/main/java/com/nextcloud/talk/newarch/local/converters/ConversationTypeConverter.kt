@@ -22,24 +22,21 @@ package com.nextcloud.talk.newarch.local.converters
 
 import androidx.room.TypeConverter
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
-import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.GROUP_CONVERSATION
-import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
-import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.PUBLIC_CONVERSATION
-import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.SYSTEM_CONVERSATION
+import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.*
 
 class ConversationTypeConverter {
-  @TypeConverter
-  fun fromConversationTypeToInt(conversationType: ConversationType): Int {
-    return conversationType.value
-  }
-
-  @TypeConverter
-  fun fromIntToConversationType(value: Int): ConversationType {
-    when (value) {
-      1 -> return ONE_TO_ONE_CONVERSATION
-      2 -> return GROUP_CONVERSATION
-      3 -> return PUBLIC_CONVERSATION
-      else -> return SYSTEM_CONVERSATION
+    @TypeConverter
+    fun fromConversationTypeToInt(conversationType: ConversationType): Int {
+        return conversationType.value
     }
-  }
+
+    @TypeConverter
+    fun fromIntToConversationType(value: Int): ConversationType {
+        when (value) {
+            1 -> return ONE_TO_ONE_CONVERSATION
+            2 -> return GROUP_CONVERSATION
+            3 -> return PUBLIC_CONVERSATION
+            else -> return SYSTEM_CONVERSATION
+        }
+    }
 }

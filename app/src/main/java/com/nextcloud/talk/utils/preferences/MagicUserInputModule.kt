@@ -29,7 +29,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.yarolegovich.mp.io.StandardUserInputModule
 import com.yarolegovich.mp.io.UserInputModule
 import org.koin.core.KoinComponent
@@ -51,7 +50,7 @@ class MagicUserInputModule : StandardUserInputModule, KoinComponent {
             listener: UserInputModule.Listener<String>) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_edittext, null)
         val inputField = view.findViewById<EditText>(R.id.mp_text_input)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
             inputField.imeOptions = inputField.imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
         }
         if (defaultValue != null) {

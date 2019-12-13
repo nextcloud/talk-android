@@ -22,14 +22,17 @@ package com.nextcloud.talk.models.json.capabilities;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import java.util.List;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import java.util.List;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
 public class NotificationsCapability {
-  @JsonField(name = "ocs-endpoints")
-  public List<String> features;
+    @JsonField(name = "ocs-endpoints")
+    public List<String> features;
 }

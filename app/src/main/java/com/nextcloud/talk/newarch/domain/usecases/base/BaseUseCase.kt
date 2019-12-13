@@ -27,23 +27,23 @@ import kotlinx.coroutines.launch
 
 abstract class UseCase<Type, in Params>(private val apiErrorHandler: ApiErrorHandler?) where Type : Any {
 
-  abstract suspend fun run(params: Params? = null): Type
+    abstract suspend fun run(params: Params? = null): Type
 
-  fun invoke(
-    scope: CoroutineScope,
-    params: Params?,
-    onResult: (UseCaseResponse<Type>)
-  ) {
-    val backgroundJob = scope.async { run(params) }
-    scope.launch {
-      try {
-        backgroundJob.await()
-            .let {
-              onResult.onSuccess(it)
+    fun invoke(
+            scope: CoroutineScope,
+            params: Params?,
+            onResult: (UseCaseResponse<Type>)
+    ) {
+        val backgroundJob = scope.async { run(params) }
+        scope.launch {
+            try {
+                backgroundJob.await()
+                        .let {
+                            onResult.onSuccess(it)
+                        }
+            } catch (e: Exception) {
+                onResult.onError(apiErrorHandler?.traceErrorException(e))
             }
-      } catch (e: Exception) {
-        onResult.onError(apiErrorHandler?.traceErrorException(e))
-      }
+        }
     }
-  }
 }

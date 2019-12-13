@@ -36,7 +36,6 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.CapabilitiesWorker
@@ -74,7 +73,8 @@ class AccountVerificationController(args: Bundle?) : BaseController(), KoinCompo
     val usersRepository: UsersRepository by inject()
     val usersDao: UsersDao by inject()
 
-    @JvmField @BindView(R.id.progress_text)
+    @JvmField
+    @BindView(R.id.progress_text)
     internal var progressText: TextView? = null
 
     private var internalAccountId: Long = -1
@@ -213,8 +213,7 @@ class AccountVerificationController(args: Bundle?) : BaseController(), KoinCompo
                             }
                         }
 
-                        ApplicationWideMessageHolder.getInstance().setMessageType(
-                                ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK)
+                        ApplicationWideMessageHolder.getInstance().messageType = ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK
 
                         GlobalScope.launch {
                             abortVerification()
@@ -374,20 +373,20 @@ class AccountVerificationController(args: Bundle?) : BaseController(), KoinCompo
         usersRepository.setUserAsActiveWithId(internalAccountId)
 
         if (activity != null) {
-                if (usersRepository.getUsers().count() == 1) {
-                    activity!!.runOnUiThread {
-                        router.setRoot(RouterTransaction.with(ConversationsListView())
-                                .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler()))
-                    }
-                } else {
-                    if (isAccountImport) {
-                        ApplicationWideMessageHolder.getInstance().messageType = ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
-                    }
-                    activity!!.runOnUiThread {
-                        router.popToRoot()
-                    }
+            if (usersRepository.getUsers().count() == 1) {
+                activity!!.runOnUiThread {
+                    router.setRoot(RouterTransaction.with(ConversationsListView())
+                            .pushChangeHandler(HorizontalChangeHandler())
+                            .popChangeHandler(HorizontalChangeHandler()))
                 }
+            } else {
+                if (isAccountImport) {
+                    ApplicationWideMessageHolder.getInstance().messageType = ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
+                }
+                activity!!.runOnUiThread {
+                    router.popToRoot()
+                }
+            }
         }
     }
 

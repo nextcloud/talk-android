@@ -21,8 +21,8 @@
 package com.nextcloud.talk.newarch.features.conversationsList
 
 enum class ConversationsListViewState {
-  LOADING,
-  LOADED_EMPTY,
-  LOADED,
-  FAILED
+    LOADING,
+    LOADED_EMPTY,
+    LOADED,
+    FAILED
 }

@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.newarch.data.repository.online
 
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -28,58 +27,57 @@ import com.nextcloud.talk.newarch.data.source.remote.ApiService
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
-import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 
 class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : NextcloudTalkRepository {
-  override suspend fun deleteConversationForUser(
-    user: UserNgEntity,
-    conversation: Conversation
-  ): GenericOverall {
-    return apiService.deleteConversation(
-        user.getCredentials(), ApiUtils.getRoom(user.baseUrl, conversation.token)
-    )
-  }
-
-  override suspend fun leaveConversationForUser(
-    user: UserNgEntity,
-    conversation: Conversation
-  ): GenericOverall {
-    return apiService.leaveConversation(
-        user.getCredentials(), ApiUtils.getUrlForRemoveSelfFromRoom(
-        user
-            .baseUrl, conversation.token
-    )
-    )
-  }
-
-  override suspend fun getConversationForUser(userEntity: UserNgEntity, conversationToken: String): RoomOverall {
-    return apiService.getConversation(userEntity.getCredentials(), conversationToken)
-  }
-
-  override suspend fun setFavoriteValueForConversation(
-    user: UserNgEntity,
-    conversation: Conversation,
-    favorite: Boolean
-  ): GenericOverall {
-    if (favorite) {
-      return apiService.addConversationToFavorites(
-          user.getCredentials(),
-          ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
-      )
-    } else {
-      return apiService.removeConversationFromFavorites(
-          user.getCredentials(),
-          ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
-      )
+    override suspend fun deleteConversationForUser(
+            user: UserNgEntity,
+            conversation: Conversation
+    ): GenericOverall {
+        return apiService.deleteConversation(
+                user.getCredentials(), ApiUtils.getRoom(user.baseUrl, conversation.token)
+        )
     }
-  }
 
-  override suspend fun getConversationsForUser(user: UserNgEntity): List<Conversation> {
-    return apiService.getConversations(
-        user.getCredentials(),
-        ApiUtils.getUrlForGetRooms(user.baseUrl)
-    )
-        .ocs.data
-  }
+    override suspend fun leaveConversationForUser(
+            user: UserNgEntity,
+            conversation: Conversation
+    ): GenericOverall {
+        return apiService.leaveConversation(
+                user.getCredentials(), ApiUtils.getUrlForRemoveSelfFromRoom(
+                user
+                        .baseUrl, conversation.token
+        )
+        )
+    }
+
+    override suspend fun getConversationForUser(userEntity: UserNgEntity, conversationToken: String): RoomOverall {
+        return apiService.getConversation(userEntity.getCredentials(), conversationToken)
+    }
+
+    override suspend fun setFavoriteValueForConversation(
+            user: UserNgEntity,
+            conversation: Conversation,
+            favorite: Boolean
+    ): GenericOverall {
+        if (favorite) {
+            return apiService.addConversationToFavorites(
+                    user.getCredentials(),
+                    ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
+            )
+        } else {
+            return apiService.removeConversationFromFavorites(
+                    user.getCredentials(),
+                    ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
+            )
+        }
+    }
+
+    override suspend fun getConversationsForUser(user: UserNgEntity): List<Conversation> {
+        return apiService.getConversations(
+                user.getCredentials(),
+                ApiUtils.getUrlForGetRooms(user.baseUrl)
+        )
+                .ocs.data
+    }
 }

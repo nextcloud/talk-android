@@ -30,33 +30,33 @@ import com.bluelinelabs.conductor.Controller
 
 abstract class ButterKnifeController : Controller {
 
-  protected var unbinder: Unbinder? = null
+    protected var unbinder: Unbinder? = null
 
-  constructor()
+    constructor()
 
-  constructor(args: Bundle) : super(args)
+    constructor(args: Bundle) : super(args)
 
-  protected abstract fun inflateView(
-    inflater: LayoutInflater,
-    container: ViewGroup
-  ): View
+    protected abstract fun inflateView(
+            inflater: LayoutInflater,
+            container: ViewGroup
+    ): View
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup
-  ): View {
-    val view = inflateView(inflater, container)
-    unbinder = ButterKnife.bind(this, view)
-    onViewBound(view)
-    return view
-  }
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup
+    ): View {
+        val view = inflateView(inflater, container)
+        unbinder = ButterKnife.bind(this, view)
+        onViewBound(view)
+        return view
+    }
 
-  protected open fun onViewBound(view: View) {}
+    protected open fun onViewBound(view: View) {}
 
-  override fun onDestroyView(view: View) {
-    super.onDestroyView(view)
-    unbinder!!.unbind()
-    unbinder = null
-  }
+    override fun onDestroyView(view: View) {
+        super.onDestroyView(view)
+        unbinder!!.unbind()
+        unbinder = null
+    }
 
 }

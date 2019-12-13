@@ -25,17 +25,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
-import com.nextcloud.talk.newarch.local.models.ConversationEntity
 import com.nextcloud.talk.newarch.local.models.MessageEntity
 
 @Dao
 abstract class MessagesDao {
-  @Query("SELECT * FROM messages WHERE conversation_id = :conversationId")
-  abstract fun getMessagesWithUserForConversation(conversationId: String):
-      LiveData<List<MessageEntity>>
+    @Query("SELECT * FROM messages WHERE conversation_id = :conversationId")
+    abstract fun getMessagesWithUserForConversation(conversationId: String):
+            LiveData<List<MessageEntity>>
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  abstract suspend fun saveMessagesWithInsert(vararg messages: MessageEntity): List<Long>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun saveMessagesWithInsert(vararg messages: MessageEntity): List<Long>
 }

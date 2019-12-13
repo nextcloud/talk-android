@@ -23,13 +23,15 @@ package com.nextcloud.talk.models.json.userprofile;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
 public class UserProfileOCS extends GenericOCS {
-  @JsonField(name = "data")
-  public UserProfileData data;
+    @JsonField(name = "data")
+    public UserProfileData data;
 }

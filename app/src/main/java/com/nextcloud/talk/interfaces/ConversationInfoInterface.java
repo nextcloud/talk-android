@@ -21,6 +21,7 @@
 package com.nextcloud.talk.interfaces;
 
 public interface ConversationInfoInterface {
-  void conversationNameSet(String name);
-  void passwordSet(boolean isCleared);
+    void conversationNameSet(String name);
+
+    void passwordSet(boolean isCleared);
 }

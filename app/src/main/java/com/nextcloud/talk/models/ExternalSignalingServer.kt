@@ -32,8 +32,8 @@ import org.parceler.Parcel
 @JsonObject
 @Parcelize
 data class ExternalSignalingServer(
-  @JsonField(name = ["externalSignalingServer"])
-  var externalSignalingServer: String? = null,
-  @JsonField(name = ["externalSignalingTicket"])
-  var externalSignalingTicket: String? = null
-): Parcelable
+        @JsonField(name = ["externalSignalingServer"])
+        var externalSignalingServer: String? = null,
+        @JsonField(name = ["externalSignalingTicket"])
+        var externalSignalingTicket: String? = null
+) : Parcelable

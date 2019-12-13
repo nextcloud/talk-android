@@ -29,44 +29,34 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-
 import butterknife.BindView
-
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.AdvancedUserItem
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
-import com.nextcloud.talk.models.ImportAccount
-import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.AccountUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.UserUtils
-import com.uber.autodispose.AutoDispose
-
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
 import org.koin.android.ext.android.inject
-
 import java.net.CookieManager
-import java.util.ArrayList
+import java.util.*
 
 class SwitchAccountController : BaseController {
-    @JvmField @BindView(R.id.recyclerView)
+    @JvmField
+    @BindView(R.id.recyclerView)
     internal var recyclerView: RecyclerView? = null
 
     val cookieManager: CookieManager by inject()
     val userUtils: UserUtils by inject()
 
-    @JvmField @BindView(R.id.swipe_refresh_layout)
+    @JvmField
+    @BindView(R.id.swipe_refresh_layout)
     internal var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
     private val userItems = ArrayList<AbstractFlexibleItem<*>>()

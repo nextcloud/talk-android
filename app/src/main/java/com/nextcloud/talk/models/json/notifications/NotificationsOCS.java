@@ -23,14 +23,17 @@ package com.nextcloud.talk.models.json.notifications;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-import java.util.List;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import java.util.List;
+
+import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class NotificationsOCS extends GenericOCS {
-  @JsonField(name = "data")
-  List<Notification> notificationsList;
+    @JsonField(name = "data")
+    List<Notification> notificationsList;
 }

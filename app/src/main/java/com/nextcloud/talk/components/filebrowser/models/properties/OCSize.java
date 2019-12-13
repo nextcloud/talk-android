@@ -21,53 +21,57 @@
 package com.nextcloud.talk.components.filebrowser.models.properties;
 
 import android.text.TextUtils;
-import at.bitfire.dav4jvm.Property;
-import at.bitfire.dav4jvm.PropertyFactory;
-import at.bitfire.dav4jvm.XmlUtils;
+
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils;
-import java.io.IOException;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+
+import at.bitfire.dav4jvm.Property;
+import at.bitfire.dav4jvm.PropertyFactory;
+import at.bitfire.dav4jvm.XmlUtils;
+import lombok.Getter;
+import lombok.Setter;
+
 public class OCSize implements Property {
-  public static final Property.Name NAME =
-      new Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_SIZE);
+    public static final Property.Name NAME =
+            new Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_SIZE);
 
-  @Getter
-  @Setter
-  private long ocSize;
+    @Getter
+    @Setter
+    private long ocSize;
 
-  private OCSize(long size) {
-    ocSize = size;
-  }
+    private OCSize(long size) {
+        ocSize = size;
+    }
 
-  public static class Factory implements PropertyFactory {
+    public static class Factory implements PropertyFactory {
 
-    @Nullable
-    @Override
-    public Property create(@NotNull XmlPullParser xmlPullParser) {
-      try {
-        String text = XmlUtils.INSTANCE.readText(xmlPullParser);
-        if (!TextUtils.isEmpty(text)) {
-          return new OCSize(Long.parseLong(text));
+        @Nullable
+        @Override
+        public Property create(@NotNull XmlPullParser xmlPullParser) {
+            try {
+                String text = XmlUtils.INSTANCE.readText(xmlPullParser);
+                if (!TextUtils.isEmpty(text)) {
+                    return new OCSize(Long.parseLong(text));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            }
+
+            return new OCSize(-1);
         }
-      } catch (IOException e) {
-        e.printStackTrace();
-      } catch (XmlPullParserException e) {
-        e.printStackTrace();
-      }
 
-      return new OCSize(-1);
+        @NotNull
+        @Override
+        public Name getName() {
+            return NAME;
+        }
     }
-
-    @NotNull
-    @Override
-    public Name getName() {
-      return NAME;
-    }
-  }
 }

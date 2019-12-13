@@ -23,11 +23,12 @@ package com.nextcloud.talk.models.json.participants;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.conversations.RoomsOCS;
+
 import lombok.Data;
 
 @Data
 @JsonObject
 public class AddParticipantOverall {
-  @JsonField(name = "ocs")
-  RoomsOCS ocs;
+    @JsonField(name = "ocs")
+    RoomsOCS ocs;
 }

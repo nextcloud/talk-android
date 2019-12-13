@@ -32,14 +32,14 @@ import org.parceler.Parcel
 @JsonObject
 @Parcelize
 class PushConfigurationState(
-  @JsonField(name = ["pushToken"])
-  var pushToken: String? = null,
-  @JsonField(name = ["deviceIdentifier"])
-  var deviceIdentifier: String? = null,
-  @JsonField(name = ["deviceIdentifierSignature"])
-  var deviceIdentifierSignature: String? = null,
-  @JsonField(name = ["userPublicKey"])
-  var userPublicKey: String? = null,
-  @JsonField(name = ["usesRegularPass"])
-  var usesRegularPass: Boolean = false
-): Parcelable
+        @JsonField(name = ["pushToken"])
+        var pushToken: String? = null,
+        @JsonField(name = ["deviceIdentifier"])
+        var deviceIdentifier: String? = null,
+        @JsonField(name = ["deviceIdentifierSignature"])
+        var deviceIdentifierSignature: String? = null,
+        @JsonField(name = ["userPublicKey"])
+        var userPublicKey: String? = null,
+        @JsonField(name = ["usesRegularPass"])
+        var usesRegularPass: Boolean = false
+) : Parcelable

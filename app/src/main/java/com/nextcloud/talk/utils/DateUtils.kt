@@ -21,26 +21,24 @@
 package com.nextcloud.talk.utils
 
 import java.text.DateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 object DateUtils {
-  fun getLocalDateTimeStringFromTimestamp(timestamp: Long): String {
-    val cal = Calendar.getInstance()
-    val tz = cal.timeZone
+    fun getLocalDateTimeStringFromTimestamp(timestamp: Long): String {
+        val cal = Calendar.getInstance()
+        val tz = cal.timeZone
 
-    /* date formatter in local timezone */
-    val format = DateFormat.getDateTimeInstance(
-        DateFormat.DEFAULT, DateFormat.SHORT, Locale
-        .getDefault()
-    )
-    format.timeZone = tz
+        /* date formatter in local timezone */
+        val format = DateFormat.getDateTimeInstance(
+                DateFormat.DEFAULT, DateFormat.SHORT, Locale
+                .getDefault()
+        )
+        format.timeZone = tz
 
-    return format.format(Date(timestamp))
-  }
+        return format.format(Date(timestamp))
+    }
 
-  fun getLocalDateStringFromTimestampForLobby(timestamp: Long): String {
-    return getLocalDateTimeStringFromTimestamp(timestamp * 1000)
-  }
+    fun getLocalDateStringFromTimestampForLobby(timestamp: Long): String {
+        return getLocalDateTimeStringFromTimestamp(timestamp * 1000)
+    }
 }

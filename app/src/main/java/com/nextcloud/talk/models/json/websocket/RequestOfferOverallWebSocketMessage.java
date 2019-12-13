@@ -22,13 +22,15 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @JsonObject
 @Parcel
 public class RequestOfferOverallWebSocketMessage extends BaseWebSocketMessage {
-  @JsonField(name = "message")
-  public RequestOfferSignalingMessage requestOfferOverallWebSocketMessage;
+    @JsonField(name = "message")
+    public RequestOfferSignalingMessage requestOfferOverallWebSocketMessage;
 }

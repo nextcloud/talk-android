@@ -22,19 +22,21 @@ package com.nextcloud.talk.models.json.notifications;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class NotificationRichObject {
-  @JsonField(name = "id")
-  String label;
+    @JsonField(name = "id")
+    String label;
 
-  @JsonField(name = "type")
-  String type;
+    @JsonField(name = "type")
+    String type;
 
-  @JsonField(name = "name")
-  String name;
+    @JsonField(name = "name")
+    String name;
 }

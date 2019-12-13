@@ -22,13 +22,15 @@ package com.nextcloud.talk.models.json.push;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class PushRegistrationOverall {
-  @JsonField(name = "ocs")
-  public PushRegistrationOCS ocs;
+    @JsonField(name = "ocs")
+    public PushRegistrationOCS ocs;
 }

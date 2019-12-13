@@ -23,11 +23,11 @@ package com.nextcloud.talk.newarch.mvvm.ext
 import androidx.recyclerview.widget.RecyclerView
 
 fun RecyclerView.initRecyclerView(
-  layoutManager: RecyclerView.LayoutManager,
-  adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
-  hasFixedSize: Boolean = true
+        layoutManager: RecyclerView.LayoutManager,
+        adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
+        hasFixedSize: Boolean = true
 ) {
-  this.layoutManager = layoutManager
-  this.adapter = adapter
-  setHasFixedSize(hasFixedSize)
+    this.layoutManager = layoutManager
+    this.adapter = adapter
+    setHasFixedSize(hasFixedSize)
 }

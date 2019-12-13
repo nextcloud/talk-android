@@ -23,19 +23,21 @@ package com.nextcloud.talk.models.json.websocket;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @JsonObject
 @Parcel
 public class CallWebSocketMessage {
-  @JsonField(name = "recipient")
-  public ActorWebSocketMessage recipientWebSocketMessage;
+    @JsonField(name = "recipient")
+    public ActorWebSocketMessage recipientWebSocketMessage;
 
-  @JsonField(name = "sender")
-  public ActorWebSocketMessage senderWebSocketMessage;
+    @JsonField(name = "sender")
+    public ActorWebSocketMessage senderWebSocketMessage;
 
-  @JsonField(name = "data")
-  public NCSignalingMessage ncSignalingMessage;
+    @JsonField(name = "data")
+    public NCSignalingMessage ncSignalingMessage;
 }

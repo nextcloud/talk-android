@@ -24,6 +24,6 @@ import androidx.lifecycle.LiveData
 import com.nextcloud.talk.models.json.chat.ChatMessage
 
 interface MessagesRepository {
-  fun getMessagesWithUserForConversation(conversationId: String): LiveData<List<ChatMessage>>
+    fun getMessagesWithUserForConversation(conversationId: String): LiveData<List<ChatMessage>>
 
 }

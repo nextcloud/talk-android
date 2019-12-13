@@ -28,7 +28,7 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.util.*
 
-class WebSocketConnectionHelper: KoinComponent {
+class WebSocketConnectionHelper : KoinComponent {
     val okHttpClient: OkHttpClient by inject()
 
     fun getAssembledHelloModel(userEntity: UserNgEntity, ticket: String?): HelloOverallWebSocketMessage {

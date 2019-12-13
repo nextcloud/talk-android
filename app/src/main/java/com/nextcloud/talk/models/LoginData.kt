@@ -22,13 +22,11 @@ package com.nextcloud.talk.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import lombok.Data
-import org.parceler.Parcel
 
 @Parcelize
-data class LoginData (
-  var serverUrl: String? = null,
-  var username: String? = null,
-  var token: String? = null
-): Parcelable
+data class LoginData(
+        var serverUrl: String? = null,
+        var username: String? = null,
+        var token: String? = null
+) : Parcelable
 

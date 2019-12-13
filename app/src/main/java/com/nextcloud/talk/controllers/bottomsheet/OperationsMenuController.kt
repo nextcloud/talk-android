@@ -26,7 +26,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,11 +37,9 @@ import android.widget.TextView
 import butterknife.BindView
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
-import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.BottomSheetLockEvent
 import com.nextcloud.talk.models.RetrofitBucket
@@ -59,34 +56,36 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import java.io.IOException
-import java.util.ArrayList
-import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
 import retrofit2.HttpException
+import java.util.*
 
 class OperationsMenuController(args: Bundle) : BaseController() {
 
-    @JvmField @BindView(R.id.progress_bar)
+    @JvmField
+    @BindView(R.id.progress_bar)
     internal var progressBar: ProgressBar? = null
 
-    @JvmField @BindView(R.id.result_image_view)
+    @JvmField
+    @BindView(R.id.result_image_view)
     internal var resultImageView: ImageView? = null
 
-    @JvmField @BindView(R.id.result_text_view)
+    @JvmField
+    @BindView(R.id.result_text_view)
     internal var resultsTextView: TextView? = null
 
-    @JvmField @BindView(R.id.ok_button)
+    @JvmField
+    @BindView(R.id.ok_button)
     internal var okButton: Button? = null
 
-    @JvmField @BindView(R.id.web_button)
+    @JvmField
+    @BindView(R.id.web_button)
     internal var webButton: Button? = null
 
     val ncApi: NcApi by inject()
@@ -614,7 +613,7 @@ class OperationsMenuController(args: Bundle) : BaseController() {
             callIntent.putExtras(bundle)
 
             val imm = activity!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
 
             Handler().postDelayed({ parentController!!.router.popCurrentController() },
                     100)
@@ -645,8 +644,7 @@ class OperationsMenuController(args: Bundle) : BaseController() {
                 if (e.response()!!.code() == 403) {
                     eventBus.post(BottomSheetLockEvent(true, 0, false,
                             false))
-                    ApplicationWideMessageHolder.getInstance()
-                            .setMessageType(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG)
+                    ApplicationWideMessageHolder.getInstance().messageType = ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG
                     router.popCurrentController()
                 } else {
                     showResultImage(false, false)

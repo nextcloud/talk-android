@@ -24,16 +24,18 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class RoomPropertiesWebSocketMessage {
-  @JsonField(name = "name")
-  public String name;
+    @JsonField(name = "name")
+    public String name;
 
-  @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
-  public Conversation.ConversationType roomType;
+    @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
+    public Conversation.ConversationType roomType;
 }

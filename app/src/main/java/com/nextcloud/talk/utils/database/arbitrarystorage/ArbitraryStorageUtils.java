@@ -20,6 +20,7 @@
 package com.nextcloud.talk.utils.database.arbitrarystorage;
 
 import androidx.annotation.Nullable;
+
 import com.nextcloud.talk.models.database.ArbitraryStorage;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
 
@@ -31,41 +32,41 @@ import io.requery.reactivex.ReactiveEntityStore;
 import io.requery.reactivex.ReactiveScalar;
 
 public class ArbitraryStorageUtils {
-  private ReactiveEntityStore<Persistable> dataStore;
+    private ReactiveEntityStore<Persistable> dataStore;
 
-  public ArbitraryStorageUtils(ReactiveEntityStore<Persistable> dataStore) {
-    this.dataStore = dataStore;
-  }
+    public ArbitraryStorageUtils(ReactiveEntityStore<Persistable> dataStore) {
+        this.dataStore = dataStore;
+    }
 
-  public void storeStorageSetting(long accountIdentifier, String key, String value, String object) {
-    ArbitraryStorageEntity arbitraryStorageEntity = new ArbitraryStorageEntity();
-    arbitraryStorageEntity.setAccountIdentifier(accountIdentifier);
-    arbitraryStorageEntity.setKey(key);
-    arbitraryStorageEntity.setValue(value);
-    arbitraryStorageEntity.setObject(object);
+    public void storeStorageSetting(long accountIdentifier, String key, String value, String object) {
+        ArbitraryStorageEntity arbitraryStorageEntity = new ArbitraryStorageEntity();
+        arbitraryStorageEntity.setAccountIdentifier(accountIdentifier);
+        arbitraryStorageEntity.setKey(key);
+        arbitraryStorageEntity.setValue(value);
+        arbitraryStorageEntity.setObject(object);
 
-    dataStore.upsert(arbitraryStorageEntity)
-        .toObservable()
-        .subscribeOn(Schedulers.io())
-        .subscribe();
-  }
+        dataStore.upsert(arbitraryStorageEntity)
+                .toObservable()
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
 
-  public ArbitraryStorageEntity getStorageSetting(long accountIdentifier, String key,
-      @Nullable String object) {
-    Result findStorageQueryResult = dataStore.select(ArbitraryStorage.class)
-        .where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier)
-            .and(ArbitraryStorageEntity.KEY.eq(key)).and(ArbitraryStorageEntity.OBJECT.eq(object)))
-        .limit(1).get();
+    public ArbitraryStorageEntity getStorageSetting(long accountIdentifier, String key,
+                                                    @Nullable String object) {
+        Result findStorageQueryResult = dataStore.select(ArbitraryStorage.class)
+                .where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier)
+                        .and(ArbitraryStorageEntity.KEY.eq(key)).and(ArbitraryStorageEntity.OBJECT.eq(object)))
+                .limit(1).get();
 
-    return (ArbitraryStorageEntity) findStorageQueryResult.firstOrNull();
-  }
+        return (ArbitraryStorageEntity) findStorageQueryResult.firstOrNull();
+    }
 
-  public Observable deleteAllEntriesForAccountIdentifier(long accountIdentifier) {
-    ReactiveScalar<Integer> deleteResult = dataStore.delete(ArbitraryStorage.class)
-        .where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier))
-        .get();
+    public Observable deleteAllEntriesForAccountIdentifier(long accountIdentifier) {
+        ReactiveScalar<Integer> deleteResult = dataStore.delete(ArbitraryStorage.class)
+                .where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier))
+                .get();
 
-    return deleteResult.single().toObservable()
-        .subscribeOn(Schedulers.io());
-  }
+        return deleteResult.single().toObservable()
+                .subscribeOn(Schedulers.io());
+    }
 }

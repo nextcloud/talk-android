@@ -21,11 +21,12 @@ package com.nextcloud.talk.models.json.notifications;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import lombok.Data;
 
 @Data
 @JsonObject
 public class NotificationsOverall {
-  @JsonField(name = "ocs")
-  NotificationsOCS ocs;
+    @JsonField(name = "ocs")
+    NotificationsOCS ocs;
 }

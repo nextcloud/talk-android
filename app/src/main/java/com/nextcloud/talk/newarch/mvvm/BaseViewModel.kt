@@ -30,24 +30,24 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 
 abstract class BaseViewModel<V : BaseView>(application: Application) : AndroidViewModel(
-    application
+        application
 ) {
 
-  protected val disposables: CompositeDisposable = CompositeDisposable()
-  protected val context: Context = application.applicationContext
+    protected val disposables: CompositeDisposable = CompositeDisposable()
+    protected val context: Context = application.applicationContext
 
-  val backgroundAndUIScope = CoroutineScope(
-      Job() + Dispatchers.Main
-  )
+    val backgroundAndUIScope = CoroutineScope(
+            Job() + Dispatchers.Main
+    )
 
-  val backgroundScope = CoroutineScope(
-      Job()
-  )
+    val backgroundScope = CoroutineScope(
+            Job()
+    )
 
-  override fun onCleared() {
-    super.onCleared()
-    disposables.clear()
-    backgroundAndUIScope.cancel()
-    backgroundScope.cancel()
-  }
+    override fun onCleared() {
+        super.onCleared()
+        disposables.clear()
+        backgroundAndUIScope.cancel()
+        backgroundScope.cancel()
+    }
 }

@@ -24,17 +24,17 @@ import lombok.Data;
 
 @Data
 public class EventStatus {
-  public long userId;
-  public EventType eventType;
-  public boolean allGood;
+    public long userId;
+    public EventType eventType;
+    public boolean allGood;
 
-  public EventStatus(long userId, EventType eventType, boolean allGood) {
-    this.userId = userId;
-    this.eventType = eventType;
-    this.allGood = allGood;
-  }
+    public EventStatus(long userId, EventType eventType, boolean allGood) {
+        this.userId = userId;
+        this.eventType = eventType;
+        this.allGood = allGood;
+    }
 
-  public enum EventType {
-    PUSH_REGISTRATION, CAPABILITIES_FETCH, SIGNALING_SETTINGS, CONVERSATION_UPDATE, PARTICIPANTS_UPDATE
-  }
+    public enum EventType {
+        PUSH_REGISTRATION, CAPABILITIES_FETCH, SIGNALING_SETTINGS, CONVERSATION_UPDATE, PARTICIPANTS_UPDATE
+    }
 }

@@ -23,40 +23,42 @@ package com.nextcloud.talk.models.json.push;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class DecryptedPushMessage {
-  @JsonField(name = "app")
-  public String app;
+    @JsonField(name = "app")
+    public String app;
 
-  @JsonField(name = "type")
-  public String type;
+    @JsonField(name = "type")
+    public String type;
 
-  @JsonField(name = "subject")
-  public String subject;
+    @JsonField(name = "subject")
+    public String subject;
 
-  @JsonField(name = "id")
-  public String id;
+    @JsonField(name = "id")
+    public String id;
 
-  @JsonField(name = "nid")
-  public long notificationId;
+    @JsonField(name = "nid")
+    public long notificationId;
 
-  @JsonField(name = "delete")
-  public boolean delete;
+    @JsonField(name = "delete")
+    public boolean delete;
 
-  @JsonField(name = "delete-all")
-  public boolean deleteAll;
+    @JsonField(name = "delete-all")
+    public boolean deleteAll;
 
-  @JsonIgnore
-  public NotificationUser notificationUser;
+    @JsonIgnore
+    public NotificationUser notificationUser;
 
-  @JsonIgnore
-  public String text;
+    @JsonIgnore
+    public String text;
 
-  @JsonIgnore
-  public long timestamp;
+    @JsonIgnore
+    public long timestamp;
 }

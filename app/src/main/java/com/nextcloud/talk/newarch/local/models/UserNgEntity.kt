@@ -35,56 +35,56 @@ import kotlinx.android.parcel.RawValue
 @Parcelize
 @Entity(tableName = "users")
 data class UserNgEntity(
-  @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long?,
-  @ColumnInfo(name = "user_id") var userId: String,
-  @ColumnInfo(name = "username") var username: String,
-  @ColumnInfo(name = "base_url") var baseUrl: String,
-  @ColumnInfo(name = "token") var token: String? = null,
-  @ColumnInfo(name = "display_name") var displayName: String? = null,
-  @ColumnInfo(
-      name = "push_configuration"
-  ) var pushConfiguration: PushConfigurationState? = null,
-  @ColumnInfo(name = "capabilities") var capabilities: @RawValue Capabilities? = null,
-  @ColumnInfo(name = "client_auth_cert") var clientCertificate: String? = null,
-  @ColumnInfo(
-      name = "external_signaling"
-  ) var externalSignaling: ExternalSignalingServer? = null,
-  @ColumnInfo(name = "status") var status: UserStatus? = null
+        @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long?,
+        @ColumnInfo(name = "user_id") var userId: String,
+        @ColumnInfo(name = "username") var username: String,
+        @ColumnInfo(name = "base_url") var baseUrl: String,
+        @ColumnInfo(name = "token") var token: String? = null,
+        @ColumnInfo(name = "display_name") var displayName: String? = null,
+        @ColumnInfo(
+                name = "push_configuration"
+        ) var pushConfiguration: PushConfigurationState? = null,
+        @ColumnInfo(name = "capabilities") var capabilities: @RawValue Capabilities? = null,
+        @ColumnInfo(name = "client_auth_cert") var clientCertificate: String? = null,
+        @ColumnInfo(
+                name = "external_signaling"
+        ) var externalSignaling: ExternalSignalingServer? = null,
+        @ColumnInfo(name = "status") var status: UserStatus? = null
 ) : Parcelable {
-  fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
-    val capabilityExists = capabilities?.spreedCapability?.features?.contains(capabilityName)
-    if (capabilityExists != null) {
-      return capabilityExists
-    } else {
-      return false
-    }
+    fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
+        val capabilityExists = capabilities?.spreedCapability?.features?.contains(capabilityName)
+        if (capabilityExists != null) {
+            return capabilityExists
+        } else {
+            return false
+        }
 
-  }
+    }
 }
 
 fun UserNgEntity.getCredentials() = ApiUtils.getCredentials(username, token)
 
 fun UserNgEntity.hasExternalCapability(capabilityName: String): Boolean {
-  val capabilityExists = capabilities?.externalCapability?.get("v1")
-      ?.contains(capabilityName)
-  if (capabilityExists != null) {
-    return capabilityExists
-  } else {
-    return false
-  }
+    val capabilityExists = capabilities?.externalCapability?.get("v1")
+            ?.contains(capabilityName)
+    if (capabilityExists != null) {
+        return capabilityExists
+    } else {
+        return false
+    }
 }
 
 fun UserNgEntity.hasSpreedFeatureCapability(capabilityName: String): Boolean {
-  val capabilityExists = capabilities?.spreedCapability?.features?.contains(capabilityName)
-  if (capabilityExists != null) {
-    return capabilityExists
-  } else {
-    return false
-  }
+    val capabilityExists = capabilities?.spreedCapability?.features?.contains(capabilityName)
+    if (capabilityExists != null) {
+        return capabilityExists
+    } else {
+        return false
+    }
 }
 
 fun UserNgEntity.maxMessageLength(): Int {
-  val maxLength = capabilities?.spreedCapability?.config?.get("chat")
-      ?.get("max-length")
-  return maxLength?.toInt() ?: 1000
+    val maxLength = capabilities?.spreedCapability?.config?.get("chat")
+            ?.get("max-length")
+    return maxLength?.toInt() ?: 1000
 }

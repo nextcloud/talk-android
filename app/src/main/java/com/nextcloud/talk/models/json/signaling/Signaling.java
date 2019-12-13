@@ -22,6 +22,7 @@ package com.nextcloud.talk.models.json.signaling;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import lombok.Data;
 
 /**
@@ -31,9 +32,9 @@ import lombok.Data;
 @Data
 @JsonObject
 public class Signaling {
-  @JsonField(name = "type")
-  public String type;
-  //can be NCMessageWrapper or List<HashMap<String,String>>
-  @JsonField(name = "data")
-  public Object messageWrapper;
+    @JsonField(name = "type")
+    public String type;
+    //can be NCMessageWrapper or List<HashMap<String,String>>
+    @JsonField(name = "data")
+    public Object messageWrapper;
 }

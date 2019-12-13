@@ -29,103 +29,103 @@ import android.telephony.TelephonyManager
 import com.nextcloud.talk.application.NextcloudTalkApplication
 
 object DoNotDisturbUtils {
-  fun isDnDActive(): Boolean {
-    val context = NextcloudTalkApplication.sharedApplication?.applicationContext
+    fun isDnDActive(): Boolean {
+        val context = NextcloudTalkApplication.sharedApplication?.applicationContext
 
-    val notificationManager =
-      context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      if (notificationManager.currentInterruptionFilter == NotificationManager
-              .INTERRUPTION_FILTER_NONE || notificationManager
-              .currentInterruptionFilter == NotificationManager
-              .INTERRUPTION_FILTER_ALARMS || notificationManager
-              .currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY
-      ) {
-        return true
-      }
+        val notificationManager =
+                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (notificationManager.currentInterruptionFilter == NotificationManager
+                            .INTERRUPTION_FILTER_NONE || notificationManager
+                            .currentInterruptionFilter == NotificationManager
+                            .INTERRUPTION_FILTER_ALARMS || notificationManager
+                            .currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY
+            ) {
+                return true
+            }
+        }
+
+        return false
+
     }
 
-    return false
+    fun isInDoNotDisturbWithPriority(): Boolean {
+        val context = NextcloudTalkApplication.sharedApplication?.applicationContext
 
-  }
+        val notificationManager =
+                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (notificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) {
+                return true
+            }
+        }
 
-  fun isInDoNotDisturbWithPriority(): Boolean {
-    val context = NextcloudTalkApplication.sharedApplication?.applicationContext
-
-    val notificationManager =
-      context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      if (notificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_PRIORITY) {
-        return true
-      }
+        return false
     }
 
-    return false
-  }
+    fun areWeInTelephonyCall(context: Context): Boolean {
+        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        if (telephonyManager.callState != TelephonyManager.CALL_STATE_IDLE) {
+            return true
+        }
 
-  fun areWeInTelephonyCall(context: Context): Boolean {
-    val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-    if (telephonyManager.callState != TelephonyManager.CALL_STATE_IDLE) {
-      return true
+        return false
     }
 
-    return false
-  }
+    fun shouldPlaySound(importantConversation: Boolean): Boolean {
+        val context = NextcloudTalkApplication.sharedApplication?.applicationContext
 
-  fun shouldPlaySound(importantConversation: Boolean): Boolean {
-    val context = NextcloudTalkApplication.sharedApplication?.applicationContext
+        val notificationManager =
+                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-    val notificationManager =
-      context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        var shouldPlaySound = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (notificationManager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL) {
+                shouldPlaySound = false
+            }
+        }
 
-    var shouldPlaySound = true
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      if (notificationManager.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL) {
-        shouldPlaySound = false
-      }
+        if (shouldPlaySound) {
+            if (audioManager.ringerMode != AudioManager.RINGER_MODE_NORMAL) {
+                shouldPlaySound = false
+            }
+        }
+
+        if (!shouldPlaySound && importantConversation) {
+            shouldPlaySound = true
+        }
+
+        if (areWeInTelephonyCall(context)) {
+            shouldPlaySound = false
+        }
+
+        return shouldPlaySound
     }
 
-    if (shouldPlaySound) {
-      if (audioManager.ringerMode != AudioManager.RINGER_MODE_NORMAL) {
-        shouldPlaySound = false
-      }
+    fun hasVibrator(): Boolean {
+        val context = NextcloudTalkApplication.sharedApplication?.applicationContext
+        val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        return vibrator.hasVibrator()
     }
 
-    if (!shouldPlaySound && importantConversation) {
-      shouldPlaySound = true
+    fun shouldVibrate(vibrate: Boolean): Boolean {
+        val context = NextcloudTalkApplication.sharedApplication?.applicationContext
+        if (areWeInTelephonyCall(context!!)) {
+            return false
+        }
+
+        if (hasVibrator()) {
+            val context = NextcloudTalkApplication.sharedApplication?.applicationContext
+            val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+            return if (vibrate) {
+                audioManager.ringerMode != AudioManager.RINGER_MODE_SILENT
+            } else {
+                audioManager.ringerMode == AudioManager.RINGER_MODE_VIBRATE
+            }
+        }
+
+        return false
     }
-
-    if (areWeInTelephonyCall(context)) {
-      shouldPlaySound = false
-    }
-
-    return shouldPlaySound
-  }
-
-  fun hasVibrator(): Boolean {
-    val context = NextcloudTalkApplication.sharedApplication?.applicationContext
-    val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-    return vibrator.hasVibrator()
-  }
-
-  fun shouldVibrate(vibrate: Boolean): Boolean {
-    val context = NextcloudTalkApplication.sharedApplication?.applicationContext
-    if (areWeInTelephonyCall(context!!)) {
-      return false
-    }
-
-    if (hasVibrator()) {
-      val context = NextcloudTalkApplication.sharedApplication?.applicationContext
-      val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-      return if (vibrate) {
-        audioManager.ringerMode != AudioManager.RINGER_MODE_SILENT
-      } else {
-        audioManager.ringerMode == AudioManager.RINGER_MODE_VIBRATE
-      }
-    }
-
-    return false
-  }
 }

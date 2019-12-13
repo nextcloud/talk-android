@@ -22,19 +22,21 @@ package com.nextcloud.talk.models.json.generic;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject(serializeNullObjects = true)
 public class GenericMeta {
-  @JsonField(name = "status")
-  public String status;
+    @JsonField(name = "status")
+    public String status;
 
-  @JsonField(name = "statuscode")
-  public int statusCode;
+    @JsonField(name = "statuscode")
+    public int statusCode;
 
-  @JsonField(name = "message")
-  public String message;
+    @JsonField(name = "message")
+    public String message;
 }

@@ -47,53 +47,53 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val StorageModule = module {
-  single { createPreferences(androidContext()) }
-  single { createSqlCipherDatabaseSource(androidContext()) }
-  single { createDataStore(get()) }
-  single { createConversationsRepository(get()) }
-  single { createMessagesRepository(get()) }
-  single { createUsersRepository(get()) }
-  single { createArbitraryStorageUtils(get()) }
-  single { createUserUtils(get()) }
-  single { TalkDatabase.getInstance(androidApplication()) }
-  single { get<TalkDatabase>().conversationsDao() }
-  single { get<TalkDatabase>().messagesDao() }
-  single { get<TalkDatabase>().usersDao() }
+    single { createPreferences(androidContext()) }
+    single { createSqlCipherDatabaseSource(androidContext()) }
+    single { createDataStore(get()) }
+    single { createConversationsRepository(get()) }
+    single { createMessagesRepository(get()) }
+    single { createUsersRepository(get()) }
+    single { createArbitraryStorageUtils(get()) }
+    single { createUserUtils(get()) }
+    single { TalkDatabase.getInstance(androidApplication()) }
+    single { get<TalkDatabase>().conversationsDao() }
+    single { get<TalkDatabase>().messagesDao() }
+    single { get<TalkDatabase>().usersDao() }
 
 }
 
 fun createConversationsRepository(conversationsDao: ConversationsDao): ConversationsRepository {
-  return ConversationsRepositoryImpl(conversationsDao)
+    return ConversationsRepositoryImpl(conversationsDao)
 }
 
 fun createMessagesRepository(messagesDao: MessagesDao): MessagesRepository {
-  return MessagesRepositoryImpl(messagesDao)
+    return MessagesRepositoryImpl(messagesDao)
 }
 
 fun createUsersRepository(usersDao: UsersDao): UsersRepository {
-  return UsersRepositoryImpl(usersDao)
+    return UsersRepositoryImpl(usersDao)
 }
 
 fun createPreferences(context: Context): AppPreferences {
-  return StoreBox.create<AppPreferences>(context, AppPreferences::class.java)
+    return StoreBox.create<AppPreferences>(context, AppPreferences::class.java)
 }
 
 fun createSqlCipherDatabaseSource(context: Context): SqlCipherDatabaseSource {
-  return SqlCipherDatabaseSource(context, Models.DEFAULT,
-      context.resources.getString(string.nc_app_name).toLowerCase()
-          .replace(" ", "_").trim { it <= ' ' } + ".sqlite",
-      context.getString(string.nc_talk_database_encryption_key), 6)
+    return SqlCipherDatabaseSource(context, Models.DEFAULT,
+            context.resources.getString(string.nc_app_name).toLowerCase()
+                    .replace(" ", "_").trim { it <= ' ' } + ".sqlite",
+            context.getString(string.nc_talk_database_encryption_key), 6)
 }
 
 fun createDataStore(sqlCipherDatabaseSource: SqlCipherDatabaseSource): ReactiveEntityStore<Persistable> {
-  val configuration = sqlCipherDatabaseSource.configuration
-  return ReactiveSupport.toReactiveStore(EntityDataStore(configuration))
+    val configuration = sqlCipherDatabaseSource.configuration
+    return ReactiveSupport.toReactiveStore(EntityDataStore(configuration))
 }
 
 fun createArbitraryStorageUtils(dataStore: ReactiveEntityStore<Persistable>): ArbitraryStorageUtils {
-  return ArbitraryStorageUtils(dataStore)
+    return ArbitraryStorageUtils(dataStore)
 }
 
 fun createUserUtils(dataStore: ReactiveEntityStore<Persistable>): UserUtils {
-  return UserUtils(dataStore)
+    return UserUtils(dataStore)
 }

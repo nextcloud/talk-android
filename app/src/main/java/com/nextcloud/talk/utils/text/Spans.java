@@ -21,22 +21,25 @@
 package com.nextcloud.talk.utils.text;
 
 import android.graphics.drawable.Drawable;
+
 import androidx.annotation.NonNull;
+
 import com.facebook.widget.text.span.BetterImageSpan;
+
 import lombok.Data;
 
 public class Spans {
 
-  @Data
-  public static class MentionChipSpan extends BetterImageSpan {
-    public String id;
-    public CharSequence label;
+    @Data
+    public static class MentionChipSpan extends BetterImageSpan {
+        public String id;
+        public CharSequence label;
 
-    public MentionChipSpan(@NonNull Drawable drawable, int verticalAlignment, String id,
-        CharSequence label) {
-      super(drawable, verticalAlignment);
-      this.id = id;
-      this.label = label;
+        public MentionChipSpan(@NonNull Drawable drawable, int verticalAlignment, String id,
+                               CharSequence label) {
+            super(drawable, verticalAlignment);
+            this.id = id;
+            this.label = label;
+        }
     }
-  }
 }

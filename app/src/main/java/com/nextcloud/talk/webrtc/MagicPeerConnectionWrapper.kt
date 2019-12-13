@@ -22,11 +22,8 @@ package com.nextcloud.talk.webrtc
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.text.TextUtils
 import android.util.Log
 import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.events.MediaStreamEvent
 import com.nextcloud.talk.events.PeerConnectionEvent
 import com.nextcloud.talk.events.SessionDescriptionSendEvent
@@ -48,13 +45,13 @@ class MagicPeerConnectionWrapper(peerConnectionFactory: PeerConnectionFactory,
                                  iceServerList: List<IceServer?>?,
                                  sdpConstraints: MediaConstraints,
                                  sessionId: String, localSession: String?, mediaStream: MediaStream?,
-                                 isMCUPublisher: Boolean, hasMCU: Boolean, videoStreamType: String): KoinComponent {
+                                 isMCUPublisher: Boolean, hasMCU: Boolean, videoStreamType: String) : KoinComponent {
     val context: Context by inject()
     private var iceCandidates: MutableList<IceCandidate> = ArrayList()
     var peerConnection: PeerConnection?
         private set
     var sessionId: String
-    public var nick: String? = null
+    var nick: String? = null
     private val sdpConstraints: MediaConstraints
     private var magicDataChannel: DataChannel? = null
     val magicSdpObserver: MagicSdpObserver
@@ -229,7 +226,7 @@ class MagicPeerConnectionWrapper(peerConnectionFactory: PeerConnectionFactory,
         override fun onSignalingChange(signalingState: SignalingState) {}
         override fun onIceConnectionChange(iceConnectionState: IceConnectionState) {
             peerIceConnectionState = iceConnectionState
-            writeLogEntryToFile(context!!,
+            writeLogEntryToFile(context,
                     "iceConnectionChangeTo: "
                             + iceConnectionState.name
                             + " over "
@@ -301,7 +298,7 @@ class MagicPeerConnectionWrapper(peerConnectionFactory: PeerConnectionFactory,
         private val TAG = "MagicSdpObserver"
         override fun onCreateFailure(s: String) {
             Log.d(TAG, s)
-            writeLogEntryToFile(context!!,
+            writeLogEntryToFile(context,
                     "SDPObserver createFailure: "
                             + s
                             + " over "
@@ -312,7 +309,7 @@ class MagicPeerConnectionWrapper(peerConnectionFactory: PeerConnectionFactory,
 
         override fun onSetFailure(s: String) {
             Log.d(TAG, s)
-            writeLogEntryToFile(context!!,
+            writeLogEntryToFile(context,
                     "SDPObserver setFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId)
         }
 

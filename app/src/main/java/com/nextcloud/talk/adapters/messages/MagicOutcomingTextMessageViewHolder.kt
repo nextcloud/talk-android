@@ -58,11 +58,11 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         super.onBind(message)
         val messageParameters: HashMap<String, HashMap<String, String>> = message.messageParameters
         var messageString: Spannable = SpannableString(message.text)
-        realView.setSelected(false)
-        messageTimeView!!.setTextColor(context!!.resources.getColor(R.color.white60))
+        realView.isSelected = false
+        messageTimeView!!.setTextColor(context.resources.getColor(R.color.white60))
         val layoutParams = messageTimeView!!.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
-        var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
+        var textSize = context.resources.getDimension(R.dimen.chat_text_size)
         if (messageParameters != null && messageParameters.size > 0) {
             for (key in messageParameters.keys) {
                 val individualHashMap: HashMap<String, String>? = message.messageParameters[key]
@@ -79,7 +79,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
                     } else if (individualHashMap["type"] == "file") {
                         realView.setOnClickListener(View.OnClickListener { v: View? ->
                             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                            context!!.startActivity(browserIntent)
+                            context.startActivity(browserIntent)
                         })
                     }
                 }
@@ -87,8 +87,8 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
             textSize = (textSize * 2.5).toFloat()
             layoutParams.isWrapBefore = true
-            messageTimeView!!.setTextColor(context!!.resources.getColor(R.color.warm_grey_four))
-            realView.setSelected(true)
+            messageTimeView!!.setTextColor(context.resources.getColor(R.color.warm_grey_four))
+            realView.isSelected = true
         }
         val resources = sharedApplication!!.resources
         if (message.grouped) {

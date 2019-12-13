@@ -25,17 +25,17 @@ import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 
 class PushConfigurationConverter {
-  @TypeConverter
-  fun fromPushConfigurationToString(pushConfigurationState: PushConfigurationState?): String {
-    if (pushConfigurationState == null) {
-      return ""
-    } else {
-      return LoganSquare.serialize(pushConfigurationState)
+    @TypeConverter
+    fun fromPushConfigurationToString(pushConfigurationState: PushConfigurationState?): String {
+        if (pushConfigurationState == null) {
+            return ""
+        } else {
+            return LoganSquare.serialize(pushConfigurationState)
+        }
     }
-  }
 
-  @TypeConverter
-  fun fromStringToPushConfiguration(value: String): PushConfigurationState? {
-    return LoganSquare.parse(value, PushConfigurationState::class.java)
-  }
+    @TypeConverter
+    fun fromStringToPushConfiguration(value: String): PushConfigurationState? {
+        return LoganSquare.parse(value, PushConfigurationState::class.java)
+    }
 }

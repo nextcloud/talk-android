@@ -23,14 +23,17 @@ package com.nextcloud.talk.models.json.conversations;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-import java.util.List;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import java.util.List;
+
+import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class RoomsOCS extends GenericOCS {
-  @JsonField(name = "data")
-  public List<Conversation> data;
+    @JsonField(name = "data")
+    public List<Conversation> data;
 }

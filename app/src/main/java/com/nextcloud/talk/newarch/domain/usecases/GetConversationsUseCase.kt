@@ -27,11 +27,11 @@ import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
 import org.koin.core.parameter.DefinitionParameters
 
 class GetConversationsUseCase constructor(
-  private val nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler?
+        private val nextcloudTalkRepository: NextcloudTalkRepository,
+        apiErrorHandler: ApiErrorHandler?
 ) : UseCase<List<Conversation>, Any?>(apiErrorHandler) {
 
-  override suspend fun run(params: Any?): List<Conversation> {
-    return nextcloudTalkRepository.getConversationsForUser((params as DefinitionParameters).get(0))
-  }
+    override suspend fun run(params: Any?): List<Conversation> {
+        return nextcloudTalkRepository.getConversationsForUser((params as DefinitionParameters).get(0))
+    }
 }

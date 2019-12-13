@@ -21,13 +21,15 @@ package com.nextcloud.talk.models.json.capabilities;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class CapabilitiesOverall {
-  @JsonField(name = "ocs")
-  public CapabilitiesOCS ocs;
+    @JsonField(name = "ocs")
+    public CapabilitiesOCS ocs;
 }

@@ -22,14 +22,17 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import java.util.HashMap;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import java.util.HashMap;
+
+import lombok.Data;
 
 @JsonObject
 @Parcel
 @Data
 public class ByeWebSocketMessage extends BaseWebSocketMessage {
-  @JsonField(name = "bye")
-  public HashMap<String, Object> bye;
+    @JsonField(name = "bye")
+    public HashMap<String, Object> bye;
 }

@@ -43,7 +43,6 @@ import androidx.core.view.ViewCompat
 import androidx.emoji.widget.EmojiTextView
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-
 import butterknife.BindView
 import butterknife.OnClick
 import coil.api.load
@@ -59,32 +58,20 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.models.RingtoneSettings
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
-import com.nextcloud.talk.newarch.utils.getCredentials
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.DoNotDisturbUtils
-import com.nextcloud.talk.utils.LoggingUtils
-import com.nextcloud.talk.utils.SecurityUtils
+import com.nextcloud.talk.utils.*
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.ObservableSubscribeProxy
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
 import com.yarolegovich.lovelydialog.LovelyStandardDialog
-import com.yarolegovich.mp.MaterialChoicePreference
-import com.yarolegovich.mp.MaterialEditTextPreference
-import com.yarolegovich.mp.MaterialPreferenceCategory
-import com.yarolegovich.mp.MaterialPreferenceScreen
-import com.yarolegovich.mp.MaterialStandardPreference
-import com.yarolegovich.mp.MaterialSwitchPreference
+import com.yarolegovich.mp.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
@@ -93,10 +80,7 @@ import org.koin.android.ext.android.inject
 import java.io.IOException
 import java.net.URI
 import java.net.URISyntaxException
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Locale
-import java.util.Objects
+import java.util.*
 
 class SettingsController : BaseController() {
     @JvmField
@@ -226,7 +210,7 @@ class SettingsController : BaseController() {
     @OnClick(R.id.settings_version)
     fun sendLogs() {
         if (resources!!.getBoolean(R.bool.nc_is_debug)) {
-            LoggingUtils.sendMailWithAttachment(context!!)
+            LoggingUtils.sendMailWithAttachment(context)
         }
     }
 
@@ -509,9 +493,9 @@ class SettingsController : BaseController() {
                         ) as Checkable).isChecked =
                                 appPreferences.isScreenLocked
 
-                        screenLockTimeoutChoicePreference!!.isEnabled = appPreferences!!.isScreenLocked
+                        screenLockTimeoutChoicePreference!!.isEnabled = appPreferences.isScreenLocked
 
-                        if (appPreferences!!.isScreenLocked) {
+                        if (appPreferences.isScreenLocked) {
                             screenLockTimeoutChoicePreference!!.alpha = 1.0f
                         } else {
                             screenLockTimeoutChoicePreference!!.alpha = 0.38f
@@ -564,13 +548,13 @@ class SettingsController : BaseController() {
                     settingsMessageSound!!.setSummary(R.string.nc_settings_default_ringtone)
                 }
 
-                if ("No proxy" == appPreferences!!.proxyType || appPreferences!!.proxyType == null) {
+                if ("No proxy" == appPreferences.proxyType || appPreferences.proxyType == null) {
                     hideProxySettings()
                 } else {
                     showProxySettings()
                 }
 
-                if (appPreferences!!.proxyCredentials) {
+                if (appPreferences.proxyCredentials) {
                     showProxyCredentials()
                 } else {
                     hideProxyCredentials()
@@ -670,8 +654,7 @@ class SettingsController : BaseController() {
                         }
                         else -> messageView!!.visibility = View.GONE
                     }
-                    ApplicationWideMessageHolder.getInstance()
-                            .setMessageType(null)
+                    ApplicationWideMessageHolder.getInstance().messageType = null
 
                     messageView!!.animate()
                             .translationY(0f)

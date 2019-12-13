@@ -24,101 +24,103 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.converters.ObjectParcelConverter;
-import lombok.Data;
+
 import org.parceler.Parcel;
 import org.parceler.ParcelPropertyConverter;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
 public class Participant {
-  @JsonField(name = "userId")
-  public String userId;
+    @JsonField(name = "userId")
+    public String userId;
 
-  @JsonField(name = {
-      "type", "participantType"
-  }, typeConverter = EnumParticipantTypeConverter.class)
-  public ParticipantType type;
+    @JsonField(name = {
+            "type", "participantType"
+    }, typeConverter = EnumParticipantTypeConverter.class)
+    public ParticipantType type;
 
-  @JsonField(name = "name")
-  public String name;
+    @JsonField(name = "name")
+    public String name;
 
-  @JsonField(name = "displayName")
-  public String displayName;
+    @JsonField(name = "displayName")
+    public String displayName;
 
-  @JsonField(name = "lastPing")
-  public long lastPing;
+    @JsonField(name = "lastPing")
+    public long lastPing;
 
-  @JsonField(name = "sessionId")
-  public String sessionId;
+    @JsonField(name = "sessionId")
+    public String sessionId;
 
-  @JsonField(name = "conversationId")
-  public long roomId;
+    @JsonField(name = "conversationId")
+    public long roomId;
 
-  @ParcelPropertyConverter(ObjectParcelConverter.class)
-  @JsonField(name = "inCall")
-  public Object inCall;
-  public String source;
+    @ParcelPropertyConverter(ObjectParcelConverter.class)
+    @JsonField(name = "inCall")
+    public Object inCall;
+    public String source;
 
-  public boolean selected;
+    public boolean selected;
 
-  public ParticipantFlags getParticipantFlags() {
-    ParticipantFlags participantFlags = ParticipantFlags.NOT_IN_CALL;
-    if (inCall != null) {
-      if (inCall instanceof Long) {
-        participantFlags = ParticipantFlags.fromValue((Long) inCall);
-      } else if (inCall instanceof Boolean) {
-        if ((boolean) inCall) {
-          participantFlags = ParticipantFlags.IN_CALL;
-        } else {
-          participantFlags = ParticipantFlags.NOT_IN_CALL;
+    public ParticipantFlags getParticipantFlags() {
+        ParticipantFlags participantFlags = ParticipantFlags.NOT_IN_CALL;
+        if (inCall != null) {
+            if (inCall instanceof Long) {
+                participantFlags = ParticipantFlags.fromValue((Long) inCall);
+            } else if (inCall instanceof Boolean) {
+                if ((boolean) inCall) {
+                    participantFlags = ParticipantFlags.IN_CALL;
+                } else {
+                    participantFlags = ParticipantFlags.NOT_IN_CALL;
+                }
+            }
         }
-      }
+
+        return participantFlags;
     }
 
-    return participantFlags;
-  }
-
-  public enum ParticipantType {
-    DUMMY,
-    OWNER,
-    MODERATOR,
-    USER,
-    GUEST,
-    USER_FOLLOWING_LINK
-  }
-
-  public enum ParticipantFlags {
-    NOT_IN_CALL(0),
-    IN_CALL(1),
-    IN_CALL_WITH_AUDIO(3),
-    IN_CALL_WITH_VIDEO(5),
-    IN_CALL_WITH_AUDIO_AND_VIDEO(7);
-
-    private long value;
-
-    ParticipantFlags(long value) {
-      this.value = value;
+    public enum ParticipantType {
+        DUMMY,
+        OWNER,
+        MODERATOR,
+        USER,
+        GUEST,
+        USER_FOLLOWING_LINK
     }
 
-    public static ParticipantFlags fromValue(long value) {
-      if (value == 0) {
-        return NOT_IN_CALL;
-      } else if (value == 1) {
-        return IN_CALL;
-      } else if (value == 3) {
-        return IN_CALL_WITH_AUDIO;
-      } else if (value == 5) {
-        return IN_CALL_WITH_VIDEO;
-      } else if (value == 7) {
-        return IN_CALL_WITH_AUDIO_AND_VIDEO;
-      } else {
-        return NOT_IN_CALL;
-      }
-    }
+    public enum ParticipantFlags {
+        NOT_IN_CALL(0),
+        IN_CALL(1),
+        IN_CALL_WITH_AUDIO(3),
+        IN_CALL_WITH_VIDEO(5),
+        IN_CALL_WITH_AUDIO_AND_VIDEO(7);
 
-    public long getValue() {
-      return value;
+        private long value;
+
+        ParticipantFlags(long value) {
+            this.value = value;
+        }
+
+        public static ParticipantFlags fromValue(long value) {
+            if (value == 0) {
+                return NOT_IN_CALL;
+            } else if (value == 1) {
+                return IN_CALL;
+            } else if (value == 3) {
+                return IN_CALL_WITH_AUDIO;
+            } else if (value == 5) {
+                return IN_CALL_WITH_VIDEO;
+            } else if (value == 7) {
+                return IN_CALL_WITH_AUDIO_AND_VIDEO;
+            } else {
+                return NOT_IN_CALL;
+            }
+        }
+
+        public long getValue() {
+            return value;
+        }
     }
-  }
 }

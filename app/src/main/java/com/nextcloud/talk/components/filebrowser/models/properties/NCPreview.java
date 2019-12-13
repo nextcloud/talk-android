@@ -21,53 +21,57 @@
 package com.nextcloud.talk.components.filebrowser.models.properties;
 
 import android.text.TextUtils;
-import at.bitfire.dav4jvm.Property;
-import at.bitfire.dav4jvm.PropertyFactory;
-import at.bitfire.dav4jvm.XmlUtils;
+
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils;
-import java.io.IOException;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+
+import at.bitfire.dav4jvm.Property;
+import at.bitfire.dav4jvm.PropertyFactory;
+import at.bitfire.dav4jvm.XmlUtils;
+import lombok.Getter;
+import lombok.Setter;
+
 public class NCPreview implements Property {
-  public static final Property.Name NAME =
-      new Property.Name(DavUtils.NC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_HAS_PREVIEW);
+    public static final Property.Name NAME =
+            new Property.Name(DavUtils.NC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_HAS_PREVIEW);
 
-  @Getter
-  @Setter
-  private boolean ncPreview;
+    @Getter
+    @Setter
+    private boolean ncPreview;
 
-  private NCPreview(boolean hasPreview) {
-    ncPreview = hasPreview;
-  }
+    private NCPreview(boolean hasPreview) {
+        ncPreview = hasPreview;
+    }
 
-  public static class Factory implements PropertyFactory {
+    public static class Factory implements PropertyFactory {
 
-    @Nullable
-    @Override
-    public Property create(@NotNull XmlPullParser xmlPullParser) {
-      try {
-        String text = XmlUtils.INSTANCE.readText(xmlPullParser);
-        if (!TextUtils.isEmpty(text)) {
-          return new NCPreview(Boolean.parseBoolean(text));
+        @Nullable
+        @Override
+        public Property create(@NotNull XmlPullParser xmlPullParser) {
+            try {
+                String text = XmlUtils.INSTANCE.readText(xmlPullParser);
+                if (!TextUtils.isEmpty(text)) {
+                    return new NCPreview(Boolean.parseBoolean(text));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            }
+
+            return new OCFavorite(false);
         }
-      } catch (IOException e) {
-        e.printStackTrace();
-      } catch (XmlPullParserException e) {
-        e.printStackTrace();
-      }
 
-      return new OCFavorite(false);
+        @NotNull
+        @Override
+        public Property.Name getName() {
+            return NAME;
+        }
     }
-
-    @NotNull
-    @Override
-    public Property.Name getName() {
-      return NAME;
-    }
-  }
 }

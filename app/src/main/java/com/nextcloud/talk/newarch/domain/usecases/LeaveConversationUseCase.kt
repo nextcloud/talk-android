@@ -27,15 +27,15 @@ import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
 import org.koin.core.parameter.DefinitionParameters
 
 class LeaveConversationUseCase constructor(
-  private val nextcloudTalkRepository: NextcloudTalkRepository,
-  apiErrorHandler: ApiErrorHandler?
+        private val nextcloudTalkRepository: NextcloudTalkRepository,
+        apiErrorHandler: ApiErrorHandler?
 ) : UseCase<GenericOverall, Any?>(apiErrorHandler) {
 
-  override suspend fun run(params: Any?): GenericOverall {
-    val definitionParameters = params as DefinitionParameters
-    return nextcloudTalkRepository.leaveConversationForUser(
-            definitionParameters[0],
-            definitionParameters[1]
-    )
-  }
+    override suspend fun run(params: Any?): GenericOverall {
+        val definitionParameters = params as DefinitionParameters
+        return nextcloudTalkRepository.leaveConversationForUser(
+                definitionParameters[0],
+                definitionParameters[1]
+        )
+    }
 }

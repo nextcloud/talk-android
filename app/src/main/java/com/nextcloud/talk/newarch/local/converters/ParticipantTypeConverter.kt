@@ -22,29 +22,24 @@ package com.nextcloud.talk.newarch.local.converters
 
 import androidx.room.TypeConverter
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
-import com.nextcloud.talk.models.json.participants.Participant.ParticipantType.DUMMY
-import com.nextcloud.talk.models.json.participants.Participant.ParticipantType.GUEST
-import com.nextcloud.talk.models.json.participants.Participant.ParticipantType.MODERATOR
-import com.nextcloud.talk.models.json.participants.Participant.ParticipantType.OWNER
-import com.nextcloud.talk.models.json.participants.Participant.ParticipantType.USER
-import com.nextcloud.talk.models.json.participants.Participant.ParticipantType.USER_FOLLOWING_LINK
+import com.nextcloud.talk.models.json.participants.Participant.ParticipantType.*
 
 class ParticipantTypeConverter {
-  @TypeConverter
-  fun fromParticipantType(participantType: ParticipantType): Int {
-    return participantType.ordinal
-  }
-
-  @TypeConverter
-  fun fromIntToParticipantType(value: Int): ParticipantType {
-    when (value) {
-      0 -> return DUMMY
-      1 -> return OWNER
-      2 -> return MODERATOR
-      3 -> return USER
-      4 -> return GUEST
-      else -> return USER_FOLLOWING_LINK
-
+    @TypeConverter
+    fun fromParticipantType(participantType: ParticipantType): Int {
+        return participantType.ordinal
     }
-  }
+
+    @TypeConverter
+    fun fromIntToParticipantType(value: Int): ParticipantType {
+        when (value) {
+            0 -> return DUMMY
+            1 -> return OWNER
+            2 -> return MODERATOR
+            3 -> return USER
+            4 -> return GUEST
+            else -> return USER_FOLLOWING_LINK
+
+        }
+    }
 }

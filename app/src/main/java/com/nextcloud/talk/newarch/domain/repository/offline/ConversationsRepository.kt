@@ -24,33 +24,33 @@ import androidx.lifecycle.LiveData
 import com.nextcloud.talk.models.json.conversations.Conversation
 
 interface ConversationsRepository {
-  fun getConversationsForUser(userId: Long): LiveData<List<Conversation>>
-  suspend fun getConversationForUserWithToken(userId: Long, token: String): Conversation?
-  suspend fun clearConversationsForUser(userId: Long)
-  suspend fun saveConversationsForUser(
-    userId: Long,
-    conversations: List<Conversation>
-  )
+    fun getConversationsForUser(userId: Long): LiveData<List<Conversation>>
+    suspend fun getConversationForUserWithToken(userId: Long, token: String): Conversation?
+    suspend fun clearConversationsForUser(userId: Long)
+    suspend fun saveConversationsForUser(
+            userId: Long,
+            conversations: List<Conversation>
+    )
 
-  suspend fun setChangingValueForConversation(
-    userId: Long,
-    conversationId: String,
-    changing: Boolean
-  )
+    suspend fun setChangingValueForConversation(
+            userId: Long,
+            conversationId: String,
+            changing: Boolean
+    )
 
-  suspend fun setFavoriteValueForConversation(
-    userId: Long,
-    conversationId: String,
-    favorite: Boolean
-  )
+    suspend fun setFavoriteValueForConversation(
+            userId: Long,
+            conversationId: String,
+            favorite: Boolean
+    )
 
-  suspend fun deleteConversation(
-    userId: Long,
-    conversationId: String
-  )
+    suspend fun deleteConversation(
+            userId: Long,
+            conversationId: String
+    )
 
-  suspend fun deleteConversationForUserWithTimestamp(
-    userId: Long,
-    timestamp: Long
-  )
+    suspend fun deleteConversationForUserWithTimestamp(
+            userId: Long,
+            timestamp: Long
+    )
 }

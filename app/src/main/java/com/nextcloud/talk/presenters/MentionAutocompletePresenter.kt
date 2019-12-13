@@ -24,8 +24,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.adapters.items.MentionAutocompleteItem
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.mention.MentionOverall
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository

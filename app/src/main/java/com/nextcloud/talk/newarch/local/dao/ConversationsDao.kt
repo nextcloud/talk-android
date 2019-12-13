@@ -21,79 +21,73 @@
 package com.nextcloud.talk.newarch.local.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
+import androidx.room.*
 import com.nextcloud.talk.newarch.local.models.ConversationEntity
 
 @Dao
 abstract class ConversationsDao {
 
-  @Query("SELECT * FROM conversations WHERE user_id = :userId ORDER BY favorite DESC, last_activity DESC")
-  abstract fun getConversationsForUser(userId: Long): LiveData<List<ConversationEntity>>
+    @Query("SELECT * FROM conversations WHERE user_id = :userId ORDER BY favorite DESC, last_activity DESC")
+    abstract fun getConversationsForUser(userId: Long): LiveData<List<ConversationEntity>>
 
-  @Query("DELETE FROM conversations WHERE user_id = :userId")
-  abstract suspend fun clearConversationsForUser(userId: Long)
+    @Query("DELETE FROM conversations WHERE user_id = :userId")
+    abstract suspend fun clearConversationsForUser(userId: Long)
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  abstract suspend fun saveConversationWithInsert(conversation: ConversationEntity): Long
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun saveConversationWithInsert(conversation: ConversationEntity): Long
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  abstract suspend fun saveConversationsWithInsert(vararg conversations: ConversationEntity): List<Long>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun saveConversationsWithInsert(vararg conversations: ConversationEntity): List<Long>
 
-  @Query(
-      "UPDATE conversations SET changing = :changing WHERE user_id = :userId AND conversation_id = :conversationId"
-  )
-  abstract suspend fun updateChangingValueForConversation(
-    userId: Long,
-    conversationId: String,
-    changing: Boolean
-  )
+    @Query(
+            "UPDATE conversations SET changing = :changing WHERE user_id = :userId AND conversation_id = :conversationId"
+    )
+    abstract suspend fun updateChangingValueForConversation(
+            userId: Long,
+            conversationId: String,
+            changing: Boolean
+    )
 
-  @Query(
-      "UPDATE conversations SET favorite = :favorite, changing = 0 WHERE user_id = :userId AND conversation_id = :conversationId"
-  )
-  abstract suspend fun updateFavoriteValueForConversation(
-    userId: Long,
-    conversationId: String,
-    favorite: Boolean
-  )
+    @Query(
+            "UPDATE conversations SET favorite = :favorite, changing = 0 WHERE user_id = :userId AND conversation_id = :conversationId"
+    )
+    abstract suspend fun updateFavoriteValueForConversation(
+            userId: Long,
+            conversationId: String,
+            favorite: Boolean
+    )
 
-  @Query("DELETE FROM conversations WHERE user_id = :userId AND conversation_id = :conversationId")
-  abstract suspend fun deleteConversation(
-    userId: Long,
-    conversationId: String
-  )
+    @Query("DELETE FROM conversations WHERE user_id = :userId AND conversation_id = :conversationId")
+    abstract suspend fun deleteConversation(
+            userId: Long,
+            conversationId: String
+    )
 
-  @Delete
-  abstract suspend fun deleteConversations(vararg conversation: ConversationEntity)
+    @Delete
+    abstract suspend fun deleteConversations(vararg conversation: ConversationEntity)
 
-  @Query("DELETE FROM conversations WHERE user_id = :userId AND modified_at < :timestamp")
-  abstract suspend fun deleteConversationsForUserWithTimestamp(
-    userId: Long,
-    timestamp: Long
-  )
+    @Query("DELETE FROM conversations WHERE user_id = :userId AND modified_at < :timestamp")
+    abstract suspend fun deleteConversationsForUserWithTimestamp(
+            userId: Long,
+            timestamp: Long
+    )
 
-  @Query("SELECT * FROM conversations where id = :userId AND token = :token")
-  abstract suspend fun getConversationForUserWithToken(userId: Long, token: String): ConversationEntity?
+    @Query("SELECT * FROM conversations where id = :userId AND token = :token")
+    abstract suspend fun getConversationForUserWithToken(userId: Long, token: String): ConversationEntity?
 
-  @Transaction
-  open suspend fun updateConversationsForUser(
-    userId: Long,
-    newConversations: Array<ConversationEntity>
-  ) {
-    val timestamp = System.currentTimeMillis()
+    @Transaction
+    open suspend fun updateConversationsForUser(
+            userId: Long,
+            newConversations: Array<ConversationEntity>
+    ) {
+        val timestamp = System.currentTimeMillis()
 
-    val conversationsWithTimestampApplied = newConversations.map {
-      it.modifiedAt = timestamp
-      it
+        val conversationsWithTimestampApplied = newConversations.map {
+            it.modifiedAt = timestamp
+            it
+        }
+
+        saveConversationsWithInsert(*conversationsWithTimestampApplied.toTypedArray())
+        deleteConversationsForUserWithTimestamp(userId, timestamp)
     }
-
-    saveConversationsWithInsert(*conversationsWithTimestampApplied.toTypedArray())
-    deleteConversationsForUserWithTimestamp(userId, timestamp)
-  }
 }

@@ -24,16 +24,16 @@ import androidx.room.TypeConverter
 import com.nextcloud.talk.models.json.conversations.Conversation.LobbyState
 
 class LobbyStateConverter {
-  @TypeConverter
-  fun fromLobbyStateToInt(lobbyState: LobbyState): Int {
-    return lobbyState.ordinal
-  }
-
-  @TypeConverter
-  fun fromIntToLobbyState(value: Int): LobbyState {
-    when (value) {
-      0 -> return LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
-      else -> return LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
+    @TypeConverter
+    fun fromLobbyStateToInt(lobbyState: LobbyState): Int {
+        return lobbyState.ordinal
     }
-  }
+
+    @TypeConverter
+    fun fromIntToLobbyState(value: Int): LobbyState {
+        when (value) {
+            0 -> return LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
+            else -> return LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
+        }
+    }
 }

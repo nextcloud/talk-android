@@ -31,66 +31,66 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
  * */
 
 data class ErrorModel(
-  val message: String?,
-  val code: Int?,
-  var errorStatus: ErrorStatus
+        val message: String?,
+        val code: Int?,
+        var errorStatus: ErrorStatus
 ) {
-  constructor(errorStatus: ErrorStatus) : this(null, null, errorStatus)
+    constructor(errorStatus: ErrorStatus) : this(null, null, errorStatus)
 
-  constructor(
-    message: String?,
-    errorStatus: ErrorStatus
-  ) : this(message, null, errorStatus)
+    constructor(
+            message: String?,
+            errorStatus: ErrorStatus
+    ) : this(message, null, errorStatus)
 
-  fun getErrorMessage(): String {
-    return when (errorStatus) {
-      ErrorStatus.NO_CONNECTION -> NextcloudTalkApplication.sharedApplication?.resources!!.getString(
-          R.string.nc_no_connection_error
-      )
-      ErrorStatus.BAD_RESPONSE -> NextcloudTalkApplication.sharedApplication?.resources!!.getString(
-          R.string.nc_bad_response_error
-      )
-      ErrorStatus.TIMEOUT -> NextcloudTalkApplication.sharedApplication?.resources!!.getString(
-          R.string.nc_timeout_error
-      )
-      ErrorStatus.EMPTY_RESPONSE -> NextcloudTalkApplication.sharedApplication?.resources!!.getString(
-          R.string.nc_empty_response_error
-      )
-      ErrorStatus.NOT_DEFINED -> NextcloudTalkApplication.sharedApplication?.resources!!.getString(
-          R.string.nc_not_defined_error
-      )
-      ErrorStatus.UNAUTHORIZED -> NextcloudTalkApplication.sharedApplication?.resources!!
-          .getString(R.string.nc_unauthorized_error)
+    fun getErrorMessage(): String {
+        return when (errorStatus) {
+            ErrorStatus.NO_CONNECTION -> NextcloudTalkApplication.sharedApplication?.resources!!.getString(
+                    R.string.nc_no_connection_error
+            )
+            ErrorStatus.BAD_RESPONSE -> NextcloudTalkApplication.sharedApplication?.resources!!.getString(
+                    R.string.nc_bad_response_error
+            )
+            ErrorStatus.TIMEOUT -> NextcloudTalkApplication.sharedApplication?.resources!!.getString(
+                    R.string.nc_timeout_error
+            )
+            ErrorStatus.EMPTY_RESPONSE -> NextcloudTalkApplication.sharedApplication?.resources!!.getString(
+                    R.string.nc_empty_response_error
+            )
+            ErrorStatus.NOT_DEFINED -> NextcloudTalkApplication.sharedApplication?.resources!!.getString(
+                    R.string.nc_not_defined_error
+            )
+            ErrorStatus.UNAUTHORIZED -> NextcloudTalkApplication.sharedApplication?.resources!!
+                    .getString(R.string.nc_unauthorized_error)
+        }
     }
-  }
 
-  /**
-   * various error status to know what happened if something goes wrong with a repository call
-   */
-  enum class ErrorStatus {
     /**
-     * error in connecting to repository (Server or Database)
+     * various error status to know what happened if something goes wrong with a repository call
      */
-    NO_CONNECTION,
-    /**
-     * error in getting value (Json Error, Server Error, etc)
-     */
-    BAD_RESPONSE,
-    /**
-     * Time out  error
-     */
-    TIMEOUT,
-    /**
-     * no data available in repository
-     */
-    EMPTY_RESPONSE,
-    /**
-     * an unexpected error
-     */
-    NOT_DEFINED,
-    /**
-     * bad credentials
-     */
-    UNAUTHORIZED
-  }
+    enum class ErrorStatus {
+        /**
+         * error in connecting to repository (Server or Database)
+         */
+        NO_CONNECTION,
+        /**
+         * error in getting value (Json Error, Server Error, etc)
+         */
+        BAD_RESPONSE,
+        /**
+         * Time out  error
+         */
+        TIMEOUT,
+        /**
+         * no data available in repository
+         */
+        EMPTY_RESPONSE,
+        /**
+         * an unexpected error
+         */
+        NOT_DEFINED,
+        /**
+         * bad credentials
+         */
+        UNAUTHORIZED
+    }
 }

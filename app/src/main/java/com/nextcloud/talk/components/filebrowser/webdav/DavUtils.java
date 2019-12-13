@@ -20,6 +20,15 @@
 
 package com.nextcloud.talk.components.filebrowser.webdav;
 
+import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted;
+import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import at.bitfire.dav4jvm.Property;
 import at.bitfire.dav4jvm.PropertyFactory;
 import at.bitfire.dav4jvm.PropertyRegistry;
@@ -30,75 +39,68 @@ import at.bitfire.dav4jvm.property.GetContentType;
 import at.bitfire.dav4jvm.property.GetETag;
 import at.bitfire.dav4jvm.property.GetLastModified;
 import at.bitfire.dav4jvm.property.ResourceType;
-import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted;
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DavUtils {
-  public static final String OC_NAMESPACE = "http://owncloud.org/ns";
-  public static final String NC_NAMESPACE = "http://nextcloud.org/ns";
-  public static final String DAV_PATH = "/remote.php/dav/files/";
+    public static final String OC_NAMESPACE = "http://owncloud.org/ns";
+    public static final String NC_NAMESPACE = "http://nextcloud.org/ns";
+    public static final String DAV_PATH = "/remote.php/dav/files/";
 
-  public static final String EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions";
-  public static final String EXTENDED_PROPERTY_NAME_REMOTE_ID = "id";
-  public static final String EXTENDED_PROPERTY_NAME_SIZE = "size";
-  public static final String EXTENDED_PROPERTY_FAVORITE = "favorite";
-  public static final String EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted";
-  public static final String EXTENDED_PROPERTY_MOUNT_TYPE = "mount-type";
-  public static final String EXTENDED_PROPERTY_OWNER_ID = "owner-id";
-  public static final String EXTENDED_PROPERTY_OWNER_DISPLAY_NAME = "owner-display-name";
-  public static final String EXTENDED_PROPERTY_UNREAD_COMMENTS = "comments-unread";
-  public static final String EXTENDED_PROPERTY_HAS_PREVIEW = "has-preview";
-  public static final String EXTENDED_PROPERTY_NOTE = "note";
-  public static final String TRASHBIN_FILENAME = "trashbin-filename";
-  public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
-  public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
+    public static final String EXTENDED_PROPERTY_NAME_PERMISSIONS = "permissions";
+    public static final String EXTENDED_PROPERTY_NAME_REMOTE_ID = "id";
+    public static final String EXTENDED_PROPERTY_NAME_SIZE = "size";
+    public static final String EXTENDED_PROPERTY_FAVORITE = "favorite";
+    public static final String EXTENDED_PROPERTY_IS_ENCRYPTED = "is-encrypted";
+    public static final String EXTENDED_PROPERTY_MOUNT_TYPE = "mount-type";
+    public static final String EXTENDED_PROPERTY_OWNER_ID = "owner-id";
+    public static final String EXTENDED_PROPERTY_OWNER_DISPLAY_NAME = "owner-display-name";
+    public static final String EXTENDED_PROPERTY_UNREAD_COMMENTS = "comments-unread";
+    public static final String EXTENDED_PROPERTY_HAS_PREVIEW = "has-preview";
+    public static final String EXTENDED_PROPERTY_NOTE = "note";
+    public static final String TRASHBIN_FILENAME = "trashbin-filename";
+    public static final String TRASHBIN_ORIGINAL_LOCATION = "trashbin-original-location";
+    public static final String TRASHBIN_DELETION_TIME = "trashbin-deletion-time";
 
-  public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
-  public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
+    public static final String PROPERTY_QUOTA_USED_BYTES = "quota-used-bytes";
+    public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
 
-  static Property.Name[] getAllPropSet() {
-    List<Property.Name> propSet = new ArrayList<>();
+    static Property.Name[] getAllPropSet() {
+        List<Property.Name> propSet = new ArrayList<>();
 
-    propSet.add(DisplayName.NAME);
-    propSet.add(GetContentType.NAME);
-    propSet.add(GetContentLength.NAME);
-    propSet.add(GetContentType.NAME);
-    propSet.add(GetContentLength.NAME);
-    propSet.add(GetLastModified.NAME);
-    propSet.add(CreationDate.NAME);
-    propSet.add(GetETag.NAME);
-    propSet.add(ResourceType.NAME);
+        propSet.add(DisplayName.NAME);
+        propSet.add(GetContentType.NAME);
+        propSet.add(GetContentLength.NAME);
+        propSet.add(GetContentType.NAME);
+        propSet.add(GetContentLength.NAME);
+        propSet.add(GetLastModified.NAME);
+        propSet.add(CreationDate.NAME);
+        propSet.add(GetETag.NAME);
+        propSet.add(ResourceType.NAME);
 
-    propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_NAME_PERMISSIONS));
-    propSet.add(OCId.NAME);
-    propSet.add(OCSize.NAME);
-    propSet.add(OCFavorite.NAME);
-    propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_ID));
-    propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_DISPLAY_NAME));
-    propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_UNREAD_COMMENTS));
+        propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_NAME_PERMISSIONS));
+        propSet.add(OCId.NAME);
+        propSet.add(OCSize.NAME);
+        propSet.add(OCFavorite.NAME);
+        propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_ID));
+        propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_DISPLAY_NAME));
+        propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_UNREAD_COMMENTS));
 
-    propSet.add(NCEncrypted.NAME);
-    propSet.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_MOUNT_TYPE));
-    propSet.add(NCPreview.NAME);
-    propSet.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_NOTE));
+        propSet.add(NCEncrypted.NAME);
+        propSet.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_MOUNT_TYPE));
+        propSet.add(NCPreview.NAME);
+        propSet.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_NOTE));
 
-    return propSet.toArray(new Property.Name[0]);
-  }
+        return propSet.toArray(new Property.Name[0]);
+    }
 
-  public static void registerCustomFactories() {
-    PropertyRegistry propertyRegistry = PropertyRegistry.INSTANCE;
-    List<PropertyFactory> propertyFactories = new ArrayList<>();
-    propertyFactories.add(new OCId.Factory());
-    propertyFactories.add(new NCPreview.Factory());
-    propertyFactories.add(new NCEncrypted.Factory());
-    propertyFactories.add(new OCFavorite.Factory());
-    propertyFactories.add(new OCSize.Factory());
+    public static void registerCustomFactories() {
+        PropertyRegistry propertyRegistry = PropertyRegistry.INSTANCE;
+        List<PropertyFactory> propertyFactories = new ArrayList<>();
+        propertyFactories.add(new OCId.Factory());
+        propertyFactories.add(new NCPreview.Factory());
+        propertyFactories.add(new NCEncrypted.Factory());
+        propertyFactories.add(new OCFavorite.Factory());
+        propertyFactories.add(new OCSize.Factory());
 
-    propertyRegistry.register(propertyFactories);
-  }
+        propertyRegistry.register(propertyFactories);
+    }
 }

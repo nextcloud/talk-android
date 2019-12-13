@@ -30,20 +30,20 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 class PushRegistrationWorker(
-  context: Context,
-  workerParams: WorkerParameters
+        context: Context,
+        workerParams: WorkerParameters
 ) : Worker(context, workerParams), KoinComponent {
 
-  val usersRepository: UsersRepository by inject()
+    val usersRepository: UsersRepository by inject()
 
-  override fun doWork(): Result {
-    val pushUtils = PushUtils(usersRepository)
-    pushUtils.generateRsa2048KeyPair()
-    pushUtils.pushRegistrationToServer()
-    return Result.success()
-  }
+    override fun doWork(): Result {
+        val pushUtils = PushUtils(usersRepository)
+        pushUtils.generateRsa2048KeyPair()
+        pushUtils.pushRegistrationToServer()
+        return Result.success()
+    }
 
-  companion object {
-    const val TAG = "PushRegistrationWorker"
-  }
+    companion object {
+        const val TAG = "PushRegistrationWorker"
+    }
 }

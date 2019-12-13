@@ -25,7 +25,6 @@ import android.security.KeyChainException
 import android.text.TextUtils
 import android.util.Log
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -45,7 +44,7 @@ class MagicKeyManager(private val keyManager: X509KeyManager, private val usersR
         user?.let {
             it.clientCertificate?.let {
                 alias = it
-            }?: run {
+            } ?: run {
                 appPreferences.temporaryClientCertAlias?.let {
                     alias = it
                 }

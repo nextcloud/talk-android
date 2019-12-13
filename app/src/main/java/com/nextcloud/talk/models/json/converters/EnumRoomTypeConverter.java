@@ -24,35 +24,35 @@ import com.bluelinelabs.logansquare.typeconverters.IntBasedTypeConverter;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 
 public class EnumRoomTypeConverter extends IntBasedTypeConverter<Conversation.ConversationType> {
-  @Override
-  public Conversation.ConversationType getFromInt(int i) {
-    switch (i) {
-      case 1:
-        return Conversation.ConversationType.ONE_TO_ONE_CONVERSATION;
-      case 2:
-        return Conversation.ConversationType.GROUP_CONVERSATION;
-      case 3:
-        return Conversation.ConversationType.PUBLIC_CONVERSATION;
-      case 4:
-        return Conversation.ConversationType.SYSTEM_CONVERSATION;
-      default:
-        return Conversation.ConversationType.ONE_TO_ONE_CONVERSATION;
+    @Override
+    public Conversation.ConversationType getFromInt(int i) {
+        switch (i) {
+            case 1:
+                return Conversation.ConversationType.ONE_TO_ONE_CONVERSATION;
+            case 2:
+                return Conversation.ConversationType.GROUP_CONVERSATION;
+            case 3:
+                return Conversation.ConversationType.PUBLIC_CONVERSATION;
+            case 4:
+                return Conversation.ConversationType.SYSTEM_CONVERSATION;
+            default:
+                return Conversation.ConversationType.ONE_TO_ONE_CONVERSATION;
+        }
     }
-  }
 
-  @Override
-  public int convertToInt(Conversation.ConversationType object) {
-    switch (object) {
-      case ONE_TO_ONE_CONVERSATION:
-        return 1;
-      case GROUP_CONVERSATION:
-        return 2;
-      case PUBLIC_CONVERSATION:
-        return 3;
-      case SYSTEM_CONVERSATION:
-        return 4;
-      default:
-        return 1;
+    @Override
+    public int convertToInt(Conversation.ConversationType object) {
+        switch (object) {
+            case ONE_TO_ONE_CONVERSATION:
+                return 1;
+            case GROUP_CONVERSATION:
+                return 2;
+            case PUBLIC_CONVERSATION:
+                return 3;
+            case SYSTEM_CONVERSATION:
+                return 4;
+            default:
+                return 1;
+        }
     }
-  }
 }

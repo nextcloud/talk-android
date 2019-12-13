@@ -22,11 +22,12 @@ package com.nextcloud.talk.models.json.conversations;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import lombok.Data;
 
 @Data
 @JsonObject
 public class RoomOverall {
-  @JsonField(name = "ocs")
-  public RoomOCS ocs;
+    @JsonField(name = "ocs")
+    public RoomOCS ocs;
 }

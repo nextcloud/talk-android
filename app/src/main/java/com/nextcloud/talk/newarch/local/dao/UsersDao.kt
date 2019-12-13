@@ -22,8 +22,6 @@ package com.nextcloud.talk.newarch.local.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.talk.newarch.local.models.ConversationEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
 

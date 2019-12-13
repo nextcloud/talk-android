@@ -22,25 +22,27 @@ package com.nextcloud.talk.models.json.signaling;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @JsonObject
 @Parcel
 public class NCMessagePayload {
-  @JsonField(name = "type")
-  public String type;
+    @JsonField(name = "type")
+    public String type;
 
-  @JsonField(name = "sdp")
-  public String sdp;
+    @JsonField(name = "sdp")
+    public String sdp;
 
-  @JsonField(name = "nick")
-  public String nick;
+    @JsonField(name = "nick")
+    public String nick;
 
-  @JsonField(name = "candidate")
-  public NCIceCandidate iceCandidate;
+    @JsonField(name = "candidate")
+    public NCIceCandidate iceCandidate;
 
-  @JsonField(name = "name")
-  public String name;
+    @JsonField(name = "name")
+    public String name;
 }

@@ -55,16 +55,20 @@ import java.util.*
 
 class BrowserController(args: Bundle) : BaseController(), ListingInterface, FlexibleAdapter.OnItemClickListener, SelectionInterface {
     private val selectedPaths: MutableSet<String>
-    @JvmField @BindView(R.id.recyclerView)
+    @JvmField
+    @BindView(R.id.recyclerView)
     internal var recyclerView: RecyclerView? = null
-    @JvmField @BindView(R.id.fast_scroller)
+    @JvmField
+    @BindView(R.id.fast_scroller)
     internal var fastScroller: FastScroller? = null
-    @JvmField @BindView(R.id.action_back)
+    @JvmField
+    @BindView(R.id.action_back)
     internal var backMenuItem: BottomNavigationItemView? = null
-    @JvmField @BindView(R.id.action_refresh)
+    @JvmField
+    @BindView(R.id.action_refresh)
     internal var actionRefreshMenuItem: BottomNavigationItemView? = null
 
-    val okHttpClient:OkHttpClient by inject()
+    val okHttpClient: OkHttpClient by inject()
 
     private var filesSelectionDoneMenuItem: MenuItem? = null
     private var layoutManager: RecyclerView.LayoutManager? = null
@@ -275,13 +279,13 @@ class BrowserController(args: Bundle) : BaseController(), ListingInterface, Flex
             recyclerView!!.setHasFixedSize(true)
             recyclerView!!.adapter = adapter
 
-            adapter!!.setFastScroller(fastScroller)
+            adapter!!.fastScroller = fastScroller
             adapter!!.addListener(this)
 
             fastScroller!!.setBubbleTextCreator { position ->
                 val abstractFlexibleItem = adapter!!.getItem(position)
                 if (abstractFlexibleItem is BrowserFileItem) {
-                     (adapter!!.getItem(position) as BrowserFileItem).model.displayName.toCharArray()[0].toString()
+                    (adapter!!.getItem(position) as BrowserFileItem).model.displayName.toCharArray()[0].toString()
                 } else {
                     ""
                 }

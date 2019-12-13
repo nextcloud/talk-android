@@ -20,53 +20,44 @@
 
 package com.nextcloud.talk.jobs
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.text.TextUtils
-import android.util.Log
-import androidx.work.ListenableWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import java.io.IOException
 
 class WebsocketConnectionsWorker(
-  context: Context,
-  workerParams: WorkerParameters
+        context: Context,
+        workerParams: WorkerParameters
 ) : Worker(context, workerParams), KoinComponent {
 
-  val usersRepository: UsersRepository by inject()
+    val usersRepository: UsersRepository by inject()
 
-  override fun doWork(): Result {
-    val userEntityList = usersRepository.getUsers()
-    var userEntity: UserNgEntity
-    for (i in userEntityList.indices) {
-      userEntity = userEntityList[i]
-      if (userEntity.externalSignaling != null) {
-          if (!userEntity.externalSignaling!!.externalSignalingServer.isNullOrEmpty() &&
-              !userEntity.externalSignaling!!.externalSignalingTicket.isNullOrEmpty()) {
-            WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
-                userEntity.externalSignaling!!.externalSignalingServer!!,
-                userEntity, userEntity.externalSignaling!!.externalSignalingTicket,
-                false
-            )
-          }
+    override fun doWork(): Result {
+        val userEntityList = usersRepository.getUsers()
+        var userEntity: UserNgEntity
+        for (i in userEntityList.indices) {
+            userEntity = userEntityList[i]
+            if (userEntity.externalSignaling != null) {
+                if (!userEntity.externalSignaling!!.externalSignalingServer.isNullOrEmpty() &&
+                        !userEntity.externalSignaling!!.externalSignalingTicket.isNullOrEmpty()) {
+                    WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                            userEntity.externalSignaling!!.externalSignalingServer!!,
+                            userEntity, userEntity.externalSignaling!!.externalSignalingTicket,
+                            false
+                    )
+                }
 
-      }
+            }
+        }
+
+        return Result.success()
     }
 
-    return Result.success()
-  }
-
-  companion object {
-    private val TAG = "WebsocketConnectionsWorker"
-  }
+    companion object {
+        private val TAG = "WebsocketConnectionsWorker"
+    }
 }

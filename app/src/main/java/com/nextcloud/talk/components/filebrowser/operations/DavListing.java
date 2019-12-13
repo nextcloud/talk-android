@@ -21,49 +21,51 @@
 package com.nextcloud.talk.components.filebrowser.operations;
 
 import androidx.annotation.Nullable;
+
 import com.nextcloud.talk.components.filebrowser.interfaces.ListingInterface;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.newarch.local.models.UserNgEntity;
+
+import java.util.concurrent.Callable;
+
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import java.util.concurrent.Callable;
 import okhttp3.OkHttpClient;
 
 public class DavListing extends ListingAbstractClass {
-  private DavResponse davResponse = new DavResponse();
+    private DavResponse davResponse = new DavResponse();
 
-  public DavListing(ListingInterface listingInterface) {
-    super(listingInterface);
-  }
+    public DavListing(ListingInterface listingInterface) {
+        super(listingInterface);
+    }
 
-  @Override
-  public void getFiles(String path, UserNgEntity currentUser, @Nullable OkHttpClient okHttpClient) {
-    Single.fromCallable(new Callable<ReadFilesystemOperation>() {
-      @Override
-      public ReadFilesystemOperation call() {
-        return new ReadFilesystemOperation(okHttpClient, currentUser, path, 1);
-      }
-    }).subscribeOn(Schedulers.io())
-        .subscribe(new SingleObserver<ReadFilesystemOperation>() {
-          @Override
-          public void onSubscribe(Disposable d) {
+    @Override
+    public void getFiles(String path, UserNgEntity currentUser, @Nullable OkHttpClient okHttpClient) {
+        Single.fromCallable(new Callable<ReadFilesystemOperation>() {
+            @Override
+            public ReadFilesystemOperation call() {
+                return new ReadFilesystemOperation(okHttpClient, currentUser, path, 1);
+            }
+        }).subscribeOn(Schedulers.io())
+                .subscribe(new SingleObserver<ReadFilesystemOperation>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-          }
+                    }
 
-          @Override
-          public void onSuccess(ReadFilesystemOperation readFilesystemOperation) {
-            davResponse = readFilesystemOperation.readRemotePath();
-            listingInterface.listingResult(davResponse);
-          }
+                    @Override
+                    public void onSuccess(ReadFilesystemOperation readFilesystemOperation) {
+                        davResponse = readFilesystemOperation.readRemotePath();
+                        listingInterface.listingResult(davResponse);
+                    }
 
-          @Override
-          public void onError(Throwable e) {
-            listingInterface.listingResult(davResponse);
-          }
-        });
-  }
+                    @Override
+                    public void onError(Throwable e) {
+                        listingInterface.listingResult(davResponse);
+                    }
+                });
+    }
 }

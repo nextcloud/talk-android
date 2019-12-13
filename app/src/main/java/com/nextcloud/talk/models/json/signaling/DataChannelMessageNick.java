@@ -23,24 +23,27 @@ package com.nextcloud.talk.models.json.signaling;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.ObjectParcelConverter;
-import java.util.HashMap;
-import lombok.Data;
+
 import org.parceler.ParcelPropertyConverter;
+
+import java.util.HashMap;
+
+import lombok.Data;
 
 @Data
 @JsonObject
 public class DataChannelMessageNick {
-  @JsonField(name = "type")
-  public String type;
+    @JsonField(name = "type")
+    public String type;
 
-  @ParcelPropertyConverter(ObjectParcelConverter.class)
-  @JsonField(name = "payload")
-  public HashMap<String, String> payload;
+    @ParcelPropertyConverter(ObjectParcelConverter.class)
+    @JsonField(name = "payload")
+    public HashMap<String, String> payload;
 
-  public DataChannelMessageNick(String type) {
-    this.type = type;
-  }
+    public DataChannelMessageNick(String type) {
+        this.type = type;
+    }
 
-  public DataChannelMessageNick() {
-  }
+    public DataChannelMessageNick() {
+    }
 }

@@ -21,6 +21,7 @@
 package com.nextcloud.talk.utils.preferences;
 
 import com.nextcloud.talk.R;
+
 import net.orange_box.storebox.annotations.method.ClearMethod;
 import net.orange_box.storebox.annotations.method.DefaultValue;
 import net.orange_box.storebox.annotations.method.KeyByResource;
@@ -35,269 +36,269 @@ import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
 @SaveOption(SaveMode.APPLY)
 public interface AppPreferences {
 
-  @KeyByString("proxy_type")
-  @RegisterChangeListenerMethod
-  void registerProxyTypeListener(OnPreferenceValueChangedListener<String> listener);
+    @KeyByString("proxy_type")
+    @RegisterChangeListenerMethod
+    void registerProxyTypeListener(OnPreferenceValueChangedListener<String> listener);
 
-  @KeyByString("proxy_type")
-  @UnregisterChangeListenerMethod
-  void unregisterProxyTypeListener(OnPreferenceValueChangedListener<String> listener);
+    @KeyByString("proxy_type")
+    @UnregisterChangeListenerMethod
+    void unregisterProxyTypeListener(OnPreferenceValueChangedListener<String> listener);
 
-  @KeyByString("proxy_type")
-  String getProxyType();
+    @KeyByString("proxy_type")
+    String getProxyType();
 
-  @KeyByString("proxy_type")
-  void setProxyType(String proxyType);
+    @KeyByString("proxy_type")
+    void setProxyType(String proxyType);
 
-  @KeyByString("proxy_server")
-  @RemoveMethod
-  void removeProxyType();
+    @KeyByString("proxy_server")
+    @RemoveMethod
+    void removeProxyType();
 
-  @KeyByString("proxy_host")
-  String getProxyHost();
+    @KeyByString("proxy_host")
+    String getProxyHost();
 
-  @KeyByString("proxy_host")
-  void setProxyHost(String proxyHost);
+    @KeyByString("proxy_host")
+    void setProxyHost(String proxyHost);
 
-  @KeyByString("proxy_host")
-  @RemoveMethod
-  void removeProxyHost();
+    @KeyByString("proxy_host")
+    @RemoveMethod
+    void removeProxyHost();
 
-  @KeyByString("proxy_port")
-  String getProxyPort();
+    @KeyByString("proxy_port")
+    String getProxyPort();
 
-  @KeyByString("proxy_port")
-  void setProxyPort(String proxyPort);
+    @KeyByString("proxy_port")
+    void setProxyPort(String proxyPort);
 
-  @KeyByString("proxy_port")
-  @RemoveMethod
-  void removeProxyPort();
+    @KeyByString("proxy_port")
+    @RemoveMethod
+    void removeProxyPort();
 
-  @KeyByString("proxy_credentials")
-  @RegisterChangeListenerMethod
-  void registerProxyCredentialsListener(OnPreferenceValueChangedListener<Boolean> listener);
+    @KeyByString("proxy_credentials")
+    @RegisterChangeListenerMethod
+    void registerProxyCredentialsListener(OnPreferenceValueChangedListener<Boolean> listener);
 
-  @KeyByString("proxy_credentials")
-  @UnregisterChangeListenerMethod
-  void unregisterProxyCredentialsListener(OnPreferenceValueChangedListener<Boolean> listener);
+    @KeyByString("proxy_credentials")
+    @UnregisterChangeListenerMethod
+    void unregisterProxyCredentialsListener(OnPreferenceValueChangedListener<Boolean> listener);
 
-  @KeyByString("proxy_credentials")
-  boolean getProxyCredentials();
+    @KeyByString("proxy_credentials")
+    boolean getProxyCredentials();
 
-  @KeyByString("proxy_credentials")
-  void setProxyNeedsCredentials(boolean proxyNeedsCredentials);
+    @KeyByString("proxy_credentials")
+    void setProxyNeedsCredentials(boolean proxyNeedsCredentials);
 
-  @KeyByString("proxy_credentials")
-  @RemoveMethod
-  void removeProxyCredentials();
+    @KeyByString("proxy_credentials")
+    @RemoveMethod
+    void removeProxyCredentials();
 
-  @KeyByString("proxy_username")
-  String getProxyUsername();
+    @KeyByString("proxy_username")
+    String getProxyUsername();
 
-  @KeyByString("proxy_username")
-  void setProxyUsername(String proxyUsername);
+    @KeyByString("proxy_username")
+    void setProxyUsername(String proxyUsername);
 
-  @KeyByString("proxy_username")
-  @RemoveMethod
-  void removeProxyUsername();
+    @KeyByString("proxy_username")
+    @RemoveMethod
+    void removeProxyUsername();
 
-  @KeyByString("proxy_password")
-  String getProxyPassword();
+    @KeyByString("proxy_password")
+    String getProxyPassword();
 
-  @KeyByString("proxy_password")
-  void setProxyPassword(String proxyPassword);
+    @KeyByString("proxy_password")
+    void setProxyPassword(String proxyPassword);
 
-  @KeyByString("proxy_password")
-  @RemoveMethod
-  void removeProxyPassword();
+    @KeyByString("proxy_password")
+    @RemoveMethod
+    void removeProxyPassword();
 
-  @KeyByString("push_token")
-  String getPushToken();
+    @KeyByString("push_token")
+    String getPushToken();
 
-  @KeyByString("push_token")
-  void setPushToken(String pushToken);
+    @KeyByString("push_token")
+    void setPushToken(String pushToken);
 
-  @KeyByString("push_token")
-  @RemoveMethod
-  void removePushToken();
+    @KeyByString("push_token")
+    @RemoveMethod
+    void removePushToken();
 
-  @KeyByString("tempClientCertAlias")
-  String getTemporaryClientCertAlias();
+    @KeyByString("tempClientCertAlias")
+    String getTemporaryClientCertAlias();
 
-  @KeyByString("tempClientCertAlias")
-  void setTemporaryClientCertAlias(String alias);
+    @KeyByString("tempClientCertAlias")
+    void setTemporaryClientCertAlias(String alias);
 
-  @KeyByString("tempClientCertAlias")
-  @RemoveMethod
-  void removeTemporaryClientCertAlias();
+    @KeyByString("tempClientCertAlias")
+    @RemoveMethod
+    void removeTemporaryClientCertAlias();
 
-  @KeyByString("pushToTalk_intro_shown")
-  boolean getPushToTalkIntroShown();
+    @KeyByString("pushToTalk_intro_shown")
+    boolean getPushToTalkIntroShown();
 
-  @KeyByString("pushToTalk_intro_shown")
-  void setPushToTalkIntroShown(boolean shown);
+    @KeyByString("pushToTalk_intro_shown")
+    void setPushToTalkIntroShown(boolean shown);
 
-  @KeyByString("pushToTalk_intro_shown")
-  @RemoveMethod
-  void removePushToTalkIntroShown();
+    @KeyByString("pushToTalk_intro_shown")
+    @RemoveMethod
+    void removePushToTalkIntroShown();
 
-  @KeyByString("call_ringtone")
-  String getCallRingtoneUri();
+    @KeyByString("call_ringtone")
+    String getCallRingtoneUri();
 
-  @KeyByString("call_ringtone")
-  void setCallRingtoneUri(String value);
+    @KeyByString("call_ringtone")
+    void setCallRingtoneUri(String value);
 
-  @KeyByString("call_ringtone")
-  @RemoveMethod
-  void removeCallRingtoneUri();
+    @KeyByString("call_ringtone")
+    @RemoveMethod
+    void removeCallRingtoneUri();
 
-  @KeyByString("message_ringtone")
-  String getMessageRingtoneUri();
+    @KeyByString("message_ringtone")
+    String getMessageRingtoneUri();
 
-  @KeyByString("message_ringtone")
-  void setMessageRingtoneUri(String value);
+    @KeyByString("message_ringtone")
+    void setMessageRingtoneUri(String value);
 
-  @KeyByString("message_ringtone")
-  @RemoveMethod
-  void removeMessageRingtoneUri();
+    @KeyByString("message_ringtone")
+    @RemoveMethod
+    void removeMessageRingtoneUri();
 
-  @KeyByString("notification_channels_upgrade_to_v2")
-  boolean getIsNotificationChannelUpgradedToV2();
+    @KeyByString("notification_channels_upgrade_to_v2")
+    boolean getIsNotificationChannelUpgradedToV2();
 
-  @KeyByString("notification_channels_upgrade_to_v2")
-  void setNotificationChannelIsUpgradedToV2(boolean value);
+    @KeyByString("notification_channels_upgrade_to_v2")
+    void setNotificationChannelIsUpgradedToV2(boolean value);
 
-  @KeyByString("notification_channels_upgrade_to_v2")
-  @RemoveMethod
-  void removeNotificationChannelUpgradeToV2();
+    @KeyByString("notification_channels_upgrade_to_v2")
+    @RemoveMethod
+    void removeNotificationChannelUpgradeToV2();
 
-  @KeyByString("notification_channels_upgrade_to_v3")
-  boolean getIsNotificationChannelUpgradedToV3();
+    @KeyByString("notification_channels_upgrade_to_v3")
+    boolean getIsNotificationChannelUpgradedToV3();
 
-  @KeyByString("notification_channels_upgrade_to_v3")
-  void setNotificationChannelIsUpgradedToV3(boolean value);
+    @KeyByString("notification_channels_upgrade_to_v3")
+    void setNotificationChannelIsUpgradedToV3(boolean value);
 
-  @KeyByString("notification_channels_upgrade_to_v3")
-  @RemoveMethod
-  void removeNotificationChannelUpgradeToV3();
+    @KeyByString("notification_channels_upgrade_to_v3")
+    @RemoveMethod
+    void removeNotificationChannelUpgradeToV3();
 
-  @KeyByString("notifications_vibrate")
-  @DefaultValue(R.bool.value_true)
-  boolean getShouldVibrateSetting();
+    @KeyByString("notifications_vibrate")
+    @DefaultValue(R.bool.value_true)
+    boolean getShouldVibrateSetting();
 
-  @KeyByString("notifications_vibrate")
-  void setVibrateSetting(boolean value);
+    @KeyByString("notifications_vibrate")
+    void setVibrateSetting(boolean value);
 
-  @KeyByString("notifications_vibrate")
-  @RemoveMethod
-  void removeVibrateSetting();
+    @KeyByString("notifications_vibrate")
+    @RemoveMethod
+    void removeVibrateSetting();
 
-  @KeyByString("screen_security")
-  @DefaultValue(R.bool.value_false)
-  boolean getIsScreenSecured();
+    @KeyByString("screen_security")
+    @DefaultValue(R.bool.value_false)
+    boolean getIsScreenSecured();
 
-  @KeyByString("screen_security")
-  void setScreenSecurity(boolean value);
+    @KeyByString("screen_security")
+    void setScreenSecurity(boolean value);
 
-  @KeyByString("screen_security")
-  @RemoveMethod
-  void removeScreenSecurity();
+    @KeyByString("screen_security")
+    @RemoveMethod
+    void removeScreenSecurity();
 
-  @KeyByString("screen_security")
-  @RegisterChangeListenerMethod
-  void registerScreenSecurityListener(OnPreferenceValueChangedListener<Boolean> listener);
+    @KeyByString("screen_security")
+    @RegisterChangeListenerMethod
+    void registerScreenSecurityListener(OnPreferenceValueChangedListener<Boolean> listener);
 
-  @KeyByString("screen_security")
-  @UnregisterChangeListenerMethod
-  void unregisterScreenSecurityListener(OnPreferenceValueChangedListener<Boolean> listener);
+    @KeyByString("screen_security")
+    @UnregisterChangeListenerMethod
+    void unregisterScreenSecurityListener(OnPreferenceValueChangedListener<Boolean> listener);
 
-  @KeyByString("screen_lock")
-  @DefaultValue(R.bool.value_false)
-  boolean getIsScreenLocked();
+    @KeyByString("screen_lock")
+    @DefaultValue(R.bool.value_false)
+    boolean getIsScreenLocked();
 
-  @KeyByString("screen_lock")
-  void setScreenLock(boolean value);
+    @KeyByString("screen_lock")
+    void setScreenLock(boolean value);
 
-  @KeyByString("screen_lock")
-  @RemoveMethod
-  void removeScreenLock();
+    @KeyByString("screen_lock")
+    @RemoveMethod
+    void removeScreenLock();
 
-  @KeyByString("screen_lock")
-  @RegisterChangeListenerMethod
-  void registerScreenLockListener(OnPreferenceValueChangedListener<Boolean> listener);
+    @KeyByString("screen_lock")
+    @RegisterChangeListenerMethod
+    void registerScreenLockListener(OnPreferenceValueChangedListener<Boolean> listener);
 
-  @KeyByString("screen_lock")
-  @UnregisterChangeListenerMethod
-  void unregisterScreenLockListener(OnPreferenceValueChangedListener<Boolean> listener);
+    @KeyByString("screen_lock")
+    @UnregisterChangeListenerMethod
+    void unregisterScreenLockListener(OnPreferenceValueChangedListener<Boolean> listener);
 
-  @KeyByString("incognito_keyboard")
-  @DefaultValue(R.bool.value_true)
-  boolean getIsKeyboardIncognito();
+    @KeyByString("incognito_keyboard")
+    @DefaultValue(R.bool.value_true)
+    boolean getIsKeyboardIncognito();
 
-  @KeyByString("incognito_keyboard")
-  void setIncognitoKeyboard(boolean value);
+    @KeyByString("incognito_keyboard")
+    void setIncognitoKeyboard(boolean value);
 
-  @KeyByString("incognito_keyboard")
-  @RemoveMethod
-  void removeIncognitoKeyboard();
+    @KeyByString("incognito_keyboard")
+    @RemoveMethod
+    void removeIncognitoKeyboard();
 
-  @KeyByString("link_previews")
-  @DefaultValue(R.bool.value_true)
-  boolean getAreLinkPreviewsAllowed();
+    @KeyByString("link_previews")
+    @DefaultValue(R.bool.value_true)
+    boolean getAreLinkPreviewsAllowed();
 
-  @KeyByString("link_previews")
-  void setLinkPreviewsAllowed(boolean value);
+    @KeyByString("link_previews")
+    void setLinkPreviewsAllowed(boolean value);
 
-  @KeyByString("link_previews")
-  @RemoveMethod
-  void removeLinkPreviews();
+    @KeyByString("link_previews")
+    @RemoveMethod
+    void removeLinkPreviews();
 
-  @KeyByString("screen_lock_timeout")
-  @DefaultValue(R.string.nc_screen_lock_timeout_sixty)
-  String getScreenLockTimeout();
+    @KeyByString("screen_lock_timeout")
+    @DefaultValue(R.string.nc_screen_lock_timeout_sixty)
+    String getScreenLockTimeout();
 
-  @KeyByString("screen_lock_timeout")
-  void setScreenLockTimeout(int value);
+    @KeyByString("screen_lock_timeout")
+    void setScreenLockTimeout(int value);
 
-  @KeyByString("screen_lock_timeout")
-  @RemoveMethod
-  void removeScreenLockTimeout();
+    @KeyByString("screen_lock_timeout")
+    @RemoveMethod
+    void removeScreenLockTimeout();
 
-  @KeyByString("screen_lock_timeout")
-  @RegisterChangeListenerMethod
-  void registerScreenLockTimeoutListener(OnPreferenceValueChangedListener<String> listener);
+    @KeyByString("screen_lock_timeout")
+    @RegisterChangeListenerMethod
+    void registerScreenLockTimeoutListener(OnPreferenceValueChangedListener<String> listener);
 
-  @KeyByString("screen_lock_timeout")
-  @UnregisterChangeListenerMethod
-  void unregisterScreenLockTimeoutListener(OnPreferenceValueChangedListener<String> listener);
+    @KeyByString("screen_lock_timeout")
+    @UnregisterChangeListenerMethod
+    void unregisterScreenLockTimeoutListener(OnPreferenceValueChangedListener<String> listener);
 
-  @KeyByResource(R.string.nc_settings_theme_key)
-  @DefaultValue(R.string.nc_default_theme)
-  String getTheme();
+    @KeyByResource(R.string.nc_settings_theme_key)
+    @DefaultValue(R.string.nc_default_theme)
+    String getTheme();
 
-  @KeyByResource(R.string.nc_settings_theme_key)
-  @RemoveMethod
-  void removeTheme();
+    @KeyByResource(R.string.nc_settings_theme_key)
+    @RemoveMethod
+    void removeTheme();
 
-  @KeyByResource(R.string.nc_settings_theme_key)
-  @RegisterChangeListenerMethod
-  void registerThemeChangeListener(OnPreferenceValueChangedListener<String> listener);
+    @KeyByResource(R.string.nc_settings_theme_key)
+    @RegisterChangeListenerMethod
+    void registerThemeChangeListener(OnPreferenceValueChangedListener<String> listener);
 
-  @KeyByResource(R.string.nc_settings_theme_key)
-  @UnregisterChangeListenerMethod
-  void unregisterThemeChangeListener(OnPreferenceValueChangedListener<String> listener);
+    @KeyByResource(R.string.nc_settings_theme_key)
+    @UnregisterChangeListenerMethod
+    void unregisterThemeChangeListener(OnPreferenceValueChangedListener<String> listener);
 
-  @KeyByString("migration_to_room")
-  @DefaultValue(R.bool.value_false)
-  boolean getMigrationToRoomFinished();
+    @KeyByString("migration_to_room")
+    @DefaultValue(R.bool.value_false)
+    boolean getMigrationToRoomFinished();
 
-  @KeyByString("migration_to_room")
-  void setMigrationToRoomFinished(boolean value);
+    @KeyByString("migration_to_room")
+    void setMigrationToRoomFinished(boolean value);
 
-  @KeyByString("migration_to_room")
-  @RemoveMethod
-  void removeMigrationToRoomFinished();
+    @KeyByString("migration_to_room")
+    @RemoveMethod
+    void removeMigrationToRoomFinished();
 
-  @ClearMethod
-  void clear();
+    @ClearMethod
+    void clear();
 }

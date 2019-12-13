@@ -21,13 +21,15 @@ package com.nextcloud.talk.models.json.mention;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @Parcel
 @JsonObject
 public class MentionOverall {
-  @JsonField(name = "ocs")
-  public MentionOCS ocs;
+    @JsonField(name = "ocs")
+    public MentionOCS ocs;
 }

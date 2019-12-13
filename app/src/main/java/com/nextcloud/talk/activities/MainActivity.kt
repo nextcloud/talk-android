@@ -52,133 +52,133 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : BaseActivity(), ActionBarProvider {
 
-  @BindView(R.id.toolbar)
-  lateinit var toolbar: MaterialToolbar
-  @BindView(R.id.controller_container)
-  lateinit var container: ViewGroup
+    @BindView(R.id.toolbar)
+    lateinit var toolbar: MaterialToolbar
+    @BindView(R.id.controller_container)
+    lateinit var container: ViewGroup
 
-  val usersRepository: UsersRepository by inject()
-  val sqlCipherDatabaseSource: SqlCipherDatabaseSource by inject()
+    val usersRepository: UsersRepository by inject()
+    val sqlCipherDatabaseSource: SqlCipherDatabaseSource by inject()
 
-  private var router: Router? = null
+    private var router: Router? = null
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main)
 
-    ButterKnife.bind(this)
+        ButterKnife.bind(this)
 
-    setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar)
 
-    router = Conductor.attachRouter(this, container, savedInstanceState)
+        router = Conductor.attachRouter(this, container, savedInstanceState)
 
-    var hasDb = true
+        var hasDb = true
 
-    try {
-      sqlCipherDatabaseSource.writableDatabase
-    } catch (exception: Exception) {
-      hasDb = false
-    }
+        try {
+            sqlCipherDatabaseSource.writableDatabase
+        } catch (exception: Exception) {
+            hasDb = false
+        }
 
 
-    if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-      if (!router!!.hasRootController()) {
-        router!!.setRoot(
-            RouterTransaction.with(ConversationsListView())
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
-      }
-      onNewIntent(intent)
-    } else if (!router!!.hasRootController()) {
-      if (hasDb) {
-        GlobalScope.launch {
-          if (usersRepository.getUsers().count() > 0) {
-            runOnUiThread {
-              router!!.setRoot(
-                      RouterTransaction.with(ConversationsListView())
-                              .pushChangeHandler(HorizontalChangeHandler())
-                              .popChangeHandler(HorizontalChangeHandler())
-              )
+        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+            if (!router!!.hasRootController()) {
+                router!!.setRoot(
+                        RouterTransaction.with(ConversationsListView())
+                                .pushChangeHandler(HorizontalChangeHandler())
+                                .popChangeHandler(HorizontalChangeHandler())
+                )
+            }
+            onNewIntent(intent)
+        } else if (!router!!.hasRootController()) {
+            if (hasDb) {
+                GlobalScope.launch {
+                    if (usersRepository.getUsers().count() > 0) {
+                        runOnUiThread {
+                            router!!.setRoot(
+                                    RouterTransaction.with(ConversationsListView())
+                                            .pushChangeHandler(HorizontalChangeHandler())
+                                            .popChangeHandler(HorizontalChangeHandler())
+                            )
+
+                        }
+                    } else {
+                        runOnUiThread {
+                            router!!.setRoot(
+                                    RouterTransaction.with(ServerSelectionController())
+                                            .pushChangeHandler(HorizontalChangeHandler())
+                                            .popChangeHandler(HorizontalChangeHandler())
+                            )
+                        }
+                    }
+
+                }
+            } else {
+                router!!.setRoot(
+                        RouterTransaction.with(ServerSelectionController())
+                                .pushChangeHandler(HorizontalChangeHandler())
+                                .popChangeHandler(HorizontalChangeHandler())
+                )
 
             }
-          } else {
-            runOnUiThread {
-              router!!.setRoot(
-                      RouterTransaction.with(ServerSelectionController())
-                              .pushChangeHandler(HorizontalChangeHandler())
-                              .popChangeHandler(HorizontalChangeHandler())
-              )
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkIfWeAreSecure()
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    fun checkIfWeAreSecure() {
+        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {
+            if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
+                if (router != null && router!!.getControllerWithTag(LockedController.TAG) == null) {
+                    router!!.pushController(
+                            RouterTransaction.with(LockedController())
+                                    .pushChangeHandler(VerticalChangeHandler())
+                                    .popChangeHandler(VerticalChangeHandler())
+                                    .tag(LockedController.TAG)
+                    )
+                }
             }
-          }
-
         }
-      } else {
-        router!!.setRoot(
-            RouterTransaction.with(ServerSelectionController())
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
-
-      }
     }
-  }
 
-  override fun onStart() {
-    super.onStart()
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      checkIfWeAreSecure()
-    }
-  }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
 
-  @RequiresApi(api = Build.VERSION_CODES.M)
-  fun checkIfWeAreSecure() {
-    val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-    if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {
-      if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
-        if (router != null && router!!.getControllerWithTag(LockedController.TAG) == null) {
-          router!!.pushController(
-              RouterTransaction.with(LockedController())
-                  .pushChangeHandler(VerticalChangeHandler())
-                  .popChangeHandler(VerticalChangeHandler())
-                  .tag(LockedController.TAG)
-          )
+        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+            if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
+                router!!.pushController(
+                        RouterTransaction.with(CallNotificationController(intent.extras!!))
+                                .pushChangeHandler(HorizontalChangeHandler())
+                                .popChangeHandler(HorizontalChangeHandler())
+                )
+            } else {
+                ConductorRemapping.remapChatController(
+                        router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
+                        intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN), intent.extras!!, false
+                )
+            }
         }
-      }
-    }
-  }
-
-  override fun onNewIntent(intent: Intent) {
-    super.onNewIntent(intent)
-
-    if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-      if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
-        router!!.pushController(
-            RouterTransaction.with(CallNotificationController(intent.extras!!))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
-      } else {
-        ConductorRemapping.remapChatController(
-            router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
-            intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN), intent.extras!!, false
-        )
-      }
-    }
-  }
-
-  override fun onBackPressed() {
-    if (router!!.getControllerWithTag(LockedController.TAG) != null) {
-      return
     }
 
-    if (!router!!.handleBack()) {
-      super.onBackPressed()
-    }
-  }
+    override fun onBackPressed() {
+        if (router!!.getControllerWithTag(LockedController.TAG) != null) {
+            return
+        }
 
-  companion object {
-    private val TAG = "MainActivity"
-  }
+        if (!router!!.handleBack()) {
+            super.onBackPressed()
+        }
+    }
+
+    companion object {
+        private val TAG = "MainActivity"
+    }
 }

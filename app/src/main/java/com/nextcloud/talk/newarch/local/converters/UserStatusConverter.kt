@@ -22,26 +22,24 @@ package com.nextcloud.talk.newarch.local.converters
 
 import androidx.room.TypeConverter
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
-import com.nextcloud.talk.newarch.local.models.other.UserStatus.ACTIVE
-import com.nextcloud.talk.newarch.local.models.other.UserStatus.DORMANT
-import com.nextcloud.talk.newarch.local.models.other.UserStatus.PENDING_DELETE
+import com.nextcloud.talk.newarch.local.models.other.UserStatus.*
 
 class UserStatusConverter {
-  @TypeConverter
-  fun fromUserStatusToInt(userStatus: UserStatus?): Int {
-    if (userStatus == null) {
-      return DORMANT.ordinal
+    @TypeConverter
+    fun fromUserStatusToInt(userStatus: UserStatus?): Int {
+        if (userStatus == null) {
+            return DORMANT.ordinal
+        }
+
+        return userStatus.ordinal
     }
 
-    return userStatus.ordinal
-  }
-
-  @TypeConverter
-  fun fromIntToUserStatus(value: Int): UserStatus? {
-    return when (value) {
-      0 -> DORMANT
-      1 -> ACTIVE
-      else -> PENDING_DELETE
+    @TypeConverter
+    fun fromIntToUserStatus(value: Int): UserStatus? {
+        return when (value) {
+            0 -> DORMANT
+            1 -> ACTIVE
+            else -> PENDING_DELETE
+        }
     }
-  }
 }

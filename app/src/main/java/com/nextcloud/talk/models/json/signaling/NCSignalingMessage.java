@@ -22,25 +22,27 @@ package com.nextcloud.talk.models.json.signaling;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Data
 @JsonObject
 @Parcel
 public class NCSignalingMessage {
-  @JsonField(name = "from")
-  public String from;
-  @JsonField(name = "to")
-  public String to;
-  @JsonField(name = "type")
-  public String type;
-  @JsonField(name = "payload")
-  public NCMessagePayload payload;
-  @JsonField(name = "roomType")
-  public String roomType;
-  @JsonField(name = "sid")
-  public String sid;
-  @JsonField(name = "prefix")
-  public String prefix;
+    @JsonField(name = "from")
+    public String from;
+    @JsonField(name = "to")
+    public String to;
+    @JsonField(name = "type")
+    public String type;
+    @JsonField(name = "payload")
+    public NCMessagePayload payload;
+    @JsonField(name = "roomType")
+    public String roomType;
+    @JsonField(name = "sid")
+    public String sid;
+    @JsonField(name = "prefix")
+    public String prefix;
 }

@@ -40,36 +40,32 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.BottomSheetLockEvent
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.EmojiTextInputEditText
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
-import com.vanniktech.emoji.EmojiImageView
 import com.vanniktech.emoji.EmojiPopup
-import com.vanniktech.emoji.emoji.Emoji
-import com.vanniktech.emoji.listeners.OnEmojiClickListener
-import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener
-import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener
-import org.greenrobot.eventbus.EventBus
 import org.parceler.Parcels
 
 class EntryMenuController(private val originalBundle: Bundle) : BaseController() {
 
-    @JvmField @BindView(R.id.ok_button)
+    @JvmField
+    @BindView(R.id.ok_button)
     internal var proceedButton: Button? = null
 
-    @JvmField @BindView(R.id.text_edit)
+    @JvmField
+    @BindView(R.id.text_edit)
     internal var editText: EmojiTextInputEditText? = null
 
-    @JvmField @BindView(R.id.text_input_layout)
+    @JvmField
+    @BindView(R.id.text_input_layout)
     internal var textInputLayout: TextInputLayout? = null
 
-    @JvmField @BindView(R.id.smileyButton)
+    @JvmField
+    @BindView(R.id.smileyButton)
     internal var smileyButton: ImageView? = null
 
     private val operationCode: Int

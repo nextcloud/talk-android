@@ -30,78 +30,78 @@ import com.nextcloud.talk.newarch.local.models.toConversation
 import com.nextcloud.talk.newarch.local.models.toConversationEntity
 
 class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
-    ConversationsRepository {
-  override suspend fun setChangingValueForConversation(
-    userId: Long,
-    conversationId: String,
-    changing: Boolean
-  ) {
-    conversationsDao
-        .updateChangingValueForConversation(userId, conversationId, changing)
-  }
-
-  override suspend fun setFavoriteValueForConversation(
-    userId: Long,
-    conversationId: String,
-    favorite: Boolean
-  ) {
-    conversationsDao
-        .updateFavoriteValueForConversation(userId, conversationId, favorite)
-  }
-
-  override suspend fun deleteConversation(
-    userId: Long,
-    conversationId: String
-  ) {
-    conversationsDao
-        .deleteConversation(userId, conversationId)
-  }
-
-  override fun getConversationsForUser(userId: Long): LiveData<List<Conversation>> {
-    return Transformations.distinctUntilChanged(conversationsDao
-        .getConversationsForUser(userId)
-        .map { data ->
-          data.map {
-            it.toConversation()
-          }
-        }
-    )
-  }
-
-  override suspend fun getConversationForUserWithToken(userId: Long, token: String): Conversation? {
-    val conversationEntity = conversationsDao.getConversationForUserWithToken(userId, token)
-    if (conversationEntity != null) {
-      return conversationEntity.toConversation()
+        ConversationsRepository {
+    override suspend fun setChangingValueForConversation(
+            userId: Long,
+            conversationId: String,
+            changing: Boolean
+    ) {
+        conversationsDao
+                .updateChangingValueForConversation(userId, conversationId, changing)
     }
 
-    return null
-  }
-
-  override suspend fun clearConversationsForUser(userId: Long) {
-    conversationsDao
-        .clearConversationsForUser(userId)
-  }
-
-  override suspend fun saveConversationsForUser(
-    userId: Long,
-    conversations: List<Conversation>
-  ) {
-    val map = conversations.map {
-      it.toConversationEntity()
+    override suspend fun setFavoriteValueForConversation(
+            userId: Long,
+            conversationId: String,
+            favorite: Boolean
+    ) {
+        conversationsDao
+                .updateFavoriteValueForConversation(userId, conversationId, favorite)
     }
 
-    conversationsDao
-        .updateConversationsForUser(
-            userId,
-            map.toTypedArray()
+    override suspend fun deleteConversation(
+            userId: Long,
+            conversationId: String
+    ) {
+        conversationsDao
+                .deleteConversation(userId, conversationId)
+    }
+
+    override fun getConversationsForUser(userId: Long): LiveData<List<Conversation>> {
+        return Transformations.distinctUntilChanged(conversationsDao
+                .getConversationsForUser(userId)
+                .map { data ->
+                    data.map {
+                        it.toConversation()
+                    }
+                }
         )
-  }
+    }
 
-  override suspend fun deleteConversationForUserWithTimestamp(
-    userId: Long,
-    timestamp: Long
-  ) {
-    conversationsDao
-        .deleteConversationsForUserWithTimestamp(userId, timestamp)
-  }
+    override suspend fun getConversationForUserWithToken(userId: Long, token: String): Conversation? {
+        val conversationEntity = conversationsDao.getConversationForUserWithToken(userId, token)
+        if (conversationEntity != null) {
+            return conversationEntity.toConversation()
+        }
+
+        return null
+    }
+
+    override suspend fun clearConversationsForUser(userId: Long) {
+        conversationsDao
+                .clearConversationsForUser(userId)
+    }
+
+    override suspend fun saveConversationsForUser(
+            userId: Long,
+            conversations: List<Conversation>
+    ) {
+        val map = conversations.map {
+            it.toConversationEntity()
+        }
+
+        conversationsDao
+                .updateConversationsForUser(
+                        userId,
+                        map.toTypedArray()
+                )
+    }
+
+    override suspend fun deleteConversationForUserWithTimestamp(
+            userId: Long,
+            timestamp: Long
+    ) {
+        conversationsDao
+                .deleteConversationsForUserWithTimestamp(userId, timestamp)
+    }
 }

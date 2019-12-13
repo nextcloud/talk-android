@@ -22,24 +22,21 @@ package com.nextcloud.talk.newarch.local.converters
 
 import androidx.room.TypeConverter
 import com.nextcloud.talk.models.json.conversations.Conversation.NotificationLevel
-import com.nextcloud.talk.models.json.conversations.Conversation.NotificationLevel.ALWAYS
-import com.nextcloud.talk.models.json.conversations.Conversation.NotificationLevel.DEFAULT
-import com.nextcloud.talk.models.json.conversations.Conversation.NotificationLevel.MENTION
-import com.nextcloud.talk.models.json.conversations.Conversation.NotificationLevel.NEVER
+import com.nextcloud.talk.models.json.conversations.Conversation.NotificationLevel.*
 
 class NotificationLevelConverter {
-  @TypeConverter
-  fun fromNotificationLevelToInt(notificationLevel: NotificationLevel): Int {
-    return notificationLevel.ordinal
-  }
-
-  @TypeConverter
-  fun fromIntToNotificationLevel(value: Int): NotificationLevel {
-    when (value) {
-      0 -> return DEFAULT
-      1 -> return ALWAYS
-      2 -> return MENTION
-      else -> return NEVER
+    @TypeConverter
+    fun fromNotificationLevelToInt(notificationLevel: NotificationLevel): Int {
+        return notificationLevel.ordinal
     }
-  }
+
+    @TypeConverter
+    fun fromIntToNotificationLevel(value: Int): NotificationLevel {
+        when (value) {
+            0 -> return DEFAULT
+            1 -> return ALWAYS
+            2 -> return MENTION
+            else -> return NEVER
+        }
+    }
 }

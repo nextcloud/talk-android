@@ -29,23 +29,22 @@ import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
-import com.nextcloud.talk.utils.database.user.UserUtils
 
 class ConversationListViewModelFactory constructor(
-  private val application: Application,
-  private val conversationsUseCase: GetConversationsUseCase,
-  private val setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
-  private val leaveConversationUseCase: LeaveConversationUseCase,
-  private val deleteConversationUseCase: DeleteConversationUseCase,
-  private val conversationsRepository: ConversationsRepository,
-  private val usersRepository: UsersRepository
+        private val application: Application,
+        private val conversationsUseCase: GetConversationsUseCase,
+        private val setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,
+        private val leaveConversationUseCase: LeaveConversationUseCase,
+        private val deleteConversationUseCase: DeleteConversationUseCase,
+        private val conversationsRepository: ConversationsRepository,
+        private val usersRepository: UsersRepository
 ) : ViewModelProvider.Factory {
 
-  override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-    return ConversationsListViewModel(
-        application, conversationsUseCase,
-        setConversationFavoriteValueUseCase, leaveConversationUseCase, deleteConversationUseCase,
-        conversationsRepository, usersRepository
-    ) as T
-  }
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return ConversationsListViewModel(
+                application, conversationsUseCase,
+                setConversationFavoriteValueUseCase, leaveConversationUseCase, deleteConversationUseCase,
+                conversationsRepository, usersRepository
+        ) as T
+    }
 }

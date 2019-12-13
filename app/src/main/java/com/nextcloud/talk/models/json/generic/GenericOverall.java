@@ -22,13 +22,15 @@ package com.nextcloud.talk.models.json.generic;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
+
+import lombok.Data;
 
 @Parcel
 @Data
 @JsonObject
 public class GenericOverall {
-  @JsonField(name = "ocs")
-  public GenericOCS ocs;
+    @JsonField(name = "ocs")
+    public GenericOCS ocs;
 }
