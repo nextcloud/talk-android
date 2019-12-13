@@ -95,6 +95,8 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     public HashMap<String, HashMap<String, String>> messageParameters;
     @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
     public SystemMessageType systemMessageType;
+    @JsonField(name = "isReplyable")
+    public boolean replyable;
 
     @JsonIgnore
     @Ignore

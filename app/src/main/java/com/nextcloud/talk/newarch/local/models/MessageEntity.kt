@@ -48,6 +48,7 @@ data class MessageEntity(
         @ColumnInfo(name = "message") var message: String? = null,
         /*@JsonField(name = "messageParameters")
         public HashMap<String, HashMap<String, String>> messageParameters;*/
+        @ColumnInfo(name = "replyable") var replyable: Boolean = false,
         @ColumnInfo(name = "system_message_type") var systemMessageType: SystemMessageType? = null
 )
 
@@ -64,6 +65,7 @@ fun MessageEntity.toChatMessage(): ChatMessage {
     chatMessage.message = this.message
     //chatMessage.messageParameters = this.messageParameters
     chatMessage.systemMessageType = this.systemMessageType
+    chatMessage.replyable = this.replyable
     return chatMessage
 }
 
@@ -77,6 +79,7 @@ fun ChatMessage.toMessageEntity(): MessageEntity {
     messageEntity.timestamp = this.timestamp
     messageEntity.message = this.message
     messageEntity.systemMessageType = this.systemMessageType
+    messageEntity.replyable = this.replyable
     //messageEntity.messageParameters = this.messageParameters
 
     return messageEntity
