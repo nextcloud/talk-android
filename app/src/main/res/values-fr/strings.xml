@@ -114,7 +114,7 @@
     <string name="nc_username">Nom d\'utilisateur</string>
     <string name="nc_password">Mot de passe</string>
     <string name="nc_password_redacted">Rédigé pour des raisons de confidentialité</string>
-    <string name="nc_conversation_link">Lien de conversation</string>
+    <string name="nc_conversation_link">Lien de la conversation</string>
     <string name="nc_new_password">Nouveau mot de passe</string>
     <string name="nc_wrong_password">Mot de passe incorrect</string>
     <string name="nc_about">À propos</string>
