@@ -22,6 +22,7 @@ package com.nextcloud.talk.controllers
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
@@ -72,8 +73,10 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.android.ext.android.inject
@@ -304,13 +307,13 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
                                 "/raw/librem_by_feandesign_call"
                 )
             } else {
-                try {
+                ringtoneUri = try {
                     val ringtoneSettings =
                             LoganSquare.parse(callRingtonePreferenceString, RingtoneSettings::class.java)
-                    ringtoneUri = ringtoneSettings.ringtoneUri
+                    ringtoneSettings.ringtoneUri
                 } catch (e: IOException) {
                     Log.e(TAG, "Failed to parse ringtone settings")
-                    ringtoneUri = Uri.parse(
+                    Uri.parse(
                             "android.resource://" + applicationContext!!.packageName +
                                     "/raw/librem_by_feandesign_call"
                     )
@@ -400,16 +403,26 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
                     transformations(CircleCropTransformation())
                     listener(onSuccess = { data, dataSource ->
                         GlobalScope.launch {
+                            val bitmapFromImageView: Bitmap
+
+                            if (avatarImageView!!.drawable is CrossfadeDrawable) {
+                                bitmapFromImageView = ((avatarImageView!!.drawable as CrossfadeDrawable).end as BitmapDrawable).bitmap
+                            } else {
+                                bitmapFromImageView = ((avatarImageView!!.drawable) as BitmapDrawable).bitmap
+                            }
+
                             if ((AvatarStatusCodeHolder.getInstance().statusCode == 200 || AvatarStatusCodeHolder.getInstance().statusCode == 0)) {
 
                                 if (activity != null) {
                                     val newBitmap = BlurTransformation(activity!!, 5f).transform(
-                                            BitmapPool(10000000), ((avatarImageView!!.drawable as CrossfadeDrawable).end as BitmapDrawable).bitmap
+                                            BitmapPool(10000000), bitmapFromImageView
                                     )
-                                    backgroundImageView!!.setImageBitmap(newBitmap)
+                                    withContext(Dispatchers.Main) {
+                                        backgroundImageView!!.setImageBitmap(newBitmap)
+                                    }
                                 }
                             } else if (AvatarStatusCodeHolder.getInstance().statusCode == 201) {
-                                val colorArt = ColorArt(((avatarImageView!!.drawable as CrossfadeDrawable).end as BitmapDrawable).bitmap)
+                                val colorArt = ColorArt(bitmapFromImageView)
                                 var color = colorArt.backgroundColor
 
                                 val hsv = FloatArray(3)
@@ -417,7 +430,9 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
                                 hsv[2] *= 0.75f
                                 color = Color.HSVToColor(hsv)
 
-                                backgroundImageView!!.setImageDrawable(ColorDrawable(color))
+                                withContext(Dispatchers.Main) {
+                                    backgroundImageView!!.setImageDrawable(ColorDrawable(color))
+                                }
                             }
                         }
                     })
