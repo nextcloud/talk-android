@@ -59,6 +59,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
+import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DoNotDisturbUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -393,6 +394,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
                                 currentConversation!!.name, R.dimen.avatar_size_very_big
                         )
                 ) {
+                    addHeader("Authorization", userBeingCalled.getCredentials())
                     transformations(CircleCropTransformation())
                     listener(onSuccess = { data, dataSource ->
                         GlobalScope.launch {

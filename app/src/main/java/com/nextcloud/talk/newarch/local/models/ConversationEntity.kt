@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.newarch.local.models
 
+import android.util.Log
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.nextcloud.talk.models.json.chat.ChatMessage
@@ -42,7 +43,7 @@ import java.util.*
 )
 data class ConversationEntity(
         @PrimaryKey @ColumnInfo(name = "id") var id: String,
-        @ColumnInfo(name = "user_id") var user: Long? = null,
+        @ColumnInfo(name = "user_id") var userId: Long? = null,
         @ColumnInfo(name = "conversation_id") var conversationId: String? = null,
         @ColumnInfo(name = "token") var token: String? = null,
         @ColumnInfo(name = "name") var name: String? = null,
@@ -74,11 +75,52 @@ data class ConversationEntity(
         @ColumnInfo(name = "last_read_message") var lastReadMessageId: Long = 0,
         @ColumnInfo(name = "modified_at") var modifiedAt: Long? = null,
         @ColumnInfo(name = "changing") var changing: Boolean = false
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ConversationEntity
+
+        if (id != other.id) return false
+        if (userId != other.userId) return false
+        if (conversationId != other.conversationId) return false
+        if (token != other.token) return false
+        if (name != other.name) return false
+        if (displayName != other.displayName) return false
+        if (type != other.type) return false
+        if (count != other.count) return false
+        if (numberOfGuests != other.numberOfGuests) return false
+        if (participantsCount != other.participantsCount) return false
+        if (participantType != other.participantType) return false
+        if (hasPassword != other.hasPassword) return false
+        if (sessionId != other.sessionId) return false
+        if (favorite != other.favorite) return false
+        if (lastActivity != other.lastActivity) return false
+        if (unreadMessages != other.unreadMessages) return false
+        if (unreadMention != other.unreadMention) return false
+        if (lastMessage?.internalMessageId != other.lastMessage?.internalMessageId) return false
+        if (objectType != other.objectType) return false
+        if (notificationLevel != other.notificationLevel) return false
+        if (conversationReadOnlyState != other.conversationReadOnlyState) return false
+        if (lobbyState != other.lobbyState) return false
+        if (lobbyTimer != other.lobbyTimer) return false
+        if (lastReadMessageId != other.lastReadMessageId) return false
+        if (changing != other.changing) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = userId?.hashCode() ?: 0
+        result = 31 * result + (token?.hashCode() ?: 0)
+        return result
+    }
+}
 
 fun ConversationEntity.toConversation(): Conversation {
     val conversation = Conversation()
-    conversation.internalUserId = this.user
+    conversation.internalUserId = this.userId
     conversation.conversationId = this.conversationId
     conversation.type = this.type
     conversation.token = this.token
@@ -111,7 +153,7 @@ fun ConversationEntity.toConversation(): Conversation {
 
 fun Conversation.toConversationEntity(): ConversationEntity {
     val conversationEntity = ConversationEntity(this.internalUserId.toString() + "@" + this.token)
-    conversationEntity.user = this.internalUserId
+    conversationEntity.userId = this.internalUserId
     conversationEntity.conversationId = this.conversationId
     conversationEntity.token = this.token
     conversationEntity.name = this.name

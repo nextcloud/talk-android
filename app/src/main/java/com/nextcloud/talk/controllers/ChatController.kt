@@ -105,7 +105,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 .OnMessageLongClickListener<IMessage>, MessageHolders.ContentChecker<IMessage> {
 
     val ncApi: NcApi by inject()
-    val userUtils: UserUtils by inject()
 
     @BindView(R.id.messagesListView)
     @JvmField
@@ -306,7 +305,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                         imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
                         conversationUser?.baseUrl,
                         currentConversation?.name, avatarSize / 2
-                ), null, target, null,
+                ), conversationUser, target, null,
                         CircleCropTransformation()
                 )
 

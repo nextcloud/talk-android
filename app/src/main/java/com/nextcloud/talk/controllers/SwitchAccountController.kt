@@ -37,12 +37,21 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.AdvancedUserItem
 import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.models.ImportAccount
+import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.other.UserStatus
 import com.nextcloud.talk.utils.AccountUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.UserUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import java.net.CookieManager
 import java.util.*
@@ -53,7 +62,7 @@ class SwitchAccountController : BaseController {
     internal var recyclerView: RecyclerView? = null
 
     val cookieManager: CookieManager by inject()
-    val userUtils: UserUtils by inject()
+    val usersRepository: UsersRepository by inject()
 
     @JvmField
     @BindView(R.id.swipe_refresh_layout)
@@ -75,30 +84,13 @@ class SwitchAccountController : BaseController {
     private val onSwitchItemClickListener = FlexibleAdapter.OnItemClickListener { view, position ->
         if (userItems.size > position) {
             val userEntity = (userItems[position] as AdvancedUserItem).entity
-            /*userUtils!!.createOrUpdateUser(null, null, null, null, null, true, null, userEntity!!.getId(), null, null, null)
-                    .`as`(AutoDispose.autoDisposable<Any>(scopeProvider))
-                    .subscribe(object : Observer<UserEntity> {
-                        override fun onSubscribe(d: Disposable) {
-
-                        }
-
-                        override fun onNext(userEntity: UserEntity) {
-                            cookieManager!!.cookieStore.removeAll()
-
-                            userUtils!!.disableAllUsersWithoutId(userEntity.getId())
-                            if (activity != null) {
-                                activity!!.runOnUiThread { router.popCurrentController() }
-                            }
-                        }
-
-                        override fun onError(e: Throwable) {
-
-                        }
-
-                        override fun onComplete() {
-
-                        }
-                    })*/
+            GlobalScope.launch {
+                usersRepository.setUserAsActiveWithId(userEntity!!.id!!)
+                cookieManager.cookieStore.removeAll()
+                withContext(Dispatchers.Main) {
+                    router.popCurrentController()
+                }
+            }
         }
 
         true
@@ -130,7 +122,69 @@ class SwitchAccountController : BaseController {
         return inflater.inflate(R.layout.controller_generic_rv, container, false)
     }
 
-    override fun onViewBound(view: View) {
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup
+    ): View {
+        swipeRefreshLayout?.isEnabled = false
+        actionBar?.show()
+
+        adapter = FlexibleAdapter(userItems, activity, false)
+        GlobalScope.launch {
+            val users = usersRepository.getUsers()
+            var userEntity: UserNgEntity
+            var participant: Participant
+
+            if (isAccountImport) {
+                var account: Account
+                var importAccount: ImportAccount
+                for (accountObject in AccountUtils.findAccounts(users)) {
+                    account = accountObject
+                    importAccount = AccountUtils.getInformationFromAccount(account)
+
+                    participant = Participant()
+                    participant.name = importAccount.username
+                    participant.userId = importAccount.username
+                    userEntity = UserNgEntity(-1, "!", "!", importAccount.baseUrl)
+                    userItems.add(AdvancedUserItem(participant, userEntity, account))
+                }
+
+                adapter!!.addListener(onImportItemClickListener)
+                withContext(Dispatchers.Main) {
+                    adapter!!.updateDataSet(userItems, false)
+                }
+
+
+            } else {
+                for (userEntityObject in users) {
+                    userEntity = userEntityObject
+                    if (userEntity.status != UserStatus.ACTIVE) {
+                        participant = Participant()
+                        participant.name = userEntity.displayName
+
+                        val userId: String
+
+                        if (userEntity.userId != null) {
+                            userId = userEntity.userId
+                        } else {
+                            userId = userEntity.username
+                        }
+                        participant.userId = userId
+                        userItems.add(AdvancedUserItem(participant, userEntity, null))
+                    }
+                }
+
+                adapter!!.addListener(onSwitchItemClickListener)
+                withContext(Dispatchers.Main) {
+                    adapter!!.updateDataSet(userItems, false)
+                }
+
+            }
+
+        }
+        return super.onCreateView(inflater, container)
+    }
+        override fun onViewBound(view: View) {
         super.onViewBound(view)
         swipeRefreshLayout!!.isEnabled = false
 

@@ -262,7 +262,7 @@ object DisplayUtils {
                 )
             }
 
-            val request = Images().getRequestForUrl(Coil.loader(), context, url, null, target, null, CircleCropTransformation())
+            val request = Images().getRequestForUrl(Coil.loader(), context, url, conversationUser, target, null, CircleCropTransformation())
             Coil.loader().load(request)
         }
 

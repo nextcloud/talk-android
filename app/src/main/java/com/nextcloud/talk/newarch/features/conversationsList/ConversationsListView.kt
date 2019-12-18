@@ -26,12 +26,15 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.view.MenuItemCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.distinctUntilChanged
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import butterknife.OnClick
 import coil.ImageLoader
@@ -74,11 +77,12 @@ import java.util.*
 class ConversationsListView : BaseView(), OnQueryTextListener,
         OnItemClickListener, OnItemLongClickListener {
 
-    lateinit var viewModel: ConversationsListViewModel
+    private lateinit var viewModel: ConversationsListViewModel
     val factory: ConversationListViewModelFactory by inject()
-    val imageLoader: ImageLoader by inject()
+    private val imageLoader: ImageLoader by inject()
+    private val viewState: MutableLiveData<ConversationsListViewState> = MutableLiveData(LOADING)
 
-    private val recyclerViewAdapter = FlexibleAdapter(mutableListOf(), null, true)
+    private val recyclerViewAdapter = FlexibleAdapter(mutableListOf(), null, false)
 
     private var searchItem: MenuItem? = null
     private var settingsItem: MenuItem? = null
@@ -178,9 +182,12 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         searchView!!.imeOptions = imeOptions
         searchView!!.queryHint = resources?.getString(R.string.nc_search)
         searchView!!.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
-
         searchView!!.setOnQueryTextListener(this)
+    }
 
+    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
+        super.onRestoreViewState(view, savedViewState)
+        viewModel.loadConversations()
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -208,71 +215,15 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                 loadAvatar()
             })
 
-            viewState.observe(this@ConversationsListView, Observer { value ->
-                when (value) {
-                    LOADING -> {
-                        view?.swipeRefreshLayoutView?.isEnabled = false
-                        view?.loadingStateView?.visibility = View.VISIBLE
-                        view?.stateWithMessageView?.visibility = View.GONE
-                        view?.dataStateView?.visibility = View.GONE
-                        view?.floatingActionButton?.visibility = View.GONE
-                        searchItem?.isVisible = false
-                    }
-                    LOADED -> {
-                        view?.swipeRefreshLayoutView?.isEnabled = true
-                        view?.swipeRefreshLayoutView?.post {
-                            view?.swipeRefreshLayoutView?.isRefreshing = false
-                        }
-                        view?.loadingStateView?.visibility = View.GONE
-                        view?.stateWithMessageView?.visibility = View.GONE
-                        view?.dataStateView?.visibility = View.VISIBLE
-                        view?.floatingActionButton?.visibility = View.VISIBLE
-                        searchItem?.isVisible = true
-                    }
-                    LOADED_EMPTY, FAILED -> {
-                        view?.swipeRefreshLayoutView?.post {
-                            view?.swipeRefreshLayoutView?.isRefreshing = false
-                        }
-                        view?.swipeRefreshLayoutView?.isEnabled = true
-                        view?.loadingStateView?.visibility = View.GONE
-                        view?.dataStateView?.visibility = View.GONE
-                        searchItem?.isVisible = false
-
-                        if (value.equals(FAILED)) {
-                            view?.stateWithMessageView?.errorStateTextView?.text = messageData
-                            if (messageData.equals(
-                                            context.resources.getString(R.string.nc_no_connection_error)
-                                    )
-                            ) {
-                                view?.stateWithMessageView?.errorStateImageView?.setImageResource(
-                                        drawable.ic_signal_wifi_off_white_24dp
-                                )
-                            } else {
-                                view?.stateWithMessageView?.errorStateImageView?.setImageResource(
-                                        drawable.ic_announcement_white_24dp
-                                )
-                            }
-                            view?.floatingActionButton?.visibility = View.GONE
-                        } else {
-                            view?.floatingActionButton?.visibility = View.VISIBLE
-                            view?.stateWithMessageView?.errorStateTextView?.text =
-                                    resources?.getText(R.string.nc_conversations_empty)
-                            view?.stateWithMessageView?.errorStateImageView?.setImageResource(drawable.ic_logo)
-                        }
-
-                        view?.stateWithMessageView?.visibility = View.VISIBLE
-                    }
-                    else -> {
-                        // We should not be here
-                    }
-                }
-            })
-
             conversationsLiveData.observe(this@ConversationsListView, Observer {
                 if (it.isEmpty()) {
-                    viewState.value = LOADED_EMPTY
+                    if (viewState.value != LOADED_EMPTY) {
+                        viewState.value = LOADED_EMPTY
+                    }
                 } else {
-                    viewState.value = LOADED
+                    if (viewState.value != LOADED) {
+                        viewState.value = LOADED
+                    }
                 }
 
                 val newConversations = mutableListOf<ConversationItem>()
@@ -297,6 +248,67 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             })
         }
 
+        viewState.observe(this@ConversationsListView, Observer { value ->
+            when (value) {
+                LOADING -> {
+                    view?.swipeRefreshLayoutView?.isEnabled = false
+                    view?.loadingStateView?.visibility = View.VISIBLE
+                    view?.stateWithMessageView?.visibility = View.GONE
+                    view?.dataStateView?.visibility = View.GONE
+                    view?.floatingActionButton?.visibility = View.GONE
+                    searchItem?.isVisible = false
+                }
+                LOADED -> {
+                    view?.swipeRefreshLayoutView?.isEnabled = true
+                    view?.swipeRefreshLayoutView?.post {
+                        view?.swipeRefreshLayoutView?.isRefreshing = false
+                    }
+                    view?.loadingStateView?.visibility = View.GONE
+                    view?.stateWithMessageView?.visibility = View.GONE
+                    view?.dataStateView?.visibility = View.VISIBLE
+                    view?.floatingActionButton?.visibility = View.VISIBLE
+                    searchItem?.isVisible = true
+                }
+                LOADED_EMPTY, FAILED -> {
+                    view?.swipeRefreshLayoutView?.post {
+                        view?.swipeRefreshLayoutView?.isRefreshing = false
+                    }
+                    view?.swipeRefreshLayoutView?.isEnabled = true
+                    view?.loadingStateView?.visibility = View.GONE
+                    view?.dataStateView?.visibility = View.GONE
+                    searchItem?.isVisible = false
+
+                    if (value.equals(FAILED)) {
+                        view?.stateWithMessageView?.errorStateTextView?.text = viewModel.messageData
+                        if (viewModel.messageData.equals(
+                                        context.resources.getString(R.string.nc_no_connection_error)
+                                )
+                        ) {
+                            view?.stateWithMessageView?.errorStateImageView?.setImageResource(
+                                    drawable.ic_signal_wifi_off_white_24dp
+                            )
+                        } else {
+                            view?.stateWithMessageView?.errorStateImageView?.setImageResource(
+                                    drawable.ic_announcement_white_24dp
+                            )
+                        }
+                        view?.floatingActionButton?.visibility = View.GONE
+                    } else {
+                        view?.floatingActionButton?.visibility = View.VISIBLE
+                        view?.stateWithMessageView?.errorStateTextView?.text =
+                                resources?.getText(R.string.nc_conversations_empty)
+                        view?.stateWithMessageView?.errorStateImageView?.setImageResource(drawable.ic_logo)
+                    }
+
+                    view?.stateWithMessageView?.visibility = View.VISIBLE
+                }
+                else -> {
+                    // We should not be here
+                }
+            }
+        })
+
+
         return super.onCreateView(inflater, container)
     }
 
@@ -311,7 +323,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
     @OnClick(R.id.stateWithMessageView)
     fun onStateWithMessageViewClick() {
-        if (viewModel.viewState.equals(LOADED_EMPTY)) {
+        if (viewState.value!! == LOADED_EMPTY) {
             openNewConversationScreen()
         }
     }

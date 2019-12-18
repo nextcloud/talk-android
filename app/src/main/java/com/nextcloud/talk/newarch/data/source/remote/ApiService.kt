@@ -23,6 +23,7 @@ package com.nextcloud.talk.newarch.data.source.remote
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import io.reactivex.Observable
 import retrofit2.http.*
 
 interface ApiService {
@@ -63,4 +64,14 @@ interface ApiService {
 
     @GET
     suspend fun getConversation(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun joinConversation(@Header("Authorization") authorization: String,
+                          @Url url: String, @Field("password") password: String?): RoomOverall
+
+    @DELETE
+    suspend fun exitConversation(@Header("Authorization") authorization: String,
+                           @Url url: String): GenericOverall
+
 }

@@ -256,10 +256,10 @@ class SettingsController : BaseController() {
     }
 
     private fun removeCurrentAccount() {
-        val user = usersRepository.getActiveUser()
-        user!!.status = UserStatus.PENDING_DELETE
         GlobalScope.launch {
             val job = async {
+                val user = usersRepository.getActiveUser()
+                user!!.status = UserStatus.PENDING_DELETE
                 usersRepository.updateUser(user)
                 val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
                         .build()
@@ -274,13 +274,14 @@ class SettingsController : BaseController() {
                     onAttach(view!!)
                 }
             } else {
-                router.setRoot(RouterTransaction.with(
-                        ServerSelectionController()
-                )
-                        .pushChangeHandler(VerticalChangeHandler())
-                        .popChangeHandler(VerticalChangeHandler())
-                )
-
+                withContext(Dispatchers.Main) {
+                    router.setRoot(RouterTransaction.with(
+                            ServerSelectionController()
+                    )
+                            .pushChangeHandler(VerticalChangeHandler())
+                            .popChangeHandler(VerticalChangeHandler())
+                    )
+                }
             }
         }
     }
@@ -293,7 +294,7 @@ class SettingsController : BaseController() {
         }
 
         GlobalScope.launch {
-            var hasMultipleUsers: Boolean = false
+            var hasMultipleUsers = false
             val job = async {
                 currentUser = usersRepository.getActiveUser()
                 hasMultipleUsers = usersRepository.getUsers().size > 0

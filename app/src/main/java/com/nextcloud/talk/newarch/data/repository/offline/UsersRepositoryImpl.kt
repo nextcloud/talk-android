@@ -21,13 +21,15 @@
 package com.nextcloud.talk.newarch.data.repository.offline
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.distinctUntilChanged
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
-class UsersRepositoryImpl(val usersDao: UsersDao) : UsersRepository {
+class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     override fun getActiveUserLiveData(): LiveData<UserNgEntity> {
-        return usersDao.getActiveUserLiveData()
+        return usersDao.getActiveUserLiveData().distinctUntilChanged()
     }
 
     override fun getActiveUser(): UserNgEntity {

@@ -47,4 +47,15 @@ interface NextcloudTalkRepository {
             userEntity: UserNgEntity,
             conversationToken: String
     ): RoomOverall
+
+    suspend fun joinConversationForUser(
+            userNgEntity: UserNgEntity,
+            conversationToken: String,
+            conversationPassword: String?
+    ): RoomOverall
+
+    suspend fun exitConversationForUser(
+            userNgEntity: UserNgEntity,
+            conversationToken: String
+    ): GenericOverall
 }

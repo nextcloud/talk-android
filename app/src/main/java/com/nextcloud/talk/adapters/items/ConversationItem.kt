@@ -34,6 +34,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -67,14 +68,14 @@ class ConversationItem(
                     && model.unreadMention == comparedConversation.unreadMention
                     && model.objectType == comparedConversation.objectType
                     && model.changing == comparedConversation.changing
-                    && user.id == inItem.user.id)
+                    && inItem.user.id == other.user.id)
         }
         return false
     }
 
     override fun hashCode(): Int {
         return Objects.hash(
-                model.conversationId, model.token,
+                model.token,
                 user.id
         )
     }
@@ -245,6 +246,7 @@ class ConversationItem(
                                     model.name, R.dimen.avatar_size
                             )
                     ) {
+                        addHeader("Authorization", user.getCredentials())
                         transformations(CircleCropTransformation())
                     }
 

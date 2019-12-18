@@ -18,12 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.features.conversationsList
+package com.nextcloud.talk.newarch.utils
 
-enum class ConversationsListViewState {
-    INITIAL_LOAD,
-    LOADING,
-    LOADED_EMPTY,
-    LOADED,
-    FAILED
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+
+interface ConversationsManagerInterface  {
+    fun joinedConversationForUser(userNgEntity: UserNgEntity, conversation: Conversation?)
 }

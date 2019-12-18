@@ -39,7 +39,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType
 )
 data class MessageEntity(
         @PrimaryKey @ColumnInfo(name = "id") var id: String,
-        @ColumnInfo(name = "conversation_id") var conversation: String,
+        @ColumnInfo(name = "conversation_id") var conversationId: String,
         @ColumnInfo(name = "message_id") var messageId: Long = 0,
         @ColumnInfo(name = "actor_id") var actorId: String? = null,
         @ColumnInfo(name = "actor_type") var actorType: String? = null,
@@ -56,7 +56,7 @@ data class MessageEntity(
 fun MessageEntity.toChatMessage(): ChatMessage {
     val chatMessage = ChatMessage()
     chatMessage.internalMessageId = this.id
-    chatMessage.internalConversationId = this.conversation
+    chatMessage.internalConversationId = this.conversationId
     chatMessage.jsonMessageId = this.messageId
     chatMessage.actorType = this.actorType
     chatMessage.actorId = this.actorId

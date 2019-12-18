@@ -41,7 +41,6 @@ import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
-import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListViewState.LOADING
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ShareUtils
 import kotlinx.coroutines.launch
@@ -57,14 +56,11 @@ class ConversationsListViewModel constructor(
         usersRepository: UsersRepository
 ) : BaseViewModel<ConversationsListView>(application) {
 
-    val viewState = MutableLiveData(LOADING)
     var messageData: String? = null
     val searchQuery = MutableLiveData<String>()
     val currentUserLiveData: LiveData<UserNgEntity> = usersRepository.getActiveUserLiveData()
     val conversationsLiveData = Transformations.switchMap(currentUserLiveData) {
-        if (viewState.value != LOADING) {
-            viewState.value = LOADING
-        }
+        loadConversations()
         conversationsRepository.getConversationsForUser(it.id!!)
     }
 

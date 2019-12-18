@@ -355,7 +355,8 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
                     }
                 }
 
-                if (url.startsWith(viewModel.user.baseUrl) && url.contains("index.php/core/preview?fileId=")) {
+                val needsAuthBasedOnUrl = url.contains("index.php/core/preview?fileId=") || url.contains("index.php/avatar/")
+                if (url.startsWith(viewModel.user.baseUrl) && needsAuthBasedOnUrl) {
                     addHeader("Authorization", viewModel.user.getCredentials())
 
                 }
@@ -384,7 +385,7 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
                         imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
                         viewModel.user.baseUrl,
                         it.name, avatarSize / 2
-                ), null, target, this,
+                ), viewModel.user, target, this,
                         CircleCropTransformation()
                 )
 

@@ -27,6 +27,7 @@ import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -112,6 +113,7 @@ class MentionAutocompleteItem(
             }
 
             holder.avatarImageView!!.load(avatarUrl) {
+                addHeader("Authorization", currentUser.getCredentials())
                 transformations(CircleCropTransformation())
             }
         }

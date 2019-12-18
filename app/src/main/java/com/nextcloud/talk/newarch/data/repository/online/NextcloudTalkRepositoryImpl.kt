@@ -55,18 +55,26 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
         return apiService.getConversation(userEntity.getCredentials(), conversationToken)
     }
 
+    override suspend fun joinConversationForUser(userNgEntity: UserNgEntity, conversationToken: String, conversationPassword: String?): RoomOverall {
+        return apiService.joinConversation(userNgEntity.getCredentials(), ApiUtils.getUrlForSettingMyselfAsActiveParticipant(userNgEntity.baseUrl, conversationToken), conversationPassword)
+    }
+
+    override suspend fun exitConversationForUser(userNgEntity: UserNgEntity, conversationToken: String): GenericOverall {
+        return apiService.exitConversation(userNgEntity.getCredentials(), ApiUtils.getUrlForSettingMyselfAsActiveParticipant(userNgEntity.baseUrl, conversationToken))
+    }
+
     override suspend fun setFavoriteValueForConversation(
             user: UserNgEntity,
             conversation: Conversation,
             favorite: Boolean
     ): GenericOverall {
-        if (favorite) {
-            return apiService.addConversationToFavorites(
+        return if (favorite) {
+            apiService.addConversationToFavorites(
                     user.getCredentials(),
                     ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
             )
         } else {
-            return apiService.removeConversationFromFavorites(
+            apiService.removeConversationFromFavorites(
                     user.getCredentials(),
                     ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
             )

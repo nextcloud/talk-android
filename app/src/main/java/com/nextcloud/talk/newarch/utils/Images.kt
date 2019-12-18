@@ -51,9 +51,8 @@ class Images {
                 target(target)
             }
 
-            if (userEntity != null && url.startsWith(userEntity.baseUrl) && url.contains(
-                            "index.php/core/preview?fileId="
-                    )
+            if (userEntity != null && url.startsWith(userEntity.baseUrl) && (url.contains(
+                            "index.php/core/preview?fileId=") || url.contains("index.php/avatar/"))
             ) {
                 addHeader("Authorization", userEntity.getCredentials())
             }
