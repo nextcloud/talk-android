@@ -17,36 +17,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.nextcloud.talk.models.json.capabilities
 
-package com.nextcloud.talk.models.json.capabilities;
-
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-
-import org.parceler.Parcel;
-
-import java.util.List;
-import java.util.Objects;
-
-import lombok.Data;
+import android.os.Parcelable
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.android.parcel.Parcelize
+import lombok.Data
+import org.parceler.Parcel
+import java.util.*
 
 @Parcel
 @Data
 @JsonObject
-public class NotificationsCapability {
-    @JsonField(name = "ocs-endpoints")
-    public List<String> features;
+@Parcelize
+data class NotificationsCapability(
+    @JsonField(name = ["ocs-endpoints"])
+    var features: List<String>? = null
+): Parcelable {
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof NotificationsCapability)) return false;
-        NotificationsCapability that = (NotificationsCapability) o;
-        return Objects.equals(features, that.features);
+    override fun equals(o: Any?): Boolean {
+        if (this === o) return true
+        if (o !is NotificationsCapability) return false
+        return features == o.features
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(features);
+    override fun hashCode(): Int {
+        return Objects.hash(features)
     }
 }

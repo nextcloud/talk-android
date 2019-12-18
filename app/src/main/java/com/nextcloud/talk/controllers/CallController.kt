@@ -1007,22 +1007,12 @@ class CallController(args: Bundle) : BaseController() {
 
                     override fun onNext(capabilitiesOverall: CapabilitiesOverall) {
                         isMultiSession = capabilitiesOverall.ocs.data
-                                .capabilities != null && capabilitiesOverall.ocs.data
-                                .capabilities.spreedCapability != null &&
-                                capabilitiesOverall.ocs.data
-                                        .capabilities.spreedCapability
-                                        .features != null && capabilitiesOverall.ocs.data
                                 .capabilities.spreedCapability
-                                .features.contains("multi-room-users")
+                                ?.features?.contains("multi-room-users") == true
 
-                        needsPing = !(capabilitiesOverall.ocs.data
-                                .capabilities != null && capabilitiesOverall.ocs.data
-                                .capabilities.spreedCapability != null &&
-                                capabilitiesOverall.ocs.data
-                                        .capabilities.spreedCapability
-                                        .features != null && capabilitiesOverall.ocs.data
+                        needsPing = capabilitiesOverall.ocs.data
                                 .capabilities.spreedCapability
-                                .features.contains("no-ping"))
+                                ?.features?.contains("no-ping") == false
 
                         if (!hasExternalSignalingServer) {
                             joinRoomAndCall()

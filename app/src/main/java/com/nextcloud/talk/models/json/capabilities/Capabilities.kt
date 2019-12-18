@@ -17,8 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.nextcloud.talk.models
+package com.nextcloud.talk.models.json.capabilities
 
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
@@ -26,32 +25,29 @@ import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.android.parcel.Parcelize
 import lombok.Data
 import org.parceler.Parcel
+import java.util.*
 
 @Data
 @Parcel
 @JsonObject
 @Parcelize
-data class ExternalSignalingServer(
-        @JsonField(name = ["externalSignalingServer"])
-        var externalSignalingServer: String? = null,
-        @JsonField(name = ["externalSignalingTicket"])
-        var externalSignalingTicket: String? = null
-) : Parcelable {
-        override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (javaClass != other?.javaClass) return false
+data class Capabilities(
+    @JsonField(name = ["spreed"])
+    var spreedCapability: SpreedCapability? = null,
+    @JsonField(name = ["notifications"])
+    var notificationsCapability: NotificationsCapability? = null,
+    @JsonField(name = ["theming"])
+    var themingCapability: ThemingCapability? = null
+): Parcelable {
+    override fun equals(o: Any?): Boolean {
+        if (this === o) return true
+        if (o !is Capabilities) return false
+        return  (spreedCapability == o.spreedCapability &&
+                notificationsCapability == o.notificationsCapability &&
+                themingCapability == o.themingCapability)
+    }
 
-                other as ExternalSignalingServer
-
-                if (externalSignalingServer != other.externalSignalingServer) return false
-                if (externalSignalingTicket != other.externalSignalingTicket) return false
-
-                return true
-        }
-
-        override fun hashCode(): Int {
-                var result = externalSignalingServer?.hashCode() ?: 0
-                result = 31 * result + (externalSignalingTicket?.hashCode() ?: 0)
-                return result
-        }
+    override fun hashCode(): Int {
+        return Objects.hash(spreedCapability, notificationsCapability, themingCapability)
+    }
 }

@@ -20,7 +20,9 @@
 
 package com.nextcloud.talk.newarch.local.models
 
+import android.os.Parcel
 import android.os.Parcelable
+import android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -29,8 +31,10 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
 import com.nextcloud.talk.utils.ApiUtils
+import kotlinx.android.parcel.Parceler
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
+import org.parceler.Parcels
 
 @Parcelize
 @Entity(tableName = "users")
@@ -44,7 +48,7 @@ data class UserNgEntity(
         @ColumnInfo(
                 name = "push_configuration"
         ) var pushConfiguration: PushConfigurationState? = null,
-        @ColumnInfo(name = "capabilities") var capabilities: @RawValue Capabilities? = null,
+        @ColumnInfo(name = "capabilities") var capabilities: Capabilities? = null,
         @ColumnInfo(name = "client_auth_cert") var clientCertificate: String? = null,
         @ColumnInfo(
                 name = "external_signaling"

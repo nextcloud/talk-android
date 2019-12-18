@@ -22,5 +22,11 @@ package com.nextcloud.talk.newarch.utils
 
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.ApiUtils
+import java.security.MessageDigest
 
 fun UserEntity.getCredentials() = ApiUtils.getCredentials(username, token)
+fun String.hashWithAlgorithm(algorithm: String): String {
+    val digest = MessageDigest.getInstance(algorithm)
+    val bytes = digest.digest(this.toByteArray(Charsets.UTF_8))
+    return bytes.fold("", { str, it -> str + "%02x".format(it) })
+}

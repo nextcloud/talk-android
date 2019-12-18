@@ -59,6 +59,8 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DoNotDisturbUtils
@@ -108,7 +110,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     @BindView(R.id.incomingTextRelativeLayout)
     var incomingTextRelativeLayout: RelativeLayout? = null
     private val roomId: String
-    private val userBeingCalled: UserEntity?
+    private val userBeingCalled: UserNgEntity?
     private val credentials: String?
     private var currentConversation: Conversation? = null
     private var mediaPlayer: MediaPlayer? = null
@@ -282,7 +284,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
 
         var importantConversation = false
         val arbitraryStorageEntity: ArbitraryStorageEntity? = arbitraryStorageUtils.getStorageSetting(
-                userBeingCalled!!.id,
+                userBeingCalled!!.id!!,
                 "important_conversation",
                 currentConversation!!.token
         )

@@ -36,7 +36,6 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -53,14 +52,12 @@ import java.util.*
 import kotlin.experimental.and
 
 class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
-    val userUtils: UserUtils by inject()
     val appPreferences: AppPreferences by inject()
     val eventBus: EventBus by inject()
     val ncApi: NcApi by inject()
     private val keysFile: File
     private val publicKeyFile: File
     private val privateKeyFile: File
-    private val proxyServer: String
     fun verifySignature(
             signatureBytes: ByteArray?,
             subjectBytes: ByteArray?
@@ -74,7 +71,7 @@ class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
         val userEntities: List<UserNgEntity> = usersRepository.getUsers()
         try {
             signature = Signature.getInstance("SHA512withRSA")
-            if (userEntities.size > 0) {
+            if (userEntities.isNotEmpty()) {
                 for (userEntity in userEntities) {
                     pushConfigurationState = userEntity.pushConfiguration
                     if (pushConfigurationState?.userPublicKey != null) {
@@ -127,29 +124,6 @@ class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
         return -1
     }
 
-    private fun generateSHA512Hash(pushToken: String): String {
-        var messageDigest: MessageDigest? = null
-        try {
-            messageDigest = MessageDigest.getInstance("SHA-512")
-            messageDigest.update(pushToken.toByteArray())
-            return bytesToHex(messageDigest.digest())
-        } catch (e: NoSuchAlgorithmException) {
-            Log.d(TAG, "SHA-512 algorithm not supported")
-        }
-        return ""
-    }
-
-    private fun bytesToHex(bytes: ByteArray): String {
-        val result = StringBuilder()
-        for (individualByte in bytes) {
-            result.append(
-                    ((individualByte and 0xff.toByte()) + 0x100).toString(16)
-                            .substring(1)
-            )
-        }
-        return result.toString()
-    }
-
     fun generateRsa2048KeyPair(): Int {
         if (!publicKeyFile.exists() && !privateKeyFile.exists()) {
             if (!keysFile.exists()) {
@@ -186,139 +160,6 @@ class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
         return -2
     }
 
-    fun pushRegistrationToServer() {
-        val token: String = appPreferences.pushToken
-        if (!TextUtils.isEmpty(token)) {
-            var credentials: String
-            val pushTokenHash = generateSHA512Hash(token).toLowerCase()
-            val devicePublicKey =
-                    readKeyFromFile(true) as PublicKey?
-            if (devicePublicKey != null) {
-                val publicKeyBytes: ByteArray? =
-                        Base64.encode(devicePublicKey.encoded, Base64.NO_WRAP)
-                var publicKey = String(publicKeyBytes!!)
-                publicKey = publicKey.replace("(.{64})".toRegex(), "$1\n")
-                publicKey = "-----BEGIN PUBLIC KEY-----\n$publicKey\n-----END PUBLIC KEY-----\n"
-                if (userUtils.anyUserExists()) {
-                    var accountPushData: PushConfigurationState? = null
-                    for (userEntityObject in usersRepository.getUsers()) {
-                        val userEntity = userEntityObject
-                        accountPushData = userEntity.pushConfiguration
-                        if (accountPushData == null || accountPushData.pushToken != token) {
-                            val queryMap: MutableMap<String, String> =
-                                    HashMap()
-                            queryMap["format"] = "json"
-                            queryMap["pushTokenHash"] = pushTokenHash
-                            queryMap["devicePublicKey"] = publicKey
-                            queryMap["proxyServer"] = proxyServer
-                            credentials = ApiUtils.getCredentials(
-                                    userEntity.username, userEntity.token
-                            )
-                            val finalCredentials = credentials
-                            ncApi.registerDeviceForNotificationsWithNextcloud(
-                                    credentials,
-                                    ApiUtils.getUrlNextcloudPush(userEntity.baseUrl),
-                                    queryMap
-                            )
-                                    .subscribe(object : Observer<PushRegistrationOverall> {
-                                        override fun onSubscribe(d: Disposable) {}
-                                        override fun onNext(pushRegistrationOverall: PushRegistrationOverall) {
-                                            val proxyMap: MutableMap<String, String> =
-                                                    HashMap()
-                                            proxyMap["pushToken"] = token
-                                            proxyMap["deviceIdentifier"] =
-                                                    pushRegistrationOverall.ocs.data.deviceIdentifier
-                                            proxyMap["deviceIdentifierSignature"] = pushRegistrationOverall.ocs
-                                                    .data.signature
-                                            proxyMap["userPublicKey"] = pushRegistrationOverall.ocs
-                                                    .data.publicKey
-                                            ncApi.registerDeviceForNotificationsWithProxy(
-                                                    ApiUtils.getUrlPushProxy(), proxyMap
-                                            )
-                                                    .subscribeOn(Schedulers.io())
-                                                    .subscribe(object : Observer<Void> {
-                                                        override fun onSubscribe(d: Disposable) {}
-                                                        override fun onNext(aVoid: Void) {
-                                                            val pushConfigurationState =
-                                                                    PushConfigurationState()
-                                                            pushConfigurationState.pushToken = token
-                                                            pushConfigurationState.deviceIdentifier = pushRegistrationOverall
-                                                                    .ocs.data.deviceIdentifier
-                                                            pushConfigurationState.deviceIdentifierSignature =
-                                                                    pushRegistrationOverall.ocs.data.signature
-                                                            pushConfigurationState.userPublicKey = pushRegistrationOverall.ocs
-                                                                    .data.publicKey
-                                                            pushConfigurationState.usesRegularPass = false
-                                                            try {
-                                                                userUtils.createOrUpdateUser(
-                                                                        null,
-                                                                        null, null,
-                                                                        userEntity.displayName,
-                                                                        LoganSquare.serialize(
-                                                                                pushConfigurationState
-                                                                        ), null,
-                                                                        null, userEntity.id, null, null, null
-                                                                )
-                                                                        .subscribe(object : Observer<UserEntity> {
-                                                                            override fun onSubscribe(d: Disposable) {}
-                                                                            override fun onNext(userEntity: UserEntity) {
-                                                                                eventBus.post(
-                                                                                        EventStatus(
-                                                                                                userEntity.id,
-                                                                                                PUSH_REGISTRATION,
-                                                                                                true
-                                                                                        )
-                                                                                )
-                                                                            }
-
-                                                                            override fun onError(e: Throwable) {
-                                                                                eventBus.post(
-                                                                                        EventStatus(
-                                                                                                userEntity.id!!,
-                                                                                                PUSH_REGISTRATION, false
-                                                                                        )
-                                                                                )
-                                                                            }
-
-                                                                            override fun onComplete() {}
-                                                                        })
-                                                            } catch (e: IOException) {
-                                                                Log.e(TAG, "IOException while updating user")
-                                                            }
-                                                        }
-
-                                                        override fun onError(e: Throwable) {
-                                                            eventBus.post(
-                                                                    EventStatus(
-                                                                            userEntity.id!!,
-                                                                            PUSH_REGISTRATION,
-                                                                            false
-                                                                    )
-                                                            )
-                                                        }
-
-                                                        override fun onComplete() {}
-                                                    })
-                                        }
-
-                                        override fun onError(e: Throwable) {
-                                            eventBus.post(
-                                                    EventStatus(
-                                                            userEntity.id!!,
-                                                            PUSH_REGISTRATION,
-                                                            false
-                                                    )
-                                            )
-                                        }
-
-                                        override fun onComplete() {}
-                                    })
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     private fun readKeyFromString(
             readPublicKey: Boolean,
@@ -417,8 +258,5 @@ class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
                         Context.MODE_PRIVATE
                 ), "push_key.priv"
         )
-        proxyServer =
-                sharedApplication!!.resources
-                        .getString(string.nc_push_server_url)
     }
 }

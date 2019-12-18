@@ -333,4 +333,5 @@ dependencies {
   findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
   implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
   implementation 'com.github.Kennyc1012:BottomSheet:2.4.1'
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
 }

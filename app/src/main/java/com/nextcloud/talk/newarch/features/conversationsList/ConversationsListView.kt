@@ -216,7 +216,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             })
 
             conversationsLiveData.observe(this@ConversationsListView, Observer {
-                Log.d("MARIO", "TRIGGER")
                 if (it.isEmpty()) {
                     if (viewState.value != LOADED_EMPTY) {
                         viewState.value = LOADED_EMPTY

@@ -20,10 +20,8 @@
 package com.nextcloud.talk.services.firebase
 
 import android.annotation.SuppressLint
-import autodagger.AutoInjector
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.jobs.NotificationWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -31,33 +29,31 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
     val appPreferences: AppPreferences by inject()
 
-    @Override
-    fun onNewToken(token: String?) {
+    override fun onNewToken(token: String) {
         super.onNewToken(token)
-        appPreferences.setPushToken(token)
-        val pushRegistrationWork: OneTimeWorkRequest = Builder(PushRegistrationWorker::class.java).build()
+        appPreferences.pushToken = token
+        val pushRegistrationWork: OneTimeWorkRequest = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
         WorkManager.getInstance().enqueue(pushRegistrationWork)
     }
 
     @SuppressLint("LongLogTag")
-    @Override
-    fun onMessageReceived(remoteMessage: RemoteMessage?) {
-        if (remoteMessage == null) {
-            return
-        }
-        if (remoteMessage.getData() != null) {
-            val messageData: Data = Builder()
-                    .putString(BundleKeys.INSTANCE.getKEY_NOTIFICATION_SUBJECT(), remoteMessage.getData().get("subject"))
-                    .putString(BundleKeys.INSTANCE.getKEY_NOTIFICATION_SIGNATURE(), remoteMessage.getData().get("signature"))
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        remoteMessage.data.let {
+            val messageData: Data = Data.Builder()
+                    .putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, it["subject"])
+                    .putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, it["signature"])
                     .build()
-            val pushNotificationWork: OneTimeWorkRequest = Builder(NotificationWorker::class.java)
+            val pushNotificationWork: OneTimeWorkRequest = OneTimeWorkRequest.Builder(NotificationWorker::class.java)
                     .setInputData(messageData)
                     .build()
             WorkManager.getInstance().enqueue(pushNotificationWork)
+
         }
     }
 }

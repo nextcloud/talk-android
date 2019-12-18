@@ -31,7 +31,7 @@ import org.parceler.Parcel
 @Data
 @JsonObject
 @Parcelize
-class PushConfigurationState(
+data class PushConfigurationState(
         @JsonField(name = ["pushToken"])
         var pushToken: String? = null,
         @JsonField(name = ["deviceIdentifier"])

@@ -162,8 +162,6 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
                 12, TimeUnit.HOURS
         )
                 .build()
-        val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java)
-                .build()
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
                 .build()
 
@@ -171,8 +169,6 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
                 .enqueue(pushRegistrationWork)
         WorkManager.getInstance()
                 .enqueue(accountRemovalWork)
-        WorkManager.getInstance()
-                .enqueue(capabilitiesUpdateWork)
         WorkManager.getInstance()
                 .enqueue(signalingSettingsWork)
         WorkManager.getInstance()
