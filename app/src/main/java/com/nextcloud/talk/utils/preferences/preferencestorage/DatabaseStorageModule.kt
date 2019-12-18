@@ -216,8 +216,8 @@ class DatabaseStorageModule(
 
     override fun getString(
             key: String,
-            defaultVal: String
-    ): String {
+            defaultVal: String?
+    ): String? {
         if (key != "message_notification_level"
                 && key != "conversation_name"
                 && key != "conversation_password"
