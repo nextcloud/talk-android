@@ -230,9 +230,9 @@ class DatabaseStorageModule(
                 valueFromDb.value
             }
         } else if (key == "message_notification_level") {
-            return messageNotificationLevel!!
+            return messageNotificationLevel
         } else if (key == "conversation_name") {
-            return conversationNameValue!!
+            return conversationNameValue
         } else if (key == "conversation_password") {
             return ""
         }
