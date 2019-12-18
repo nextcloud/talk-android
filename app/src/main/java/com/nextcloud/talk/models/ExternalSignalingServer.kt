@@ -36,4 +36,24 @@ data class ExternalSignalingServer(
         var externalSignalingServer: String? = null,
         @JsonField(name = ["externalSignalingTicket"])
         var externalSignalingTicket: String? = null
-) : Parcelable
+
+
+) : Parcelable {
+        override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (javaClass != other?.javaClass) return false
+
+                other as ExternalSignalingServer
+
+                if (externalSignalingServer != other.externalSignalingServer) return false
+                if (externalSignalingTicket != other.externalSignalingTicket) return false
+
+                return true
+        }
+
+        override fun hashCode(): Int {
+                var result = externalSignalingServer?.hashCode() ?: 0
+                result = 31 * result + (externalSignalingTicket?.hashCode() ?: 0)
+                return result
+        }
+}

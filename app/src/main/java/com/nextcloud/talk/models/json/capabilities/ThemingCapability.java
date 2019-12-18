@@ -25,6 +25,8 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.parceler.Parcel;
 
+import java.util.Objects;
+
 import lombok.Data;
 
 @Parcel
@@ -60,4 +62,26 @@ class ThemingCapability {
 
     @JsonField(name = "background-default")
     boolean backgroundDefault;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ThemingCapability)) return false;
+        ThemingCapability that = (ThemingCapability) o;
+        return backgroundPlain == that.backgroundPlain &&
+                backgroundDefault == that.backgroundDefault &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(url, that.url) &&
+                Objects.equals(slogan, that.slogan) &&
+                Objects.equals(color, that.color) &&
+                Objects.equals(colorText, that.colorText) &&
+                Objects.equals(colorElement, that.colorElement) &&
+                Objects.equals(logo, that.logo) &&
+                Objects.equals(background, that.background);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, url, slogan, color, colorText, colorElement, logo, background, backgroundPlain, backgroundDefault);
+    }
 }

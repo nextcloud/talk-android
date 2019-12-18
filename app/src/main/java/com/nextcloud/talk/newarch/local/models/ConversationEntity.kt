@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.newarch.local.models
 
-import android.util.Log
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.nextcloud.talk.models.json.chat.ChatMessage
@@ -31,7 +30,7 @@ import java.util.*
 
 @Entity(
         tableName = "conversations",
-        indices = [Index(value = ["user_id", "token"], unique = true)],
+        indices = [Index(value = ["user_id", "token"], unique = true), Index(value = ["user_id"])],
         foreignKeys = [ForeignKey(
                 entity = UserNgEntity::class,
                 parentColumns = arrayOf("id"),

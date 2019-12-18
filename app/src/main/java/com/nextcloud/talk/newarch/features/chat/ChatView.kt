@@ -29,7 +29,7 @@ import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
-import com.nextcloud.talk.newarch.local.models.maxMessageLength
+import com.nextcloud.talk.newarch.local.models.getMaxMessageLength
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
@@ -160,7 +160,7 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
             })
 
             val filters = arrayOfNulls<InputFilter>(1)
-            val lengthFilter = viewModel.user.maxMessageLength()
+            val lengthFilter = viewModel.user.getMaxMessageLength()
 
 
             filters[0] = InputFilter.LengthFilter(lengthFilter)

@@ -26,6 +26,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import org.parceler.Parcel;
 
 import java.util.List;
+import java.util.Objects;
 
 import lombok.Data;
 
@@ -35,4 +36,17 @@ import lombok.Data;
 public class NotificationsCapability {
     @JsonField(name = "ocs-endpoints")
     public List<String> features;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NotificationsCapability)) return false;
+        NotificationsCapability that = (NotificationsCapability) o;
+        return Objects.equals(features, that.features);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(features);
+    }
 }

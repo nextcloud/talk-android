@@ -27,6 +27,7 @@ import org.parceler.Parcel;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import lombok.Data;
 
@@ -43,6 +44,21 @@ public class Capabilities {
     @JsonField(name = "theming")
     public ThemingCapability themingCapability;
 
-    @JsonField(name = "external")
-    public HashMap<String, List<String>> externalCapability;
+    /*@JsonField(name = "external")
+    public HashMap<String, List<String>> externalCapability;*/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Capabilities)) return false;
+        Capabilities that = (Capabilities) o;
+        return Objects.equals(spreedCapability, that.spreedCapability) &&
+                Objects.equals(notificationsCapability, that.notificationsCapability) &&
+                Objects.equals(themingCapability, that.themingCapability);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(spreedCapability, notificationsCapability, themingCapability);
+    }
 }

@@ -27,6 +27,7 @@ import org.parceler.Parcel;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import lombok.Data;
 
@@ -39,4 +40,18 @@ public class SpreedCapability {
 
     @JsonField(name = "config")
     public HashMap<String, HashMap<String, String>> config;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SpreedCapability)) return false;
+        SpreedCapability that = (SpreedCapability) o;
+        return Objects.equals(features, that.features) &&
+                Objects.equals(config, that.config);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(features, config);
+    }
 }

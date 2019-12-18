@@ -42,4 +42,29 @@ class PushConfigurationState(
         var userPublicKey: String? = null,
         @JsonField(name = ["usesRegularPass"])
         var usesRegularPass: Boolean = false
-) : Parcelable
+
+) : Parcelable {
+        override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (javaClass != other?.javaClass) return false
+
+                other as PushConfigurationState
+
+                if (pushToken != other.pushToken) return false
+                if (deviceIdentifier != other.deviceIdentifier) return false
+                if (deviceIdentifierSignature != other.deviceIdentifierSignature) return false
+                if (userPublicKey != other.userPublicKey) return false
+                if (usesRegularPass != other.usesRegularPass) return false
+
+                return true
+        }
+
+        override fun hashCode(): Int {
+                var result = pushToken?.hashCode() ?: 0
+                result = 31 * result + (deviceIdentifier?.hashCode() ?: 0)
+                result = 31 * result + (deviceIdentifierSignature?.hashCode() ?: 0)
+                result = 31 * result + (userPublicKey?.hashCode() ?: 0)
+                result = 31 * result + usesRegularPass.hashCode()
+                return result
+        }
+}

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0bb77d35d80f74e97eea4a5415d9a102",
+    "identityHash": "479fc8a763ef590d3126641f418e5730",
     "entities": [
       {
         "tableName": "conversations",
@@ -180,6 +180,14 @@
               "token"
             ],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_conversations_user_id_token` ON `${TABLE_NAME}` (`user_id`, `token`)"
+          },
+          {
+            "name": "index_conversations_user_id",
+            "unique": false,
+            "columnNames": [
+              "user_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_conversations_user_id` ON `${TABLE_NAME}` (`user_id`)"
           }
         ],
         "foreignKeys": [
@@ -375,7 +383,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0bb77d35d80f74e97eea4a5415d9a102')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '479fc8a763ef590d3126641f418e5730')"
     ]
   }
 }

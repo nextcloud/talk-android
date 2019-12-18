@@ -66,13 +66,12 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
-import com.nextcloud.talk.newarch.local.models.maxMessageLength
+import com.nextcloud.talk.newarch.local.models.getMaxMessageLength
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.utils.*
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
@@ -428,7 +427,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
         })
 
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = conversationUser?.maxMessageLength() ?: 1000
+        val lengthFilter = conversationUser?.getMaxMessageLength() ?: 1000
 
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)

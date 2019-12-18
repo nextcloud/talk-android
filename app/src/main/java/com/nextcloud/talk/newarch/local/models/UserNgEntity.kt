@@ -51,6 +51,7 @@ data class UserNgEntity(
         ) var externalSignaling: ExternalSignalingServer? = null,
         @ColumnInfo(name = "status") var status: UserStatus? = null
 ) : Parcelable {
+
     fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
         val capabilityExists = capabilities?.spreedCapability?.features?.contains(capabilityName)
         if (capabilityExists != null) {
@@ -60,19 +61,33 @@ data class UserNgEntity(
         }
 
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as UserNgEntity
+
+        if (userId != other.userId) return false
+        if (username != other.username) return false
+        if (baseUrl != other.baseUrl) return false
+        if (token != other.token) return false
+        if (displayName != other.displayName) return false
+        if (pushConfiguration != other.pushConfiguration) return false
+        if (capabilities != other.capabilities) return false
+        if (clientCertificate != other.clientCertificate) return false
+        //if (externalSignaling != other.externalSignaling) return false
+        if (status != other.status) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return userId.hashCode()
+    }
 }
 
 fun UserNgEntity.getCredentials() = ApiUtils.getCredentials(username, token)
-
-fun UserNgEntity.hasExternalCapability(capabilityName: String): Boolean {
-    val capabilityExists = capabilities?.externalCapability?.get("v1")
-            ?.contains(capabilityName)
-    if (capabilityExists != null) {
-        return capabilityExists
-    } else {
-        return false
-    }
-}
 
 fun UserNgEntity.hasSpreedFeatureCapability(capabilityName: String): Boolean {
     val capabilityExists = capabilities?.spreedCapability?.features?.contains(capabilityName)
@@ -83,7 +98,7 @@ fun UserNgEntity.hasSpreedFeatureCapability(capabilityName: String): Boolean {
     }
 }
 
-fun UserNgEntity.maxMessageLength(): Int {
+fun UserNgEntity.getMaxMessageLength(): Int {
     val maxLength = capabilities?.spreedCapability?.config?.get("chat")
             ?.get("max-length")
     return maxLength?.toInt() ?: 1000
