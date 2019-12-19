@@ -356,6 +356,11 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
             adapter = MessagesListAdapter(
                     conversationUser?.userId, messageHolders, ImageLoader { imageView, url, payload ->
                 imageView.load(url) {
+                    if (conversationUser != null && url!!.startsWith(conversationUser.baseUrl) && (url.contains(
+                                    "index.php/core/preview?fileId=") || url.contains("/avatar/"))) {
+                        addHeader("Authorization", conversationUser.getCredentials())
+                    }
+
                     if (url!!.contains("/avatar/")) {
                         transformations(CircleCropTransformation())
                     } else {
@@ -370,11 +375,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                                 }
                             }
                         }
-                    }
-
-                    if (conversationUser != null && url.startsWith(conversationUser.baseUrl) && url.contains(
-                                    "index.php/core/preview?fileId=")) {
-                        addHeader("Authorization", conversationUser.getCredentials())
                     }
                 }
             })
