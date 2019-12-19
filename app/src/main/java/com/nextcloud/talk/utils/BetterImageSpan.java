@@ -41,9 +41,11 @@ public class BetterImageSpan extends ReplacementSpan {
     private int mWidth;
     private int mHeight;
     private Rect mBounds;
+
     public BetterImageSpan(Drawable drawable) {
         this(drawable, ALIGN_BASELINE);
     }
+
     public BetterImageSpan(Drawable drawable, @BetterImageSpanAlignment int verticalAlignment) {
         mDrawable = drawable;
         mAlignment = verticalAlignment;

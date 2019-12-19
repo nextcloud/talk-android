@@ -26,7 +26,6 @@ import android.text.TextUtils
 import android.text.format.DateUtils
 import android.view.View
 import coil.api.load
-import coil.request.CachePolicy
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
