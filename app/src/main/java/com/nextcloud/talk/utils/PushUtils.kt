@@ -21,25 +21,15 @@
 package com.nextcloud.talk.utils
 
 import android.content.Context
-import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
-import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.R.string
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.events.EventStatus
-import com.nextcloud.talk.events.EventStatus.EventType.PUSH_REGISTRATION
 import com.nextcloud.talk.models.SignatureVerification
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -48,8 +38,6 @@ import java.security.*
 import java.security.spec.InvalidKeySpecException
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
-import java.util.*
-import kotlin.experimental.and
 
 class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
     val appPreferences: AppPreferences by inject()

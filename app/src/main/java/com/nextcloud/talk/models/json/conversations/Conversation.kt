@@ -29,7 +29,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.converters.*
 import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.newarch.local.models.ConversationEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import lombok.Data
 import org.parceler.Parcel

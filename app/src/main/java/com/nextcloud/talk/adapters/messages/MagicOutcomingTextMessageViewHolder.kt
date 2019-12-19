@@ -38,7 +38,6 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.DisplayUtils.getMessageSelector
 import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
 import com.nextcloud.talk.utils.TextMatchers
-import com.nextcloud.talk.utils.database.user.UserUtils
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
 import org.koin.core.KoinComponent
 import org.koin.core.inject

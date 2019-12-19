@@ -90,15 +90,8 @@ import org.parceler.Parcels
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.HashSet
-import kotlin.Any
-import kotlin.Boolean
-import kotlin.CharSequence
 import kotlin.Comparator
-import kotlin.Exception
-import kotlin.Int
 import kotlin.String
-import kotlin.Throwable
-import kotlin.getValue
 
 class ContactsController : BaseController,
         SearchView.OnQueryTextListener,

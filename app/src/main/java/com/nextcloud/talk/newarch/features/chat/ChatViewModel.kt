@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
-import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -15,8 +14,6 @@ import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.usecases.ExitConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
-import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListViewState
-import com.nextcloud.talk.newarch.local.models.MessageEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf

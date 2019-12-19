@@ -20,7 +20,9 @@
 
 package com.nextcloud.talk.newarch.data.repository.offline
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.map
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.local.dao.ConversationsDao

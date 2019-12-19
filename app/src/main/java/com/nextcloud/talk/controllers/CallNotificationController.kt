@@ -55,14 +55,12 @@ import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.ConfigurationChangeEvent
 import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
-import com.nextcloud.talk.newarch.utils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DoNotDisturbUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys

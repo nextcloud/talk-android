@@ -23,7 +23,6 @@ package com.nextcloud.talk.newarch.data.source.remote
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import io.reactivex.Observable
 import retrofit2.http.*
 
 interface ApiService {
