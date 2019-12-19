@@ -1982,12 +1982,9 @@ class CallController(args: Bundle) : BaseController() {
         val relativeLayout =
                 remoteRenderersLayout!!.findViewWithTag<RelativeLayout>("$session+$videoStreamType")
         val surfaceViewRenderer = relativeLayout.findViewById<SurfaceViewRenderer>(R.id.surface_view)
-        val imageView = relativeLayout.findViewById<SimpleDraweeView>(R.id.avatarImageView)
+        val imageView = relativeLayout.findViewById(R.id.avatarImageView) as ImageView
 
-        if (mediaStream != null
-                && mediaStream.videoTracks != null
-                && mediaStream.videoTracks.size > 0
-                && enable
+        if (!(mediaStream?.videoTracks == null || mediaStream.videoTracks.size <= 0 || !enable)
         ) {
             val videoTrack = mediaStream.videoTracks[0]
 
