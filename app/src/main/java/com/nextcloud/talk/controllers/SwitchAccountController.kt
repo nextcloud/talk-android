@@ -183,7 +183,8 @@ class SwitchAccountController : BaseController {
         }
         return super.onCreateView(inflater, container)
     }
-        override fun onViewBound(view: View) {
+
+    override fun onViewBound(view: View) {
         super.onViewBound(view)
         swipeRefreshLayout!!.isEnabled = false
 

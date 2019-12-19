@@ -25,9 +25,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -41,7 +39,6 @@ import android.text.style.StyleSpan
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -50,30 +47,25 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.XmlRes
 import androidx.appcompat.widget.AppCompatDrawableManager
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.emoji.text.EmojiCompat
 import coil.Coil
 import coil.api.load
+import coil.bitmappool.BitmapPool
 import coil.target.Target
 import coil.transform.CircleCropTransformation
-import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.common.RotationOptions
-import com.facebook.imagepipeline.image.ImageInfo
-import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor
-import com.facebook.imagepipeline.request.ImageRequest
-import com.facebook.imagepipeline.request.ImageRequestBuilder
-import com.facebook.widget.text.span.BetterImageSpan
 import com.google.android.material.chip.ChipDrawable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.UserMentionClickEvent
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.text.Spans
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.InvocationTargetException
 import java.util.regex.Pattern
+import kotlin.math.min
 
 object DisplayUtils {
 
@@ -103,25 +95,25 @@ object DisplayUtils {
         textView.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    private fun updateViewSize(
-            imageInfo: ImageInfo?,
-            draweeView: SimpleDraweeView
-    ) {
-        if (imageInfo != null) {
-            val maxSize = draweeView.context
-                    .resources
-                    .getDimensionPixelSize(R.dimen.maximum_file_preview_size)
-            draweeView.layoutParams.width = if (imageInfo.width > maxSize) maxSize else imageInfo.width
-            draweeView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            draweeView.aspectRatio = imageInfo.width.toFloat() / imageInfo.height
-            draweeView.requestLayout()
-        }
-    }
-
     fun getRoundedDrawable(drawable: Drawable?): Drawable {
         val bitmap = getBitmap(drawable!!)
-        RoundAsCirclePostprocessor(true).process(bitmap)
-        return BitmapDrawable(bitmap)
+        return BitmapDrawable(roundImage(BitmapPool(10000), bitmap))
+    }
+
+    private fun roundImage(pool: BitmapPool, input: Bitmap): Bitmap {
+        val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+        val bitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN) }
+
+        val minSize = min(input.width, input.height)
+        val radius = minSize / 2f
+        val output = pool.get(minSize, minSize, input.config)
+        output.applyCanvas {
+            drawCircle(radius, radius, radius, circlePaint)
+            drawBitmap(input, 0f, 0f, bitmapPaint)
+        }
+        pool.put(input)
+
+        return output
     }
 
     private fun getBitmap(drawable: Drawable): Bitmap {
@@ -362,22 +354,6 @@ object DisplayUtils {
         }
 
         return spannableString
-    }
-
-    fun getImageRequestForUrl(url: String, userEntity: UserEntity?): ImageRequest {
-        val headers = HashMap<String, String>()
-        if (userEntity != null && url.startsWith(userEntity.baseUrl) && url.contains(
-                        "index.php/core/preview?fileId=")) {
-            headers.put("Authorization",
-                    ApiUtils.getCredentials(userEntity.username, userEntity.token))
-        }
-
-        return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
-                .setProgressiveRenderingEnabled(true)
-                .setRotationOptions(RotationOptions.autoRotate())
-                .disableDiskCache()
-                .setHeaders(headers)
-                .build()
     }
 
     fun getMessageSelector(

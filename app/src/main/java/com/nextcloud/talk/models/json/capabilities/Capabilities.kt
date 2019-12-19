@@ -32,17 +32,17 @@ import java.util.*
 @JsonObject
 @Parcelize
 data class Capabilities(
-    @JsonField(name = ["spreed"])
-    var spreedCapability: SpreedCapability? = null,
-    @JsonField(name = ["notifications"])
-    var notificationsCapability: NotificationsCapability? = null,
-    @JsonField(name = ["theming"])
-    var themingCapability: ThemingCapability? = null
-): Parcelable {
+        @JsonField(name = ["spreed"])
+        var spreedCapability: SpreedCapability? = null,
+        @JsonField(name = ["notifications"])
+        var notificationsCapability: NotificationsCapability? = null,
+        @JsonField(name = ["theming"])
+        var themingCapability: ThemingCapability? = null
+) : Parcelable {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o !is Capabilities) return false
-        return  (spreedCapability == o.spreedCapability &&
+        return (spreedCapability == o.spreedCapability &&
                 notificationsCapability == o.notificationsCapability &&
                 themingCapability == o.themingCapability)
     }

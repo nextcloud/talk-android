@@ -23,7 +23,7 @@ package com.nextcloud.talk.newarch.utils
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
-interface ConversationsManagerInterface  {
+interface ConversationsManagerInterface {
     enum class OperationStatus {
         STATUS_OK,
         STATUS_FAILED

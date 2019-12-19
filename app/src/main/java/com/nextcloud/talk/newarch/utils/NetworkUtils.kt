@@ -31,7 +31,8 @@ import java.net.Proxy.NO_PROXY
 import java.net.Proxy.Type
 import java.net.Proxy.Type.SOCKS
 
-class NetworkUtils { class HeadersInterceptor : Interceptor {
+class NetworkUtils {
+    class HeadersInterceptor : Interceptor {
 
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {

@@ -47,8 +47,6 @@ import butterknife.OnLongClick
 import coil.api.load
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.logansquare.LoganSquare
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.controllers.base.BaseController
@@ -66,7 +64,6 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOveral
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.animations.PulseAnimation
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -79,7 +76,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.*
 import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions
 import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment
@@ -99,7 +95,7 @@ class CallController(args: Bundle) : BaseController() {
 
     @JvmField
     @BindView(R.id.callControlEnableSpeaker)
-    var callControlEnableSpeaker: SimpleDraweeView? = null
+    var callControlEnableSpeaker: ImageView? = null
     @JvmField
     @BindView(R.id.pip_video_view)
     var pipVideoView: SurfaceViewRenderer? = null
@@ -115,13 +111,13 @@ class CallController(args: Bundle) : BaseController() {
     var callControls: RelativeLayout? = null
     @JvmField
     @BindView(R.id.call_control_microphone)
-    var microphoneControlButton: SimpleDraweeView? = null
+    var microphoneControlButton: ImageView? = null
     @JvmField
     @BindView(R.id.call_control_camera)
-    var cameraControlButton: SimpleDraweeView? = null
+    var cameraControlButton: ImageView? = null
     @JvmField
     @BindView(R.id.call_control_switch_camera)
-    var cameraSwitchButton: SimpleDraweeView? = null
+    var cameraSwitchButton: ImageView? = null
     @JvmField
     @BindView(R.id.connectingTextView)
     var connectingTextView: TextView? = null
@@ -460,10 +456,9 @@ class CallController(args: Bundle) : BaseController() {
                     onCameraClick()
                 }
             } else {
-                cameraControlButton!!.hierarchy
-                        .setPlaceholderImage(R.drawable.ic_videocam_off_white_24px)
-                cameraControlButton!!.alpha = 0.7f
-                cameraSwitchButton!!.visibility = View.GONE
+                cameraControlButton?.setImageResource(R.drawable.ic_videocam_off_white_24px)
+                cameraControlButton?.alpha = 0.7f
+                cameraSwitchButton?.visibility = View.GONE
             }
         }
 
@@ -472,7 +467,7 @@ class CallController(args: Bundle) : BaseController() {
                 onMicrophoneClick()
             }
         } else {
-            microphoneControlButton!!.hierarchy.setPlaceholderImage(R.drawable.ic_mic_off_white_24px)
+            microphoneControlButton?.setImageResource(R.drawable.ic_mic_off_white_24px)
         }
 
         if (!isConnectionEstablished) {
@@ -598,11 +593,9 @@ class CallController(args: Bundle) : BaseController() {
         if (audioManager != null) {
             audioManager!!.toggleUseSpeakerphone()
             if (audioManager!!.isSpeakerphoneAutoOn) {
-                callControlEnableSpeaker!!.hierarchy
-                        .setPlaceholderImage(R.drawable.ic_volume_up_white_24dp)
+                callControlEnableSpeaker?.setImageResource(R.drawable.ic_volume_up_white_24dp)
             } else {
-                callControlEnableSpeaker!!.hierarchy
-                        .setPlaceholderImage(R.drawable.ic_volume_mute_white_24dp)
+                callControlEnableSpeaker?.setImageResource(R.drawable.ic_volume_mute_white_24dp)
             }
         }
     }
@@ -643,15 +636,14 @@ class CallController(args: Bundle) : BaseController() {
                 audioOn = !audioOn
 
                 if (audioOn) {
-                    microphoneControlButton!!.hierarchy.setPlaceholderImage(R.drawable.ic_mic_white_24px)
+                    microphoneControlButton?.setImageResource(R.drawable.ic_mic_white_24px)
                 } else {
-                    microphoneControlButton!!.hierarchy
-                            .setPlaceholderImage(R.drawable.ic_mic_off_white_24px)
+                    microphoneControlButton?.setImageResource(R.drawable.ic_mic_off_white_24px)
                 }
 
                 toggleMedia(audioOn, false)
             } else {
-                microphoneControlButton!!.hierarchy.setPlaceholderImage(R.drawable.ic_mic_white_24px)
+                microphoneControlButton?.setImageResource(R.drawable.ic_mic_white_24px)
                 pulseAnimation!!.start()
                 toggleMedia(true, false)
             }
@@ -695,13 +687,12 @@ class CallController(args: Bundle) : BaseController() {
             videoOn = !videoOn
 
             if (videoOn) {
-                cameraControlButton!!.hierarchy.setPlaceholderImage(R.drawable.ic_videocam_white_24px)
+                cameraControlButton?.setImageResource(R.drawable.ic_videocam_white_24px)
                 if (cameraEnumerator!!.deviceNames.size > 1) {
                     cameraSwitchButton!!.visibility = View.VISIBLE
                 }
             } else {
-                cameraControlButton!!.hierarchy
-                        .setPlaceholderImage(R.drawable.ic_videocam_off_white_24px)
+                cameraControlButton?.setImageResource(R.drawable.ic_videocam_off_white_24px)
                 cameraSwitchButton!!.visibility = View.GONE
             }
 
@@ -2373,8 +2364,7 @@ class CallController(args: Bundle) : BaseController() {
             v.onTouchEvent(event)
             if (event.action == MotionEvent.ACTION_UP && isPTTActive) {
                 isPTTActive = false
-                microphoneControlButton!!.hierarchy
-                        .setPlaceholderImage(R.drawable.ic_mic_off_white_24px)
+                microphoneControlButton?.setImageResource(R.drawable.ic_mic_off_white_24px)
                 pulseAnimation!!.stop()
                 toggleMedia(false, false)
                 animateCallControls(false, 5000)

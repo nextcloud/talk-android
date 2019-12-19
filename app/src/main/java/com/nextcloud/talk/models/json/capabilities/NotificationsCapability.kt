@@ -32,9 +32,9 @@ import java.util.*
 @JsonObject
 @Parcelize
 data class NotificationsCapability(
-    @JsonField(name = ["ocs-endpoints"])
-    var features: List<String>? = null
-): Parcelable {
+        @JsonField(name = ["ocs-endpoints"])
+        var features: List<String>? = null
+) : Parcelable {
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

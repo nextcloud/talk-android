@@ -32,27 +32,27 @@ import java.util.*
 @JsonObject
 @Parcelize
 data class ThemingCapability(
-    @JsonField(name = ["name"])
-    var name: String? = null,
-    @JsonField(name = ["url"])
-    var url: String? = null,
-    @JsonField(name = ["slogan"])
-    var slogan: String? = null,
-    @JsonField(name = ["color"])
-    var color: String? = null,
-    @JsonField(name = ["color-text"])
-    var colorText: String? = null,
-    @JsonField(name = ["color-element"])
-    var colorElement: String? = null,
-    @JsonField(name = ["logo"])
-    var logo: String? = null,
-    @JsonField(name = ["background"])
-    var background: String? = null,
-    @JsonField(name = ["background-plain"])
-    var backgroundPlain: Boolean = false,
-    @JsonField(name = ["background-default"])
-    var backgroundDefault: Boolean = false
-): Parcelable {
+        @JsonField(name = ["name"])
+        var name: String? = null,
+        @JsonField(name = ["url"])
+        var url: String? = null,
+        @JsonField(name = ["slogan"])
+        var slogan: String? = null,
+        @JsonField(name = ["color"])
+        var color: String? = null,
+        @JsonField(name = ["color-text"])
+        var colorText: String? = null,
+        @JsonField(name = ["color-element"])
+        var colorElement: String? = null,
+        @JsonField(name = ["logo"])
+        var logo: String? = null,
+        @JsonField(name = ["background"])
+        var background: String? = null,
+        @JsonField(name = ["background-plain"])
+        var backgroundPlain: Boolean = false,
+        @JsonField(name = ["background-default"])
+        var backgroundDefault: Boolean = false
+) : Parcelable {
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

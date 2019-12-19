@@ -30,13 +30,13 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.emoji.widget.EmojiTextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.amulyakhare.textdrawable.TextDrawable
-import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.chat.ChatMessage
@@ -60,7 +60,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
     @JvmField
     @BindView(R.id.messageUserAvatar)
-    var messageUserAvatarView: SimpleDraweeView? = null
+    var messageUserAvatarView: ImageView? = null
 
     @JvmField
     @BindView(R.id.messageTime)
@@ -91,16 +91,12 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
             if (message.actorType == "guests") {
                 // do nothing, avatar is set
             } else if (message.actorType == "bots" && message.actorType == "changelog") {
-                messageUserAvatarView!!.controller = null
                 val layers = arrayOfNulls<Drawable>(2)
                 layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
                 layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
-
-                messageUserAvatarView!!.hierarchy
-                        .setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
+                messageUserAvatarView?.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
             } else if (message.actorType == "bots") {
-                messageUserAvatarView!!.controller = null
                 val drawable = TextDrawable.builder()
                         .beginConfig()
                         .bold()
@@ -110,7 +106,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
                                 context.resources.getColor(R.color.black)
                         )
                 messageUserAvatarView!!.visibility = View.VISIBLE
-                messageUserAvatarView!!.hierarchy.setPlaceholderImage(drawable)
+                messageUserAvatarView?.setImageDrawable(drawable)
             }
         } else {
             if (message.oneToOneConversation) {

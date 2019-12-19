@@ -143,26 +143,26 @@ class PushRegistrationWorker(
                                             })
                                         }
 
-                                                            override fun onError(e: Throwable) {
-                                                        eventBus.post(
-                                                                EventStatus(
-                                                                        userEntityObject.id!!,
-                                                                        EventStatus.EventType.PUSH_REGISTRATION,
-                                                                        false
-                                                                )
-                                                        )
-                                                    }
+                                        override fun onError(e: Throwable) {
+                                            eventBus.post(
+                                                    EventStatus(
+                                                            userEntityObject.id!!,
+                                                            EventStatus.EventType.PUSH_REGISTRATION,
+                                                            false
+                                                    )
+                                            )
+                                        }
 
-                                                            override fun onComplete() {}
-                                        })
-                                    }
+                                        override fun onComplete() {}
+                                    })
                         }
                     }
                 }
             }
         }
-
-        companion object {
-            const val TAG = "PushRegistrationWorker"
-        }
     }
+
+    companion object {
+        const val TAG = "PushRegistrationWorker"
+    }
+}

@@ -67,10 +67,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST
     suspend fun joinConversation(@Header("Authorization") authorization: String,
-                          @Url url: String, @Field("password") password: String?): RoomOverall
+                                 @Url url: String, @Field("password") password: String?): RoomOverall
 
     @DELETE
     suspend fun exitConversation(@Header("Authorization") authorization: String,
-                           @Url url: String): GenericOverall
+                                 @Url url: String): GenericOverall
 
 }

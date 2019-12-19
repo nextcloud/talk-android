@@ -36,9 +36,6 @@ import androidx.work.WorkManager
 import coil.Coil
 import coil.ImageLoader
 import com.bluelinelabs.logansquare.LoganSquare
-import com.facebook.cache.disk.DiskCacheConfig
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
 import com.nextcloud.talk.jobs.AccountRemovalWorker
@@ -56,7 +53,6 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.*
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils
@@ -135,18 +131,6 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         setAppTheme(appPreferences.theme)
         super.onCreate()
 
-        val imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
-                .setNetworkFetcher(OkHttpNetworkFetcherWithCache(okHttpClient))
-                .setMainDiskCacheConfig(
-                        DiskCacheConfig.newBuilder(this)
-                                .setMaxCacheSize(0)
-                                .setMaxCacheSizeOnLowDiskSpace(0)
-                                .setMaxCacheSizeOnVeryLowDiskSpace(0)
-                                .build()
-                )
-                .build()
-
-        Fresco.initialize(this, imagePipelineConfig)
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
         ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()

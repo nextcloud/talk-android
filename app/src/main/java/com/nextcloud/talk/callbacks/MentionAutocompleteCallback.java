@@ -25,10 +25,10 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.widget.EditText;
 
-import com.facebook.widget.text.span.BetterImageSpan;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.newarch.local.models.UserNgEntity;
+import com.nextcloud.talk.utils.BetterImageSpan;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.MagicCharPolicy;
 import com.nextcloud.talk.utils.text.Spans;

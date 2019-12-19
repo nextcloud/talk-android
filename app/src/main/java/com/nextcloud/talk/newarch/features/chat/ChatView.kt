@@ -102,7 +102,7 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
                     view?.lobbyView?.visibility = View.VISIBLE
                     val timer = conversation.lobbyTimer
                     if (timer != null && timer != 0L) {
-                        view?.lobbyTextView?.text =  String.format(
+                        view?.lobbyTextView?.text = String.format(
                                 resources!!.getString(R.string.nc_lobby_waiting_with_date),
                                 DateUtils.getLocalDateStringFromTimestampForLobby(
                                         conversation.lobbyTimer!!

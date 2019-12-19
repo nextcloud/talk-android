@@ -5,20 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
-import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.usecases.ExitConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
-import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.utils.ConversationsManager
 import com.nextcloud.talk.newarch.utils.ConversationsManagerInterface
 import kotlinx.coroutines.launch
-import org.koin.core.parameter.parametersOf
 
 class ChatViewModel constructor(application: Application,
                                 private val joinConversationUseCase: JoinConversationUseCase,

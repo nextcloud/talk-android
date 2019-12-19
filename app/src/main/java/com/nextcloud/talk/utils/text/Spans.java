@@ -24,7 +24,7 @@ import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.widget.text.span.BetterImageSpan;
+import com.nextcloud.talk.utils.BetterImageSpan;
 
 import lombok.Data;
 

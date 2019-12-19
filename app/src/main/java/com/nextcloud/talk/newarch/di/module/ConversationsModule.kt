@@ -57,6 +57,7 @@ fun createJoinConversationUseCase(nextcloudTalkRepository: NextcloudTalkReposito
 fun createExitConversationUseCase(nextcloudTalkRepository: NextcloudTalkRepository, apiErrorHandler: ApiErrorHandler): ExitConversationUseCase {
     return ExitConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
+
 fun createChatViewModelFactory(application: Application, joinConversationUseCase: JoinConversationUseCase, exitConversationUseCase: ExitConversationUseCase, conversationsRepository: ConversationsRepository, messagesRepository: MessagesRepository, conversationsManager: ConversationsManager): ChatViewModelFactory {
     return ChatViewModelFactory(application, joinConversationUseCase, exitConversationUseCase, conversationsRepository, messagesRepository, conversationsManager)
 }

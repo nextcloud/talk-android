@@ -30,7 +30,7 @@ import org.koin.dsl.module
 import java.net.CookieManager
 
 val ManagementModule = module {
-    single{ createConversationsManager(get(), get(), get(), get(), get(), get()) }
+    single { createConversationsManager(get(), get(), get(), get(), get(), get()) }
 }
 
 fun createConversationsManager(usersRepository: UsersRepository, cookieManager: CookieManager, okHttpClient: OkHttpClient, conversationsRepository: ConversationsRepository, getConversationUseCase: GetConversationUseCase, joinConversationUseCase: JoinConversationUseCase): ConversationsManager {

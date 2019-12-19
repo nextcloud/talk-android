@@ -32,11 +32,11 @@ import java.util.*
 @JsonObject
 @Parcelize
 data class SpreedCapability(
-    @JsonField(name = ["features"])
-    var features: List<String>? = null,
-    @JsonField(name = ["config"])
-    var config: HashMap<String, HashMap<String, String>>? = null
-): Parcelable {
+        @JsonField(name = ["features"])
+        var features: List<String>? = null,
+        @JsonField(name = ["config"])
+        var config: HashMap<String, HashMap<String, String>>? = null
+) : Parcelable {
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
