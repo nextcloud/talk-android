@@ -82,6 +82,10 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -215,23 +219,28 @@ class ContactsController : BaseController,
     override fun onViewBound(view: View) {
         super.onViewBound(view)
 
-        currentUser = usersRepository.getActiveUser()
 
-        if (currentUser != null) {
-            credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
-        }
-
-        if (adapter == null) {
-            contactItems = ArrayList()
-            adapter = FlexibleAdapter(contactItems, activity, true)
+        GlobalScope.launch {
+            currentUser = usersRepository.getActiveUser()
 
             if (currentUser != null) {
-                fetchData(true)
+                credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+            }
+
+            if (adapter == null) {
+                contactItems = ArrayList()
+                adapter = FlexibleAdapter(contactItems, activity, true)
+
+                if (currentUser != null) {
+                    fetchData(true)
+                }
+            }
+
+            setupAdapter()
+            withContext(Dispatchers.Main) {
+                prepareViews()
             }
         }
-
-        setupAdapter()
-        prepareViews()
     }
 
     private fun setupAdapter() {
@@ -239,11 +248,6 @@ class ContactsController : BaseController,
                 .mode = SelectableAdapter.Mode.MULTI
 
         adapter!!.setEndlessScrollListener(this, ProgressItem())
-
-        adapter!!.setStickyHeaderElevation(5)
-                .setUnlinkAllItemsOnRemoveHeaders(true)
-                .setDisplayHeadersAtStartUp(true)
-                .setStickyHeaders(true)
 
         adapter!!.addListener(this)
     }
@@ -663,6 +667,11 @@ class ContactsController : BaseController,
         recyclerView!!.layoutManager = layoutManager
         recyclerView!!.setHasFixedSize(true)
         recyclerView!!.adapter = adapter
+
+        adapter!!.setStickyHeaderElevation(5)
+                .setUnlinkAllItemsOnRemoveHeaders(true)
+                .setDisplayHeadersAtStartUp(true)
+                .setStickyHeaders(true)
 
         swipeRefreshLayout!!.setOnRefreshListener { fetchData(true) }
         swipeRefreshLayout!!.setColorSchemeResources(R.color.colorPrimary)
