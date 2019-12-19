@@ -74,8 +74,7 @@ class Images {
                 "file" -> {
                     return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_file_icon))
                 }
-                else -> {
-                } // do nothing
+                else -> {} // do nothing
             }
         }
 
@@ -89,16 +88,13 @@ class Images {
             Conversation.ConversationType.PUBLIC_CONVERSATION -> {
                 return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_link_white_24px))
             }
-            //Conversation.ConversationType.SYSTEM_CONVERSATION
             else -> {
-                // we handle else as SYSTEM_CONVERSATION
+                // we handle else as Conversation.ConversationType.SYSTEM_CONVERSATION for now
                 val layers = arrayOfNulls<Drawable>(2)
                 layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
                 layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
                 return DisplayUtils.getRoundedDrawable(LayerDrawable(layers))
-
             }
-
         }
     }
 }
