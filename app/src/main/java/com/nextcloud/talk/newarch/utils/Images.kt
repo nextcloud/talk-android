@@ -21,13 +21,18 @@
 package com.nextcloud.talk.newarch.utils
 
 import android.content.Context
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.LoadRequest
 import coil.target.Target
 import coil.transform.Transformation
+import com.nextcloud.talk.R
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.utils.DisplayUtils
 
 class Images {
     fun getRequestForUrl(
@@ -56,6 +61,44 @@ class Images {
             ) {
                 addHeader("Authorization", userEntity.getCredentials())
             }
+        }
+    }
+
+    // returns null if it's one-to-one that you need to fetch yourself
+    fun getImageForConversation(context: Context, conversation: Conversation): Drawable? {
+        conversation.objectType?.let { objectType ->
+            when (objectType) {
+                "share:password" -> {
+                    return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_file_password_request))
+                }
+                "file" -> {
+                    return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_file_icon))
+                }
+                else -> {
+                } // do nothing
+            }
+        }
+
+        when (conversation.type) {
+            Conversation.ConversationType.ONE_TO_ONE_CONVERSATION -> {
+                return null
+            }
+            Conversation.ConversationType.GROUP_CONVERSATION -> {
+                return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px))
+            }
+            Conversation.ConversationType.PUBLIC_CONVERSATION -> {
+                return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_link_white_24px))
+            }
+            //Conversation.ConversationType.SYSTEM_CONVERSATION
+            else -> {
+                // we handle else as SYSTEM_CONVERSATION
+                val layers = arrayOfNulls<Drawable>(2)
+                layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
+                layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
+                return DisplayUtils.getRoundedDrawable(LayerDrawable(layers))
+
+            }
+
         }
     }
 }

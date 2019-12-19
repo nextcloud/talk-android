@@ -22,11 +22,11 @@ package com.nextcloud.talk.adapters.items
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import android.text.TextUtils
 import android.text.format.DateUtils
 import android.view.View
 import coil.api.load
+import coil.request.CachePolicy
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -35,6 +35,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.ApiUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -199,69 +200,19 @@ class ConversationItem(
 
         holder.itemView.dialogAvatar.visibility = View.VISIBLE
 
-        var shouldLoadAvatar = true
-        val objectType: String? = model.objectType
-        if (!TextUtils.isEmpty(objectType)) {
-            when (objectType) {
-                "share:password" -> {
-                    shouldLoadAvatar = false
-                    holder.itemView.dialogAvatar.load(R.drawable.ic_file_password_request) {
-                        transformations(CircleCropTransformation())
-                    }
-                }
-                "file" -> {
-                    shouldLoadAvatar = false
-                    holder.itemView.dialogAvatar.load(R.drawable.ic_file_icon) {
-                        transformations(CircleCropTransformation())
-                    }
 
-                }
-                else -> {
-                }
-            }
-        }
-
-        if (Conversation.ConversationType.SYSTEM_CONVERSATION == model.type) {
-            val layers = arrayOfNulls<Drawable>(2)
-            layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
-            layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
-            val layerDrawable = LayerDrawable(layers)
-
-            holder.itemView.dialogAvatar.load(layerDrawable) {
+        val conversationDrawable: Drawable? = Images().getImageForConversation(context, model)
+        if (conversationDrawable != null) {
+            holder.itemView.dialogAvatar.setImageDrawable(conversationDrawable)
+        } else {
+            holder.itemView.dialogAvatar.load(
+                    ApiUtils.getUrlForAvatarWithName(
+                            user.baseUrl,
+                            model.name, R.dimen.avatar_size
+                    )
+            ) {
+                addHeader("Authorization", user.getCredentials())
                 transformations(CircleCropTransformation())
-            }
-
-            shouldLoadAvatar = false
-        }
-
-        if (shouldLoadAvatar) {
-            when (model.type) {
-                ONE_TO_ONE_CONVERSATION -> if (!TextUtils.isEmpty(
-                                model.name
-                        )
-                ) {
-                    holder.itemView.dialogAvatar.load(
-                            ApiUtils.getUrlForAvatarWithName(
-                                    user.baseUrl,
-                                    model.name, R.dimen.avatar_size
-                            )
-                    ) {
-                        addHeader("Authorization", user.getCredentials())
-                        transformations(CircleCropTransformation())
-                    }
-
-                } else {
-                    holder.itemView.dialogAvatar.visibility = View.GONE
-                }
-                Conversation.ConversationType.GROUP_CONVERSATION ->
-                    holder.itemView.dialogAvatar.load(R.drawable.ic_people_group_white_24px) {
-                        transformations(CircleCropTransformation())
-                    }
-                Conversation.ConversationType.PUBLIC_CONVERSATION ->
-                    holder.itemView.dialogAvatar.load(R.drawable.ic_link_white_24px) {
-                        transformations(CircleCropTransformation())
-                    }
-                else -> holder.itemView.dialogAvatar.visibility = View.GONE
             }
         }
     }
