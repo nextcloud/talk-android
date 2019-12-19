@@ -20,9 +20,7 @@
 
 package com.nextcloud.talk.newarch.local.models
 
-import android.os.Parcel
 import android.os.Parcelable
-import android.os.Parcelable.PARCELABLE_WRITE_RETURN_VALUE
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -31,10 +29,7 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
 import com.nextcloud.talk.utils.ApiUtils
-import kotlinx.android.parcel.Parceler
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
-import org.parceler.Parcels
 
 @Parcelize
 @Entity(tableName = "users")
@@ -57,12 +52,7 @@ data class UserNgEntity(
 ) : Parcelable {
 
     fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
-        val capabilityExists = capabilities?.spreedCapability?.features?.contains(capabilityName)
-        if (capabilityExists != null) {
-            return capabilityExists
-        } else {
-            return false
-        }
+        return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
 
     }
 
@@ -80,7 +70,7 @@ data class UserNgEntity(
         if (pushConfiguration != other.pushConfiguration) return false
         if (capabilities != other.capabilities) return false
         if (clientCertificate != other.clientCertificate) return false
-        //if (externalSignaling != other.externalSignaling) return false
+        if (externalSignaling != other.externalSignaling) return false
         if (status != other.status) return false
 
         return true
