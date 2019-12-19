@@ -407,7 +407,6 @@ class OperationsMenuController(args: Bundle) : BaseController() {
             okButton!!.visibility = View.VISIBLE
         }
     }
-    }
 
     private fun dispose() {
         if (disposable != null && !disposable!!.isDisposed) {
