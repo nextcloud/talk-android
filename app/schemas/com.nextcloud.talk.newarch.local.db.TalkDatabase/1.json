@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "479fc8a763ef590d3126641f418e5730",
+    "identityHash": "3a9126341dd46ffc54056126b59ed5fb",
     "entities": [
       {
         "tableName": "conversations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` INTEGER, `conversation_id` TEXT, `token` TEXT, `name` TEXT, `display_name` TEXT, `type` INTEGER, `count` INTEGER NOT NULL, `number_of_guests` INTEGER NOT NULL, `participants_count` INTEGER NOT NULL, `participant_type` INTEGER, `has_password` INTEGER NOT NULL, `session_id` TEXT, `favorite` INTEGER NOT NULL, `last_activity` INTEGER NOT NULL, `unread_messages` INTEGER NOT NULL, `unread_mention` INTEGER NOT NULL, `last_message` TEXT, `object_type` TEXT, `notification_level` INTEGER, `read_only_state` INTEGER, `lobby_state` INTEGER, `lobby_timer` INTEGER, `last_read_message` INTEGER NOT NULL, `modified_at` INTEGER, `changing` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` INTEGER, `conversation_id` TEXT, `token` TEXT, `name` TEXT, `display_name` TEXT, `type` INTEGER, `count` INTEGER NOT NULL, `number_of_guests` INTEGER NOT NULL, `participants_count` INTEGER NOT NULL, `participant_type` INTEGER, `has_password` INTEGER NOT NULL, `session_id` TEXT, `favorite` INTEGER NOT NULL, `last_activity` INTEGER NOT NULL, `unread_messages` INTEGER NOT NULL, `unread_mention` INTEGER NOT NULL, `last_message` TEXT, `object_type` TEXT, `notification_level` INTEGER, `read_only_state` INTEGER, `lobby_state` INTEGER, `lobby_timer` INTEGER, `last_read_message` INTEGER NOT NULL, `can_start_call` INTEGER, `modified_at` INTEGER, `changing` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "id",
@@ -151,6 +151,12 @@
             "columnName": "last_read_message",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "canStartCall",
+            "columnName": "can_start_call",
+            "affinity": "INTEGER",
+            "notNull": false
           },
           {
             "fieldPath": "modifiedAt",
@@ -383,7 +389,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '479fc8a763ef590d3126641f418e5730')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3a9126341dd46ffc54056126b59ed5fb')"
     ]
   }
 }
