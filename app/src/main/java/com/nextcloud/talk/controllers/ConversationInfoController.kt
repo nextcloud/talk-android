@@ -69,6 +69,7 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -658,7 +659,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
                                 deleteConversationAction.visibility = View.VISIBLE
                             }
 
-                            if (Conversation.ConversationType.SYSTEM_CONVERSATION == conversation!!.type) {
+                            if (SYSTEM_CONVERSATION == conversation!!.type) {
                                 muteCalls.visibility = View.GONE
                             }
 
@@ -813,39 +814,17 @@ class ConversationInfoController(args: Bundle) : BaseController(),
     }
 
     private fun loadConversationAvatar() {
-        when (conversation!!.type) {
-            ONE_TO_ONE_CONVERSATION -> if (!TextUtils.isEmpty
-                    (conversation!!.name)
-            ) {
+        conversation?.let {
+            val conversationDrawable = Images().getImageForConversation(context, it)
+            conversationDrawable?.let {
+                conversationAvatarImageView.setImageDrawable(conversationDrawable)
+            } ?: run {
                 conversationAvatarImageView.load(ApiUtils.getUrlForAvatarWithName(
                         conversationUser!!.baseUrl,
-                        conversation!!.name, R.dimen.avatar_size_big
+                        it.name, R.dimen.avatar_size_big
                 )) {
                     transformations(CircleCropTransformation())
                 }
-            }
-            GROUP_CONVERSATION -> {
-                conversationAvatarImageView.load(R.drawable.ic_people_group_white_24px) {
-                    transformations(CircleCropTransformation())
-                }
-            }
-            PUBLIC_CONVERSATION -> {
-                conversationAvatarImageView.load(R.drawable.ic_link_white_24px) {
-                    transformations(CircleCropTransformation())
-                }
-            }
-
-            SYSTEM_CONVERSATION -> {
-                val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
-                layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
-                val layerDrawable = LayerDrawable(layers)
-                conversationAvatarImageView.load(layerDrawable) {
-                    transformations(CircleCropTransformation())
-                }
-            }
-
-            else -> {
             }
         }
     }

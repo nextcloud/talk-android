@@ -589,7 +589,7 @@ class SettingsController : BaseController() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .`as`<ObservableSubscribeProxy<UserProfileOverall>>(
-                                    AutoDispose.autoDisposable<UserProfileOverall>(scopeProvider)
+                                    AutoDispose.autoDisposable(scopeProvider)
                             )
                             .subscribe({ userProfileOverall ->
 

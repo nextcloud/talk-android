@@ -706,6 +706,10 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     override fun onDetach(view: View) {
         eventBus.unregister(this)
 
+        if (actionBar != null) {
+            actionBar?.setIcon(null)
+        }
+
         if (activity != null) {
             activity?.findViewById<View>(R.id.toolbar)
                     ?.setOnClickListener(null)
@@ -739,15 +743,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
     public override fun onDestroy() {
         super.onDestroy()
-
-        if (activity != null) {
-            activity?.findViewById<View>(R.id.toolbar)
-                    ?.setOnClickListener(null)
-        }
-
-        if (actionBar != null) {
-            actionBar?.setIcon(null)
-        }
 
         adapter = null
         inConversation = false
