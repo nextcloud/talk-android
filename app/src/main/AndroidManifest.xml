@@ -62,8 +62,10 @@
 
     <application
         android:name=".application.NextcloudTalkApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:fullBackupContent="@xml/backup_config"
+        android:allowClearUserData="false"
+        android:allowClearUserDataOnFailedRestore="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/nc_app_name"
         android:largeHeap="true"

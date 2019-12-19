@@ -697,6 +697,7 @@ class SettingsController : BaseController() {
                         avatarId, R.dimen.avatar_size_big
                 )
         ) {
+            addHeader("Authorization", currentUser!!.getCredentials())
             transformations(CircleCropTransformation())
         }
     }

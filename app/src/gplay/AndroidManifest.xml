@@ -24,12 +24,14 @@
 
     <application
         android:name=".application.NextcloudTalkApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:fullBackupContent="@xml/backup_config"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/nc_app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
+        android:allowClearUserData="false"
+        android:allowClearUserDataOnFailedRestore="true"
         android:theme="@style/AppTheme"
         tools:replace="label, icon, theme, name, allowBackup"
         tools:ignore="UnusedAttribute, ExportedService">
