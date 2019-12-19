@@ -72,6 +72,8 @@ data class ConversationEntity(
         @ColumnInfo(name = "lobby_state") var lobbyState: LobbyState? = null,
         @ColumnInfo(name = "lobby_timer") var lobbyTimer: Long? = null,
         @ColumnInfo(name = "last_read_message") var lastReadMessageId: Long = 0,
+        @ColumnInfo(name = "can_start_call") var canStartCall: Boolean? = true,
+
         @ColumnInfo(name = "modified_at") var modifiedAt: Long? = null,
         @ColumnInfo(name = "changing") var changing: Boolean = false
 ) {
@@ -104,6 +106,7 @@ data class ConversationEntity(
         if (conversationReadOnlyState != other.conversationReadOnlyState) return false
         if (lobbyState != other.lobbyState) return false
         if (lobbyTimer != other.lobbyTimer) return false
+        if (canStartCall != other.canStartCall) return false
         if (lastReadMessageId != other.lastReadMessageId) return false
         if (changing != other.changing) return false
 
@@ -144,6 +147,7 @@ fun ConversationEntity.toConversation(): Conversation {
     conversation.conversationReadOnlyState = this.conversationReadOnlyState
     conversation.lobbyState = this.lobbyState
     conversation.lobbyTimer = this.lobbyTimer
+    conversation.canStartCall = this.canStartCall
     conversation.lastReadMessageId = this.lastReadMessageId
     conversation.changing = this.changing
 
@@ -174,6 +178,7 @@ fun Conversation.toConversationEntity(): ConversationEntity {
     conversationEntity.lobbyState = this.lobbyState
     conversationEntity.lobbyTimer = this.lobbyTimer
     conversationEntity.lastReadMessageId = this.lastReadMessageId
+    conversationEntity.canStartCall = this.canStartCall
     conversationEntity.type = this.type
     conversationEntity.changing = this.changing
 
