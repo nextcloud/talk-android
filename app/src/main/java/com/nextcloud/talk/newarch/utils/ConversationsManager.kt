@@ -42,7 +42,7 @@ class ConversationsManager constructor(usersRepository: UsersRepository,
                                        okHttpClient: OkHttpClient,
                                        private val conversationsRepository: ConversationsRepository,
                                        private val joinConversationUseCase: JoinConversationUseCase,
-                                       private val getConversationUseCase: GetConversationUseCase): KoinComponent {
+                                       private val getConversationUseCase: GetConversationUseCase) : KoinComponent {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
     private val previousUser: UserNgEntity? = null
     private val currentUserLiveData: LiveData<UserNgEntity> = usersRepository.getActiveUserLiveData()
@@ -50,9 +50,11 @@ class ConversationsManager constructor(usersRepository: UsersRepository,
 
     init {
         currentUserLiveData.observeForever { user ->
-            cookieManager.cookieStore.removeAll()
-            okHttpClient.dispatcher().cancelAll()
-            currentConversation = null
+            if (user.id != previousUser?.id) {
+                cookieManager.cookieStore.removeAll()
+                //okHttpClient.dispatcher().cancelAll()
+                currentConversation = null
+            }
         }
     }
 

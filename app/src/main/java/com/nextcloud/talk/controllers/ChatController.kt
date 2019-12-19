@@ -123,7 +123,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     @BindView(R.id.smileyButton)
     @JvmField
     var smileyButton: ImageButton? = null
-    @BindView(R.id.lobby_view)
+    @BindView(R.id.lobbyView)
     @JvmField
     var lobbyView: RelativeLayout? = null
     @BindView(R.id.lobbyTextView)

@@ -15,6 +15,7 @@ import com.nextcloud.talk.newarch.domain.usecases.ExitConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.utils.ConversationsManager
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
@@ -22,7 +23,8 @@ class ChatViewModel constructor(application: Application,
                                 private val joinConversationUseCase: JoinConversationUseCase,
                                 private val exitConversationUseCase: ExitConversationUseCase,
                                 private val conversationsRepository: ConversationsRepository,
-                                private val messagesRepository: MessagesRepository) : BaseViewModel<ChatView>(application) {
+                                private val messagesRepository: MessagesRepository,
+                                private val conversationsManager: ConversationsManager) : BaseViewModel<ChatView>(application) {
     lateinit var user: UserNgEntity
     val conversation: MutableLiveData<Conversation?> = MutableLiveData()
     val messagesLiveData = Transformations.switchMap(conversation) {

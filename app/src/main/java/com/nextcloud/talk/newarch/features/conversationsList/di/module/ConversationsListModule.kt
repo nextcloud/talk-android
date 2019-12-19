@@ -34,10 +34,6 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
 val ConversationsListModule = module {
-    single { createGetConversationsUseCase(get(), get()) }
-    single { createSetConversationFavoriteValueUseCase(get(), get()) }
-    single { createLeaveConversationUseCase(get(), get()) }
-    single { createDeleteConversationuseCase(get(), get()) }
     //viewModel { ConversationsListViewModel(get(), get()) }
     factory {
         createConversationListViewModelFactory(
@@ -45,34 +41,6 @@ val ConversationsListModule = module {
         (), get(), get(), get()
         )
     }
-}
-
-fun createSetConversationFavoriteValueUseCase(
-        nextcloudTalkRepository: NextcloudTalkRepository,
-        apiErrorHandler: ApiErrorHandler
-): SetConversationFavoriteValueUseCase {
-    return SetConversationFavoriteValueUseCase(nextcloudTalkRepository, apiErrorHandler)
-}
-
-fun createGetConversationsUseCase(
-        nextcloudTalkRepository: NextcloudTalkRepository,
-        apiErrorHandler: ApiErrorHandler
-): GetConversationsUseCase {
-    return GetConversationsUseCase(nextcloudTalkRepository, apiErrorHandler)
-}
-
-fun createLeaveConversationUseCase(
-        nextcloudTalkRepository: NextcloudTalkRepository,
-        apiErrorHandler: ApiErrorHandler
-): LeaveConversationUseCase {
-    return LeaveConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
-}
-
-fun createDeleteConversationuseCase(
-        nextcloudTalkRepository: NextcloudTalkRepository,
-        apiErrorHandler: ApiErrorHandler
-): DeleteConversationUseCase {
-    return DeleteConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createConversationListViewModelFactory(

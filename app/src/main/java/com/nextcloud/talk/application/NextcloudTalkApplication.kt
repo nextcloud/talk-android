@@ -49,9 +49,7 @@ import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import com.nextcloud.talk.newarch.di.module.CommunicationModule
-import com.nextcloud.talk.newarch.di.module.NetworkModule
-import com.nextcloud.talk.newarch.di.module.StorageModule
+import com.nextcloud.talk.newarch.di.module.*
 import com.nextcloud.talk.newarch.features.conversationsList.di.module.ConversationsListModule
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
@@ -165,13 +163,13 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
                 .build()
 
-        WorkManager.getInstance()
+        WorkManager.getInstance(this)
                 .enqueue(pushRegistrationWork)
-        WorkManager.getInstance()
+        WorkManager.getInstance(this)
                 .enqueue(accountRemovalWork)
-        WorkManager.getInstance()
+        WorkManager.getInstance(this)
                 .enqueue(signalingSettingsWork)
-        WorkManager.getInstance()
+        WorkManager.getInstance(this)
                 .enqueueUniquePeriodicWork(
                         "DailyCapabilitiesUpdateWork", ExistingPeriodicWorkPolicy.REPLACE,
                         periodicCapabilitiesUpdateWork
@@ -195,7 +193,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         startKoin {
             androidContext(this@NextcloudTalkApplication)
             androidLogger()
-            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule))
+            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsModule, ConversationsListModule, ManagementModule))
         }
     }
 

@@ -24,5 +24,6 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 interface ConversationsManagerInterface  {
+    fun gotConversationInfoForuser(userNgEntity: UserNgEntity, conversation: Conversation?)
     fun joinedConversationForUser(userNgEntity: UserNgEntity, conversation: Conversation?)
 }
