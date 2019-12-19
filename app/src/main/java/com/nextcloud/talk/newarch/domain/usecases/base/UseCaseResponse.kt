@@ -24,6 +24,6 @@ import com.nextcloud.talk.newarch.data.model.ErrorModel
 
 interface UseCaseResponse<Type> {
     suspend fun onSuccess(result: Type)
-    fun onError(errorModel: ErrorModel?)
+    suspend fun onError(errorModel: ErrorModel?)
 }
 

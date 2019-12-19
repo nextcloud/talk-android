@@ -58,7 +58,7 @@ class ConversationsManager constructor(usersRepository: UsersRepository,
         }
     }
 
-    suspend fun getConversation(conversationToken: String) {
+    suspend fun getConversation(conversationToken: String, conversationsManagerInterface: ConversationsManagerInterface) {
         val currentUser = currentUserLiveData.value
         getConversationUseCase.invoke(applicationScope, parametersOf(
                 currentUser,
@@ -68,11 +68,14 @@ class ConversationsManager constructor(usersRepository: UsersRepository,
                     override suspend fun onSuccess(result: RoomOverall) {
                         currentUser?.let {
                             conversationsRepository.saveConversationsForUser(it.id!!, listOf(result.ocs.data))
+                            conversationsManagerInterface.gotConversationInfoForUser(it, result.ocs.data, ConversationsManagerInterface.OperationStatus.STATUS_OK)
                         }
                     }
 
-                    override fun onError(errorModel: ErrorModel?) {
-                        // what do we do on error
+                    override suspend fun onError(errorModel: ErrorModel?) {
+                        currentUser?.let {
+                            conversationsManagerInterface.gotConversationInfoForUser(it, null, ConversationsManagerInterface.OperationStatus.STATUS_FAILED)
+                        }
                     }
                 })
     }
@@ -89,12 +92,14 @@ class ConversationsManager constructor(usersRepository: UsersRepository,
                         currentUser?.let {
                             conversationsRepository.saveConversationsForUser(it.id!!, listOf(result.ocs.data))
                             currentConversation = conversationsRepository.getConversationForUserWithToken(it.id!!, result.ocs!!.data!!.token!!)
-                            conversationsManagerInterface.joinedConversationForUser(it, currentConversation)
+                            conversationsManagerInterface.joinedConversationForUser(it, currentConversation, ConversationsManagerInterface.OperationStatus.STATUS_OK)
                         }
                     }
 
-                    override fun onError(errorModel: ErrorModel?) {
-                        // what do we do on error
+                    override suspend fun onError(errorModel: ErrorModel?) {
+                        currentUser?.let {
+                            conversationsManagerInterface.joinedConversationForUser(it, currentConversation, ConversationsManagerInterface.OperationStatus.STATUS_FAILED)
+                        }
                     }
                 })
     }

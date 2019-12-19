@@ -105,7 +105,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         }
 
         settingsItem = menu.findItem(R.id.action_settings)
-        loadAvatar()
     }
 
     private fun loadAvatar() {

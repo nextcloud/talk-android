@@ -16,6 +16,7 @@ import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.utils.ConversationsManager
+import com.nextcloud.talk.newarch.utils.ConversationsManagerInterface
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
@@ -24,9 +25,10 @@ class ChatViewModel constructor(application: Application,
                                 private val exitConversationUseCase: ExitConversationUseCase,
                                 private val conversationsRepository: ConversationsRepository,
                                 private val messagesRepository: MessagesRepository,
-                                private val conversationsManager: ConversationsManager) : BaseViewModel<ChatView>(application) {
+                                private val conversationsManager: ConversationsManager) : BaseViewModel<ChatView>(application), ConversationsManagerInterface {
     lateinit var user: UserNgEntity
     val conversation: MutableLiveData<Conversation?> = MutableLiveData()
+    var initConversation: Conversation? = null
     val messagesLiveData = Transformations.switchMap(conversation) {
         it?.let {
             messagesRepository.getMessagesWithUserForConversation(it.conversationId!!)
@@ -38,45 +40,29 @@ class ChatViewModel constructor(application: Application,
     fun init(user: UserNgEntity, conversationToken: String, conversationPassword: String?) {
         viewModelScope.launch {
             this@ChatViewModel.user = user
-            this@ChatViewModel.conversation.value = conversationsRepository.getConversationForUserWithToken(user.id!!, conversationToken)
+            this@ChatViewModel.initConversation = conversationsRepository.getConversationForUserWithToken(user.id!!, conversationToken)
             this@ChatViewModel.conversationPassword = conversationPassword
+            conversationsManager.getConversation(conversationToken, this@ChatViewModel)
         }
-    }
-
-    suspend fun joinConversation() {
-        joinConversationUseCase.invoke(viewModelScope, parametersOf(
-                user,
-                conversation.value!!.token,
-                conversationPassword
-        ),
-                object : UseCaseResponse<RoomOverall> {
-                    override suspend fun onSuccess(result: RoomOverall) {
-                        conversationsRepository.saveConversationsForUser(user.id!!, listOf(result.ocs.data))
-                    }
-
-                    override fun onError(errorModel: ErrorModel?) {
-                        // what do we do on error
-                    }
-                })
-    }
-
-    suspend fun exitConversation() {
-        exitConversationUseCase.invoke(backgroundScope, parametersOf(
-                user,
-                conversation.value!!.token
-        ),
-                object : UseCaseResponse<GenericOverall> {
-                    override suspend fun onSuccess(result: GenericOverall) {
-                    }
-
-                    override fun onError(errorModel: ErrorModel?) {
-                        // what do we do on error
-                    }
-                })
     }
 
     fun sendMessage(message: CharSequence) {
 
+    }
+
+    override suspend fun gotConversationInfoForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: ConversationsManagerInterface.OperationStatus) {
+        if (operationStatus == ConversationsManagerInterface.OperationStatus.STATUS_OK) {
+            if (userNgEntity.id == user.id && conversation!!.token == initConversation?.token) {
+                this.conversation.value = conversationsRepository.getConversationForUserWithToken(user.id!!, conversation.token!!)
+                conversation.token?.let { conversationToken ->
+                    conversationsManager.joinConversation(conversationToken, conversationPassword, this)
+                }
+            }
+        }
+    }
+
+    override suspend fun joinedConversationForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: ConversationsManagerInterface.OperationStatus) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }

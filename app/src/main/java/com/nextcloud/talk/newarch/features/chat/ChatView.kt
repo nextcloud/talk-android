@@ -68,6 +68,9 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
     private lateinit var recyclerViewAdapter: MessagesListAdapter<ChatMessage>
     private lateinit var mentionAutocomplete: Autocomplete<*>
 
+    private var shouldShowLobby: Boolean = false
+    private var isReadOnlyConversation: Boolean = false
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup
@@ -88,8 +91,10 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
                     actionBar?.setIcon(null)
                 }
 
-                val shouldShowLobby = conversation!!.shouldShowLobby(user)
-                val isReadOnlyConversation = conversation.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
+                shouldShowLobby = conversation!!.shouldShowLobby(user)
+                isReadOnlyConversation = conversation.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
+
+                activity?.invalidateOptionsMenu()
 
                 if (shouldShowLobby) {
                     view?.messagesListView?.visibility = View.GONE
@@ -134,9 +139,21 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
     ) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_conversation_plus_filter, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
         conversationInfoMenuItem = menu.findItem(R.id.conversation_info)
         conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
         conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
+
+        if (shouldShowLobby || isReadOnlyConversation) {
+            conversationVoiceCallMenuItem?.isVisible = false
+            conversationVideoMenuItem?.isVisible = false
+        } else {
+            conversationVoiceCallMenuItem?.isVisible = true
+            conversationVideoMenuItem?.isVisible = true
+        }
     }
 
     private fun setupViews() {
