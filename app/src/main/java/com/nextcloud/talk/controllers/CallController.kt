@@ -44,6 +44,8 @@ import androidx.appcompat.app.AppCompatActivity
 import butterknife.BindView
 import butterknife.OnClick
 import butterknife.OnLongClick
+import coil.api.load
+import coil.transform.CircleCropTransformation
 import com.bluelinelabs.logansquare.LoganSquare
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
@@ -62,6 +64,7 @@ import com.nextcloud.talk.models.json.signaling.*
 import com.nextcloud.talk.models.json.signaling.settings.IceServer
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
@@ -76,6 +79,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.*
 import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions
 import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment
@@ -1935,7 +1939,7 @@ class CallController(args: Bundle) : BaseController() {
         if (remoteRenderersLayout != null) {
             val relativeLayout = remoteRenderersLayout!!.findViewWithTag<RelativeLayout>("$session+video")
             if (relativeLayout != null) {
-                val avatarImageView = relativeLayout.findViewById<SimpleDraweeView>(R.id.avatarImageView)
+                val avatarImageView = relativeLayout.findViewById(R.id.avatarImageView) as ImageView
 
                 val userId: String
 
@@ -1948,21 +1952,15 @@ class CallController(args: Bundle) : BaseController() {
                 if (!TextUtils.isEmpty(userId)) {
 
                     if (activity != null) {
-                        avatarImageView.controller = null
-
-                        val draweeController = Fresco.newDraweeControllerBuilder()
-                                .setOldController(avatarImageView.controller)
-                                .setImageRequest(
-                                        DisplayUtils.getImageRequestForUrl(
-                                                ApiUtils.getUrlForAvatarWithName(
-                                                        baseUrl,
-                                                        userId,
-                                                        R.dimen.avatar_size_big
-                                                ), null
-                                        )
+                        avatarImageView.load(
+                                ApiUtils.getUrlForAvatarWithName(
+                                        baseUrl,
+                                        userId, R.dimen.avatar_size_big
                                 )
-                                .build()
-                        avatarImageView.controller = draweeController
+                        ) {
+                            addHeader("Authorization", conversationUser!!.getCredentials())
+                            transformations(CircleCropTransformation())
+                        }
                     }
                 }
             }
@@ -2017,7 +2015,7 @@ class CallController(args: Bundle) : BaseController() {
         val relativeLayout = remoteRenderersLayout!!.findViewWithTag<RelativeLayout>(sessionId)
         if (relativeLayout != null) {
             val imageView: ImageView
-            val avatarImageView = relativeLayout.findViewById<SimpleDraweeView>(R.id.avatarImageView)
+            val avatarImageView = relativeLayout.findViewById(R.id.avatarImageView) as ImageView
             val surfaceViewRenderer = relativeLayout.findViewById<SurfaceViewRenderer>(R.id.surface_view)
 
             if (video) {
