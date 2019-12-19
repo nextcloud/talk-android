@@ -126,7 +126,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     @BindView(R.id.lobby_view)
     @JvmField
     var lobbyView: RelativeLayout? = null
-    @BindView(R.id.lobby_text_view)
+    @BindView(R.id.lobbyTextView)
     @JvmField
     var conversationLobbyText: TextView? = null
     var roomToken: String? = null

@@ -33,10 +33,7 @@ import com.nextcloud.talk.newarch.local.models.getMaxMessageLength
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.DrawableUtils
-import com.nextcloud.talk.utils.MagicCharPolicy
+import com.nextcloud.talk.utils.*
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD
 import com.nextcloud.talk.utils.text.Spans
@@ -47,6 +44,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import kotlinx.android.synthetic.main.controller_chat.view.*
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.*
+import kotlinx.android.synthetic.main.lobby_view.view.*
 import kotlinx.android.synthetic.main.view_message_input.view.*
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
@@ -67,8 +65,8 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
 
     private var newMessagesCount = 0
 
-    lateinit var recyclerViewAdapter: MessagesListAdapter<ChatMessage>
-    lateinit var mentionAutocomplete: Autocomplete<*>
+    private lateinit var recyclerViewAdapter: MessagesListAdapter<ChatMessage>
+    private lateinit var mentionAutocomplete: Autocomplete<*>
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -80,15 +78,45 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
         viewModel.init(args.getParcelable(BundleKeys.KEY_USER_ENTITY)!!, args.getString(BundleKeys.KEY_ROOM_TOKEN)!!, args.getString(KEY_CONVERSATION_PASSWORD))
 
         viewModel.apply {
-            conversation.observe(this@ChatView) { value ->
+            conversation.observe(this@ChatView) { conversation ->
                 setTitle()
                 setupAdapter()
 
-                if (Conversation.ConversationType.ONE_TO_ONE_CONVERSATION == value?.type) {
+                if (Conversation.ConversationType.ONE_TO_ONE_CONVERSATION == conversation?.type) {
                     loadAvatar()
                 } else {
                     actionBar?.setIcon(null)
                 }
+
+                val shouldShowLobby = conversation!!.shouldShowLobby(user)
+                val isReadOnlyConversation = conversation.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
+
+                if (shouldShowLobby) {
+                    view?.messagesListView?.visibility = View.GONE
+                    view?.messageInputView?.visibility = View.GONE
+                    view?.lobbyView?.visibility = View.VISIBLE
+                    val timer = conversation.lobbyTimer
+                    if (timer != null && timer != 0L) {
+                        view?.lobbyTextView?.text =  String.format(
+                                resources!!.getString(R.string.nc_lobby_waiting_with_date),
+                                DateUtils.getLocalDateStringFromTimestampForLobby(
+                                        conversation.lobbyTimer!!
+                                ))
+                    } else {
+                        view?.lobbyTextView?.setText(R.string.nc_lobby_waiting)
+                    }
+                } else {
+                    view?.messagesListView?.visibility = View.GONE
+                    view?.lobbyView?.visibility = View.GONE
+
+                    if (isReadOnlyConversation) {
+                        view?.messageInputView?.visibility = View.GONE
+                    } else {
+                        view?.messageInputView?.visibility = View.VISIBLE
+
+                    }
+                }
+
             }
         }
         return super.onCreateView(inflater, container)
@@ -358,7 +386,6 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
                 val needsAuthBasedOnUrl = url.contains("index.php/core/preview?fileId=") || url.contains("index.php/avatar/")
                 if (url.startsWith(viewModel.user.baseUrl) && needsAuthBasedOnUrl) {
                     addHeader("Authorization", viewModel.user.getCredentials())
-
                 }
             }
         })
