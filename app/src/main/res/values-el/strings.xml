@@ -42,6 +42,8 @@
     <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
     <string name="nc_yes">Ναι</string>
     <string name="nc_no">Όχι</string>
+    <string name="nc_certificate_error">Η ρύθμιση SSL απέτρεψε την σύνδεση</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Διαμεσολαβητής</string>
     <string name="nc_settings_proxy_type_title">Τύπος διαμεσολαβητή</string>
@@ -117,6 +119,7 @@
     <string name="nc_start_conversation">Έναρξη συνομιλίας</string>
     <string name="nc_configure_room">Ρύθμιση συνομιλίας</string>
     <string name="nc_leave">Εγκατάλειψη συνομιλίας</string>
+    <string name="nc_leave_message">Παρακαλώ επιβεβαιώστε την πρόθεσή σας να αποχωρήσετε από την συζήτηση.</string>
     <string name="nc_simple_leave">Αποχώρηση</string>
     <string name="nc_rename">Μετονομασία συνομιλίας</string>
     <string name="nc_set_password">Ορισμός συνθηματικού</string>
@@ -185,6 +188,9 @@
     <string name="nc_share_subject">%1$s πρόσκληση</string>
     <string name="nc_share_text_pass">\nΣυνθηματικό: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_push_to_talk">Push-to-talk</string>
+    <string name="nc_push_to_talk_desc">Με απενεργοποιημένο το μικρόφων, πιέστε και κρατήστε το &amp; για χρήση του Push-to-talk</string>
     <string name="nc_configure_cert_auth">Επιλογή πιστοποιητικού πιστοποίησης</string>
     <string name="nc_change_cert_auth">Αλλαγή πιστοποιητικού πιστοποίησης</string>
 
@@ -202,6 +208,12 @@
     <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>
     <string name="nc_new_messages">Μη αναγνωσμένα μηνύματα</string>
     <string name="nc_no_messages_yet">Κανένα μήνυμα ακόμα</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s έστειλε σύνδεσμο.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s έστειλε GIF.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s έστειλε συνημμένο</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s έστειλε  ήχο.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s έστειλε βίντεο.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s έστειλε εικόνα.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Στείλατε σύνδεσμο.</string>
     <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Στείλατε εικόνα GIF.</string>
     <string name="nc_sent_an_attachment_you">Στείλατε συνημμένο.</string>
@@ -228,4 +240,16 @@
     <string name="nc_moderator">Συντονιστής</string>
     <string name="nc_user">Χρήστης</string>
     <string name="nc_guest">Επισκέπτης</string>
+    <string name="nc_select_files">Επιλέξτε Αρχεία</string>
+    <string name="nc_file_browser_back">Πίσω</string>
+    <string name="nc_file_browser_refresh">Ανανέωση</string>
+    <string name="nc_last_modified">%1$s Τελευταία τροποποίηση %2$s</string>
+
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinar</string>
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Δεν υπάρχει σύνδεση</string>
+    <string name="nc_not_defined_error">Άγνωστο σφάλμα</string>
+    <string name="nc_general_settings">Γενικά</string>
     </resources>
