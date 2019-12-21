@@ -37,6 +37,7 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.appbar.MaterialToolbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.CallNotificationController
+import com.nextcloud.talk.controllers.ContactsController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
@@ -152,7 +153,13 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
-        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
+        if (intent.action == BundleKeys.KEY_NEW_CONVERSATION) {
+            openNewConversationScreen()
+        } else if (intent.action == BundleKeys.KEY_OPEN_CONVERSATION) {
+            ConductorRemapping.remapChatController(
+                    router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
+                    intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!, intent.extras!!, false)
+        } else if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
                 router!!.pushController(
                         RouterTransaction.with(CallNotificationController(intent.extras!!))
@@ -162,7 +169,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             } else {
                 ConductorRemapping.remapChatController(
                         router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
-                        intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN), intent.extras!!, false
+                        intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!, intent.extras!!, false
                 )
             }
         }
@@ -176,6 +183,17 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         if (!router!!.handleBack()) {
             super.onBackPressed()
         }
+    }
+
+    private fun openNewConversationScreen() {
+        val bundle = Bundle()
+        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
+
+        router?.pushController(
+                RouterTransaction.with(ContactsController(bundle))
+                        .pushChangeHandler(HorizontalChangeHandler())
+                        .popChangeHandler(HorizontalChangeHandler())
+        )
     }
 
     companion object {

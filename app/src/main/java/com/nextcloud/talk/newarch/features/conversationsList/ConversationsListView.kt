@@ -22,6 +22,7 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.pm.ShortcutManager
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -58,6 +59,7 @@ import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.newarch.utils.ShortcutService
 import com.nextcloud.talk.utils.animations.SharedElementTransition
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -233,6 +235,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                     )
                 }
 
+<<<<<<< HEAD
                 recyclerViewAdapter.updateDataSet(
                         newConversations as
                                 List<IFlexible<ViewHolder>>?, false
@@ -244,6 +247,18 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                 recyclerViewAdapter.filterItems(500)
             })
         }
+=======
+    val shortcutService = ShortcutService(
+            context.getSystemService<ShortcutManager>(ShortcutManager::class.java),
+            context,
+            this
+            //this.offlineRepository
+    );
+    shortcutService.registerShortcuts()
+
+    return super.onCreateView(inflater, container)
+  }
+>>>>>>> feature/app-shortcuts
 
         viewState.observe(this@ConversationsListView, Observer { value ->
             when (value) {

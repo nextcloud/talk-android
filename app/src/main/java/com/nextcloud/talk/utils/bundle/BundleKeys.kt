@@ -21,6 +21,7 @@
 package com.nextcloud.talk.utils.bundle
 
 object BundleKeys {
+    val KEY_OPEN_CONVERSATION: String = "KEY_OPEN_CONVERSATION"
     val KEY_SELECTED_USERS = "KEY_SELECTED_USERS"
     val KEY_SELECTED_GROUPS = "KEY_SELECTED_GROUPS"
     val KEY_USERNAME = "KEY_USERNAME"

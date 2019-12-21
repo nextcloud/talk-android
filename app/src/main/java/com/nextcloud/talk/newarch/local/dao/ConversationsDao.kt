@@ -30,6 +30,9 @@ abstract class ConversationsDao {
     @Query("SELECT * FROM conversations WHERE user_id = :userId ORDER BY favorite DESC, last_activity DESC")
     abstract fun getConversationsForUser(userId: Long): LiveData<List<ConversationEntity>>
 
+    @Query("SELECT * FROM conversations WHERE user_id = :userId ORDER BY last_activity DESC LIMIT 3")
+    abstract fun getLastThreeConversationsForUser(userId: Long): LiveData<List<ConversationEntity>>
+
     @Query("DELETE FROM conversations WHERE user_id = :userId")
     abstract suspend fun clearConversationsForUser(userId: Long)
 
