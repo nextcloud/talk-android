@@ -45,7 +45,7 @@ class ConversationService constructor(usersRepository: UsersRepository,
                                       private val getConversationUseCase: GetConversationUseCase) : KoinComponent {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
     private val previousUser: UserNgEntity? = null
-    private val currentUserLiveData: LiveData<UserNgEntity> = usersRepository.getActiveUserLiveData()
+    val currentUserLiveData: LiveData<UserNgEntity> = usersRepository.getActiveUserLiveData()
     private var currentConversation: Conversation? = null
 
     init {

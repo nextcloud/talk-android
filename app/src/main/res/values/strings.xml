@@ -167,6 +167,7 @@
     <string name="nc_delete_conversation_more">If you delete this conversation it will also be
         deleted for all other participants.</string>
 
+    <string name="nc_new_conversation_short">New</string>
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_join_via_link">Join with a link</string>
     <string name="nc_join_via_web">Join via web</string>

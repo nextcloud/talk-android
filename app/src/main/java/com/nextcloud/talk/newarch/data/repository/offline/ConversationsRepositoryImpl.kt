@@ -65,6 +65,14 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
         }
     }
 
+    override fun getLastThreeActiveConversationsForUser(userId: Long): LiveData<List<Conversation>> {
+        return conversationsDao.getLastThreeConversationsForUser(userId).distinctUntilChanged().map { data ->
+            data.map {
+                it.toConversation()
+            }
+        }
+    }
+
     override suspend fun getConversationForUserWithToken(userId: Long, token: String): Conversation? {
         val conversationEntity = conversationsDao.getConversationForUserWithToken(userId, token)
         if (conversationEntity != null) {
