@@ -7,7 +7,7 @@ import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.domain.usecases.*
 import com.nextcloud.talk.newarch.features.chat.ChatViewModelFactory
-import com.nextcloud.talk.newarch.utils.ConversationsManager
+import com.nextcloud.talk.newarch.utils.ConversationService
 import org.koin.dsl.module
 
 val ConversationsModule = module {
@@ -58,6 +58,6 @@ fun createExitConversationUseCase(nextcloudTalkRepository: NextcloudTalkReposito
     return ExitConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
-fun createChatViewModelFactory(application: Application, joinConversationUseCase: JoinConversationUseCase, exitConversationUseCase: ExitConversationUseCase, conversationsRepository: ConversationsRepository, messagesRepository: MessagesRepository, conversationsManager: ConversationsManager): ChatViewModelFactory {
-    return ChatViewModelFactory(application, joinConversationUseCase, exitConversationUseCase, conversationsRepository, messagesRepository, conversationsManager)
+fun createChatViewModelFactory(application: Application, joinConversationUseCase: JoinConversationUseCase, exitConversationUseCase: ExitConversationUseCase, conversationsRepository: ConversationsRepository, messagesRepository: MessagesRepository, conversationService: ConversationService): ChatViewModelFactory {
+    return ChatViewModelFactory(application, joinConversationUseCase, exitConversationUseCase, conversationsRepository, messagesRepository, conversationService)
 }

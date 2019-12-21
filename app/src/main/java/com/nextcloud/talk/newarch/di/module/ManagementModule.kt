@@ -24,7 +24,7 @@ import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsReposit
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
-import com.nextcloud.talk.newarch.utils.ConversationsManager
+import com.nextcloud.talk.newarch.utils.ConversationService
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import java.net.CookieManager
@@ -33,6 +33,6 @@ val ManagementModule = module {
     single { createConversationsManager(get(), get(), get(), get(), get(), get()) }
 }
 
-fun createConversationsManager(usersRepository: UsersRepository, cookieManager: CookieManager, okHttpClient: OkHttpClient, conversationsRepository: ConversationsRepository, getConversationUseCase: GetConversationUseCase, joinConversationUseCase: JoinConversationUseCase): ConversationsManager {
-    return ConversationsManager(usersRepository, cookieManager, okHttpClient, conversationsRepository, joinConversationUseCase, getConversationUseCase)
+fun createConversationsManager(usersRepository: UsersRepository, cookieManager: CookieManager, okHttpClient: OkHttpClient, conversationsRepository: ConversationsRepository, getConversationUseCase: GetConversationUseCase, joinConversationUseCase: JoinConversationUseCase): ConversationService {
+    return ConversationService(usersRepository, cookieManager, okHttpClient, conversationsRepository, joinConversationUseCase, getConversationUseCase)
 }
