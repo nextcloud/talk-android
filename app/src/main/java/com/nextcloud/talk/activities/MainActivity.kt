@@ -46,7 +46,6 @@ import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListVi
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import io.requery.android.sqlcipher.SqlCipherDatabaseSource
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -59,7 +58,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     lateinit var container: ViewGroup
 
     val usersRepository: UsersRepository by inject()
-    val sqlCipherDatabaseSource: SqlCipherDatabaseSource by inject()
 
     private var router: Router? = null
 
@@ -74,56 +72,31 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         router = Conductor.attachRouter(this, container, savedInstanceState)
 
-        var hasDb = true
+        if (router?.hasRootController() == false) {
+            GlobalScope.launch {
+                if (usersRepository.getUsers().count() > 0) {
+                    runOnUiThread {
+                        router!!.setRoot(
+                                RouterTransaction.with(ConversationsListView())
+                                        .pushChangeHandler(HorizontalChangeHandler())
+                                        .popChangeHandler(HorizontalChangeHandler())
+                        )
 
-        try {
-            sqlCipherDatabaseSource.writableDatabase
-        } catch (exception: Exception) {
-            hasDb = false
-        }
-
-
-        if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            if (!router!!.hasRootController()) {
-                router!!.setRoot(
-                        RouterTransaction.with(ConversationsListView())
-                                .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler())
-                )
-            }
-            onNewIntent(intent)
-        } else if (!router!!.hasRootController()) {
-            if (hasDb) {
-                GlobalScope.launch {
-                    if (usersRepository.getUsers().count() > 0) {
-                        runOnUiThread {
-                            router!!.setRoot(
-                                    RouterTransaction.with(ConversationsListView())
-                                            .pushChangeHandler(HorizontalChangeHandler())
-                                            .popChangeHandler(HorizontalChangeHandler())
-                            )
-
-                        }
-                    } else {
-                        runOnUiThread {
-                            router!!.setRoot(
-                                    RouterTransaction.with(ServerSelectionController())
-                                            .pushChangeHandler(HorizontalChangeHandler())
-                                            .popChangeHandler(HorizontalChangeHandler())
-                            )
-                        }
                     }
-
+                } else {
+                    runOnUiThread {
+                        router!!.setRoot(
+                                RouterTransaction.with(ServerSelectionController())
+                                        .pushChangeHandler(HorizontalChangeHandler())
+                                        .popChangeHandler(HorizontalChangeHandler())
+                        )
+                    }
                 }
-            } else {
-                router!!.setRoot(
-                        RouterTransaction.with(ServerSelectionController())
-                                .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler())
-                )
 
             }
         }
+
+        onNewIntent(intent)
     }
 
     override fun onStart() {

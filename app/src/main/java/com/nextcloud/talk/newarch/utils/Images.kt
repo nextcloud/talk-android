@@ -20,9 +20,18 @@
 
 package com.nextcloud.talk.newarch.utils
 
+import android.app.ActivityManager
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
+import android.graphics.Bitmap
+import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.LoadRequest
@@ -33,6 +42,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.DisplayUtils
+
 
 class Images {
     fun getRequestForUrl(
@@ -64,6 +74,18 @@ class Images {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun getRoundedBitmapForNewConversation(context: Context): Bitmap {
+        val activityManager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager?
+        val size =  activityManager!!.launcherLargeIconSize
+        val layers = arrayOfNulls<Drawable>(2)
+        layers[0] = context.getDrawable(R.drawable.primary_color_circle)
+        layers[1] = context.getDrawable(R.drawable.ic_add_white_24px)
+        val layeredDrawable = LayerDrawable(layers)
+        layeredDrawable.setLayerHeight(1, size / 2)
+        return (layeredDrawable as BitmapDrawable).toBitmap()
+    }
+
     // returns null if it's one-to-one that you need to fetch yourself
     fun getImageForConversation(context: Context, conversation: Conversation): Drawable? {
         conversation.objectType?.let { objectType ->
@@ -74,7 +96,8 @@ class Images {
                 "file" -> {
                     return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_file_icon))
                 }
-                else -> {} // do nothing
+                else -> {
+                } // do nothing
             }
         }
 

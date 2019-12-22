@@ -51,6 +51,7 @@ import com.nextcloud.talk.newarch.features.conversationsList.di.module.Conversat
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.*
+import com.nextcloud.talk.newarch.utils.ShortcutService
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
@@ -64,6 +65,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -131,8 +133,12 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         setAppTheme(appPreferences.theme)
         super.onCreate()
 
-        Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val shortcutService: ShortcutService = get()
+        }
+
+        Security.insertProviderAt(Conscrypt.newProvider(), 1)
         ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
 
         val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
