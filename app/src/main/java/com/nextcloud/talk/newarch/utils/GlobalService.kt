@@ -50,10 +50,12 @@ class GlobalService constructor(usersRepository: UsersRepository,
 
     init {
         currentUserLiveData.observeForever { user ->
-            if (user.id != previousUser?.id) {
-                cookieManager.cookieStore.removeAll()
-                //okHttpClient.dispatcher().cancelAll()
-                currentConversation = null
+            user?.let {
+                if (it.id != previousUser?.id) {
+                    cookieManager.cookieStore.removeAll()
+                    //okHttpClient.dispatcher().cancelAll()
+                    currentConversation = null
+                }
             }
         }
     }

@@ -82,6 +82,7 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/nc_app_label"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
