@@ -86,7 +86,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                         )
 
                         onNewIntent(intent)
-
                     }
                 } else {
                     runOnUiThread {
@@ -97,10 +96,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                         )
                     }
                 }
-
             }
-        } else {
-            onNewIntent(intent)
         }
     }
 
@@ -143,7 +139,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     extras.putParcelable(BundleKeys.KEY_USER_ENTITY, it)
                     withContext(Dispatchers.Main) {
                         ConductorRemapping.remapChatController(
-                                router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
+                                router!!, it.id!!,
                                 intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!, extras, false)
                     }
                 }
