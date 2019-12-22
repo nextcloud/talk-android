@@ -37,12 +37,12 @@ import org.koin.core.KoinComponent
 import org.koin.core.parameter.parametersOf
 import java.net.CookieManager
 
-class ConversationService constructor(usersRepository: UsersRepository,
-                                      cookieManager: CookieManager,
-                                      okHttpClient: OkHttpClient,
-                                      private val conversationsRepository: ConversationsRepository,
-                                      private val joinConversationUseCase: JoinConversationUseCase,
-                                      private val getConversationUseCase: GetConversationUseCase) : KoinComponent {
+class GlobalService constructor(usersRepository: UsersRepository,
+                                cookieManager: CookieManager,
+                                okHttpClient: OkHttpClient,
+                                private val conversationsRepository: ConversationsRepository,
+                                private val joinConversationUseCase: JoinConversationUseCase,
+                                private val getConversationUseCase: GetConversationUseCase) : KoinComponent {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
     private val previousUser: UserNgEntity? = null
     val currentUserLiveData: LiveData<UserNgEntity> = usersRepository.getActiveUserLiveData()
@@ -58,7 +58,7 @@ class ConversationService constructor(usersRepository: UsersRepository,
         }
     }
 
-    suspend fun getConversation(conversationToken: String, conversationServiceInterface: ConversationServiceInterface) {
+    suspend fun getConversation(conversationToken: String, globalServiceInterface: GlobalServiceInterface) {
         val currentUser = currentUserLiveData.value
         getConversationUseCase.invoke(applicationScope, parametersOf(
                 currentUser,
@@ -68,19 +68,19 @@ class ConversationService constructor(usersRepository: UsersRepository,
                     override suspend fun onSuccess(result: RoomOverall) {
                         currentUser?.let {
                             conversationsRepository.saveConversationsForUser(it.id!!, listOf(result.ocs.data))
-                            conversationServiceInterface.gotConversationInfoForUser(it, result.ocs.data, ConversationServiceInterface.OperationStatus.STATUS_OK)
+                            globalServiceInterface.gotConversationInfoForUser(it, result.ocs.data, GlobalServiceInterface.OperationStatus.STATUS_OK)
                         }
                     }
 
                     override suspend fun onError(errorModel: ErrorModel?) {
                         currentUser?.let {
-                            conversationServiceInterface.gotConversationInfoForUser(it, null, ConversationServiceInterface.OperationStatus.STATUS_FAILED)
+                            globalServiceInterface.gotConversationInfoForUser(it, null, GlobalServiceInterface.OperationStatus.STATUS_FAILED)
                         }
                     }
                 })
     }
 
-    suspend fun joinConversation(conversationToken: String, conversationPassword: String?, conversationServiceInterface: ConversationServiceInterface) {
+    suspend fun joinConversation(conversationToken: String, conversationPassword: String?, globalServiceInterface: GlobalServiceInterface) {
         val currentUser = currentUserLiveData.value
         joinConversationUseCase.invoke(applicationScope, parametersOf(
                 currentUser,
@@ -92,13 +92,13 @@ class ConversationService constructor(usersRepository: UsersRepository,
                         currentUser?.let {
                             conversationsRepository.saveConversationsForUser(it.id!!, listOf(result.ocs.data))
                             currentConversation = conversationsRepository.getConversationForUserWithToken(it.id!!, result.ocs!!.data!!.token!!)
-                            conversationServiceInterface.joinedConversationForUser(it, currentConversation, ConversationServiceInterface.OperationStatus.STATUS_OK)
+                            globalServiceInterface.joinedConversationForUser(it, currentConversation, GlobalServiceInterface.OperationStatus.STATUS_OK)
                         }
                     }
 
                     override suspend fun onError(errorModel: ErrorModel?) {
                         currentUser?.let {
-                            conversationServiceInterface.joinedConversationForUser(it, currentConversation, ConversationServiceInterface.OperationStatus.STATUS_FAILED)
+                            globalServiceInterface.joinedConversationForUser(it, currentConversation, GlobalServiceInterface.OperationStatus.STATUS_FAILED)
                         }
                     }
                 })

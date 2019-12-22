@@ -26,46 +26,57 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import coil.Coil
+import coil.api.get
+import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ShortcutService constructor(private val context: Context,
                                   private val conversationsRepository: ConversationsRepository,
-                                  conversationsService: ConversationService
+                                  conversationsService: GlobalService
 ) {
-    private var lastThreeActiveConversations: LiveData<List<Conversation>> = MutableLiveData()
     private var currentUser: UserNgEntity? = null
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private val shortcutManager = context.getSystemService(ShortcutManager::class.java)
 
+    @RequiresApi(Build.VERSION_CODES.P)
+    private var lastThreeActiveConversations: LiveData<List<Conversation>> = Transformations.switchMap(conversationsService.currentUserLiveData) { user ->
+        currentUser = user
+        var internalUserId: Long = -1
+        currentUser?.let {
+            internalUserId = it.id!!
+        }
+        conversationsRepository.getLastThreeActiveConversationsForUser(internalUserId)
+    }
+
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            conversationsService.currentUserLiveData.observeForever {
-                currentUser = it
-                it?.let {
-                    lastThreeActiveConversations = conversationsRepository.getLastThreeActiveConversationsForUser(it.id!!)
-                } ?: run {
-                    shortcutManager?.dynamicShortcuts = listOf()
-                }
-            }
-
             lastThreeActiveConversations.observeForever {
-                registerShortcuts()
+                GlobalScope.launch {
+                    registerShortcuts()
+                }
             }
         }
     }
 
     @TargetApi(Build.VERSION_CODES.P)
-    fun registerShortcuts() {
+    private suspend fun registerShortcuts() {
         val openNewConversationIntent = Intent(context, MainActivity::class.java)
         openNewConversationIntent.action = BundleKeys.KEY_NEW_CONVERSATION
 
@@ -76,26 +87,30 @@ class ShortcutService constructor(private val context: Context,
             shortcuts.add(ShortcutInfo.Builder(context, "new")
                     .setShortLabel(context.resources.getString(R.string.nc_new_conversation_short))
                     .setLongLabel(context.resources.getString(R.string.nc_new_conversation))
-                    .setIcon(Icon.createWithResource(context, R.drawable.ic_add_grey600_24px))
+                    .setIcon(Icon.createWithBitmap(context.resources.getDrawable(R.drawable.new_conversation_shortcut).toBitmap()))
                     .setIntent(openNewConversationIntent)
                     .build())
 
             lastThreeActiveConversations.value?.let { conversations ->
                 for ((index, conversation) in conversations.withIndex()) {
-                    // Only do this for the first 3 conversations
-                    if (index <= 3) continue
-
                     val intent = Intent(context, MainActivity::class.java)
                     intent.action = BundleKeys.KEY_OPEN_CONVERSATION
                     intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
                     intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
 
-                    val icon = images.getImageForConversation(context, conversation)
+                    var iconImage = images.getImageForConversation(context, conversation)
+
+                    if (iconImage == null) {
+                        iconImage = Coil.get(ApiUtils.getUrlForAvatarWithName(user.baseUrl, conversation.name, R.dimen.avatar_size_big)) {
+                            addHeader("Authorization", user.getCredentials())
+                            transformations(CircleCropTransformation())
+                        }
+                    }
+
                     shortcuts.add(ShortcutInfo.Builder(context, "current_conversation_" + (index + 1))
                             .setShortLabel(conversation.displayName as String)
                             .setLongLabel(conversation.displayName as String)
-                            // @TODO: Use avatar as icon
-                            .setIcon(Icon.createWithResource(context, R.drawable.ic_add_grey600_24px))
+                            .setIcon(Icon.createWithBitmap((iconImage as BitmapDrawable).bitmap))
                             .setIntent(intent)
                             .build())
                 }

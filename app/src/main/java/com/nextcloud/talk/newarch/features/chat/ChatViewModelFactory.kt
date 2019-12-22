@@ -7,7 +7,7 @@ import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsReposit
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.usecases.ExitConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
-import com.nextcloud.talk.newarch.utils.ConversationService
+import com.nextcloud.talk.newarch.utils.GlobalService
 
 class ChatViewModelFactory constructor(
         private val application: Application,
@@ -15,12 +15,12 @@ class ChatViewModelFactory constructor(
         private val exitConversationUseCase: ExitConversationUseCase,
         private val conversationsRepository: ConversationsRepository,
         private val messagesRepository: MessagesRepository,
-        private val conversationService: ConversationService
+        private val globalService: GlobalService
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return ChatViewModel(
-                application, joinConversationUseCase, exitConversationUseCase, conversationsRepository, messagesRepository, conversationService
+                application, joinConversationUseCase, exitConversationUseCase, conversationsRepository, messagesRepository, globalService
         ) as T
     }
 }

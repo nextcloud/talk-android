@@ -11,8 +11,8 @@ import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.usecases.ExitConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
-import com.nextcloud.talk.newarch.utils.ConversationService
-import com.nextcloud.talk.newarch.utils.ConversationServiceInterface
+import com.nextcloud.talk.newarch.utils.GlobalService
+import com.nextcloud.talk.newarch.utils.GlobalServiceInterface
 import kotlinx.coroutines.launch
 
 class ChatViewModel constructor(application: Application,
@@ -20,7 +20,7 @@ class ChatViewModel constructor(application: Application,
                                 private val exitConversationUseCase: ExitConversationUseCase,
                                 private val conversationsRepository: ConversationsRepository,
                                 private val messagesRepository: MessagesRepository,
-                                private val conversationService: ConversationService) : BaseViewModel<ChatView>(application), ConversationServiceInterface {
+                                private val globalService: GlobalService) : BaseViewModel<ChatView>(application), GlobalServiceInterface {
     lateinit var user: UserNgEntity
     val conversation: MutableLiveData<Conversation?> = MutableLiveData()
     var initConversation: Conversation? = null
@@ -37,7 +37,7 @@ class ChatViewModel constructor(application: Application,
             this@ChatViewModel.user = user
             this@ChatViewModel.initConversation = conversationsRepository.getConversationForUserWithToken(user.id!!, conversationToken)
             this@ChatViewModel.conversationPassword = conversationPassword
-            conversationService.getConversation(conversationToken, this@ChatViewModel)
+            globalService.getConversation(conversationToken, this@ChatViewModel)
         }
     }
 
@@ -45,18 +45,18 @@ class ChatViewModel constructor(application: Application,
 
     }
 
-    override suspend fun gotConversationInfoForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: ConversationServiceInterface.OperationStatus) {
-        if (operationStatus == ConversationServiceInterface.OperationStatus.STATUS_OK) {
+    override suspend fun gotConversationInfoForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: GlobalServiceInterface.OperationStatus) {
+        if (operationStatus == GlobalServiceInterface.OperationStatus.STATUS_OK) {
             if (userNgEntity.id == user.id && conversation!!.token == initConversation?.token) {
                 this.conversation.value = conversationsRepository.getConversationForUserWithToken(user.id!!, conversation.token!!)
                 conversation.token?.let { conversationToken ->
-                    conversationService.joinConversation(conversationToken, conversationPassword, this)
+                    globalService.joinConversation(conversationToken, conversationPassword, this)
                 }
             }
         }
     }
 
-    override suspend fun joinedConversationForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: ConversationServiceInterface.OperationStatus) {
+    override suspend fun joinedConversationForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: GlobalServiceInterface.OperationStatus) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

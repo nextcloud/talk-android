@@ -101,19 +101,20 @@ object DisplayUtils {
     }
 
     private fun roundImage(pool: BitmapPool, input: Bitmap): Bitmap {
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+        val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+        val bitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN) }
 
         val minSize = min(input.width, input.height)
         val radius = minSize / 2f
         val output = pool.get(minSize, minSize, input.config)
         output.applyCanvas {
-            drawCircle(radius, radius, radius, paint)
-            paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-            drawBitmap(input, radius - input.width / 2, radius - input.height / 2, paint)
+            drawCircle(radius, radius, radius, circlePaint)
+            drawBitmap(input, 0f, 0f, bitmapPaint)
         }
         pool.put(input)
 
         return output
+
     }
 
 
