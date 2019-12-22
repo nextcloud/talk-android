@@ -73,19 +73,7 @@ class Images {
             }
         }
     }
-
-    @RequiresApi(Build.VERSION_CODES.P)
-    fun getRoundedBitmapForNewConversation(context: Context): Bitmap {
-        val activityManager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager?
-        val size =  activityManager!!.launcherLargeIconSize
-        val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = context.getDrawable(R.drawable.primary_color_circle)
-        layers[1] = context.getDrawable(R.drawable.ic_add_white_24px)
-        val layeredDrawable = LayerDrawable(layers)
-        layeredDrawable.setLayerHeight(1, size / 2)
-        return (layeredDrawable as BitmapDrawable).toBitmap()
-    }
-
+    
     // returns null if it's one-to-one that you need to fetch yourself
     fun getImageForConversation(context: Context, conversation: Conversation): Drawable? {
         conversation.objectType?.let { objectType ->
