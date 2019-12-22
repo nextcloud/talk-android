@@ -43,11 +43,14 @@ import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListView
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 
 class MainActivity : BaseActivity(), ActionBarProvider {
@@ -82,6 +85,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                                         .popChangeHandler(HorizontalChangeHandler())
                         )
 
+                        onNewIntent(intent)
+
                     }
                 } else {
                     runOnUiThread {
@@ -94,9 +99,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 }
 
             }
+        } else {
+            onNewIntent(intent)
         }
-
-        onNewIntent(intent)
     }
 
     override fun onStart() {
@@ -129,9 +134,20 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         if (intent.action == BundleKeys.KEY_NEW_CONVERSATION) {
             openNewConversationScreen()
         } else if (intent.action == BundleKeys.KEY_OPEN_CONVERSATION) {
-            ConductorRemapping.remapChatController(
-                    router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
-                    intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!, intent.extras!!, false)
+            GlobalScope.launch {
+                val user: UserNgEntity? = usersRepository.getUserWithId(intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1))
+                user?.let {
+                    // due to complications with persistablebundle not supporting complex types we do this magic
+                    // remove this once we rewrite chat magic
+                    val extras = intent.extras!!
+                    extras.putParcelable(BundleKeys.KEY_USER_ENTITY, it)
+                    withContext(Dispatchers.Main) {
+                        ConductorRemapping.remapChatController(
+                                router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
+                                intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!, extras, false)
+                    }
+                }
+            }
         } else if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
                 router!!.pushController(
