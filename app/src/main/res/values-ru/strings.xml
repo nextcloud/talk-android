@@ -196,6 +196,11 @@
     <string name="nc_configure_cert_auth">Выбрать сертификат для подтверждения подлинности</string>
     <string name="nc_change_cert_auth">Изменить сертификат для подтверждения подлинности</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Сместить с поста модератора</string>
+    <string name="nc_promote">Назначить модератором</string>
+    <string name="nc_remove_participant">Удалить участника</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Напишите сообщение…</string>
     <string name="nc_date_header_yesterday">Вчера</string>
@@ -262,4 +267,7 @@
     <string name="nc_lobby_waiting_with_date">В данный момент вы ожидаете начала встречи, запланированной на %1$s.</string>
     <string name="nc_manual">Не задано</string>
 
+    <string name="nc_timeout_error">Тайм-аут</string>
+    <string name="nc_not_defined_error">Неизвестная ошибка</string>
+    <string name="nc_general_settings">Основные</string>
     </resources>

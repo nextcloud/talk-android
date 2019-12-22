@@ -67,6 +67,7 @@
     <string name="nc_settings_remove_confirmation">現在のアカウントを削除する目的を確認してください。</string>
     <string name="nc_settings_remove_account">アカウントを削除</string>
     <string name="nc_settings_add_account">新規アカウント追加</string>
+    <string name="nc_add">追加</string>
     <string name="nc_settings_wrong_account">現在のアカウントのみ再認可できます</string>
     <string name="nc_settings_no_talk_installed">許可を得ようとしたサーバーにトークアプリがインストールされていません</string>
     <string name="nc_settings_account_updated">新しいアカウントを追加する代わりに、既存のアカウントが更新されました</string>
@@ -196,6 +197,11 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_configure_cert_auth">認証証明書を選択</string>
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">モデレータから降格</string>
+    <string name="nc_promote">モデレータに昇格</string>
+    <string name="nc_remove_participant">参加者を削除</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">メッセージを入力…</string>
     <string name="nc_date_header_yesterday">昨日</string>
@@ -260,4 +266,6 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_lobby">ロビー</string>
     <string name="nc_start_time">開始時刻</string>
     <string name="nc_lobby_waiting">現在ロビーで待機中</string>
+    <string name="nc_not_defined_error">不明なエラー</string>
+    <string name="nc_general_settings">一般</string>
     </resources>

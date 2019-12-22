@@ -62,12 +62,17 @@
     <string name="nc_settings_remove_confirmation">請確認 是否要清除目前的帳號</string>
     <string name="nc_settings_remove_account">移除帳號</string>
     <string name="nc_settings_add_account">新增一個帳號</string>
+    <string name="nc_add">新增</string>
     <string name="nc_settings_wrong_account">只有特定帳號可以被重新授權</string>
     <string name="nc_account_scheduled_for_deletion">此帳號已經被排定要刪除，也不能被修改。</string>
     <string name="nc_settings_notification_sounds">提示音</string>
     <string name="nc_settings_other_notifications_ringtone">其他</string>
     <string name="nc_settings_no_ringtone">無聲</string>
     <string name="nc_settings_vibrate">振動</string>
+    <string name="nc_settings_theme_title">佈景主題</string>
+    <string name="nc_settings_theme_light">亮色</string>
+    <string name="nc_settings_theme_dark">暗色</string>
+    <string name="nc_settings_privacy">隱私</string>
     <string name="nc_settings_screen_lock_title">螢幕鎖定</string>
     <string name="nc_none">無</string>
     <string name="nc_settings_link_previews_title">顯示 連結預覽</string>
@@ -143,6 +148,7 @@
     <string name="nc_all_ok_operation">完成</string>
     <string name="nc_ok">確定</string>
     <string name="nc_call_name">對話名稱</string>
+    <string name="nc_proceed">進行</string>
     <string name="nc_call_name_is_same">名稱已存在</string>
     <string name="nc_wrong_link">對話連結無效</string>
     <!-- Chat -->
@@ -178,10 +184,13 @@
     <string name="nc_participants">參與者</string>
 
     <string name="nc_owner">擁有者</string>
+    <string name="nc_moderator">主持人</string>
     <string name="nc_user">使用者</string>
     <string name="nc_guest">訪客</string>
     <string name="nc_select_files">選取檔案</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">重新整理</string>
+    <string name="nc_not_defined_error">未知的錯誤</string>
+    <string name="nc_general_settings">一般</string>
     <string name="nc_allow_guests">允許訪客</string>
     </resources>

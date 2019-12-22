@@ -63,6 +63,7 @@
     <string name="nc_settings_remove">הסרה</string>
     <string name="nc_settings_remove_account">הסרת חשבון</string>
     <string name="nc_settings_add_account">הוספת חשבון חדש</string>
+    <string name="nc_add">הוספה</string>
     <string name="nc_settings_wrong_account">ניתן לאמת רק את החשבון הנוכחי</string>
     <string name="nc_settings_account_updated">החשבון הקיים שלך עודכן, במקום הוספת חדש</string>
     <string name="nc_account_scheduled_for_deletion">החשבון מועמד למחיקה ולא ניתן לשנות אותו</string>
@@ -71,8 +72,12 @@
     <string name="nc_settings_other_notifications_ringtone">אחר</string>
     <string name="nc_settings_no_ringtone">אין צליל</string>
     <string name="nc_settings_vibrate">רטט</string>
+    <string name="nc_settings_theme_title">ערכת עיצוב</string>
+    <string name="nc_settings_theme_light">בהירה</string>
+    <string name="nc_settings_theme_dark">כהה</string>
     <string name="nc_settings_privacy">פרטיות</string>
     <string name="nc_settings_screen_lock_title">נעילת מסך</string>
+    <string name="nc_none">אין</string>
     <string name="nc_settings_screen_security_title">אבטחת מסך</string>
     <string name="nc_settings_incognito_keyboard_title">מקלדת אלמונית</string>
     <string name="nc_locked">יש לגעת כדי לשחרר</string>
@@ -154,6 +159,11 @@
     <string name="nc_configure_cert_auth">בחירת אישור לאימות</string>
     <string name="nc_change_cert_auth">החלפת אישור לאימות</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">הורדה מדרגת פיקוח</string>
+    <string name="nc_promote">קידום לדרגת פיקוח</string>
+    <string name="nc_remove_participant">הסרת משתתף</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">נא להקליד הודעה…</string>
     <string name="nc_date_header_yesterday">אתמול</string>
@@ -194,4 +204,8 @@
     <string name="nc_guest">אורח</string>
     <string name="nc_following_link">משתמש שעוקב אחר קישור ציבורי</string>
 
+    <string name="nc_file_browser_back">חזרה</string>
+    <string name="nc_file_browser_refresh">רענון</string>
+    <string name="nc_not_defined_error">שגיאה בלתי ידועה</string>
+    <string name="nc_general_settings">כללי</string>
     </resources>

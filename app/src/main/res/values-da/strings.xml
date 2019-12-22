@@ -268,4 +268,6 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_lobby_waiting">Du venter nu i lobbyen.</string>
     <string name="nc_lobby_waiting_with_date">Du venter nu i lobbyen.\n Dette
 møde er planlagt til %1$s.</string>
+    <string name="nc_not_defined_error">Ukendt fejl</string>
+    <string name="nc_general_settings">Generelt</string>
     </resources>

@@ -60,10 +60,14 @@
     <string name="nc_settings_remove">Remover</string>
     <string name="nc_settings_remove_account">Remover conta</string>
     <string name="nc_settings_add_account">Adicionar uma nova conta</string>
+    <string name="nc_add">Adicionar</string>
     <string name="nc_settings_notification_sounds">Sons de notificação</string>
     <string name="nc_settings_other_notifications_ringtone">Outros</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_vibrate">Vibrar</string>
+    <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_theme_light">Claro</string>
+    <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_privacy">Privacidade</string>
     <string name="nc_settings_screen_lock_title">Bloqueio de ecrã</string>
     <string name="nc_none">Nenhum</string>
@@ -146,6 +150,11 @@
     <string name="nc_configure_cert_auth">Selecionar certificado de autenticação</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Relegar de moderador</string>
+    <string name="nc_promote">Promover a moderador</string>
+    <string name="nc_remove_participant">Remover participante</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Insira uma mensagem...</string>
     <string name="nc_date_header_yesterday">Ontem</string>
@@ -178,4 +187,6 @@
     <string name="nc_file_browser_refresh">Atualizar</string>
     <string name="nc_last_modified">%1$s | Última modificação: %2$s</string>
 
+    <string name="nc_not_defined_error">Erro desconhecido</string>
+    <string name="nc_general_settings">Geral</string>
     </resources>

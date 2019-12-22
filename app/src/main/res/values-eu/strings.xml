@@ -28,6 +28,8 @@
     <string name="nc_server_db_upgrade_needed">Mesedez eguneratu zure %1$s datu-basea</string>
     <string name="nc_server_import_account_plain">Inportatu kontua</string>
     <string name="nc_server_import_accounts_plain">Inportatu kontuak</string>
+    <string name="nc_get_from_provider">Oraindik zerbitzaririk gabe?\n Egin klik hemen hornitzailetik bat lortzeko</string>
+
     <string name="nc_never">Ez da inoiz elkartu</string>
     <string name="nc_search">Bilatu</string>
 
@@ -46,6 +48,7 @@
     <string name="nc_settings_add_account">Kontu berria gehitu</string>
     <string name="nc_add">Gehitu</string>
     <string name="nc_settings_notification_sounds">Jakinarazpen soinuak</string>
+    <string name="nc_settings_other_notifications_ringtone">Beste bat</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
     <string name="nc_settings_vibrate">Bibratu</string>
     <string name="nc_settings_appearance">Itxura</string>
@@ -84,6 +87,7 @@
 
     <!-- ConversationEntity menu -->
     <string name="nc_start_conversation">Hasi elkarrizketa bat</string>
+    <string name="nc_leave">Atera elkarrizketatik</string>
     <string name="nc_simple_leave">Irten</string>
     <string name="nc_rename">Aldatu izena elkarrizktari</string>
     <string name="nc_set_password">Ezarri pasahitz bat</string>
@@ -108,15 +112,22 @@
 
     <string name="nc_notification_settings">Jakinarazpen-ezarpenak</string>
     <string name="nc_plain_old_messages">Mezuak</string>
+    <string name="nc_notify_me_always">Jakinarazi beti</string>
     <string name="nc_notify_me_never">Ez jakinarazi inoiz</string>
     <string name="nc_mute_calls">Mututu deiak</string>
     <string name="nc_all_ok_operation">Ados, dena eginda!</string>
     <string name="nc_ok">Ados</string>
+    <string name="nc_proceed">Jarraitu</string>
     <string name="nc_share_subject">Gonbidapen %1$s</string>
     <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Sakatu-hitz-egiteko</string>
+    <!-- Moderation -->
+    <string name="nc_demote">Moderatzailetik degradatua</string>
+    <string name="nc_promote">Moderatzaile bihurtu zara</string>
+    <string name="nc_remove_participant">Partehartzailea borratu</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Idatzi mezu bat…</string>
     <string name="nc_date_header_yesterday">Atzo</string>
@@ -149,6 +160,7 @@
     <string name="nc_participants">Parte-hartzaileak</string>
 
     <string name="nc_owner">Jabea</string>
+    <string name="nc_moderator">Moderatzailea</string>
     <string name="nc_user">Erabiltzailea</string>
     <string name="nc_guest">Gonbidatua</string>
     <string name="nc_select_files">Hautatu fitxategiak</string>

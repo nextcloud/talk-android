@@ -183,6 +183,11 @@
     <string name="nc_configure_cert_auth">Veldu skilríki fyrir auðkenningu</string>
     <string name="nc_change_cert_auth">Skipta um skilríki fyrir auðkenningu</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Láta hætta sem umsjónarmann</string>
+    <string name="nc_promote">Gera að umsjónarmanni</string>
+    <string name="nc_remove_participant">Fjarlægja þátttakanda</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Settu inn skilaboð…</string>
     <string name="nc_date_header_yesterday">Í gær</string>
