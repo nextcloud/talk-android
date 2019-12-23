@@ -268,4 +268,5 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_lobby_waiting">現在ロビーで待機中</string>
     <string name="nc_not_defined_error">不明なエラー</string>
     <string name="nc_general_settings">一般</string>
+    <string name="nc_allow_guests">ゲストを許可する</string>
     </resources>

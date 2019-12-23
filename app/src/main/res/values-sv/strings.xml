@@ -192,7 +192,7 @@
     <string name="nc_mute_calls">Tysta alla samtal</string>
     <string name="nc_mute_calls_desc">Inkommande samtal kommer att ignoreras</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
-    <string name="nc_important_conversation_desc">Samtal och meddelandeaviseringar visas även i läget Stör ej (följer systemet \"Tillåt endast prioriterade avbrott\" -konfiguration)</string>
+    <string name="nc_important_conversation_desc">Samtal och meddelandeaviseringar visas även i läget Stör inte (följer systemkonfigurationen \"Tillåt endast prioriterade avbrott\")</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>
