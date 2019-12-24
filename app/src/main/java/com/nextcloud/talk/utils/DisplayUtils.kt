@@ -62,6 +62,7 @@ import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.text.Spans
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.InvocationTargetException
 import java.util.regex.Pattern
@@ -97,24 +98,11 @@ object DisplayUtils {
 
     fun getRoundedDrawable(drawable: Drawable?): Drawable {
         val bitmap = getBitmap(drawable!!)
-        return BitmapDrawable(roundImage(BitmapPool(10000), bitmap))
-    }
-
-    private fun roundImage(pool: BitmapPool, input: Bitmap): Bitmap {
-        val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
-        val bitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN) }
-
-        val minSize = min(input.width, input.height)
-        val radius = minSize / 2f
-        val output = pool.get(minSize, minSize, input.config)
-        output.applyCanvas {
-            drawCircle(radius, radius, radius, circlePaint)
-            drawBitmap(input, 0f, 0f, bitmapPaint)
+        val drawable = runBlocking {
+            return@runBlocking BitmapDrawable(CircleCropTransformation().transform(BitmapPool(10000), bitmap))
         }
-        pool.put(input)
 
-        return output
-
+        return drawable
     }
 
 
