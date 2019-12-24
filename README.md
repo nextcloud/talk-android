@@ -26,8 +26,6 @@ If you have suggestions or problems, please [open an issue](https://github.com/n
 
 Please read the [Code of Conduct](https://nextcloud.com/community/code-of-conduct/). This document offers some guidance to ensure Nextcloud participants can cooperate effectively in a positive and inspiring atmosphere, and to explain how together we can strengthen and support each other.
 
-For more information please review the [guidelines for contributing](https://github.com/nextcloud/talk-android/blob/master/CONTRIBUTING.md) to this repository.
-
 ### Testing
 
 So you would like to contribute by testing? Awesome, we appreciate that very much. Right now our testing
