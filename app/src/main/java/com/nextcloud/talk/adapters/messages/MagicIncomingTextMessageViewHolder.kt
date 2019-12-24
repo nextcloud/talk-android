@@ -90,7 +90,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
             messageUserAvatarView!!.visibility = View.VISIBLE
             if (message.actorType == "guests") {
                 // do nothing, avatar is set
-            } else if (message.actorType == "bots" && message.actorType == "changelog") {
+            } else if (message.actorType == "bots" && message.actorId == "changelog") {
                 val layers = arrayOfNulls<Drawable>(2)
                 layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
                 layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
