@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/action_copy_message"
         android:icon="@drawable/ic_content_copy_white_24dp"
         android:title="@string/nc_copy_message"
-        app:showAsAction="always"/>
+        android:iconTint="@color/nc_incoming_text_default"
+        app:showAsAction="ifRoom"
+        tools:ignore="UnusedAttribute" />
 
     <item
         android:id="@+id/action_reply_to_message"
         android:icon="@drawable/ic_reply_white_24dp"
         android:title="@string/nc_reply"
-        app:showAsAction="always"
-        />
+        android:iconTint="@color/nc_incoming_text_default"
+        app:showAsAction="ifRoom"
+        tools:ignore="UnusedAttribute" />
 </menu>
