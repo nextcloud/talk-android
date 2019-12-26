@@ -22,7 +22,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:keepScreenOn="true">
+    android:keepScreenOn="true"
+    android:animateLayoutChanges="true">
 
     <include layout="@layout/lobby_view"
         android:visibility="gone"/>
@@ -52,6 +53,7 @@
 
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/messageInputView"
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

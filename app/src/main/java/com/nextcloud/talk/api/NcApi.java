@@ -318,7 +318,8 @@ public interface NcApi {
     Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization,
                                                @Url String url,
                                                @Field("message") CharSequence message,
-                                               @Field("actorDisplayName") String actorDisplayName);
+                                               @Field("actorDisplayName") String actorDisplayName,
+                                               @Field("replyTo") Integer replyTo);
 
     @GET
     Observable<MentionOverall> getMentionAutocompleteSuggestions(
