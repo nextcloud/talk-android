@@ -31,19 +31,20 @@ import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.emoji.widget.EmojiTextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.amulyakhare.textdrawable.TextDrawable
-import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
+import com.stfalcon.chatkit.utils.DateFormatter
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
@@ -65,6 +66,34 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
     @JvmField
     @BindView(R.id.messageTime)
     var messageTimeView: TextView? = null
+
+    @JvmField
+    @BindView(R.id.quotedChatMessageView)
+    var quotedChatMessageView: RelativeLayout? = null
+
+    @JvmField
+    @BindView(R.id.quotedUserAvatar)
+    var quotedUserAvatar: ImageView? = null
+
+    @JvmField
+    @BindView(R.id.quotedMessageAuthor)
+    var quotedUserName: EmojiTextView? = null
+
+    @JvmField
+    @BindView(R.id.quotedMessageImage)
+    var quotedMessagePreview: ImageView? = null
+
+    @JvmField
+    @BindView(R.id.quotedMessage)
+    var quotedMessage: EmojiTextView? = null
+
+    @JvmField
+    @BindView(R.id.quotedMessageTime)
+    var quotedMessageTime: TextView? = null
+
+    @JvmField
+    @BindView(R.id.quoteColoredView)
+    var quoteColoredView: View? = null
 
     val context: Context by inject()
 
@@ -139,9 +168,6 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
         itemView.isSelected = false
         messageTimeView!!.setTextColor(context.resources.getColor(R.color.warm_grey_four))
 
-        val layoutParams = messageTimeView!!.layoutParams as FlexboxLayout.LayoutParams
-        layoutParams.isWrapBefore = false
-
         var messageString: Spannable = SpannableString(message.text)
 
         var textSize = context.resources.getDimension(R.dimen.chat_text_size)
@@ -173,22 +199,45 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
                             )
                         }
                     } else if (individualHashMap["type"] == "file") {
-                        itemView.setOnClickListener({ v ->
+                        itemView.setOnClickListener { v ->
                             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
                             context.startActivity(browserIntent)
-                        })
+                        }
                     }
                 }
             }
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
             textSize = (textSize * 2.5).toFloat()
-            layoutParams.isWrapBefore = true
             itemView.isSelected = true
             messageAuthor!!.visibility = View.GONE
         }
 
         messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        messageTimeView!!.layoutParams = layoutParams
         messageText!!.text = messageString
+
+        // parent message handling
+
+        message.parentMessage?.let { parentChatMessage ->
+            parentChatMessage.activeUser = message.activeUser
+            imageLoader.loadImage(quotedUserAvatar, parentChatMessage.user.avatar, null)
+            parentChatMessage.imageUrl?.let{
+                quotedMessagePreview?.visibility = View.VISIBLE
+                imageLoader.loadImage(quotedMessagePreview, it, null)
+            } ?: run {
+                quotedMessagePreview?.visibility = View.GONE
+            }
+            quotedUserName?.text = parentChatMessage.actorDisplayName
+                    ?: context.getText(R.string.nc_nick_guest)
+            quotedMessage?.text = parentChatMessage.text
+
+            quotedUserName?.setTextColor(context.resources.getColor(R.color.colorPrimary))
+
+            quotedMessageTime?.text = DateFormatter.format(parentChatMessage.createdAt, DateFormatter.Template.TIME)
+            quotedMessageTime?.setTextColor(context.resources.getColor(R.color.warm_grey_four))
+            quoteColoredView?.setBackgroundResource(R.color.colorPrimary)
+            quotedChatMessageView?.visibility = View.VISIBLE
+        } ?: run {
+            quotedChatMessageView?.visibility = View.GONE
+        }
     }
 }

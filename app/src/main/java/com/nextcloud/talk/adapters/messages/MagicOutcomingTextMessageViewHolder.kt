@@ -24,8 +24,11 @@ import android.content.Intent
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.emoji.widget.EmojiTextView
@@ -39,6 +42,7 @@ import com.nextcloud.talk.utils.DisplayUtils.getMessageSelector
 import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
 import com.nextcloud.talk.utils.TextMatchers
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
+import com.stfalcon.chatkit.utils.DateFormatter
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.util.*
@@ -50,6 +54,35 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     @JvmField
     @BindView(R.id.messageTime)
     var messageTimeView: TextView? = null
+
+    @JvmField
+    @BindView(R.id.quotedChatMessageView)
+    var quotedChatMessageView: RelativeLayout? = null
+
+    @JvmField
+    @BindView(R.id.quotedUserAvatar)
+    var quotedUserAvatar: ImageView? = null
+
+    @JvmField
+    @BindView(R.id.quotedMessageAuthor)
+    var quotedUserName: EmojiTextView? = null
+
+    @JvmField
+    @BindView(R.id.quotedMessageImage)
+    var quotedMessagePreview: ImageView? = null
+
+    @JvmField
+    @BindView(R.id.quotedMessage)
+    var quotedMessage: EmojiTextView? = null
+
+    @JvmField
+    @BindView(R.id.quotedMessageTime)
+    var quotedMessageTime: TextView? = null
+
+    @JvmField
+    @BindView(R.id.quoteColoredView)
+    var quoteColoredView: View? = null
+
     val context: Context by inject()
     private val realView: View
     override fun onBind(message: ChatMessage) {
@@ -107,6 +140,33 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         messageTimeView!!.layoutParams = layoutParams
         messageText!!.text = messageString
+
+        // parent message handling
+
+        message.parentMessage?.let { parentChatMessage ->
+            parentChatMessage.activeUser = message.activeUser
+            imageLoader.loadImage(quotedUserAvatar, parentChatMessage.user.avatar, null)
+            parentChatMessage.imageUrl?.let{
+                quotedMessagePreview?.visibility = View.VISIBLE
+                imageLoader.loadImage(quotedMessagePreview, it, null)
+            } ?: run {
+                quotedMessagePreview?.visibility = View.GONE
+            }
+            quotedUserName?.text = parentChatMessage.actorDisplayName
+                    ?: context.getText(R.string.nc_nick_guest)
+            quotedMessage?.text = parentChatMessage.text
+            quotedMessage?.setTextColor(context.resources.getColor(R.color.nc_outcoming_text_default))
+            quotedUserName?.setTextColor(context.resources.getColor(R.color.nc_grey))
+
+            quotedMessageTime?.text = DateFormatter.format(parentChatMessage.createdAt, DateFormatter.Template.TIME)
+            quotedMessageTime?.setTextColor(context.resources.getColor(R.color.white60))
+            quoteColoredView?.setBackgroundResource(R.color.white)
+
+            quotedChatMessageView?.visibility = View.VISIBLE
+        } ?: run {
+            quotedChatMessageView?.visibility = View.GONE
+        }
+
     }
 
     init {
