@@ -23,20 +23,35 @@ import android.content.Context
 import android.text.Spannable
 import android.text.SpannableString
 import android.view.View
+import android.widget.TextView
 import androidx.core.view.ViewCompat
+import butterknife.BindView
+import butterknife.ButterKnife
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.DisplayUtils.getMessageSelector
 import com.nextcloud.talk.utils.DisplayUtils.searchAndColor
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders.IncomingTextMessageViewHolder
+import com.stfalcon.chatkit.utils.DateFormatter
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.util.*
 
-class MagicSystemMessageViewHolder(itemView: View?) : IncomingTextMessageViewHolder<ChatMessage>(itemView), KoinComponent {
+class MagicSystemMessageViewHolder(itemView: View) : IncomingTextMessageViewHolder<ChatMessage>(itemView), KoinComponent {
     val appPreferences: AppPreferences by inject()
     val context: Context by inject()
+
+    @JvmField
+    @BindView(R.id.messageTime)
+    var messageTime: TextView? = null
+
+    init {
+        ButterKnife.bind(
+                this,
+                itemView
+        )
+    }
 
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
@@ -61,5 +76,6 @@ class MagicSystemMessageViewHolder(itemView: View?) : IncomingTextMessageViewHol
             }
         }
         text.text = messageString
+        messageTime?.text = DateFormatter.format(message.createdAt, DateFormatter.Template.TIME)
     }
 }
