@@ -154,13 +154,13 @@ class BrowserFileItem(
         @BindView(R.id.file_icon)
         var fileIconImageView: ImageView? = null
         @JvmField
-        @BindView(R.id.file_modified_info)
+        @BindView(R.id.fileModifiedTextView)
         var fileModifiedTextView: TextView? = null
         @JvmField
-        @BindView(R.id.filename_text_view)
+        @BindView(R.id.filenameTextView)
         var filenameTextView: TextView? = null
         @JvmField
-        @BindView(R.id.select_file_checkbox)
+        @BindView(R.id.selectFileCheckbox)
         var selectFileCheckbox: CheckBox? = null
         @JvmField
         @BindView(R.id.fileEncryptedImageView)
