@@ -22,6 +22,7 @@ package com.nextcloud.talk.newarch.di.module
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import coil.ImageLoader
@@ -44,7 +45,6 @@ import com.nextcloud.talk.utils.LoggingUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.ssl.MagicKeyManager
 import com.nextcloud.talk.utils.ssl.MagicTrustManager
-import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat
 import io.reactivex.schedulers.Schedulers
 import okhttp3.*
 import okhttp3.internal.tls.OkHostnameVerifier
@@ -59,13 +59,13 @@ import java.io.IOException
 import java.net.CookieManager
 import java.net.CookiePolicy.ACCEPT_ALL
 import java.net.Proxy
-import java.security.KeyStore
-import java.security.KeyStoreException
-import java.security.NoSuchAlgorithmException
-import java.security.UnrecoverableKeyException
+import java.security.*
 import java.security.cert.CertificateException
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509KeyManager
 
 val NetworkModule = module {
@@ -97,7 +97,7 @@ fun createOkHttpClient(
         proxy: Proxy,
         appPreferences: AppPreferences,
         magicTrustManager: MagicTrustManager,
-        sslSocketFactoryCompat: SSLSocketFactoryCompat,
+        sslSocketFactory: SSLSocketFactory,
         cache: Cache,
         cookieManager: CookieManager,
         dispatcher: Dispatcher
@@ -113,9 +113,15 @@ fun createOkHttpClient(
     httpClient.cache(cache)
 
     // Trust own CA and all self-signed certs
-    httpClient.sslSocketFactory(sslSocketFactoryCompat, magicTrustManager)
+    httpClient.sslSocketFactory(sslSocketFactory, magicTrustManager)
     httpClient.retryOnConnectionFailure(true)
     httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE))
+
+    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N) {
+        val suites = sslSocketFactory.defaultCipherSuites
+        val tlsSpec = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).cipherSuites(*suites).build()
+        httpClient.connectionSpecs(listOf(tlsSpec, ConnectionSpec.CLEARTEXT))
+    }
 
     httpClient.dispatcher(dispatcher)
     if (Proxy.NO_PROXY != proxy) {
@@ -181,8 +187,13 @@ fun createSslSocketFactory(
         magicKeyManager: MagicKeyManager,
         magicTrustManager:
         MagicTrustManager
-): SSLSocketFactoryCompat {
-    return SSLSocketFactoryCompat(magicKeyManager, magicTrustManager)
+): SSLSocketFactory {
+    val sslContext = SSLContext.getInstance("TLS")
+    sslContext.init(
+            arrayOf(magicKeyManager),
+            arrayOf(magicTrustManager),
+            SecureRandom())
+    return sslContext.socketFactory
 }
 
 fun createKeyManager(
