@@ -25,7 +25,7 @@
     android:background="@color/bg_default">
 
     <CheckBox
-        android:id="@+id/select_file_checkbox"
+        android:id="@+id/selectFileCheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -53,13 +53,13 @@
         android:src="@drawable/ic_lock_grey600_24px" />
 
     <TextView
-        android:id="@+id/file_modified_info"
+        android:id="@+id/fileModifiedTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@id/filename_text_view"
+        android:layout_below="@id/filenameTextView"
         android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@id/select_file_checkbox"
+        android:layout_toStartOf="@id/selectFileCheckbox"
         android:layout_toEndOf="@id/file_icon"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="1"
@@ -68,12 +68,12 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/filename_text_view"
+        android:id="@+id/filenameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@id/select_file_checkbox"
+        android:layout_toStartOf="@id/selectFileCheckbox"
         android:layout_toEndOf="@id/file_icon"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="1"
