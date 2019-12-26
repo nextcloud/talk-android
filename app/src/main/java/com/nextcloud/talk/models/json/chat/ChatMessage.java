@@ -67,8 +67,6 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     @Ignore
     public boolean isLinkPreviewAllowed;
     @JsonIgnore
-    public Long internalUserId = null;
-    @JsonIgnore
     public String internalMessageId = null;
     @JsonIgnore
     public String internalConversationId = null;
@@ -97,6 +95,8 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     public SystemMessageType systemMessageType;
     @JsonField(name = "isReplyable")
     public boolean replyable;
+    @JsonField(name = "parent")
+    public ChatMessage parentMessage;
 
     @JsonIgnore
     @Ignore
