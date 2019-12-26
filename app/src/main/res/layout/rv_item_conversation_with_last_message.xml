@@ -43,17 +43,19 @@
 
             <ImageView
                 android:id="@+id/passwordProtectedRoomImageView"
-                android:layout_width="@dimen/margin_between_elements"
-                android:layout_height="@dimen/margin_between_elements"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
                 android:layout_gravity="bottom|end"
-                android:background="@drawable/shape_lock_bubble" />
+                android:src="@drawable/ic_lock_grey600_24px" />
 
             <ImageView
                 android:id="@+id/favoriteConversationImageView"
-                android:layout_width="@dimen/margin_between_elements"
-                android:layout_height="@dimen/margin_between_elements"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
                 android:layout_gravity="top|end"
-                android:background="@drawable/shape_favorite_bubble" />
+                android:src="@drawable/ic_star_black_24dp"
+                android:tint="@color/favorite_icon_tint"
+                android:tintMode="src_in"/>
 
         </FrameLayout>
 

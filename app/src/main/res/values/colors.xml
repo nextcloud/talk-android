@@ -68,4 +68,5 @@
 
     <color name="nc_author_text">#65A7CA</color>
     <color name="bg_bottom_sheet">#46ffffff</color>
+    <color name="favorite_icon_tint">#FFCC00</color>
 </resources>

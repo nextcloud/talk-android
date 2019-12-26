@@ -26,5 +26,5 @@
             <solid android:color="@color/bg_message_list_incoming_bubble"/>
         </shape>
     </item>
-    <item android:drawable="@drawable/ic_star_black_24dp" android:tint="@color/grey_600"/>
+    <item android:drawable="@drawable/ic_star_black_24dp" android:tint="@color/favorite_icon_tint"/>
 </layer-list>
