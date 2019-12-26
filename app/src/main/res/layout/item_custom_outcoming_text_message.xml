@@ -46,6 +46,9 @@
             android:layout_height="wrap_content"
             android:layout_alignWithParentIfMissing="true"
             android:lineSpacingMultiplier="1.2"
+            app:layout_alignSelf="flex_start"
+            app:layout_flexGrow="1"
+            app:layout_wrapBefore="true"
             android:textColorHighlight="@color/nc_grey"
             android:textIsSelectable="true" />
 
