@@ -323,6 +323,8 @@
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Copy</string>
+    <string name="nc_reply">Reply</string>
 
     <!-- Non-translatable strings -->
 

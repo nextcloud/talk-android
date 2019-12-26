@@ -20,12 +20,14 @@
 
 package com.nextcloud.talk.controllers
 
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
@@ -34,10 +36,12 @@ import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.widget.EmojiEditText
+import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
@@ -48,6 +52,7 @@ import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
+import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.adapters.messages.*
@@ -101,7 +106,7 @@ import java.util.concurrent.TimeUnit
 
 class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 .OnLoadMoreListener, MessagesListAdapter.Formatter<Date>, MessagesListAdapter
-.OnMessageLongClickListener<IMessage>, MessageHolders.ContentChecker<IMessage> {
+.OnMessageViewLongClickListener<IMessage>, MessageHolders.ContentChecker<IMessage> {
 
     val ncApi: NcApi by inject()
 
@@ -129,6 +134,9 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     @BindView(R.id.lobbyTextView)
     @JvmField
     var conversationLobbyText: TextView? = null
+    @JvmField
+    @BindView(R.id.quotedChatMessageView)
+    var quotedChatMessageView: RelativeLayout? = null
     var roomToken: String? = null
     val conversationUser: UserNgEntity?
     val roomPassword: String
@@ -385,7 +393,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
         messagesListView?.setAdapter(adapter)
         adapter?.setLoadMoreListener(this)
         adapter?.setDateHeadersFormatter { format(it) }
-        adapter?.setOnMessageLongClickListener { onMessageLongClick(it) }
+        adapter?.setOnMessageViewLongClickListener { view, message ->  onMessageViewLongClick(view, message)}
 
         layoutManager = messagesListView?.layoutManager as LinearLayoutManager?
 
@@ -428,7 +436,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
         val filters = arrayOfNulls<InputFilter>(1)
         val lengthFilter = conversationUser?.getMaxMessageLength() ?: 1000
-
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
         messageInput?.filters = filters
@@ -923,11 +930,13 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
             }
 
             messageInput?.setText("")
-            sendMessage(editable)
+            val replyMessageId: Long? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Long?
+            sendMessage(editable, if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) replyMessageId?.toInt() else null )
+            cancelReply()
         }
     }
 
-    private fun sendMessage(message: CharSequence) {
+    private fun sendMessage(message: CharSequence, replyTo: Int?) {
 
         if (conversationUser != null) {
             ncApi.sendChatMessage(
@@ -935,7 +944,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                     conversationUser.baseUrl,
                     roomToken
             ),
-                    message, conversationUser.displayName
+                    message, conversationUser.displayName, replyTo
             )
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
@@ -1371,14 +1380,73 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
         }
     }
 
-    override fun onMessageLongClick(message: IMessage) {
-        if (activity != null) {
-            val clipboardManager =
-                    activity?.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-            val clipData = android.content.ClipData.newPlainText(
-                    resources?.getString(R.string.nc_app_name), message.text
-            )
-            clipboardManager.setPrimaryClip(clipData)
+    @OnClick(R.id.cancelReplyButton)
+    fun cancelReply() {
+        quotedChatMessageView?.visibility = View.GONE
+        messageInputView?.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
+        messageInputView?.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility = View.VISIBLE
+    }
+
+    override fun onMessageViewLongClick(view: View?, message: IMessage?) {
+        PopupMenu(this.context, view, if (message?.user?.id == conversationUser?.userId) Gravity.END else Gravity.START).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                setForceShowIcon(true)
+            }
+            setOnMenuItemClickListener { item ->
+                when (item?.itemId) {
+
+                    R.id.action_copy_message -> {
+                        val clipboardManager =
+                                activity?.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                        val clipData = ClipData.newPlainText(resources?.getString(R.string.nc_app_name), message?.text)
+                        clipboardManager.setPrimaryClip(clipData)
+                        true
+                    }
+                    R.id.action_reply_to_message -> {
+                        val chatMessage = message as ChatMessage?
+                        chatMessage?.let {
+                            messageInputView?.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.GONE
+                            messageInputView?.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility = View.GONE
+                            messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility = View.VISIBLE
+                            messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.maxLines = 2
+                            messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.ellipsize = TextUtils.TruncateAt.END
+                            messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.text = it.text
+                            messageInputView?.findViewById<TextView>(R.id.quotedMessageTime)?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
+                            messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text = it.actorDisplayName ?: context.getText(R.string.nc_nick_guest)
+
+                            conversationUser?.let { currentUser ->
+                                messageInputView?.findViewById<ImageView>(R.id.quotedUserAvatar)?.load(it.user.avatar) {
+                                    addHeader("Authorization", currentUser.getCredentials())
+                                    transformations(CircleCropTransformation())
+                                }
+
+                                chatMessage.imageUrl?.let{ previewImageUrl ->
+                                    messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility = View.VISIBLE
+
+                                    val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 96f, resources?.displayMetrics)
+                                    messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.maxHeight = px.toInt()
+                                    val layoutParams = messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.layoutParams as FlexboxLayout.LayoutParams
+                                    layoutParams.flexGrow = 0f
+                                    messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.layoutParams = layoutParams
+                                    messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.load(previewImageUrl) {
+                                        addHeader("Authorization", currentUser.getCredentials())
+                                    }
+                                } ?: run {
+                                    messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility = View.GONE
+                                }
+                            }
+
+                            quotedChatMessageView?.tag = message?.jsonMessageId
+                            quotedChatMessageView?.visibility = View.VISIBLE
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
+            inflate(R.menu.chat_message_menu)
+            menu.findItem(R.id.action_reply_to_message).isVisible = (message as ChatMessage).replyable
+            show()
         }
     }
 

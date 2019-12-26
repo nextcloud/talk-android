@@ -20,57 +20,68 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <androidx.emoji.widget.EmojiEditText
-        android:id="@id/messageInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/sendButtonSpace"
-        android:layout_toEndOf="@id/attachmentButtonSpace"
-        android:imeOptions="actionDone"
-        android:inputType="textAutoCorrect|textMultiLine|textCapSentences"
-        android:lineSpacingMultiplier="1.2" />
+    <RelativeLayout android:layout_height="wrap_content" android:layout_width="match_parent">
+        <include layout="@layout/item_message_quote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:visibility="gone"/>
 
-    <ImageButton
-        android:id="@id/attachmentButton"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_centerVertical="true"
-        android:scaleType="centerInside" />
+        <androidx.emoji.widget.EmojiEditText
+            android:id="@id/messageInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/quotedChatMessageView"
+            android:layout_centerHorizontal="true"
+            android:layout_toStartOf="@id/sendButtonSpace"
+            android:layout_toEndOf="@id/attachmentButtonSpace"
+            android:imeOptions="actionDone"
+            android:inputType="textAutoCorrect|textMultiLine|textCapSentences"
+            android:lineSpacingMultiplier="1.2" />
 
-    <ImageButton
-        android:id="@+id/smileyButton"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/messageSendButton"
-        android:background="@color/transparent"
-        android:src="@drawable/ic_insert_emoticon_black_24dp"
-        android:tint="@color/emoji_icons" />
+        <ImageButton
+            android:id="@id/attachmentButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_below="@id/quotedChatMessageView"
+            android:scaleType="centerInside" />
 
-    <ImageButton
-        android:id="@id/messageSendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:adjustViewBounds="true"
-        android:padding="4dp"
-        android:scaleType="centerInside" />
+        <ImageButton
+            android:id="@+id/smileyButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_below="@id/quotedChatMessageView"
+            android:layout_toStartOf="@id/messageSendButton"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_insert_emoticon_black_24dp"
+            android:tint="@color/emoji_icons" />
 
-    <Space
-        android:id="@id/attachmentButtonSpace"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_toEndOf="@id/attachmentButton" />
+        <ImageButton
+            android:id="@id/messageSendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/quotedChatMessageView"
+            android:adjustViewBounds="true"
+            android:padding="4dp"
+            android:scaleType="centerInside" />
 
-    <Space
-        android:id="@id/sendButtonSpace"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_toStartOf="@id/smileyButton" />
+        <Space
+            android:id="@id/attachmentButtonSpace"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_below="@id/quotedChatMessageView"
+            android:layout_toEndOf="@id/attachmentButton" />
+
+        <Space
+            android:id="@id/sendButtonSpace"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_below="@id/quotedChatMessageView"
+            android:layout_toStartOf="@id/smileyButton" />
+    </RelativeLayout>
+
 
 </merge>
