@@ -161,7 +161,7 @@ public class DisplayUtils {
 
     public static ImageRequest getImageRequestForUrl(String url, @Nullable UserEntity userEntity) {
         Map<String, String> headers = new HashMap<>();
-        if (userEntity != null && url.startsWith(userEntity.getBaseUrl()) && url.contains("index.php/core/preview?fileId=")) {
+        if (userEntity != null && url.startsWith(userEntity.getBaseUrl()) && (url.contains("index.php/core/preview?fileId=") || url.contains("/avatar/"))) {
             headers.put("Authorization", ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()));
         }
 

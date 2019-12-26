@@ -217,7 +217,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                                 .setOldController(holder.dialogAvatar.getController())
                                 .setAutoPlayAnimations(true)
-                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getName(), R.dimen.avatar_size), null))
+                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getName(), R.dimen.avatar_size), userEntity))
                                 .build();
                         holder.dialogAvatar.setController(draweeController);
                     } else {

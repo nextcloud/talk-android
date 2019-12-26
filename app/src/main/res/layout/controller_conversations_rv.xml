@@ -89,8 +89,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:backgroundTint="@color/colorPrimary"
         android:layout_margin="16dp"
-        app:srcCompat="@drawable/ic_add_white_24px" />
+        app:tint="@color/white"
+        app:srcCompat="@drawable/ic_add_white_24px"/>
 
     <include layout="@layout/fast_scroller" />
 

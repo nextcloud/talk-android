@@ -22,6 +22,8 @@ package com.nextcloud.talk.application
 
 import android.content.Context
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.P
 import android.util.Log
 import androidx.emoji.bundled.BundledEmojiCompatConfig
 import androidx.emoji.text.EmojiCompat
@@ -36,6 +38,11 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoComponent
 import autodagger.AutoInjector
+import coil.Coil
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.decode.SvgDecoder
 import com.facebook.cache.disk.DiskCacheConfig
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
@@ -130,6 +137,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
         componentApplication.inject(this)
 
+        Coil.setDefaultImageLoader(::buildDefaultImageLoader)
         setAppTheme(appPreferences.theme)
         super.onCreate()
 
@@ -192,6 +200,21 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         MultiDex.install(this)
     }
 
+    private fun buildDefaultImageLoader(): ImageLoader {
+        return ImageLoader(applicationContext) {
+            availableMemoryPercentage(0.5) // Use 50% of the application's available memory.
+            crossfade(true) // Show a short crossfade when loading images from network or disk into an ImageView.
+            componentRegistry {
+                if (SDK_INT >= P) {
+                    add(ImageDecoderDecoder())
+                } else {
+                    add(GifDecoder())
+                }
+                add(SvgDecoder(applicationContext))
+            }
+            okHttpClient(okHttpClient)
+        }
+    }
     companion object {
         private val TAG = NextcloudTalkApplication::class.java.simpleName
         //region Singleton

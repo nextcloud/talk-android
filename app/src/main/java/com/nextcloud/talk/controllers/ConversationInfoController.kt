@@ -574,7 +574,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                         .setOldController(conversationAvatarImageView.controller)
                         .setAutoPlayAnimations(true)
                         .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(conversationUser!!.baseUrl,
-                                conversation!!.name, R.dimen.avatar_size_big), null))
+                                conversation!!.name, R.dimen.avatar_size_big), conversationUser))
                         .build()
                 conversationAvatarImageView.controller = draweeController
             }

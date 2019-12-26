@@ -298,5 +298,28 @@
     <string name="nc_lobby_waiting">You are currently waiting in the lobby.</string>
     <string name="nc_lobby_waiting_with_date">You are currently waiting in the lobby.\n This
         meeting is scheduled for %1$s.</string>
-    <string name="nc_manual">Manual</string>
+    <string name="nc_manual">Not set</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">No connection</string>
+    <string name="nc_bad_response_error">Bad response</string>
+    <string name="nc_timeout_error">Timeout</string>
+    <string name="nc_empty_response_error">Empty response</string>
+    <string name="nc_not_defined_error">Unknown error</string>
+    <string name="nc_unauthorized_error">Unauthorized</string>
+
+    <string name="nc_general_settings">General</string>
+    <string name="nc_allow_guests">Allow guests</string>
+    <string name="nc_last_moderator_title">Could not leave conversation</string>
+    <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Copy</string>
+    <string name="nc_reply">Reply</string>
+
+    <!-- Non-translatable strings -->
+
+    <string name="path_password_strike_through" translatable="false"
+        tools:override="true">M3.27,4.27L19.74,20.74</string>
 </resources>
