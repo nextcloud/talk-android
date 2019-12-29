@@ -23,10 +23,13 @@ package com.nextcloud.talk.newarch.di.module
 import android.app.Application
 import android.content.Context
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.P
 import android.text.TextUtils
 import android.util.Log
 import coil.ImageLoader
 import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import coil.decode.SvgDecoder
 import com.github.aurae.retrofit2.LoganSquareConverterFactory
 import com.nextcloud.talk.BuildConfig
@@ -43,6 +46,7 @@ import com.nextcloud.talk.newarch.utils.NetworkUtils.GetProxyRunnable
 import com.nextcloud.talk.newarch.utils.NetworkUtils.MagicAuthenticator
 import com.nextcloud.talk.utils.LoggingUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder
 import com.nextcloud.talk.utils.ssl.MagicKeyManager
 import com.nextcloud.talk.utils.ssl.MagicTrustManager
 import io.reactivex.schedulers.Schedulers
@@ -61,7 +65,6 @@ import java.net.CookiePolicy.ACCEPT_ALL
 import java.net.Proxy
 import java.security.*
 import java.security.cert.CertificateException
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
@@ -140,6 +143,20 @@ fun createOkHttpClient(
                     )
             )
         }
+    }
+
+    httpClient.addNetworkInterceptor { chain ->
+        var response = chain.proceed(chain.request())
+
+        if (response.request().url().encodedPath().contains("/avatar/")) {
+            AvatarStatusCodeHolder.getInstance().statusCode = response.code()
+        }
+
+        if (response.code() == 201) {
+            response = response.newBuilder().code(200).build()
+        }
+
+        response
     }
 
     httpClient.addInterceptor(NetworkUtils.HeadersInterceptor())
@@ -278,7 +295,11 @@ fun createImageLoader(
         crossfade(true)
         okHttpClient(okHttpClient)
         componentRegistry {
-            add(GifDecoder())
+            if (SDK_INT >= P) {
+                add(ImageDecoderDecoder())
+            } else {
+                add(GifDecoder())
+            }
             add(SvgDecoder(androidApplication))
         }
     }

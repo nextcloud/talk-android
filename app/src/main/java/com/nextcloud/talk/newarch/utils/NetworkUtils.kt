@@ -22,7 +22,6 @@ package com.nextcloud.talk.newarch.utils
 
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder
 import okhttp3.*
 import java.io.IOException
 import java.net.InetSocketAddress
@@ -45,11 +44,6 @@ class NetworkUtils {
                     .build()
 
             val response = chain.proceed(request)
-
-            if (request.url().encodedPath().contains("/avatar/")) {
-                AvatarStatusCodeHolder.getInstance()
-                        .statusCode = response.code()
-            }
 
             return response
         }
