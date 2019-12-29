@@ -328,7 +328,7 @@ class WebViewLoginController : BaseController {
                     messageType = ACCOUNT_UPDATED_NOT_ADDED
                 }
 
-                if (targetUser != null && UserStatus.PENDING_DELETE.equals(targetUser.status)) {
+                if (targetUser != null && UserStatus.PENDING_DELETE == targetUser.status) {
                     ApplicationWideMessageHolder.getInstance().messageType = ACCOUNT_SCHEDULED_FOR_DELETION
                     if (!isPasswordUpdate) {
                         withContext(Dispatchers.Main) {
