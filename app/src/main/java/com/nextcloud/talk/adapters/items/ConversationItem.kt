@@ -202,7 +202,7 @@ class ConversationItem(
 
         val conversationDrawable: Drawable? = Images().getImageForConversation(context, model)
         if (conversationDrawable != null) {
-            holder.itemView.dialogAvatar.setImageDrawable(conversationDrawable)
+            holder.itemView.dialogAvatar.load(conversationDrawable)
         } else {
             holder.itemView.dialogAvatar.load(
                     ApiUtils.getUrlForAvatarWithName(
