@@ -25,6 +25,7 @@ import androidx.room.ForeignKey.CASCADE
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.*
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
 import java.util.*
 
@@ -50,12 +51,7 @@ data class ConversationEntity(
         @ColumnInfo(name = "type") var type: ConversationType? = null,
         @ColumnInfo(name = "count") var count: Long = 0,
         @ColumnInfo(name = "number_of_guests") var numberOfGuests: Long = 0,
-        /*@ColumnInfo(name = "guest_list") var guestList: HashMap<String, HashMap<String, Any>>? = null,
-        @ColumnInfo(name = "participants") var participants: HashMap<String, HashMap<String, Any>>? =
-        null,
-         */
-        // hack for participants list
-        @ColumnInfo(name = "participants_count") var participantsCount: Int = 0,
+        @ColumnInfo(name = "participants") var participants: HashMap<String, Participant>? = null,
         @ColumnInfo(name = "participant_type") var participantType: ParticipantType? = null,
         @ColumnInfo(name = "has_password") var hasPassword: Boolean = false,
         @ColumnInfo(name = "session_id") var sessionId: String? = null,
@@ -92,7 +88,7 @@ data class ConversationEntity(
         if (type != other.type) return false
         if (count != other.count) return false
         if (numberOfGuests != other.numberOfGuests) return false
-        if (participantsCount != other.participantsCount) return false
+        if (participants != other.participants) return false
         if (participantType != other.participantType) return false
         if (hasPassword != other.hasPassword) return false
         if (sessionId != other.sessionId) return false
@@ -130,10 +126,7 @@ fun ConversationEntity.toConversation(): Conversation {
     conversation.displayName = this.displayName
     conversation.count = this.count
     conversation.numberOfGuests = this.numberOfGuests
-    conversation.participants = HashMap()
-    for (i in 0 until participantsCount) {
-        conversation.participants?.put(i.toString(), HashMap())
-    }
+    conversation.participants = this.participants
     conversation.participantType = this.participantType
     conversation.hasPassword = this.hasPassword
     conversation.sessionId = this.sessionId
@@ -163,7 +156,7 @@ fun Conversation.toConversationEntity(): ConversationEntity {
     conversationEntity.displayName = this.displayName
     conversationEntity.count = this.count
     conversationEntity.numberOfGuests = this.numberOfGuests
-    conversationEntity.participantsCount = this.participants?.size ?: 0
+    conversationEntity.participants = this.participants
     conversationEntity.participantType = this.participantType
     conversationEntity.hasPassword = this.hasPassword
     conversationEntity.sessionId = this.sessionId

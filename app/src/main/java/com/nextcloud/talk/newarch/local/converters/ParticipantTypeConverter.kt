@@ -22,7 +22,6 @@ package com.nextcloud.talk.newarch.local.converters
 
 import androidx.room.TypeConverter
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
-import com.nextcloud.talk.models.json.participants.Participant.ParticipantType.*
 
 class ParticipantTypeConverter {
     @TypeConverter
@@ -32,14 +31,6 @@ class ParticipantTypeConverter {
 
     @TypeConverter
     fun fromIntToParticipantType(value: Int): ParticipantType {
-        when (value) {
-            0 -> return DUMMY
-            1 -> return OWNER
-            2 -> return MODERATOR
-            3 -> return USER
-            4 -> return GUEST
-            else -> return USER_FOLLOWING_LINK
-
-        }
+        return ParticipantType.fromValue(value.toLong())
     }
 }

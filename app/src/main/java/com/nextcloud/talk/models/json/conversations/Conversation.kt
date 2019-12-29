@@ -61,7 +61,7 @@ class Conversation {
     /*@JsonField(name = ["guestList"])
     var guestList: HashMap<String, HashMap<String, Any>>? = null*/
     @JsonField(name = ["participants"])
-    var participants: HashMap<String, HashMap<String, Any>>? = null
+    var participants: HashMap<String, Participant>? = null
     @JsonField(name = ["participantType"], typeConverter = EnumParticipantTypeConverter::class)
     var participantType: Participant.ParticipantType? = null
     @JsonField(name = ["hasPassword"])
