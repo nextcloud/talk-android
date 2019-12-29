@@ -32,24 +32,18 @@ import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils
-import com.nextcloud.talk.webrtc.WebSocketConnectionHelper.Companion.deleteExternalSignalingInstanceForUserEntity
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import retrofit2.Retrofit
 import java.net.CookieManager
-import java.util.*
 import java.util.zip.CRC32
 
 class AccountRemovalWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams), KoinComponent {
-    val arbitraryStorageUtils: ArbitraryStorageUtils by inject()
     val okHttpClient: OkHttpClient by inject()
     val retrofit: Retrofit by inject()
     private val usersDao: UsersDao by inject()
@@ -57,8 +51,6 @@ class AccountRemovalWorker(context: Context, workerParams: WorkerParameters) : C
     var ncApi: NcApi? = null
 
     override suspend fun doWork(): Result {
-        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
         for (userEntityObject in usersDao.getUsersScheduledForDeletion()) {
             val userEntity: UserNgEntity = userEntityObject
             val credentials = userEntity.getCredentials()
@@ -76,41 +68,7 @@ class AccountRemovalWorker(context: Context, workerParams: WorkerParameters) : C
                                     queryMap["userPublicKey"] = userEntity.pushConfiguration!!.userPublicKey
                                     queryMap["deviceIdentifierSignature"] = userEntity.pushConfiguration!!.deviceIdentifierSignature
 
-                                    ncApi!!.unregisterDeviceForNotificationsWithProxy(ApiUtils.getUrlPushProxy(), queryMap)
-                                            .subscribe(object : Observer<Void> {
-                                                override fun onSubscribe(d: Disposable) {}
-                                                override fun onNext(aVoid: Void) {
-                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                        val groupName = java.lang.String.format(applicationContext.resources
-                                                                .getString(R.string.nc_notification_channel), userEntity.userId,
-                                                                userEntity.baseUrl)
-                                                        val crc32 = CRC32()
-                                                        crc32.update(groupName.toByteArray())
-                                                        notificationManager.deleteNotificationChannelGroup(java.lang.Long
-                                                                .toString(crc32.value))
-                                                    }
-                                                    deleteExternalSignalingInstanceForUserEntity(
-                                                            userEntity.id!!)
-                                                    arbitraryStorageUtils.deleteAllEntriesForAccountIdentifier(
-                                                            userEntity.id!!).subscribe(object : Observer<Any?> {
-                                                        override fun onSubscribe(d: Disposable) {}
-                                                        override fun onNext(o: Any) {
-                                                            GlobalScope.launch {
-                                                                val job = async {
-                                                                    usersRepository.deleteUserWithId(userEntity.id!!)
-                                                                }
-                                                                job.await()
-                                                            }
-                                                        }
-
-                                                        override fun onError(e: Throwable) {}
-                                                        override fun onComplete() {}
-                                                    })
-                                                }
-
-                                                override fun onError(e: Throwable) {}
-                                                override fun onComplete() {}
-                                            })
+                                    unregisterWithProxy(queryMap, userEntity)
                                 }
                             }
 
@@ -118,15 +76,35 @@ class AccountRemovalWorker(context: Context, workerParams: WorkerParameters) : C
                             override fun onComplete() {}
                         })
             } ?: run {
-                GlobalScope.launch {
-                    val job = async {
-                        usersRepository.deleteUserWithId(userEntity.id!!)
-                    }
-                    job.await()
+                runBlocking {
+                    usersRepository.deleteUserWithId(userEntity.id!!)
                 }
             }
         }
         return Result.success()
+    }
+
+    private fun unregisterWithProxy(queryMap: HashMap<String, String?>, userEntity: UserNgEntity) {
+        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        ncApi!!.unregisterDeviceForNotificationsWithProxy(ApiUtils.getUrlPushProxy(), queryMap)
+                .doOnComplete {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val groupName = java.lang.String.format(applicationContext.resources
+                                .getString(R.string.nc_notification_channel), userEntity.userId,
+                                userEntity.baseUrl)
+                        val crc32 = CRC32()
+                        crc32.update(groupName.toByteArray())
+                        notificationManager.deleteNotificationChannelGroup(crc32.value.toString())
+                    }
+
+                    //deleteExternalSignalingInstanceForUserEntity(
+                    //        userEntity.id!!)
+                    runBlocking {
+                        usersRepository.deleteUserWithId(userEntity.id!!)
+                    }
+
+                }
+                .blockingSubscribe()
     }
 
     companion object {
