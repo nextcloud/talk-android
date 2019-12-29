@@ -22,11 +22,10 @@ package com.nextcloud.talk.models.json.participants;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.models.json.converters.EnumParticipantFlagsConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
-import com.nextcloud.talk.models.json.converters.ObjectParcelConverter;
 
 import org.parceler.Parcel;
-import org.parceler.ParcelPropertyConverter;
 
 import lombok.Data;
 
@@ -55,39 +54,52 @@ public class Participant {
     public String sessionId;
 
     @JsonField(name = "conversationId")
-    public long roomId;
+    public long conversationId;
 
-    @ParcelPropertyConverter(ObjectParcelConverter.class)
-    @JsonField(name = "inCall")
-    public Object inCall;
+    @JsonField(name = { "inCall", "call" }, typeConverter = EnumParticipantFlagsConverter.class)
+    public ParticipantFlags participantFlags;
+
+    @JsonField(name = "source")
     public String source;
 
     public boolean selected;
+    
+    public enum ParticipantType {
+        OWNER(1),
+        MODERATOR(2),
+        USER(3),
+        GUEST(4),
+        USER_FOLLOWING_LINK(5),
+        GUEST_AS_MODERATOR(6);
 
-    public ParticipantFlags getParticipantFlags() {
-        ParticipantFlags participantFlags = ParticipantFlags.NOT_IN_CALL;
-        if (inCall != null) {
-            if (inCall instanceof Long) {
-                participantFlags = ParticipantFlags.fromValue((Long) inCall);
-            } else if (inCall instanceof Boolean) {
-                if ((boolean) inCall) {
-                    participantFlags = ParticipantFlags.IN_CALL;
-                } else {
-                    participantFlags = ParticipantFlags.NOT_IN_CALL;
-                }
+        private long value;
+
+        ParticipantType(long value) {
+            this.value = value;
+        }
+
+        public static ParticipantType fromValue(long value) {
+            if (value == 1) {
+                return OWNER;
+            } else if (value == 2) {
+                return MODERATOR;
+            } else if (value == 3) {
+                return USER;
+            } else if (value == 4) {
+                return GUEST;
+            } else if (value == 5) {
+                return USER_FOLLOWING_LINK;
+            } else if (value == 6) {
+                return GUEST_AS_MODERATOR;
+            } else {
+                return GUEST;
             }
         }
 
-        return participantFlags;
-    }
+        public long getValue() {
+            return value;
+        }
 
-    public enum ParticipantType {
-        DUMMY,
-        OWNER,
-        MODERATOR,
-        USER,
-        GUEST,
-        USER_FOLLOWING_LINK
     }
 
     public enum ParticipantFlags {
