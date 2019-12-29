@@ -22,6 +22,7 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -50,7 +51,9 @@ import com.nextcloud.talk.R.drawable
 import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.controllers.ContactsController
 import com.nextcloud.talk.controllers.SettingsController
+import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListViewState.*
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
@@ -58,6 +61,7 @@ import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.animations.SharedElementTransition
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -335,6 +339,81 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         )
     }
 
+    private fun getShareIntentForConversation(conversation: Conversation): Intent {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    String.format(
+                            context.getString(R.string.nc_share_subject),
+                            context.getString(R.string.nc_app_name)
+                    )
+            )
+
+            // TODO, make sure we ask for password if needed
+            putExtra(
+                    Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(
+                    context, null, conversation
+            )
+            )
+
+            type = "text/plain"
+        }
+
+        // TODO filter our own app once we're there
+        return Intent.createChooser(sendIntent, context.getString(R.string.nc_share_link))
+    }
+
+    private fun getConversationMenuItemsForConversation(conversation: Conversation): MutableList<BasicListItemWithImage> {
+        val items = mutableListOf<BasicListItemWithImage>()
+
+        if (conversation.favorite) {
+            items.add(
+                    BasicListItemWithImage(
+                            drawable.ic_star_border_black_24dp,
+                            context.getString(R.string.nc_remove_from_favorites)
+                    )
+            )
+        } else {
+            items.add(
+                    BasicListItemWithImage(
+                            drawable.ic_star_black_24dp,
+                            context.getString(R.string.nc_add_to_favorites)
+                    )
+            )
+        }
+
+        if (conversation.isPublic) {
+            items.add(
+                    (BasicListItemWithImage(
+                            drawable
+                                    .ic_share_black_24dp, context.getString(R.string.nc_share_link)
+                    ))
+            )
+        }
+
+        if (conversation.canLeave(viewModel.currentUserLiveData.value!!)) {
+            items.add(
+                    BasicListItemWithImage(
+                            drawable.ic_exit_to_app_black_24dp, context.getString
+                    (R.string.nc_leave)
+                    )
+            )
+        }
+
+        if (conversation.canModerate(viewModel.currentUserLiveData.value!!)) {
+            items.add(
+                    BasicListItemWithImage(
+                            drawable.ic_delete_grey600_24dp, context.getString(
+                            R.string.nc_delete_call
+                    )
+                    )
+            )
+        }
+
+        return items
+    }
+
     override fun getTitle(): String? {
         return resources?.getString(R.string.nc_app_name)
     }
@@ -377,8 +456,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                 MaterialDialog(activity, BottomSheet(WRAP_CONTENT)).show {
                     cornerRadius(res = R.dimen.corner_radius)
                     title(text = conversation.displayName)
-                    listItemsWithImage(
-                            viewModel.getConversationMenuItemsForConversation(conversation)
+                    listItemsWithImage(getConversationMenuItemsForConversation(conversation)
                     ) { dialog,
                         index, item ->
 
@@ -391,7 +469,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                                 viewModel.changeFavoriteValueForConversation(conversation, true)
                             }
                             drawable.ic_share_black_24dp -> {
-                                startActivity(viewModel.getShareIntentForConversation(conversation))
+                                startActivity(getShareIntentForConversation(conversation))
                             }
                             drawable.ic_exit_to_app_black_24dp -> {
                                 MaterialDialog(activity).show {
