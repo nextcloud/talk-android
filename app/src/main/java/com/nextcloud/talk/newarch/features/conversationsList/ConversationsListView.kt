@@ -219,6 +219,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                         view?.post {
                             view?.loadingStateView?.visibility = View.GONE
                             view?.dataStateView?.visibility = View.VISIBLE
+                            view?.stateWithMessageView?.visibility = if (recyclerViewAdapter.isEmpty) View.VISIBLE else View.GONE
                             view?.floatingActionButton?.visibility = View.VISIBLE
                             if (view?.floatingActionButton?.isShown == false) {
                                 view?.floatingActionButton?.show()
