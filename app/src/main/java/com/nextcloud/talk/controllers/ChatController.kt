@@ -363,6 +363,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
             adapter = MessagesListAdapter(
                     conversationUser?.userId, messageHolders, ImageLoader { imageView, url, payload ->
+
                 imageView.load(url) {
                     if (conversationUser != null && url!!.startsWith(conversationUser.baseUrl) && (url.contains(
                                     "index.php/core/preview?fileId=") || url.contains("/avatar/"))) {
@@ -373,14 +374,11 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                         transformations(CircleCropTransformation())
                     } else {
                         if (payload is ImageLoaderPayload) {
-                            payload.map?.let {
-                                if (payload.map.containsKey("mimetype")) {
-                                    placeholder(
-                                            getDrawableResourceIdForMimeType(
-                                                    payload.map.get("mimetype") as String?
-                                            )
-                                    )
-                                }
+                            payload.map?.get("mimetype")?.let {
+                                    val mimeTypeDrawableResource = getDrawableResourceIdForMimeType(it as String)
+                                    val drawable = context.getDrawable(mimeTypeDrawableResource)
+                                    placeholder(drawable)
+                                    error(drawable)
                             }
                         }
                     }

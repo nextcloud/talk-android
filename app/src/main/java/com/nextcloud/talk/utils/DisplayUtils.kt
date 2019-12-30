@@ -54,6 +54,7 @@ import androidx.emoji.text.EmojiCompat
 import coil.Coil
 import coil.api.load
 import coil.bitmappool.BitmapPool
+import coil.size.OriginalSize
 import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.google.android.material.chip.ChipDrawable
@@ -99,7 +100,7 @@ object DisplayUtils {
     fun getRoundedDrawable(drawable: Drawable?): Drawable {
         val bitmap = getBitmap(drawable!!)
         val drawable = runBlocking {
-            return@runBlocking BitmapDrawable(CircleCropTransformation().transform(BitmapPool(10000), bitmap))
+            return@runBlocking BitmapDrawable(CircleCropTransformation().transform(BitmapPool(10000), bitmap, OriginalSize))
         }
 
         return drawable

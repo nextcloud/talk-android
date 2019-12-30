@@ -44,6 +44,7 @@ import butterknife.OnClick
 import coil.api.load
 import coil.bitmappool.BitmapPool
 import coil.drawable.CrossfadeDrawable
+import coil.size.OriginalSize
 import coil.transform.BlurTransformation
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
@@ -413,7 +414,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
 
                                 if (activity != null) {
                                     val newBitmap = BlurTransformation(activity!!, 5f).transform(
-                                            BitmapPool(10000000), bitmapFromImageView
+                                            BitmapPool(10000000), bitmapFromImageView, OriginalSize
                                     )
                                     withContext(Dispatchers.Main) {
                                         backgroundImageView!!.setImageBitmap(newBitmap)

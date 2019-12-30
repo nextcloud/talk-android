@@ -203,7 +203,7 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
     override fun getPayloadForImageLoader(message: ChatMessage): Any {
         val map = HashMap<String, Any>()
         if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
-            map.put("mimetype", message.getSelectedIndividualHashMap().get("mimetype")!!)
+            map["mimetype"] = message.getSelectedIndividualHashMap().get("mimetype")!!
         }
 
         return ImageLoaderPayload(map)

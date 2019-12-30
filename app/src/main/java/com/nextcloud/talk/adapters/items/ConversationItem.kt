@@ -42,7 +42,8 @@ import eu.davidea.flexibleadapter.items.IFilterable
 import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.flexibleadapter.utils.FlexibleUtils
 import eu.davidea.viewholders.FlexibleViewHolder
-import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.*
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.*
 import java.util.*
 import java.util.regex.Pattern
 
@@ -101,57 +102,57 @@ class ConversationItem(
         val appContext = NextcloudTalkApplication.sharedApplication!!.applicationContext
 
         if (model.changing) {
-            holder.itemView.actionProgressBar!!.visibility = View.VISIBLE
+            holder.actionProgressBar!!.visibility = View.VISIBLE
         } else {
-            holder.itemView.actionProgressBar!!.visibility = View.GONE
+            holder.actionProgressBar!!.visibility = View.GONE
         }
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(
-                    holder.itemView.dialogName!!, model.displayName,
+                    holder.dialogName!!, model.displayName,
                     adapter.getFilter(String::class.java).toString(),
                     NextcloudTalkApplication.sharedApplication!!
                             .resources.getColor(R.color.colorPrimary)
             )
         } else {
-            holder.itemView.dialogName!!.text = model.displayName
+            holder.dialogName!!.text = model.displayName
         }
 
         if (model.unreadMessages > 0) {
-            holder.itemView.dialogUnreadBubble!!.visibility = View.VISIBLE
+            holder.dialogUnreadBubble!!.visibility = View.VISIBLE
             if (model.unreadMessages < 100) {
-                holder.itemView.dialogUnreadBubble!!.text = model.unreadMessages.toLong()
+                holder.dialogUnreadBubble!!.text = model.unreadMessages.toLong()
                         .toString()
             } else {
-                holder.itemView.dialogUnreadBubble!!.text = context.getString(R.string.nc_99_plus)
+                holder.dialogUnreadBubble!!.text = context.getString(R.string.nc_99_plus)
             }
 
             if (model.unreadMention) {
-                holder.itemView.dialogUnreadBubble!!.background =
+                holder.dialogUnreadBubble!!.background =
                         context.getDrawable(R.drawable.bubble_circle_unread_mention)
             } else {
-                holder.itemView.dialogUnreadBubble!!.background =
+                holder.dialogUnreadBubble!!.background =
                         context.getDrawable(R.drawable.bubble_circle_unread)
             }
         } else {
-            holder.itemView.dialogUnreadBubble!!.visibility = View.GONE
+            holder.dialogUnreadBubble!!.visibility = View.GONE
         }
 
         if (model.hasPassword) {
-            holder.itemView.passwordProtectedRoomImageView!!.visibility = View.VISIBLE
+            holder.passwordProtectedRoomImageView!!.visibility = View.VISIBLE
         } else {
-            holder.itemView.passwordProtectedRoomImageView!!.visibility = View.GONE
+            holder.passwordProtectedRoomImageView!!.visibility = View.GONE
         }
 
         if (model.favorite) {
-            holder.itemView.favoriteConversationImageView!!.visibility = View.VISIBLE
+            holder.favoriteConversationImageView!!.visibility = View.VISIBLE
         } else {
-            holder.itemView.favoriteConversationImageView!!.visibility = View.GONE
+            holder.favoriteConversationImageView!!.visibility = View.GONE
         }
 
         if (model.lastMessage != null) {
-            holder.itemView.dialogDate!!.visibility = View.VISIBLE
-            holder.itemView.dialogDate!!.text = DateUtils.getRelativeTimeSpanString(
+            holder.dialogDate!!.visibility = View.VISIBLE
+            holder.dialogDate!!.text = DateUtils.getRelativeTimeSpanString(
                     model.lastActivity * 1000L,
                     System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE
             )
@@ -160,7 +161,7 @@ class ConversationItem(
                             model.lastMessage!!.systemMessage
                     ) || Conversation.ConversationType.SYSTEM_CONVERSATION == model.type
             ) {
-                holder.itemView.dialogLastMessage!!.text = model.lastMessage!!.text
+                holder.dialogLastMessage!!.text = model.lastMessage!!.text
             } else {
                 var authorDisplayName = ""
                 model.lastMessage!!.activeUser = user
@@ -191,20 +192,18 @@ class ConversationItem(
                     text = model.lastMessage!!.lastMessageDisplayText
                 }
 
-                holder.itemView.dialogLastMessage.text = text
+                holder.dialogLastMessage.text = text
             }
         } else {
-            holder.itemView.dialogDate.visibility = View.GONE
-            holder.itemView.dialogLastMessage.setText(R.string.nc_no_messages_yet)
+            holder.dialogDate.visibility = View.GONE
+            holder.dialogLastMessage.setText(R.string.nc_no_messages_yet)
         }
-
-        holder.itemView.dialogAvatar.visibility = View.VISIBLE
 
         val conversationDrawable: Drawable? = Images().getImageForConversation(context, model)
         if (conversationDrawable != null) {
-            holder.itemView.dialogAvatar.load(conversationDrawable)
+            holder.dialogAvatar.load(conversationDrawable)
         } else {
-            holder.itemView.dialogAvatar.load(
+            holder.dialogAvatar.load(
                     ApiUtils.getUrlForAvatarWithName(
                             user.baseUrl,
                             model.name, R.dimen.avatar_size
@@ -227,5 +226,8 @@ class ConversationItem(
     class ConversationItemViewHolder(
             view: View,
             adapter: FlexibleAdapter<*>
-    ) : FlexibleViewHolder(view, adapter)
+    ) : FlexibleViewHolder(view, adapter), LayoutContainer {
+        override val containerView: View?
+            get() = itemView
+    }
 }

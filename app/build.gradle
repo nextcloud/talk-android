@@ -294,9 +294,10 @@ dependencies {
   implementation 'com.github.wooplr:Spotlight:1.3'
   implementation'com.github.mario:chatkit:d32a7372bb'
 
-  implementation "io.coil-kt:coil:${coil_version}"
+  /*implementation "io.coil-kt:coil:${coil_version}"
   implementation "io.coil-kt:coil-gif:${coil_version}"
-  implementation "io.coil-kt:coil-svg:${coil_version}"
+  implementation "io.coil-kt:coil-svg:${coil_version}"*/
+  implementation 'com.github.coil-kt:coil:9769e11f19'
 
   implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
