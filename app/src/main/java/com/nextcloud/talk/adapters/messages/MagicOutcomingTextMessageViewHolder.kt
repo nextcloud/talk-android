@@ -24,7 +24,6 @@ import android.content.Intent
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -146,7 +145,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         message.parentMessage?.let { parentChatMessage ->
             parentChatMessage.activeUser = message.activeUser
             imageLoader.loadImage(quotedUserAvatar, parentChatMessage.user.avatar, null)
-            parentChatMessage.imageUrl?.let{
+            parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE
                 imageLoader.loadImage(quotedMessagePreview, it, null)
             } ?: run {

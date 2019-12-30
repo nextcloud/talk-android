@@ -41,9 +41,8 @@ data class SpreedCapability(
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o !is SpreedCapability) return false
-        val that = o
-        return features == that.features &&
-                config == that.config
+        return features == o.features &&
+                config == o.config
     }
 
     override fun hashCode(): Int {

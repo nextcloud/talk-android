@@ -7,7 +7,7 @@ import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsReposit
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.usecases.ExitConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
-import com.nextcloud.talk.newarch.utils.GlobalService
+import com.nextcloud.talk.newarch.services.GlobalService
 
 class ChatViewModelFactory constructor(
         private val application: Application,

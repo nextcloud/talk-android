@@ -22,15 +22,15 @@
 
 package com.nextcloud.talk.models.json.converters
 
-import com.bluelinelabs.logansquare.typeconverters.LongBasedTypeConverter
+import com.bluelinelabs.logansquare.typeconverters.IntBasedTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 
-class EnumParticipantFlagsConverter : LongBasedTypeConverter<Participant.ParticipantFlags>() {
-    override fun getFromLong(l: Long): Participant.ParticipantFlags {
+class EnumParticipantFlagsConverter : IntBasedTypeConverter<Participant.ParticipantFlags>() {
+    override fun getFromInt(l: Int): Participant.ParticipantFlags {
         return Participant.ParticipantFlags.fromValue(l)
     }
 
-    override fun convertToLong(`object`: Participant.ParticipantFlags?): Long {
+    override fun convertToInt(`object`: Participant.ParticipantFlags?): Int {
         return `object`?.value ?: 0
     }
 }

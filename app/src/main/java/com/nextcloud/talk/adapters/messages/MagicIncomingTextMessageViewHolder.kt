@@ -220,7 +220,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
         message.parentMessage?.let { parentChatMessage ->
             parentChatMessage.activeUser = message.activeUser
             imageLoader.loadImage(quotedUserAvatar, parentChatMessage.user.avatar, null)
-            parentChatMessage.imageUrl?.let{
+            parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE
                 imageLoader.loadImage(quotedMessagePreview, it, null)
             } ?: run {

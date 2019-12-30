@@ -27,6 +27,8 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 
 import org.parceler.Parcel;
 
+import java.util.Objects;
+
 import lombok.Data;
 
 @Parcel
@@ -47,8 +49,8 @@ public class Participant {
     @JsonField(name = "displayName")
     public String displayName;
 
-    @JsonField(name = "lastPing")
-    public long lastPing;
+    /*@JsonField(name = "lastPing")
+    public long lastPing;*/
 
     @JsonField(name = "sessionId")
     public String sessionId;
@@ -56,14 +58,35 @@ public class Participant {
     @JsonField(name = "conversationId")
     public long conversationId;
 
-    @JsonField(name = { "inCall", "call" }, typeConverter = EnumParticipantFlagsConverter.class)
+    @JsonField(name = {"inCall", "call"}, typeConverter = EnumParticipantFlagsConverter.class)
     public ParticipantFlags participantFlags;
 
     @JsonField(name = "source")
     public String source;
 
     public boolean selected;
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Participant)) return false;
+        Participant that = (Participant) o;
+        return conversationId == that.conversationId &&
+                selected == that.selected &&
+                Objects.equals(userId, that.userId) &&
+                type == that.type &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(displayName, that.displayName) &&
+                Objects.equals(sessionId, that.sessionId) &&
+                participantFlags == that.participantFlags &&
+                Objects.equals(source, that.source);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, type, name, displayName, sessionId, conversationId, participantFlags, source, selected);
+    }
+
     public enum ParticipantType {
         OWNER(1),
         MODERATOR(2),
@@ -72,13 +95,13 @@ public class Participant {
         USER_FOLLOWING_LINK(5),
         GUEST_AS_MODERATOR(6);
 
-        private long value;
+        private Integer value;
 
-        ParticipantType(long value) {
+        ParticipantType(Integer value) {
             this.value = value;
         }
 
-        public static ParticipantType fromValue(long value) {
+        public static ParticipantType fromValue(Integer value) {
             if (value == 1) {
                 return OWNER;
             } else if (value == 2) {
@@ -96,7 +119,7 @@ public class Participant {
             }
         }
 
-        public long getValue() {
+        public Integer getValue() {
             return value;
         }
 
@@ -109,13 +132,13 @@ public class Participant {
         IN_CALL_WITH_VIDEO(5),
         IN_CALL_WITH_AUDIO_AND_VIDEO(7);
 
-        private long value;
+        private Integer value;
 
-        ParticipantFlags(long value) {
+        ParticipantFlags(Integer value) {
             this.value = value;
         }
 
-        public static ParticipantFlags fromValue(long value) {
+        public static ParticipantFlags fromValue(Integer value) {
             if (value == 0) {
                 return NOT_IN_CALL;
             } else if (value == 1) {
@@ -131,7 +154,7 @@ public class Participant {
             }
         }
 
-        public long getValue() {
+        public Integer getValue() {
             return value;
         }
     }

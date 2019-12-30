@@ -96,7 +96,7 @@ data class ConversationEntity(
         if (lastActivity != other.lastActivity) return false
         if (unreadMessages != other.unreadMessages) return false
         if (unreadMention != other.unreadMention) return false
-        if (lastMessage?.internalMessageId != other.lastMessage?.internalMessageId) return false
+        if (lastMessage != other.lastMessage) return false
         if (objectType != other.objectType) return false
         if (notificationLevel != other.notificationLevel) return false
         if (conversationReadOnlyState != other.conversationReadOnlyState) return false

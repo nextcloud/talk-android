@@ -30,6 +30,7 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 @Parcelize
 @Entity(tableName = "users")
@@ -63,7 +64,7 @@ data class UserNgEntity(
         other as UserNgEntity
 
         if (userId != other.userId) return false
-        if (username != other.username) return false
+        //if (username != other.username) return false
         if (baseUrl != other.baseUrl) return false
         if (token != other.token) return false
         if (displayName != other.displayName) return false
@@ -77,7 +78,7 @@ data class UserNgEntity(
     }
 
     override fun hashCode(): Int {
-        return userId.hashCode()
+        return Objects.hash(userId, username)
     }
 }
 

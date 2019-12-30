@@ -5,7 +5,7 @@ import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsReposit
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
-import com.nextcloud.talk.newarch.utils.GlobalService
+import com.nextcloud.talk.newarch.services.GlobalService
 import com.nextcloud.talk.newarch.utils.ShortcutService
 import okhttp3.OkHttpClient
 import org.koin.dsl.module

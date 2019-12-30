@@ -48,7 +48,7 @@ import java.util.regex.Pattern
 
 class ConversationItem(
         val model: Conversation,
-        private val user: UserNgEntity,
+        val user: UserNgEntity,
         private val context: Context
 ) : AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder>(), IFilterable<String> {
 
@@ -56,6 +56,7 @@ class ConversationItem(
         if (other is ConversationItem) {
             val inItem = other as ConversationItem?
             val comparedConversation = inItem!!.model
+
             return (model.conversationId == comparedConversation.conversationId
                     && model.token == comparedConversation.token
                     && model.name == comparedConversation.name
@@ -68,7 +69,7 @@ class ConversationItem(
                     && model.unreadMention == comparedConversation.unreadMention
                     && model.objectType == comparedConversation.objectType
                     && model.changing == comparedConversation.changing
-                    && inItem.user.id == other.user.id)
+                    && inItem.user.id == user.id)
         }
         return false
     }
@@ -198,7 +199,6 @@ class ConversationItem(
         }
 
         holder.itemView.dialogAvatar.visibility = View.VISIBLE
-
 
         val conversationDrawable: Drawable? = Images().getImageForConversation(context, model)
         if (conversationDrawable != null) {

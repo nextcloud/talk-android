@@ -26,11 +26,11 @@ import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
 class ParticipantTypeConverter {
     @TypeConverter
     fun fromParticipantType(participantType: ParticipantType): Int {
-        return participantType.ordinal
+        return participantType.value
     }
 
     @TypeConverter
     fun fromIntToParticipantType(value: Int): ParticipantType {
-        return ParticipantType.fromValue(value.toLong())
+        return ParticipantType.fromValue(value)
     }
 }

@@ -11,8 +11,8 @@ import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.usecases.ExitConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
-import com.nextcloud.talk.newarch.utils.GlobalService
-import com.nextcloud.talk.newarch.utils.GlobalServiceInterface
+import com.nextcloud.talk.newarch.services.GlobalService
+import com.nextcloud.talk.newarch.services.GlobalServiceInterface
 import kotlinx.coroutines.launch
 
 class ChatViewModel constructor(application: Application,

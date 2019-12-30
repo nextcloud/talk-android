@@ -7,7 +7,7 @@ import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.domain.usecases.*
 import com.nextcloud.talk.newarch.features.chat.ChatViewModelFactory
-import com.nextcloud.talk.newarch.utils.GlobalService
+import com.nextcloud.talk.newarch.services.GlobalService
 import org.koin.dsl.module
 
 val ConversationsModule = module {

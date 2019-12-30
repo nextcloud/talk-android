@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import lombok.Data;
 
@@ -97,12 +98,34 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     public boolean replyable;
     @JsonField(name = "parent")
     public ChatMessage parentMessage;
-
     @JsonIgnore
     @Ignore
     List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
             MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
             MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChatMessage)) return false;
+        ChatMessage that = (ChatMessage) o;
+        return timestamp == that.timestamp &&
+                replyable == that.replyable &&
+                Objects.equals(jsonMessageId, that.jsonMessageId) &&
+                Objects.equals(actorType, that.actorType) &&
+                Objects.equals(actorId, that.actorId) &&
+                Objects.equals(actorDisplayName, that.actorDisplayName) &&
+                Objects.equals(token, that.token) &&
+                Objects.equals(message, that.message) &&
+                Objects.equals(messageParameters, that.messageParameters) &&
+                systemMessageType == that.systemMessageType &&
+                Objects.equals(parentMessage, that.parentMessage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(jsonMessageId, token, actorType, actorId, actorDisplayName, timestamp, message, messageParameters, systemMessageType, replyable, parentMessage);
+    }
 
     private boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {

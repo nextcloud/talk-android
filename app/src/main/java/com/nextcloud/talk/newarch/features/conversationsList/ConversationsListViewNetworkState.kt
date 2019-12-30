@@ -18,17 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.utils
+package com.nextcloud.talk.newarch.features.conversationsList
 
-import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.newarch.local.models.UserNgEntity
-
-interface GlobalServiceInterface {
-    enum class OperationStatus {
-        STATUS_OK,
-        STATUS_FAILED
-    }
-
-    suspend fun gotConversationInfoForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: OperationStatus)
-    suspend fun joinedConversationForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: OperationStatus)
+enum class ConversationsListViewNetworkState {
+    LOADING,
+    LOADED_EMPTY,
+    LOADED,
+    FAILED
 }
