@@ -20,18 +20,9 @@
 
 package com.nextcloud.talk.newarch.utils
 
-import android.app.ActivityManager
 import android.content.Context
-import android.content.Context.ACTIVITY_SERVICE
-import android.graphics.Bitmap
-import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.LoadRequest
@@ -73,7 +64,7 @@ class Images {
             }
         }
     }
-    
+
     // returns null if it's one-to-one that you need to fetch yourself
     fun getImageForConversation(context: Context, conversation: Conversation): Drawable? {
         conversation.objectType?.let { objectType ->

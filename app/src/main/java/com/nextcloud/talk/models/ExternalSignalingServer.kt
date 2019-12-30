@@ -26,6 +26,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.android.parcel.Parcelize
 import lombok.Data
 import org.parceler.Parcel
+import java.util.*
 
 @Data
 @Parcel
@@ -44,14 +45,15 @@ data class ExternalSignalingServer(
         other as ExternalSignalingServer
 
         if (externalSignalingServer != other.externalSignalingServer) return false
-        if (externalSignalingTicket != other.externalSignalingTicket) return false
+        //if (externalSignalingTicket != other.externalSignalingTicket) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = externalSignalingServer?.hashCode() ?: 0
+        return Objects.hash(externalSignalingServer)
+        /*var result = externalSignalingServer?.hashCode() ?: 0
         result = 31 * result + (externalSignalingTicket?.hashCode() ?: 0)
-        return result
+        return result*/
     }
 }

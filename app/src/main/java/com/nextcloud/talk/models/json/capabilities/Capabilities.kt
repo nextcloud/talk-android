@@ -42,6 +42,7 @@ data class Capabilities(
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o !is Capabilities) return false
+
         return (spreedCapability == o.spreedCapability &&
                 notificationsCapability == o.notificationsCapability &&
                 themingCapability == o.themingCapability)

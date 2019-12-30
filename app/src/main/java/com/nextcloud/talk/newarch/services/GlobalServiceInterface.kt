@@ -20,29 +20,17 @@
  *
  */
 
-package com.nextcloud.talk.newarch.local.converters
+package com.nextcloud.talk.newarch.services
 
-import androidx.room.TypeConverter
-import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
-class ParticipantMapConverter {
-    @TypeConverter
-    fun fromMapToString(map: HashMap<String, Participant>?): String? {
-        if (map == null) {
-            return ""
-        }
-
-        return LoganSquare.serialize(map)
+interface GlobalServiceInterface {
+    enum class OperationStatus {
+        STATUS_OK,
+        STATUS_FAILED
     }
 
-    @TypeConverter
-    fun fromStringToHashMap(value: String?): HashMap<String, Participant>? {
-        if (value.isNullOrEmpty()) {
-            return null
-        }
-
-        return LoganSquare.parse(value, HashMap::class.java) as java.util.HashMap<String, Participant>?
-    }
-
+    suspend fun gotConversationInfoForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: OperationStatus)
+    suspend fun joinedConversationForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: OperationStatus)
 }

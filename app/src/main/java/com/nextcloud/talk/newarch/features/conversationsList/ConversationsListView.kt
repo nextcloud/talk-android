@@ -23,7 +23,6 @@ package com.nextcloud.talk.newarch.features.conversationsList
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -32,13 +31,10 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.view.MenuItemCompat
-import androidx.lifecycle.MutableLiveData
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import butterknife.OnClick
-import coil.ImageLoader
-import coil.target.Target
-import coil.transform.CircleCropTransformation
 import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -55,10 +51,8 @@ import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
-import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListViewState.*
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListViewNetworkState.*
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
-import com.nextcloud.talk.newarch.utils.Images
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ShareUtils
@@ -81,8 +75,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
     private lateinit var viewModel: ConversationsListViewModel
     val factory: ConversationListViewModelFactory by inject()
-    private val imageLoader: ImageLoader by inject()
-    private val viewState: MutableLiveData<ConversationsListViewState> = MutableLiveData(LOADING)
 
     private val recyclerViewAdapter = FlexibleAdapter(mutableListOf(), null, false)
 
@@ -109,42 +101,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         }
 
         settingsItem = menu.findItem(R.id.action_settings)
-    }
-
-    private fun loadAvatar() {
-        val iconSize = settingsItem?.icon?.intrinsicHeight?.toFloat()
-                ?.let {
-                    DisplayUtils.convertDpToPixel(
-                            it,
-                            activity!!
-                    )
-                            .toInt()
-                }
-
-        iconSize?.let {
-            val target = object : Target {
-                override fun onSuccess(result: Drawable) {
-                    super.onSuccess(result)
-                    settingsItem?.icon = result
-                }
-
-                override fun onError(error: Drawable?) {
-                    super.onError(error)
-                    settingsItem?.icon = context.getDrawable(R.drawable.ic_settings_white_24dp)
-                }
-            }
-
-            viewModel.currentUserLiveData.value?.let {
-                val avatarRequest = Images().getRequestForUrl(
-                        imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
-                        it.baseUrl,
-                        it.userId, iconSize
-                ), it, target, this, CircleCropTransformation()
-                )
-
-                imageLoader.load(avatarRequest)
-            }
-        }
+        viewModel.loadAvatar()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -186,10 +143,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         searchView!!.setOnQueryTextListener(this)
     }
 
-    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
-        super.onRestoreViewState(view, savedViewState)
-        viewModel.loadConversations()
-    }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (!viewModel.searchQuery.value.equals(query)) {
@@ -212,26 +165,32 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
         viewModel = viewModelProvider(factory).get(ConversationsListViewModel::class.java)
         viewModel.apply {
-            currentUserLiveData.observe(this@ConversationsListView, Observer { value ->
-                loadAvatar()
+            currentUserAvatar.observe(this@ConversationsListView, Observer { value ->
+                settingsItem?.icon = value
             })
 
             conversationsLiveData.observe(this@ConversationsListView, Observer {
-                if (it.isEmpty()) {
-                    if (viewState.value != LOADED_EMPTY) {
-                        viewState.value = LOADED_EMPTY
-                    }
-                } else {
-                    if (viewState.value != LOADED) {
-                        viewState.value = LOADED
-                    }
+                val isListEmpty = it.isNullOrEmpty()
+
+                if (isListEmpty) {
+                    view?.stateWithMessageView?.errorStateTextView?.text =
+                            resources?.getText(R.string.nc_conversations_empty)
+                    view?.stateWithMessageView?.errorStateImageView?.setImageResource(drawable.ic_logo)
                 }
+
+                view?.stateWithMessageView?.visibility = if (isListEmpty && networkStateLiveData.value != LOADING) View.VISIBLE else View.GONE
+
+                if (view?.floatingActionButton?.isShown == false) {
+                    view?.floatingActionButton?.show()
+                }
+
+                searchItem?.isVisible = !isListEmpty
 
                 val newConversations = mutableListOf<ConversationItem>()
                 for (conversation in it) {
                     newConversations.add(
                             ConversationItem(
-                                    conversation, viewModel.currentUserLiveData.value!!,
+                                    conversation, globalService.currentUserLiveData.value!!,
                                     activity!!
                             )
                     )
@@ -241,6 +200,46 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                         newConversations as
                                 List<IFlexible<ViewHolder>>?, false
                 )
+
+            })
+
+            networkStateLiveData.observe(this@ConversationsListView, Observer { value ->
+                when (value) {
+                    LOADING -> {
+                        view?.post {
+                            view?.loadingStateView?.visibility = View.VISIBLE
+                            view?.dataStateView?.visibility = View.GONE
+                            view?.stateWithMessageView?.visibility = View.GONE
+                            view?.floatingActionButton?.visibility = View.GONE
+                        }
+                        searchItem?.isVisible = false
+                    }
+                    LOADED -> {
+                        // awesome, but we delegate the magic stuff to the data handler
+                        view?.post {
+                            view?.loadingStateView?.visibility = View.GONE
+                            view?.dataStateView?.visibility = View.VISIBLE
+                            view?.floatingActionButton?.visibility = View.VISIBLE
+                            if (view?.floatingActionButton?.isShown == false) {
+                                view?.floatingActionButton?.show()
+                            }
+                        }
+                        searchItem?.isVisible = !recyclerViewAdapter.isEmpty
+                    }
+                    FAILED -> {
+                        // probably offline, so what? :)
+                        view?.post {
+                            view?.loadingStateView?.visibility = View.GONE
+                            view?.dataStateView?.visibility = View.VISIBLE
+                            view?.floatingActionButton?.visibility = View.GONE
+                            view?.stateWithMessageView?.visibility = if (recyclerViewAdapter.isEmpty) View.VISIBLE else View.GONE
+                        }
+                        searchItem?.isVisible = !recyclerViewAdapter.isEmpty
+                    }
+                    else -> {
+                        // We should not be here
+                    }
+                }
             })
 
             searchQuery.observe(this@ConversationsListView, Observer {
@@ -249,65 +248,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             })
         }
 
-        viewState.observe(this@ConversationsListView, Observer { value ->
-            when (value) {
-                LOADING -> {
-                    view?.swipeRefreshLayoutView?.isEnabled = false
-                    view?.loadingStateView?.visibility = View.VISIBLE
-                    view?.stateWithMessageView?.visibility = View.GONE
-                    view?.dataStateView?.visibility = View.GONE
-                    view?.floatingActionButton?.visibility = View.GONE
-                    searchItem?.isVisible = false
-                }
-                LOADED -> {
-                    view?.swipeRefreshLayoutView?.isEnabled = true
-                    view?.swipeRefreshLayoutView?.post {
-                        view?.swipeRefreshLayoutView?.isRefreshing = false
-                    }
-                    view?.loadingStateView?.visibility = View.GONE
-                    view?.stateWithMessageView?.visibility = View.GONE
-                    view?.dataStateView?.visibility = View.VISIBLE
-                    view?.floatingActionButton?.visibility = View.VISIBLE
-                    searchItem?.isVisible = true
-                }
-                LOADED_EMPTY, FAILED -> {
-                    view?.swipeRefreshLayoutView?.post {
-                        view?.swipeRefreshLayoutView?.isRefreshing = false
-                    }
-                    view?.swipeRefreshLayoutView?.isEnabled = true
-                    view?.loadingStateView?.visibility = View.GONE
-                    view?.dataStateView?.visibility = View.GONE
-                    searchItem?.isVisible = false
-
-                    if (value.equals(FAILED)) {
-                        view?.stateWithMessageView?.errorStateTextView?.text = viewModel.messageData
-                        if (viewModel.messageData.equals(
-                                        context.resources.getString(R.string.nc_no_connection_error)
-                                )
-                        ) {
-                            view?.stateWithMessageView?.errorStateImageView?.setImageResource(
-                                    drawable.ic_signal_wifi_off_white_24dp
-                            )
-                        } else {
-                            view?.stateWithMessageView?.errorStateImageView?.setImageResource(
-                                    drawable.ic_announcement_white_24dp
-                            )
-                        }
-                        view?.floatingActionButton?.visibility = View.GONE
-                    } else {
-                        view?.floatingActionButton?.visibility = View.VISIBLE
-                        view?.stateWithMessageView?.errorStateTextView?.text =
-                                resources?.getText(R.string.nc_conversations_empty)
-                        view?.stateWithMessageView?.errorStateImageView?.setImageResource(drawable.ic_logo)
-                    }
-
-                    view?.stateWithMessageView?.visibility = View.VISIBLE
-                }
-                else -> {
-                    // We should not be here
-                }
-            }
-        })
 
 
         return super.onCreateView(inflater, container)
@@ -324,7 +264,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
     @OnClick(R.id.stateWithMessageView)
     fun onStateWithMessageViewClick() {
-        if (viewState.value!! == LOADED_EMPTY) {
+        if (view?.floatingActionButton?.isVisible == true) {
             openNewConversationScreen()
         }
     }
@@ -392,7 +332,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             )
         }
 
-        if (conversation.canLeave(viewModel.currentUserLiveData.value!!)) {
+        if (conversation.canLeave(viewModel.globalService.currentUserLiveData.value!!)) {
             items.add(
                     BasicListItemWithImage(
                             drawable.ic_exit_to_app_black_24dp, context.getString
@@ -401,7 +341,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             )
         }
 
-        if (conversation.canModerate(viewModel.currentUserLiveData.value!!)) {
+        if (conversation.canModerate(viewModel.globalService.currentUserLiveData.value!!)) {
             items.add(
                     BasicListItemWithImage(
                             drawable.ic_delete_grey600_24dp, context.getString(
@@ -418,6 +358,11 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         return resources?.getString(R.string.nc_app_name)
     }
 
+    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
+        super.onRestoreViewState(view, savedViewState)
+        viewModel.loadConversations()
+    }
+
     override fun onAttach(view: View) {
         super.onAttach(view)
         view.recyclerView.initRecyclerView(
@@ -432,7 +377,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             view.swipeRefreshLayoutView.isRefreshing = false
             viewModel.loadConversations()
         }
-
         view.swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
 
         view.fast_scroller.setBubbleTextCreator { position ->
@@ -514,15 +458,16 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
     ): Boolean {
         val clickedItem = recyclerViewAdapter.getItem(position)
         if (clickedItem != null) {
-            val conversation = (clickedItem as ConversationItem).model
+            val conversationItem = clickedItem as ConversationItem
+            val conversation = conversationItem.model
 
             val bundle = Bundle()
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, viewModel.currentUserLiveData.value)
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationItem.user)
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
             bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.conversationId)
             bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
             ConductorRemapping.remapChatController(
-                    router, viewModel.currentUserLiveData.value!!.id!!, conversation.token!!,
+                    router, conversationItem.user.id!!, conversation.token!!,
                     bundle, false
             )
         }

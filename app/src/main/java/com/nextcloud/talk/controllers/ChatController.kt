@@ -393,7 +393,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
         messagesListView?.setAdapter(adapter)
         adapter?.setLoadMoreListener(this)
         adapter?.setDateHeadersFormatter { format(it) }
-        adapter?.setOnMessageViewLongClickListener { view, message ->  onMessageViewLongClick(view, message)}
+        adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
 
         layoutManager = messagesListView?.layoutManager as LinearLayoutManager?
 
@@ -931,7 +931,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
             messageInput?.setText("")
             val replyMessageId: Long? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Long?
-            sendMessage(editable, if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) replyMessageId?.toInt() else null )
+            sendMessage(editable, if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) replyMessageId?.toInt() else null)
             cancelReply()
         }
     }
@@ -1412,7 +1412,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.ellipsize = TextUtils.TruncateAt.END
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.text = it.text
                             messageInputView?.findViewById<TextView>(R.id.quotedMessageTime)?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
-                            messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text = it.actorDisplayName ?: context.getText(R.string.nc_nick_guest)
+                            messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text = it.actorDisplayName
+                                    ?: context.getText(R.string.nc_nick_guest)
 
                             conversationUser?.let { currentUser ->
                                 messageInputView?.findViewById<ImageView>(R.id.quotedUserAvatar)?.load(it.user.avatar) {
@@ -1420,7 +1421,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                                     transformations(CircleCropTransformation())
                                 }
 
-                                chatMessage.imageUrl?.let{ previewImageUrl ->
+                                chatMessage.imageUrl?.let { previewImageUrl ->
                                     messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility = View.VISIBLE
 
                                     val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 96f, resources?.displayMetrics)

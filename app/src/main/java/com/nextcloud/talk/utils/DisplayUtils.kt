@@ -25,7 +25,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -47,7 +49,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.XmlRes
 import androidx.appcompat.widget.AppCompatDrawableManager
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.emoji.text.EmojiCompat
 import coil.Coil
@@ -66,7 +67,6 @@ import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import java.lang.reflect.InvocationTargetException
 import java.util.regex.Pattern
-import kotlin.math.min
 
 object DisplayUtils {
 

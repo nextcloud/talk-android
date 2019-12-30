@@ -21,30 +21,31 @@
 package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.Application
-import android.content.Intent
-import androidx.lifecycle.LiveData
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import coil.Coil
+import coil.api.get
+import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
-import com.nextcloud.talk.R.drawable
-import com.nextcloud.talk.R.string
-import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
-import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
-import com.nextcloud.talk.newarch.local.models.UserNgEntity
-import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.services.GlobalService
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
+import java.util.concurrent.locks.ReentrantLock
 
 class ConversationsListViewModel constructor(
         application: Application,
@@ -53,14 +54,21 @@ class ConversationsListViewModel constructor(
         private val leaveConversationUseCase: LeaveConversationUseCase,
         private val deleteConversationUseCase: DeleteConversationUseCase,
         private val conversationsRepository: ConversationsRepository,
-        usersRepository: UsersRepository
+        val globalService: GlobalService
 ) : BaseViewModel<ConversationsListView>(application) {
+
+    private val conversationsLoadingLock = ReentrantLock()
 
     var messageData: String? = null
     val searchQuery = MutableLiveData<String>()
-    val currentUserLiveData: LiveData<UserNgEntity> = usersRepository.getActiveUserLiveData()
-    val conversationsLiveData = Transformations.switchMap(currentUserLiveData) {
+    val networkStateLiveData: MutableLiveData<ConversationsListViewNetworkState> = MutableLiveData(ConversationsListViewNetworkState.LOADING)
+    val currentUserAvatar: MutableLiveData<Drawable> = MutableLiveData(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_settings_white_24dp)))
+    val conversationsLiveData = Transformations.switchMap(globalService.currentUserLiveData) {
+        if (networkStateLiveData.value != ConversationsListViewNetworkState.LOADING) {
+            networkStateLiveData.postValue(ConversationsListViewNetworkState.LOADING)
+        }
         loadConversations()
+        loadAvatar()
         conversationsRepository.getConversationsForUser(it.id!!)
     }
 
@@ -70,13 +78,13 @@ class ConversationsListViewModel constructor(
         }
 
         leaveConversationUseCase.invoke(viewModelScope, parametersOf(
-                currentUserLiveData.value,
+                globalService.currentUserLiveData.value,
                 conversation
         ),
                 object : UseCaseResponse<GenericOverall> {
                     override suspend fun onSuccess(result: GenericOverall) {
                         conversationsRepository.deleteConversation(
-                                currentUserLiveData.value!!.id!!, conversation
+                                globalService.currentUserLiveData.value!!.id!!, conversation
                                 .conversationId!!
                         )
                     }
@@ -99,13 +107,13 @@ class ConversationsListViewModel constructor(
         }
 
         deleteConversationUseCase.invoke(viewModelScope, parametersOf(
-                currentUserLiveData.value,
+                globalService.currentUserLiveData.value,
                 conversation
         ),
                 object : UseCaseResponse<GenericOverall> {
                     override suspend fun onSuccess(result: GenericOverall) {
                         conversationsRepository.deleteConversation(
-                                currentUserLiveData.value!!.id!!, conversation
+                                globalService.currentUserLiveData.value!!.id!!, conversation
                                 .conversationId!!
                         )
                     }
@@ -129,14 +137,14 @@ class ConversationsListViewModel constructor(
         }
 
         setConversationFavoriteValueUseCase.invoke(viewModelScope, parametersOf(
-                currentUserLiveData.value,
+                globalService.currentUserLiveData.value,
                 conversation,
                 favorite
         ),
                 object : UseCaseResponse<GenericOverall> {
                     override suspend fun onSuccess(result: GenericOverall) {
                         conversationsRepository.setFavoriteValueForConversation(
-                                currentUserLiveData.value!!.id!!,
+                                globalService.currentUserLiveData.value!!.id!!,
                                 conversation.conversationId!!, favorite
                         )
                     }
@@ -150,26 +158,48 @@ class ConversationsListViewModel constructor(
                 })
     }
 
+    fun loadAvatar() {
+        val operationUser = globalService.currentUserLiveData.value
+
+        operationUser?.let {
+            viewModelScope.launch {
+                val url = ApiUtils.getUrlForAvatarWithNameAndPixels(it.baseUrl, it.userId, 512)
+                val drawable = Coil.get((url)) {
+                    addHeader("Authorization", it.getCredentials())
+                    transformations(CircleCropTransformation())
+                }
+                currentUserAvatar.postValue(drawable)
+            }
+        }
+    }
+
     fun loadConversations() {
-        getConversationsUseCase.invoke(viewModelScope, parametersOf(currentUserLiveData.value), object :
-                UseCaseResponse<List<Conversation>> {
-            override suspend fun onSuccess(result: List<Conversation>) {
-                val mutableList = result.toMutableList()
-                val internalUserId = currentUserLiveData.value!!.id
-                mutableList.forEach {
-                    it.internalUserId = internalUserId
+        if (conversationsLoadingLock.tryLock()) {
+            getConversationsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value), object :
+                    UseCaseResponse<List<Conversation>> {
+                override suspend fun onSuccess(
+                        result: List<Conversation>) {
+                    networkStateLiveData.postValue(ConversationsListViewNetworkState.LOADED)
+                    val mutableList = result.toMutableList()
+                    val internalUserId = globalService.currentUserLiveData.value!!.id
+                    mutableList.forEach {
+                        it.internalUserId = internalUserId
+                    }
+
+                    conversationsRepository.saveConversationsForUser(
+                            internalUserId!!,
+                            mutableList)
+                    messageData = ""
+                    conversationsLoadingLock.unlock()
                 }
 
-                conversationsRepository.saveConversationsForUser(
-                        internalUserId!!,
-                        mutableList)
-                messageData = ""
-            }
-
-            override suspend fun onError(errorModel: ErrorModel?) {
-                messageData = errorModel?.getErrorMessage()
-            }
-        })
+                override suspend fun onError(errorModel: ErrorModel?) {
+                    messageData = errorModel?.getErrorMessage()
+                    networkStateLiveData.postValue(ConversationsListViewNetworkState.FAILED)
+                    conversationsLoadingLock.unlock()
+                }
+            })
+        }
     }
 
 
@@ -178,7 +208,7 @@ class ConversationsListViewModel constructor(
             value: Boolean
     ) {
         conversationsRepository.setChangingValueForConversation(
-                currentUserLiveData.value!!.id!!, conversation
+                globalService.currentUserLiveData.value!!.id!!, conversation
                 .conversationId!!, value
         )
     }

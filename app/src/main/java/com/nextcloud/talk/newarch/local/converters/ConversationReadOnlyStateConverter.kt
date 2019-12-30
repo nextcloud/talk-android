@@ -34,9 +34,9 @@ class ConversationReadOnlyStateConverter {
 
     @TypeConverter
     fun fromIntToConversationType(value: Int): ConversationReadOnlyState {
-        when (value) {
-            0 -> return CONVERSATION_READ_WRITE
-            else -> return CONVERSATION_READ_ONLY
+        return when (value) {
+            0 -> CONVERSATION_READ_WRITE
+            else -> CONVERSATION_READ_ONLY
         }
     }
 }

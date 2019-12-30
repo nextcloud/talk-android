@@ -297,7 +297,7 @@ class SettingsController : BaseController() {
             var hasMultipleUsers = false
             val job = async {
                 currentUser = usersRepository.getActiveUser()
-                hasMultipleUsers = usersRepository.getUsers().size > 0
+                hasMultipleUsers = usersRepository.getUsers().isNotEmpty()
                 credentials = currentUser!!.getCredentials()
             }
 
