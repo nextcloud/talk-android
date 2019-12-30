@@ -138,6 +138,7 @@
     <string name="nc_make_call_private">Beszélgetés priváttá tétele</string>
     <string name="nc_delete_call">Beszélgetés törlése</string>
     <string name="nc_delete">Törlés</string>
+    <string name="nc_new_conversation_short">Új</string>
     <string name="nc_new_conversation">Új beszélgetés</string>
     <string name="nc_join_via_link">Csatlakozás hivatkozással</string>
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
@@ -268,4 +269,7 @@
         ekkorra van ütemezve: %1$s.</string>
     <string name="nc_not_defined_error">Ismeretlen hiba</string>
     <string name="nc_general_settings">Általános</string>
+    <string name="nc_copy_message">Másolás</string>
+    <string name="nc_reply">Válasz</string>
+
     </resources>

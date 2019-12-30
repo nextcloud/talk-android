@@ -111,6 +111,7 @@
     <string name="nc_share_link_via">Partilhar hiperligação via</string>
     <string name="nc_delete_call">Eliminar conversação</string>
     <string name="nc_delete">Eliminar</string>
+    <string name="nc_new_conversation_short">Novo</string>
     <string name="nc_new_conversation">Nova conversação</string>
     <string name="nc_join_via_web">Aderir via Web</string>
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
@@ -189,4 +190,7 @@
 
     <string name="nc_not_defined_error">Erro desconhecido</string>
     <string name="nc_general_settings">Geral</string>
+    <string name="nc_copy_message">Copiar</string>
+    <string name="nc_reply">Resposta</string>
+
     </resources>

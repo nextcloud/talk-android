@@ -103,6 +103,7 @@
     <string name="nc_make_call_private">Hacer la conversación privada</string>
     <string name="nc_delete_call">Borrar conversación</string>
     <string name="nc_delete">Borrar</string>
+    <string name="nc_new_conversation_short">Nuevo</string>
     <string name="nc_join_via_web">Únete vía web</string>
     <string name="nc_add_to_favorites">Agregar a tus favoritos</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
@@ -172,4 +173,7 @@ teléfonos móviles. Puedes intentar unirte a la conversación a través de un n
     <string name="nc_file_browser_refresh">Actualizar</string>
     <string name="nc_not_defined_error">Error desconocido</string>
     <string name="nc_general_settings">General</string>
+    <string name="nc_copy_message">Copiar</string>
+    <string name="nc_reply">Responder</string>
+
     </resources>

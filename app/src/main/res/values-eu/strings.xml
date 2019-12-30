@@ -96,6 +96,7 @@
     <string name="nc_share_link">Partekatu esteka</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
     <string name="nc_delete">Ezabatu</string>
+    <string name="nc_new_conversation_short">Berria</string>
     <string name="nc_add_to_favorites">Gehitu gogokoetara</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
     <string name="nc_contacts_done">Egina</string>
@@ -187,5 +188,7 @@
     <string name="nc_allow_guests">Gonbidatuak baimendu</string>
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopiatu</string>
+    <string name="nc_reply">Erantzun</string>
 
     </resources>

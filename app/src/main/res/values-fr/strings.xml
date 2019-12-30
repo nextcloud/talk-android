@@ -145,6 +145,7 @@
     <string name="nc_delete_conversation_one2one">Si vous supprimez la conversation, elle sera aussi supprimée pour %1$s.</string>
     <string name="nc_delete_conversation_more">Si vous supprimez cette conversation, elle sera supprimée pour tous les participants.</string>
 
+    <string name="nc_new_conversation_short">Créer</string>
     <string name="nc_new_conversation">Nouvelle conversation</string>
     <string name="nc_join_via_link">Joindre via un lien</string>
     <string name="nc_join_via_web">Joindre via le web</string>
@@ -298,5 +299,7 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Copier</string>
+    <string name="nc_reply">Répondre</string>
 
     </resources>

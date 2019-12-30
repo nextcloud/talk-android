@@ -147,6 +147,7 @@ Kies er eentje van een provider.</string>
         verwijderd voor %1$s.</string>
     <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
 
+    <string name="nc_new_conversation_short">Nieuw</string>
     <string name="nc_new_conversation">Nieuw gesprek</string>
     <string name="nc_join_via_link">Deelnemen via een link</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
@@ -301,5 +302,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopie</string>
+    <string name="nc_reply">Antwoord</string>
 
     </resources>

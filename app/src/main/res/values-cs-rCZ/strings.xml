@@ -148,6 +148,7 @@
     <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude také
         smazána pro všechny ostatní její účastníky.</string>
 
+    <string name="nc_new_conversation_short">Nové</string>
     <string name="nc_new_conversation">Nová konverzace</string>
     <string name="nc_join_via_link">Připojit se s odkazem</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
@@ -301,5 +302,7 @@
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Zkopírovat</string>
+    <string name="nc_reply">Odpovědět</string>
 
     </resources>

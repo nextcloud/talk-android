@@ -148,6 +148,7 @@
     <string name="nc_delete_conversation_more">Om du raderar konversationen kommer den även att
         raderas för alla andra deltagare.</string>
 
+    <string name="nc_new_conversation_short">Nytt</string>
     <string name="nc_new_conversation">Ny konversation</string>
     <string name="nc_join_via_link">Gå med via länk</string>
     <string name="nc_join_via_web">Gå med via webb</string>
@@ -302,5 +303,7 @@
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopia</string>
+    <string name="nc_reply">Svara</string>
 
     </resources>

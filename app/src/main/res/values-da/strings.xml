@@ -138,6 +138,7 @@
     <string name="nc_make_call_private">Gør samtalen privat</string>
     <string name="nc_delete_call">Slet samtale</string>
     <string name="nc_delete">Slet</string>
+    <string name="nc_new_conversation_short">Ny</string>
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_join_via_link">Deltag via link</string>
     <string name="nc_join_via_web">Deltag via web</string>
@@ -270,4 +271,7 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
 møde er planlagt til %1$s.</string>
     <string name="nc_not_defined_error">Ukendt fejl</string>
     <string name="nc_general_settings">Generelt</string>
+    <string name="nc_copy_message">Kopiér</string>
+    <string name="nc_reply">Besvar</string>
+
     </resources>

@@ -122,6 +122,7 @@
     <string name="nc_make_call_private">להפוך את הדיון לפרטי</string>
     <string name="nc_delete_call">מחיקת דיון</string>
     <string name="nc_delete">מחיקה</string>
+    <string name="nc_new_conversation_short">חדש</string>
     <string name="nc_new_conversation">דיון חדש</string>
     <string name="nc_join_via_web">הצטרפות דרך דפדפן</string>
     <string name="nc_add_to_favorites">הוספה למועדפים</string>
@@ -208,4 +209,7 @@
     <string name="nc_file_browser_refresh">רענון</string>
     <string name="nc_not_defined_error">שגיאה בלתי ידועה</string>
     <string name="nc_general_settings">כללי</string>
+    <string name="nc_copy_message">העתק</string>
+    <string name="nc_reply">תגובה</string>
+
     </resources>

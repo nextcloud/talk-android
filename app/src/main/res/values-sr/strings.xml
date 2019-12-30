@@ -148,6 +148,7 @@
     <string name="nc_delete_conversation_more">Ако обришете разговор, он ће такође бити
  обрисан и за све друге учеснике.</string>
 
+    <string name="nc_new_conversation_short">Нов</string>
     <string name="nc_new_conversation">Нови разговор</string>
     <string name="nc_join_via_link">Придружи се преко везе</string>
     <string name="nc_join_via_web">Придружи се преко веба</string>
@@ -302,5 +303,7 @@
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Копија</string>
+    <string name="nc_reply">Одговори</string>
 
     </resources>

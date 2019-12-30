@@ -150,6 +150,7 @@ Produciuse un fallo ao recuperar os axustes da sinalización</string>
     <string name="nc_delete_conversation_more">Se elimina a conversa, tamén se eliminrá
         para todos os demais participantes.</string>
 
+    <string name="nc_new_conversation_short">Novo</string>
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Xuntarse mediante unha ligazón</string>
     <string name="nc_join_via_web">Xuntarse medinte a web</string>
@@ -304,5 +305,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Copiar</string>
+    <string name="nc_reply">Responder</string>
 
     </resources>

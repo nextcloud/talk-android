@@ -142,6 +142,7 @@
     <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan
         za vse udeležence.</string>
 
+    <string name="nc_new_conversation_short">Novo</string>
     <string name="nc_new_conversation">Nov pogovor</string>
     <string name="nc_join_via_link">Pridruži se prek povezave</string>
     <string name="nc_join_via_web">Pridruži se prek spleta</string>
@@ -288,5 +289,7 @@ Pozdravite prijatelje in znance.</string>
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopiraj</string>
+    <string name="nc_reply">Odgovori</string>
 
     </resources>

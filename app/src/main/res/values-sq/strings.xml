@@ -109,6 +109,7 @@
     <string name="nc_make_call_private">Bëje bisedën private</string>
     <string name="nc_delete_call">Fshijeni bisedën</string>
     <string name="nc_delete">Delete</string>
+    <string name="nc_new_conversation_short">I ri</string>
     <string name="nc_new_conversation">Bisedë e re</string>
     <string name="nc_add_to_favorites">Shto tek të preferuarat</string>
     <string name="nc_remove_from_favorites">Hiqeni nga të parapëlqyerat</string>
@@ -169,4 +170,7 @@
     <string name="nc_file_browser_refresh">Rifresko</string>
     <string name="nc_not_defined_error">Gabim i panjohur</string>
     <string name="nc_general_settings">Të përgjithshme</string>
+    <string name="nc_copy_message">Kopjo</string>
+    <string name="nc_reply">Përgjigju</string>
+
     </resources>

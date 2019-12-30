@@ -148,6 +148,7 @@
     <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung löschen, dann wird 
 sie auch für alle anderen Teilnehmer gelöscht.</string>
 
+    <string name="nc_new_conversation_short">Neu</string>
     <string name="nc_new_conversation">Neue Unterhaltung</string>
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
@@ -302,5 +303,7 @@ Meeting ist für %1$s geplant.</string>
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopieren</string>
+    <string name="nc_reply">Antworten</string>
 
     </resources>

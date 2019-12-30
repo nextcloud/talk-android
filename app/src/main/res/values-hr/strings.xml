@@ -148,6 +148,7 @@ izbrisan za %1$s.</string>
     <string name="nc_delete_conversation_more">Ako izbrišete ovaj razgovor, također će biti
 izbrisan za sve ostale sudionike.</string>
 
+    <string name="nc_new_conversation_short">Novo</string>
     <string name="nc_new_conversation">Novi razgovor</string>
     <string name="nc_join_via_link">Pridružite se putem poveznice</string>
     <string name="nc_join_via_web">Pridružite se putem weba</string>
@@ -302,5 +303,7 @@ popisa razgovora</string>
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopiraj</string>
+    <string name="nc_reply">Odgovori</string>
 
     </resources>

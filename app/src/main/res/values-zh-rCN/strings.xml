@@ -147,6 +147,7 @@
 从 %1$s 处删除。</string>
     <string name="nc_delete_conversation_more">如果您删除了此会话，它也将会从所有其他参与者处删除。</string>
 
+    <string name="nc_new_conversation_short">新建</string>
     <string name="nc_new_conversation">新的会话</string>
     <string name="nc_join_via_link">使用链接加入</string>
     <string name="nc_join_via_web">通过网页加入</string>
@@ -299,5 +300,7 @@
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">复制</string>
+    <string name="nc_reply">回复</string>
 
     </resources>
