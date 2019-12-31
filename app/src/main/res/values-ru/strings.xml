@@ -138,6 +138,7 @@
     <string name="nc_make_call_private">Сделать беседу личной</string>
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete">Удалить</string>
+    <string name="nc_new_conversation_short">Новая</string>
     <string name="nc_new_conversation">Новая беседа</string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
     <string name="nc_join_via_web">Присоединиться через веб</string>
@@ -270,4 +271,7 @@
     <string name="nc_timeout_error">Тайм-аут</string>
     <string name="nc_not_defined_error">Неизвестная ошибка</string>
     <string name="nc_general_settings">Основные</string>
+    <string name="nc_copy_message">Копировать</string>
+    <string name="nc_reply">Ответить</string>
+
     </resources>

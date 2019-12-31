@@ -148,6 +148,7 @@
     <string name="nc_delete_conversation_more">Se você excluir esta conversa, ela também será
         excluída para todos os participantes.</string>
 
+    <string name="nc_new_conversation_short">Novo</string>
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Juntar-se com um link</string>
     <string name="nc_join_via_web">Juntar-se via web</string>
@@ -302,4 +303,7 @@
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Copiar</string>
+    <string name="nc_reply">Responder</string>
+
     </resources>

@@ -191,8 +191,14 @@
         susitikimo pradžia yra suplanuota %1$s.</string>
     <!-- Errors -->
     <string name="nc_no_connection_error">Nėra ryšio</string>
+    <string name="nc_bad_response_error">Blogas atsakas</string>
     <string name="nc_not_defined_error">Nežinoma klaida</string>
     <string name="nc_general_settings">Bendra</string>
+    <string name="nc_last_moderator_title">Nepavyko išeiti iš pokalbio</string>
+    <string name="nc_last_moderator">Prieš išeidami iš %1$s, turite paaukštinti naują moderatorių.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopijuoti</string>
     <string name="nc_reply">Atsakyti</string>
 

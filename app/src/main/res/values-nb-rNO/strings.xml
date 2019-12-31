@@ -129,6 +129,7 @@
     <string name="nc_make_call_private">Gjør samtale privat</string>
     <string name="nc_delete_call">Slett samtale</string>
     <string name="nc_delete">Slett</string>
+    <string name="nc_new_conversation_short">Ny</string>
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_join_via_web">Bli med via nett</string>
     <string name="nc_favorite_conversation">Favoritt samtale</string>
@@ -271,4 +272,7 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopier</string>
+    <string name="nc_reply">Svar</string>
+
     </resources>

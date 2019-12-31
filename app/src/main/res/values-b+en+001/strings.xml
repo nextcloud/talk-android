@@ -113,6 +113,7 @@
     <string name="nc_make_call_private">Make conversation private</string>
     <string name="nc_delete_call">Delete conversation</string>
     <string name="nc_delete">Delete</string>
+    <string name="nc_new_conversation_short">New</string>
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_join_via_web">Join via web</string>
     <string name="nc_add_to_favorites">Add to favourites</string>
@@ -221,4 +222,7 @@
     <string name="nc_file_browser_refresh">Refresh</string>
     <string name="nc_not_defined_error">Unknown error</string>
     <string name="nc_general_settings">General</string>
+    <string name="nc_copy_message">Copy</string>
+    <string name="nc_reply">Reply</string>
+
     </resources>

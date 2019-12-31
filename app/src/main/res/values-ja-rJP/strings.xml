@@ -139,6 +139,7 @@
     <string name="nc_make_call_private">会話を非公開にする</string>
     <string name="nc_delete_call">会話を削除</string>
     <string name="nc_delete">削除</string>
+    <string name="nc_new_conversation_short">新規作成</string>
     <string name="nc_new_conversation">新しい会話</string>
     <string name="nc_join_via_link">トークに参加する</string>
     <string name="nc_join_via_web">ウェブ経由で参加</string>
@@ -269,4 +270,7 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_not_defined_error">不明なエラー</string>
     <string name="nc_general_settings">一般</string>
     <string name="nc_allow_guests">ゲストを許可する</string>
+    <string name="nc_copy_message">コピー</string>
+    <string name="nc_reply">返信</string>
+
     </resources>

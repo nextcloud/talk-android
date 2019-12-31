@@ -132,6 +132,7 @@
     <string name="nc_make_call_private">Gera samtal að einka</string>
     <string name="nc_delete_call">Eyða samtali</string>
     <string name="nc_delete">Eyða</string>
+    <string name="nc_new_conversation_short">Nýtt</string>
     <string name="nc_new_conversation">Nýtt samtal</string>
     <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
     <string name="nc_add_to_favorites">Bæta í eftirlæti</string>
@@ -254,4 +255,7 @@
     <string name="nc_last_moderator_title">Gat ekki hætt í samtali</string>
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Afrita</string>
+    <string name="nc_reply">Svara</string>
+
     </resources>

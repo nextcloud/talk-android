@@ -148,6 +148,7 @@ zmazaný pre %1$s.</string>
     <string name="nc_delete_conversation_more">Ak zmažete tento rozhovor, bude takisto 
 zmazaný pre všetkých ostatných zúčastnených</string>
 
+    <string name="nc_new_conversation_short">Nový</string>
     <string name="nc_new_conversation">Nový rozhovor</string>
     <string name="nc_join_via_link">Pripojiť sa cez odkaz</string>
     <string name="nc_join_via_web">Pripojiť sa cez web</string>
@@ -302,4 +303,7 @@ v zozname rozhovorov</string>
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopírovať</string>
+    <string name="nc_reply">Odpoveď</string>
+
     </resources>

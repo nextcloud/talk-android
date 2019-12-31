@@ -137,6 +137,7 @@
     <string name="nc_delete_conversation_more">Εάν διαγράψετε την συνομιλία θα διαγραφεί επίσης
  και για όλους του συμμετέχοντες.</string>
 
+    <string name="nc_new_conversation_short">Νέα</string>
     <string name="nc_new_conversation">Νέα συνομιλία</string>
     <string name="nc_join_via_link">Συμμετοχή με σύνδεσμο</string>
     <string name="nc_join_via_web">Συμμετοχή μέσω ιστού</string>
@@ -252,4 +253,7 @@
     <string name="nc_no_connection_error">Δεν υπάρχει σύνδεση</string>
     <string name="nc_not_defined_error">Άγνωστο σφάλμα</string>
     <string name="nc_general_settings">Γενικά</string>
+    <string name="nc_copy_message">Αντιγραφή</string>
+    <string name="nc_reply">Απάντηση</string>
+
     </resources>
