@@ -114,6 +114,7 @@
     <string name="nc_no_proxy">プロキシを利用しない</string>
     <string name="nc_username">ユーザー名</string>
     <string name="nc_password">パスワード</string>
+    <string name="nc_password_redacted">プライバシー上の理由で編集済み</string>
     <string name="nc_conversation_link">会話リンク</string>
     <string name="nc_new_password">新しいパスワード</string>
     <string name="nc_wrong_password">パスワードが間違っています</string>
@@ -129,6 +130,8 @@
     <string name="nc_start_conversation">会話を開始する</string>
     <string name="nc_configure_room">会話を構成する</string>
     <string name="nc_leave">会話を離れる</string>
+    <string name="nc_leave_message">この会話から退出しますが本当によろしいですか。</string>
+    <string name="nc_simple_leave">退出</string>
     <string name="nc_rename">会話の名前を変更する</string>
     <string name="nc_set_password">パスワードを設定</string>
     <string name="nc_change_password">パスワードを変更</string>
@@ -139,12 +142,19 @@
     <string name="nc_make_call_private">会話を非公開にする</string>
     <string name="nc_delete_call">会話を削除</string>
     <string name="nc_delete">削除</string>
+    <string name="nc_delete_conversation_default">この会話を削除しますが本当によろしいですか。</string>
+    <string name="nc_delete_conversation_one2one">会話を削除すると、%1$sも一緒に削除されます。</string>
+    <string name="nc_delete_conversation_more">この会話を削除すると、ほかの参加者も一緒に削除されます。</string>
+
     <string name="nc_new_conversation_short">新規作成</string>
     <string name="nc_new_conversation">新しい会話</string>
     <string name="nc_join_via_link">トークに参加する</string>
     <string name="nc_join_via_web">ウェブ経由で参加</string>
+    <string name="nc_favorite_conversation">お気に入りの会話</string>
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
+    <string name="nc_favorites_explanation">会話は会話リストのトップに固定されます</string>
+
     <!-- Contacts -->
     <string name="nc_select_contacts">連絡先を選択</string>
     <string name="nc_contacts_done">完了</string>
@@ -177,7 +187,10 @@
     <string name="nc_notify_me_mention">言及したときに通知する</string>
     <string name="nc_notify_me_never">決して通知しない</string>
     <string name="nc_mute_calls">通話をミュートする</string>
+    <string name="nc_mute_calls_desc">着信は無視されます</string>
     <string name="nc_important_conversation">重要な会議</string>
+    <string name="nc_important_conversation_desc">おやすみモードでも通話とメッセージ通知は表示されます（システムの「優先的な割り込みのみ許可」の設定に従います）</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
     <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。
@@ -267,9 +280,24 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_lobby">ロビー</string>
     <string name="nc_start_time">開始時刻</string>
     <string name="nc_lobby_waiting">現在ロビーで待機中</string>
+    <string name="nc_lobby_waiting_with_date">現在ロビーで待機中。\n この会議は%1$sに予定されています。</string>
+    <string name="nc_manual">未設定</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">接続がありません</string>
+    <string name="nc_bad_response_error">不正なレスポンス</string>
+    <string name="nc_timeout_error">タイムアウト</string>
+    <string name="nc_empty_response_error">空のレスポンス</string>
     <string name="nc_not_defined_error">不明なエラー</string>
+    <string name="nc_unauthorized_error">権限がありません</string>
+
     <string name="nc_general_settings">一般</string>
     <string name="nc_allow_guests">ゲストを許可する</string>
+    <string name="nc_last_moderator_title">会話を退出できませんでした</string>
+    <string name="nc_last_moderator">%1$sを退出する前に、新しいモデレータを昇格させる必要があります。</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">コピー</string>
     <string name="nc_reply">返信</string>
 
