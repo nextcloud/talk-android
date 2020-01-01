@@ -27,7 +27,6 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
-import android.os.Handler
 import android.view.View
 import androidx.emoji.widget.EmojiTextView
 import butterknife.BindView
@@ -89,6 +88,7 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
                 }
             }
         }
+
         if (message.messageType == SINGLE_NC_ATTACHMENT_MESSAGE) {
             // it's a preview for a Nextcloud share
 
@@ -99,8 +99,9 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
             )
 
             if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
-                // we now handle this directly in imageloader
-                //image.load(getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap().get ("mimetype")))
+                if (message.imageUrl == "no-preview") {
+                    image.load(getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap()["mimetype"]))
+                }
             } else {
                 fetchFileInformation(
                         "/" + message.getSelectedIndividualHashMap()["path"],
@@ -187,11 +188,8 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
                         if (davResponse.data != null) {
                             val browserFileList =
                                     davResponse.data as List<BrowserFile>
-                            if (!browserFileList.isEmpty()) {
-                                Handler(context.mainLooper)
-                                        .post {
-                                            image.load(getDrawableResourceIdForMimeType(browserFileList[0].mimeType))
-                                        }
+                            if (browserFileList.isNotEmpty()) {
+                                image.load(getDrawableResourceIdForMimeType(browserFileList[0].mimeType))
                             }
                         }
                     }
@@ -202,9 +200,12 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
 
     override fun getPayloadForImageLoader(message: ChatMessage): Any {
         val map = HashMap<String, Any>()
+        // used for setting a placeholder
         if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
-            map["mimetype"] = message.getSelectedIndividualHashMap().get("mimetype")!!
+            map["mimetype"] = message.getSelectedIndividualHashMap()["mimetype"]!!
         }
+
+        map["hasPreview"] = message.selectedIndividualHashMap.getOrDefault("has-preview", false)
 
         return ImageLoaderPayload(map)
     }

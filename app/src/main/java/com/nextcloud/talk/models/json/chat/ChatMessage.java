@@ -148,7 +148,13 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
                 Map<String, String> individualHashMap = messageParameters.get(key);
                 if (individualHashMap.get("type").equals("file")) {
                     selectedIndividualHashMap = individualHashMap;
-                    return (ApiUtils.getUrlForFilePreviewWithFileId(getActiveUser().getBaseUrl(),
+                    if (selectedIndividualHashMap.containsKey("preview-available")) {
+                        if (selectedIndividualHashMap.get("preview-available").equals("no")) {
+                            return "no-preview";
+                        }
+                    }
+
+                    return (ApiUtils.getUrlForFilePreviewWithFileId(activeUser.getBaseUrl(),
                             individualHashMap.get("id"), NextcloudTalkApplication.Companion.getSharedApplication()
                                     .getResources()
                                     .getDimensionPixelSize(R.dimen.maximum_file_preview_size)));
@@ -157,7 +163,7 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
         }
 
         if (!messageTypesToIgnore.contains(getMessageType()) && isLinkPreviewAllowed) {
-            return getMessage().trim();
+            return message.trim();
         }
 
         return null;
