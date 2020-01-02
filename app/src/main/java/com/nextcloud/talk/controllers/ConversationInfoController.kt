@@ -86,6 +86,10 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.android.ext.android.inject
@@ -728,27 +732,33 @@ class ConversationInfoController(args: Bundle) : BaseController(),
             }
 
             shareAction.setOnClickListener {
-                val sendIntent: Intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(
-                            Intent.EXTRA_SUBJECT,
-                            String.format(
-                                    context.getString(R.string.nc_share_subject),
-                                    context.getString(R.string.nc_app_name)
-                            )
-                    )
+                GlobalScope.launch {
+                    val sendIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(
+                                Intent.EXTRA_SUBJECT,
+                                String.format(
+                                        context.getString(string.nc_share_subject),
+                                        context.getString(string.nc_app_name)
+                                )
+                        )
 
-                    putExtra(
-                            Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(
-                            context, conversation!!.password, conversation!!
-                    )
-                    )
+                        putExtra(
+                                Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(
+                                context, conversation!!.password, conversation!!
+                        )
+                        )
 
-                    type = "text/plain"
+                        type = "text/plain"
+                    }
+
+
+                    val intent = Intent.createChooser(sendIntent, context.getString(string.nc_share_link))
+                    withContext(Dispatchers.Main) {
+                        startActivity(intent)
+                    }
+
                 }
-
-                val intent = Intent.createChooser(sendIntent, context.getString(string.nc_share_link))
-                startActivity(intent)
             }
 
             if (allowGuestsAction.value) {

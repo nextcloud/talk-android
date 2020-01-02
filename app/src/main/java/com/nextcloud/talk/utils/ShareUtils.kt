@@ -34,8 +34,8 @@ object ShareUtils : KoinComponent {
 
     @JvmStatic
     fun getStringForIntent(context: Context?, password: String?, conversation: Conversation): String {
-        val userEntity: UserNgEntity? = usersRepository.getActiveUser()
         var shareString = ""
+        val userEntity: UserNgEntity? = usersRepository.getActiveUser()
         if (userEntity != null && context != null) {
             shareString = java.lang.String.format(context.resources.getString(R.string.nc_share_text),
                     userEntity.baseUrl, conversation.token)
@@ -43,6 +43,7 @@ object ShareUtils : KoinComponent {
                 shareString += String.format(context.resources.getString(R.string.nc_share_text_pass), password)
             }
         }
+
         return shareString
     }
 }
