@@ -76,7 +76,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
     private lateinit var viewModel: ConversationsListViewModel
     val factory: ConversationListViewModelFactory by inject()
 
-    private val recyclerViewAdapter = FlexibleAdapter(mutableListOf(), null, false)
+    private val recyclerViewAdapter = FlexibleAdapter(mutableListOf(), this, false)
 
     private var searchItem: MenuItem? = null
     private var settingsItem: MenuItem? = null
@@ -164,6 +164,30 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         actionBar?.show()
 
         viewModel = viewModelProvider(factory).get(ConversationsListViewModel::class.java)
+
+        val view = super.onCreateView(inflater, container)
+
+        view.apply {
+            recyclerView.initRecyclerView(
+                    SmoothScrollLinearLayoutManager(activity), recyclerViewAdapter, false)
+            recyclerViewAdapter.fastScroller = fast_scroller
+            swipeRefreshLayoutView.setOnRefreshListener {
+                view.swipeRefreshLayoutView.isRefreshing = false
+                viewModel.loadConversations()
+            }
+            swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
+            fast_scroller.setBubbleTextCreator { position ->
+                var displayName =
+                        (recyclerViewAdapter.getItem(position) as ConversationItem).model.displayName
+
+                if (displayName!!.length > 8) {
+                    displayName = displayName.substring(0, 4) + "..."
+                }
+
+                displayName
+            }
+        }
+
         viewModel.apply {
             currentUserAvatar.observe(this@ConversationsListView, Observer { value ->
                 settingsItem?.icon = value
@@ -173,15 +197,15 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                 val isListEmpty = it.isNullOrEmpty()
 
                 if (isListEmpty) {
-                    view?.stateWithMessageView?.errorStateTextView?.text =
+                    view.stateWithMessageView?.errorStateTextView?.text =
                             resources?.getText(R.string.nc_conversations_empty)
-                    view?.stateWithMessageView?.errorStateImageView?.setImageResource(drawable.ic_logo)
+                    view.stateWithMessageView?.errorStateImageView?.setImageResource(drawable.ic_logo)
                 }
 
-                view?.stateWithMessageView?.visibility = if (isListEmpty && networkStateLiveData.value != LOADING) View.VISIBLE else View.GONE
+                view.stateWithMessageView?.visibility = if (isListEmpty && networkStateLiveData.value != LOADING) View.VISIBLE else View.GONE
 
-                if (view?.floatingActionButton?.isShown == false) {
-                    view?.floatingActionButton?.show()
+                if (view.floatingActionButton?.isShown == false) {
+                    view.floatingActionButton?.show()
                 }
 
                 searchItem?.isVisible = !isListEmpty
@@ -206,34 +230,34 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             networkStateLiveData.observe(this@ConversationsListView, Observer { value ->
                 when (value) {
                     LOADING -> {
-                        view?.post {
-                            view?.loadingStateView?.visibility = View.VISIBLE
-                            view?.dataStateView?.visibility = View.GONE
-                            view?.stateWithMessageView?.visibility = View.GONE
-                            view?.floatingActionButton?.visibility = View.GONE
+                        view.post {
+                            view.loadingStateView?.visibility = View.VISIBLE
+                            view.recyclerView?.visibility = View.GONE
+                            view.stateWithMessageView?.visibility = View.GONE
+                            view.floatingActionButton?.visibility = View.GONE
                         }
                         searchItem?.isVisible = false
                     }
                     LOADED -> {
                         // awesome, but we delegate the magic stuff to the data handler
-                        view?.post {
-                            view?.loadingStateView?.visibility = View.GONE
-                            view?.dataStateView?.visibility = View.VISIBLE
-                            view?.stateWithMessageView?.visibility = if (recyclerViewAdapter.isEmpty) View.VISIBLE else View.GONE
-                            view?.floatingActionButton?.visibility = View.VISIBLE
-                            if (view?.floatingActionButton?.isShown == false) {
-                                view?.floatingActionButton?.show()
+                        view.post {
+                            view.loadingStateView?.visibility = View.GONE
+                            view.recyclerView?.visibility = View.VISIBLE
+                            view.stateWithMessageView?.visibility = if (recyclerViewAdapter.isEmpty) View.VISIBLE else View.GONE
+                            view.floatingActionButton?.visibility = View.VISIBLE
+                            if (view.floatingActionButton?.isShown == false) {
+                                view.floatingActionButton?.show()
                             }
                         }
                         searchItem?.isVisible = !recyclerViewAdapter.isEmpty
                     }
                     FAILED -> {
                         // probably offline, so what? :)
-                        view?.post {
-                            view?.loadingStateView?.visibility = View.GONE
-                            view?.dataStateView?.visibility = View.VISIBLE
-                            view?.floatingActionButton?.visibility = View.GONE
-                            view?.stateWithMessageView?.visibility = if (recyclerViewAdapter.isEmpty) View.VISIBLE else View.GONE
+                        view.post {
+                            view.loadingStateView?.visibility = View.GONE
+                            view.recyclerView?.visibility = View.VISIBLE
+                            view.floatingActionButton?.visibility = View.GONE
+                            view.stateWithMessageView?.visibility = if (recyclerViewAdapter.isEmpty) View.VISIBLE else View.GONE
                         }
                         searchItem?.isVisible = !recyclerViewAdapter.isEmpty
                     }
@@ -249,9 +273,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
             })
         }
 
-
-
-        return super.onCreateView(inflater, container)
+        return view
     }
 
     override fun getLayoutId(): Int {
@@ -366,30 +388,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        view.recyclerView.initRecyclerView(
-                SmoothScrollLinearLayoutManager(view.context), recyclerViewAdapter, false
-        )
-
-        recyclerViewAdapter.fastScroller = view.fast_scroller
-        recyclerViewAdapter.mItemClickListener = this
-        recyclerViewAdapter.mItemLongClickListener = this
-
-        view.swipeRefreshLayoutView.setOnRefreshListener {
-            view.swipeRefreshLayoutView.isRefreshing = false
-            viewModel.loadConversations()
-        }
-        view.swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
-
-        view.fast_scroller.setBubbleTextCreator { position ->
-            var displayName =
-                    (recyclerViewAdapter.getItem(position) as ConversationItem).model.displayName
-
-            if (displayName!!.length > 8) {
-                displayName = displayName.substring(0, 4) + "..."
-            }
-
-            displayName
-        }
     }
 
     override fun onItemLongClick(position: Int) {

@@ -27,7 +27,7 @@ fun RecyclerView.initRecyclerView(
         adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>,
         hasFixedSize: Boolean = true
 ) {
-    this.layoutManager = layoutManager
     this.adapter = adapter
+    this.layoutManager = layoutManager
     setHasFixedSize(hasFixedSize)
 }

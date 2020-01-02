@@ -100,7 +100,7 @@ object DisplayUtils {
     fun getRoundedDrawable(drawable: Drawable?): Drawable {
         val bitmap = getBitmap(drawable!!)
         val drawable = runBlocking {
-            return@runBlocking BitmapDrawable(CircleCropTransformation().transform(BitmapPool(10000), bitmap, OriginalSize))
+            return@runBlocking BitmapDrawable(CircleCropTransformation().transform(BitmapPool(0), bitmap, OriginalSize))
         }
 
         return drawable

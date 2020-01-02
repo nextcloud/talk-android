@@ -120,7 +120,7 @@ fun createOkHttpClient(
     httpClient.retryOnConnectionFailure(true)
     httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE))
 
-    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N) {
+    if (SDK_INT == Build.VERSION_CODES.N) {
         val suites = sslSocketFactory.defaultCipherSuites
         val tlsSpec = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).cipherSuites(*suites).build()
         httpClient.connectionSpecs(listOf(tlsSpec, ConnectionSpec.CLEARTEXT))
@@ -145,7 +145,7 @@ fun createOkHttpClient(
         }
     }
 
-    httpClient.addNetworkInterceptor { chain ->
+    httpClient.addInterceptor { chain ->
         var response = chain.proceed(chain.request())
 
         if (response.request().url().encodedPath().contains("/avatar/")) {
@@ -291,7 +291,6 @@ fun createImageLoader(
 ): ImageLoader {
     return ImageLoader(androidApplication) {
         availableMemoryPercentage(0.5)
-        bitmapPoolPercentage(0.5)
         crossfade(true)
         okHttpClient(okHttpClient)
         componentRegistry {

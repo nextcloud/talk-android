@@ -24,53 +24,41 @@
     android:id="@+id/generic_rv_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    >
+    android:animateLayoutChanges="true">
 
-  <include
-      layout="@layout/view_states"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      />
+    <include
+        layout="@layout/view_states"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-  <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-      android:id="@+id/swipeRefreshLayoutView"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:visibility="visible"
-      app:layout_behavior="com.nextcloud.talk.utils.FABAwareScrollingViewBehavior"
-      >
-
-    <FrameLayout
-        android:id="@+id/dataStateView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayoutView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
-        >
+        android:visibility="visible"
+        app:layout_behavior="com.nextcloud.talk.utils.FABAwareScrollingViewBehavior">
 
-      <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/recyclerView"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          tools:listitem="@layout/rv_item_conversation_with_last_message"
-          />
 
-    </FrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/rv_item_conversation_with_last_message" />
 
-  </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-  <com.google.android.material.floatingactionbutton.FloatingActionButton
-      android:id="@+id/floatingActionButton"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom|end"
-      android:layout_margin="16dp"
-      android:visibility="gone"
-      app:srcCompat="@drawable/ic_add_white_24px"
-      app:tint="@color/white"
-      app:backgroundTint="@color/colorPrimary"
-      />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-  <include layout="@layout/fast_scroller" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_add_white_24px"
+        app:tint="@color/white" />
+
+    <include layout="@layout/fast_scroller" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

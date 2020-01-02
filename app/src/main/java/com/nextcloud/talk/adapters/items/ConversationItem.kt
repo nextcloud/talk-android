@@ -199,18 +199,21 @@ class ConversationItem(
             holder.dialogLastMessage.setText(R.string.nc_no_messages_yet)
         }
 
-        val conversationDrawable: Drawable? = Images().getImageForConversation(context, model)
-        if (conversationDrawable != null) {
-            holder.dialogAvatar.load(conversationDrawable)
-        } else {
-            holder.dialogAvatar.load(
-                    ApiUtils.getUrlForAvatarWithName(
+        holder.dialogAvatar.apply {
+            val conversationDrawable: Drawable? = Images().getImageForConversation(context, model)
+
+            if (conversationDrawable != null) {
+                load(conversationDrawable)
+            } else {
+                if (model.name?.contains("marco") == false) {
+                    load(ApiUtils.getUrlForAvatarWithName(
                             user.baseUrl,
-                            model.name, R.dimen.avatar_size
-                    )
-            ) {
-                addHeader("Authorization", user.getCredentials())
-                transformations(CircleCropTransformation())
+                            model.name, R.dimen.avatar_size))
+                    {
+                        addHeader("Authorization", user.getCredentials())
+                        transformations(CircleCropTransformation())
+                    }
+                }
             }
         }
     }
@@ -227,6 +230,7 @@ class ConversationItem(
             view: View,
             adapter: FlexibleAdapter<*>
     ) : FlexibleViewHolder(view, adapter), LayoutContainer {
+
         override val containerView: View?
             get() = itemView
     }
