@@ -51,7 +51,7 @@ import com.nextcloud.talk.newarch.features.conversationsList.di.module.Conversat
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.*
-import com.nextcloud.talk.newarch.utils.ShortcutService
+import com.nextcloud.talk.newarch.services.shortcuts.ShortcutService
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
@@ -133,10 +133,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         setAppTheme(appPreferences.theme)
         super.onCreate()
 
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val shortcutService: ShortcutService = get()
-        }
+        val shortcutService: ShortcutService = get()
 
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
         ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
