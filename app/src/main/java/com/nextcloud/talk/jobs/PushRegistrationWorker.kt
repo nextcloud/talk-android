@@ -23,7 +23,6 @@ package com.nextcloud.talk.jobs
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.text.TextUtils
 import android.util.Base64
 import androidx.work.CoroutineWorker
 import androidx.work.ListenableWorker.Result
@@ -68,8 +67,8 @@ class PushRegistrationWorker(
     }
 
     private fun pushRegistrationToServer() {
-        val token: String = appPreferences.pushToken
-        if (!TextUtils.isEmpty(token)) {
+        val token: String? = appPreferences.pushToken
+        if (!token.isNullOrEmpty()) {
             var credentials: String
             val pushUtils = PushUtils(usersRepository)
             val pushTokenHash = token.hashWithAlgorithm("SHA-512")

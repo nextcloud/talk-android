@@ -63,9 +63,9 @@
     <application
         android:name=".application.NextcloudTalkApplication"
         android:allowBackup="false"
-        android:fullBackupContent="@xml/backup_config"
         android:allowClearUserData="false"
         android:allowClearUserDataOnFailedRestore="true"
+        android:fullBackupContent="@xml/backup_config"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/nc_app_name"
         android:largeHeap="true"
@@ -79,15 +79,34 @@
             android:name="android.max_aspect"
             android:value="10" />
 
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/nc_app_label"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!--
+<intent-filter>
+    <action android:name="android.intent.action.SEND" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:mimeType="text/plain" />
+</intent-filter>
+
+<meta-data android:name="android.app.shortcuts"
+    android:resource="@xml/shortcuts" />
+
+<meta-data
+    android:name="android.service.chooser.chooser_target_service"
+    android:value="androidx.sharetarget.ChooserTargetServiceCompat"
+    />
+    -->
+
         </activity>
 
         <activity
@@ -104,7 +123,6 @@
         <service
             android:name="com.novoda.merlin.MerlinService"
             android:exported="false" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}"

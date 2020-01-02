@@ -664,9 +664,9 @@ class ContactsController : BaseController,
 
     private fun prepareViews() {
         layoutManager = SmoothScrollLinearLayoutManager(activity!!)
-        recyclerView!!.layoutManager = layoutManager
-        recyclerView!!.setHasFixedSize(true)
-        recyclerView!!.adapter = adapter
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.setHasFixedSize(true)
+        recyclerView?.adapter = adapter
 
         adapter!!.setStickyHeaderElevation(5)
                 .setUnlinkAllItemsOnRemoveHeaders(true)

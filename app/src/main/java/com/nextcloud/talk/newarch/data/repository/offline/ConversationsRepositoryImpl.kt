@@ -65,8 +65,8 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
         }
     }
 
-    override fun getLastThreeActiveConversationsForUser(userId: Long): LiveData<List<Conversation>> {
-        return conversationsDao.getLastThreeConversationsForUser(userId).distinctUntilChanged().map { data ->
+    override fun getShortcutTargetConversations(userId: Long): LiveData<List<Conversation>> {
+        return conversationsDao.getShortcutTargetConversations(userId).distinctUntilChanged().map { data ->
             data.map {
                 it.toConversation()
             }

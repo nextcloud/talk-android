@@ -6,7 +6,7 @@ import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
 import com.nextcloud.talk.newarch.services.GlobalService
-import com.nextcloud.talk.newarch.utils.ShortcutService
+import com.nextcloud.talk.newarch.services.shortcuts.ShortcutService
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import java.net.CookieManager
@@ -14,7 +14,6 @@ import java.net.CookieManager
 val ServiceModule = module {
     single { createGlobalService(get(), get(), get(), get(), get(), get()) }
     single { createShortcutService(get(), get(), get()) }
-
 }
 
 fun createGlobalService(usersRepository: UsersRepository, cookieManager: CookieManager,
