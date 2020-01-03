@@ -36,7 +36,7 @@ abstract class BaseViewModel<V : BaseView>(application: Application) : AndroidVi
     protected val disposables: CompositeDisposable = CompositeDisposable()
     protected val context: Context = application.applicationContext
 
-    val backgroundAndUIScope = CoroutineScope(
+    val uiScope = CoroutineScope(
             Job() + Dispatchers.Main
     )
 
@@ -47,7 +47,7 @@ abstract class BaseViewModel<V : BaseView>(application: Application) : AndroidVi
     override fun onCleared() {
         super.onCleared()
         disposables.clear()
-        backgroundAndUIScope.cancel()
+        uiScope.cancel()
         backgroundScope.cancel()
     }
 }

@@ -35,7 +35,6 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import coil.Coil
 import coil.ImageLoader
-import coil.util.CoilLogger
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
@@ -126,8 +125,6 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         startKoin()
         DavUtils.registerCustomFactories()
 
-        CoilLogger.setLevel(Log.DEBUG)
-        CoilLogger.setEnabled(true)// Enable logging to the standard Android log.
         Coil.setDefaultImageLoader(imageLoader)
         migrateUsers()
 
