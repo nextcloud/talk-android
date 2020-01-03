@@ -60,9 +60,8 @@ class ConversationsListViewModel constructor(
     private val conversationsLoadingLock = ReentrantLock()
 
     var messageData: String? = null
-    val searchQuery = MutableLiveData<String>()
     val networkStateLiveData: MutableLiveData<ConversationsListViewNetworkState> = MutableLiveData(ConversationsListViewNetworkState.LOADING)
-    val currentUserAvatar: MutableLiveData<Drawable> = MutableLiveData(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_settings_white_24dp)))
+    val avatar: MutableLiveData<Drawable> = MutableLiveData(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_settings_white_24dp)))
     val conversationsLiveData = Transformations.switchMap(globalService.currentUserLiveData) {
         if (networkStateLiveData.value != ConversationsListViewNetworkState.LOADING) {
             networkStateLiveData.postValue(ConversationsListViewNetworkState.LOADING)
@@ -163,12 +162,12 @@ class ConversationsListViewModel constructor(
 
         operationUser?.let {
             viewModelScope.launch {
-                val url = ApiUtils.getUrlForAvatarWithNameAndPixels(it.baseUrl, it.userId, 512)
+                val url = ApiUtils.getUrlForAvatarWithNameAndPixels(it.baseUrl, it.userId, 256)
                 val drawable = Coil.get((url)) {
                     addHeader("Authorization", it.getCredentials())
                     transformations(CircleCropTransformation())
                 }
-                currentUserAvatar.postValue(drawable)
+                avatar.postValue(drawable)
             }
         }
     }

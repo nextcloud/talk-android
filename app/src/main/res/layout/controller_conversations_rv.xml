@@ -26,11 +26,6 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
-    <include
-        layout="@layout/view_states"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayoutView"
         android:layout_width="match_parent"
@@ -58,7 +53,5 @@
         app:backgroundTint="@color/colorPrimary"
         app:srcCompat="@drawable/ic_add_white_24px"
         app:tint="@color/white" />
-
-    <include layout="@layout/fast_scroller" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

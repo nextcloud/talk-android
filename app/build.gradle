@@ -19,7 +19,7 @@
  */
 
 apply plugin: 'com.android.application'
-apply plugin: 'findbugs'
+//apply plugin: 'findbugs'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
@@ -82,9 +82,26 @@ android {
       }
     }
 
-    dataBinding {
-      enabled = true
-    }
+    /*buildFeatures {
+      // Determines whether to enable support for Jetpack Compose.
+      compose = false
+      // Determines whether to generate a BuildConfig class.
+      buildConfig = true
+      // Determines whether to support View Binding.
+      // Note that the viewBinding.enabled property is now deprecated.
+      viewBinding = true
+      // Determines whether to support Data Binding.
+      // Note that the dataBinding.enabled property is now deprecated.
+      dataBinding = true
+      // Determines whether to generate binder classes for your AIDL files.
+      aidl = true
+      // Determines whether to support RenderScript.
+      renderScript = true
+      // Determines whether to support injecting custom variables into the module’s R class.
+      resValues = true
+      // Determines whether to support shader AOT compilation.
+      shaders = true
+    }*/
 
     androidExtensions {
       experimental = true
@@ -133,27 +150,6 @@ android {
     htmlReport true
     htmlOutput file("$project.buildDir/reports/lint/lint.html")
     disable 'MissingTranslation'
-  }
-
-  task findbugs(type: FindBugs) {
-    ignoreFailures = false
-    effort = "max"
-    reportLevel = "medium"
-    classes = fileTree("$project.buildDir/intermediates/javac/gplayDebug/classes/com/nextcloud")
-    excludeFilter = file("${project.rootDir}/findbugs-filter.xml")
-    source = fileTree('src/main/java')
-    pluginClasspath = project.configurations.findbugsPlugins
-    classpath = files()
-    include '**/*.java'
-    exclude '**/gen/**'
-
-    reports {
-      xml.enabled = false
-      html.enabled = true
-      html {
-        destination = file("$project.buildDir/reports/findbugs/findbugs.html")
-      }
-    }
   }
 }
 
@@ -242,7 +238,7 @@ dependencies {
 
   implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 
-  implementation 'androidx.biometric:biometric:1.0.0'
+  implementation 'androidx.biometric:biometric:1.0.1'
   implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
 
   implementation 'androidx.multidex:multidex:2.0.1'
@@ -278,7 +274,7 @@ dependencies {
   kapt 'io.requery:requery-processor:1.5.1'
   implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
   compileOnly 'org.projectlombok:lombok:1.18.10'
-  annotationProcessor 'org.projectlombok:lombok:1.18.10'
+  annotationProcessor "org.projectlombok:lombok:1.18.10"
   kapt "org.projectlombok:lombok:1.18.10"
 
   implementation 'com.jakewharton:butterknife:10.2.0'
@@ -287,6 +283,7 @@ dependencies {
   implementation 'eu.davidea:flexible-adapter:5.1.0'
   implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
   implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b3'
+  implementation 'com.otaliastudios:elements:0.3.7'
   implementation 'org.webrtc:google-webrtc:1.0.23295'
   implementation 'com.yarolegovich:lovely-dialog:1.1.0'
   implementation 'com.yarolegovich:lovelyinput:1.0.9'
@@ -327,9 +324,6 @@ dependencies {
   androidTestImplementation('androidx.test.espresso:espresso-core:3.3.0-alpha02', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
-  findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.0'
-  findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
   implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
   implementation 'com.github.Kennyc1012:BottomSheet:2.4.1'
-    implementation 'com.google.firebase:firebase-messaging:20.1.0'
 }

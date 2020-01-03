@@ -24,7 +24,9 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
@@ -212,9 +214,18 @@ class ConversationItem(
                 addHeader("Authorization", user.getCredentials())
                 transformations(CircleCropTransformation())
             }
-
         }
 
+    }
+
+    override fun onViewAttached(adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?, holder: ConversationItemViewHolder?, position: Int) {
+        super.onViewAttached(adapter, holder, position)
+        Log.d("MAriO", model.displayName!!)
+    }
+
+    override fun onViewDetached(adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?, holder: ConversationItemViewHolder?, position: Int) {
+        super.onViewDetached(adapter, holder, position)
+        Log.d("MAriO DETACH", model.displayName!!)
     }
 
     override fun filter(constraint: String): Boolean {

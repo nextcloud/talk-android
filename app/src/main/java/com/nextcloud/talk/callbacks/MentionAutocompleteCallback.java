@@ -54,7 +54,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         if (range == null) return false;
         int start = range[0];
         int end = range[1];
-        String replacement = item.getLabel();
+        String replacement = item.label;
 
         StringBuilder replacementStringBuilder = new StringBuilder(item.getLabel());
         for (EmojiRange emojiRange : EmojiUtils.emojis(replacement)) {

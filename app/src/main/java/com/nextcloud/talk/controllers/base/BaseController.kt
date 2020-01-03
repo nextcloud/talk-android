@@ -47,7 +47,7 @@ import java.util.*
 
 abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
-    val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
+    open val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
 
     val appPreferences: AppPreferences by inject()
     val context: Context by inject()
