@@ -205,14 +205,12 @@ class ConversationItem(
             if (conversationDrawable != null) {
                 load(conversationDrawable)
             } else {
-                if (model.name?.contains("marco") == false) {
-                    load(ApiUtils.getUrlForAvatarWithName(
-                            user.baseUrl,
-                            model.name, R.dimen.avatar_size))
-                    {
-                        addHeader("Authorization", user.getCredentials())
-                        transformations(CircleCropTransformation())
-                    }
+                load(ApiUtils.getUrlForAvatarWithName(
+                        user.baseUrl,
+                        model.name, R.dimen.avatar_size))
+                {
+                    addHeader("Authorization", user.getCredentials())
+                    transformations(CircleCropTransformation())
                 }
             }
         }

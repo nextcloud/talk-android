@@ -161,7 +161,7 @@ ext {
   work_version = "2.3.0-alpha02"
   koin_version = "2.1.0-alpha-1"
   lifecycle_version = "2.2.0-rc01"
-  coil_version = "0.9.0"
+  coil_version = "0.9.1"
   room_version = "2.2.3"
 }
 
@@ -299,7 +299,6 @@ dependencies {
   implementation "io.coil-kt:coil:${coil_version}"
   implementation "io.coil-kt:coil-gif:${coil_version}"
   implementation "io.coil-kt:coil-svg:${coil_version}"
-  //implementation 'com.github.coil-kt:coil:9769e11f19'
 
   implementation 'com.github.natario1:Autocomplete:v1.1.0'
 

@@ -36,10 +36,9 @@
 
             <ImageView
                 android:id="@id/dialogAvatar"
-                android:layout_width="@dimen/small_item_height"
-                android:layout_height="@dimen/small_item_height"
-                android:contentDescription="@null"
-                tools:src="@drawable/ic_call_black_24dp" />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/passwordProtectedRoomImageView"
