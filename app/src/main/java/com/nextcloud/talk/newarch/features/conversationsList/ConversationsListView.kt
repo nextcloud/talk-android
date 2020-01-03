@@ -255,13 +255,16 @@ class ConversationsListView : BaseView() {
 
     @OnClick(R.id.floatingActionButton)
     fun onFloatingActionButtonClick() {
+        openNewConversationScreen()
+    }
+
+    private fun openNewConversationScreen() {
         val bundle = Bundle()
         bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
         router.pushController(
                 RouterTransaction.with(ContactsController(bundle))
                         .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler())
-        )
+                        .popChangeHandler(HorizontalChangeHandler()))
     }
 
     private fun getConversationMenuItemsForConversation(conversation: Conversation): MutableList<BasicListItemWithImage> {
