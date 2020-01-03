@@ -145,16 +145,17 @@ fun createOkHttpClient(
         }
     }
 
-    httpClient.addInterceptor { chain ->
+    httpClient.addNetworkInterceptor { chain ->
         var response = chain.proceed(chain.request())
 
         if (response.request().url().encodedPath().contains("/avatar/")) {
             AvatarStatusCodeHolder.getInstance().statusCode = response.code()
+
+            if (response.code() == 201) {
+                response = response.newBuilder().code(200).message("OK").build()
+            }
         }
 
-        if (response.code() == 201) {
-            response = response.newBuilder().code(200).build()
-        }
 
         response
     }
@@ -291,6 +292,7 @@ fun createImageLoader(
 ): ImageLoader {
     return ImageLoader(androidApplication) {
         availableMemoryPercentage(0.5)
+        bitmapPoolPercentage(0.5)
         crossfade(true)
         okHttpClient(okHttpClient)
         componentRegistry {

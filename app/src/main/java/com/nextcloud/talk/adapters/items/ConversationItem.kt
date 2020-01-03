@@ -44,6 +44,7 @@ import eu.davidea.flexibleadapter.utils.FlexibleUtils
 import eu.davidea.viewholders.FlexibleViewHolder
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.*
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.*
 import java.util.*
 import java.util.regex.Pattern
 
@@ -199,21 +200,21 @@ class ConversationItem(
             holder.dialogLastMessage.setText(R.string.nc_no_messages_yet)
         }
 
-        holder.dialogAvatar.apply {
-            val conversationDrawable: Drawable? = Images().getImageForConversation(context, model)
+        val conversationDrawable: Drawable? = Images().getImageForConversation(context, model)
 
-            if (conversationDrawable != null) {
-                load(conversationDrawable)
-            } else {
-                load(ApiUtils.getUrlForAvatarWithName(
-                        user.baseUrl,
-                        model.name, R.dimen.avatar_size))
-                {
-                    addHeader("Authorization", user.getCredentials())
-                    transformations(CircleCropTransformation())
-                }
+        conversationDrawable?.let {
+            holder.itemView.dialogAvatar.load(conversationDrawable)
+        }?: run {
+            holder.itemView.dialogAvatar.load(ApiUtils.getUrlForAvatarWithName(
+                    user.baseUrl,
+                    model.name, R.dimen.avatar_size))
+            {
+                addHeader("Authorization", user.getCredentials())
+                transformations(CircleCropTransformation())
             }
+
         }
+
     }
 
     override fun filter(constraint: String): Boolean {
@@ -231,5 +232,7 @@ class ConversationItem(
 
         override val containerView: View?
             get() = itemView
+
+
     }
 }

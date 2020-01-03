@@ -44,7 +44,7 @@ buildscript {
 
 configurations.all {
     // check for updates every build
-    //resolutionStrategy.cacheChangingModulesFor 3600, 'seconds'
+    resolutionStrategy.cacheChangingModulesFor 36000, 'seconds'
 }
 
 allprojects {

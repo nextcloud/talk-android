@@ -64,7 +64,6 @@ import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
@@ -83,7 +82,6 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
     val userUtils: UserUtils by inject()
     val imageLoader: ImageLoader by inject()
     val appPreferences: AppPreferences by inject()
-    val okHttpClient: OkHttpClient by inject()
     val usersDao: UsersDao by inject()
     //endregion
 

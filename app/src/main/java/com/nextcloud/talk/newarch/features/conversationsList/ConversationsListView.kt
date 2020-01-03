@@ -33,7 +33,6 @@ import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import butterknife.OnClick
 import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
@@ -76,7 +75,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
     private lateinit var viewModel: ConversationsListViewModel
     val factory: ConversationListViewModelFactory by inject()
 
-    private val recyclerViewAdapter = FlexibleAdapter(mutableListOf(), this, false)
+    private val recyclerViewAdapter = FlexibleAdapter(mutableListOf(), this, true)
 
     private var searchItem: MenuItem? = null
     private var settingsItem: MenuItem? = null
@@ -101,6 +100,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
         }
 
         settingsItem = menu.findItem(R.id.action_settings)
+        searchItem?.isVisible = searchItem?.isVisible == false && !recyclerViewAdapter.isEmpty
         viewModel.loadAvatar()
     }
 
@@ -208,7 +208,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                     view.floatingActionButton?.show()
                 }
 
-                searchItem?.isVisible = !isListEmpty
+                searchItem?.isVisible = searchItem?.isVisible == false && !isListEmpty
 
                 val newConversations = mutableListOf<ConversationItem>()
                 for (conversation in it) {
@@ -221,8 +221,7 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                 }
 
                 recyclerViewAdapter.updateDataSet(
-                        newConversations as
-                                List<IFlexible<ViewHolder>>?, false
+                        newConversations as List<IFlexible<ConversationItem.ConversationItemViewHolder>>, false
                 )
 
             })
@@ -236,7 +235,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                             view.stateWithMessageView?.visibility = View.GONE
                             view.floatingActionButton?.visibility = View.GONE
                         }
-                        searchItem?.isVisible = false
                     }
                     LOADED -> {
                         // awesome, but we delegate the magic stuff to the data handler
@@ -249,7 +247,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                                 view.floatingActionButton?.show()
                             }
                         }
-                        searchItem?.isVisible = !recyclerViewAdapter.isEmpty
                     }
                     FAILED -> {
                         // probably offline, so what? :)
@@ -259,7 +256,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
                             view.floatingActionButton?.visibility = View.GONE
                             view.stateWithMessageView?.visibility = if (recyclerViewAdapter.isEmpty) View.VISIBLE else View.GONE
                         }
-                        searchItem?.isVisible = !recyclerViewAdapter.isEmpty
                     }
                     else -> {
                         // We should not be here
@@ -384,10 +380,6 @@ class ConversationsListView : BaseView(), OnQueryTextListener,
     override fun onRestoreViewState(view: View, savedViewState: Bundle) {
         super.onRestoreViewState(view, savedViewState)
         viewModel.loadConversations()
-    }
-
-    override fun onAttach(view: View) {
-        super.onAttach(view)
     }
 
     override fun onItemLongClick(position: Int) {
