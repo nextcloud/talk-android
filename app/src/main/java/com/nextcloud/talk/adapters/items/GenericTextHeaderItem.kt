@@ -66,7 +66,7 @@ class GenericTextHeaderItem(val model: String) : AbstractHeaderItem<GenericTextH
         if (payloads.size > 0) {
             Log.d(TAG, "We have payloads, so ignoring!")
         } else {
-            holder.titleTextView!!.text = model
+            holder.titleTextView?.text = model
         }
     }
 

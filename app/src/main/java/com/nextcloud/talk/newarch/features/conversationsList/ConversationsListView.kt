@@ -22,9 +22,13 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.os.Bundle
 import android.view.*
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.observe
 import butterknife.OnClick
+import com.afollestad.materialdialogs.LayoutMode
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
@@ -36,10 +40,12 @@ import com.nextcloud.talk.adapters.ConversationsPresenter
 import com.nextcloud.talk.controllers.ContactsController
 import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
+import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.utils.ConductorRemapping
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.animations.SharedElementTransition
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.otaliastudios.elements.*
@@ -74,6 +80,7 @@ class ConversationsListView : BaseView() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         settingsItem = menu.findItem(R.id.action_settings)
+        settingsItem?.actionView?.transitionName = "userAvatar.transitionTag"
         viewModel.loadAvatar()
     }
 
@@ -141,7 +148,7 @@ class ConversationsListView : BaseView() {
 
         val adapter = Adapter.builder(this)
                 .addSource(Source.fromLiveData(viewModel.conversationsLiveData))
-                .addPresenter(ConversationsPresenter(context, ::onElementClick))
+                .addPresenter(ConversationsPresenter(context, ::onElementClick, ::onElementLongClick))
                 .addPresenter(Presenter.forLoadingIndicator(context, R.layout.loading_state))
                 .addPresenter(Presenter.forEmptyIndicator(context, R.layout.message_state))
                 .addPresenter(Presenter.forErrorIndicator(context, R.layout.message_state) { view, throwable ->
@@ -149,7 +156,6 @@ class ConversationsListView : BaseView() {
                     view.messageStateImageView.setImageDrawable(context.getDrawable(drawable.ic_announcement_white_24dp))
                 })
                 .into(view.recyclerView)
-        view.recyclerView.initRecyclerView(SmoothScrollLinearLayoutManager(activity), adapter, false)
 
         view.apply {
             recyclerView.initRecyclerView(SmoothScrollLinearLayoutManager(activity), adapter, false)
@@ -189,16 +195,66 @@ class ConversationsListView : BaseView() {
         }
     }
 
+    private fun onElementLongClick(page: Page, holder: Presenter.Holder, element: Element<Conversation>) {
+        val conversation = element.data
+
+        conversation?.let { conversation ->
+            activity?.let { activity ->
+                MaterialDialog(activity, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
+                    cornerRadius(res = R.dimen.corner_radius)
+                    title(text = conversation.displayName)
+
+                    listItemsWithImage(getConversationMenuItemsForConversation(conversation)) { dialog, index, item ->
+                        when (item.iconRes) {
+                            drawable.ic_star_border_black_24dp -> {
+                                viewModel.changeFavoriteValueForConversation(conversation, false)
+
+                            }
+                            drawable.ic_star_black_24dp -> {
+                                viewModel.changeFavoriteValueForConversation(conversation, true)
+                            }
+                            drawable.ic_exit_to_app_black_24dp -> {
+                                MaterialDialog(activity).show {
+                                    title(R.string.nc_leave)
+                                    message(R.string.nc_leave_message)
+                                    positiveButton(R.string.nc_simple_leave) {
+                                        viewModel.leaveConversation(conversation)
+                                    }
+                                    negativeButton(R.string.nc_cancel)
+                                    icon(drawable.ic_exit_to_app_black_24dp)
+                                }
+                            }
+                            drawable.ic_delete_grey600_24dp -> {
+                                MaterialDialog(activity).show {
+                                    title(R.string.nc_delete)
+                                    message(text = conversation.deleteWarningMessage)
+                                    positiveButton(R.string.nc_delete_call) { dialog ->
+                                        viewModel.deleteConversation(conversation)
+                                    }
+                                    negativeButton(R.string.nc_cancel)
+                                    icon(
+                                            drawable = DisplayUtils.getTintedDrawable(
+                                                    resources!!, drawable
+                                                    .ic_delete_grey600_24dp, R.color.nc_darkRed
+                                            )
+                                    )
+                                }
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override fun getLayoutId(): Int {
         return R.layout.controller_conversations_rv
     }
 
     @OnClick(R.id.floatingActionButton)
     fun onFloatingActionButtonClick() {
-        openNewConversationScreen()
-    }
-
-    private fun openNewConversationScreen() {
         val bundle = Bundle()
         bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
         router.pushController(
