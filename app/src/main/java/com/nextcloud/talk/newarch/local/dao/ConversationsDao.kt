@@ -30,6 +30,9 @@ abstract class ConversationsDao {
     @Query("SELECT * FROM conversations WHERE user_id = :userId ORDER BY favorite DESC, last_activity DESC")
     abstract fun getConversationsForUser(userId: Long): LiveData<List<ConversationEntity>>
 
+    @Query("SELECT * FROM conversations WHERE user_id = :userId AND  display_name LIKE '%' || :filter || '%' ORDER BY favorite DESC, last_activity DESC")
+    abstract fun getConversationsForUserWithFilter(userId: Long, filter: String): LiveData<List<ConversationEntity>>
+
     @Query("SELECT * FROM conversations WHERE user_id = :userId ORDER BY favorite DESC, last_activity DESC LIMIT 4")
     abstract fun getShortcutTargetConversations(userId: Long): LiveData<List<ConversationEntity>>
 

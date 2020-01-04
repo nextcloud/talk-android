@@ -57,10 +57,18 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
                 .deleteConversation(userId, conversationId)
     }
 
-    override fun getConversationsForUser(userId: Long): LiveData<List<Conversation>> {
-        return conversationsDao.getConversationsForUser(userId).distinctUntilChanged().map { data ->
-            data.map {
-                it.toConversation()
+    override fun getConversationsForUser(userId: Long, filter: String?): LiveData<List<Conversation>> {
+        filter?.let {
+            return conversationsDao.getConversationsForUserWithFilter(userId, it).distinctUntilChanged().map { data ->
+                data.map {conversationEntity ->
+                    conversationEntity.toConversation()
+                }
+            }
+        } ?: run {
+            return conversationsDao.getConversationsForUser(userId).distinctUntilChanged().map { data ->
+                data.map {
+                    it.toConversation()
+                }
             }
         }
     }

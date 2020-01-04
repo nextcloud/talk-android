@@ -22,8 +22,11 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.Application
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import coil.Coil
 import coil.api.get
@@ -47,6 +50,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 import java.util.concurrent.locks.ReentrantLock
 
+
 class ConversationsListViewModel constructor(
         application: Application,
         private val getConversationsUseCase: GetConversationsUseCase,
@@ -62,13 +66,18 @@ class ConversationsListViewModel constructor(
     var messageData: String? = null
     val networkStateLiveData: MutableLiveData<ConversationsListViewNetworkState> = MutableLiveData(ConversationsListViewNetworkState.LOADING)
     val avatar: MutableLiveData<Drawable> = MutableLiveData(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_settings_white_24dp)))
-    val conversationsLiveData = Transformations.switchMap(globalService.currentUserLiveData) {
+    val filterLiveData: MutableLiveData<String?> = MutableLiveData(null)
+    val conversationsLiveData = Transformations.switchMap(globalService.currentUserLiveData) { user ->
         if (networkStateLiveData.value != ConversationsListViewNetworkState.LOADING) {
             networkStateLiveData.postValue(ConversationsListViewNetworkState.LOADING)
         }
         loadConversations()
         loadAvatar()
-        conversationsRepository.getConversationsForUser(it.id!!)
+
+        filterLiveData.value = null
+        Transformations.switchMap(filterLiveData.distinctUntilChanged()) { filter ->
+            conversationsRepository.getConversationsForUser(user.id!!, filter)
+        }
     }
 
     fun leaveConversation(conversation: Conversation) {
