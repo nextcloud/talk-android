@@ -49,8 +49,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        app:layout_anchor="@id/recyclerView"
-        app:layout_anchorGravity="bottom|end"
         app:backgroundTint="@color/colorPrimary"
         app:srcCompat="@drawable/ic_add_white_24px"
         app:tint="@color/white" />

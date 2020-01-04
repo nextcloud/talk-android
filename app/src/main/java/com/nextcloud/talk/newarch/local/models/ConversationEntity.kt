@@ -118,7 +118,8 @@ data class ConversationEntity(
 
 fun ConversationEntity.toConversation(): Conversation {
     val conversation = Conversation()
-    conversation.internalUserId = this.userId
+    conversation.databaseId = this.id
+    conversation.databaseUserId = this.userId
     conversation.conversationId = this.conversationId
     conversation.type = this.type
     conversation.token = this.token
@@ -148,8 +149,8 @@ fun ConversationEntity.toConversation(): Conversation {
 }
 
 fun Conversation.toConversationEntity(): ConversationEntity {
-    val conversationEntity = ConversationEntity(this.internalUserId.toString() + "@" + this.token)
-    conversationEntity.userId = this.internalUserId
+    val conversationEntity = ConversationEntity(this.databaseUserId.toString() + "@" + this.token)
+    conversationEntity.userId = this.databaseUserId
     conversationEntity.conversationId = this.conversationId
     conversationEntity.token = this.token
     conversationEntity.name = this.name

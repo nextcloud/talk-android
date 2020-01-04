@@ -25,6 +25,7 @@ package com.nextcloud.talk.newarch.services.shortcuts
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import androidx.core.app.Person
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -38,6 +39,7 @@ import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
@@ -47,6 +49,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import kotlin.math.abs
 
 
@@ -91,6 +94,7 @@ class ShortcutService constructor(private var context: Context,
                     .setAlwaysBadged()
                     .build())
 
+            var iconImage: Drawable? = null
             for ((index, conversation) in conversations.withIndex()) {
                 val intent = Intent(context, MainActivity::class.java)
                 intent.action = BundleKeys.KEY_OPEN_CONVERSATION
@@ -99,28 +103,31 @@ class ShortcutService constructor(private var context: Context,
 
                 val persons = mutableListOf<Person>()
                 conversation.participants?.forEach {
-                    val hashMap = it.value as HashMap<*, *>
+                    val key = it.key
+                    val participant = it.value
                     val personBuilder = Person.Builder()
-                    personBuilder.setName(hashMap["name"].toString())
+                    personBuilder.setName(participant.name.toString())
                     personBuilder.setBot(false)
                     // we need a key for each of the users
 
-                    /*val isGuest = hashMap["type"]?.equals(Participant.ParticipantType.GUEST) == true
-                            || hashMap["type"]?.equals(Participant.ParticipantType.GUEST_AS_MODERATOR) == true
-                            || hashMap["type"]?.equals(Participant.ParticipantType.USER_FOLLOWING_LINK) == true
+                    val isGuest = participant.type == Participant.ParticipantType.GUEST || participant.type == Participant.ParticipantType.GUEST_AS_MODERATOR || participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
 
-                    val avatarUrl = if (isGuest) ApiUtils.getUrlForAvatarWithNameForGuests(user.baseUrl, hashMap["name"].toString(), R.dimen.avatar_size_big)
-                    else ApiUtils.getUrlForAvatarWithName(user.baseUrl, hashMap["userId"].toString(), R.dimen.avatar_size_big)
+                    val avatarUrl = if (isGuest) ApiUtils.getUrlForAvatarWithNameForGuests(user.baseUrl, participant.name, R.dimen.avatar_size_big)
+                    else ApiUtils.getUrlForAvatarWithName(user.baseUrl, it.key, R.dimen.avatar_size_big)
 
-                    iconImage = Coil.get(avatarUrl) {
-                        addHeader("Authorization", user.getCredentials())
-                        transformations(CircleCropTransformation())
+                    try {
+                        iconImage = Coil.get(avatarUrl) {
+                            addHeader("Authorization", user.getCredentials())
+                            transformations(CircleCropTransformation())
+                        }
+                        personBuilder.setIcon(IconCompat.createWithBitmap((iconImage as BitmapDrawable).bitmap))
+                    } catch (e: Exception) {
+                        // No icon, that's fine for now
                     }
-                    personBuilder.setIcon(IconCompat.createWithBitmap((iconImage as BitmapDrawable).bitmap))*/
                     persons.add(personBuilder.build())
                 }
 
-                var iconImage = images.getImageForConversation(context, conversation)
+                iconImage = images.getImageForConversation(context, conversation)
 
                 if (iconImage == null) {
                     iconImage = Coil.get(ApiUtils.getUrlForAvatarWithName(user.baseUrl, conversation.name, R.dimen.avatar_size_big)) {

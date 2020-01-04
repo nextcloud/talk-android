@@ -40,8 +40,10 @@ import java.util.*
 @JsonObject(serializeNullCollectionElements = true, serializeNullObjects = true)
 class Conversation {
     @JsonIgnore
+    var databaseId: String? = null
+    @JsonIgnore
     @NonNull
-    var internalUserId: Long? = null
+    var databaseUserId: Long? = null
     @JsonField(name = ["id"])
     var conversationId: String? = null
     @JsonField(name = ["token"])

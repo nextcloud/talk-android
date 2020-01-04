@@ -33,8 +33,7 @@
 
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/ic_settings_white_24dp"
-        android:title="@string/nc_settings"
+        android:visible="@bool/value_true"
         app:showAsAction="ifRoom" />
 
 

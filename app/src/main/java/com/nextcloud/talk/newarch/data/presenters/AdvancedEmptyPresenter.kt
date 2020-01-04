@@ -17,32 +17,21 @@
  *  *
  *  * You should have received a copy of the GNU General Public License
  *  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  
  */
 
-package com.nextcloud.talk.newarch.local.converters
+package com.nextcloud.talk.newarch.data.presenters
 
-import androidx.room.TypeConverter
-import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.models.json.participants.Participant
+import android.content.Context
+import com.otaliastudios.elements.Element
+import com.otaliastudios.elements.Page
+import com.otaliastudios.elements.extensions.EmptyPresenter
 
-class ParticipantMapConverter {
-    @TypeConverter
-    fun fromMapToString(map: HashMap<String, Participant>?): String? {
-        if (map == null) {
-            return ""
+class AdvancedEmptyPresenter(context: Context, layout: Int, private val onViewClick: (() -> Unit)? = null) : EmptyPresenter(context, layout) {
+    override fun onBind(page: Page, holder: Holder, element: Element<Void>, payloads: List<Any>) {
+        super.onBind(page, holder, element, payloads)
+        holder.itemView.setOnClickListener {
+            onViewClick?.invoke()
         }
-
-        return LoganSquare.serialize(map)
     }
-
-    @TypeConverter
-    fun fromStringToHashMap(value: String?): HashMap<String, Participant>? {
-        if (value.isNullOrEmpty()) {
-            return null
-        }
-
-        return LoganSquare.parseMap(value, Participant::class.java) as HashMap<String, Participant>?
-    }
-
 }

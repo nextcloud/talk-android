@@ -182,7 +182,7 @@ class ConversationsListViewModel constructor(
                     val mutableList = result.toMutableList()
                     val internalUserId = globalService.currentUserLiveData.value!!.id
                     mutableList.forEach {
-                        it.internalUserId = internalUserId
+                        it.databaseUserId = internalUserId
                     }
 
                     conversationsRepository.saveConversationsForUser(

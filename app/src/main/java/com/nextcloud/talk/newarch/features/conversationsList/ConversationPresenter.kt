@@ -20,7 +20,7 @@
  *
  */
 
-package com.nextcloud.talk.adapters
+package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.content.Context
 import android.graphics.drawable.Drawable

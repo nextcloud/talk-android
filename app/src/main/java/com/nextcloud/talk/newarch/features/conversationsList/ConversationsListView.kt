@@ -22,7 +22,6 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.os.Bundle
 import android.view.*
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.observe
 import butterknife.OnClick
@@ -36,13 +35,13 @@ import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.R.drawable
-import com.nextcloud.talk.adapters.ConversationsPresenter
 import com.nextcloud.talk.controllers.ContactsController
 import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
+import com.nextcloud.talk.newarch.data.presenters.AdvancedEmptyPresenter
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
@@ -147,19 +146,19 @@ class ConversationsListView : BaseView() {
         val view = super.onCreateView(inflater, container)
 
         val adapter = Adapter.builder(this)
-                .addSource(Source.fromLiveData(viewModel.conversationsLiveData))
+                .addSource(ConversationsListSource(viewModel.conversationsLiveData))
                 .addPresenter(ConversationsPresenter(context, ::onElementClick, ::onElementLongClick))
                 .addPresenter(Presenter.forLoadingIndicator(context, R.layout.loading_state))
-                .addPresenter(Presenter.forEmptyIndicator(context, R.layout.message_state))
+                .addPresenter(AdvancedEmptyPresenter(context, R.layout.message_state, ::openNewConversationScreen))
                 .addPresenter(Presenter.forErrorIndicator(context, R.layout.message_state) { view, throwable ->
                     view.messageStateTextView.setText(R.string.nc_oops)
                     view.messageStateImageView.setImageDrawable(context.getDrawable(drawable.ic_announcement_white_24dp))
                 })
                 .into(view.recyclerView)
 
+
         view.apply {
             recyclerView.initRecyclerView(SmoothScrollLinearLayoutManager(activity), adapter, false)
-
             swipeRefreshLayoutView.setOnRefreshListener {
                 view.swipeRefreshLayoutView.isRefreshing = false
                 viewModel.loadConversations()
