@@ -296,6 +296,8 @@
     <string name="nc_not_defined_error">Errore sconosciuto</string>
     <string name="nc_unauthorized_error">Non autorizzato</string>
 
+    <string name="nc_oops">Spiacenti, qualcosa non ha funzionato.</string>
+
     <string name="nc_general_settings">Generale</string>
     <string name="nc_allow_guests">Consenti ospiti</string>
     <string name="nc_last_moderator_title">Impossibile lasciare la conversazione</string>

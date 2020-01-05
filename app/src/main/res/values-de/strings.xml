@@ -296,6 +296,8 @@ Meeting ist für %1$s geplant.</string>
     <string name="nc_not_defined_error">Unbekannter Fehler</string>
     <string name="nc_unauthorized_error">Nicht autorisiert</string>
 
+    <string name="nc_oops">Etwas ist schiefgelaufen.</string>
+
     <string name="nc_general_settings">Allgemein</string>
     <string name="nc_allow_guests">Gäste zulassen</string>
     <string name="nc_last_moderator_title">Unterhaltung konnte nicht verlassen werden</string>

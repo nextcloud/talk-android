@@ -292,6 +292,8 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_not_defined_error">Erreur inconnue </string>
     <string name="nc_unauthorized_error">Interdit</string>
 
+    <string name="nc_oops">Désolé, quelque chose s\'est mal passé.</string>
+
     <string name="nc_general_settings">Général</string>
     <string name="nc_allow_guests">Autoriser les invités</string>
     <string name="nc_last_moderator_title">Impossible de quitter la conversation</string>
