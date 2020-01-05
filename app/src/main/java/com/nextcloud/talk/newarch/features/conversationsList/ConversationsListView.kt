@@ -20,6 +20,8 @@
 
 package com.nextcloud.talk.newarch.features.conversationsList
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
@@ -28,6 +30,8 @@ import butterknife.OnClick
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.bluelinelabs.conductor.ControllerChangeHandler
+import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
@@ -35,6 +39,7 @@ import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.R.drawable
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.ContactsController
 import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
@@ -147,12 +152,12 @@ class ConversationsListView : BaseView() {
 
         val adapter = Adapter.builder(this)
                 .addSource(ConversationsListSource(viewModel.conversationsLiveData))
-                .addPresenter(ConversationsPresenter(context, ::onElementClick, ::onElementLongClick))
-                .addPresenter(Presenter.forLoadingIndicator(context, R.layout.loading_state))
-                .addPresenter(AdvancedEmptyPresenter(context, R.layout.message_state, ::openNewConversationScreen))
-                .addPresenter(Presenter.forErrorIndicator(context, R.layout.message_state) { view, throwable ->
+                .addPresenter(ConversationsPresenter(activity as Context, ::onElementClick, ::onElementLongClick))
+                .addPresenter(Presenter.forLoadingIndicator(activity as Context, R.layout.loading_state))
+                .addPresenter(AdvancedEmptyPresenter(activity as Context, R.layout.message_state, ::openNewConversationScreen))
+                .addPresenter(Presenter.forErrorIndicator(activity as Context, R.layout.message_state) { view, throwable ->
                     view.messageStateTextView.setText(R.string.nc_oops)
-                    view.messageStateImageView.setImageDrawable(context.getDrawable(drawable.ic_announcement_white_24dp))
+                    view.messageStateImageView.setImageDrawable((activity as Context).getDrawable(drawable.ic_announcement_white_24dp))
                 })
                 .into(view.recyclerView)
 

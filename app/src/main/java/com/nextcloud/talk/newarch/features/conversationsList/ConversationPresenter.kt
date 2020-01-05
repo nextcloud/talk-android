@@ -28,10 +28,10 @@ import android.text.TextUtils
 import android.text.format.DateUtils
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import coil.api.load
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.local.models.getCredentials
@@ -68,14 +68,7 @@ open class ConversationsPresenter(context: Context, onElementClick: ((Page, Hold
 
         user?.let { user ->
             conversation?.let { conversation ->
-                val appContext = NextcloudTalkApplication.sharedApplication!!.applicationContext
-
-                if (conversation.changing) {
-                    holder.itemView.actionProgressBar!!.visibility = View.VISIBLE
-                } else {
-                    holder.itemView.actionProgressBar!!.visibility = View.GONE
-                }
-
+                holder.itemView.actionProgressBar.isVisible = conversation.changing
                 holder.itemView.dialogName!!.text = conversation.displayName
 
                 if (conversation.unreadMessages > 0) {
@@ -98,17 +91,8 @@ open class ConversationsPresenter(context: Context, onElementClick: ((Page, Hold
                     holder.itemView.dialogUnreadBubble!!.visibility = View.GONE
                 }
 
-                if (conversation.hasPassword) {
-                    holder.itemView.passwordProtectedRoomImageView!!.visibility = View.VISIBLE
-                } else {
-                    holder.itemView.passwordProtectedRoomImageView!!.visibility = View.GONE
-                }
-
-                if (conversation.favorite) {
-                    holder.itemView.favoriteConversationImageView!!.visibility = View.VISIBLE
-                } else {
-                    holder.itemView.favoriteConversationImageView!!.visibility = View.GONE
-                }
+                holder.itemView.passwordProtectedRoomImageView.isVisible = conversation.hasPassword
+                holder.itemView.favoriteConversationImageView.isVisible = conversation.favorite
 
                 if (conversation.lastMessage != null) {
                     holder.itemView.dialogDate!!.visibility = View.VISIBLE
@@ -132,18 +116,18 @@ open class ConversationsPresenter(context: Context, onElementClick: ((Page, Hold
                         ) {
                             if (conversation.lastMessage!!.actorId == user.userId) {
                                 text = String.format(
-                                        appContext.getString(R.string.nc_formatted_message_you),
+                                        context.getString(R.string.nc_formatted_message_you),
                                         conversation.lastMessage!!.lastMessageDisplayText
                                 )
                             } else {
                                 authorDisplayName = if (!TextUtils.isEmpty(conversation.lastMessage!!.actorDisplayName))
                                     conversation.lastMessage!!.actorDisplayName
                                 else if ("guests" == conversation.lastMessage!!.actorType)
-                                    appContext.getString(R.string.nc_guest)
+                                    context.getString(R.string.nc_guest)
                                 else
                                     ""
                                 text = String.format(
-                                        appContext.getString(R.string.nc_formatted_message),
+                                        context.getString(R.string.nc_formatted_message),
                                         authorDisplayName,
                                         conversation.lastMessage!!.lastMessageDisplayText
                                 )
