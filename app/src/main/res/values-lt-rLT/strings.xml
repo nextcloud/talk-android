@@ -30,6 +30,8 @@
     <string name="nc_server_version">%1$s veikia tik naudojant %2$s 13 ar naujesnę versiją</string>
     <string name="nc_server_import_account_plain">Importuoti paskyrą</string>
     <string name="nc_server_import_accounts_plain">Importuoti paskyras</string>
+    <string name="nc_server_import_account">Importuoti paskyrą iš programėlės %1$s</string>
+    <string name="nc_server_import_accounts">Importuoti paskyras iš programėlės %1$s</string>
     <string name="nc_server_failed_to_import_account">Nepavyko importuoti pasirinktą paskyrą</string>
     <string name="nc_Server_account_imported">Dabar, pasirinkta paskyra yra importuota ir prieinama</string>
     <string name="nc_get_from_provider">Neturite serverio? Spauskite čia, kad galėtumėte pasirinkti vieną iš paslaugų teikėjų</string>
