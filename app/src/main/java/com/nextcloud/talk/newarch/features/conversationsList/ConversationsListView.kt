@@ -55,8 +55,12 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.otaliastudios.elements.*
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.*
 import kotlinx.android.synthetic.main.message_state.view.*
+import kotlinx.android.synthetic.main.search_layout.*
+import kotlinx.android.synthetic.main.search_layout.view.*
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
 import java.util.*
@@ -67,50 +71,6 @@ class ConversationsListView : BaseView() {
 
     private lateinit var viewModel: ConversationsListViewModel
     val factory: ConversationListViewModelFactory by inject()
-
-    private var searchItem: MenuItem? = null
-    private var settingsItem: MenuItem? = null
-    private var searchView: SearchView? = null
-
-    override fun onCreateOptionsMenu(
-            menu: Menu,
-            inflater: MenuInflater
-    ) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_conversation_plus_filter, menu)
-        searchItem = menu.findItem(R.id.action_search)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        settingsItem = menu.findItem(R.id.action_settings)
-        settingsItem?.actionView?.transitionName = "userAvatar.transitionTag"
-        viewModel.loadAvatar()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_settings -> {
-                val names = ArrayList<String>()
-                names.add("userAvatar.transitionTag")
-                router.pushController(
-                        RouterTransaction.with(SettingsController())
-                                .pushChangeHandler(
-                                        TransitionChangeHandlerCompat(
-                                                SharedElementTransition(names), VerticalChangeHandler()
-                                        )
-                                )
-                                .popChangeHandler(
-                                        TransitionChangeHandlerCompat(
-                                                SharedElementTransition(names), VerticalChangeHandler()
-                                        )
-                                )
-                )
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
 
     /*private fun initSearchView() {
         val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -144,7 +104,6 @@ class ConversationsListView : BaseView() {
             inflater: LayoutInflater,
             container: ViewGroup
     ): View {
-        setHasOptionsMenu(true)
         actionBar?.show()
 
         viewModel = viewModelProvider(factory).get(ConversationsListViewModel::class.java)
@@ -172,8 +131,26 @@ class ConversationsListView : BaseView() {
             swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
         }
 
+        activity?.rightButton?.setOnClickListener {
+            val settingsTransitionName = "userAvatar.transitionTag"
+            router.pushController(
+                    RouterTransaction.with(SettingsController())
+                            .pushChangeHandler(
+                                    TransitionChangeHandlerCompat(
+                                            SharedElementTransition(arrayListOf(settingsTransitionName)), VerticalChangeHandler()
+                                    )
+                            )
+                            .popChangeHandler(
+                                    TransitionChangeHandlerCompat(
+                                            SharedElementTransition(arrayListOf(settingsTransitionName)), VerticalChangeHandler()
+                                    )
+                            )
+            )
+
+        }
+
         viewModel.avatar.observe(this@ConversationsListView) { avatar ->
-            settingsItem?.icon = avatar
+            activity?.rightButton?.setImageDrawable(avatar)
         }
 
         return view
@@ -319,6 +296,14 @@ class ConversationsListView : BaseView() {
         }
 
         return items
+    }
+
+    override fun getIsUsingSearchLayout(): Boolean {
+        return true
+    }
+
+    override fun getSearchHint(): String? {
+        return resources?.getString(R.string.nc_search_conversations)
     }
 
     override fun getTitle(): String? {

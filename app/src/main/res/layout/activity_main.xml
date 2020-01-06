@@ -33,16 +33,27 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:id="@+id/appBar"
+        app:elevation="0dp"
+        >
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:contentInsetStart="24dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:popupTheme="@style/appActionBarPopupMenu" />
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/transparent"
+            app:elevation="0dp"
+            app:contentInsetEnd="12dp"
+            app:contentInsetStart="12dp"
+            app:popupTheme="@style/appActionBarPopupMenu">
+
+        <include layout="@layout/search_layout"/>
+
+        </com.google.android.material.appbar.MaterialToolbar>>
+
+
     </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

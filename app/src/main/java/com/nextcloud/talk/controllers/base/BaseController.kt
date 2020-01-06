@@ -20,11 +20,14 @@
 
 package com.nextcloud.talk.controllers.base
 
+import android.app.Activity
 import android.content.ComponentCallbacks
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
+import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +36,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
+import androidx.core.view.isVisible
+import androidx.core.view.marginBottom
+import androidx.core.view.updatePadding
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.MaterialToolbar
+import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.AccountVerificationController
 import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SwitchAccountController
@@ -41,6 +51,8 @@ import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.search_layout.*
 import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.android.inject
 import java.util.*
@@ -68,15 +80,39 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 router.popCurrentController()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
+    private fun showSearchOrToolbar() {
+        val value = getIsUsingSearchLayout()
+        activity?.let {
+            if (it is MainActivity) {
+                it.searchCardView.isVisible = value
+                it.inputEditText.hint = getSearchHint()
+
+                val layoutParams = it.toolbar.layoutParams as AppBarLayout.LayoutParams
+
+                if (value) {
+                    it.appBar.setBackgroundResource(R.color.transparent)
+                    //it.toolbar.setContentInsetsAbsolute(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, resources?.displayMetrics).toInt(), 0)
+                    //layoutParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
+                    it.toolbar.layoutParams = layoutParams
+                } else {
+                    it.appBar.setBackgroundResource(R.color.colorPrimary)
+                    //it.toolbar.setContentInsetsAbsolute(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24f, resources?.displayMetrics).toInt(), 0)
+                    layoutParams.scrollFlags = 0
+                    it.toolbar.layoutParams = layoutParams
+                }
+            }
+        }
+
+    }
     private fun cleanTempCertPreference() {
         val temporaryClassNames = ArrayList<String>()
         temporaryClassNames.add(ServerSelectionController::class.java.name)
@@ -95,16 +131,22 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         cleanTempCertPreference()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
             disableKeyboardPersonalisedLearning(view as ViewGroup)
+
+            activity?.let {
+                if (it is MainActivity && getIsUsingSearchLayout()) {
+                    disableKeyboardPersonalisedLearning(it.appBar)
+                }
+            }
         }
+
     }
 
     override fun onAttach(view: View) {
         super.onAttach(view)
 
         setTitle()
-        if (actionBar != null) {
-            actionBar!!.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize > 1)
-        }
+        actionBar?.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize > 1)
+        showSearchOrToolbar()
     }
 
     override fun onDetach(view: View) {
@@ -159,4 +201,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     open fun getTitle(): String? {
         return null
     }
+
+    open fun getIsUsingSearchLayout(): Boolean = false
+    open fun getSearchHint(): String? = null
 }

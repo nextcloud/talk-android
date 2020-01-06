@@ -100,7 +100,10 @@ class Conversation {
     @JsonIgnore
     var changing: Boolean = false
 
+
+    @JsonIgnore
     val isPublic: Boolean = ConversationType.PUBLIC_CONVERSATION == type
+    @JsonIgnore
     val isGuest: Boolean =
             Participant.ParticipantType.GUEST == participantType ||
                     Participant.ParticipantType.USER_FOLLOWING_LINK == participantType
@@ -153,6 +156,48 @@ class Conversation {
         return !canModerate(
                 conversationUser
         ) || type != ConversationType.ONE_TO_ONE_CONVERSATION && participants!!.size > 1
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Conversation
+
+        if (databaseId != other.databaseId) return false
+        if (databaseUserId != other.databaseUserId) return false
+        if (conversationId != other.conversationId) return false
+        if (token != other.token) return false
+        if (name != other.name) return false
+        if (displayName != other.displayName) return false
+        if (type != other.type) return false
+        if (count != other.count) return false
+        if (numberOfGuests != other.numberOfGuests) return false
+        if (participants != other.participants) return false
+        if (participantType != other.participantType) return false
+        if (hasPassword != other.hasPassword) return false
+        if (password != other.password) return false
+        if (favorite != other.favorite) return false
+        if (lastActivity != other.lastActivity) return false
+        if (unreadMessages != other.unreadMessages) return false
+        if (unreadMention != other.unreadMention) return false
+        if (lastMessage != other.lastMessage) return false
+        if (objectType != other.objectType) return false
+        if (notificationLevel != other.notificationLevel) return false
+        if (conversationReadOnlyState != other.conversationReadOnlyState) return false
+        if (lobbyState != other.lobbyState) return false
+        if (lobbyTimer != other.lobbyTimer) return false
+        if (lastReadMessageId != other.lastReadMessageId) return false
+        if (canStartCall != other.canStartCall) return false
+        if (changing != other.changing) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = databaseUserId?.hashCode() ?: 0
+        result = 31 * result + (token?.hashCode() ?: 0)
+        return result
     }
 
     enum class NotificationLevel {

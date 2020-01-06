@@ -46,6 +46,7 @@
 
     <string name="nc_never">Never joined</string>
     <string name="nc_search">Search</string>
+    <string name="nc_search_conversations">Search conversations</string>
 
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>

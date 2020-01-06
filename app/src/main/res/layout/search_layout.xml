@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ /*
+  ~  * Nextcloud Talk application
+  ~  *
+  ~  * @author Mario Danic
+  ~  * Copyright (C) 2017-2020 Mario Danic <mario@lovelyhq.com>
+  ~  *
+  ~  * This program is free software: you can redistribute it and/or modify
+  ~  * it under the terms of the GNU General Public License as published by
+  ~  * the Free Software Foundation, either version 3 of the License, or
+  ~  * at your option) any later version.
+  ~  *
+  ~  * This program is distributed in the hope that it will be useful,
+  ~  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  * GNU General Public License for more details.
+  ~  *
+  ~  * You should have received a copy of the GNU General Public License
+  ~  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~  */
+  -->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/searchCardView"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginVertical="8dp"
+        android:background="@color/transparent"
+        app:cardUseCompatPadding="false"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardElevation="0dp"
+        android:elevation="0dp"
+        app:cardCornerRadius="4dp"
+        tools:cardCornerRadius="4dp"
+        tools:cardElevation="0dp"
+        android:clipToPadding="true"
+        android:clipChildren="true"
+        android:animateLayoutChanges="true"
+        android:layout_centerHorizontal="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:clipToPadding="true"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary">
+
+            <FrameLayout
+                android:id="@+id/leftContainer"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_centerVertical="true">
+
+                <ImageButton
+                    android:id="@+id/leftButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitCenter"
+                    android:tint="@color/fg_inverse"
+                    android:src="@drawable/ic_arrow_back_black_24dp"
+                    android:visibility="visible"
+                    tools:src="@drawable/ic_arrow_back_black_24dp" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/colorPrimary"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <EditText
+                android:id="@+id/inputEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="start|center"
+                android:layout_toEndOf="@id/leftContainer"
+                android:layout_alignWithParentIfMissing="true"
+                android:inputType="textNoSuggestions"
+                android:layout_marginStart="16dp"
+                android:imeOptions="actionSearch|flagNoExtractUi"
+                android:lines="1"
+                android:layout_marginEnd="16dp"
+                android:maxLines="1"
+                android:background="@null"
+                android:textSize="16sp"
+                tools:hint="Search"
+                android:layout_toStartOf="@id/rightButton"/>
+
+
+            <ImageView
+                android:id="@+id/rightButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="16dp"
+                android:layout_alignParentEnd="true"
+                android:transitionName="userAvatar.transitionTag"
+                android:layout_centerVertical="true"
+                android:scaleType="fitCenter"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_settings_white_24dp"
+                tools:src="@tools:sample/avatars[0]"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+</merge>
