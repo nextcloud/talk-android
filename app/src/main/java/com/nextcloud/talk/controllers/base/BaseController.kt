@@ -34,10 +34,9 @@ import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.core.view.isVisible
-import com.bluelinelabs.conductor.ControllerChangeHandler
-import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.AccountVerificationController
@@ -74,6 +73,18 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
             return actionBarProvider?.supportActionBar
         }
+
+    protected val floatingActionButton: FloatingActionButton?
+    get() {
+        var floatingActionButton: FloatingActionButton? = null
+        activity?.let {
+            if (it is MainActivity) {
+                floatingActionButton = it.floatingActionButton
+            }
+        }
+
+        return floatingActionButton
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

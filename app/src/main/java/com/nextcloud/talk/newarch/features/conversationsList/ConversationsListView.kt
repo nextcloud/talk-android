@@ -125,6 +125,15 @@ class ConversationsListView : BaseView() {
         viewModel.filterLiveData.observe(this@ConversationsListView) {query ->
             activity?.settingsButton?.isVisible = query.isNullOrEmpty()
             activity?.clearButton?.isVisible = !query.isNullOrEmpty()
+            if (query.isNullOrEmpty()) {
+                if (floatingActionButton?.isOrWillBeShown == false) {
+                    floatingActionButton?.show()
+                }
+            } else {
+                if (floatingActionButton?.isOrWillBeHidden == false) {
+                    floatingActionButton?.hide()
+                }
+            }
         }
         return view
     }
@@ -210,11 +219,6 @@ class ConversationsListView : BaseView() {
     override fun getLayoutId(): Int {
         return R.layout.controller_conversations_rv
     }
-
-    /*@OnClick(R.id.floatingActionButton)
-    fun onFloatingActionButtonClick() {
-        openNewConversationScreen()
-    }*/
 
     private fun openNewConversationScreen() {
         val bundle = Bundle()
