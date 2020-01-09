@@ -64,8 +64,6 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     val context: Context by inject()
     val eventBus: EventBus by inject()
 
-    // Note: This is just a quick demo of how an ActionBar *can* be accessed, not necessarily how it *should*
-    // be accessed. In a production app, this would use Dagger instead.
     protected val actionBar: ActionBar?
         get() {
             var actionBarProvider: ActionBarProvider? = null
@@ -98,6 +96,16 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
+        setOptionsMenuHidden(true)
+        super.onChangeStarted(changeHandler, changeType)
+    }
+
+    override fun onChangeEnded(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
+        setOptionsMenuHidden(false)
+        super.onChangeEnded(changeHandler, changeType)
     }
 
     private fun showSearchOrToolbar() {

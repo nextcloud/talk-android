@@ -712,11 +712,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
         }
     }
 
-    override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
-        actionBar?.setIcon(null)
-        super.onChangeStarted(changeHandler, changeType)
-    }
-
     override fun onDetach(view: View) {
         eventBus.unregister(this)
 

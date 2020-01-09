@@ -29,6 +29,8 @@ import butterknife.OnClick
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.bluelinelabs.conductor.ControllerChangeHandler
+import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
@@ -125,17 +127,13 @@ class ConversationsListView : BaseView() {
         viewModel.filterLiveData.observe(this@ConversationsListView) {query ->
             activity?.settingsButton?.isVisible = query.isNullOrEmpty()
             activity?.clearButton?.isVisible = !query.isNullOrEmpty()
-            if (query.isNullOrEmpty()) {
-                if (floatingActionButton?.isOrWillBeShown == false) {
-                    floatingActionButton?.show()
-                }
-            } else {
-                if (floatingActionButton?.isOrWillBeHidden == false) {
-                    floatingActionButton?.hide()
-                }
-            }
         }
         return view
+    }
+
+    override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
+        actionBar?.setIcon(null)
+        super.onChangeStarted(changeHandler, changeType)
     }
 
     private fun setSearchQuery(query: CharSequence?) {
