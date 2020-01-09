@@ -22,10 +22,11 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
-import butterknife.OnClick
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -51,7 +52,10 @@ import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.animations.SharedElementTransition
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.otaliastudios.elements.*
+import com.otaliastudios.elements.Adapter
+import com.otaliastudios.elements.Element
+import com.otaliastudios.elements.Page
+import com.otaliastudios.elements.Presenter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.*
@@ -124,7 +128,7 @@ class ConversationsListView : BaseView() {
             activity?.settingsButton?.setImageDrawable(avatar)
         }
 
-        viewModel.filterLiveData.observe(this@ConversationsListView) {query ->
+        viewModel.filterLiveData.observe(this@ConversationsListView) { query ->
             activity?.settingsButton?.isVisible = query.isNullOrEmpty()
             activity?.clearButton?.isVisible = !query.isNullOrEmpty()
         }

@@ -60,7 +60,7 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
     override fun getConversationsForUser(userId: Long, filter: CharSequence?): LiveData<List<Conversation>> {
         filter?.let {
             return conversationsDao.getConversationsForUserWithFilter(userId, it.toString()).distinctUntilChanged().map { data ->
-                data.map {conversationEntity ->
+                data.map { conversationEntity ->
                     conversationEntity.toConversation()
                 }
             }

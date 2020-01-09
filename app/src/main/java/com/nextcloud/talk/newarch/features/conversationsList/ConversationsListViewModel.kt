@@ -22,11 +22,8 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.Application
 import android.graphics.drawable.Drawable
-import android.os.Handler
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import coil.Coil
 import coil.api.get

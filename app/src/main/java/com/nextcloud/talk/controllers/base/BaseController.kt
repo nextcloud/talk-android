@@ -77,16 +77,16 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         }
 
     protected val floatingActionButton: FloatingActionButton?
-    get() {
-        var floatingActionButton: FloatingActionButton? = null
-        activity?.let {
-            if (it is MainActivity) {
-                floatingActionButton = it.floatingActionButton
+        get() {
+            var floatingActionButton: FloatingActionButton? = null
+            activity?.let {
+                if (it is MainActivity) {
+                    floatingActionButton = it.floatingActionButton
+                }
             }
-        }
 
-        return floatingActionButton
-    }
+            return floatingActionButton
+        }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

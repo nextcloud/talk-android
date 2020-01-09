@@ -49,8 +49,6 @@ import butterknife.OnClick
 import coil.api.load
 import coil.target.Target
 import coil.transform.CircleCropTransformation
-import com.bluelinelabs.conductor.ControllerChangeHandler
-import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler

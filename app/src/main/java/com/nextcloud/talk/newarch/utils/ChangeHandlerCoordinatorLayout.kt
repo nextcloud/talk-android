@@ -34,15 +34,13 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.bluelinelabs.conductor.Controller
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeHandler.ControllerChangeListener
-import com.nextcloud.talk.activities.MainActivity
-import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListView
 
 class ChangeHandlerCoordinatorLayout : CoordinatorLayout, ControllerChangeListener {
     private var inProgressTransactionCount = 0
 
-    constructor(context: Context) : super(context) {}
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         return inProgressTransactionCount > 0 || super.onInterceptTouchEvent(ev)

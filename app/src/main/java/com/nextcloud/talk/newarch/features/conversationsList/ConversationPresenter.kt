@@ -147,7 +147,7 @@ open class ConversationsPresenter(context: Context, onElementClick: ((Page, Hold
 
                 conversationDrawable?.let {
                     holder.itemView.dialogAvatar.load(conversationDrawable)
-                }?: run {
+                } ?: run {
                     holder.itemView.dialogAvatar.load(ApiUtils.getUrlForAvatarWithName(
                             user.baseUrl,
                             conversation.name, R.dimen.avatar_size))

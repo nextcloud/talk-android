@@ -29,7 +29,7 @@ import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Source
 import com.otaliastudios.elements.extensions.MainSource
 
-class ConversationsListSource<T: Conversation>(private val data: LiveData<List<T>>, private val elementType: Int = 0, loadingIndicatorsEnabled: Boolean = true, errorIndicatorEnabled: Boolean = true, emptyIndicatorEnabled: Boolean = true) : MainSource<T>(loadingIndicatorsEnabled, errorIndicatorEnabled, emptyIndicatorEnabled) {
+class ConversationsListSource<T : Conversation>(private val data: LiveData<List<T>>, private val elementType: Int = 0, loadingIndicatorsEnabled: Boolean = true, errorIndicatorEnabled: Boolean = true, emptyIndicatorEnabled: Boolean = true) : MainSource<T>(loadingIndicatorsEnabled, errorIndicatorEnabled, emptyIndicatorEnabled) {
 
     override fun onPageOpened(page: Page, dependencies: List<Element<*>>) {
         super.onPageOpened(page, dependencies)

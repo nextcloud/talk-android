@@ -49,7 +49,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import kotlin.math.abs
 
 
