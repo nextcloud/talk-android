@@ -33,7 +33,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isVisible
+import com.bluelinelabs.conductor.ControllerChangeHandler
+import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -44,6 +47,7 @@ import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SwitchAccountController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
+import com.nextcloud.talk.utils.FABAwareScrollingViewBehavior
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.activity_main.*
@@ -104,15 +108,20 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
                 it.floatingActionButton.isVisible = value
                 it.inputEditText.hint = getSearchHint()
 
+                val layoutParamsForContainer = it.container.layoutParams as CoordinatorLayout.LayoutParams
                 val layoutParams = it.toolbar.layoutParams as AppBarLayout.LayoutParams
                 if (value) {
+                    layoutParamsForContainer.behavior = FABAwareScrollingViewBehavior()
                     layoutParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
                     it.appBar.setBackgroundResource(R.color.transparent)
                 } else {
+                    layoutParamsForContainer.behavior = AppBarLayout.ScrollingViewBehavior()
                     layoutParams.scrollFlags = 0
                     it.appBar.setBackgroundResource(R.color.colorPrimary)
                 }
+                it.container.layoutParams = layoutParamsForContainer
                 it.toolbar.layoutParams = layoutParams
+                it.toolbar.forceLayout()
             }
         }
 
