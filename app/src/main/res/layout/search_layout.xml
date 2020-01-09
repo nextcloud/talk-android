@@ -60,7 +60,7 @@
                 <ImageButton
                     android:id="@+id/leftButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="24dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
@@ -110,8 +110,8 @@
 
                 <ImageView
                     android:id="@+id/clearButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
@@ -123,8 +123,8 @@
 
                 <ImageView
                 android:id="@+id/settingsButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitCenter"
