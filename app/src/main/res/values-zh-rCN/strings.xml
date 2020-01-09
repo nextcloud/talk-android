@@ -207,7 +207,7 @@
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Push-to-talk</string>
-    <string name="nc_push_to_talk_desc">麦克风已禁用，单击&amp;来使用“随按即说”功能</string>
+    <string name="nc_push_to_talk_desc">在禁用麦克风的情况下，单击并按住即可使用 “按键发言” 功能</string>
     <string name="nc_configure_cert_auth">选择验证证书</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
 
