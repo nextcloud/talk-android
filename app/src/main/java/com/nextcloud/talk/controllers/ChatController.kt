@@ -644,6 +644,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
     override fun onAttach(view: View) {
         super.onAttach(view)
+        setTitle()
         eventBus.register(this)
 
         if (conversationUser?.userId != "?" && conversationUser?.hasSpreedFeatureCapability(

@@ -99,6 +99,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     }
 
     override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
+        actionBar?.setIcon(null)
         setOptionsMenuHidden(true)
         super.onChangeStarted(changeHandler, changeType)
     }
@@ -129,7 +130,6 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
                 }
                 it.container.layoutParams = layoutParamsForContainer
                 it.toolbar.layoutParams = layoutParams
-                it.toolbar.forceLayout()
             }
         }
 
