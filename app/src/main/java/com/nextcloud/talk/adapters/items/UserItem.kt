@@ -265,27 +265,20 @@ class UserItem(
             adapter: FlexibleAdapter<*>
     ) : FlexibleViewHolder(view, adapter) {
 
-        @JvmField
-        @BindView(R.id.name_text)
         var contactDisplayName: EmojiTextView? = null
-        @JvmField
-        @BindView(R.id.avatarImageView)
         var avatarImageView: ImageView? = null
-        @JvmField
-        @BindView(R.id.secondary_text)
         var contactMentionId: EmojiTextView? = null
-        @JvmField
-        @BindView(R.id.voiceOrSimpleCallImageView)
         var voiceOrSimpleCallImageView: ImageView? = null
-        @JvmField
-        @BindView(R.id.videoCallImageView)
         var videoCallImageView: ImageView? = null
-        @JvmField
-        @BindView(R.id.checkedImageView)
         var checkedImageView: ImageView? = null
 
         init {
-            ButterKnife.bind(this, view)
+            contactDisplayName = view.findViewById(R.id.name_text)
+            avatarImageView = view.findViewById(R.id.avatarImageView)
+            contactMentionId = view.findViewById(R.id.secondary_text)
+            voiceOrSimpleCallImageView = view.findViewById(R.id.voiceOrSimpleCallImageView)
+            videoCallImageView = view.findViewById(R.id.videoCallImageView)
+            checkedImageView = view.findViewById(R.id.checkedImageView)
         }
     }
 }
