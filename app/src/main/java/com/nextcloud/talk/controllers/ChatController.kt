@@ -49,6 +49,8 @@ import butterknife.OnClick
 import coil.api.load
 import coil.target.Target
 import coil.transform.CircleCropTransformation
+import com.bluelinelabs.conductor.ControllerChangeHandler
+import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
@@ -710,12 +712,13 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
         }
     }
 
+    override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
+        actionBar?.setIcon(null)
+        super.onChangeStarted(changeHandler, changeType)
+    }
+
     override fun onDetach(view: View) {
         eventBus.unregister(this)
-
-        if (actionBar != null) {
-            actionBar?.setIcon(null)
-        }
 
         if (activity != null) {
             activity?.findViewById<View>(R.id.toolbar)

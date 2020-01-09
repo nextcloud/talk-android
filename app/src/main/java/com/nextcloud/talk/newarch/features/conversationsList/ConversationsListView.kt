@@ -21,17 +21,14 @@
 package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.lifecycle.observe
 import butterknife.OnClick
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.bluelinelabs.conductor.ControllerChangeHandler
-import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
@@ -39,7 +36,6 @@ import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.R.drawable
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.ContactsController
 import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
@@ -47,6 +43,7 @@ import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.data.presenters.AdvancedEmptyPresenter
+import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
@@ -55,15 +52,11 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.otaliastudios.elements.*
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.controller_conversations_rv.view.*
 import kotlinx.android.synthetic.main.message_state.view.*
 import kotlinx.android.synthetic.main.search_layout.*
-import kotlinx.android.synthetic.main.search_layout.view.*
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
-import java.util.*
 
 class ConversationsListView : BaseView() {
 
@@ -71,34 +64,6 @@ class ConversationsListView : BaseView() {
 
     private lateinit var viewModel: ConversationsListViewModel
     val factory: ConversationListViewModelFactory by inject()
-
-    /*private fun initSearchView() {
-        val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-        searchView!!.maxWidth = Integer.MAX_VALUE
-        searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
-        var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
-            imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
-        }
-        searchView!!.imeOptions = imeOptions
-        searchView!!.queryHint = resources?.getString(R.string.nc_search)
-        searchView!!.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
-        searchView!!.setOnQueryTextListener(this)
-    }
-
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        if (!viewModel.searchQuery.value.equals(query)) {
-            viewModel.searchQuery.value = query
-        }
-
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        return onQueryTextSubmit(newText)
-    }*/
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -131,7 +96,11 @@ class ConversationsListView : BaseView() {
             swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
         }
 
-        activity?.rightButton?.setOnClickListener {
+        activity?.inputEditText?.addTextChangedListener(DebouncingTextWatcher(lifecycle, ::setSearchQuery))
+        activity?.clearButton?.setOnClickListener {
+            activity?.inputEditText?.text = null
+        }
+        activity?.settingsButton?.setOnClickListener {
             val settingsTransitionName = "userAvatar.transitionTag"
             router.pushController(
                     RouterTransaction.with(SettingsController())
@@ -150,10 +119,18 @@ class ConversationsListView : BaseView() {
         }
 
         viewModel.avatar.observe(this@ConversationsListView) { avatar ->
-            activity?.rightButton?.setImageDrawable(avatar)
+            activity?.settingsButton?.setImageDrawable(avatar)
         }
 
+        viewModel.filterLiveData.observe(this@ConversationsListView) {query ->
+            activity?.settingsButton?.isVisible = query.isNullOrEmpty()
+            activity?.clearButton?.isVisible = !query.isNullOrEmpty()
+        }
         return view
+    }
+
+    private fun setSearchQuery(query: CharSequence?) {
+        viewModel.filterLiveData.value = query
     }
 
     private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<Conversation>) {
@@ -234,10 +211,10 @@ class ConversationsListView : BaseView() {
         return R.layout.controller_conversations_rv
     }
 
-    @OnClick(R.id.floatingActionButton)
+    /*@OnClick(R.id.floatingActionButton)
     fun onFloatingActionButtonClick() {
         openNewConversationScreen()
-    }
+    }*/
 
     private fun openNewConversationScreen() {
         val bundle = Bundle()

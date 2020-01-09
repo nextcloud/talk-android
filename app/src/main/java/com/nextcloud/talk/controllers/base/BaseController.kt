@@ -20,14 +20,11 @@
 
 package com.nextcloud.talk.controllers.base
 
-import android.app.Activity
 import android.content.ComponentCallbacks
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
-import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -37,11 +34,10 @@ import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.core.view.isVisible
-import androidx.core.view.marginBottom
-import androidx.core.view.updatePadding
+import com.bluelinelabs.conductor.ControllerChangeHandler
+import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.MaterialToolbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.AccountVerificationController
@@ -94,25 +90,23 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         activity?.let {
             if (it is MainActivity) {
                 it.searchCardView.isVisible = value
+                it.floatingActionButton.isVisible = value
                 it.inputEditText.hint = getSearchHint()
 
                 val layoutParams = it.toolbar.layoutParams as AppBarLayout.LayoutParams
-
                 if (value) {
+                    layoutParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
                     it.appBar.setBackgroundResource(R.color.transparent)
-                    //it.toolbar.setContentInsetsAbsolute(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, resources?.displayMetrics).toInt(), 0)
-                    //layoutParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
-                    it.toolbar.layoutParams = layoutParams
                 } else {
-                    it.appBar.setBackgroundResource(R.color.colorPrimary)
-                    //it.toolbar.setContentInsetsAbsolute(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24f, resources?.displayMetrics).toInt(), 0)
                     layoutParams.scrollFlags = 0
-                    it.toolbar.layoutParams = layoutParams
+                    it.appBar.setBackgroundResource(R.color.colorPrimary)
                 }
+                it.toolbar.layoutParams = layoutParams
             }
         }
 
     }
+
     private fun cleanTempCertPreference() {
         val temporaryClassNames = ArrayList<String>()
         temporaryClassNames.add(ServerSelectionController::class.java.name)
@@ -125,6 +119,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         }
 
     }
+
 
     override fun onViewBound(view: View) {
         super.onViewBound(view)
@@ -142,11 +137,10 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     }
 
     override fun onAttach(view: View) {
-        super.onAttach(view)
-
+        showSearchOrToolbar()
         setTitle()
         actionBar?.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize > 1)
-        showSearchOrToolbar()
+        super.onAttach(view)
     }
 
     override fun onDetach(view: View) {

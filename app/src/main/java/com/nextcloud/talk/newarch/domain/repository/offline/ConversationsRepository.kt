@@ -24,7 +24,7 @@ import androidx.lifecycle.LiveData
 import com.nextcloud.talk.models.json.conversations.Conversation
 
 interface ConversationsRepository {
-    fun getConversationsForUser(userId: Long, filter: String?): LiveData<List<Conversation>>
+    fun getConversationsForUser(userId: Long, filter: CharSequence?): LiveData<List<Conversation>>
     fun getShortcutTargetConversations(userId: Long): LiveData<List<Conversation>>
 
     suspend fun getConversationForUserWithToken(userId: Long, token: String): Conversation?

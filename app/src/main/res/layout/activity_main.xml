@@ -21,39 +21,50 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainActivityCoordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
-    <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
-        android:id="@+id/controller_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="0dp"
         android:id="@+id/appBar"
-        app:elevation="0dp"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/transparent"
+        app:elevation="0dp">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="@color/transparent"
-            app:elevation="0dp"
             app:contentInsetEnd="12dp"
             app:contentInsetStart="12dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:elevation="0dp"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
             app:popupTheme="@style/appActionBarPopupMenu">
 
-        <include layout="@layout/search_layout"/>
-
-        </com.google.android.material.appbar.MaterialToolbar>>
-
-
+            <include layout="@layout/search_layout"/>
+        </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
+
+    <com.nextcloud.talk.newarch.utils.ChangeHandlerCoordinatorLayout
+        android:id="@+id/controller_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.nextcloud.talk.utils.FABAwareScrollingViewBehavior"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_add_white_24px"
+        app:tint="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

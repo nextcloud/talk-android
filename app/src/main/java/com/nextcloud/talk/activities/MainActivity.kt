@@ -29,6 +29,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import butterknife.BindView
 import butterknife.ButterKnife
+import butterknife.OnClick
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
@@ -70,7 +71,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         setContentView(R.layout.activity_main)
 
         ButterKnife.bind(this)
-
         setSupportActionBar(toolbar)
 
         router = Conductor.attachRouter(this, container, savedInstanceState)
@@ -106,6 +106,17 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             checkIfWeAreSecure()
         }
     }
+
+    @OnClick(R.id.floatingActionButton)
+    fun onFloatingActionButtonClick() {
+        val bundle = Bundle()
+        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
+        router?.pushController(
+                RouterTransaction.with(ContactsController(bundle))
+                        .pushChangeHandler(HorizontalChangeHandler())
+                        .popChangeHandler(HorizontalChangeHandler()))
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     fun checkIfWeAreSecure() {
