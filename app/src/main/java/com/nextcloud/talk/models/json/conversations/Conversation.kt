@@ -29,6 +29,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.converters.*
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.newarch.data.model.LocalConversationConfiguration
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import lombok.Data
 import org.parceler.Parcel
@@ -39,6 +40,8 @@ import java.util.*
 @Data
 @JsonObject(serializeNullCollectionElements = true, serializeNullObjects = true)
 class Conversation {
+    @JsonIgnore
+    var localConfiguration: LocalConversationConfiguration? = null
     @JsonIgnore
     var databaseId: String? = null
     @JsonIgnore
@@ -190,6 +193,7 @@ class Conversation {
         if (lastReadMessageId != other.lastReadMessageId) return false
         if (canStartCall != other.canStartCall) return false
         if (changing != other.changing) return false
+        if (localConfiguration != other.localConfiguration) return false
 
         return true
     }

@@ -922,7 +922,7 @@ class CallController(args: Bundle) : BaseController() {
                             }
 
                             if (conversationUser!!.userId != "?") {
-                                try {
+                                /*try {
                                     userUtils.createOrUpdateUser(
                                             null, null, null, null, null, null, null,
                                             conversationUser.id, null, null,
@@ -932,7 +932,7 @@ class CallController(args: Bundle) : BaseController() {
                                             .subscribe()
                                 } catch (exception: IOException) {
                                     Log.e(TAG, "Failed to serialize external signaling server")
-                                }
+                                }*/
 
                             }
 

@@ -85,7 +85,7 @@ abstract class ConversationsDao {
     open suspend fun updateConversationsForUser(
             userId: Long,
             newConversations: Array<ConversationEntity>
-    ) {
+    ): List<Long> {
         val timestamp = System.currentTimeMillis()
 
         val conversationsWithTimestampApplied = newConversations.map {
@@ -93,7 +93,8 @@ abstract class ConversationsDao {
             it
         }
 
-        saveConversationsWithInsert(*conversationsWithTimestampApplied.toTypedArray())
+        val list = saveConversationsWithInsert(*conversationsWithTimestampApplied.toTypedArray())
         deleteConversationsForUserWithTimestamp(userId, timestamp)
+        return list
     }
 }

@@ -98,12 +98,12 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
     override suspend fun saveConversationsForUser(
             userId: Long,
             conversations: List<Conversation>
-    ) {
+    ): List<Long> {
         val map = conversations.map {
             it.toConversationEntity()
         }
 
-        conversationsDao
+        return conversationsDao
                 .updateConversationsForUser(
                         userId,
                         map.toTypedArray()

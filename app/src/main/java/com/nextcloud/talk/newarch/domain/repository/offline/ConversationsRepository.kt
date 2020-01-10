@@ -32,7 +32,7 @@ interface ConversationsRepository {
     suspend fun saveConversationsForUser(
             userId: Long,
             conversations: List<Conversation>
-    )
+    ): List<Long>
 
     suspend fun setChangingValueForConversation(
             userId: Long,

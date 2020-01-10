@@ -61,6 +61,8 @@ import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.googlecompat.GoogleCompatEmojiProvider
 import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
+import io.requery.Persistable
+import io.requery.reactivex.ReactiveEntityStore
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.conscrypt.Conscrypt
@@ -79,6 +81,8 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
     //region Getters
 
     val userUtils: UserUtils by inject()
+    val dataStore: ReactiveEntityStore<Persistable> by inject()
+
     val imageLoader: ImageLoader by inject()
     val appPreferences: AppPreferences by inject()
     val usersDao: UsersDao by inject()
@@ -124,7 +128,6 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         DisplayUtils.useCompatVectorIfNeeded()
         startKoin()
         DavUtils.registerCustomFactories()
-
         Coil.setDefaultImageLoader(imageLoader)
         migrateUsers()
 
@@ -160,10 +163,9 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
                         periodicCapabilitiesUpdateWork
                 )
 
-        val config = BundledEmojiCompatConfig(this)
+        val config = BundledEmojiCompatConfig(this@NextcloudTalkApplication)
         config.setReplaceAll(true)
         val emojiCompat = EmojiCompat.init(config)
-
         EmojiManager.install(GoogleCompatEmojiProvider(emojiCompat))
     }
 
@@ -187,7 +189,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         MultiDex.install(this)
     }
 
-    fun migrateUsers() {
+    private fun migrateUsers() {
         if (!appPreferences.migrationToRoomFinished) {
             GlobalScope.launch {
                 val users: List<UserEntity> = userUtils.users as List<UserEntity>
@@ -223,10 +225,10 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
                         }
                     }
 
-
                     newUsers.add(userNg)
                 }
                 usersDao.saveUsers(*newUsers.toTypedArray())
+                dataStore.delete()
                 appPreferences.migrationToRoomFinished = true
             }
         }
@@ -239,6 +241,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
 
         var sharedApplication: NextcloudTalkApplication? = null
             protected set
+
         //endregion
 
         //region Setters

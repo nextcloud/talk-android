@@ -22,6 +22,7 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -124,13 +125,15 @@ class ConversationsListView : BaseView() {
 
         }
 
-        viewModel.avatar.observe(this@ConversationsListView) { avatar ->
-            activity?.settingsButton?.setImageDrawable(avatar)
-        }
+        viewModel.apply {
+            avatar.observe(this@ConversationsListView) { avatar ->
+                activity?.settingsButton?.setImageDrawable(avatar)
+            }
 
-        viewModel.filterLiveData.observe(this@ConversationsListView) { query ->
-            activity?.settingsButton?.isVisible = query.isNullOrEmpty()
-            activity?.clearButton?.isVisible = !query.isNullOrEmpty()
+            filterLiveData.observe(this@ConversationsListView) { query ->
+                activity?.settingsButton?.isVisible = query.isNullOrEmpty()
+                activity?.clearButton?.isVisible = !query.isNullOrEmpty()
+            }
         }
         return view
     }
