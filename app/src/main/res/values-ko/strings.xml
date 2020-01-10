@@ -44,7 +44,6 @@
 
     <string name="nc_never">참가하지 않음</string>
     <string name="nc_search">검색</string>
-
     <string name="nc_certificate_dialog_title">인증서 확인</string>
     <string name="nc_certificate_dialog_text">%1$s에서 %2$s에게 발급한 %3$s부터 %4$s까지 유효한 알 수 없는 인증서를 신뢰하시겠습니까?</string>
     <string name="nc_yes">예</string>

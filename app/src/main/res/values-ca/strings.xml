@@ -46,7 +46,6 @@
 
     <string name="nc_never">Mai no us hi heu unit</string>
     <string name="nc_search">Cerca</string>
-
     <string name="nc_certificate_dialog_title">Verifica el certificat</string>
     <string name="nc_certificate_dialog_text">Us en refieu del certificat SSL desconegut fins ara, emès per %1$s per %2$s, vàlid del %3$s fins el %4$s?</string>
     <string name="nc_yes">Sí</string>

@@ -45,7 +45,6 @@
 
     <string name="nc_never">Chưa bao giờ tham gia</string>
     <string name="nc_search">Tìm</string>
-
     <string name="nc_certificate_dialog_title">Kiểm tra chứng chỉ</string>
     <string name="nc_certificate_dialog_text">Bạn có tin tưởng vào chứng thực SSL chưa biết này không, phát sinh này bởi %1$s cho %2$s, hiệu lực từ %3$s đến %4$s?</string>
     <string name="nc_yes">Đồng ý</string>

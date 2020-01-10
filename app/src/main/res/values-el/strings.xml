@@ -38,7 +38,6 @@
     <!-- Account verification -->
     <string name="nc_push_disabled">Οι ειδοποιήσεις push απενεργοποιήθηκαν</string>
     <string name="nc_search">Αναζήτηση</string>
-
     <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
     <string name="nc_yes">Ναι</string>
     <string name="nc_no">Όχι</string>

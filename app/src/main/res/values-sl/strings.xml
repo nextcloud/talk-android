@@ -46,7 +46,6 @@
 
     <string name="nc_never">Nikoli pridružen</string>
     <string name="nc_search">Poišči</string>
-
     <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
     <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
     <string name="nc_yes">Da</string>

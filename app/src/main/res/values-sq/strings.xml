@@ -42,7 +42,6 @@
 
     <string name="nc_never">Nuk u bashkua kurrë</string>
     <string name="nc_search">Kërko</string>
-
     <string name="nc_certificate_dialog_title">Kontrollo çertifikaten</string>
     <string name="nc_certificate_dialog_text">A e beson deri tani çertifikatën e panjohur deri tani SSL, lëshuar nga %1$spër %2$s, e vlefshme nga %3$s në %4$s?</string>
     <string name="nc_yes">Po</string>

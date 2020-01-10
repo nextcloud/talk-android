@@ -46,7 +46,6 @@
 
     <string name="nc_never">Soha nem csatlakozott</string>
     <string name="nc_search">Keresés</string>
-
     <string name="nc_certificate_dialog_title">Ellenőrizze a tanúsítványt</string>
     <string name="nc_certificate_dialog_text">Megbízik a(z) %1$s által a(z) %2$s részére kiállított, %3$s és %4$s között érvényes, korábban ismeretlen SSL tanúsítványban?</string>
     <string name="nc_yes">Igen</string>

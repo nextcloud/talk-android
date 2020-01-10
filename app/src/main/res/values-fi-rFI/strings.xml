@@ -33,7 +33,6 @@
     <string name="nc_Server_account_imported">Valittu tili on nyt tuotu ja käytettävissä</string>
     <string name="nc_nextcloud_talk_app_not_installed">Sovellusta %1$s ei ole asennettu, keskeytetään</string>
     <string name="nc_search">Etsi</string>
-
     <string name="nc_certificate_dialog_title">Tarkista varmenne</string>
     <string name="nc_yes">Kyllä</string>
     <string name="nc_no">Ei</string>

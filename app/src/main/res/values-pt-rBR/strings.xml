@@ -46,7 +46,6 @@
 
     <string name="nc_never">Nunca juntado</string>
     <string name="nc_search">Persquisar</string>
-
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_dialog_text">Quer confiar em um certificado SSL desconhecido, emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
     <string name="nc_yes">Sim</string>

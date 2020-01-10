@@ -46,7 +46,6 @@
 
     <string name="nc_never">Skráði sig aldrei</string>
     <string name="nc_search">Leita</string>
-
     <string name="nc_certificate_dialog_title">Sannreyna skilríkið</string>
     <string name="nc_certificate_dialog_text">Treystirðu hinu hingað til óþekkta SSL-skilríki, útgefnu af %1$s fyrir %2$s, með gildistíma frá %3$s til %4$s?</string>
     <string name="nc_yes">Já</string>

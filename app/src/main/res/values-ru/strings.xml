@@ -46,7 +46,6 @@
 
     <string name="nc_never">Никогда не использовался</string>
     <string name="nc_search">Поиск</string>
-
     <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
     <string name="nc_certificate_dialog_text">Доверять неизвестному сертификату SSL: выпущен %1$s для %2$s, действителен с %3$s по %4$s?</string>
     <string name="nc_yes">Да</string>

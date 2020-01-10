@@ -46,7 +46,6 @@
 
     <string name="nc_never">Никад придружен</string>
     <string name="nc_search">Тражи</string>
-
     <string name="nc_certificate_dialog_title">Провери сертификат</string>
     <string name="nc_certificate_dialog_text">Да ли верујете, до сада непознатом, SSL сертификату, који је издао %1$s на %2$s, валидним од %3$s до %4$s?</string>
     <string name="nc_yes">Да</string>

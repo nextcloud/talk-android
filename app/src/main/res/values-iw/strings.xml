@@ -44,7 +44,6 @@
     <string name="nc_display_name_not_stored">לא ניתן לאחסן את שם התצוגה, התהליך נפסק</string>
 
     <string name="nc_search">חיפוש</string>
-
     <string name="nc_certificate_dialog_title">חקירת האישור</string>
     <string name="nc_yes">כן</string>
     <string name="nc_no">לא</string>

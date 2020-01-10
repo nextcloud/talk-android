@@ -37,7 +37,6 @@
     <string name="nc_get_from_provider">Neturite serverio? Spauskite čia, kad galėtumėte pasirinkti vieną iš paslaugų teikėjų</string>
 
     <string name="nc_search">Ieškoti</string>
-
     <string name="nc_certificate_dialog_text">Ar pasitikite iki šiol nežinomu SSL liudijimu, kurį išdavė %1$s, kuris skirtas %2$s ir galioja nuo %3$s iki %4$s?</string>
     <string name="nc_yes">Taip</string>
     <string name="nc_no">Ne</string>
