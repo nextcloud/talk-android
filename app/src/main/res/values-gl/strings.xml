@@ -48,6 +48,8 @@ Produciuse un fallo ao recuperar os axustes da sinalización</string>
 
     <string name="nc_never">Non conectou nunca</string>
     <string name="nc_search">Buscar</string>
+    <string name="nc_search_conversations">Buscar conversas</string>
+
     <string name="nc_certificate_dialog_title">Verificar o certificado</string>
     <string name="nc_certificate_dialog_text">Quere confiar nun certificado SSL descoñecido, emitido por %1$s para %2$s, válido dende %3$s ata %4$s?</string>
     <string name="nc_yes">Si</string>

@@ -124,6 +124,7 @@
     <string name="nc_notify_me_always">Visada pranešti</string>
     <string name="nc_notify_me_never">Niekada nepranešti</string>
     <string name="nc_mute_calls_desc">Gaunamųjų skambučių bus nepaisoma</string>
+    <string name="nc_important_conversation">Svarbus pokalbis</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Atleiskite, kažkas nutiko!</string>
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
@@ -193,7 +194,10 @@
     <!-- Errors -->
     <string name="nc_no_connection_error">Nėra ryšio</string>
     <string name="nc_bad_response_error">Blogas atsakas</string>
+    <string name="nc_empty_response_error">Tuščias atsakas</string>
     <string name="nc_not_defined_error">Nežinoma klaida</string>
+    <string name="nc_oops">Oi, kažkas nutiko.</string>
+
     <string name="nc_general_settings">Bendra</string>
     <string name="nc_last_moderator_title">Nepavyko išeiti iš pokalbio</string>
     <string name="nc_last_moderator">Prieš išeidami iš %1$s, turite paaukštinti naują moderatorių.</string>

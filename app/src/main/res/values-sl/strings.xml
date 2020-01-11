@@ -46,6 +46,8 @@
 
     <string name="nc_never">Nikoli pridružen</string>
     <string name="nc_search">Poišči</string>
+    <string name="nc_search_conversations">Preišči pogovore</string>
+
     <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
     <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
     <string name="nc_yes">Da</string>
@@ -86,12 +88,16 @@
     <string name="nc_settings_theme_dark">Temna</string>
     <string name="nc_settings_privacy">Zasebnost</string>
     <string name="nc_settings_screen_lock_title">Zaklep zaslona</string>
+    <string name="nc_settings_screen_lock_timeout_title">Časovni zamik zaklepa ob nedejavnosti</string>
     <string name="nc_none">Brez</string>
     <string name="nc_settings_screen_security_title">Varnost zaslona</string>
     <string name="nc_settings_screen_security_desc">Prepreči ustvarjanje zaslonskih slik v seznamu nedavnih pogovorov in znotraj programa</string>
     <string name="nc_settings_incognito_keyboard_title">Skrito tipkanje</string>
     <string name="nc_settings_incognito_keyboard_desc">Nastavi določilo za onemogočanje osebnega učenja (brez vsakršnih zagotovil)</string>
     <string name="nc_settings_link_previews_title">Pokaži predoglede povezav</string>
+    <string name="nc_settings_link_previews_desc">Dovoli predogled vsebine prejetih povezav podprtih storitev</string>
+    <string name="nc_locked">Pritisnite za odklep</string>
+
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
@@ -280,6 +286,8 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_empty_response_error">Neznan odziv</string>
     <string name="nc_not_defined_error">Neznana napaka</string>
     <string name="nc_unauthorized_error">Neoverjeno</string>
+
+    <string name="nc_oops">Prišlo je do napake ...</string>
 
     <string name="nc_general_settings">Splošno</string>
     <string name="nc_allow_guests">Dovoli povezave z gosti</string>
