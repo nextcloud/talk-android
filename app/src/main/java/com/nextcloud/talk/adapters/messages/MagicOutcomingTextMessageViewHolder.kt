@@ -34,12 +34,15 @@ import androidx.emoji.widget.EmojiTextView
 import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.ButterKnife
+import coil.api.load
+import coil.transform.CircleCropTransformation
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils.getMessageSelector
 import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
 import com.nextcloud.talk.utils.TextMatchers
@@ -63,7 +66,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
     @JvmField
     @BindView(R.id.quotedUserAvatar)
-    var quotedUserAvatar: SimpleDraweeView? = null
+    var quotedUserAvatar: ImageView? = null
 
     @JvmField
     @BindView(R.id.quotedMessageAuthor)
@@ -71,7 +74,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
     @JvmField
     @BindView(R.id.quotedMessageImage)
-    var quotedMessagePreview: SimpleDraweeView? = null
+    var quotedMessagePreview: ImageView? = null
 
     @JvmField
     @BindView(R.id.quotedMessage)
@@ -151,10 +154,15 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
         message.parentMessage?.let { parentChatMessage ->
             parentChatMessage.activeUser = message.activeUser
-            imageLoader.loadImage(quotedUserAvatar, parentChatMessage.user.avatar, null)
+            quotedUserAvatar?.load(parentChatMessage.user.avatar) {
+                transformations(CircleCropTransformation())
+                addHeader("Authorization", ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token))
+            }
             parentChatMessage.imageUrl?.let{
                 quotedMessagePreview?.visibility = View.VISIBLE
-                imageLoader.loadImage(quotedMessagePreview, it, null)
+                quotedMessagePreview?.load(it) {
+                    addHeader("Authorization", ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token))
+                }
             } ?: run {
                 quotedMessagePreview?.visibility = View.GONE
             }

@@ -840,8 +840,8 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             }
 
             messageInput?.setText("")
-            val replyMessageId: Long? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Long?
-            sendMessage(editable, if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) replyMessageId?.toInt() else null )
+            val replyMessageId: Int? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int
+            sendMessage(editable, if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) replyMessageId else null )
             cancelReply()
         }
     }
@@ -1258,8 +1258,8 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     @OnClick(R.id.cancelReplyButton)
     fun cancelReply() {
         quotedChatMessageView?.visibility = View.GONE
-        messageInputView?.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
-        messageInputView?.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility = View.VISIBLE
+        messageInputView!!.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
+        messageInputView!!.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility = View.VISIBLE
     }
 
     override fun onMessageViewLongClick(view: View?, message: IMessage?) {

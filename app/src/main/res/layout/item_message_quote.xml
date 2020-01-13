@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/quotedChatMessageView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp">
 
     <View
         android:id="@+id/quoteColoredView"
@@ -15,13 +16,10 @@
         android:layout_marginEnd="4dp"
         android:background="@color/colorPrimary"></View>
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/quotedUserAvatar"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
-        android:scaleType="centerInside"
-        android:adjustViewBounds="true"
-        app:roundAsCircle="true"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="4dp"
         android:layout_toEndOf="@id/quoteColoredView"
@@ -44,19 +42,20 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/quotedUserAvatar"
         android:layout_alignStart="@id/quotedUserAvatar"
+        android:layout_toStartOf="@id/cancelReplyButton"
         android:layout_marginTop="4dp"
         android:orientation="vertical"
         app:alignContent="stretch"
         app:alignItems="stretch"
         app:flexWrap="wrap"
-        app:justifyContent="flex_end">
+        app:justifyContent="flex_start">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <ImageView
             android:id="@+id/quotedMessageImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:scaleType="centerInside"
+            android:scaleType="fitCenter"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true"
@@ -86,5 +85,17 @@
         />
 
     </com.google.android.flexbox.FlexboxLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/ic_cancel_black_24dp"
+        android:backgroundTint="@color/grey_600"
+        android:id="@+id/cancelReplyButton"/>
 
 </RelativeLayout>
