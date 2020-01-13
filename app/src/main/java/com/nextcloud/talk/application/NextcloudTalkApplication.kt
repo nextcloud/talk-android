@@ -48,7 +48,7 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.newarch.di.module.*
 import com.nextcloud.talk.newarch.features.account.di.module.AccountModule
-import com.nextcloud.talk.newarch.features.conversationsList.di.module.ConversationsListModule
+import com.nextcloud.talk.newarch.features.conversationslist.di.module.ConversationsListModule
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.*

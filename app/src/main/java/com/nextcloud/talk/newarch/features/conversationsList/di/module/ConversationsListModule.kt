@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.features.conversationsList.di.module
+package com.nextcloud.talk.newarch.features.conversationslist.di.module
 
 import android.app.Application
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
@@ -26,7 +26,7 @@ import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
-import com.nextcloud.talk.newarch.features.conversationsList.ConversationListViewModelFactory
+import com.nextcloud.talk.newarch.features.conversationslist.ConversationListViewModelFactory
 import com.nextcloud.talk.newarch.services.GlobalService
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module

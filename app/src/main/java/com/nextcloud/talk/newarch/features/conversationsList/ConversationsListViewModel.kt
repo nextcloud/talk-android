@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.features.conversationsList
+package com.nextcloud.talk.newarch.features.conversationslist
 
 import android.app.Application
 import android.graphics.drawable.Drawable
