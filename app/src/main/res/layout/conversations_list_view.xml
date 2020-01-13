@@ -30,15 +30,15 @@
         android:id="@+id/swipeRefreshLayoutView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/rv_item_conversation_with_last_message"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            tools:listitem="@layout/rv_item_conversation_with_last_message" />
 
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

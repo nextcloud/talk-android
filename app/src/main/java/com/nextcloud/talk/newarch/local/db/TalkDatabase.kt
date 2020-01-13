@@ -44,8 +44,7 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
         ConversationTypeConverter::class, ParticipantTypeConverter::class,
         PushConfigurationConverter::class, CapabilitiesConverter::class,
         ExternalSignalingConverter::class,
-        UserStatusConverter::class, SystemMessageTypeConverter::class, ParticipantMapConverter::class,
-        LocalConversationConfigurationConverter::class
+        UserStatusConverter::class, SystemMessageTypeConverter::class, ParticipantMapConverter::class
 )
 
 abstract class TalkDatabase : RoomDatabase() {

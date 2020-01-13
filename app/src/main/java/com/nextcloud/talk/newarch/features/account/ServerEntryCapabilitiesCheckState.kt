@@ -20,18 +20,11 @@
  *
  */
 
-package com.nextcloud.talk.newarch.data.model
+package com.nextcloud.talk.newarch.features.account
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-@Parcelize
-@Serializable
-data class LocalConversationConfiguration(
-        @SerialName("important_conversation")
-        var importantConversation: Boolean = false,
-        @SerialName("ignore_calls")
-        var ignoreCalls: Boolean = false
-) : Parcelable
+enum class ServerEntryCapabilitiesCheckState {
+    WAITING_FOR_INPUT,
+    CHECKING,
+    SERVER_UNSUPPORTED,
+    SERVER_SUPPORTED
+}

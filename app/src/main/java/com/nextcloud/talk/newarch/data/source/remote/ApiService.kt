@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.newarch.data.source.remote
 
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -30,6 +31,9 @@ interface ApiService {
     /*
       Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
    */
+    @GET
+    suspend fun getCapabilities(@Url url: String): CapabilitiesOverall
+
     @GET
     suspend fun getConversations(
             @Header(

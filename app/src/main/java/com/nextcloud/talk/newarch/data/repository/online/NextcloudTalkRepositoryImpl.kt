@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.newarch.data.repository.online
 
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -61,6 +62,10 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
 
     override suspend fun exitConversationForUser(userNgEntity: UserNgEntity, conversationToken: String): GenericOverall {
         return apiService.exitConversation(userNgEntity.getCredentials(), ApiUtils.getUrlForSettingMyselfAsActiveParticipant(userNgEntity.baseUrl, conversationToken))
+    }
+
+    override suspend fun getCapabilitiesForServer(server: String): CapabilitiesOverall {
+        return apiService.getCapabilities(ApiUtils.getUrlForCapabilities(server))
     }
 
     override suspend fun setFavoriteValueForConversation(

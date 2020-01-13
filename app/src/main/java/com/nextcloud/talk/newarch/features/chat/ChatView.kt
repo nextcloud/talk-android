@@ -43,7 +43,7 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import kotlinx.android.synthetic.main.controller_chat.view.*
-import kotlinx.android.synthetic.main.controller_conversations_rv.view.*
+import kotlinx.android.synthetic.main.conversations_list_view.view.*
 import kotlinx.android.synthetic.main.lobby_view.view.*
 import kotlinx.android.synthetic.main.view_message_input.view.*
 import org.koin.android.ext.android.inject

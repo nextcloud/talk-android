@@ -27,7 +27,6 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.*
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
-import com.nextcloud.talk.newarch.data.model.LocalConversationConfiguration
 import java.util.*
 
 @Entity(
@@ -72,8 +71,7 @@ data class ConversationEntity(
         @ColumnInfo(name = "can_start_call") var canStartCall: Boolean? = true,
 
         @ColumnInfo(name = "modified_at") var modifiedAt: Long? = null,
-        @ColumnInfo(name = "changing") var changing: Boolean = false,
-        @ColumnInfo(name = "local_configuration") var localConfiguration: LocalConversationConfiguration? = null
+        @ColumnInfo(name = "changing") var changing: Boolean = false
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -107,7 +105,6 @@ data class ConversationEntity(
         if (canStartCall != other.canStartCall) return false
         if (lastReadMessageId != other.lastReadMessageId) return false
         if (changing != other.changing) return false
-        if (localConfiguration != other.localConfiguration) return false
 
         return true
     }
@@ -147,7 +144,6 @@ fun ConversationEntity.toConversation(): Conversation {
     conversation.canStartCall = this.canStartCall
     conversation.lastReadMessageId = this.lastReadMessageId
     conversation.changing = this.changing
-    conversation.localConfiguration = this.localConfiguration
 
     return conversation
 }
@@ -179,7 +175,6 @@ fun Conversation.toConversationEntity(): ConversationEntity {
     conversationEntity.canStartCall = this.canStartCall
     conversationEntity.type = this.type
     conversationEntity.changing = this.changing
-    conversationEntity.localConfiguration = this.localConfiguration
 
     return conversationEntity
 }

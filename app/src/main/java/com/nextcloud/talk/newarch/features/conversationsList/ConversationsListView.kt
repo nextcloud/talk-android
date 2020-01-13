@@ -22,7 +22,6 @@ package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,7 +58,7 @@ import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Presenter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
-import kotlinx.android.synthetic.main.controller_conversations_rv.view.*
+import kotlinx.android.synthetic.main.conversations_list_view.view.*
 import kotlinx.android.synthetic.main.message_state.view.*
 import kotlinx.android.synthetic.main.search_layout.*
 import org.koin.android.ext.android.inject
@@ -222,7 +221,7 @@ class ConversationsListView : BaseView() {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.controller_conversations_rv
+        return R.layout.conversations_list_view
     }
 
     private fun openNewConversationScreen() {

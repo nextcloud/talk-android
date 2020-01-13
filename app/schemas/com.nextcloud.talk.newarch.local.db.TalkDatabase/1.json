@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "24ed06b3e6bdb36d2657cc9735999e89",
+    "identityHash": "2c4f372b48cd11e679b04c6d577f1cd8",
     "entities": [
       {
         "tableName": "conversations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` INTEGER, `conversation_id` TEXT, `token` TEXT, `name` TEXT, `display_name` TEXT, `type` INTEGER, `count` INTEGER NOT NULL, `number_of_guests` INTEGER NOT NULL, `participants` TEXT, `participant_type` INTEGER, `has_password` INTEGER NOT NULL, `session_id` TEXT, `favorite` INTEGER NOT NULL, `last_activity` INTEGER NOT NULL, `unread_messages` INTEGER NOT NULL, `unread_mention` INTEGER NOT NULL, `last_message` TEXT, `object_type` TEXT, `notification_level` INTEGER, `read_only_state` INTEGER, `lobby_state` INTEGER, `lobby_timer` INTEGER, `last_read_message` INTEGER NOT NULL, `can_start_call` INTEGER, `modified_at` INTEGER, `changing` INTEGER NOT NULL, `local_configuration` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` INTEGER, `conversation_id` TEXT, `token` TEXT, `name` TEXT, `display_name` TEXT, `type` INTEGER, `count` INTEGER NOT NULL, `number_of_guests` INTEGER NOT NULL, `participants` TEXT, `participant_type` INTEGER, `has_password` INTEGER NOT NULL, `session_id` TEXT, `favorite` INTEGER NOT NULL, `last_activity` INTEGER NOT NULL, `unread_messages` INTEGER NOT NULL, `unread_mention` INTEGER NOT NULL, `last_message` TEXT, `object_type` TEXT, `notification_level` INTEGER, `read_only_state` INTEGER, `lobby_state` INTEGER, `lobby_timer` INTEGER, `last_read_message` INTEGER NOT NULL, `can_start_call` INTEGER, `modified_at` INTEGER, `changing` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "id",
@@ -169,12 +169,6 @@
             "columnName": "changing",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "localConfiguration",
-            "columnName": "local_configuration",
-            "affinity": "TEXT",
-            "notNull": false
           }
         ],
         "primaryKey": {
@@ -395,7 +389,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '24ed06b3e6bdb36d2657cc9735999e89')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2c4f372b48cd11e679b04c6d577f1cd8')"
     ]
   }
 }

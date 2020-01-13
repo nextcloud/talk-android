@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.newarch.domain.repository.online
 
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -58,4 +59,8 @@ interface NextcloudTalkRepository {
             userNgEntity: UserNgEntity,
             conversationToken: String
     ): GenericOverall
+
+    suspend fun getCapabilitiesForServer(
+            server: String
+    ): CapabilitiesOverall
 }

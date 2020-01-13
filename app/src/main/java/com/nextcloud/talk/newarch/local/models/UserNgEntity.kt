@@ -85,16 +85,9 @@ data class UserNgEntity(
 fun UserNgEntity.getCredentials() = ApiUtils.getCredentials(username, token)
 
 fun UserNgEntity.hasSpreedFeatureCapability(capabilityName: String): Boolean {
-    val capabilityExists = capabilities?.spreedCapability?.features?.contains(capabilityName)
-    if (capabilityExists != null) {
-        return capabilityExists
-    } else {
-        return false
-    }
+    return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
 }
 
 fun UserNgEntity.getMaxMessageLength(): Int {
-    val maxLength = capabilities?.spreedCapability?.config?.get("chat")
-            ?.get("max-length")
-    return maxLength?.toInt() ?: 1000
+    return capabilities?.spreedCapability?.config?.get("chat")?.get("max-length")?.toInt() ?: 1000
 }
