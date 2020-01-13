@@ -50,7 +50,8 @@
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true"
             android:textColorHighlight="@color/nc_grey"
-            android:textIsSelectable="true" />
+            android:textIsSelectable="false"
+            android:autoLink="all"/>
 
         <TextView
             android:id="@id/messageTime"
