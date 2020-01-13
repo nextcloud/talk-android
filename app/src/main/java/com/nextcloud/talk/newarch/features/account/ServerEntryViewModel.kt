@@ -52,7 +52,11 @@ class ServerEntryViewModel constructor(
             }
 
             override suspend fun onError(errorModel: ErrorModel?) {
-                checkState.postValue(ServerEntryCapabilitiesCheckStateWrapper(ServerEntryCapabilitiesCheckState.SERVER_UNSUPPORTED, url))
+                if (url.startsWith("https://")) {
+                    fetchCapabilities(url.replace("https://", "http://"))
+                }  else {
+                    checkState.postValue(ServerEntryCapabilitiesCheckStateWrapper(ServerEntryCapabilitiesCheckState.SERVER_UNSUPPORTED, url))
+                }
             }
 
         })

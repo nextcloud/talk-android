@@ -47,7 +47,7 @@ class ServerEntryView : BaseView() {
     override fun getLayoutId(): Int {
         return R.layout.server_entry_view
     }
-    
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         actionBar?.hide()
         viewModel = viewModelProvider(factory).get(ServerEntryViewModel::class.java)
