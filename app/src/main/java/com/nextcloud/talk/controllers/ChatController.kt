@@ -1413,11 +1413,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                                     ?: context.getText(R.string.nc_nick_guest)
 
                             conversationUser?.let { currentUser ->
-                                messageInputView?.findViewById<ImageView>(R.id.quotedUserAvatar)?.load(it.user.avatar) {
-                                    addHeader("Authorization", currentUser.getCredentials())
-                                    transformations(CircleCropTransformation())
-                                }
-
                                 chatMessage.imageUrl?.let { previewImageUrl ->
                                     messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility = View.VISIBLE
 

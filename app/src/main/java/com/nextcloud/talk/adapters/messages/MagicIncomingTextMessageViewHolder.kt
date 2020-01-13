@@ -72,10 +72,6 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
     var quotedChatMessageView: RelativeLayout? = null
 
     @JvmField
-    @BindView(R.id.quotedUserAvatar)
-    var quotedUserAvatar: ImageView? = null
-
-    @JvmField
     @BindView(R.id.quotedMessageAuthor)
     var quotedUserName: EmojiTextView? = null
 
@@ -219,7 +215,6 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
         message.parentMessage?.let { parentChatMessage ->
             parentChatMessage.activeUser = message.activeUser
-            imageLoader.loadImage(quotedUserAvatar, parentChatMessage.user.avatar, null)
             parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE
                 imageLoader.loadImage(quotedMessagePreview, it, null)
