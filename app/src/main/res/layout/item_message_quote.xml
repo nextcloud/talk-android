@@ -23,8 +23,8 @@
         android:adjustViewBounds="true"
         app:roundAsCircle="true"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/quoteColoredView"
         android:layout_marginEnd="4dp"
+        android:layout_toEndOf="@id/quoteColoredView"
         tools:src="@tools:sample/avatars[0]" />
 
     <androidx.emoji.widget.EmojiTextView
@@ -32,9 +32,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/quotedUserAvatar"
+        android:layout_marginEnd="8dp"
         android:layout_toEndOf="@id/quotedUserAvatar"
         android:ellipsize="end"
-        android:layout_marginEnd="8dp"
         android:textSize="12sp"
         tools:text="Mario" />
 
@@ -66,10 +66,10 @@
             android:id="@+id/quotedMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
             android:layout_below="@id/quotedMessageImage"
             android:layout_alignStart="@id/quotedUserAvatar"
             android:lineSpacingMultiplier="1.2"
+            android:textSize="14sp"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true"
