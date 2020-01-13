@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Uvozi račun iz %1$s</string>
     <string name="nc_server_import_accounts">Uvozi račune iz %1$s</string>
     <string name="nc_server_failed_to_import_account">Uvoz izbranega računa je spodletel</string>
-    <string name="nc_Server_account_imported">Izbran račun je uvožen in na voljo za uporabo</string>
+    <string name="nc_server_account_imported">Izbran račun je uvožen in na voljo za uporabo</string>
     <string name="nc_get_from_provider">Še nimate izbranega oziroma nameščenega strežnika? Kliknite in si pridobite dostop.</string>
 
     <!-- Account verification -->

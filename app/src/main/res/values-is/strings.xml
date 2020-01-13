@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Flytja inn aðgang úr %1$s forritinu</string>
     <string name="nc_server_import_accounts">Flytja inn aðganga úr %1$s forritinu</string>
     <string name="nc_server_failed_to_import_account">Mistókst að flytja inn valinn notandaaðgang</string>
-    <string name="nc_Server_account_imported">Valinn aðgangur er núna fluttur inn og tiltækur</string>
+    <string name="nc_server_account_imported">Valinn aðgangur er núna fluttur inn og tiltækur</string>
     <string name="nc_get_from_provider">Ertu ekki enn með skýjaþjón?\nSmelltu hér til að fá þér einn frá þjónustuaðila.</string>
 
     <!-- Account verification -->

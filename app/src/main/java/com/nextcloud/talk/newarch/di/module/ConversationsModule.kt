@@ -18,7 +18,6 @@ val ConversationsModule = module {
     single { createDeleteConversationUseCase(get(), get()) }
     single { createJoinConversationUseCase(get(), get()) }
     single { createExitConversationUseCase(get(), get()) }
-
     factory { createChatViewModelFactory(get(), get(), get(), get(), get(), get()) }
 }
 

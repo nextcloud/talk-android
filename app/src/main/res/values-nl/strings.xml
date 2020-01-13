@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Importeren account van de %1$sapp</string>
     <string name="nc_server_import_accounts">Importeren accounts van de %1$sapp</string>
     <string name="nc_server_failed_to_import_account">Kon het geselecteerde account niet importeren</string>
-    <string name="nc_Server_account_imported">Het geselecteerde account is nu geïmporteerd en beschikbaar</string>
+    <string name="nc_server_account_imported">Het geselecteerde account is nu geïmporteerd en beschikbaar</string>
     <string name="nc_get_from_provider">Heb je nog geen server?\n
 Kies er eentje van een provider.</string>
 

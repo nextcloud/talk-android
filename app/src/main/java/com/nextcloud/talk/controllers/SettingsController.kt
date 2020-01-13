@@ -640,12 +640,12 @@ class SettingsController : BaseController() {
                             messageText!!.text = resources!!.getString(R.string.nc_settings_wrong_account)
                             messageView!!.visibility = View.VISIBLE
                             messageText!!.setTextColor(resources!!.getColor(R.color.colorPrimary))
-                            messageText!!.text = resources!!.getString(R.string.nc_Server_account_imported)
+                            messageText!!.text = resources!!.getString(R.string.nc_server_account_imported)
                             messageView!!.visibility = View.VISIBLE
                         }
                         ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED -> {
                             messageText!!.setTextColor(resources!!.getColor(R.color.colorPrimary))
-                            messageText!!.text = resources!!.getString(R.string.nc_Server_account_imported)
+                            messageText!!.text = resources!!.getString(R.string.nc_server_account_imported)
                             messageView!!.visibility = View.VISIBLE
                         }
                         ApplicationWideMessageHolder.MessageType.FAILED_TO_IMPORT_ACCOUNT -> {

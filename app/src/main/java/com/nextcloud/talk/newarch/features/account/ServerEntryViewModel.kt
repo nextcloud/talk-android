@@ -24,6 +24,7 @@ package com.nextcloud.talk.newarch.features.account
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
@@ -36,22 +37,22 @@ class ServerEntryViewModel constructor(
         application: Application,
         private val getCapabilitiesUseCase: GetCapabilitiesUseCase
 ) : BaseViewModel<ServerEntryView>(application) {
-    val checkState: MutableLiveData<ServerEntryCapabilitiesCheckState> = MutableLiveData(ServerEntryCapabilitiesCheckState.WAITING_FOR_INPUT)
+    val checkState: MutableLiveData<ServerEntryCapabilitiesCheckStateWrapper> = MutableLiveData(ServerEntryCapabilitiesCheckStateWrapper(ServerEntryCapabilitiesCheckState.WAITING_FOR_INPUT, null))
 
     fun fetchCapabilities(url: String) {
-        checkState.postValue(ServerEntryCapabilitiesCheckState.CHECKING)
+        checkState.postValue(ServerEntryCapabilitiesCheckStateWrapper(ServerEntryCapabilitiesCheckState.CHECKING, url))
         getCapabilitiesUseCase.invoke(viewModelScope, parametersOf(url), object : UseCaseResponse<CapabilitiesOverall> {
             override suspend fun onSuccess(result: CapabilitiesOverall) {
                 val hasSupportedTalkVersion = result.ocs?.data?.capabilities?.spreedCapability?.features?.contains("no-ping") == true
                 if (hasSupportedTalkVersion) {
-                    checkState.postValue(ServerEntryCapabilitiesCheckState.SERVER_SUPPORTED)
+                    checkState.postValue(ServerEntryCapabilitiesCheckStateWrapper(ServerEntryCapabilitiesCheckState.SERVER_SUPPORTED, url))
                 } else {
-                    checkState.postValue(ServerEntryCapabilitiesCheckState.SERVER_UNSUPPORTED)
+                    checkState.postValue(ServerEntryCapabilitiesCheckStateWrapper(ServerEntryCapabilitiesCheckState.SERVER_UNSUPPORTED, url))
                 }
             }
 
             override suspend fun onError(errorModel: ErrorModel?) {
-                checkState.postValue(ServerEntryCapabilitiesCheckState.SERVER_UNSUPPORTED)
+                checkState.postValue(ServerEntryCapabilitiesCheckStateWrapper(ServerEntryCapabilitiesCheckState.SERVER_UNSUPPORTED, url))
             }
 
         })

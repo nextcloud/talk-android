@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">ייבוא חשבון מהיישומון %1$s</string>
     <string name="nc_server_import_accounts">ייבוא חשבונות מהיישומון %1$s</string>
     <string name="nc_server_failed_to_import_account">ייבוא החשבון הנבחר נכשל</string>
-    <string name="nc_Server_account_imported">החשבון שנבחר עבר ייבוא והוא זמין</string>
+    <string name="nc_server_account_imported">החשבון שנבחר עבר ייבוא והוא זמין</string>
     <string name="nc_get_from_provider">עדיין אין לך שרת?\nניתן ללחוץ כאן ולקבל אחת מספק</string>
 
     <!-- Account verification -->

@@ -29,7 +29,7 @@
     <string name="nc_server_import_account">Importar conta da aplicação %1$s</string>
     <string name="nc_server_import_accounts">Importar contas da aplicação %1$s</string>
     <string name="nc_server_failed_to_import_account">Não foi possível importar a conta selecionada</string>
-    <string name="nc_Server_account_imported">A conta selecionada foi importada e está disponível</string>
+    <string name="nc_server_account_imported">A conta selecionada foi importada e está disponível</string>
     <string name="nc_get_from_provider">Ainda não tem um servidor?\nClique aqui para obter um de um fornecedor</string>
 
     <!-- Account verification -->

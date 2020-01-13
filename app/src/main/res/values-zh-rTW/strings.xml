@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">從%1$s應用程式匯入帳戶</string>
     <string name="nc_server_import_accounts">從%1$s應用程式匯入帳戶</string>
     <string name="nc_server_failed_to_import_account">無法匯入所選的帳戶</string>
-    <string name="nc_Server_account_imported">選擇已匯入且可用的帳戶</string>
+    <string name="nc_server_account_imported">選擇已匯入且可用的帳戶</string>
     <string name="nc_get_from_provider">您沒有自己的伺服器嗎？\n點這裡向服務供應商購買</string>
 
     <!-- Account verification -->

@@ -27,7 +27,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.newarch.domain.usecases.GetCapabilitiesUseCase
 
-class ServerEntryVideModelFactory constructor(private val application: Application, private val getCapabilitiesUseCase: GetCapabilitiesUseCase): ViewModelProvider.Factory {
+class ServerEntryViewModelFactory constructor(private val application: Application, private val getCapabilitiesUseCase: GetCapabilitiesUseCase): ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return ServerEntryViewModel(application, getCapabilitiesUseCase) as T
     }

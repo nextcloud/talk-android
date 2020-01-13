@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Импортировать учётную запись из приложения %1$s </string>
     <string name="nc_server_import_accounts">Импортировать учётные записи из приложения %1$s </string>
     <string name="nc_server_failed_to_import_account">Не удалось импортировать выбранную учётную запись</string>
-    <string name="nc_Server_account_imported">Выбранная учётная запись теперь доступна</string>
+    <string name="nc_server_account_imported">Выбранная учётная запись теперь доступна</string>
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
 
     <!-- Account verification -->

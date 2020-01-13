@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Importer konto fra %1$s appen</string>
     <string name="nc_server_import_accounts">Importer konti fra %1$s appen</string>
     <string name="nc_server_failed_to_import_account">Den valgte konto kunne ikke importeres</string>
-    <string name="nc_Server_account_imported">Den valgte konto blev importeret og kan bruges nu</string>
+    <string name="nc_server_account_imported">Den valgte konto blev importeret og kan bruges nu</string>
     <string name="nc_get_from_provider">Har du ikke en server endnu?\nKlik her for at skaffe en udbyder</string>
 
     <!-- Account verification -->

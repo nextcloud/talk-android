@@ -28,7 +28,7 @@
     <string name="nc_server_import_account_plain">Importar cuenta</string>
     <string name="nc_server_import_accounts_plain">Importar cuentas</string>
     <string name="nc_server_failed_to_import_account">Error al importar la cuenta seleccionada</string>
-    <string name="nc_Server_account_imported">La cuenta seleccionada ahora está importada y disponible</string>
+    <string name="nc_server_account_imported">La cuenta seleccionada ahora está importada y disponible</string>
     <string name="nc_get_from_provider">Aún no tiene un servidor? \nHaga click aquí para obtener uno de un proveedor</string>
 
     <!-- Account verification -->

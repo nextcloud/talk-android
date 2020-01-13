@@ -43,6 +43,7 @@ import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
+import com.nextcloud.talk.newarch.features.account.ServerEntryView
 import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListView
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ConductorRemapping
@@ -90,7 +91,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 } else {
                     runOnUiThread {
                         router!!.setRoot(
-                                RouterTransaction.with(ServerSelectionController())
+                                RouterTransaction.with(ServerEntryView())
                                         .pushChangeHandler(HorizontalChangeHandler())
                                         .popChangeHandler(HorizontalChangeHandler())
                         )

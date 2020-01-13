@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Importoni llogarinë nga %1$s aplikacioni</string>
     <string name="nc_server_import_accounts">Importoni llogaritë nga %1$s aplikacioni</string>
     <string name="nc_server_failed_to_import_account">Dështoi të importonte llogarinë e përzgjedhur</string>
-    <string name="nc_Server_account_imported">Llogaria e përzgjedhur është tani e importuar dhe në dispozicion</string>
+    <string name="nc_server_account_imported">Llogaria e përzgjedhur është tani e importuar dhe në dispozicion</string>
     <string name="nc_get_from_provider">Akoma nuk ke një server ?\nKliko këtu për të marrë një nga një ofrues </string>
 
     <string name="nc_display_name_not_fetched">Emri i shfaqur nuk mund të merret, ndërpritet</string>

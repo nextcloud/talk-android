@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Увези налог из апликације %1$s</string>
     <string name="nc_server_import_accounts">Увези налоге из апликације %1$s</string>
     <string name="nc_server_failed_to_import_account">Грешка при учитавању одабраног налога</string>
-    <string name="nc_Server_account_imported">Одабрани налог је сада увезен и доступан</string>
+    <string name="nc_server_account_imported">Одабрани налог је сада увезен и доступан</string>
     <string name="nc_get_from_provider">Имате ли сервер?nКликните овде да направите један код провајдера</string>
 
     <!-- Account verification -->

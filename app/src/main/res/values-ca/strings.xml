@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">importa el compte des de l\'aplicació %1$s</string>
     <string name="nc_server_import_accounts">importa els comptes des de l\'aplicació %1$s</string>
     <string name="nc_server_failed_to_import_account">Ha fallat la importació del compte seleccionat</string>
-    <string name="nc_Server_account_imported">El compte que heu seleccionat s\'ha importat i ja és disponible</string>
+    <string name="nc_server_account_imported">El compte que heu seleccionat s\'ha importat i ja és disponible</string>
     <string name="nc_get_from_provider">Encara no teniu cap servidor?\nFeu clic aquí per obtenir-ne un d\'un proveïdor</string>
 
     <!-- Account verification -->

@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Thêm tài khoản từ ứng dụng %1$s</string>
     <string name="nc_server_import_accounts">Thêm tài khoản từ ứng dụng %1$s</string>
     <string name="nc_server_failed_to_import_account">Lỗi thêm tài khoản đã chọn</string>
-    <string name="nc_Server_account_imported">Bây giờ chọn tài khoản thêm vào và đang cho phép</string>
+    <string name="nc_server_account_imported">Bây giờ chọn tài khoản thêm vào và đang cho phép</string>
     <string name="nc_get_from_provider">Bạn đã có một máy chủ chưa?\nBấm vào đây để tìm từ một nhà cung cấp.</string>
 
     <!-- Account verification -->

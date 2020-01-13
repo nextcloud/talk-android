@@ -56,7 +56,6 @@
             android:hint="@string/nc_server_url"
             android:imeOptions="actionDone"
             android:inputType="textUri"
-            android:drawableEnd="@drawable/ic_arrow_forward_white_24px"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
             android:singleLine="true"

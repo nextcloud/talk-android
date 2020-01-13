@@ -22,9 +22,14 @@
 
 package com.nextcloud.talk.newarch.features.account
 
+import kotlinx.serialization.Serializable
+
 enum class ServerEntryCapabilitiesCheckState {
     WAITING_FOR_INPUT,
     CHECKING,
     SERVER_UNSUPPORTED,
     SERVER_SUPPORTED
 }
+
+@Serializable
+data class ServerEntryCapabilitiesCheckStateWrapper(val checkState: ServerEntryCapabilitiesCheckState, val url: String?)

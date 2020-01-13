@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Importovat účet z aplikace %1$s</string>
     <string name="nc_server_import_accounts">Importovat účty z aplikace %1$s</string>
     <string name="nc_server_failed_to_import_account">Vyznačený účet se nepodařilo naimportovat</string>
-    <string name="nc_Server_account_imported">Vyznačený účet byl importován a je k dispozici</string>
+    <string name="nc_server_account_imported">Vyznačený účet byl importován a je k dispozici</string>
     <string name="nc_get_from_provider">Nemáte ještě server?\nKliknutím sem ho získejte od poskytovatele</string>
 
     <!-- Account verification -->

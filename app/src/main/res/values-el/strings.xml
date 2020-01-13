@@ -32,7 +32,7 @@
     <string name="nc_server_import_account">Εισαγωγή λογαριασμού από την %1$s εφαρμογή</string>
     <string name="nc_server_import_accounts">Εισαγωγή λογαριασμών από την εφαρμογή %1$s</string>
     <string name="nc_server_failed_to_import_account">Αποτυχία εισαγωγής επιλεγμένου λογαριασμού</string>
-    <string name="nc_Server_account_imported">Ο επιλεγμένος λογαριασμός έχει εισαχθεί και είναι διαθέσιμος</string>
+    <string name="nc_server_account_imported">Ο επιλεγμένος λογαριασμός έχει εισαχθεί και είναι διαθέσιμος</string>
     <string name="nc_get_from_provider">Δεν έχετε ακόμα διακομιστή;\nΚάντε κλικ εδώ για να αποκτήσετε έναν από κάποιον πάροχο</string>
 
     <!-- Account verification -->

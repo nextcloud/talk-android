@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Import account from the %1$s app</string>
     <string name="nc_server_import_accounts">Import accounts from the %1$s app</string>
     <string name="nc_server_failed_to_import_account">Failed to import selected account</string>
-    <string name="nc_Server_account_imported">Selected account is now imported and available</string>
+    <string name="nc_server_account_imported">Selected account is now imported and available</string>
     <string name="nc_get_from_provider">Do you not have a server yet?\nClick here to get one from a provider</string>
 
     <!-- Account verification -->

@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">Fiók importálása a(z) %1$s alkalmazásból</string>
     <string name="nc_server_import_accounts">Fiókok importálása a(z) %1$s alkalmazásból</string>
     <string name="nc_server_failed_to_import_account">A kiválasztott fiók importálása sikertelen</string>
-    <string name="nc_Server_account_imported">A kiválasztott fiók importálva lett és elérhető</string>
+    <string name="nc_server_account_imported">A kiválasztott fiók importálva lett és elérhető</string>
     <string name="nc_get_from_provider">Nincs még saját kiszolgálója?\nKattintson ide a beszerzéshez az egyik szolgáltatótól</string>
 
     <!-- Account verification -->

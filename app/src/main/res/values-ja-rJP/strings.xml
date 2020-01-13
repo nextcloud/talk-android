@@ -33,7 +33,7 @@
     <string name="nc_server_import_account">%1$sアプリからアカウントをインポートする</string>
     <string name="nc_server_import_accounts">%1$sアプリからアカウントをインポートする</string>
     <string name="nc_server_failed_to_import_account">選択したアカウントのインポートに失敗しました</string>
-    <string name="nc_Server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
+    <string name="nc_server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
     <string name="nc_get_from_provider">まだサーバーがありませんか？\ nプロバイダーから取得するにはここをクリックしてください</string>
 
     <!-- Account verification -->
