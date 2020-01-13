@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Projects-talk-android.iml" filepath="$PROJECT_DIR$/.idea/modules/Projects-talk-android.iml" group="talk-android" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/talk-android.iml" filepath="$PROJECT_DIR$/talk-android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/talk-android-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/talk-android-app.iml" group="talk-android/app" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="talk-android/app" />
+      <module fileurl="file://$PROJECT_DIR$/talk-android.iml" filepath="$PROJECT_DIR$/talk-android.iml" group="talk-android" />
     </modules>
   </component>
 </project>
