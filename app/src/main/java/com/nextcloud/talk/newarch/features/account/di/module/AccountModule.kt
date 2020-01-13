@@ -2,7 +2,7 @@ package com.nextcloud.talk.newarch.features.account.di.module
 
 import android.app.Application
 import com.nextcloud.talk.newarch.domain.usecases.GetCapabilitiesUseCase
-import com.nextcloud.talk.newarch.features.account.ServerEntryViewModelFactory
+import com.nextcloud.talk.newarch.features.account.serverentry.ServerEntryViewModelFactory
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 

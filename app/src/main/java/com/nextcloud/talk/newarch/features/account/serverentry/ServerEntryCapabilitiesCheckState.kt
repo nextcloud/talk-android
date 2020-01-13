@@ -20,7 +20,7 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.account
+package com.nextcloud.talk.newarch.features.account.serverentry
 
 import kotlinx.serialization.Serializable
 

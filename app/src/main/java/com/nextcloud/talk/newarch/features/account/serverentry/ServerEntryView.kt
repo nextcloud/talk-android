@@ -20,7 +20,7 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.account
+package com.nextcloud.talk.newarch.features.account.serverentry
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,14 +30,10 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import kotlinx.android.synthetic.main.server_entry_view.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 
 class ServerEntryView : BaseView() {
