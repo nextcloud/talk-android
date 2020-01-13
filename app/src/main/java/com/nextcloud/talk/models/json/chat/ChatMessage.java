@@ -52,9 +52,6 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     public Map<String, String> selectedIndividualHashMap;
     @JsonIgnore
     public boolean isLinkPreviewAllowed;
-    List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
-            MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
-            MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
     @JsonField(name = "id")
     public int jsonMessageId;
     @JsonField(name = "token")
@@ -76,6 +73,15 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     public HashMap<String, HashMap<String, String>> messageParameters;
     @JsonField(name = "systemMessage", typeConverter = EnumSystemMessageTypeConverter.class)
     public SystemMessageType systemMessageType;
+    @JsonField(name = "isReplyable")
+    public boolean replyable;
+    @JsonField(name = "parent")
+    public ChatMessage parentMessage;
+
+    @JsonIgnore
+    List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
+            MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
+            MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
 
     private boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {

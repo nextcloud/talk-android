@@ -81,8 +81,8 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
     public void onBind(ChatMessage message) {
         super.onBind(message);
         if (userAvatar != null) {
-            if (message.isGrouped || message.isOneToOneConversation()) {
-                if (message.isOneToOneConversation()) {
+            if (message.isGrouped || message.isOneToOneConversation) {
+                if (message.isOneToOneConversation) {
                     userAvatar.setVisibility(View.GONE);
                 } else {
                     userAvatar.setVisibility(View.INVISIBLE);
@@ -90,7 +90,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             } else {
                 userAvatar.setVisibility(View.VISIBLE);
 
-                if ("bots".equals(message.getActorType()) && "changelog".equals(message.getActorId())) {
+                if ("bots".equals(message.actorType) && "changelog".equals(message.actorId)) {
                     Drawable[] layers = new Drawable[2];
                     layers[0] = context.getDrawable(R.drawable.ic_launcher_background);
                     layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground);
@@ -108,13 +108,13 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
                 image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap().get("mimetype"))));
             } else {
-                fetchFileInformation("/" + message.getSelectedIndividualHashMap().get("path"), message.getActiveUser());
+                fetchFileInformation("/" + message.getSelectedIndividualHashMap().get("path"), message.activeUser);
             }
 
             image.setOnClickListener(v -> {
 
                 String accountString =
-                        message.getActiveUser().getUsername() + "@" + message.getActiveUser().getBaseUrl().replace("https://", "").replace("http://", "");
+                        message.activeUser.getUsername() + "@" + message.activeUser.getBaseUrl().replace("https://", "").replace("http://", "");
 
                 if (AccountUtils.INSTANCE.canWeOpenFilesApp(context, accountString)) {
                     Intent filesAppIntent = new Intent(Intent.ACTION_VIEW, null);
@@ -167,10 +167,10 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                     @Override
                     public void onSuccess(ReadFilesystemOperation readFilesystemOperation) {
                         DavResponse davResponse = readFilesystemOperation.readRemotePath();
-                        if (davResponse.getData() != null) {
-                            List<BrowserFile> browserFileList = (List<BrowserFile>) davResponse.getData();
+                        if (davResponse.data != null) {
+                            List<BrowserFile> browserFileList = (List<BrowserFile>) davResponse.data;
                             if (!browserFileList.isEmpty()) {
-                                new Handler(context.getMainLooper()).post(() -> image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(browserFileList.get(0).getMimeType()))));
+                                new Handler(context.getMainLooper()).post(() -> image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(browserFileList.get(0).mimeType))));
                             }
                         }
                     }

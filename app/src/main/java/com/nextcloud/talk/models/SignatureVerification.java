@@ -28,6 +28,6 @@ import org.parceler.Parcel;
 @Data
 @Parcel
 public class SignatureVerification {
-    boolean signatureValid;
-    UserEntity userEntity;
+    public boolean signatureValid;
+    public UserEntity userEntity;
 }

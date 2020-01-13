@@ -72,9 +72,9 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
         Spannable messageString = new SpannableString(message.getText());
 
-        if (message.getMessageParameters() != null && message.getMessageParameters().size() > 0) {
-            for (String key : message.getMessageParameters().keySet()) {
-                Map<String, String> individualHashMap = message.getMessageParameters().get(key);
+        if (message.messageParameters != null && message.messageParameters.size() > 0) {
+            for (String key : message.messageParameters.keySet()) {
+                Map<String, String> individualHashMap = message.messageParameters.get(key);
                 if (individualHashMap != null && (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call"))) {
                     messageString = DisplayUtils.searchAndColor(messageString, "@" + individualHashMap.get("name"), mentionColor);
                 }

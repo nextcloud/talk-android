@@ -20,72 +20,58 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginStart="16dp"
     android:layout_marginTop="2dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="2dp">
 
-    <RelativeLayout
+    <com.google.android.flexbox.FlexboxLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/messageUserAvatar">
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:layout_alignParentStart="true"
+        app:alignContent="stretch"
+        app:alignItems="stretch"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_end">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@id/image"
-            android:layout_width="@dimen/minimum_file_preview_size"
-            android:layout_height="@dimen/minimum_file_preview_size"
-            android:adjustViewBounds="true"
-            app:actualImageScaleType="fitCenter" />
-
-        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/image"
-            android:layout_alignStart="@+id/image"
-            android:layout_alignEnd="@id/image"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="vertical"
-            app:alignContent="stretch"
-            app:alignItems="stretch"
-            app:flexWrap="wrap"
-            app:justifyContent="flex_end">
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:layout_flexGrow="1"
+            app:layout_wrapBefore="true"
+            app:layout_alignSelf="flex_start"
+            tools:src="@tools:sample/backgrounds/scenic"/>
 
-            <androidx.emoji.widget.EmojiTextView
-                android:id="@id/messageText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:autoLink="none"
-                android:textColor="@color/warm_grey_four"
-                android:textColorLink="@color/warm_grey_four"
-                android:textIsSelectable="true"
-                android:textSize="12sp"
-                app:layout_alignSelf="flex_start"
-                app:layout_flexGrow="1"
-                app:layout_wrapBefore="true" />
+        <androidx.emoji.widget.EmojiTextView
+            android:id="@id/messageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="none"
+            android:textColor="@color/warm_grey_four"
+            android:textColorLink="@color/warm_grey_four"
+            android:textIsSelectable="true"
+            android:textSize="12sp"
+            app:layout_alignSelf="flex_start"
+            app:layout_flexGrow="1"
+            app:layout_wrapBefore="true" />
 
-            <TextView
-                android:id="@id/messageTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="8dp"
-                android:textColor="@color/warm_grey_four"
-                app:layout_alignSelf="center" />
-
-        </com.google.android.flexbox.FlexboxLayout>
-
-    </RelativeLayout>
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@id/messageUserAvatar"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="8dp"
-        app:roundAsCircle="true" />
+        <TextView
+            android:id="@id/messageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/warm_grey_four"
+            app:layout_alignSelf="center" />
+    </com.google.android.flexbox.FlexboxLayout>
 
 </RelativeLayout>
