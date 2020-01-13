@@ -39,7 +39,7 @@ android {
         targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode 115
+        versionCode 116
         versionName "8.0.0beta1"
 
         flavorDimensions "default"
