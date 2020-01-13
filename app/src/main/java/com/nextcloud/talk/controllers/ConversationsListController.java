@@ -208,7 +208,7 @@ public class ConversationsListController extends BaseController implements Searc
         if (getActivity() != null) {
             int avatarSize = (int) DisplayUtils.convertDpToPixel(menuItem.getIcon().getIntrinsicHeight(), getActivity());
             ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(currentUser.getBaseUrl(),
-                    currentUser.getUserId(), avatarSize), null);
+                    currentUser.getUserId(), avatarSize), currentUser);
 
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
             DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
