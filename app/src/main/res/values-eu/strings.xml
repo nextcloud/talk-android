@@ -107,6 +107,7 @@
     <string name="nc_calling">Deitzen…</string>
     <string name="nc_incoming_call">Honen sarrerako deia</string>
     <string name="nc_nick_guest">Gonbidatua</string>
+    <string name="nc_public_call">Elkarrizketa publiko berria</string>
     <string name="nc_call_reconnecting">Berriro konektatzen...</string>
     <string name="nc_leaving_call">Deia uzten...</string>
 
