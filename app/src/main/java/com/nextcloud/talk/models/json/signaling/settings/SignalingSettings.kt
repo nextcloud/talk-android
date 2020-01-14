@@ -23,6 +23,7 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import lombok.Data
 
@@ -33,14 +34,18 @@ import lombok.Data
 data class SignalingSettings @JvmOverloads constructor(
         @JvmField
         @JsonField(name = ["stunservers"])
+        @SerialName("stunservers")
         var stunServers: List<IceServer>? = null,
         @JvmField
         @JsonField(name = ["turnservers"])
+        @SerialName("turnservers")
         var turnServers: List<IceServer>? = null,
         @JvmField
         @JsonField(name = ["server"])
+        @SerialName("server")
         var externalSignalingServer: String? = null,
         @JvmField
         @JsonField(name = ["ticket"])
+        @SerialName("ticket")
         var externalSignalingTicket: String? = null
 ) : Parcelable

@@ -23,7 +23,6 @@ import android.annotation.SuppressLint
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.nextcloud.talk.jobs.NotificationWorker
-import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -38,8 +37,6 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         appPreferences.pushToken = token
-        val pushRegistrationWork: OneTimeWorkRequest = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
-        WorkManager.getInstance().enqueue(pushRegistrationWork)
     }
 
     @SuppressLint("LongLogTag")

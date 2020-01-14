@@ -23,12 +23,14 @@ package com.nextcloud.talk.utils
 import android.content.Context
 import android.util.Base64
 import android.util.Log
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.SignatureVerification
-import com.nextcloud.talk.models.json.push.PushConfigurationState
+import com.nextcloud.talk.models.json.push.PushConfiguration
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.utils.hashWithAlgorithm
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.KoinComponent
@@ -38,6 +40,7 @@ import java.security.*
 import java.security.spec.InvalidKeySpecException
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
+import java.util.HashMap
 
 class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
     val appPreferences: AppPreferences by inject()
@@ -46,12 +49,52 @@ class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
     private val keysFile: File
     private val publicKeyFile: File
     private val privateKeyFile: File
+
+    fun getMapForPushRegistrationWithServer(user: UserNgEntity): Map<String, String?>? {
+        val options = mutableMapOf<String, String?>()
+        val pushConfiguration = user.pushConfiguration
+        options["pushToken"] = pushConfiguration?.pushToken
+        options["deviceIdentifier"] = pushConfiguration?.deviceIdentifier
+        options["deviceIdentifierSignature"] = pushConfiguration?.deviceIdentifierSignature
+        options["userPublicKey"] = pushConfiguration?.userPublicKey
+
+        if (options.containsValue(null)) {
+            return null
+        }
+
+        return options
+    }
+
+    fun getMapForPushRegistrationWithServer(context: Context, token: String) : Map<String, String> {
+        val options = mutableMapOf<String, String>()
+
+        // Let's generate a keypair if we don't have it
+        generateRsa2048KeyPair()
+
+        val pushTokenHash = token.hashWithAlgorithm("SHA-512")
+        var publicKey = ""
+        val devicePublicKey = readKeyFromFile(true) as PublicKey?
+        devicePublicKey?.let {
+            val publicKeyBytes: ByteArray = Base64.encode(it.encoded, Base64.NO_WRAP)
+            publicKey = String(publicKeyBytes)
+            publicKey = publicKey.replace("(.{64})".toRegex(), "$1\n")
+            publicKey = "-----BEGIN PUBLIC KEY-----\n$publicKey\n-----END PUBLIC KEY-----\n"
+        }
+
+        options["format"] = "json"
+        options["pushTokenHash"] = pushTokenHash
+        options["devicePublicKey"] = publicKey
+        options["proxyServer"] = context.resources.getString(R.string.nc_push_server_url)
+
+        return options
+    }
+
     fun verifySignature(
             signatureBytes: ByteArray?,
             subjectBytes: ByteArray?
     ): SignatureVerification {
         val signature: Signature?
-        var pushConfigurationState: PushConfigurationState?
+        var pushConfiguration: PushConfiguration?
         var publicKey: PublicKey?
         val signatureVerification =
                 SignatureVerification()
@@ -61,10 +104,10 @@ class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
             signature = Signature.getInstance("SHA512withRSA")
             if (userEntities.isNotEmpty()) {
                 for (userEntity in userEntities) {
-                    pushConfigurationState = userEntity.pushConfiguration
-                    if (pushConfigurationState?.userPublicKey != null) {
+                    pushConfiguration = userEntity.pushConfiguration
+                    if (pushConfiguration?.userPublicKey != null) {
                         publicKey = readKeyFromString(
-                                true, pushConfigurationState.userPublicKey!!
+                                true, pushConfiguration.userPublicKey!!
                         ) as PublicKey?
                         signature.initVerify(publicKey)
                         signature.update(subjectBytes)
@@ -141,7 +184,6 @@ class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
         // we failed to generate the key
         else {
             // We already have the key
-
             return -1
         }
 

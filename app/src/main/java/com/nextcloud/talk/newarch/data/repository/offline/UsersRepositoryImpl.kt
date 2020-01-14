@@ -54,6 +54,10 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         return usersDao.updateUser(user)
     }
 
+    override suspend fun insertUser(user: UserNgEntity): Long {
+        return usersDao.saveUser(user)
+    }
+
     override suspend fun setUserAsActiveWithId(id: Long) {
         usersDao.setUserAsActiveWithId(id)
     }

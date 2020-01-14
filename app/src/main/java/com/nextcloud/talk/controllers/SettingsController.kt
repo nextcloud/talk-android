@@ -60,6 +60,7 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
+import com.nextcloud.talk.newarch.features.account.serverentry.ServerEntryView
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
@@ -276,7 +277,7 @@ class SettingsController : BaseController() {
             } else {
                 withContext(Dispatchers.Main) {
                     router.setRoot(RouterTransaction.with(
-                            ServerSelectionController()
+                            ServerEntryView()
                     )
                             .pushChangeHandler(VerticalChangeHandler())
                             .popChangeHandler(VerticalChangeHandler())
@@ -395,7 +396,7 @@ class SettingsController : BaseController() {
 
                 addAccountButton!!.addPreferenceClickListener { view15 ->
                     router.pushController(
-                            RouterTransaction.with(ServerSelectionController()).pushChangeHandler(
+                            RouterTransaction.with(ServerEntryView()).pushChangeHandler(
                                     VerticalChangeHandler()
                             )
                                     .popChangeHandler(VerticalChangeHandler())
@@ -567,13 +568,6 @@ class SettingsController : BaseController() {
                             .host
 
                     reauthorizeButton!!.addPreferenceClickListener { view14 ->
-                        router.pushController(
-                                RouterTransaction.with(
-                                        WebViewLoginController(currentUser!!.baseUrl, true)
-                                )
-                                        .pushChangeHandler(VerticalChangeHandler())
-                                        .popChangeHandler(VerticalChangeHandler())
-                        )
                     }
 
                     if (currentUser!!.displayName != null) {

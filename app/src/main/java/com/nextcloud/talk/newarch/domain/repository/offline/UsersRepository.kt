@@ -30,6 +30,7 @@ interface UsersRepository {
     fun getUserWithId(id: Long): UserNgEntity
     suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
     suspend fun updateUser(user: UserNgEntity): Int
+    suspend fun insertUser(user: UserNgEntity): Long
     suspend fun setUserAsActiveWithId(id: Long)
     suspend fun deleteUserWithId(id: Long)
     suspend fun setAnyUserAsActive(): Boolean

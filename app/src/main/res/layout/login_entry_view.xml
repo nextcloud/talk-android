@@ -5,18 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorPrimary">
 
-    <ProgressBar
-        android:id="@+id/pageProgressBar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:layout_centerInParent="true"
-        android:layout_marginHorizontal="8dp"
-        android:background="@color/white"
-        android:visibility="visible"/>
-
-    <org.mozilla.geckoview.GeckoView
-        android:id="@+id/geckoView"
+    <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
@@ -28,7 +18,7 @@
         android:layout_width="@dimen/item_height"
         android:layout_height="@dimen/item_height"
         android:layout_centerInParent="true"
-        android:visibility="gone"
+        android:visibility="visible"
         android:indeterminate="true"
         android:indeterminateTint="@color/white"
         android:indeterminateTintMode="src_in" />

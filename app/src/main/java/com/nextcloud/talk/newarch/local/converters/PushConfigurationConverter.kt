@@ -22,20 +22,25 @@ package com.nextcloud.talk.newarch.local.converters
 
 import androidx.room.TypeConverter
 import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.models.json.push.PushConfigurationState
+import com.nextcloud.talk.models.json.push.PushConfiguration
+import com.nextcloud.talk.newarch.utils.MagicJson
+import kotlinx.serialization.json.Json
 
 class PushConfigurationConverter {
+    val json = Json(MagicJson.customJsonConfiguration)
+
     @TypeConverter
-    fun fromPushConfigurationToString(pushConfigurationState: PushConfigurationState?): String {
-        if (pushConfigurationState == null) {
-            return ""
+    fun fromPushConfigurationToString(pushConfiguration: PushConfiguration?): String {
+
+        return if (pushConfiguration == null) {
+            ""
         } else {
-            return LoganSquare.serialize(pushConfigurationState)
+            json.stringify(PushConfiguration.serializer(), pushConfiguration)
         }
     }
 
     @TypeConverter
-    fun fromStringToPushConfiguration(value: String): PushConfigurationState? {
-        return LoganSquare.parse(value, PushConfigurationState::class.java)
+    fun fromStringToPushConfiguration(value: String): PushConfiguration? {
+        return json.parse(PushConfiguration.serializer(), value)
     }
 }

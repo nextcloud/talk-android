@@ -260,9 +260,6 @@ class SwitchAccountController : BaseController {
         bundle.putString(BundleKeys.KEY_USERNAME, importAccount.username)
         bundle.putString(BundleKeys.KEY_TOKEN, importAccount.token)
         bundle.putBoolean(BundleKeys.KEY_IS_ACCOUNT_IMPORT, true)
-        router.pushController(RouterTransaction.with(AccountVerificationController(bundle))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler()))
     }
 
     override fun getTitle(): String? {

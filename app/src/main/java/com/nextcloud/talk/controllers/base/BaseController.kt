@@ -42,10 +42,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
-import com.nextcloud.talk.controllers.AccountVerificationController
-import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SwitchAccountController
-import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.utils.FABAwareScrollingViewBehavior
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -137,9 +134,6 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
     private fun cleanTempCertPreference() {
         val temporaryClassNames = ArrayList<String>()
-        temporaryClassNames.add(ServerSelectionController::class.java.name)
-        temporaryClassNames.add(AccountVerificationController::class.java.name)
-        temporaryClassNames.add(WebViewLoginController::class.java.name)
         temporaryClassNames.add(SwitchAccountController::class.java.name)
 
         if (!temporaryClassNames.contains(javaClass.name)) {

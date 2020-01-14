@@ -44,7 +44,7 @@ abstract class UsersDao {
     abstract fun saveUser(user: UserNgEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun saveUsers(vararg users: UserNgEntity)
+    abstract suspend fun saveUsers(vararg users: UserNgEntity): List<Long>
 
     // get all users not scheduled for deletion
     @Query("SELECT * FROM users where status != 2")

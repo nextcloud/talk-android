@@ -43,7 +43,36 @@ val UseCasesModule = module {
     single { createGetProfileUseCase(get(), get()) }
     single { createGetSignalingUseCase(get(), get()) }
     single { createGetCapabilitiesUseCase(get(), get()) }
+    single { createRegisterPushWithProxyUseCase(get(), get()) }
+    single { createRegisterPushWithServerUseCase(get(), get()) }
+    single { createUnregisterPushWithProxyUseCase(get(), get()) }
+    single { createUnregisterPushWithServerUseCase(get(), get()) }
     factory { createChatViewModelFactory(get(), get(), get(), get(), get(), get()) }
+}
+
+fun createUnregisterPushWithServerUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
+                                        apiErrorHandler: ApiErrorHandler
+): UnregisterPushWithServerUseCase {
+    return UnregisterPushWithServerUseCase(nextcloudTalkRepository, apiErrorHandler)
+}
+
+fun createUnregisterPushWithProxyUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
+                                        apiErrorHandler: ApiErrorHandler
+): UnregisterPushWithProxyUseCase {
+    return UnregisterPushWithProxyUseCase(nextcloudTalkRepository, apiErrorHandler)
+}
+
+
+fun createRegisterPushWithServerUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
+                                       apiErrorHandler: ApiErrorHandler
+): RegisterPushWithServerUseCase {
+    return RegisterPushWithServerUseCase(nextcloudTalkRepository, apiErrorHandler)
+}
+
+fun createRegisterPushWithProxyUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
+                                 apiErrorHandler: ApiErrorHandler
+): RegisterPushWithProxyUseCase {
+    return RegisterPushWithProxyUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createGetCapabilitiesUseCase(nextcloudTalkRepository: NextcloudTalkRepository,

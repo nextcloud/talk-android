@@ -23,6 +23,7 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import lombok.Data
 
@@ -33,14 +34,18 @@ import lombok.Data
 data class IceServer @JvmOverloads constructor(
         @JvmField
         @JsonField(name = ["url"])
+        @SerialName("url")
         var url: String? = null,
         @JvmField
         @JsonField(name = ["urls"])
+        @SerialName("urls")
         var urls: List<String>? = null,
         @JvmField
         @JsonField(name = ["username"])
+        @SerialName("username")
         var username: String? = null,
         @JvmField
         @JsonField(name = ["credential"])
+        @SerialName("credential")
         var credential: String? = null
 ) : Parcelable

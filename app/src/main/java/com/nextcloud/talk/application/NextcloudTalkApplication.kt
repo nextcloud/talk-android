@@ -37,12 +37,11 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
-import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.push.PushConfigurationState
+import com.nextcloud.talk.models.json.push.PushConfiguration
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 import com.nextcloud.talk.newarch.di.module.*
 import com.nextcloud.talk.newarch.domain.di.module.UseCasesModule
@@ -71,7 +70,6 @@ import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-import org.mozilla.geckoview.GeckoRuntime
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.voiceengine.WebRtcAudioManager
 import org.webrtc.voiceengine.WebRtcAudioUtils
@@ -140,8 +138,6 @@ class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
         ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
 
-        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
-                .build()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
                 .build()
         val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
@@ -152,8 +148,6 @@ class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
                 .build()
 
-        WorkManager.getInstance(this)
-                .enqueue(pushRegistrationWork)
         WorkManager.getInstance(this)
                 .enqueue(accountRemovalWork)
         WorkManager.getInstance(this)
@@ -202,7 +196,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration
                     userNg.displayName = user.displayName
                     try {
                         userNg.pushConfiguration =
-                                LoganSquare.parse(user.pushConfigurationState, PushConfigurationState::class.java)
+                                LoganSquare.parse(user.pushConfigurationState, PushConfiguration::class.java)
                     } catch (e: Exception) {
                         // no push
                     }

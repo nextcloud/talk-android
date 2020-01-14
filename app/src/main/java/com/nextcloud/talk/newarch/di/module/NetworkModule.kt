@@ -57,7 +57,6 @@ import okhttp3.logging.HttpLoggingInterceptor.Logger
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
-import org.mozilla.geckoview.GeckoRuntime
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.io.IOException
@@ -73,7 +72,6 @@ import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509KeyManager
 
 val NetworkModule = module {
-    single { createGeckoRuntime(androidContext()) }
     single { createService(get()) }
     single { createLegacyNcApi(get()) }
     single { createRetrofit(get()) }
@@ -89,10 +87,6 @@ val NetworkModule = module {
     single { createNextcloudTalkRepository(get()) }
     single { createImageLoader(androidApplication(), get()) }
 
-}
-
-fun createGeckoRuntime(context: Context): GeckoRuntime {
-    return GeckoRuntime.create(context)
 }
 
 fun createCookieManager(): CookieManager {

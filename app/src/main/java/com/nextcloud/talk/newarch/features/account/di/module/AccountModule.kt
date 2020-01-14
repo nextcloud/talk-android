@@ -2,9 +2,7 @@ package com.nextcloud.talk.newarch.features.account.di.module
 
 import android.app.Application
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
-import com.nextcloud.talk.newarch.domain.usecases.GetCapabilitiesUseCase
-import com.nextcloud.talk.newarch.domain.usecases.GetProfileUseCase
-import com.nextcloud.talk.newarch.domain.usecases.GetSignalingSettingsUseCase
+import com.nextcloud.talk.newarch.domain.usecases.*
 import com.nextcloud.talk.newarch.features.account.loginentry.LoginEntryViewModelFactory
 import com.nextcloud.talk.newarch.features.account.serverentry.ServerEntryViewModelFactory
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -18,7 +16,7 @@ val AccountModule = module {
         )
     }
     factory {
-        createLoginEntryViewModelFactory(androidApplication(), get(), get(), get(), get(), get() )
+        createLoginEntryViewModelFactory(androidApplication(), get(), get(), get(), get(), get(), get(), get())
     }
 }
 
@@ -36,10 +34,12 @@ fun createLoginEntryViewModelFactory(
         getProfileUseCase: GetProfileUseCase,
         getCapabilitiesUseCase: GetCapabilitiesUseCase,
         getSignalingSettingsUseCase: GetSignalingSettingsUseCase,
+        registerPushWithServerUseCase: RegisterPushWithServerUseCase,
+        registerPushWithProxyUseCase: RegisterPushWithProxyUseCase,
         appPreferences: AppPreferences,
         usersRepository: UsersRepository
 ): LoginEntryViewModelFactory {
     return LoginEntryViewModelFactory(
-            application, getProfileUseCase, getCapabilitiesUseCase, getSignalingSettingsUseCase, appPreferences, usersRepository
+            application, getProfileUseCase, getCapabilitiesUseCase, getSignalingSettingsUseCase, registerPushWithServerUseCase, registerPushWithProxyUseCase, appPreferences, usersRepository
     )
 }

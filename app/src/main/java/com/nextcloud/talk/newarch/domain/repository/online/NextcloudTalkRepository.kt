@@ -34,7 +34,6 @@ interface NextcloudTalkRepository {
     suspend fun unregisterPushWithServerForUser(user: UserNgEntity): GenericOverall
     suspend fun registerPushWithProxyForUser(user: UserNgEntity, options: Map<String, String>): Any
     suspend fun unregisterPushWithProxyForUser(user: UserNgEntity, options: Map<String, String>): Any
-
     suspend fun getSignalingSettingsForUser(user: UserNgEntity): SignalingSettingsOverall
     suspend fun getProfileForUser(user: UserNgEntity): UserProfileOverall
     suspend fun getConversationsForUser(user: UserNgEntity): List<Conversation>

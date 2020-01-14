@@ -25,7 +25,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.nextcloud.talk.models.json.capabilities.Capabilities
-import com.nextcloud.talk.models.json.push.PushConfigurationState
+import com.nextcloud.talk.models.json.push.PushConfiguration
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
 import com.nextcloud.talk.utils.ApiUtils
@@ -43,7 +43,7 @@ data class UserNgEntity(
         @ColumnInfo(name = "display_name") var displayName: String? = null,
         @ColumnInfo(
                 name = "push_configuration"
-        ) var pushConfiguration: PushConfigurationState? = null,
+        ) var pushConfiguration: PushConfiguration? = null,
         @ColumnInfo(name = "capabilities") var capabilities: Capabilities? = null,
         @ColumnInfo(name = "client_auth_cert") var clientCertificate: String? = null,
         @ColumnInfo(

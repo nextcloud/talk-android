@@ -22,11 +22,14 @@
 
 package com.nextcloud.talk.newarch.features.account.loginentry
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.bluelinelabs.conductor.RouterTransaction
@@ -35,10 +38,9 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import de.cotech.hw.fido.WebViewFidoBridge
 import kotlinx.android.synthetic.main.login_entry_view.view.*
 import org.koin.android.ext.android.inject
-import org.mozilla.geckoview.*
-import org.mozilla.geckoview.GeckoSessionSettings.USER_AGENT_MODE_MOBILE
 import java.util.*
 
 class LoginEntryView(val bundle: Bundle) : BaseView() {
@@ -48,11 +50,7 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
     private lateinit var viewModel: LoginEntryViewModel
     val factory: LoginEntryViewModelFactory by inject()
 
-    private lateinit var geckoView: GeckoView
-    private lateinit var geckoSession: GeckoSession
-    private val geckoRuntime: GeckoRuntime by inject()
-
-    private val assembledPrefix = resources?.getString(R.string.nc_talk_login_scheme) + protocolSuffix + "login/"
+    private var assembledPrefix = ""
 
     private val webLoginUserAgent: String
         get() = (Build.MANUFACTURER.substring(0, 1).toUpperCase(
@@ -65,10 +63,13 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
         return R.layout.login_entry_view
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         actionBar?.hide()
         viewModel = viewModelProvider(factory).get(LoginEntryViewModel::class.java)
         val view = super.onCreateView(inflater, container)
+
+        assembledPrefix = resources?.getString(R.string.nc_talk_login_scheme) + protocolSuffix + "login/"
 
         viewModel.state.observe(this@LoginEntryView, Observer {
             when (it.state) {
@@ -80,82 +81,83 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
                 }
                 LoginEntryState.CHECKING -> {
                     view.progressBar.isVisible = true
-                    geckoView.isVisible = false
+                    view.webView.isVisible = false
                 }
                 else -> {
-                    if (router?.hasRootController() == true) {
-                        router.popController(this)
-                    } else {
-                        router.setRoot(RouterTransaction.with(ConversationsListView())
-                                .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler()))
-                    }
-                    // all good, proceed
+                    router.setRoot(RouterTransaction.with(ConversationsListView())
+                            .pushChangeHandler(HorizontalChangeHandler())
+                            .popChangeHandler(HorizontalChangeHandler()))
                 }
             }
         })
 
-        geckoView = view.geckoView
-        activity?.let {
-            val settings = GeckoSessionSettings.Builder()
-                    //.usePrivateMode(true)
-                    //.useTrackingProtection(true)
-                    .userAgentMode(USER_AGENT_MODE_MOBILE)
-                    .userAgentOverride(webLoginUserAgent)
-                    .suspendMediaWhenInactive(true)
-                    .allowJavascript(true)
 
-            geckoView.autofillEnabled = true
-            geckoSession = GeckoSession(settings.build())
-            geckoSession.open(geckoRuntime)
-            geckoSession.progressDelegate = createProgressDelegate()
-            geckoSession.navigationDelegate = createNavigationDelegate()
-            geckoView.setSession(geckoSession)
-            bundle.getString(BundleKeys.KEY_BASE_URL)?.let { baseUrl ->
-                geckoSession.loadUri("$baseUrl/index.php/login/flow", mapOf<String, String>("OCS-APIRequest" to "true"))
-            }
-        }
+
+        val baseUrl = bundle.get(BundleKeys.KEY_BASE_URL)
+        val headers: MutableMap<String, String> = hashMapOf()
+        headers["OCS-APIRequest"] = "true"
+
+        setupWebView(view)
+        view.webView.loadUrl("$baseUrl/index.php/login/flow", headers)
 
         return view
     }
 
-    private fun createNavigationDelegate(): GeckoSession.NavigationDelegate {
-        return object : GeckoSession.NavigationDelegate {
-            override fun onLoadRequest(p0: GeckoSession, p1: GeckoSession.NavigationDelegate.LoadRequest): GeckoResult<AllowOrDeny>? {
-                if (p1.uri.startsWith(assembledPrefix)) {
-                    viewModel.parseData(assembledPrefix, dataSeparator, p1.uri)
-                    return GeckoResult.DENY
+    override fun onSaveViewState(view: View, outState: Bundle) {
+        view.webView.saveState(outState)
+        super.onSaveViewState(view, outState)
+    }
+
+    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
+        super.onRestoreViewState(view, savedViewState)
+        view.webView.restoreState(savedViewState)
+    }
+
+    private fun setupWebView(loginEntryView: View) {
+        loginEntryView.webView.apply {
+            settings.allowFileAccess = false
+            settings.allowFileAccessFromFileURLs = false
+            settings.javaScriptEnabled = true
+            settings.javaScriptCanOpenWindowsAutomatically = false
+            settings.domStorageEnabled = true
+            settings.userAgentString = webLoginUserAgent
+            settings.saveFormData = false
+            settings.savePassword = false
+            settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
+            clearCache(true)
+            clearFormData()
+            clearHistory()
+            clearSslPreferences()
+        }
+
+        val webViewFidoBridge = WebViewFidoBridge.createInstanceForWebView(activity as AppCompatActivity?, loginEntryView.webView)
+        CookieSyncManager.createInstance(activity)
+        CookieManager.getInstance().removeAllCookies(null)
+
+        loginEntryView.webView.webViewClient = object : WebViewClient() {
+            var initialPageLoad = true
+            override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+                webViewFidoBridge?.delegateShouldInterceptRequest(view, request)
+                return super.shouldInterceptRequest(view, request)
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                if (request?.url.toString().startsWith(assembledPrefix)) {
+                    viewModel.parseData(assembledPrefix, dataSeparator, request?.url.toString())
+                    return true
                 }
-                return super.onLoadRequest(p0, p1)
+                return super.shouldOverrideUrlLoading(view, request)
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                if (initialPageLoad) {
+                    initialPageLoad = false
+                    loginEntryView.progressBar?.isVisible = false
+                    loginEntryView.webView?.isVisible = true
+                }
+                super.onPageFinished(view, url)
             }
         }
     }
 
-    private fun createProgressDelegate(): GeckoSession.ProgressDelegate {
-        return object : GeckoSession.ProgressDelegate {
-            private var initialLoad = true
-
-            override fun onPageStop(session: GeckoSession, success: Boolean) = Unit
-
-            override fun onSecurityChange(
-                    session: GeckoSession,
-                    securityInfo: GeckoSession.ProgressDelegate.SecurityInformation
-            ) = Unit
-
-            override fun onPageStart(session: GeckoSession, url: String) = Unit
-
-            override fun onProgressChange(session: GeckoSession, progress: Int) {
-                if (initialLoad) {
-                    view?.pageProgressBar?.progress = progress
-                    view?.pageProgressBar?.isVisible = progress in 1..99
-                }
-
-                if (progress == 100) {
-                    initialLoad = false
-                    view?.pageProgressBar?.isVisible = false
-                    view?.geckoView?.isVisible = true
-                }
-            }
-        }
-    }
 }
