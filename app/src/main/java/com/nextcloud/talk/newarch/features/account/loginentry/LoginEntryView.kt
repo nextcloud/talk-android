@@ -65,9 +65,11 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        actionBar?.hide()
         viewModel = viewModelProvider(factory).get(LoginEntryViewModel::class.java)
         val view = super.onCreateView(inflater, container)
+
+        appBar?.isVisible = false
+        actionBar?.hide()
 
         assembledPrefix = resources?.getString(R.string.nc_talk_login_scheme) + protocolSuffix + "login/"
 

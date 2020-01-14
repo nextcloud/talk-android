@@ -19,7 +19,9 @@ import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.parameter.parametersOf
 import java.net.URLDecoder
 
@@ -107,7 +109,7 @@ class LoginEntryViewModel constructor(
         }
     }
 
-    private fun getProfile(loginData: LoginData) {
+    private suspend fun getProfile(loginData: LoginData) {
         user.username = loginData.username!!
         user.baseUrl = loginData.serverUrl!!
         user.token = loginData.token
@@ -128,7 +130,7 @@ class LoginEntryViewModel constructor(
         })
     }
 
-    private fun getCapabilities() {
+    private suspend fun getCapabilities() {
         getCapabilitiesUseCase.invoke(viewModelScope, parametersOf(user.baseUrl), object : UseCaseResponse<CapabilitiesOverall> {
             override suspend fun onSuccess(result: CapabilitiesOverall) {
                 user.capabilities = result.ocs.data.capabilities
@@ -141,15 +143,18 @@ class LoginEntryViewModel constructor(
         })
     }
 
-    private fun getSignalingSettings() {
+    private suspend fun getSignalingSettings() {
         getSignalingSettingsUseCase.invoke(viewModelScope, parametersOf(user), object : UseCaseResponse<SignalingSettingsOverall> {
             override suspend fun onSuccess(result: SignalingSettingsOverall) {
-                user.signalingSettings = result.ocs.signalingSettings
-                val pushConfiguration = PushConfiguration()
-                val pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PENDING, 0)
-                pushConfiguration.pushConfigurationStateWrapper = pushConfigurationStateWrapper
-                usersRepository.insertUser(user)
-                registerForPush()
+                withContext(Dispatchers.IO) {
+                    user.signalingSettings = result.ocs.signalingSettings
+                    val pushConfiguration = PushConfiguration()
+                    val pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PENDING, 0)
+                    pushConfiguration.pushConfigurationStateWrapper = pushConfigurationStateWrapper
+                    usersRepository.insertUser(user)
+                    setAdjustedUserAsActive()
+                    registerForPush()
+                }
             }
 
             override suspend fun onError(errorModel: ErrorModel?) {
@@ -161,31 +166,37 @@ class LoginEntryViewModel constructor(
     private suspend fun registerForPush() {
         val token = appPreferences.pushToken
         if (!token.isNullOrBlank()) {
-            user.pushConfiguration?.pushToken = token
-            usersRepository.updateUser(user)
-            registerForPushWithServer(token)
+            withContext(Dispatchers.IO) {
+                user.pushConfiguration?.pushToken = token
+                usersRepository.updateUser(user)
+                registerForPushWithServer(token)
+            }
         } else {
             state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_MISSING_TOKEN))
         }
     }
 
-    private fun registerForPushWithServer(token: String) {
+    private suspend fun registerForPushWithServer(token: String) {
         val options = PushUtils(usersRepository).getMapForPushRegistrationWithServer(context, token)
         registerPushWithServerUseCase.invoke(viewModelScope, parametersOf(user, options), object : UseCaseResponse<PushRegistrationOverall> {
             override suspend fun onSuccess(result: PushRegistrationOverall) {
-                user.pushConfiguration?.deviceIdentifier = result.ocs.data.deviceIdentifier
-                user.pushConfiguration?.deviceIdentifierSignature = result.ocs.data.signature
-                user.pushConfiguration?.userPublicKey = result.ocs.data.publicKey
-                user.pushConfiguration?.pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.SERVER_REGISTRATION_DONE, null)
-                usersRepository.updateUser(user)
-                registerForPushWithProxy()
+                withContext(Dispatchers.IO) {
+                    user.pushConfiguration?.deviceIdentifier = result.ocs.data.deviceIdentifier
+                    user.pushConfiguration?.deviceIdentifierSignature = result.ocs.data.signature
+                    user.pushConfiguration?.userPublicKey = result.ocs.data.publicKey
+                    user.pushConfiguration?.pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.SERVER_REGISTRATION_DONE, null)
+                    usersRepository.updateUser(user)
+                    registerForPushWithProxy()
+                }
             }
 
             override suspend fun onError(errorModel: ErrorModel?) {
-                user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_SERVER_REGISTRATION
-                user.pushConfiguration?.pushConfigurationStateWrapper?.reason = errorModel?.code
-                usersRepository.updateUser(user)
-                state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_WITH_SERVER_FAILED))
+                withContext(Dispatchers.IO) {
+                    user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_SERVER_REGISTRATION
+                    user.pushConfiguration?.pushConfigurationStateWrapper?.reason = errorModel?.code
+                    usersRepository.updateUser(user)
+                    state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_WITH_SERVER_FAILED))
+                }
             }
         })
     }
@@ -196,22 +207,29 @@ class LoginEntryViewModel constructor(
         if (options != null) {
             registerPushWithProxyUseCase.invoke(viewModelScope, parametersOf(user, options), object : UseCaseResponse<Any> {
                 override suspend fun onSuccess(result: Any) {
-                    user.pushConfiguration?.pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PROXY_REGISTRATION_DONE, null)
-                    usersRepository.updateUser(user)
-                    state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, if (!updatingUser) LoginEntryStateClarification.ACCOUNT_CREATED else LoginEntryStateClarification.ACCOUNT_UPDATED))
+                    withContext(Dispatchers.IO) {
+                        user.pushConfiguration?.pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PROXY_REGISTRATION_DONE, null)
+                        usersRepository.updateUser(user)
+                        state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, if (!updatingUser) LoginEntryStateClarification.ACCOUNT_CREATED else LoginEntryStateClarification.ACCOUNT_UPDATED))
+                    }
                 }
 
                 override suspend fun onError(errorModel: ErrorModel?) {
-                    user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_PROXY_REGISTRATION
-                    user.pushConfiguration?.pushConfigurationStateWrapper?.reason = errorModel?.code
-                    usersRepository.updateUser(user)
-                    state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_WITH_PUSH_PROXY_FAILED))
+                    withContext(Dispatchers.IO) {
+                        user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_PROXY_REGISTRATION
+                        user.pushConfiguration?.pushConfigurationStateWrapper?.reason = errorModel?.code
+                        usersRepository.updateUser(user)
+                        setAdjustedUserAsActive()
+                        state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_WITH_PUSH_PROXY_FAILED))
+                    }
                 }
             })
         } else {
-            user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_PROXY_REGISTRATION
-            usersRepository.updateUser(user)
-            state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_WITH_PUSH_PROXY_FAILED))
+            withContext(Dispatchers.IO) {
+                user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_PROXY_REGISTRATION
+                usersRepository.updateUser(user)
+                state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_WITH_PUSH_PROXY_FAILED))
+            }
         }
     }
 

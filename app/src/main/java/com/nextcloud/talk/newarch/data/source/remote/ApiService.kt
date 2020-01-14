@@ -27,7 +27,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
-import io.reactivex.Observable
 import retrofit2.http.*
 
 interface ApiService {

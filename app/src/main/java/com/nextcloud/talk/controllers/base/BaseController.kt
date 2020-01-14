@@ -85,6 +85,19 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
             return floatingActionButton
         }
 
+    protected val appBar: AppBarLayout?
+        get() {
+            var appBarLayout: AppBarLayout? = null
+            activity?.let {
+                if (it is MainActivity) {
+                    appBarLayout = it.appBar
+                }
+            }
+
+            return appBarLayout
+        }
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {

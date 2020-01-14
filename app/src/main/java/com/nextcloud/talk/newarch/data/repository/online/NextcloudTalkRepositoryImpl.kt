@@ -98,7 +98,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
     }
 
     override suspend fun registerPushWithProxyForUser(user: UserNgEntity, options: Map<String, String>): Any {
-        return apiService.unregisterForPushWithProxy(ApiUtils.getUrlPushProxy(), options)
+        return apiService.registerForPushWithProxy(ApiUtils.getUrlPushProxy(), options)
     }
 
     override suspend fun unregisterPushWithProxyForUser(user: UserNgEntity, options: Map<String, String>): Any {

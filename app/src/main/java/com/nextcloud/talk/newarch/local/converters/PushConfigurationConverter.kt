@@ -41,6 +41,10 @@ class PushConfigurationConverter {
 
     @TypeConverter
     fun fromStringToPushConfiguration(value: String): PushConfiguration? {
+        if (value.isNullOrBlank()) {
+            return null
+        }
+
         return json.parse(PushConfiguration.serializer(), value)
     }
 }
