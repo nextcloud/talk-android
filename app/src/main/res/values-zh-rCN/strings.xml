@@ -33,7 +33,6 @@
     <string name="nc_server_import_account">从 %1$s 应用导入账号</string>
     <string name="nc_server_import_accounts">从 %1$s 应用导入账号</string>
     <string name="nc_server_failed_to_import_account">选择的账号导入失败</string>
-    <string name="nc_server_account_imported">所选账号现已导入并可立即使用</string>
     <string name="nc_get_from_provider">还没有服务器吗？\n点此查看供应商</string>
 
     <!-- Account verification -->

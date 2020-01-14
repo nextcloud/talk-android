@@ -116,7 +116,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
     <string name="nc_password_redacted">Verwijderd voor privacy-redenen</string>
-    <string name="nc_conversation_link">Conversatie link</string>
+    <string name="nc_conversation_link">Gesprekslink</string>
     <string name="nc_new_password">Nieuw wachtwoord</string>
     <string name="nc_wrong_password">Onjuist wachtwoord</string>
     <string name="nc_about">Over</string>
@@ -203,7 +203,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_proceed">Verder</string>
     <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
-    <string name="nc_wrong_link">Conversatie link is niet geldig</string>
+    <string name="nc_wrong_link">Gesprekslink is niet geldig</string>
     <string name="nc_share_text">Neem deel aan het gesprek %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s uitnodiging</string>
     <string name="nc_share_text_pass">\nWachtwoord: %1$s</string>
