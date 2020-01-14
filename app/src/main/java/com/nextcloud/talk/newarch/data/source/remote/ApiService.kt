@@ -24,15 +24,58 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.push.PushRegistrationOverall
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
+import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import io.reactivex.Observable
 import retrofit2.http.*
 
 interface ApiService {
 
-    /*
-      Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
-   */
     @GET
     suspend fun getCapabilities(@Url url: String): CapabilitiesOverall
+
+    @GET
+    suspend fun getSignalingSettings(@Header("Authorization") authorization: String,
+                                     @Url url: String): SignalingSettingsOverall
+
+    @GET
+    suspend fun getUserProfile(@Header("Authorization") authorization: String,
+                               @Url url: String): UserProfileOverall
+
+    /*
+        QueryMap items are as follows:
+            - "format" : "json"
+            - "pushTokenHash" : ""
+            - "devicePublicKey" : ""
+            - "proxyServer" : ""
+
+        Server URL is: baseUrl + ocsApiVersion + "/apps/notifications/api/v2/push
+     */
+    @POST
+    fun registerForPushWithServer(
+            @Header("Authorization") authorization: String,
+            @Url url: String,
+            @QueryMap options: Map<String, String>): PushRegistrationOverall
+
+    @DELETE
+    fun unregisterForPushWithServer(@Header("Authorization") authorization: String,
+                                    @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    fun registerForPushWithProxy(@Url url: String,
+                                 @FieldMap fields: Map<String, String>): Any
+
+    /*
+        QueryMap items are as follows:
+          - "deviceIdentifier": "{{deviceIdentifier}}",
+          - "deviceIdentifierSignature": "{{signature}}",
+          - "userPublicKey": "{{userPublicKey}}"
+    */
+    @DELETE
+    fun unregisterForPushWithProxy(@Url url: String?,
+                                   @QueryMap fields: Map<String, String>): Any
 
     @GET
     suspend fun getConversations(

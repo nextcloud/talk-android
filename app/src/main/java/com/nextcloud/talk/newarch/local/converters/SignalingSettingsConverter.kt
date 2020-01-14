@@ -21,21 +21,23 @@
 package com.nextcloud.talk.newarch.local.converters
 
 import androidx.room.TypeConverter
-import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.models.ExternalSignalingServer
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
+import com.nextcloud.talk.newarch.utils.MagicJson
+import kotlinx.serialization.json.Json
 
-class ExternalSignalingConverter {
+class SignalingSettingsConverter {
+    val json = Json(MagicJson.customJsonConfiguration)
     @TypeConverter
-    fun fromExternalSignalingToString(externalSignalingServer: ExternalSignalingServer?): String {
-        if (externalSignalingServer == null) {
-            return ""
+    fun fromSignalingSettingsToString(signalingSettings: SignalingSettings?): String {
+        return if (signalingSettings == null) {
+            ""
         } else {
-            return LoganSquare.serialize(externalSignalingServer)
+            json.stringify(SignalingSettings.serializer(), signalingSettings)
         }
     }
 
     @TypeConverter
-    fun fromStringToExternalSignaling(value: String): ExternalSignalingServer? {
-        return LoganSquare.parse(value, ExternalSignalingServer::class.java)
+    fun fromStringToSignalingSettings(value: String): SignalingSettings? {
+        return json.parse(SignalingSettings.serializer(), value)
     }
 }

@@ -24,9 +24,19 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.push.PushRegistrationOverall
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
+import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 interface NextcloudTalkRepository {
+    suspend fun registerPushWithServerForUser(user: UserNgEntity, options: Map<String, String>): PushRegistrationOverall
+    suspend fun unregisterPushWithServerForUser(user: UserNgEntity): GenericOverall
+    suspend fun registerPushWithProxyForUser(user: UserNgEntity, options: Map<String, String>): Any
+    suspend fun unregisterPushWithProxyForUser(user: UserNgEntity, options: Map<String, String>): Any
+
+    suspend fun getSignalingSettingsForUser(user: UserNgEntity): SignalingSettingsOverall
+    suspend fun getProfileForUser(user: UserNgEntity): UserProfileOverall
     suspend fun getConversationsForUser(user: UserNgEntity): List<Conversation>
     suspend fun setFavoriteValueForConversation(
             user: UserNgEntity,

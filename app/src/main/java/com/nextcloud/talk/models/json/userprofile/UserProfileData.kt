@@ -18,25 +18,21 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.userprofile;
+package com.nextcloud.talk.models.json.userprofile
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-
-import org.parceler.Parcel;
-
-import lombok.Data;
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import lombok.Data
+import org.parceler.Parcel
 
 @Parcel
 @Data
 @JsonObject
-public class UserProfileData {
-    @JsonField(name = "display-name")
-    public String displayName;
-
-    @JsonField(name = "displayname")
-    public String displayNameAlt;
-
-    @JsonField(name = "id")
-    public String userId;
+class UserProfileData {
+    @JvmField
+    @JsonField(name = ["display-name", "displayname"])
+    var displayName: String? = null
+    @JvmField
+    @JsonField(name = ["id"])
+    var userId: String? = null
 }

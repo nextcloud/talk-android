@@ -121,8 +121,8 @@ open class ConversationsPresenter(context: Context, onElementClick: ((Page, Hold
                                 )
                             } else {
                                 authorDisplayName = if (!TextUtils.isEmpty(conversation.lastMessage?.actorDisplayName)) {
-                                    conversation.lastMessage?.actorDisplayName!!.substringBefore(" ")                                }
-                                else if ("guests" == conversation.lastMessage!!.actorType)
+                                    conversation.lastMessage?.actorDisplayName!!.substringBefore(" ")
+                                } else if ("guests" == conversation.lastMessage!!.actorType)
                                     context.getString(R.string.nc_guest)
                                 else
                                     ""

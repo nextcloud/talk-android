@@ -900,22 +900,22 @@ class CallController(args: Bundle) : BaseController() {
                     override fun onNext(signalingSettingsOverall: SignalingSettingsOverall) {
                         var iceServer: IceServer
                         if (signalingSettingsOverall.ocs != null &&
-                                signalingSettingsOverall.ocs.settings != null
+                                signalingSettingsOverall.ocs.signalingSettings != null
                         ) {
 
                             externalSignalingServer = ExternalSignalingServer()
 
                             if (!TextUtils.isEmpty(
-                                            signalingSettingsOverall.ocs.settings.externalSignalingServer
+                                            signalingSettingsOverall.ocs.signalingSettings.externalSignalingServer
                                     ) && !TextUtils.isEmpty(
                                             signalingSettingsOverall.ocs
-                                                    .settings
+                                                    .signalingSettings
                                                     .externalSignalingTicket
                                     )
                             ) {
                                 externalSignalingServer = ExternalSignalingServer()
-                                externalSignalingServer!!.externalSignalingServer = signalingSettingsOverall.ocs.settings.externalSignalingServer
-                                externalSignalingServer!!.externalSignalingTicket = signalingSettingsOverall.ocs.settings.externalSignalingTicket
+                                externalSignalingServer!!.externalSignalingServer = signalingSettingsOverall.ocs.signalingSettings.externalSignalingServer
+                                externalSignalingServer!!.externalSignalingTicket = signalingSettingsOverall.ocs.signalingSettings.externalSignalingTicket
                                 hasExternalSignalingServer = true
                             } else {
                                 hasExternalSignalingServer = false
@@ -936,9 +936,9 @@ class CallController(args: Bundle) : BaseController() {
 
                             }
 
-                            if (signalingSettingsOverall.ocs.settings.stunServers != null) {
-                                for (i in 0 until signalingSettingsOverall.ocs.settings.stunServers.size) {
-                                    iceServer = signalingSettingsOverall.ocs.settings.stunServers[i]
+                            if (signalingSettingsOverall.ocs.signalingSettings.stunServers != null) {
+                                for (i in 0 until signalingSettingsOverall.ocs.signalingSettings.stunServers!!.size) {
+                                    iceServer = signalingSettingsOverall.ocs.signalingSettings.stunServers!![i]
                                     if (TextUtils.isEmpty(iceServer.username) || TextUtils.isEmpty(
                                                     iceServer
                                                             .credential
@@ -956,20 +956,20 @@ class CallController(args: Bundle) : BaseController() {
                                 }
                             }
 
-                            if (signalingSettingsOverall.ocs.settings.turnServers != null) {
-                                for (i in 0 until signalingSettingsOverall.ocs.settings.turnServers.size) {
-                                    iceServer = signalingSettingsOverall.ocs.settings.turnServers[i]
-                                    for (j in 0 until iceServer.urls.size) {
+                            if (signalingSettingsOverall.ocs.signalingSettings.turnServers != null) {
+                                for (i in 0 until signalingSettingsOverall.ocs.signalingSettings.turnServers!!.size) {
+                                    iceServer = signalingSettingsOverall.ocs.signalingSettings.turnServers!![i]
+                                    for (j in 0 until iceServer.urls!!.size) {
                                         if (TextUtils.isEmpty(iceServer.username) || TextUtils.isEmpty(
                                                         iceServer
                                                                 .credential
                                                 )
                                         ) {
-                                            iceServers!!.add(PeerConnection.IceServer(iceServer.urls[j]))
+                                            iceServers!!.add(PeerConnection.IceServer(iceServer.urls!![j]))
                                         } else {
                                             iceServers!!.add(
                                                     PeerConnection.IceServer(
-                                                            iceServer.urls[j],
+                                                            iceServer.urls!![j],
                                                             iceServer.username, iceServer.credential
                                                     )
                                             )

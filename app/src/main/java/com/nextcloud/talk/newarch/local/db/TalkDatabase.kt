@@ -43,7 +43,7 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
         ConversationReadOnlyStateConverter::class, NotificationLevelConverter::class,
         ConversationTypeConverter::class, ParticipantTypeConverter::class,
         PushConfigurationConverter::class, CapabilitiesConverter::class,
-        ExternalSignalingConverter::class,
+        SignalingSettingsConverter::class,
         UserStatusConverter::class, SystemMessageTypeConverter::class, ParticipantMapConverter::class
 )
 

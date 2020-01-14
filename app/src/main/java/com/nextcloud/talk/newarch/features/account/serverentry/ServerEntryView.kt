@@ -30,8 +30,11 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
+import com.nextcloud.talk.newarch.features.account.loginentry.LoginEntryView
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import kotlinx.android.synthetic.main.server_entry_view.view.*
 import org.koin.android.ext.android.inject
@@ -54,7 +57,7 @@ class ServerEntryView : BaseView() {
 
         viewModel.apply {
             checkState.observe(this@ServerEntryView, Observer {
-                when(it.checkState) {
+                when (it.checkState) {
                     ServerEntryCapabilitiesCheckState.WAITING_FOR_INPUT -> {
                         view.serverEntryTextInputLayout.isEnabled = true
                         view.serverEntryProgressBar.isVisible = false
@@ -67,7 +70,8 @@ class ServerEntryView : BaseView() {
                     ServerEntryCapabilitiesCheckState.SERVER_SUPPORTED -> {
                         val bundle = Bundle()
                         bundle.putString(BundleKeys.KEY_BASE_URL, it.url)
-                        //router.pushController(RouterTransaction.with(LoginEntryView(bundle)).popChangeHandler(HorizontalChangeHandler()).pushChangeHandler(HorizontalChangeHandler()))
+                        router.pushController(RouterTransaction.with(LoginEntryView(bundle))
+                                .popChangeHandler(HorizontalChangeHandler()).pushChangeHandler(HorizontalChangeHandler()))
                     }
                     // Unsupported
                     else -> {
@@ -96,8 +100,8 @@ class ServerEntryView : BaseView() {
             val drawableRight = 2
             val drawableBottom = 3
 
-            if(event.action == MotionEvent.ACTION_UP) {
-                if(event.rawX >= (view.serverEntryTextInputEditText.right - view.serverEntryTextInputEditText.compoundDrawables[drawableRight].bounds.width())) {
+            if (event.action == MotionEvent.ACTION_UP) {
+                if (event.rawX >= (view.serverEntryTextInputEditText.right - view.serverEntryTextInputEditText.compoundDrawables[drawableRight].bounds.width())) {
                     if (view.serverEntryTextInputEditText.compoundDrawables[drawableRight].alpha == 255) {
                         view.serverEntryTextInputEditText?.text?.let { serverUrl ->
                             var baseUrl = serverUrl.toString()

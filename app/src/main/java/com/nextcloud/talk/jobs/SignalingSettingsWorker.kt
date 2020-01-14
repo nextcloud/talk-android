@@ -26,7 +26,6 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.events.EventStatus
-import com.nextcloud.talk.jobs.WebsocketConnectionsWorker
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
@@ -69,8 +68,8 @@ class SignalingSettingsWorker(context: Context, workerParams: WorkerParameters) 
                         override fun onNext(signalingSettingsOverall: SignalingSettingsOverall) {
                             val externalSignalingServer: ExternalSignalingServer
                             externalSignalingServer = ExternalSignalingServer()
-                            externalSignalingServer.externalSignalingServer = signalingSettingsOverall.ocs.settings.externalSignalingServer
-                            externalSignalingServer.externalSignalingTicket = signalingSettingsOverall.ocs.settings.externalSignalingTicket
+                            externalSignalingServer.externalSignalingServer = signalingSettingsOverall.ocs.signalingSettings.externalSignalingServer
+                            externalSignalingServer.externalSignalingTicket = signalingSettingsOverall.ocs.signalingSettings.externalSignalingTicket
                             val user = usersRepository.getUserWithId(userEntity.id!!)
                             user.externalSignaling = externalSignalingServer
                             runBlocking {

@@ -181,7 +181,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         startKoin {
             androidContext(this@NextcloudTalkApplication)
             androidLogger()
-            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsModule, ConversationsListModule, ServiceModule, AccountModule, ServerModule))
+            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule, ServiceModule, AccountModule, ServerModule))
         }
     }
 

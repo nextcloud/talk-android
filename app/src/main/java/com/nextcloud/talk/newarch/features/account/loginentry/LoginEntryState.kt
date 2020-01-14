@@ -20,15 +20,28 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.account.serverentry
+package com.nextcloud.talk.newarch.features.account.loginentry
 
-import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.nextcloud.talk.newarch.domain.usecases.GetCapabilitiesUseCase
+import kotlinx.serialization.Serializable
 
-class ServerEntryViewModelFactory constructor(private val application: Application, private val getCapabilitiesUseCase: GetCapabilitiesUseCase) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ServerEntryViewModel(application, getCapabilitiesUseCase) as T
-    }
+enum class LoginEntryState {
+    PENDING_CHECK,
+    CHECKING,
+    FAILED,
+    OK
 }
+
+enum class LoginEntryStateClarification {
+    INVALID_PARSED_DATA,
+    PROFILE_FETCH_FAILED,
+    CAPABILITIES_FETCH_FAILED,
+    SIGNALING_SETTINGS_FETCH_FAILED,
+    PUSH_REGISTRATION_MISSING_TOKEN,
+    PUSH_REGISTRATION_WITH_SERVER_FAILED,
+    PUSH_REGISTRATION_WITH_PUSH_PROXY_FAILED,
+    ACCOUNT_UPDATED,
+    ACCOUNT_CREATED
+}
+
+@Serializable
+data class LoginEntryStateWrapper(val state: LoginEntryState, val clarification: LoginEntryStateClarification?)

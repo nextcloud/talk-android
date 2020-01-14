@@ -20,15 +20,20 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.account.serverentry
+package com.nextcloud.talk.newarch.domain.usecases
 
-import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.nextcloud.talk.newarch.domain.usecases.GetCapabilitiesUseCase
+import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
+import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
+import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
+import org.koin.core.parameter.DefinitionParameters
 
-class ServerEntryViewModelFactory constructor(private val application: Application, private val getCapabilitiesUseCase: GetCapabilitiesUseCase) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ServerEntryViewModel(application, getCapabilitiesUseCase) as T
+class GetProfileUseCase constructor(
+        private val nextcloudTalkRepository: NextcloudTalkRepository,
+        apiErrorHandler: ApiErrorHandler?
+) : UseCase<UserProfileOverall, Any?>(apiErrorHandler) {
+    override suspend fun run(params: Any?): UserProfileOverall {
+        val definitionParameters = params as DefinitionParameters
+        return nextcloudTalkRepository.getProfileForUser(definitionParameters[0])
     }
 }

@@ -28,7 +28,7 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
-import com.nextcloud.talk.newarch.domain.usecases.*
+import com.nextcloud.talk.newarch.domain.usecases.GetCapabilitiesUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import org.koin.core.parameter.parametersOf
 
@@ -53,11 +53,10 @@ class ServerEntryViewModel constructor(
             override suspend fun onError(errorModel: ErrorModel?) {
                 if (url.startsWith("https://")) {
                     fetchCapabilities(url.replace("https://", "http://"))
-                }  else {
+                } else {
                     checkState.postValue(ServerEntryCapabilitiesCheckStateWrapper(ServerEntryCapabilitiesCheckState.SERVER_UNSUPPORTED, url))
                 }
             }
-
         })
     }
 }

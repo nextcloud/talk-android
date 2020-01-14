@@ -24,9 +24,9 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.android.parcel.Parcelize
@@ -47,8 +47,8 @@ data class UserNgEntity(
         @ColumnInfo(name = "capabilities") var capabilities: Capabilities? = null,
         @ColumnInfo(name = "client_auth_cert") var clientCertificate: String? = null,
         @ColumnInfo(
-                name = "external_signaling"
-        ) var externalSignaling: ExternalSignalingServer? = null,
+                name = "signaling_settings"
+        ) var signalingSettings: SignalingSettings? = null,
         @ColumnInfo(name = "status") var status: UserStatus? = null
 ) : Parcelable {
 
@@ -71,7 +71,7 @@ data class UserNgEntity(
         if (pushConfiguration != other.pushConfiguration) return false
         if (capabilities != other.capabilities) return false
         if (clientCertificate != other.clientCertificate) return false
-        if (externalSignaling != other.externalSignaling) return false
+        if (signalingSettings != other.signalingSettings) return false
         if (status != other.status) return false
 
         return true

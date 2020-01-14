@@ -26,8 +26,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import butterknife.BindView
-import butterknife.ButterKnife
 import coil.api.load
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R

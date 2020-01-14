@@ -20,15 +20,24 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.account.serverentry
+package com.nextcloud.talk.newarch.utils
 
-import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.nextcloud.talk.newarch.domain.usecases.GetCapabilitiesUseCase
+import kotlinx.serialization.json.JsonConfiguration
 
-class ServerEntryViewModelFactory constructor(private val application: Application, private val getCapabilitiesUseCase: GetCapabilitiesUseCase) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ServerEntryViewModel(application, getCapabilitiesUseCase) as T
+sealed class MagicJson {
+    companion object {
+        private val defaultIndent: String = "    "
+        private val defaultDiscriminator = "type"
+
+        val customJsonConfiguration = JsonConfiguration(
+                encodeDefaults = true,
+                strictMode = true,
+                unquoted = false,
+                allowStructuredMapKeys = true,
+                prettyPrint = true,
+                indent = defaultIndent,
+                useArrayPolymorphism = true,
+                classDiscriminator = defaultDiscriminator
+        )
     }
 }

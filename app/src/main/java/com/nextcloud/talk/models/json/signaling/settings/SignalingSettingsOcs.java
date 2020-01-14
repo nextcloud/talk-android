@@ -30,5 +30,5 @@ import lombok.Data;
 @JsonObject
 public class SignalingSettingsOcs extends GenericOCS {
     @JsonField(name = "data")
-    public Settings settings;
+    public SignalingSettings signalingSettings;
 }

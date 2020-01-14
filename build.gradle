@@ -31,6 +31,9 @@ buildscript {
         maven {
             url 'https://jitpack.io'
         }
+        maven {
+            url 'https://maven.mozilla.org/maven2'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
@@ -55,9 +58,14 @@ allprojects {
             url 'https://oss.sonatype.org/content/repositories/snapshots'
         }
         maven {
+            url 'https://maven.mozilla.org/maven2'
+        }
+        maven {
             url 'https://jitpack.io'
         }
-        maven { url 'https://maven.google.com' }
+        maven {
+            url 'https://maven.google.com'
+        }
     }
 }
 

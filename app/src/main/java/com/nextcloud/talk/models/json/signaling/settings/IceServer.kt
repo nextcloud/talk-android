@@ -17,28 +17,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.nextcloud.talk.models.json.signaling.settings
 
-package com.nextcloud.talk.models.json.signaling.settings;
-
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-
-import java.util.List;
-
-import lombok.Data;
+import android.os.Parcelable
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.Serializable
+import lombok.Data
 
 @Data
 @JsonObject
-public class IceServer {
-    @JsonField(name = "url")
-    public String url;
-
-    @JsonField(name = "urls")
-    public List<String> urls;
-
-    @JsonField(name = "username")
-    public String username;
-
-    @JsonField(name = "credential")
-    public String credential;
-}
+@Parcelize
+@Serializable
+data class IceServer @JvmOverloads constructor(
+        @JvmField
+        @JsonField(name = ["url"])
+        var url: String? = null,
+        @JvmField
+        @JsonField(name = ["urls"])
+        var urls: List<String>? = null,
+        @JvmField
+        @JsonField(name = ["username"])
+        var username: String? = null,
+        @JvmField
+        @JsonField(name = ["credential"])
+        var credential: String? = null
+) : Parcelable

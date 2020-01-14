@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.controllers
 
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
@@ -113,6 +114,7 @@ class AccountVerificationController(args: Bundle?) : BaseController(), KoinCompo
         eventBus.register(this)
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onViewBound(view: View) {
         super.onViewBound(view)
         if (activity != null) {
@@ -257,16 +259,11 @@ class AccountVerificationController(args: Bundle?) : BaseController(), KoinCompo
                     override fun onSubscribe(d: Disposable) {}
 
                     override fun onNext(userProfileOverall: UserProfileOverall) {
-                        var displayName: String? = null
-                        if (!TextUtils.isEmpty(userProfileOverall.ocs.data.displayName)) {
-                            displayName = userProfileOverall.ocs.data.displayName
-                        } else if (!TextUtils.isEmpty(userProfileOverall.ocs.data.displayNameAlt)) {
-                            displayName = userProfileOverall.ocs.data.displayNameAlt
-                        }
+                        var displayName: String? = userProfileOverall.ocs.data.displayName
 
                         if (!TextUtils.isEmpty(displayName)) {
                             GlobalScope.launch {
-                                storeProfile(displayName, userProfileOverall.ocs.data.userId)
+                                storeProfile(displayName, userProfileOverall.ocs.data.userId!!)
                             }
                         } else {
                             if (activity != null) {

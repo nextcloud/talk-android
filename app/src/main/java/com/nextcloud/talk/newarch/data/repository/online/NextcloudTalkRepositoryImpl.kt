@@ -24,6 +24,9 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.push.PushRegistrationOverall
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
+import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
@@ -84,6 +87,30 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
                     ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
             )
         }
+    }
+
+    override suspend fun registerPushWithServerForUser(user: UserNgEntity, options: Map<String, String>): PushRegistrationOverall {
+        return apiService.registerForPushWithServer(user.getCredentials(), ApiUtils.getUrlNextcloudPush(user.baseUrl), options)
+    }
+
+    override suspend fun unregisterPushWithServerForUser(user: UserNgEntity): GenericOverall {
+        return apiService.unregisterForPushWithServer(user.getCredentials(), ApiUtils.getUrlNextcloudPush(user.baseUrl))
+    }
+
+    override suspend fun registerPushWithProxyForUser(user: UserNgEntity, options: Map<String, String>): Any {
+        return apiService.unregisterForPushWithProxy(ApiUtils.getUrlPushProxy(), options)
+    }
+
+    override suspend fun unregisterPushWithProxyForUser(user: UserNgEntity, options: Map<String, String>): Any {
+        return apiService.unregisterForPushWithProxy(ApiUtils.getUrlPushProxy(), options)
+    }
+
+    override suspend fun getSignalingSettingsForUser(user: UserNgEntity): SignalingSettingsOverall {
+        return apiService.getSignalingSettings(user.getCredentials(), ApiUtils.getUrlForSignalingSettings(user.baseUrl))
+    }
+
+    override suspend fun getProfileForUser(user: UserNgEntity): UserProfileOverall {
+        return apiService.getUserProfile(user.getCredentials(), ApiUtils.getUrlForUserProfile(user.baseUrl))
     }
 
     override suspend fun getConversationsForUser(user: UserNgEntity): List<Conversation> {
