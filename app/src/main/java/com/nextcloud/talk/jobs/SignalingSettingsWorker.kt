@@ -71,7 +71,7 @@ class SignalingSettingsWorker(context: Context, workerParams: WorkerParameters) 
                             externalSignalingServer.externalSignalingServer = signalingSettingsOverall.ocs.signalingSettings.externalSignalingServer
                             externalSignalingServer.externalSignalingTicket = signalingSettingsOverall.ocs.signalingSettings.externalSignalingTicket
                             val user = usersRepository.getUserWithId(userEntity.id!!)
-                            user.externalSignaling = externalSignalingServer
+                            //user.externalSignaling = externalSignalingServer
                             runBlocking {
                                 val result = usersRepository.updateUser(user)
                                 eventBus.post(EventStatus(user.id!!,

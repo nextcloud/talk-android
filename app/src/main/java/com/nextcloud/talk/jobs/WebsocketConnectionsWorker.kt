@@ -41,7 +41,7 @@ class WebsocketConnectionsWorker(
         var userEntity: UserNgEntity
         for (i in userEntityList.indices) {
             userEntity = userEntityList[i]
-            if (userEntity.externalSignaling != null) {
+            /*if (userEntity.externalSignaling != null) {
                 if (!userEntity.externalSignaling!!.externalSignalingServer.isNullOrEmpty() &&
                         !userEntity.externalSignaling!!.externalSignalingTicket.isNullOrEmpty()) {
                     WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
@@ -50,8 +50,7 @@ class WebsocketConnectionsWorker(
                             false
                     )
                 }
-
-            }
+            }*/
         }
 
         return Result.success()

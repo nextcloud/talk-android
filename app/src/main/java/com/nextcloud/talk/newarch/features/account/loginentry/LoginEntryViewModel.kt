@@ -148,13 +148,13 @@ class LoginEntryViewModel constructor(
     private fun registerForPush() {
         val token = appPreferences.pushToken
         if (!token.isNullOrBlank()) {
-
+            registerForPushWithServer(token)
         } else {
             state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_MISSING_TOKEN))
         }
     }
 
-    private fun registerForPushWithServer() {
+    private fun registerForPushWithServer(token: String) {
 
     }
 

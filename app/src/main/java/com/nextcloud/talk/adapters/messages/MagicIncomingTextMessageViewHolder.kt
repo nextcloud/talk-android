@@ -84,10 +84,6 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
     var quotedMessage: EmojiTextView? = null
 
     @JvmField
-    @BindView(R.id.quotedMessageTime)
-    var quotedMessageTime: TextView? = null
-
-    @JvmField
     @BindView(R.id.quoteColoredView)
     var quoteColoredView: View? = null
 
@@ -227,8 +223,6 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
             quotedUserName?.setTextColor(context.resources.getColor(R.color.colorPrimary))
 
-            quotedMessageTime?.text = DateFormatter.format(parentChatMessage.createdAt, DateFormatter.Template.TIME)
-            quotedMessageTime?.setTextColor(context.resources.getColor(R.color.warm_grey_four))
             quoteColoredView?.setBackgroundResource(R.color.colorPrimary)
             quotedChatMessageView?.visibility = View.VISIBLE
         } ?: run {

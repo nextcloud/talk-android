@@ -64,16 +64,6 @@
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true"
             tools:text="Hello, this is me!" />
-
-        <TextView
-            android:id="@+id/quotedMessageTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textSize="12sp"
-            app:layout_alignSelf="center"
-            android:textColor="@color/warm_grey_four"
-            tools:text="16:08" />
     </com.google.android.flexbox.FlexboxLayout>
 
     <ImageButton

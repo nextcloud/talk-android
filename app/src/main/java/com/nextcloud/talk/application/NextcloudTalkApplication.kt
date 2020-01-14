@@ -29,10 +29,7 @@ import androidx.emoji.bundled.BundledEmojiCompatConfig
 import androidx.emoji.text.EmojiCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.multidex.MultiDex
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.OneTimeWorkRequest
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import coil.Coil
 import coil.ImageLoader
 import com.bluelinelabs.logansquare.LoganSquare
@@ -46,7 +43,9 @@ import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 import com.nextcloud.talk.newarch.di.module.*
+import com.nextcloud.talk.newarch.domain.di.module.UseCasesModule
 import com.nextcloud.talk.newarch.features.account.di.module.AccountModule
 import com.nextcloud.talk.newarch.features.conversationslist.di.module.ConversationsListModule
 import com.nextcloud.talk.newarch.local.dao.UsersDao
@@ -72,13 +71,14 @@ import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.mozilla.geckoview.GeckoRuntime
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.voiceengine.WebRtcAudioManager
 import org.webrtc.voiceengine.WebRtcAudioUtils
 import java.security.Security
 import java.util.concurrent.TimeUnit
 
-class NextcloudTalkApplication : Application(), LifecycleObserver {
+class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration.Provider {
     //region Getters
 
     val userUtils: UserUtils by inject()
@@ -181,7 +181,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
         startKoin {
             androidContext(this@NextcloudTalkApplication)
             androidLogger()
-            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule, ServiceModule, AccountModule, ServerModule))
+            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule, ServiceModule, AccountModule, UseCasesModule))
         }
     }
 
@@ -211,8 +211,11 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
                     }
                     userNg.clientCertificate = user.clientCertificate
                     try {
-                        userNg.externalSignaling =
-                                LoganSquare.parse(user.externalSignalingServer, ExternalSignalingServer::class.java)
+                        val external = LoganSquare.parse(user.externalSignalingServer, ExternalSignalingServer::class.java)
+                        val signalingSettings = SignalingSettings()
+                        signalingSettings.externalSignalingServer = external.externalSignalingServer
+                        signalingSettings.externalSignalingTicket = external.externalSignalingTicket
+                        userNg.signalingSettings = signalingSettings
                     } catch (e: Exception) {
                         // no external signaling
                     }
@@ -258,6 +261,10 @@ class NextcloudTalkApplication : Application(), LifecycleObserver {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
         }
+    }
+
+    override fun getWorkManagerConfiguration(): Configuration {
+        return Configuration.Builder().build()
     }
     //endregion
 }

@@ -159,8 +159,8 @@ ext {
   lifecycle_version = '2.2.0-rc03'
   coil_version = "0.9.1"
   room_version = "2.2.3"
-  geckoviewChannel = "stable"
-  geckoviewVersion = "72.0.20200107212822"
+  geckoviewChannel = "nightly"
+  geckoviewVersion = "71.0.20200108003105"
 }
 
 configurations.all {

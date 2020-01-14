@@ -29,11 +29,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
+import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import kotlinx.android.synthetic.main.login_entry_view.view.*
-import kotlinx.android.synthetic.main.login_web_view.view.*
 import org.koin.android.ext.android.inject
 import org.mozilla.geckoview.*
 import org.mozilla.geckoview.GeckoSessionSettings.USER_AGENT_MODE_MOBILE
@@ -48,6 +50,7 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
 
     private lateinit var geckoView: GeckoView
     private lateinit var geckoSession: GeckoSession
+    private val geckoRuntime: GeckoRuntime by inject()
 
     private val assembledPrefix = resources?.getString(R.string.nc_talk_login_scheme) + protocolSuffix + "login/"
 
@@ -67,7 +70,32 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
         viewModel = viewModelProvider(factory).get(LoginEntryViewModel::class.java)
         val view = super.onCreateView(inflater, container)
 
-        geckoView = view.stubImport.inflate() as GeckoView
+        viewModel.state.observe(this@LoginEntryView, Observer {
+            when (it.state) {
+                LoginEntryState.FAILED -> {
+                    router.popController(this)
+                }
+                LoginEntryState.PENDING_CHECK -> {
+                    // everything is already setup in XML
+                }
+                LoginEntryState.CHECKING -> {
+                    view.progressBar.isVisible = true
+                    geckoView.isVisible = false
+                }
+                else -> {
+                    if (router?.hasRootController() == true) {
+                        router.popController(this)
+                    } else {
+                        router.setRoot(RouterTransaction.with(ConversationsListView())
+                                .pushChangeHandler(HorizontalChangeHandler())
+                                .popChangeHandler(HorizontalChangeHandler()))
+                    }
+                    // all good, proceed
+                }
+            }
+        })
+
+        geckoView = view.geckoView
         activity?.let {
             val settings = GeckoSessionSettings.Builder()
                     //.usePrivateMode(true)
@@ -79,8 +107,7 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
 
             geckoView.autofillEnabled = true
             geckoSession = GeckoSession(settings.build())
-            val runtime = GeckoRuntime.create(it)
-            geckoSession.open(runtime)
+            geckoSession.open(geckoRuntime)
             geckoSession.progressDelegate = createProgressDelegate()
             geckoSession.navigationDelegate = createNavigationDelegate()
             geckoView.setSession(geckoSession)
@@ -89,20 +116,6 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
             }
         }
 
-        viewModel.state.observe(this@LoginEntryView, Observer {
-            if (it.state == LoginEntryState.FAILED) {
-                router.popController(this)
-            } else if (it.state == LoginEntryState.PENDING_CHECK) {
-                view.progressBar.isVisible = false
-                view.geckoView.isVisible = true
-            } else if (it.state == LoginEntryState.CHECKING) {
-                view.progressBar.isVisible = true
-                view.geckoView.isVisible = false
-            } else {
-                // all good, proceed
-            }
-        })
-
         return view
     }
 
@@ -110,20 +123,17 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
         return object : GeckoSession.NavigationDelegate {
             override fun onLoadRequest(p0: GeckoSession, p1: GeckoSession.NavigationDelegate.LoadRequest): GeckoResult<AllowOrDeny>? {
                 if (p1.uri.startsWith(assembledPrefix)) {
+                    viewModel.parseData(assembledPrefix, dataSeparator, p1.uri)
                     return GeckoResult.DENY
                 }
                 return super.onLoadRequest(p0, p1)
-            }
-
-            override fun onLocationChange(p0: GeckoSession, p1: String?) {
-                super.onLocationChange(p0, p1)
-                viewModel.parseData(assembledPrefix, dataSeparator, p1)
             }
         }
     }
 
     private fun createProgressDelegate(): GeckoSession.ProgressDelegate {
         return object : GeckoSession.ProgressDelegate {
+            private var initialLoad = true
 
             override fun onPageStop(session: GeckoSession, success: Boolean) = Unit
 
@@ -135,8 +145,16 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
             override fun onPageStart(session: GeckoSession, url: String) = Unit
 
             override fun onProgressChange(session: GeckoSession, progress: Int) {
-                view?.pageProgressBar?.progress = progress
-                view?.pageProgressBar?.isVisible = progress in 1..99
+                if (initialLoad) {
+                    view?.pageProgressBar?.progress = progress
+                    view?.pageProgressBar?.isVisible = progress in 1..99
+                }
+
+                if (progress == 100) {
+                    initialLoad = false
+                    view?.pageProgressBar?.isVisible = false
+                    view?.geckoView?.isVisible = true
+                }
             }
         }
     }

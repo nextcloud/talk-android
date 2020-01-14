@@ -593,18 +593,7 @@ class SettingsController : BaseController() {
                             )
                             .subscribe({ userProfileOverall ->
 
-                                var displayName: String? = null
-                                if (!TextUtils.isEmpty(
-                                                userProfileOverall.ocs.data.displayName
-                                        )
-                                ) {
-                                    displayName = userProfileOverall.ocs.data.displayName
-                                } else if (!TextUtils.isEmpty(
-                                                userProfileOverall.ocs.data.displayName
-                                        )
-                                ) {
-                                    displayName = userProfileOverall.ocs.data.displayNameAlt
-                                }
+                                var displayName: String? = userProfileOverall.ocs.data.displayName
 
                                 if (!TextUtils.isEmpty(displayName) && displayName != currentUser!!.displayName) {
                                     val user = usersRepository.getUserWithId(currentUser!!.id!!)

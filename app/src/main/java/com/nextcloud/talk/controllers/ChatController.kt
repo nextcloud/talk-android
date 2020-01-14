@@ -1408,7 +1408,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.maxLines = 2
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.ellipsize = TextUtils.TruncateAt.END
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.text = it.text
-                            messageInputView?.findViewById<TextView>(R.id.quotedMessageTime)?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text = it.actorDisplayName
                                     ?: context.getText(R.string.nc_nick_guest)
 

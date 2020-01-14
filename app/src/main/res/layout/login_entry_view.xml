@@ -2,21 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorPrimary">
 
-    <ViewStub
-        android:id="@+id/stubImport"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:inflatedId="@+id/webViewImportLayout"
-        android:layout="@layout/login_web_view" />
+    <ProgressBar
+        android:id="@+id/pageProgressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="8dp"
+        android:background="@color/white"
+        android:visibility="visible"/>
+
+    <org.mozilla.geckoview.GeckoView
+        android:id="@+id/geckoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        tools:context=".MainActivity"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="@dimen/item_height"
         android:layout_height="@dimen/item_height"
         android:layout_centerInParent="true"
+        android:visibility="gone"
         android:indeterminate="true"
         android:indeterminateTint="@color/white"
         android:indeterminateTintMode="src_in" />

@@ -71,10 +71,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     var quotedMessage: EmojiTextView? = null
 
     @JvmField
-    @BindView(R.id.quotedMessageTime)
-    var quotedMessageTime: TextView? = null
-
-    @JvmField
     @BindView(R.id.quoteColoredView)
     var quoteColoredView: View? = null
 
@@ -152,8 +148,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             quotedMessage?.setTextColor(context.resources.getColor(R.color.nc_outcoming_text_default))
             quotedUserName?.setTextColor(context.resources.getColor(R.color.nc_grey))
 
-            quotedMessageTime?.text = DateFormatter.format(parentChatMessage.createdAt, DateFormatter.Template.TIME)
-            quotedMessageTime?.setTextColor(context.resources.getColor(R.color.white60))
             quoteColoredView?.setBackgroundResource(R.color.white)
 
             quotedChatMessageView?.visibility = View.VISIBLE
