@@ -40,7 +40,6 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/rv_item_conversation_with_last_message" />
 
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

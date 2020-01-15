@@ -25,25 +25,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:background="@color/transparent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="48dp"
         android:background="@color/transparent"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_height="match_parent"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:contentInsetEnd="12dp"
-            app:contentInsetStart="12dp"
+            android:background="@color/transparent"
             app:contentInsetStartWithNavigation="0dp"
-            app:elevation="0dp"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:popupTheme="@style/appActionBarPopupMenu">
 
