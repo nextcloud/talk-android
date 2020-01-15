@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">Importa account dall\'applicazione %1$s</string>
     <string name="nc_server_failed_to_import_account">Importazione dell\'account selezionato non riuscita</string>
     <string name="nc_server_account_imported">L\'account selezionato è ora importato e disponibile</string>
+    <string name="nc_server_unsupported">Sul server non è installata l\'applicazione Talk supportata </string>
     <string name="nc_get_from_provider">Non hai ancora un server?\nFai clic qui per ottenerne uno da un fornitore</string>
 
     <!-- Account verification -->

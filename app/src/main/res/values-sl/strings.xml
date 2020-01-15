@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">Uvozi račune iz %1$s</string>
     <string name="nc_server_failed_to_import_account">Uvoz izbranega računa je spodletel</string>
     <string name="nc_server_account_imported">Izbran račun je uvožen in na voljo za uporabo</string>
+    <string name="nc_server_unsupported">Na strežniku ni nameščenega ustreznega programa Talk</string>
     <string name="nc_get_from_provider">Še nimate izbranega oziroma nameščenega strežnika? Kliknite in si pridobite dostop.</string>
 
     <!-- Account verification -->
@@ -88,6 +89,7 @@
     <string name="nc_settings_theme_dark">Temna</string>
     <string name="nc_settings_privacy">Zasebnost</string>
     <string name="nc_settings_screen_lock_title">Zaklep zaslona</string>
+    <string name="nc_settings_screen_lock_desc">Zakleni %1$s z zaklepom zaslona oziroma drugo podprto biometrično metodo</string>
     <string name="nc_settings_screen_lock_timeout_title">Časovni zamik zaklepa ob nedejavnosti</string>
     <string name="nc_none">Brez</string>
     <string name="nc_settings_screen_security_title">Varnost zaslona</string>
@@ -161,6 +163,9 @@
     <string name="nc_select_contacts">Izbor stikov</string>
     <string name="nc_contacts_done">Začni pogovor</string>
 
+    <!-- Permissions -->
+    <string name="nc_camera_permission_permanently_denied">Za omogočanje pogovora prek videa je treba dodeliti ustrezna dovoljenja za dostop do »Kamere« med nastavitvami sistema.</string>
+    <string name="nc_microphone_permission_permanently_denied">Za omogočanje zvočnega pogovora je treba dodeliti ustrezna dovoljenja za dostop do »Mikrofona« med nastavitvami sistema.</string>
     <string name="nc_permissions_settings">Odpri nastavitve</string>
 
     <!-- Call -->
@@ -171,10 +176,13 @@
     <string name="nc_public_call">Nov javni pogovor</string>
     <string name="nc_public_call_explanation">Javni pogovori omogočajo pogovor vsakogar, ki pozna ustvarjeno
         enkratno povezavo.</string>
+    <string name="nc_call_timeout">Ni bilo odziva že 45 sekund. Ponovite vzpostavitev povezave.</string>
     <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave ...</string>
     <string name="nc_offline">Ni omrežne povezave; preverite povezave!</string>
     <string name="nc_leaving_call">Poteka zapuščanje klica ...</string>
 
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s na %2$s kanalu za obveščanje</string>
     <string name="nc_notification_channel_calls">Kanal obvestil klicev</string>
     <string name="nc_notification_channel_messages">Kanal obvestil sporočil</string>
     <string name="nc_notification_channel_calls_description">Pokaži dohodne klice</string>

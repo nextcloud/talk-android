@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">Importera konton från %1$s-appen</string>
     <string name="nc_server_failed_to_import_account">Misslyckades att importera valt konto</string>
     <string name="nc_server_account_imported">Valt konto är nu importerat och tillgängligt</string>
+    <string name="nc_server_unsupported">Servern har inte korrekt Talk-app installerad</string>
     <string name="nc_get_from_provider">Har du inte en server än?\nKlicka här för att få en från en leverantör</string>
 
     <!-- Account verification -->
