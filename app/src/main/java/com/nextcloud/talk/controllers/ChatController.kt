@@ -840,7 +840,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             }
 
             messageInput?.setText("")
-            val replyMessageId: Int? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int
+            val replyMessageId: Int? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int?
             sendMessage(editable, if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) replyMessageId else null )
             cancelReply()
         }
