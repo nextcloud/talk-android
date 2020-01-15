@@ -154,7 +154,7 @@ android {
 }
 
 ext {
-  work_version = '2.3.0-beta02'
+  work_version = '2.3.0-rc01'
   koin_version = "2.1.0-alpha-1"
   lifecycle_version = '2.2.0-rc03'
   coil_version = "0.9.1"
@@ -262,7 +262,7 @@ dependencies {
   implementation 'com.github.aurae.retrofit2:converter-logansquare:1.4.1'
   implementation group: 'joda-time', name: 'joda-time', version: '2.10.3'
   implementation 'com.bluelinelabs:logansquare:1.3.7'
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.1'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.2'
   kapt 'com.bluelinelabs:logansquare-compiler:1.3.7'
 
   compileOnly 'javax.annotation:jsr250-api:1.0'
