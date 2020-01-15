@@ -651,12 +651,11 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     override fun getTitle(): String? {
-        val charSequence = currentConversation?.displayName as CharSequence
-        return if (charSequence != null) {
-            EmojiCompat.get().process(charSequence).toString()
-        } else {
-            ""
+        currentConversation?.displayName?.let {
+            return EmojiCompat.get().process(it as CharSequence).toString()
         }
+
+        return ""
     }
 
     public override fun onDestroy() {
