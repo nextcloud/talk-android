@@ -558,19 +558,21 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     private fun setupMentionAutocomplete() {
         val elevation = 6f
-        val backgroundDrawable = ColorDrawable(resources!!.getColor(R.color.bg_default))
-        val presenter = MentionAutocompletePresenter(applicationContext, roomToken)
-        val callback = MentionAutocompleteCallback(activity,
-                conversationUser, messageInput)
+        resources?.let {
+            val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default))
+            val presenter = MentionAutocompletePresenter(applicationContext, roomToken)
+            val callback = MentionAutocompleteCallback(activity,
+                    conversationUser, messageInput)
 
-        if (mentionAutocomplete == null && messageInput != null) {
-            mentionAutocomplete = Autocomplete.on<Mention>(messageInput)
-                    .with(elevation)
-                    .with(backgroundDrawable)
-                    .with(MagicCharPolicy('@'))
-                    .with(presenter)
-                    .with(callback)
-                    .build()
+            if (mentionAutocomplete == null && messageInput != null) {
+                mentionAutocomplete = Autocomplete.on<Mention>(messageInput)
+                        .with(elevation)
+                        .with(backgroundDrawable)
+                        .with(MagicCharPolicy('@'))
+                        .with(presenter)
+                        .with(callback)
+                        .build()
+            }
         }
     }
 
