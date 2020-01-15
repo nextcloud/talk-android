@@ -651,10 +651,11 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     override fun getTitle(): String? {
-        if (currentConversation != null && currentConversation?.displayName != null) {
-            return EmojiCompat.get().process(currentConversation!!.displayName).toString()
+        val charSequence = currentConversation?.displayName as CharSequence
+        return if (charSequence != null) {
+            EmojiCompat.get().process(charSequence).toString()
         } else {
-            return ""
+            ""
         }
     }
 
