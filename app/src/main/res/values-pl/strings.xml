@@ -89,7 +89,7 @@
     <string name="nc_settings_theme_dark">Ciemny</string>
     <string name="nc_settings_privacy">Prywatność</string>
     <string name="nc_settings_screen_lock_title">Blokada ekranu</string>
-    <string name="nc_settings_screen_lock_desc">Blokuje %1$s za pomocą blokady ekranu Android lub obsługiwanej metody biometrycznej</string>
+    <string name="nc_settings_screen_lock_desc">Blokuje %1$s za pomocą blokady ekranu Androida lub obsługiwanej metody biometrycznej</string>
     <string name="nc_settings_screen_lock_timeout_title">Czas bezczynności do blokady ekranu</string>
     <string name="nc_none">Brak</string>
     <string name="nc_settings_screen_security_title">Zabezpieczenie ekranu</string>
@@ -97,7 +97,7 @@
     <string name="nc_settings_incognito_keyboard_title">Klawiatura incognito</string>
     <string name="nc_settings_incognito_keyboard_desc">Wskaż klawiaturze, aby wyłączyła spersonalizowane uczenie (bez gwarancji)</string>
     <string name="nc_settings_link_previews_title">Pokaż podgląd linków</string>
-    <string name="nc_settings_link_previews_desc">Umożliwia podgląd treści z otrzymanych linków dla obsługiwanych usług</string>
+    <string name="nc_settings_link_previews_desc">Umożliwia podgląd treści z otrzymanych linków przez obsługiwane usługi</string>
     <string name="nc_locked">Stuknij, aby odblokować</string>
 
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
