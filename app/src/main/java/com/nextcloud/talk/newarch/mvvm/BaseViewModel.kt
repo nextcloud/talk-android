@@ -40,14 +40,14 @@ abstract class BaseViewModel<V : BaseView>(application: Application) : AndroidVi
             Job() + Dispatchers.Main
     )
 
-    val backgroundScope = CoroutineScope(
-            Job()
+    val ioScope = CoroutineScope(
+            Job() + Dispatchers.IO
     )
 
     override fun onCleared() {
         super.onCleared()
         disposables.clear()
         uiScope.cancel()
-        backgroundScope.cancel()
+        ioScope.cancel()
     }
 }
