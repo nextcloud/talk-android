@@ -464,11 +464,12 @@ class ContactsController : BaseController,
         shareTypesList.add("0")
         // group
         shareTypesList.add("1")
-        // remote
+        // remote/circles
         shareTypesList.add("7");
 
         if (!isNewConversationView) {
             modifiedQueryMap["itemId"] = "difz"
+            // emails
             shareTypesList.add("4")
         }
 
