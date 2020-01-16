@@ -33,17 +33,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import de.cotech.hw.fido.WebViewFidoBridge
 import kotlinx.android.synthetic.main.login_entry_view.view.*
 import org.koin.android.ext.android.inject
 import java.util.*
 
 class LoginEntryView(val bundle: Bundle) : BaseView() {
+    override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
+
     private val protocolSuffix = "://"
     private val dataSeparator = ":"
 

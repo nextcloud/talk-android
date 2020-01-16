@@ -17,6 +17,7 @@ import coil.api.load
 import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.messages.*
@@ -42,6 +43,7 @@ import com.stfalcon.chatkit.commons.models.IMessage
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
+import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.controller_chat.view.*
 import kotlinx.android.synthetic.main.conversations_list_view.view.*
 import kotlinx.android.synthetic.main.lobby_view.view.*
@@ -54,6 +56,7 @@ import com.stfalcon.chatkit.commons.ImageLoader as ChatKitImageLoader
 
 class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesListAdapter.OnLoadMoreListener, MessagesListAdapter
 .OnMessageLongClickListener<IMessage>, MessagesListAdapter.Formatter<Date> {
+    override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
 
     lateinit var viewModel: ChatViewModel
     val factory: ChatViewModelFactory by inject()

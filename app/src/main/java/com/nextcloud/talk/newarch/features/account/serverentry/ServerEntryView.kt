@@ -31,15 +31,19 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.features.account.loginentry.LoginEntryView
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.server_entry_view.view.*
 import org.koin.android.ext.android.inject
 
 class ServerEntryView : BaseView() {
+    override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
+
     private lateinit var viewModel: ServerEntryViewModel
     val factory: ServerEntryViewModelFactory by inject()
 
