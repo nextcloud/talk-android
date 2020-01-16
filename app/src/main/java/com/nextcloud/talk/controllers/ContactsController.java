@@ -259,7 +259,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private void setupAdapter() {
         adapter.setNotifyChangeOfUnfilteredItems(true)
                 .setMode(SelectableAdapter.Mode.MULTI);
-        
+
         adapter.setStickyHeaderElevation(5)
                 .setUnlinkAllItemsOnRemoveHeaders(true)
                 .setDisplayHeadersAtStartUp(true)
