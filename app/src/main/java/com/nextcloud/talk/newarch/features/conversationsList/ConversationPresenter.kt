@@ -80,7 +80,7 @@ open class ConversationsPresenter(context: Context, onElementClick: ((Page, Hold
                         holder.itemView.dialogUnreadBubble!!.text = context.getString(R.string.nc_99_plus)
                     }
 
-                    if (conversation.unreadMention) {
+                    if (conversation.unreadMention || conversation.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION) {
                         holder.itemView.dialogUnreadBubble!!.background =
                                 context.getDrawable(R.drawable.bubble_circle_unread_mention)
                     } else {
