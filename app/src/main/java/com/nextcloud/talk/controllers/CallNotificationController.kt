@@ -440,12 +440,12 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
             }
 
             Conversation.ConversationType.GROUP_CONVERSATION -> {
-                avatarImageView?.load(R.drawable.ic_people_group_white_24px) {
+                avatarImageView?.load(R.drawable.ic_people_group_white_24px_with_circle) {
                     transformations(CircleCropTransformation())
                 }
             }
             Conversation.ConversationType.PUBLIC_CONVERSATION -> {
-                avatarImageView?.load(R.drawable.ic_link_white_24px) {
+                avatarImageView?.load(R.drawable.ic_link_white_24px_with_circle) {
                     transformations(CircleCropTransformation())
                 }
 

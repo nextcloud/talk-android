@@ -21,18 +21,22 @@
 package com.nextcloud.talk.adapters.items
 
 import android.content.Context
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.api.load
-import coil.transform.CircleCropTransformation
+import com.google.android.material.imageview.ShapeableImageView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.ApiUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -147,24 +151,20 @@ class UserItem(
                 holder.avatarImageView!!.load(ApiUtils.getUrlForAvatarWithNameForGuests(
                         entity.baseUrl,
                         displayName, R.dimen.avatar_size
-                )) {
-                    transformations(CircleCropTransformation())
-                }
+                ))
 
             } else {
 
                 holder.avatarImageView!!.load(ApiUtils.getUrlForAvatarWithNameForGuests(
                         entity.baseUrl,
                         model.userId, R.dimen.avatar_size
-                )) {
-                    transformations(CircleCropTransformation())
-                }
+                ))
 
             }
         } else if ("groups" == model.source) {
-            holder.avatarImageView!!.load(R.drawable.ic_people_group_white_24px) {
-                transformations(CircleCropTransformation())
-            }
+            holder.avatarImageView?.load(Images().getImageWithBackground(activityContext, R.drawable.ic_people_group_white_24px))
+        } else if ("emails" == model.source) {
+            holder.avatarImageView?.load(Images().getImageWithBackground(activityContext, R.drawable.ic_baseline_email_24))
         }
 
         val resources = activityContext.resources
@@ -264,7 +264,7 @@ class UserItem(
     ) : FlexibleViewHolder(view, adapter) {
 
         var contactDisplayName: EmojiTextView? = null
-        var avatarImageView: ImageView? = null
+        var avatarImageView: ShapeableImageView? = null
         var contactMentionId: EmojiTextView? = null
         var voiceOrSimpleCallImageView: ImageView? = null
         var videoCallImageView: ImageView? = null

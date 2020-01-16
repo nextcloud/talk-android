@@ -21,8 +21,12 @@
 package com.nextcloud.talk.newarch.utils
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ScaleDrawable
+import android.view.Gravity
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LifecycleOwner
 import coil.ImageLoader
 import coil.request.LoadRequest
@@ -33,7 +37,6 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.DisplayUtils
-
 
 class Images {
     fun getRequestForUrl(
@@ -65,15 +68,28 @@ class Images {
         }
     }
 
+    fun getImageWithBackground(context: Context, drawableId: Int): Bitmap {
+        val layers = arrayOfNulls<Drawable>(2)
+        layers[0] = context.getDrawable(R.color.bg_message_list_incoming_bubble)
+        var scale = 0.25f
+        if (drawableId == R.drawable.ic_baseline_email_24 || drawableId == R.drawable.ic_link_white_24px) {
+            scale = 0.5f
+        }
+        layers[1] = ScaleDrawable(context.getDrawable(drawableId), Gravity.CENTER, scale, scale)
+        layers[0]?.level = 0
+        layers[1]?.level = 1
+        return LayerDrawable(layers).toBitmap()
+    }
+
     // returns null if it's one-to-one that you need to fetch yourself
     fun getImageForConversation(context: Context, conversation: Conversation): Drawable? {
         conversation.objectType?.let { objectType ->
             when (objectType) {
                 "share:password" -> {
-                    return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_file_password_request))
+                    return DisplayUtils.getRoundedDrawableFromBitmap(getImageWithBackground(context, R.drawable.ic_file_password_request))
                 }
                 "file" -> {
-                    return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_file_icon))
+                    return DisplayUtils.getRoundedDrawableFromBitmap(getImageWithBackground(context, R.drawable.ic_file_icon))
                 }
                 else -> {
                 } // do nothing
@@ -85,10 +101,10 @@ class Images {
                 return null
             }
             Conversation.ConversationType.GROUP_CONVERSATION -> {
-                return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px))
+                return DisplayUtils.getRoundedDrawableFromBitmap(getImageWithBackground(context, R.drawable.ic_people_group_white_24px))
             }
             Conversation.ConversationType.PUBLIC_CONVERSATION -> {
-                return DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_link_white_24px))
+                return DisplayUtils.getRoundedDrawableFromBitmap(getImageWithBackground(context, R.drawable.ic_link_white_24px))
             }
             else -> {
                 // we handle else as Conversation.ConversationType.SYSTEM_CONVERSATION for now

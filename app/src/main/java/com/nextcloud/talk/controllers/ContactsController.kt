@@ -100,8 +100,7 @@ import kotlin.String
 class ContactsController : BaseController,
         SearchView.OnQueryTextListener,
         FlexibleAdapter.OnItemClickListener,
-        FastScroller.OnScrollStateChangeListener,
-        FlexibleAdapter.EndlessScrollListener {
+        FastScroller.OnScrollStateChangeListener{
 
     val usersRepository: UsersRepository by inject()
     val ncApi: NcApi by inject()
@@ -144,8 +143,6 @@ class ContactsController : BaseController,
     private var contactItems: MutableList<AbstractFlexibleItem<*>>? = null
     private var bottomSheet: BottomSheet? = null
     private var bottomSheetView: View? = null
-    private var currentPage: Int = 0
-    private var currentSearchPage: Int = 0
 
     private var layoutManager: SmoothScrollLinearLayoutManager? = null
 
@@ -158,8 +155,6 @@ class ContactsController : BaseController,
     private var userHeaderItems = HashMap<String, GenericTextHeaderItem>()
 
     private var alreadyFetching = false
-    private var canFetchFurther = true
-    private var canFetchSearchFurther = true
 
     private var doneMenuItem: MenuItem? = null
 
@@ -246,8 +241,6 @@ class ContactsController : BaseController,
     private fun setupAdapter() {
         adapter!!.setNotifyChangeOfUnfilteredItems(true)
                 .mode = SelectableAdapter.Mode.MULTI
-
-        adapter!!.setEndlessScrollListener(this, ProgressItem())
 
         adapter!!.addListener(this)
     }
@@ -456,52 +449,31 @@ class ContactsController : BaseController,
 
     private fun fetchData(startFromScratch: Boolean) {
         alreadyFetching = true
-        val shareeHashSet = HashSet<Sharee>()
         val autocompleteUsersHashSet = HashSet<AutocompleteUser>()
 
         userHeaderItems = HashMap()
 
         val query = adapter!!.getFilter(String::class.java)
 
-        val retrofitBucket: RetrofitBucket
-        var serverIs14OrUp = false
-        if (currentUser!!.hasSpreedFeatureCapability("last-room-activity")) {
-            // a hack to see if we're on 14 or not
-            retrofitBucket =
-                    ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl, query)
-            serverIs14OrUp = true
-        } else {
-            retrofitBucket = ApiUtils.getRetrofitBucketForContactsSearch(currentUser!!.baseUrl, query)
-        }
-
-        var page = 1
-        if (!startFromScratch) {
-            if (TextUtils.isEmpty(query)) {
-                page = currentPage + 1
-            } else {
-                page = currentSearchPage + 1
-            }
-        }
-
+        val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl, query)
         val modifiedQueryMap = HashMap<String, Any>(retrofitBucket.queryMap)
-        modifiedQueryMap["page"] = page
-        modifiedQueryMap["perPage"] = 100
+        modifiedQueryMap["limit"] = 100
 
-        var shareTypesList: MutableList<String>? = null
+        var shareTypesList: MutableList<String> = mutableListOf()
+        // user
+        shareTypesList.add("0")
+        // group
+        shareTypesList.add("1")
+        // remote
+        shareTypesList.add("7");
 
-        if (serverIs14OrUp) {
-            shareTypesList = ArrayList()
-            // users
-            shareTypesList.add("0")
-            // groups
-            shareTypesList.add("1")
-            // mails
-            //shareTypesList.add("4");
-
-            modifiedQueryMap["shareTypes[]"] = shareTypesList
+        if (!isNewConversationView) {
+            modifiedQueryMap["itemId"] = "difz"
+            shareTypesList.add("4")
         }
 
-        val finalServerIs14OrUp = serverIs14OrUp
+        modifiedQueryMap["shareTypes[]"] = shareTypesList
+
         ncApi.getContactsWithSearchParam(
                 credentials,
                 retrofitBucket.url, shareTypesList, modifiedQueryMap
@@ -561,16 +533,6 @@ class ContactsController : BaseController,
                             }
                         } catch (exception: Exception) {
                             Log.e(TAG, "Parsing response body failed while getting contacts")
-                        }
-
-                        if (TextUtils.isEmpty(modifiedQueryMap["search"] as CharSequence?)) {
-                            canFetchFurther =
-                                    !shareeHashSet.isEmpty() || finalServerIs14OrUp && autocompleteUsersHashSet.size == 100
-                            currentPage = modifiedQueryMap["page"] as Int
-                        } else {
-                            canFetchSearchFurther =
-                                    !shareeHashSet.isEmpty() || finalServerIs14OrUp && autocompleteUsersHashSet.size == 100
-                            currentSearchPage = modifiedQueryMap["page"] as Int
                         }
 
                         userHeaderItems = HashMap()
@@ -1004,23 +966,6 @@ class ContactsController : BaseController,
         } else {
             initialRelativeLayout!!.visibility = View.GONE
             secondaryRelativeLayout!!.visibility = View.VISIBLE
-        }
-    }
-
-    override fun noMoreLoad(newItemsSize: Int) {}
-
-    override fun onLoadMore(
-            lastPosition: Int,
-            currentPage: Int
-    ) {
-
-        if (!alreadyFetching && (searchView != null && searchView!!.isIconified && canFetchFurther || !TextUtils.isEmpty(
-                        adapter!!.getFilter(String::class.java)
-                ) && canFetchSearchFurther)
-        ) {
-            fetchData(false)
-        } else {
-            adapter!!.onLoadMoreComplete(null)
         }
     }
 

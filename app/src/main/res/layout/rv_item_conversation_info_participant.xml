@@ -32,10 +32,11 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/avatarImageView"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
+            app:shapeAppearanceOverlay="@style/circleImageView"
             tools:background="@tools:sample/avatars[1]"
             />
 

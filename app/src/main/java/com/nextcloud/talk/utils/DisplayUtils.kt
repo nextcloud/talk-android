@@ -97,6 +97,12 @@ object DisplayUtils {
         textView.movementMethod = LinkMovementMethod.getInstance()
     }
 
+    fun getRoundedDrawableFromBitmap(bitmap: Bitmap): Drawable {
+        return runBlocking {
+            return@runBlocking BitmapDrawable(CircleCropTransformation().transform(BitmapPool(0), bitmap, OriginalSize))
+        }
+    }
+
     fun getRoundedDrawable(drawable: Drawable?): Drawable {
         val bitmap = getBitmap(drawable!!)
         val drawable = runBlocking {
@@ -225,7 +231,7 @@ object DisplayUtils {
                 target(target)
             }
         } else {
-            Coil.load(context, R.drawable.ic_people_group_white_24px) {
+            Coil.load(context, R.drawable.ic_people_group_white_24px_with_circle) {
                 transformations(CircleCropTransformation())
                 target(target)
             }

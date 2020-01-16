@@ -293,7 +293,7 @@ fun createImageLoader(
     return ImageLoader(androidApplication) {
         availableMemoryPercentage(0.5)
         bitmapPoolPercentage(0.5)
-        crossfade(true)
+        crossfade(false)
         okHttpClient(okHttpClient)
         componentRegistry {
             if (SDK_INT >= P) {

@@ -2,7 +2,7 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
-  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -18,15 +18,11 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<vector xmlns:tools="http://schemas.android.com/tools"
-    android:autoMirrored="true" android:height="24dp"
-    android:viewportHeight="24.0" android:viewportWidth="24.0"
-    android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="@color/bg_message_list_incoming_bubble" android:fillType="nonZero"
-        android:pathData="M0,0l24,0l0,24l-24,0z"
-        android:strokeColor="#00000000" android:strokeWidth="1"/>
-    <path android:fillColor="#FFFFFF" android:fillType="nonZero"
-        android:pathData="M13,5.921L9.818,9.105C9.111,9.812 8.781,10.723 8.83,11.562C8.88,12.401 9.263,13.146 9.818,13.701L11.23,12.285C10.663,11.717 10.686,11.065 11.232,10.519L14.414,7.337C14.939,6.812 15.664,6.814 16.186,7.335C16.668,7.891 16.713,8.574 16.182,9.105L15.362,9.925C15.917,10.71 16.007,11.291 15.955,12.16L17.596,10.519C18.833,9.282 18.833,7.154 17.596,5.917C16.36,4.681 14.254,4.706 13,5.921L13,5.921ZM13.707,9.806L12.293,11.224L12.297,11.224C12.847,11.774 12.804,12.482 12.293,12.994L9.111,16.175C8.415,16.767 7.813,16.646 7.342,16.175C6.715,15.549 6.842,14.907 7.342,14.407L8.192,13.56C7.636,12.777 7.543,12.195 7.594,11.328L5.928,12.994C4.689,14.233 4.692,16.354 5.928,17.589C7.163,18.825 9.29,18.825 10.526,17.589L13.707,14.407C14.416,13.699 14.747,12.789 14.698,11.949C14.65,11.109 14.266,10.362 13.709,9.808L13.707,9.806Z"
-        android:strokeColor="#00000000" android:strokeWidth="1"
-        tools:ignore="VectorPath" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76V7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.54,8.71 19.54,6.81 18.36,5.64C17.19,4.46 15.29,4.46 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,9.17C13.8,8.78 14.44,8.78 14.83,9.17C16.78,11.12 16.78,14.29 14.83,16.24V16.24L11.29,19.78C9.34,21.73 6.17,21.73 4.22,19.78C2.27,17.83 2.27,14.66 4.22,12.71L5.71,11.22C5.7,12.04 5.83,12.86 6.11,13.65L5.64,14.12C4.46,15.29 4.46,17.19 5.64,18.36C6.81,19.54 8.71,19.54 9.88,18.36L13.41,14.83C14.59,13.66 14.59,11.76 13.41,10.59C13,10.2 13,9.56 13.41,9.17Z" />
 </vector>

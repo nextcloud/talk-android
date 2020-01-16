@@ -96,7 +96,7 @@ class MentionAutocompletePresenter : RecyclerViewPresenter<Mention?>, FlexibleAd
                                 internalAbstractFlexibleItemList.add(
                                         MentionAutocompleteItem(mention.id,
                                                 mention.label, mention.source,
-                                                currentUser!!))
+                                                currentUser!!, internalContext))
                             }
                             if (adapter!!.itemCount != 0) {
                                 adapter!!.clear()

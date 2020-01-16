@@ -48,8 +48,9 @@
         android:ellipsize="end"
         tools:text="Contact item text" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/avatarImageView"
+        app:shapeAppearanceOverlay="@style/circleImageView"
         android:layout_width="@dimen/small_item_height"
         android:layout_height="@dimen/small_item_height"
         android:layout_centerVertical="true"

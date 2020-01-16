@@ -21,13 +21,14 @@
 package com.nextcloud.talk.adapters.items
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.View
 import coil.api.load
-import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.ApiUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -40,7 +41,8 @@ class MentionAutocompleteItem(
         val objectId: String?,
         val displayName: String?,
         var source: String?,
-        private val currentUser: UserNgEntity
+        private val currentUser: UserNgEntity,
+        val context: Context
 ) : AbstractFlexibleItem<UserItem.UserItemViewHolder>(), IFilterable<String> {
 
     override fun equals(other: Any?): Boolean {
@@ -94,9 +96,7 @@ class MentionAutocompleteItem(
         }
 
         if (source == "calls") {
-            holder.avatarImageView!!.load(R.drawable.ic_people_group_white_24px) {
-                transformations(CircleCropTransformation())
-            }
+            holder.avatarImageView?.load(Images().getImageWithBackground(context, R.drawable.ic_people_group_white_24px))
         } else {
             var avatarId = objectId
             var avatarUrl = ApiUtils.getUrlForAvatarWithName(
@@ -114,7 +114,6 @@ class MentionAutocompleteItem(
 
             holder.avatarImageView!!.load(avatarUrl) {
                 addHeader("Authorization", currentUser.getCredentials())
-                transformations(CircleCropTransformation())
             }
         }
     }
