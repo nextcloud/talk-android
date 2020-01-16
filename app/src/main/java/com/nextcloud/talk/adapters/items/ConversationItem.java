@@ -120,7 +120,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 holder.dialogUnreadBubble.setText("99+");
             }
 
-            if (conversation.isUnreadMention()) {
+            if (conversation.isUnreadMention() || conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
                 holder.dialogUnreadBubble.setBackground(context.getDrawable(R.drawable.bubble_circle_unread_mention));
             } else {
                 holder.dialogUnreadBubble.setBackground(context.getDrawable(R.drawable.bubble_circle_unread));
