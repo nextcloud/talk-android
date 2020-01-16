@@ -27,7 +27,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.InputType
-import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -51,7 +50,6 @@ import com.kennyc.bottomsheet.BottomSheet
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
-import com.nextcloud.talk.adapters.items.ProgressItem
 import com.nextcloud.talk.adapters.items.UserItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.controllers.base.BaseController
@@ -65,7 +63,6 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.models.json.sharees.Sharee
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ApiUtils
@@ -100,7 +97,7 @@ import kotlin.String
 class ContactsController : BaseController,
         SearchView.OnQueryTextListener,
         FlexibleAdapter.OnItemClickListener,
-        FastScroller.OnScrollStateChangeListener{
+        FastScroller.OnScrollStateChangeListener {
 
     val usersRepository: UsersRepository by inject()
     val ncApi: NcApi by inject()
@@ -160,8 +157,6 @@ class ContactsController : BaseController,
 
     private val selectedUserIds: MutableSet<String> = mutableSetOf()
     private val selectedGroupIds: MutableSet<String> = mutableSetOf()
-    private var existingParticipants: List<String>? = null
-    private var isAddingParticipantsView: Boolean = false
     private var conversationToken: String? = null
 
     constructor() : super() {
@@ -172,16 +167,9 @@ class ContactsController : BaseController,
         setHasOptionsMenu(true)
         if (args.containsKey(BundleKeys.KEY_NEW_CONVERSATION)) {
             isNewConversationView = true
-            existingParticipants = ArrayList()
-        } else if (args.containsKey(BundleKeys.KEY_ADD_PARTICIPANTS)) {
-            isAddingParticipantsView = true
+        } else {
+            isNewConversationView = false
             conversationToken = args.getString(BundleKeys.KEY_TOKEN)
-
-            existingParticipants = ArrayList()
-
-            if (args.containsKey(BundleKeys.KEY_EXISTING_PARTICIPANTS)) {
-                existingParticipants = args.getStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS)
-            }
         }
     }
 
@@ -203,9 +191,7 @@ class ContactsController : BaseController,
 
         if (isNewConversationView) {
             toggleNewCallHeaderVisibility(!isPublicCall)
-        }
-
-        if (isAddingParticipantsView) {
+        } else {
             joinConversationViaLinkLayout!!.visibility = View.GONE
             conversationPrivacyToogleLayout!!.visibility = View.GONE
         }
@@ -246,7 +232,7 @@ class ContactsController : BaseController,
     }
 
     private fun selectionDone() {
-        if (!isAddingParticipantsView) {
+        if (isNewConversationView) {
             if (!isPublicCall && selectedGroupIds.size + selectedUserIds.size == 1) {
                 val userId: String
                 var roomType = "1"
@@ -457,7 +443,7 @@ class ContactsController : BaseController,
 
         val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl, query)
         val modifiedQueryMap = HashMap<String, Any>(retrofitBucket.queryMap)
-        modifiedQueryMap["limit"] = 100
+        modifiedQueryMap["limit"] = 50
 
         var shareTypesList: MutableList<String> = mutableListOf()
         // user
@@ -467,8 +453,8 @@ class ContactsController : BaseController,
         // remote/circles
         shareTypesList.add("7");
 
-        if (!isNewConversationView) {
-            modifiedQueryMap["itemId"] = "difz"
+        conversationToken?.let {
+            modifiedQueryMap["itemId"] = it
             // emails
             shareTypesList.add("4")
         }
@@ -497,39 +483,39 @@ class ContactsController : BaseController,
                             autocompleteUsersHashSet.addAll(autocompleteOverall.ocs.data)
 
                             for (autocompleteUser in autocompleteUsersHashSet) {
-                                if (autocompleteUser.id != currentUser!!.userId && !existingParticipants!!.contains(
-                                                autocompleteUser.id
-                                        )
-                                ) {
-                                    participant = Participant()
-                                    participant.userId = autocompleteUser.id
-                                    participant.displayName = autocompleteUser.label
-                                    participant.source = autocompleteUser.source
+                                participant = Participant()
+                                participant.userId = autocompleteUser.id
+                                participant.displayName = autocompleteUser.label
+                                participant.source = autocompleteUser.source
 
-                                    val headerTitle: String
+                                var headerTitle: String?
 
-                                    if (autocompleteUser.source != "groups") {
-                                        headerTitle = participant.displayName
-                                                .substring(0, 1)
-                                                .toUpperCase()
-                                    } else {
-                                        headerTitle = resources!!.getString(R.string.nc_groups)
-                                    }
 
-                                    val genericTextHeaderItem: GenericTextHeaderItem
-                                    if (!userHeaderItems.containsKey(headerTitle)) {
-                                        genericTextHeaderItem = GenericTextHeaderItem(headerTitle)
-                                        userHeaderItems[headerTitle] = genericTextHeaderItem
-                                    }
+                                if (autocompleteUser.source == "groups") {
+                                    headerTitle = resources?.getString(R.string.nc_groups)
+                                } else if (autocompleteUser.source == "users") {
+                                    headerTitle = resources?.getString(R.string.nc_contacts)
+                                } else if (autocompleteUser.source == "emails") {
+                                    headerTitle = resources?.getString(R.string.nc_emails)
+                                } else {
+                                    headerTitle = ""
+                                }
+                                
+                                headerTitle as String
+                                
+                                val genericTextHeaderItem: GenericTextHeaderItem
+                                if (!userHeaderItems.containsKey(headerTitle)) {
+                                    genericTextHeaderItem = GenericTextHeaderItem(headerTitle)
+                                    userHeaderItems[headerTitle] = genericTextHeaderItem
+                                }
 
-                                    val newContactItem = UserItem(
-                                            participant, currentUser!!,
-                                            userHeaderItems[headerTitle], activity!!
-                                    )
+                                val newContactItem = UserItem(
+                                        participant, currentUser!!,
+                                        userHeaderItems[headerTitle], activity!!
+                                )
 
-                                    if (!contactItems!!.contains(newContactItem)) {
-                                        newUserItemList.add(newContactItem)
-                                    }
+                                if (!contactItems!!.contains(newContactItem)) {
+                                    newUserItemList.add(newContactItem)
                                 }
                             }
                         } catch (exception: Exception) {
@@ -714,11 +700,7 @@ class ContactsController : BaseController,
     }
 
     override fun getTitle(): String? {
-        return if (!isNewConversationView && !isAddingParticipantsView) {
-            resources!!.getString(R.string.nc_app_name)
-        } else {
-            resources!!.getString(R.string.nc_select_contacts)
-        }
+        return resources?.getString(R.string.nc_select_contacts)
     }
 
     override fun onFastScrollerStateChange(scrolling: Boolean) {
@@ -797,117 +779,47 @@ class ContactsController : BaseController,
             view: View,
             position: Int
     ): Boolean {
-        if (adapter!!.getItem(position) is UserItem) {
-            if (!isNewConversationView && !isAddingParticipantsView) {
-                val userItem = adapter!!.getItem(position) as UserItem?
-                var roomType = "1"
+        val participant = (adapter!!.getItem(position) as UserItem).model
+        participant.selected = !participant.selected
 
-                if ("groups" == userItem!!.model.source) {
-                    roomType = "2"
-                }
-
-                val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-                        currentUser!!.baseUrl, roomType,
-                        userItem.model.userId, null
-                )
-
-                ncApi.createRoom(
-                        credentials,
-                        retrofitBucket.url, retrofitBucket.queryMap
-                )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .`as`(AutoDispose.autoDisposable(scopeProvider))
-                        .subscribe(object : Observer<RoomOverall> {
-                            override fun onSubscribe(d: Disposable) {
-
-                            }
-
-                            override fun onNext(roomOverall: RoomOverall) {
-                                if (activity != null) {
-                                    val conversationIntent = Intent(activity, MagicCallActivity::class.java)
-                                    val bundle = Bundle()
-                                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser)
-                                    bundle.putString(
-                                            BundleKeys.KEY_ROOM_TOKEN,
-                                            roomOverall.ocs.data.token
-                                    )
-                                    bundle.putString(
-                                            BundleKeys.KEY_ROOM_ID,
-                                            roomOverall.ocs.data.conversationId
-                                    )
-                                    conversationIntent.putExtras(bundle)
-
-                                    if (currentUser!!.hasSpreedFeatureCapability("chat-v2")) {
-                                        bundle.putParcelable(
-                                                BundleKeys.KEY_ACTIVE_CONVERSATION,
-                                                Parcels.wrap(roomOverall.ocs.data)
-                                        )
-
-                                        ConductorRemapping.remapChatController(
-                                                router,
-                                                currentUser!!.id!!,
-                                                roomOverall.ocs.data.token!!, bundle, true
-                                        )
-                                    } else {
-                                        startActivity(conversationIntent)
-                                        Handler().postDelayed({ router.popCurrentController() }, 100)
-                                    }
-                                }
-                            }
-
-                            override fun onError(e: Throwable) {
-
-                            }
-
-                            override fun onComplete() {
-
-                            }
-                        })
+        if ("groups" == participant.source) {
+            if (participant.selected) {
+                selectedGroupIds.add(participant.userId)
             } else {
-                val participant = (adapter!!.getItem(position) as UserItem).model
-                participant.selected = !participant.selected
-
-                if ("groups" == participant.source) {
-                    if (participant.selected) {
-                        selectedGroupIds.add(participant.userId)
-                    } else {
-                        selectedGroupIds.remove(participant.userId)
-                    }
-                } else {
-                    if (participant.selected) {
-                        selectedUserIds.add(participant.userId)
-                    } else {
-                        selectedUserIds.remove(participant.userId)
-                    }
-                }
-
-                if (currentUser!!.hasSpreedFeatureCapability("last-room-activity")
-                        && !currentUser!!.hasSpreedFeatureCapability("invite-groups-and-mails") &&
-                        "groups" == (adapter!!.getItem(position) as UserItem).model.source &&
-                        participant.selected &&
-                        adapter!!.selectedItemCount > 1
-                ) {
-                    val currentItems = adapter!!.currentItems
-                    var internalParticipant: Participant
-                    for (i in currentItems.indices) {
-                        if (currentItems[i] is UserItem) {
-                            internalParticipant = (currentItems[i] as UserItem).model
-                            if (internalParticipant.userId == participant.userId
-                                    &&
-                                    "groups" == internalParticipant.source
-                                    && internalParticipant.selected
-                            ) {
-                                internalParticipant.selected = false
-                                selectedGroupIds.remove(internalParticipant.userId)
-                            }
-                        }
-                    }
-                }
-
-                adapter!!.notifyDataSetChanged()
-                checkAndHandleDoneMenuItem()
+                selectedGroupIds.remove(participant.userId)
             }
+        } else {
+            if (participant.selected) {
+                selectedUserIds.add(participant.userId)
+            } else {
+                selectedUserIds.remove(participant.userId)
+            }
+        }
+
+        if (currentUser!!.hasSpreedFeatureCapability("last-room-activity")
+                && !currentUser!!.hasSpreedFeatureCapability("invite-groups-and-mails") &&
+                "groups" == (adapter!!.getItem(position) as UserItem).model.source &&
+                participant.selected &&
+                adapter!!.selectedItemCount > 1
+        ) {
+            val currentItems = adapter!!.currentItems
+            var internalParticipant: Participant
+            for (i in currentItems.indices) {
+                if (currentItems[i] is UserItem) {
+                    internalParticipant = (currentItems[i] as UserItem).model
+                    if (internalParticipant.userId == participant.userId
+                            &&
+                            "groups" == internalParticipant.source
+                            && internalParticipant.selected
+                    ) {
+                        internalParticipant.selected = false
+                        selectedGroupIds.remove(internalParticipant.userId)
+                    }
+                }
+            }
+
+            adapter!!.notifyDataSetChanged()
+            checkAndHandleDoneMenuItem()
         }
         return true
     }

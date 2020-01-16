@@ -161,7 +161,7 @@ class UserItem(
                 ))
 
             }
-        } else if ("groups" == model.source) {
+        } else if ("groups" == model.source || "circles" == model.source) {
             holder.avatarImageView?.load(Images().getImageWithBackground(activityContext, R.drawable.ic_people_group_white_24px))
         } else if ("emails" == model.source) {
             holder.avatarImageView?.load(Images().getImageWithBackground(activityContext, R.drawable.ic_baseline_email_24))

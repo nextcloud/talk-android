@@ -501,15 +501,6 @@ class ConversationInfoController(args: Bundle) : BaseController(),
             adapter!!.addListener(this)
             actionTextView.setOnClickListener {
                 val bundle = Bundle()
-                val existingParticipantsId = arrayListOf<String>()
-
-                recyclerViewItems.forEach {
-                    val userItem = it as UserItem
-                    existingParticipantsId.add(userItem.model.userId)
-                }
-
-                bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true)
-                bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
                 bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
 
                 router.pushController(
