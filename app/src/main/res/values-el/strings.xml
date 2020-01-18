@@ -26,18 +26,26 @@
     <string name="nc_server_url">Διεύθυνση διακομιστή</string>
     <string name="nc_server_not_installed">Παρακαλούμε ολοκληρώστε την %1$s εγκατάσταση</string>
     <string name="nc_server_db_upgrade_needed">Παρακαλούμε αναβαθμίστε την %1$s βάση δεδομένων σας</string>
+    <string name="nc_server_maintenance">Παρακαλώ θέστε τον %1$sεκτος συντήρησης</string>
     <string name="nc_server_version">%1$s δουλεύει μόνο με %2$s 13 και πάνω</string>
-    <string name="nc_server_import_account_plain">Εισαγωγή λογαριασμού.</string>
+    <string name="nc_server_import_account_plain">Εισαγωγή λογαριασμού</string>
     <string name="nc_server_import_accounts_plain">Εισαγωγή λογαριασμών</string>
     <string name="nc_server_import_account">Εισαγωγή λογαριασμού από την %1$s εφαρμογή</string>
     <string name="nc_server_import_accounts">Εισαγωγή λογαριασμών από την εφαρμογή %1$s</string>
     <string name="nc_server_failed_to_import_account">Αποτυχία εισαγωγής επιλεγμένου λογαριασμού</string>
     <string name="nc_server_account_imported">Ο επιλεγμένος λογαριασμός έχει εισαχθεί και είναι διαθέσιμος</string>
+    <string name="nc_server_unsupported">Ο διακομιστής δεν έχει εγκατεστημένη την υποστήριξη εφαρμογής Talk</string>
     <string name="nc_get_from_provider">Δεν έχετε ακόμα διακομιστή;\nΚάντε κλικ εδώ για να αποκτήσετε έναν από κάποιον πάροχο</string>
 
     <!-- Account verification -->
     <string name="nc_push_disabled">Οι ειδοποιήσεις push απενεργοποιήθηκαν</string>
+    <string name="nc_capabilities_failed">Η εμφάνιση δυνατοτήτων απέτυχε, ματαιωση</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Η εφαρμογή %1$s δεν εγκαταστάθηκε στον διακομιστή, ματαίωση</string>
+    <string name="nc_display_name_not_stored">Το εμφανιζόμενο όνομα δεν μπορεί να αποθηκευτεί, ματαίωση</string>
+
     <string name="nc_search">Αναζήτηση</string>
+    <string name="nc_search_conversations">Αναζήτηση συνομιλιών</string>
+
     <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
     <string name="nc_yes">Ναι</string>
     <string name="nc_no">Όχι</string>
@@ -173,10 +181,13 @@
     <string name="nc_notification_settings">Ρυθμίσεις ειδοποιήσεων</string>
     <string name="nc_plain_old_messages">Μηνύματα</string>
     <string name="nc_notify_me_always">Πάντα ειδοποίηση</string>
+    <string name="nc_notify_me_mention">Ειδοποίηση όταν αναφέρεται</string>
     <string name="nc_notify_me_never">Χωρίς ειδοποίηση</string>
     <string name="nc_mute_calls">Σίγαση κλήσεων</string>
     <string name="nc_mute_calls_desc">Οι εισερχόμενες κλήσεις θα αγνοηθούν</string>
     <string name="nc_important_conversation">Σημαντική συνομιλία</string>
+    <string name="nc_important_conversation_desc">Οι ειδοποιήσεις κλήσεων και μυνημάτων θα εφανίζονται ακόμη και στην κατάσταση Μην Ενοχλείται (ρύθμιση στο σύστημα ακολούθων \"Επιτρέπεται η αλλαγή προτεραιότητας\")</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>
     <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
@@ -185,6 +196,7 @@
     <string name="nc_proceed">Συνέχεια</string>
     <string name="nc_call_name_is_same">Το όνομα που εισάγατε είναι το ίδιο με ένα υπάρχον</string>
     <string name="nc_wrong_link">Μη έγκυρος σύνδεσμος συνομιλίας</string>
+    <string name="nc_share_text">Συμμετοχή στην συνομιλία από %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s πρόσκληση</string>
     <string name="nc_share_text_pass">\nΣυνθηματικό: %1$s</string>
 
@@ -229,8 +241,14 @@
     <string name="nc_endless_cancel">Ακυρώθηκε από τον χρήστη.</string>
     <string name="nc_endless_error">Παρουσιάστηκε σφάλμα κατά την φόρτωση περισσότερων αντικειμένων.</string>
 
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">Μενού συνομιλίας με %1$s</string>
+    <string name="nc_description_more_menu_public">Μενού για ομαδική συνομιλία %1$s</string>
+    <string name="nc_description_more_menu_group">Μενού δημόσιας συνομιλίας %1$s</string>
     <string name="nc_description_send_message_button">Αποστολή μηνύματος</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Συμμετοχή σε συνομιλία ή έναρξη νέας \n Πείτε γειά στους φίλους σας και συναδέλφους!</string>
     <string name="nc_hello">Γεια σας</string>
 
     <string name="nc_groups">Ομάδες</string>

@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">Uvezi račune iz %1$s aplikacije</string>
     <string name="nc_server_failed_to_import_account">Uvoz odabranog računa nije uspio</string>
     <string name="nc_server_account_imported">Odabrani račun sad je uvezen i dostupan</string>
+    <string name="nc_server_unsupported">Na poslužitelju nije instalirana podržana aplikacija Talk</string>
     <string name="nc_get_from_provider">Nemate poslužitelj?\nKliknite ovdje kako biste ga dobili od davatelja usluge</string>
 
     <!-- Account verification -->
@@ -46,6 +47,8 @@
 
     <string name="nc_never">Nije se nikad pridružio</string>
     <string name="nc_search">Traži</string>
+    <string name="nc_search_conversations">Pretraži razgovore</string>
+
     <string name="nc_certificate_dialog_title">Pogledaj vjerodajnicu</string>
     <string name="nc_certificate_dialog_text">Vjerujete li dosad nepoznatoj SSL vjerodajnici koju je izdao %1$s za %2$s i koja vrijedi od %3$s do %4$s?</string>
     <string name="nc_yes">Da</string>
@@ -294,6 +297,8 @@ popisa razgovora</string>
     <string name="nc_empty_response_error">Prazan odgovor</string>
     <string name="nc_not_defined_error">Nepoznata pogreška</string>
     <string name="nc_unauthorized_error">Neovlašteno</string>
+
+    <string name="nc_oops">Ups, nešto je pošlo po krivu.</string>
 
     <string name="nc_general_settings">Općenito</string>
     <string name="nc_allow_guests">Dopusti pristup gostima</string>
