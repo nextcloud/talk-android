@@ -185,7 +185,7 @@
     <string name="nc_notification_channel">%1$s na %2$s kanálu upozornění</string>
     <string name="nc_notification_channel_calls">Kanál oznamování volání</string>
     <string name="nc_notification_channel_messages">Kanál oznamování zpráv</string>
-    <string name="nc_notification_channel_calls_description">Zobrazit příchozí hovory</string>
+    <string name="nc_notification_channel_calls_description">Zobrazí příchozí hovory</string>
     <string name="nc_notification_settings">Nastavení oznamování</string>
     <string name="nc_plain_old_messages">Zprávy</string>
     <string name="nc_notify_me_always">Vždy oznamovat</string>
@@ -282,9 +282,9 @@
     <!-- Lobby -->
 
     <string name="nc_webinar">Webinář</string>
-    <string name="nc_lobby">Lobby</string>
+    <string name="nc_lobby">Čekárna</string>
     <string name="nc_start_time">Čas zahájení</string>
-    <string name="nc_lobby_waiting">Momentálně čeká v lobby.</string>
+    <string name="nc_lobby_waiting">V tuto chvíli se nacházíte v čekárně.</string>
     <string name="nc_lobby_waiting_with_date">Momentálně čeká v lobby.\n Toto
         setkání je naplánováno na %1$s.</string>
     <string name="nc_manual">Nenastaveno</string>
