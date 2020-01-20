@@ -91,6 +91,7 @@ class ConversationsListView : BaseView() {
                 })
                 .into(view.recyclerView)
 
+        adapter.setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
 
         view.apply {
             recyclerView.initRecyclerView(SmoothScrollLinearLayoutManager(activity), adapter, false)
