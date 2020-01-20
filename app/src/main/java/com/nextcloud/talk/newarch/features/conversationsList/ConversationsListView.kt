@@ -27,7 +27,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
-import butterknife.OnClick
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -95,12 +94,12 @@ class ConversationsListView : BaseView() {
 
         view.apply {
             recyclerView.initRecyclerView(SmoothScrollLinearLayoutManager(activity), adapter, false)
-            /*swipeRefreshLayoutView.setOnRefreshListener {
+            swipeRefreshLayoutView.setOnRefreshListener {
                 view.swipeRefreshLayoutView.isRefreshing = false
                 viewModel.loadConversations()
             }
 
-            swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)*/
+            swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
         }
 
         activity?.inputEditText?.addTextChangedListener(DebouncingTextWatcher(lifecycle, ::setSearchQuery))
