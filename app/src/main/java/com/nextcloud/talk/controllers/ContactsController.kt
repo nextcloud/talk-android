@@ -134,7 +134,7 @@ class ContactsController : BaseController,
 
     @JvmField
     @BindView(R.id.generic_rv_layout)
-    var genericRvLayout: FrameLayout? = null
+    var genericRvLayout: CoordinatorLayout? = null
 
     private var credentials: String? = null
     private var currentUser: UserNgEntity? = null

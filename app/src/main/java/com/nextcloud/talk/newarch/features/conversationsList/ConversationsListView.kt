@@ -138,16 +138,6 @@ class ConversationsListView : BaseView() {
         return view
     }
 
-    @OnClick(R.id.floatingActionButton)
-    fun onFloatingActionButtonClick() {
-        val bundle = Bundle()
-        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
-        router?.pushController(
-                RouterTransaction.with(ContactsController(bundle))
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
-    }
-
     override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
         actionBar?.setIcon(null)
         super.onChangeStarted(changeHandler, changeType)

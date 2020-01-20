@@ -100,6 +100,16 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
     }
 
+    @OnClick(R.id.floatingActionButton)
+    fun onFloatingActionButtonClick() {
+        val bundle = Bundle()
+        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
+        router?.pushController(
+                RouterTransaction.with(ContactsController(bundle))
+                        .pushChangeHandler(HorizontalChangeHandler())
+                        .popChangeHandler(HorizontalChangeHandler()))
+    }
+
     override fun onStart() {
         super.onStart()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
