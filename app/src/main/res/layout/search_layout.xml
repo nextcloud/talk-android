@@ -61,7 +61,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_arrow_back_black_24dp"
-                    android:tint="@color/fg_inverse"
+                    android:tint="@color/fg_default"
                     android:visibility="visible"
                     tools:src="@drawable/ic_arrow_back_black_24dp" />
 
@@ -87,6 +87,7 @@
                 android:layout_toStartOf="@id/rightContainer"
                 android:layout_toEndOf="@id/leftContainer"
                 android:background="@null"
+                android:textColor="@color/conversation_item_header"
                 android:imeOptions="actionSearch|flagNoExtractUi"
                 android:inputType="textNoSuggestions"
                 android:lines="1"
@@ -112,7 +113,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_baseline_clear_24"
-                    android:tint="@color/white"
+                    android:tint="@color/fg_default"
                     android:transitionName="userAvatar.transitionTag"
                     android:visibility="gone"
                     tools:src="@tools:sample/avatars[0]" />
@@ -125,6 +126,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_settings_white_24dp"
+                    android:tint="@color/fg_default"
                     android:transitionName="userAvatar.transitionTag"
                     android:visibility="visible"
                     tools:src="@tools:sample/avatars[0]" />

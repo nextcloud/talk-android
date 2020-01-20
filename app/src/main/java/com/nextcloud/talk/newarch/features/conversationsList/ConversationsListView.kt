@@ -127,6 +127,7 @@ class ConversationsListView : BaseView() {
 
         viewModel.apply {
             avatar.observe(this@ConversationsListView) { avatar ->
+                activity?.settingsButton?.imageTintList = null
                 activity?.settingsButton?.setImageDrawable(avatar)
             }
 

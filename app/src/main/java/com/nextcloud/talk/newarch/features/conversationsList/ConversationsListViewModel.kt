@@ -60,7 +60,7 @@ class ConversationsListViewModel constructor(
 
     var messageData: String? = null
     val networkStateLiveData: MutableLiveData<ConversationsListViewNetworkState> = MutableLiveData(ConversationsListViewNetworkState.LOADING)
-    val avatar: MutableLiveData<Drawable> = MutableLiveData(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_settings_white_24dp)))
+    val avatar: MutableLiveData<Drawable> = MutableLiveData()
     val filterLiveData: MutableLiveData<CharSequence?> = MutableLiveData(null)
     val conversationsLiveData = Transformations.switchMap(globalService.currentUserLiveData) { user ->
         if (networkStateLiveData.value != ConversationsListViewNetworkState.LOADING) {
