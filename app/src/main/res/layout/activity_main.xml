@@ -31,7 +31,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="56dp"
         android:background="@color/transparent"
         android:elevation="0dp"
         app:elevation="0dp">
