@@ -46,8 +46,6 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
-        <include layout="@layout/item_message_quote" android:visibility="gone"/>
-
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/messageAuthor"
             android:layout_width="match_parent"
@@ -55,6 +53,8 @@
             android:layout_marginBottom="4dp"
             android:textColor="@color/colorPrimary"
             android:textSize="12sp" />
+
+        <include layout="@layout/item_message_quote" android:visibility="gone"/>
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@id/messageText"
