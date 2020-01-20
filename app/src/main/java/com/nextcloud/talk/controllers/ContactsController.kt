@@ -30,13 +30,11 @@ import android.text.InputType
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.MenuItemCompat
-import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.Data
@@ -69,7 +67,6 @@ import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
-import com.nextcloud.talk.utils.KeyboardUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.uber.autodispose.AutoDispose
 import eu.davidea.fastscroller.FastScroller
@@ -739,7 +736,7 @@ class ContactsController : BaseController,
 
         bottomSheet!!.setOnShowListener { dialog ->
             if (showEntrySheet) {
-                KeyboardUtils(activity!!, bottomSheet!!.layout, true)
+                //KeyboardUtils(activity!!, bottomSheet!!.layout, true)
             } else {
                 eventBus.post(
                         BottomSheetLockEvent(

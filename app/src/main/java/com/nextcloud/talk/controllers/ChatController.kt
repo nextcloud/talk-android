@@ -684,10 +684,6 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                     .build(it)
         }
 
-        if (activity != null) {
-            KeyboardUtils(activity, getView(), false)
-        }
-
         cancelNotificationsForCurrentConversation()
 
         if (inConversation) {
