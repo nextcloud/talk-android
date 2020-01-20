@@ -117,19 +117,15 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
                 it.inputEditText.hint = getSearchHint()
 
                 val layoutParams = it.toolbar.layoutParams as AppBarLayout.LayoutParams
-                val layoutParamsForContainer = it.container.layoutParams as CoordinatorLayout.LayoutParams
 
                 if (value) {
                     layoutParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
-                    layoutParamsForContainer.behavior = FABAwareScrollingViewBehavior()
                     it.appBar.setBackgroundResource(R.color.transparent)
                 } else {
                     layoutParams.scrollFlags = 0
-                    layoutParamsForContainer.behavior = AppBarLayout.ScrollingViewBehavior()
                     it.appBar.setBackgroundResource(R.color.colorPrimary)
                 }
 
-                it.container.layoutParams = layoutParamsForContainer
                 it.toolbar.layoutParams = layoutParams
             }
         }
