@@ -89,9 +89,9 @@ class ConversationsListView : BaseView() {
                     view.messageStateTextView.setText(R.string.nc_oops)
                     view.messageStateImageView.setImageDrawable((activity as Context).getDrawable(drawable.ic_announcement_white_24dp))
                 })
+                .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
                 .into(view.recyclerView)
 
-        adapter.setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
 
         view.apply {
             recyclerView.initRecyclerView(SmoothScrollLinearLayoutManager(activity), adapter, false)

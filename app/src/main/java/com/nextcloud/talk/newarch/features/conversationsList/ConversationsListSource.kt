@@ -42,6 +42,10 @@ class ConversationsListSource<T : Conversation>(private val data: LiveData<List<
         return false
     }
 
+    override fun areContentsTheSame(first: T, second: T): Boolean {
+        return first == second
+    }
+
     override fun areItemsTheSame(first: T, second: T): Boolean {
         return first.databaseId == second.databaseId
     }
