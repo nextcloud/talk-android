@@ -212,7 +212,7 @@ class ContactsController : BaseController,
 
             if (adapter == null) {
                 contactItems = ArrayList()
-                adapter = FlexibleAdapter(contactItems, activity, true)
+                adapter = FlexibleAdapter(contactItems, activity, false)
 
                 if (currentUser != null) {
                     fetchData(true)
