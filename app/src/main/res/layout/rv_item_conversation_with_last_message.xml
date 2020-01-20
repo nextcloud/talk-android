@@ -43,15 +43,15 @@
 
             <ImageView
                 android:id="@+id/passwordProtectedRoomImageView"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_gravity="bottom|end"
                 android:src="@drawable/ic_lock_grey600_24px" />
 
             <ImageView
                 android:id="@+id/favoriteConversationImageView"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_gravity="top|end"
                 android:src="@drawable/ic_star_black_24dp"
                 android:tint="@color/favorite_icon_tint"
