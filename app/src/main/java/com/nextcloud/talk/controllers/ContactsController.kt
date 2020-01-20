@@ -30,11 +30,13 @@ import android.text.InputType
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.SearchView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.MenuItemCompat
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.Data
@@ -132,7 +134,7 @@ class ContactsController : BaseController,
 
     @JvmField
     @BindView(R.id.generic_rv_layout)
-    var genericRvLayout: CoordinatorLayout? = null
+    var genericRvLayout: FrameLayout? = null
 
     private var credentials: String? = null
     private var currentUser: UserNgEntity? = null

@@ -13,27 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nextcloud.talk.utils;
+package com.nextcloud.talk.utils.animations;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nextcloud.talk.R;
 
 import java.util.List;
 
 public class FABAwareScrollingViewBehavior extends AppBarLayout.ScrollingViewBehavior {
+
+    private boolean slidingDown = false;
+    private int searchBarHeight;
 
     public FABAwareScrollingViewBehavior() {
     }
 
     public FABAwareScrollingViewBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    @Override
+    protected void layoutChild(@NonNull CoordinatorLayout parent, @NonNull View child, int layoutDirection) {
+        if (child.getId() == R.id.searchCardView) {
+            searchBarHeight = child.getHeight();
+        }
+        super.layoutChild(parent, child, layoutDirection);
     }
 
     @Override
@@ -55,14 +69,16 @@ public class FABAwareScrollingViewBehavior extends AppBarLayout.ScrollingViewBeh
     public void onNestedScroll(final CoordinatorLayout coordinatorLayout, final View child,
                                final View target, final int dxConsumed, final int dyConsumed,
                                final int dxUnconsumed, final int dyUnconsumed) {
-        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed,
-                dyUnconsumed);
+        //super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed,
+        //        dyUnconsumed);
         if (dyConsumed > 0) {
             // User scrolled down -> hide the FAB
             List<View> dependencies = coordinatorLayout.getDependencies(child);
             for (View view : dependencies) {
                 if (view instanceof FloatingActionButton) {
                     ((FloatingActionButton) view).hide();
+                } else if (view.getId() == R.id.searchCardView) {
+                    //slideUp(child);
                 }
             }
         } else if (dyConsumed < 0) {
@@ -71,8 +87,26 @@ public class FABAwareScrollingViewBehavior extends AppBarLayout.ScrollingViewBeh
             for (View view : dependencies) {
                 if (view instanceof FloatingActionButton) {
                     ((FloatingActionButton) view).show();
+                } else if (view.getId() == R.id.searchCardView) {
+                    //slideDown(view);
                 }
             }
+        }
+    }
+
+    private void slideUp(View child) {
+        if (slidingDown) {
+            slidingDown = false;
+            child.clearAnimation();
+            child.animate().translationY(0).setDuration(200);
+        }
+    }
+
+    private void slideDown(View child) {
+        if (!slidingDown) {
+            slidingDown = true;
+            child.clearAnimation();
+            child.animate().translationY(searchBarHeight).setDuration(200);
         }
     }
 }

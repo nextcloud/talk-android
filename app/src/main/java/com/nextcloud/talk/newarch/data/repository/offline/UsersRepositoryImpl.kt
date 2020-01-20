@@ -27,11 +27,11 @@ import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
-    override fun getActiveUserLiveData(): LiveData<UserNgEntity> {
+    override fun getActiveUserLiveData(): LiveData<UserNgEntity?> {
         return usersDao.getActiveUserLiveData().distinctUntilChanged()
     }
 
-    override fun getActiveUser(): UserNgEntity {
+    override fun getActiveUser(): UserNgEntity? {
         return usersDao.getActiveUser()
     }
 

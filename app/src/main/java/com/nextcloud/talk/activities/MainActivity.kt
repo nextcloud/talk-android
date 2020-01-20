@@ -107,17 +107,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
     }
 
-    @OnClick(R.id.floatingActionButton)
-    fun onFloatingActionButtonClick() {
-        val bundle = Bundle()
-        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
-        router?.pushController(
-                RouterTransaction.with(ContactsController(bundle))
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
-    }
-
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     fun checkIfWeAreSecure() {
         val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager

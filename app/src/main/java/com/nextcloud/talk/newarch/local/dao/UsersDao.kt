@@ -29,10 +29,10 @@ import com.nextcloud.talk.newarch.local.models.other.UserStatus
 abstract class UsersDao {
     // get active user
     @Query("SELECT * FROM users where status = 1")
-    abstract fun getActiveUser(): UserNgEntity
+    abstract fun getActiveUser(): UserNgEntity?
 
     @Query("SELECT * FROM users WHERE status = 1")
-    abstract fun getActiveUserLiveData(): LiveData<UserNgEntity>
+    abstract fun getActiveUserLiveData(): LiveData<UserNgEntity?>
 
     @Query("DELETE FROM users WHERE id = :id")
     abstract suspend fun deleteUserWithId(id: Long)

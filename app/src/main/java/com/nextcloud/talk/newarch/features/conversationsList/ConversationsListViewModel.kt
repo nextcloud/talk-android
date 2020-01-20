@@ -22,9 +22,7 @@ package com.nextcloud.talk.newarch.features.conversationslist
 
 import android.app.Application
 import android.graphics.drawable.Drawable
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import coil.Coil
 import coil.api.get
 import coil.transform.CircleCropTransformation
@@ -68,12 +66,21 @@ class ConversationsListViewModel constructor(
         if (networkStateLiveData.value != ConversationsListViewNetworkState.LOADING) {
             networkStateLiveData.postValue(ConversationsListViewNetworkState.LOADING)
         }
-        loadConversations()
-        loadAvatar()
+
+        if (user != null) {
+            loadConversations()
+            loadAvatar()
+        }
 
         filterLiveData.value = null
         Transformations.switchMap(filterLiveData) { filter ->
-            conversationsRepository.getConversationsForUser(user.id!!, filter)
+            if (user != null) {
+                conversationsRepository.getConversationsForUser(user.id!!, filter)
+            } else {
+                liveData {
+                    listOf<Conversation>()
+                }
+            }
         }
     }
 

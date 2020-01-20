@@ -108,9 +108,9 @@ fun createOkHttpClient(
     val httpClient = OkHttpClient.Builder()
 
     httpClient.retryOnConnectionFailure(true)
-    httpClient.connectTimeout(45, TimeUnit.SECONDS)
-    httpClient.readTimeout(45, TimeUnit.SECONDS)
-    httpClient.writeTimeout(45, TimeUnit.SECONDS)
+    httpClient.connectTimeout(300, TimeUnit.SECONDS)
+    httpClient.readTimeout(300, TimeUnit.SECONDS)
+    httpClient.writeTimeout(300, TimeUnit.SECONDS)
 
     httpClient.cookieJar(JavaNetCookieJar(cookieManager))
     httpClient.cache(cache)

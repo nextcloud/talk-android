@@ -37,8 +37,8 @@
         app:contentPaddingRight="16dp"
         android:background="@color/transparent"
         app:cardBackgroundColor="@color/transparent"
-        android:elevation="4dp"
-        app:cardElevation="4dp"
+        android:elevation="2dp"
+        app:cardElevation="2dp"
         android:visibility="gone">
 
         <RelativeLayout

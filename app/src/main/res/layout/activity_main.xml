@@ -26,7 +26,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
     android:animateLayoutChanges="true"
-    android:background="@color/transparent">
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -45,25 +45,13 @@
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:popupTheme="@style/appActionBarPopupMenu">
 
-            <include layout="@layout/search_layout"/>
+            <include layout="@layout/search_layout" />
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.nextcloud.talk.newarch.utils.ChangeHandlerCoordinatorLayout
+    <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
         android:id="@+id/controller_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="com.nextcloud.talk.utils.FABAwareScrollingViewBehavior"
-        />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        app:backgroundTint="@color/colorPrimary"
-        app:srcCompat="@drawable/ic_add_white_24px"
-        app:tint="@color/white" />
+        android:layout_height="match_parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

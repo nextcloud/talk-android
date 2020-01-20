@@ -24,7 +24,7 @@ import androidx.lifecycle.LiveData
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 interface UsersRepository {
-    fun getActiveUserLiveData(): LiveData<UserNgEntity>
+    fun getActiveUserLiveData(): LiveData<UserNgEntity?>
     fun getActiveUser(): UserNgEntity?
     fun getUsers(): List<UserNgEntity>
     fun getUserWithId(id: Long): UserNgEntity

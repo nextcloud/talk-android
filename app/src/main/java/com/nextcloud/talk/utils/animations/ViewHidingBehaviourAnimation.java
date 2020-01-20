@@ -30,7 +30,9 @@ import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
 
-public class ViewHidingBehaviourAnimation extends CoordinatorLayout.Behavior<View> {
+import com.google.android.material.appbar.AppBarLayout;
+
+public class ViewHidingBehaviourAnimation extends AppBarLayout.ScrollingViewBehavior {
 
     private int height;
     private boolean slidingDown = false;
