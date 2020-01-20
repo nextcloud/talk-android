@@ -26,14 +26,12 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:animateLayoutChanges="true"
-    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+    app:layout_behavior="">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/rv_item_conversation_with_last_message"
-            android:paddingBottom="80dp"
-            android:clipToPadding="false"/>
+            tools:listitem="@layout/rv_item_conversation_with_last_message" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

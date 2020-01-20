@@ -55,7 +55,7 @@
         android:id="@+id/controller_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        app:layout_behavior="com.nextcloud.talk.utils.animations.FABAwareScrollingViewBehavior" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
