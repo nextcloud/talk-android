@@ -181,6 +181,8 @@
     <string name="nc_hello">Xin chào</string>
 
     <string name="nc_groups">Nhóm</string>
+    <string name="nc_contacts">Liên hệ</string>
+    <string name="nc_circles">Vòng kết nối</string>
     <string name="nc_participants">Người tham gia</string>
 
     <string name="nc_owner">Chủ</string>

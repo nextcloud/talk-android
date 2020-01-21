@@ -262,6 +262,8 @@
     <!-- Other -->
     <string name="nc_limit_hit">Достигнут је лимит од %s карактера</string>
     <string name="nc_groups">Групе</string>
+    <string name="nc_contacts">Контакти</string>
+    <string name="nc_circles">Кругови</string>
     <string name="nc_participants">Учесници</string>
 
     <string name="nc_owner">Власник</string>

@@ -245,6 +245,8 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <!-- Other -->
     <string name="nc_limit_hit">%skarakterbegrænsning nået</string>
     <string name="nc_groups">Grupper</string>
+    <string name="nc_contacts">Kontakter</string>
+    <string name="nc_circles">Cirkler</string>
     <string name="nc_participants">Deltagere</string>
 
     <string name="nc_owner">Ejer</string>

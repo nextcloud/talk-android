@@ -172,6 +172,8 @@
     <string name="nc_hello">Olá</string>
 
     <string name="nc_groups">Grupos</string>
+    <string name="nc_contacts">Contactos</string>
+    <string name="nc_circles">Círculos</string>
     <string name="nc_participants">Participantes</string>
 
     <string name="nc_owner">Proprietário</string>

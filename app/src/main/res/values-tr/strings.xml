@@ -265,6 +265,8 @@
     <!-- Other -->
     <string name="nc_limit_hit">%s karakter sınırına ulaşıldı</string>
     <string name="nc_groups">Gruplar</string>
+    <string name="nc_contacts">Kişiler</string>
+    <string name="nc_circles">Çevreler</string>
     <string name="nc_participants">Katılımcılar</string>
 
     <string name="nc_owner">Sahip</string>

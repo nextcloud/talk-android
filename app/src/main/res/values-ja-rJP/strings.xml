@@ -258,6 +258,8 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <!-- Other -->
     <string name="nc_limit_hit">%s文字の制限に達しました</string>
     <string name="nc_groups">グループ</string>
+    <string name="nc_contacts">連絡先</string>
+    <string name="nc_circles">サークル</string>
     <string name="nc_participants">参加者</string>
 
     <string name="nc_owner">オーナー</string>

@@ -262,6 +262,8 @@ Pozdravite prijatelje in znance.</string>
     <!-- Other -->
     <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
     <string name="nc_groups">Skupine</string>
+    <string name="nc_contacts">Stiki</string>
+    <string name="nc_circles">Krogi</string>
     <string name="nc_participants">Udeleženci</string>
 
     <string name="nc_owner">Lastnik</string>

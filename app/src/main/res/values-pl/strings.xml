@@ -265,6 +265,8 @@
     <!-- Other -->
     <string name="nc_limit_hit">Osiągnięto limit %s znaków</string>
     <string name="nc_groups">Grupy</string>
+    <string name="nc_contacts">Kontakty</string>
+    <string name="nc_circles">Kręgi</string>
     <string name="nc_participants">Uczestnicy</string>
 
     <string name="nc_owner">Właściciel</string>

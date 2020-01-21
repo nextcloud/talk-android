@@ -228,6 +228,8 @@
     <string name="nc_hello">Halló</string>
 
     <string name="nc_groups">Hópar</string>
+    <string name="nc_contacts">Tengiliðir</string>
+    <string name="nc_circles">Hringir</string>
     <string name="nc_participants">Þátttakendur</string>
 
     <string name="nc_owner">Eigandi</string>

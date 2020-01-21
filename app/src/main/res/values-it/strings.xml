@@ -265,6 +265,8 @@
     <!-- Other -->
     <string name="nc_limit_hit">Il limite di %s caratteri è stato raggiunto</string>
     <string name="nc_groups">Gruppi</string>
+    <string name="nc_contacts">Contatti</string>
+    <string name="nc_circles">Cerchie</string>
     <string name="nc_participants">Partecipanti</string>
 
     <string name="nc_owner">Proprietario</string>

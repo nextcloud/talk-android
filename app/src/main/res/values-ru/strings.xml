@@ -243,6 +243,8 @@
     <!-- Other -->
     <string name="nc_limit_hit">Достигнуто ограничение в %s знаков</string>
     <string name="nc_groups">Группы</string>
+    <string name="nc_contacts">Контакты</string>
+    <string name="nc_circles">Круги</string>
     <string name="nc_participants">Участники</string>
 
     <string name="nc_owner">Владелец</string>

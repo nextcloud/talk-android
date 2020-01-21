@@ -238,6 +238,8 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <!-- Other -->
     <string name="nc_limit_hit">%s grensen for maks antall tegn er nådd</string>
     <string name="nc_groups">Grupper</string>
+    <string name="nc_contacts">Kontakter</string>
+    <string name="nc_circles">Sirkler</string>
     <string name="nc_participants">Deltakere</string>
 
     <string name="nc_owner">Eier</string>

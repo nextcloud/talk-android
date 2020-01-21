@@ -267,6 +267,8 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <!-- Other -->
     <string name="nc_limit_hit">Acadouse o límite de %s caracteres</string>
     <string name="nc_groups">Grupos</string>
+    <string name="nc_contacts">Contactos</string>
+    <string name="nc_circles">Círculos</string>
     <string name="nc_participants">Participantes</string>
 
     <string name="nc_owner">Propietario</string>

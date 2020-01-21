@@ -163,6 +163,8 @@
     <string name="nc_hello">Hei</string>
 
     <string name="nc_groups">Ryhmät</string>
+    <string name="nc_contacts">Yhteystiedot</string>
+    <string name="nc_circles">Piirit</string>
     <string name="nc_participants">Osallistujat</string>
 
     <string name="nc_owner">Omistaja</string>

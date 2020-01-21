@@ -209,6 +209,8 @@
     <string name="nc_hello">Hello</string>
 
     <string name="nc_groups">Groups</string>
+    <string name="nc_contacts">Contacts</string>
+    <string name="nc_circles">Circles</string>
     <string name="nc_participants">Participants</string>
 
     <string name="nc_owner">Owner</string>

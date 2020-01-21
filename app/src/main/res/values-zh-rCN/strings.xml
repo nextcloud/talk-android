@@ -226,7 +226,7 @@
     <string name="nc_conversation_menu_video_call">视频通话</string>
     <string name="nc_conversation_menu_conversation_info">会话信息</string>
     <string name="nc_new_messages">未读消息</string>
-    <string name="nc_no_messages_yet">没有新消息</string>
+    <string name="nc_no_messages_yet">暂无消息</string>
     <string name="nc_sent_a_link" formatted="true">%1$s发送一个链接</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s发送一个GIF图</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s作为附件发送</string>
@@ -257,7 +257,7 @@
     <!-- Empty states -->
     <string name="nc_conversations_empty">加入一场交谈或开始一个新的对话
 向你的朋友和同事打个招呼吧</string>
-    <string name="nc_hello">您好</string>
+    <string name="nc_hello">你好</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">已达到%s字符限制</string>

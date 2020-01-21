@@ -265,6 +265,8 @@
     <!-- Other -->
     <string name="nc_limit_hit">%s teckengränsen har uppnåtts</string>
     <string name="nc_groups">Grupper</string>
+    <string name="nc_contacts">Kontakter</string>
+    <string name="nc_circles">Cirklar</string>
     <string name="nc_participants">Deltagare</string>
 
     <string name="nc_owner">Ägare</string>
