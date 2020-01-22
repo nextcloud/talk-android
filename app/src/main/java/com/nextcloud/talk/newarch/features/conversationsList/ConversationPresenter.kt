@@ -45,7 +45,7 @@ import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.vie
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-open class ConversationsPresenter(context: Context, onElementClick: ((Page, Holder, Element<Conversation>) -> Unit)?, private val onElementLongClick: ((Page, Holder, Element<Conversation>) -> Unit)?) : Presenter<Conversation>(context, onElementClick), KoinComponent {
+open class ConversationPresenter(context: Context, onElementClick: ((Page, Holder, Element<Conversation>) -> Unit)?, private val onElementLongClick: ((Page, Holder, Element<Conversation>) -> Unit)?) : Presenter<Conversation>(context, onElementClick), KoinComponent {
     private val globalService: GlobalService by inject()
 
     override val elementTypes: Collection<Int>
@@ -159,4 +159,6 @@ open class ConversationsPresenter(context: Context, onElementClick: ((Page, Hold
             }
         }
     }
+
+
 }

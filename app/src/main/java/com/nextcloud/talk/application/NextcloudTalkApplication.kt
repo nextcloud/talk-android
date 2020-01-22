@@ -46,6 +46,7 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 import com.nextcloud.talk.newarch.di.module.*
 import com.nextcloud.talk.newarch.domain.di.module.UseCasesModule
 import com.nextcloud.talk.newarch.features.account.di.module.AccountModule
+import com.nextcloud.talk.newarch.features.contactsflow.di.module.ContactsFlowModule
 import com.nextcloud.talk.newarch.features.conversationslist.di.module.ConversationsListModule
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
@@ -175,7 +176,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration
         startKoin {
             androidContext(this@NextcloudTalkApplication)
             androidLogger()
-            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule, ServiceModule, AccountModule, UseCasesModule))
+            modules(listOf(CommunicationModule, StorageModule, NetworkModule, ConversationsListModule, ServiceModule, AccountModule, UseCasesModule, ContactsFlowModule))
         }
     }
 

@@ -20,10 +20,12 @@
 
 package com.nextcloud.talk.newarch.data.repository.online
 
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
@@ -86,6 +88,16 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
                     user.getCredentials(),
                     ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
             )
+        }
+    }
+
+    override suspend fun getContactsForUser(user: UserNgEntity, searchQuery: String?, conversationToken: String?): List<Participant> {
+        return apiService.getContacts(authorization = user.getCredentials(), url = ApiUtils.getUrlForContactsSearch(user.baseUrl), shareTypes = ApiUtils.getShareTypesForContactsSearch(), options = ApiUtils.getQueryMapForContactsSearch(searchQuery, conversationToken)).ocs.data.map {
+            val participant = Participant()
+            participant.userId = it.id
+            participant.displayName = it.label
+            participant.source = it.source
+            participant
         }
     }
 

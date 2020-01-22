@@ -204,7 +204,7 @@ class CallController(args: Bundle) : BaseController() {
 
     init {
         roomId = args.getString(BundleKeys.KEY_ROOM_ID, "")
-        roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "")
+        roomToken = args.getString(BundleKeys.KEY_CONVERSATION_TOKEN, "")
         conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY)
         conversationPassword = args.getString(BundleKeys.KEY_CONVERSATION_PASSWORD, "")
         isVoiceOnlyCall = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)

@@ -163,7 +163,7 @@ object NotificationUtils {
                     if (conversationUser.id == notification.extras.getLong(
                                     BundleKeys.KEY_INTERNAL_USER_ID
                             ) && roomTokenOrId == statusBarNotification.notification.extras.getString(
-                                    BundleKeys.KEY_ROOM_TOKEN
+                                    BundleKeys.KEY_CONVERSATION_TOKEN
                             )
                     ) {
                         return statusBarNotification
@@ -196,7 +196,7 @@ object NotificationUtils {
                     if (conversationUser.id == notification.extras.getLong(
                                     BundleKeys.KEY_INTERNAL_USER_ID
                             ) && roomTokenOrId == statusBarNotification.notification.extras.getString(
-                                    BundleKeys.KEY_ROOM_TOKEN
+                                    BundleKeys.KEY_CONVERSATION_TOKEN
                             )
                     ) {
                         notificationManager.cancel(statusBarNotification.id)

@@ -179,7 +179,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
         this.conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY)
         this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "")
-        this.roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "")
+        this.roomToken = args.getString(BundleKeys.KEY_CONVERSATION_TOKEN, "")
 
         if (args.containsKey(BundleKeys.KEY_ACTIVE_CONVERSATION)) {
             this.currentConversation = Parcels.unwrap<Conversation>(
@@ -603,7 +603,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                 BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap<BrowserController.BrowserType>(browserType)
         )
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap<UserNgEntity>(conversationUser))
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+        bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, roomToken)
         router.pushController(
                 RouterTransaction.with(BrowserController(bundle))
                         .pushChangeHandler(VerticalChangeHandler())
@@ -614,7 +614,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     private fun showConversationInfoScreen() {
         val bundle = Bundle()
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+        bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, roomToken)
         router.pushController(
                 RouterTransaction.with(ConversationInfoController(bundle))
                         .pushChangeHandler(HorizontalChangeHandler())
@@ -1354,7 +1354,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     private fun getIntentForCall(isVoiceOnlyCall: Boolean): Intent? {
         if (currentConversation != null) {
             val bundle = Bundle()
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+            bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, roomToken)
             bundle.putString(BundleKeys.KEY_ROOM_ID, roomId)
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
@@ -1497,7 +1497,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                             val conversationIntent = Intent(activity, MagicCallActivity::class.java)
                             val bundle = Bundle()
                             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
-                            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
+                            bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, roomOverall.ocs.data.token)
                             bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs.data.conversationId)
 
                             if (conversationUser != null) {

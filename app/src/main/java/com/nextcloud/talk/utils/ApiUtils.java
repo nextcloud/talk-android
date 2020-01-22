@@ -29,7 +29,9 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RetrofitBucket;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -61,23 +63,41 @@ public class ApiUtils {
         return url;
     }
 
-    public static RetrofitBucket getRetrofitBucketForContactsSearch(String baseUrl,
-                                                                    @Nullable String searchQuery) {
-        RetrofitBucket retrofitBucket = new RetrofitBucket();
-        retrofitBucket.setUrl(baseUrl + ocsApiVersion + "/apps/files_sharing/api/v1/sharees");
+    public static String getUrlForContactsSearch(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/core/autocomplete/get";
+    }
 
+    public static List<String> getShareTypesForContactsSearch() {
+        List<String> shareTypesList = new ArrayList<>();
+        // user
+        shareTypesList.add("0");
+        // group
+        shareTypesList.add("1");
+        // group
+        shareTypesList.add("4");
+        // remote/circles
+        shareTypesList.add("7");
+
+        return shareTypesList;
+    }
+
+    public static Map<String, String> getQueryMapForContactsSearch(@Nullable String searchQuery, @Nullable String conversationToken) {
         Map<String, String> queryMap = new HashMap<>();
-
-        if (searchQuery == null) {
-            searchQuery = "";
+        if (searchQuery != null) {
+            queryMap.put("search", searchQuery);
+        } else {
+            queryMap.put("search", "");
         }
-        queryMap.put("format", "json");
-        queryMap.put("search", searchQuery);
+
         queryMap.put("itemType", "call");
 
-        retrofitBucket.setQueryMap(queryMap);
+        if (conversationToken != null) {
+            queryMap.put("itemId", conversationToken);
+        } else {
+            queryMap.put("itemId", "new");
+        }
 
-        return retrofitBucket;
+        return queryMap;
     }
 
     public static String getUrlForFilePreviewWithRemotePath(String baseUrl, String remotePath,
@@ -96,13 +116,6 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/apps/files_sharing/api/v1/shares";
     }
 
-    public static RetrofitBucket getRetrofitBucketForContactsSearchFor14(String baseUrl,
-                                                                         @Nullable String searchQuery) {
-        RetrofitBucket retrofitBucket = getRetrofitBucketForContactsSearch(baseUrl, searchQuery);
-        retrofitBucket.setUrl(baseUrl + ocsApiVersion + "/core/autocomplete/get");
-        retrofitBucket.getQueryMap().put("itemId", "new");
-        return retrofitBucket;
-    }
 
     public static String getUrlForSettingNotificationlevel(String baseUrl, String token) {
         return getRoom(baseUrl, token) + "/notify";

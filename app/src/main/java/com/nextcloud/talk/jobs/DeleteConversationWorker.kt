@@ -30,7 +30,7 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_TOKEN
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -53,7 +53,7 @@ class DeleteConversationWorker(context: Context,
     override suspend fun doWork(): Result {
         val data = inputData
         val operationUserId = data.getLong(KEY_INTERNAL_USER_ID, -1)
-        val conversationToken = data.getString(KEY_ROOM_TOKEN)
+        val conversationToken = data.getString(KEY_CONVERSATION_TOKEN)
         val operationUser: UserNgEntity? = usersRepository.getUserWithId(operationUserId)
         operationUser?.let {
             val credentials = it.getCredentials()

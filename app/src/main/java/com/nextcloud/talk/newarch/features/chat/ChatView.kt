@@ -81,7 +81,7 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
         setHasOptionsMenu(true)
         actionBar?.show()
         viewModel = viewModelProvider(factory).get(ChatViewModel::class.java)
-        viewModel.init(args.getParcelable(BundleKeys.KEY_USER_ENTITY)!!, args.getString(BundleKeys.KEY_ROOM_TOKEN)!!, args.getString(KEY_CONVERSATION_PASSWORD))
+        viewModel.init(args.getParcelable(BundleKeys.KEY_USER_ENTITY)!!, args.getString(BundleKeys.KEY_CONVERSATION_TOKEN)!!, args.getString(KEY_CONVERSATION_PASSWORD))
 
         viewModel.apply {
             conversation.observe(this@ChatView) { conversation ->
@@ -344,7 +344,7 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
                     BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap<BrowserController.BrowserType>(browserType)
             )
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap<UserNgEntity>(viewModel.user))
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, it.token)
+            bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, it.token)
             router.pushController(
                     RouterTransaction.with(BrowserController(bundle))
                             .pushChangeHandler(VerticalChangeHandler())

@@ -38,11 +38,11 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.appbar.MaterialToolbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.CallNotificationController
-import com.nextcloud.talk.controllers.ContactsController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.features.account.serverentry.ServerEntryView
+import com.nextcloud.talk.newarch.features.contactsflow.ContactsView
 import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ConductorRemapping
@@ -102,12 +102,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     @OnClick(R.id.floatingActionButton)
     fun onFloatingActionButtonClick() {
-        val bundle = Bundle()
-        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
-        router?.pushController(
-                RouterTransaction.with(ContactsController(bundle))
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
+        openNewConversationScreen()
     }
 
     override fun onStart() {
@@ -150,7 +145,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     withContext(Dispatchers.Main) {
                         ConductorRemapping.remapChatController(
                                 router!!, it.id!!,
-                                intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!, extras, false)
+                                intent.getStringExtra(BundleKeys.KEY_CONVERSATION_TOKEN)!!, extras, false)
                     }
                 }
             }
@@ -164,7 +159,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             } else {
                 ConductorRemapping.remapChatController(
                         router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
-                        intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!, intent.extras!!, false
+                        intent.getStringExtra(BundleKeys.KEY_CONVERSATION_TOKEN)!!, intent.extras!!, false
                 )
             }
         }
@@ -181,11 +176,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     private fun openNewConversationScreen() {
-        val bundle = Bundle()
-        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
-
         router?.pushController(
-                RouterTransaction.with(ContactsController(bundle))
+                RouterTransaction.with(ContactsView())
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler())
         )

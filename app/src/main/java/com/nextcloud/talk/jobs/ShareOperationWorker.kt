@@ -29,7 +29,7 @@ import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_TOKEN
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -74,7 +74,7 @@ class ShareOperationWorker(
     init {
         val data = workerParams.inputData
         userId = data.getLong(KEY_INTERNAL_USER_ID, 0)
-        roomToken = data.getString(KEY_ROOM_TOKEN)
+        roomToken = data.getString(KEY_CONVERSATION_TOKEN)
 
         Collections.addAll(
                 filesArray, *data.getStringArray(KEY_FILE_PATHS)

@@ -27,6 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -57,7 +58,6 @@ import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Presenter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
-import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import kotlinx.android.synthetic.main.conversations_list_view.view.*
 import kotlinx.android.synthetic.main.message_state.view.*
 import kotlinx.android.synthetic.main.search_layout.*
@@ -82,7 +82,7 @@ class ConversationsListView : BaseView() {
 
         val adapter = Adapter.builder(this)
                 .addSource(ConversationsListSource(viewModel.conversationsLiveData))
-                .addPresenter(ConversationsPresenter(activity as Context, ::onElementClick, ::onElementLongClick))
+                .addPresenter(ConversationPresenter(activity as Context, ::onElementClick, ::onElementLongClick))
                 .addPresenter(Presenter.forLoadingIndicator(activity as Context, R.layout.loading_state))
                 .addPresenter(AdvancedEmptyPresenter(activity as Context, R.layout.message_state, ::openNewConversationScreen))
                 .addPresenter(Presenter.forErrorIndicator(activity as Context, R.layout.message_state) { view, throwable ->
@@ -94,7 +94,7 @@ class ConversationsListView : BaseView() {
 
 
         view.apply {
-            recyclerView.initRecyclerView(SmoothScrollLinearLayoutManager(activity), adapter, false)
+            recyclerView.initRecyclerView(LinearLayoutManager(activity), adapter, true)
             swipeRefreshLayoutView.setOnRefreshListener {
                 view.swipeRefreshLayoutView.isRefreshing = false
                 viewModel.loadConversations()
@@ -156,7 +156,7 @@ class ConversationsListView : BaseView() {
             conversation?.let { conversation ->
                 val bundle = Bundle()
                 bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, user)
-                bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
+                bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversation.token)
                 bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.conversationId)
                 bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
                 ConductorRemapping.remapChatController(

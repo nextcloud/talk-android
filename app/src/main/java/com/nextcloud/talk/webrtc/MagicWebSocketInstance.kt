@@ -35,7 +35,7 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.LoggingUtils.writeLogEntryToFile
 import com.nextcloud.talk.utils.MagicMap
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_TOKEN
 import okhttp3.OkHttpClient
 import okhttp3.Request.Builder
 import okhttp3.Response
@@ -240,7 +240,7 @@ class MagicWebSocketInstance internal constructor(
                                                 if (shouldRefreshChat) {
                                                     val refreshChatHashMap =
                                                             HashMap<String, String?>()
-                                                    refreshChatHashMap[KEY_ROOM_TOKEN] = messageHashMap["roomid"] as String?
+                                                    refreshChatHashMap[KEY_CONVERSATION_TOKEN] = messageHashMap["roomid"] as String?
                                                     refreshChatHashMap[KEY_INTERNAL_USER_ID] =
                                                             java.lang.Long.toString(conversationUser.id!!)
                                                     eventBus.post(

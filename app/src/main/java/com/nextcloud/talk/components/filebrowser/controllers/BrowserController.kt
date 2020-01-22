@@ -86,7 +86,7 @@ class BrowserController(args: Bundle) : BaseController(), ListingInterface, Flex
         setHasOptionsMenu(true)
         browserType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_BROWSER_TYPE))
         activeUser = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY))
-        roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN)
+        roomToken = args.getString(BundleKeys.KEY_CONVERSATION_TOKEN)
 
         currentPath = "/"
         if (BrowserType.DAV_BROWSER == browserType) {
@@ -127,7 +127,7 @@ class BrowserController(args: Bundle) : BaseController(), ListingInterface, Flex
                 if (paths.size == 10 || !iterator.hasNext()) {
                     data = Data.Builder()
                             .putLong(BundleKeys.KEY_INTERNAL_USER_ID, activeUser.id!!)
-                            .putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+                            .putString(BundleKeys.KEY_CONVERSATION_TOKEN, roomToken)
                             .putStringArray(BundleKeys.KEY_FILE_PATHS, paths.toTypedArray())
                             .build()
                     shareWorker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)

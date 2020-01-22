@@ -98,7 +98,7 @@ class ShortcutService constructor(private var context: Context,
                 val intent = Intent(context, MainActivity::class.java)
                 intent.action = BundleKeys.KEY_OPEN_CONVERSATION
                 intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
-                intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
+                intent.putExtra(BundleKeys.KEY_CONVERSATION_TOKEN, conversation.token)
 
                 val persons = mutableListOf<Person>()
                 conversation.participants?.forEach {

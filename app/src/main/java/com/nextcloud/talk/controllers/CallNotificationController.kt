@@ -172,7 +172,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
 
     private fun proceedToCall() {
         originalBundle.putString(
-                BundleKeys.KEY_ROOM_TOKEN,
+                BundleKeys.KEY_CONVERSATION_TOKEN,
                 currentConversation!!.token
         )
 

@@ -91,7 +91,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_SIGNATURE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_SUBJECT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -143,7 +143,7 @@ class NotificationWorker(
         arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(
                 userEntity.id!!,
                 "mute_calls",
-                intent.extras!!.getString(KEY_ROOM_TOKEN)
+                intent.extras!!.getString(KEY_CONVERSATION_TOKEN)
         )
 
         if (arbitraryStorageEntity != null) {
@@ -153,7 +153,7 @@ class NotificationWorker(
         arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(
                 userEntity.id!!,
                 "important_conversation",
-                intent.extras!!.getString(KEY_ROOM_TOKEN)
+                intent.extras!!.getString(KEY_CONVERSATION_TOKEN)
         )
 
         if (arbitraryStorageEntity != null) {
@@ -171,7 +171,7 @@ class NotificationWorker(
         ncApi!!.getRoom(
                 credentials, ApiUtils.getRoom(
                 userEntity.baseUrl,
-                intent.extras!!.getString(KEY_ROOM_TOKEN)
+                intent.extras!!.getString(KEY_CONVERSATION_TOKEN)
         )
         )
                 .blockingSubscribe(object : Observer<RoomOverall?> {
@@ -358,7 +358,7 @@ class NotificationWorker(
         // could be an ID or a TOKEN
 
         notificationInfo.putString(
-                KEY_ROOM_TOKEN,
+                KEY_CONVERSATION_TOKEN,
                 decryptedPushMessage!!.id
         )
         notificationInfo.putLong(
@@ -681,7 +681,7 @@ class NotificationWorker(
                             )
                         } else {
                             bundle.putString(
-                                    KEY_ROOM_TOKEN,
+                                    KEY_CONVERSATION_TOKEN,
                                     decryptedPushMessage!!.id
                             )
                         }
@@ -696,7 +696,7 @@ class NotificationWorker(
                         intent.putExtras(bundle)
                         when (decryptedPushMessage!!.type) {
                             "call" -> if (!bundle.containsKey(
-                                            KEY_ROOM_TOKEN
+                                            KEY_CONVERSATION_TOKEN
                                     )
                             ) {
                                 context!!.startActivity(intent)
@@ -704,7 +704,7 @@ class NotificationWorker(
                                 showNotificationForCallWithNoPing(intent)
                             }
                             "room" -> if (bundle.containsKey(
-                                            KEY_ROOM_TOKEN
+                                            KEY_CONVERSATION_TOKEN
                                     )
                             ) {
                                 showNotificationWithObjectData(intent)

@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.newarch.data.source.remote
 
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
@@ -30,6 +31,9 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import retrofit2.http.*
 
 interface ApiService {
+
+    @GET
+    suspend fun getContacts(@Header("Authorization") authorization: String, @Url url: String, @Query("limit") limit: Int = 50, @Query("shareTypes[]") shareTypes: List<String>, @QueryMap options: Map<String, String>): AutocompleteOverall
 
     @GET
     suspend fun getCapabilities(@Url url: String): CapabilitiesOverall

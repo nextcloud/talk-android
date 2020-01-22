@@ -21,12 +21,16 @@
 package com.nextcloud.talk.models.json.participants;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.EnumParticipantFlagsConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import lombok.Data;
@@ -64,6 +68,7 @@ public class Participant {
     @JsonField(name = "source")
     public String source;
 
+    @JsonIgnore
     public boolean selected;
 
     @Override

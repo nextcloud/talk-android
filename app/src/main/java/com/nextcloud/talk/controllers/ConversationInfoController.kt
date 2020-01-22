@@ -179,7 +179,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
         get() {
             if (!TextUtils.isEmpty(conversationToken) && conversationUser != null) {
                 val data = Data.Builder()
-                data.putString(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
+                data.putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversationToken)
                 data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id!!)
                 return data.build()
             }
@@ -190,7 +190,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
     init {
         setHasOptionsMenu(true)
         conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY)
-        conversationToken = args.getString(BundleKeys.KEY_ROOM_TOKEN)
+        conversationToken = args.getString(BundleKeys.KEY_CONVERSATION_TOKEN)
         credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token)
     }
 

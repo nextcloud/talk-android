@@ -572,7 +572,7 @@ class OperationsMenuController(args: Bundle) : BaseController() {
                     true, true, dismissView))
 
             val conversationIntent = Intent(activity, MagicCallActivity::class.java)
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation!!.token)
+            bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversation!!.token)
             bundle.putString(BundleKeys.KEY_ROOM_ID, conversation!!.conversationId)
             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME,
                     conversation!!.displayName)
@@ -604,7 +604,7 @@ class OperationsMenuController(args: Bundle) : BaseController() {
     private fun initiateCall() {
         eventBus.post(BottomSheetLockEvent(true, 0, true, true))
         val bundle = Bundle()
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation!!.token)
+        bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversation!!.token)
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser)
         if (baseUrl != null && baseUrl != currentUser!!.baseUrl) {
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, baseUrl)
