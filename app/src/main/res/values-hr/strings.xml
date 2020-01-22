@@ -265,6 +265,8 @@ popisa razgovora</string>
     <!-- Other -->
     <string name="nc_limit_hit">Dostignuto je ograničenje od %s znakova</string>
     <string name="nc_groups">Grupe</string>
+    <string name="nc_contacts">Kontakti</string>
+    <string name="nc_circles">Krugovi</string>
     <string name="nc_participants">Sudionici</string>
 
     <string name="nc_owner">Vlasnik</string>

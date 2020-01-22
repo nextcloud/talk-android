@@ -162,6 +162,8 @@ teléfonos móviles. Puedes intentar unirte a la conversación a través de un n
     <string name="nc_endless_error">Se presentó un error al cargar más elementos. </string>
 
     <string name="nc_groups">Grupos</string>
+    <string name="nc_contacts">Contactos</string>
+    <string name="nc_circles">Círculos</string>
     <string name="nc_participants">Participantes</string>
 
     <string name="nc_owner">Dueño</string>

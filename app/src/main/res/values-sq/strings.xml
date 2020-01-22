@@ -161,6 +161,8 @@
     <string name="nc_hello">Përshëndetje</string>
 
     <string name="nc_groups">Grupet</string>
+    <string name="nc_contacts">Kontaktet</string>
+    <string name="nc_circles">Rrethet</string>
     <string name="nc_owner">Zotëruesi</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Përdorues</string>

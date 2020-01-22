@@ -176,7 +176,7 @@
     <string name="nc_public_call">Nov javni pogovor</string>
     <string name="nc_public_call_explanation">Javni pogovori omogočajo pogovor vsakogar, ki pozna ustvarjeno
         enkratno povezavo.</string>
-    <string name="nc_call_timeout">Ni bilo odziva že 45 sekund. Ponovite vzpostavitev povezave.</string>
+    <string name="nc_call_timeout">Že 45 sekund ni odziva. Ponovite vzpostavitev povezave.</string>
     <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave ...</string>
     <string name="nc_offline">Ni omrežne povezave; preverite povezave!</string>
     <string name="nc_leaving_call">Poteka zapuščanje klica ...</string>
@@ -194,6 +194,8 @@
     <string name="nc_mute_calls">Utišaj klice</string>
     <string name="nc_mute_calls_desc">Dohodni klici bodo prezrti</string>
     <string name="nc_important_conversation">Pomemben pogovor</string>
+    <string name="nc_important_conversation_desc">Klici in obvestila bodo pokazana tudi v načinu Ne moti (nastavitev »Dovoli le prednostna obvestila«).</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom prek mobilnih
@@ -210,6 +212,7 @@
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Možnost »push-to-talk«</string>
+    <string name="nc_push_to_talk_desc">Pri onemogočenem mikrofonu lahko za začetek govora kliknete in zadržite gumb</string>
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
 
@@ -264,6 +267,7 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_groups">Skupine</string>
     <string name="nc_contacts">Stiki</string>
     <string name="nc_circles">Krogi</string>
+    <string name="nc_emails">Elektronski naslovi</string>
     <string name="nc_participants">Udeleženci</string>
 
     <string name="nc_owner">Lastnik</string>

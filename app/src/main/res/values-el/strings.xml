@@ -252,6 +252,8 @@
     <string name="nc_hello">Γεια σας</string>
 
     <string name="nc_groups">Ομάδες</string>
+    <string name="nc_contacts">Επαφές</string>
+    <string name="nc_circles">Κύκλοι</string>
     <string name="nc_participants">Συμμετέχοντες</string>
 
     <string name="nc_owner">Ιδιοκτήτης</string>

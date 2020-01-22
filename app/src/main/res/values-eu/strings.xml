@@ -160,6 +160,8 @@
     <string name="nc_hello">Kaixo</string>
 
     <string name="nc_groups">Taldeak</string>
+    <string name="nc_contacts">Kontaktuak</string>
+    <string name="nc_circles">Zirkuluak</string>
     <string name="nc_participants">Parte-hartzaileak</string>
 
     <string name="nc_owner">Jabea</string>

@@ -262,6 +262,9 @@
     <!-- Other -->
     <string name="nc_limit_hit">已达到%s字符限制</string>
     <string name="nc_groups">群组</string>
+    <string name="nc_contacts">联系人</string>
+    <string name="nc_circles">圈子</string>
+    <string name="nc_emails">电子邮箱</string>
     <string name="nc_participants">参与者</string>
 
     <string name="nc_owner">拥有者</string>

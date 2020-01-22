@@ -243,6 +243,8 @@
     <!-- Other -->
     <string name="nc_limit_hit">%s karakteres korlát elérve</string>
     <string name="nc_groups">Csoportok</string>
+    <string name="nc_contacts">Névjegyek</string>
+    <string name="nc_circles">Körök</string>
     <string name="nc_participants">Résztvevők</string>
 
     <string name="nc_owner">Tulajdonos</string>

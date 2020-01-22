@@ -265,6 +265,9 @@ sie auch für alle anderen Teilnehmer gelöscht.</string>
     <!-- Other -->
     <string name="nc_limit_hit">%s-Zeichen-Limit wurde erreicht</string>
     <string name="nc_groups">Gruppen</string>
+    <string name="nc_contacts">Kontakte</string>
+    <string name="nc_circles">Kreise</string>
+    <string name="nc_emails">E-Mails</string>
     <string name="nc_participants">Teilnehmer</string>
 
     <string name="nc_owner">Besitzer</string>

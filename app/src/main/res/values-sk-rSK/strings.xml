@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">Importovať účty z aplikácie %1$s</string>
     <string name="nc_server_failed_to_import_account">Nepodarilo sa importovať vybrané kontá</string>
     <string name="nc_server_account_imported">Vybrané účty sú teraz importované a dostupné</string>
+    <string name="nc_server_unsupported">Na serveri nie je nainštalovaná podporovaná apka Talk</string>
     <string name="nc_get_from_provider">Ešte nemáte server? \nKliknite sem a získajte jeden od poskytovateľa</string>
 
     <!-- Account verification -->
@@ -46,6 +47,8 @@
 
     <string name="nc_never">Nikdy nepridaný</string>
     <string name="nc_search">Hľadať</string>
+    <string name="nc_search_conversations">Hľadať v rozhovoroch</string>
+
     <string name="nc_certificate_dialog_title">Skontrolujte certifikát</string>
     <string name="nc_certificate_dialog_text">Dôverujete tomuto doteraz neznámemu SSL certifikátu, vydaného %1$s pre %2$s, platného od %3$s do %4$s ?</string>
     <string name="nc_yes">Áno</string>
@@ -264,6 +267,7 @@ v zozname rozhovorov</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_contacts">Kontakty</string>
     <string name="nc_circles">Kruhy</string>
+    <string name="nc_emails">E-maily</string>
     <string name="nc_participants">Účastníci</string>
 
     <string name="nc_owner">Vlastník</string>
