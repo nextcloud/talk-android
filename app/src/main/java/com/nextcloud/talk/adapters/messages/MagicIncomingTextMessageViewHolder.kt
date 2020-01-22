@@ -44,7 +44,6 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
-import com.stfalcon.chatkit.utils.DateFormatter
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 

@@ -22,11 +22,13 @@ package com.nextcloud.talk.newarch.features.conversationslist
 
 import android.app.Application
 import android.graphics.drawable.Drawable
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import coil.Coil
 import coil.api.get
 import coil.transform.CircleCropTransformation
-import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
@@ -40,7 +42,6 @@ import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.services.GlobalService
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 import java.util.concurrent.locks.ReentrantLock

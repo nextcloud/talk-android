@@ -22,7 +22,6 @@
 
 package com.nextcloud.talk.newarch.domain.usecases
 
-import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCase

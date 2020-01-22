@@ -1,7 +1,6 @@
 package com.nextcloud.talk.newarch.features.contactsflow
 
 import android.content.Context
-import android.util.Log
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import coil.api.load
@@ -15,8 +14,10 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Presenter
+import com.otaliastudios.elements.extensions.FooterSource
 import com.otaliastudios.elements.extensions.HeaderSource
 import kotlinx.android.synthetic.main.rv_item_contact.view.*
+import kotlinx.android.synthetic.main.rv_item_participant_rv_footer.view.*
 import kotlinx.android.synthetic.main.rv_item_title_header.view.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -25,13 +26,19 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
     private val globalService: GlobalService by inject()
 
     override val elementTypes: Collection<Int>
-        get() = listOf(ParticipantElementType.PARTICIPANT.ordinal, ParticipantElementType.PARTICIPANT_HEADER.ordinal)
+        get() = listOf(ParticipantElementType.PARTICIPANT.ordinal, ParticipantElementType.PARTICIPANT_HEADER.ordinal, ParticipantElementType.PARTICIPANT_FOOTER.ordinal)
 
     override fun onCreate(parent: ViewGroup, elementType: Int): Holder {
-        return if (elementType == ParticipantElementType.PARTICIPANT.ordinal) {
-            Holder(getLayoutInflater().inflate(R.layout.rv_item_contact, parent, false))
-        } else {
-            Holder(getLayoutInflater().inflate(R.layout.rv_item_title_header, parent, false))
+        return when (elementType) {
+            ParticipantElementType.PARTICIPANT.ordinal -> {
+                Holder(getLayoutInflater().inflate(R.layout.rv_item_contact, parent, false))
+            }
+            ParticipantElementType.PARTICIPANT_HEADER.ordinal -> {
+                Holder(getLayoutInflater().inflate(R.layout.rv_item_title_header, parent, false))
+            }
+            else -> {
+                Holder(getLayoutInflater().inflate(R.layout.rv_item_participant_rv_footer, parent, false))
+            }
         }
     }
 
@@ -76,8 +83,10 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
                     }
                 }
             }
-        } else {
+        } else if (element.type == ParticipantElementType.PARTICIPANT_HEADER.ordinal) {
             holder.itemView.titleTextView.text = (element.data as HeaderSource.Data<*, *>).header.toString()
+        } else {
+            holder.itemView.messageTextView.text = (element.data as FooterSource.Data<*, *>).footer.toString()
         }
     }
 }

@@ -89,4 +89,4 @@ data class PushConfigurationStateWrapper(
         var pushConfigurationState: PushConfigurationState,
         @SerialName("reason")
         var reason: Int?
-): Parcelable
+) : Parcelable

@@ -52,32 +52,32 @@ val UseCasesModule = module {
 }
 
 fun createGetContactsUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
-                                          apiErrorHandler: ApiErrorHandler
+                             apiErrorHandler: ApiErrorHandler
 ): GetContactsUseCase {
     return GetContactsUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createUnregisterPushWithServerUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
-                                        apiErrorHandler: ApiErrorHandler
+                                          apiErrorHandler: ApiErrorHandler
 ): UnregisterPushWithServerUseCase {
     return UnregisterPushWithServerUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createUnregisterPushWithProxyUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
-                                        apiErrorHandler: ApiErrorHandler
+                                         apiErrorHandler: ApiErrorHandler
 ): UnregisterPushWithProxyUseCase {
     return UnregisterPushWithProxyUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 
 fun createRegisterPushWithServerUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
-                                       apiErrorHandler: ApiErrorHandler
+                                        apiErrorHandler: ApiErrorHandler
 ): RegisterPushWithServerUseCase {
     return RegisterPushWithServerUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createRegisterPushWithProxyUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
-                                 apiErrorHandler: ApiErrorHandler
+                                       apiErrorHandler: ApiErrorHandler
 ): RegisterPushWithProxyUseCase {
     return RegisterPushWithProxyUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
@@ -95,7 +95,7 @@ fun createGetSignalingSettingsUseCase(nextcloudTalkRepository: NextcloudTalkRepo
 }
 
 fun createGetSignalingUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
-                            apiErrorHandler: ApiErrorHandler
+                              apiErrorHandler: ApiErrorHandler
 ): GetSignalingSettingsUseCase {
     return GetSignalingSettingsUseCase(nextcloudTalkRepository, apiErrorHandler)
 }

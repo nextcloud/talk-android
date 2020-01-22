@@ -98,7 +98,6 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
         })
 
 
-
         val baseUrl = bundle.get(BundleKeys.KEY_BASE_URL)
         val headers: MutableMap<String, String> = hashMapOf()
         headers["OCS-APIRequest"] = "true"

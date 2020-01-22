@@ -21,7 +21,6 @@
 package com.nextcloud.talk.newarch.local.converters
 
 import androidx.room.TypeConverter
-import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.models.json.push.PushConfiguration
 import com.nextcloud.talk.newarch.utils.MagicJson
 import kotlinx.serialization.json.Json

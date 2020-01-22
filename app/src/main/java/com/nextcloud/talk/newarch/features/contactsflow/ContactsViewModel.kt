@@ -1,8 +1,6 @@
 package com.nextcloud.talk.newarch.features.contactsflow
 
 import android.app.Application
-import android.os.Build
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.participants.Participant
@@ -13,8 +11,6 @@ import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
 import com.nextcloud.talk.newarch.services.GlobalService
 import org.koin.core.parameter.parametersOf
-import java.util.*
-import kotlin.Comparator
 
 class ContactsViewModel constructor(
         application: Application,
@@ -22,14 +18,19 @@ class ContactsViewModel constructor(
         val globalService: GlobalService
 ) : BaseViewModel<ConversationsListView>(application) {
     val contactsLiveData = MutableLiveData<List<Participant>>()
-    val searchQuery = MutableLiveData<String?>(null)
+    private var searchQuery: String? = null
     var conversationToken: String? = null
 
+    fun setSearchQuery(query: String?) {
+        searchQuery = query
+        loadContacts()
+    }
+
     fun loadContacts() {
-        getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, searchQuery.value, conversationToken), object :
+        getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, searchQuery, conversationToken), object :
                 UseCaseResponse<List<Participant>> {
             override suspend fun onSuccess(result: List<Participant>) {
-                val sortPriority = mapOf("users" to 0, "groups" to 1, "emails" to 2, "circles" to 3)
+                val sortPriority = mapOf("users" to 0, "groups" to 1, "emails" to 2, "circles" to 0)
                 val typeComparator = Comparator<Participant> { o1, o2 ->
                     sortPriority[o2.source]?.let { sortPriority[o1.source]?.compareTo(it) }
                     0
@@ -38,7 +39,7 @@ class ContactsViewModel constructor(
                 val sortedList = result.sortedWith(compareBy({
                     sortPriority[it.source]
                 }, {
-                    it.displayName.toLowerCase(Locale.getDefault())
+                    it.displayName.toLowerCase()
                 }))
 
                 contactsLiveData.postValue(sortedList)

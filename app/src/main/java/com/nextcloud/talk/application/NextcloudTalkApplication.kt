@@ -43,7 +43,10 @@ import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfiguration
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
-import com.nextcloud.talk.newarch.di.module.*
+import com.nextcloud.talk.newarch.di.module.CommunicationModule
+import com.nextcloud.talk.newarch.di.module.NetworkModule
+import com.nextcloud.talk.newarch.di.module.ServiceModule
+import com.nextcloud.talk.newarch.di.module.StorageModule
 import com.nextcloud.talk.newarch.domain.di.module.UseCasesModule
 import com.nextcloud.talk.newarch.features.account.di.module.AccountModule
 import com.nextcloud.talk.newarch.features.contactsflow.di.module.ContactsFlowModule

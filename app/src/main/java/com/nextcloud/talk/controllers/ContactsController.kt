@@ -27,7 +27,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.InputType
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
@@ -45,7 +44,6 @@ import butterknife.OnClick
 import butterknife.Optional
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
-import com.bluelinelabs.logansquare.LoganSquare
 import com.kennyc.bottomsheet.BottomSheet
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
@@ -57,8 +55,6 @@ import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController
 import com.nextcloud.talk.events.BottomSheetLockEvent
 import com.nextcloud.talk.jobs.AddParticipantsToConversation
-import com.nextcloud.talk.models.RetrofitBucket
-import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -82,15 +78,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.HashSet
-import kotlin.Comparator
+import java.util.*
 import kotlin.String
 
 class ContactsController : BaseController,

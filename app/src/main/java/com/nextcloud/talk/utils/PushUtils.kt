@@ -40,7 +40,6 @@ import java.security.*
 import java.security.spec.InvalidKeySpecException
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
-import java.util.HashMap
 
 class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
     val appPreferences: AppPreferences by inject()
@@ -65,7 +64,7 @@ class PushUtils(val usersRepository: UsersRepository) : KoinComponent {
         return options
     }
 
-    fun getMapForPushRegistrationWithServer(context: Context, token: String) : Map<String, String> {
+    fun getMapForPushRegistrationWithServer(context: Context, token: String): Map<String, String> {
         val options = mutableMapOf<String, String>()
 
         // Let's generate a keypair if we don't have it

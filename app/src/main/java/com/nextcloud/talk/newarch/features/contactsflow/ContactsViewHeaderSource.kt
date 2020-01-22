@@ -7,7 +7,7 @@ import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Source
 import com.otaliastudios.elements.extensions.HeaderSource
 
-class ContactsHeaderSource(private val context: Context, private val elementType: Int): HeaderSource<Participant, String>() {
+class ContactsHeaderSource(private val context: Context, private val elementType: Int) : HeaderSource<Participant, String>() {
 
     // Store the last header that was added, even if it belongs to a previous page.
     private var lastHeader: String = ""

@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.conversations_list_view.view.*
 import kotlinx.android.synthetic.main.message_state.view.*
 import org.koin.android.ext.android.inject
 
-class ContactsView(private val bundle: Bundle? = null) : BaseView() {
+class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
 
     private lateinit var viewModel: ContactsViewModel
@@ -47,6 +47,7 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
         adapter = Adapter.builder(this)
                 .addSource(ContactsViewSource(viewModel.contactsLiveData, ParticipantElementType.PARTICIPANT.ordinal))
                 .addSource(ContactsHeaderSource(activity as Context, ParticipantElementType.PARTICIPANT_HEADER.ordinal))
+                .addSource(ContactsFooterSource(activity as Context, ParticipantElementType.PARTICIPANT_FOOTER.ordinal))
                 .addPresenter(ContactPresenter(activity as Context, ::onElementClick))
                 .addPresenter(Presenter.forLoadingIndicator(activity as Context, R.layout.loading_state))
                 .addPresenter(Presenter.forEmptyIndicator(activity as Context, R.layout.message_state))
@@ -66,10 +67,13 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
         return view
     }
 
-    private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<Participant>) {
-        val isElementSelected = element.data?.selected == true
-        element.data?.selected = !isElementSelected
-        adapter.notifyItemChanged(holder.adapterPosition, ElementPayload.SELECTION_TOGGLE)
+    private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<T>) {
+        if (element.data is Participant?) {
+            val participant = element.data as Participant?
+            val isElementSelected = participant?.selected == true
+            participant?.selected = !isElementSelected
+            adapter.notifyItemChanged(holder.adapterPosition, ElementPayload.SELECTION_TOGGLE)
+        }
     }
 
     override fun getTitle(): String? {

@@ -338,4 +338,5 @@
 
     <string name="path_password_strike_through" translatable="false"
         tools:override="true">M3.27,4.27L19.74,20.74</string>
+    <string name="nc_search_for_more">Search for more participants</string>
 </resources>

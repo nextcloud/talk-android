@@ -21,9 +21,6 @@
 package com.nextcloud.talk.adapters.items
 
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView

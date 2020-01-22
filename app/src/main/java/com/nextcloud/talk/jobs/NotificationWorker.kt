@@ -84,6 +84,7 @@ import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationWith
 import com.nextcloud.talk.utils.NotificationUtils.createNotificationChannel
 import com.nextcloud.talk.utils.NotificationUtils.findNotificationForRoom
 import com.nextcloud.talk.utils.PushUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
@@ -91,7 +92,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_SIGNATURE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_SUBJECT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences

@@ -2,7 +2,6 @@ package com.nextcloud.talk.newarch.features.account.loginentry
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.LoginData
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.push.PushConfiguration

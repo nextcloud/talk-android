@@ -28,9 +28,6 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import lombok.Data;

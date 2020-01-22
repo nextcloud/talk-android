@@ -25,7 +25,6 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
-import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
