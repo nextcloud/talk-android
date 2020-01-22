@@ -80,7 +80,7 @@ class GenericTextHeaderItem(val model: String) : AbstractHeaderItem<GenericTextH
     ) : FlexibleViewHolder(view, adapter, true) {
 
         @JvmField
-        @BindView(R.id.title_text_view)
+        @BindView(R.id.titleTextView)
         var titleTextView: TextView? = null
 
         init {
