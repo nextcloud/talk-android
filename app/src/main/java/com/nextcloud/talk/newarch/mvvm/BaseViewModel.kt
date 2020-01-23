@@ -23,6 +23,7 @@ package com.nextcloud.talk.newarch.conversationsList.mvp
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
+import com.nextcloud.talk.newarch.mvvm.BaseView
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
