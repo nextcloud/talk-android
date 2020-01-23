@@ -22,6 +22,7 @@
 
 package com.nextcloud.talk.newarch.features.contactsflow
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.nextcloud.talk.models.json.participants.Participant
 import com.otaliastudios.elements.Element
@@ -42,9 +43,7 @@ class ContactsViewSource<T : Participant>(private val data: LiveData<List<T>>, p
         return elementType
     }
 
-    override fun dependsOn(source: Source<*>): Boolean {
-        return false
-    }
+    override fun dependsOn(source: Source<*>) = false
 
     override fun areContentsTheSame(first: T, second: T): Boolean {
         return first == second
@@ -53,5 +52,4 @@ class ContactsViewSource<T : Participant>(private val data: LiveData<List<T>>, p
     override fun areItemsTheSame(first: T, second: T): Boolean {
         return first.userId == second.userId
     }
-
 }

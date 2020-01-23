@@ -45,7 +45,7 @@ import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
+import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.data.presenters.AdvancedEmptyPresenter
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
