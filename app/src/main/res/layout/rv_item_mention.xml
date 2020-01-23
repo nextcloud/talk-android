@@ -53,7 +53,7 @@
         android:orientation="vertical">
 
         <androidx.emoji.widget.EmojiTextView
-            android:id="@+id/name_text"
+            android:id="@+id/participantNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="middle"

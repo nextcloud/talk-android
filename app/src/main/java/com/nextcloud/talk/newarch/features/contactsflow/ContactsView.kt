@@ -5,7 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.participants.Participant
@@ -18,7 +22,8 @@ import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Presenter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
-import kotlinx.android.synthetic.main.conversations_list_view.view.*
+import kotlinx.android.synthetic.main.contacts_list_view.view.*
+import kotlinx.android.synthetic.main.conversations_list_view.view.recyclerView
 import kotlinx.android.synthetic.main.message_state.view.*
 import org.koin.android.ext.android.inject
 
@@ -27,7 +32,8 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
 
     private lateinit var viewModel: ContactsViewModel
     val factory: ContactsViewModelFactory by inject()
-    lateinit var adapter: Adapter
+    lateinit var participantsAdapter: Adapter
+    lateinit var selectedParticipantsAdapter: Adapter
     override fun getLayoutId(): Int {
         return R.layout.contacts_list_view
     }
@@ -44,8 +50,8 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
         val view = super.onCreateView(inflater, container)
 
         // todo - change empty state magic
-        adapter = Adapter.builder(this)
-                .addSource(ContactsViewSource(viewModel.contactsLiveData, ParticipantElementType.PARTICIPANT.ordinal))
+        participantsAdapter = Adapter.builder(this)
+                .addSource(ContactsViewSource(data = viewModel.contactsLiveData, elementType = ParticipantElementType.PARTICIPANT.ordinal))
                 .addSource(ContactsHeaderSource(activity as Context, ParticipantElementType.PARTICIPANT_HEADER.ordinal))
                 .addSource(ContactsFooterSource(activity as Context, ParticipantElementType.PARTICIPANT_FOOTER.ordinal))
                 .addPresenter(ContactPresenter(activity as Context, ::onElementClick))
@@ -58,8 +64,24 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
                 .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
                 .into(view.recyclerView)
 
+        selectedParticipantsAdapter = Adapter.builder(this)
+                .addSource(ContactsViewSource(data = viewModel.selectedParticipantsLiveData, elementType = ParticipantElementType.PARTICIPANT_SELECTED.ordinal, loadingIndicatorsEnabled = false, errorIndicatorEnabled = false, emptyIndicatorEnabled = false))
+                .addPresenter(ContactPresenter(activity as Context, ::onElementClick))
+                .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_ANY, true)
+                .into(view.selectedParticipantsRecyclerView)
+
         view.apply {
-            recyclerView.initRecyclerView(LinearLayoutManager(activity), adapter, true)
+            recyclerView.initRecyclerView(LinearLayoutManager(activity), participantsAdapter, true)
+            selectedParticipantsRecyclerView.initRecyclerView(LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false), selectedParticipantsAdapter, true)
+        }
+
+        viewModel.apply {
+            selectedParticipantsLiveData.observe(this@ContactsView) { participants ->
+                view.selectedParticipantsRecyclerView.isVisible = participants.isNotEmpty()
+                view.divider.isVisible = participants.isNotEmpty()
+
+            }
+
         }
 
         viewModel.loadContacts()
@@ -71,8 +93,16 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
         if (element.data is Participant?) {
             val participant = element.data as Participant?
             val isElementSelected = participant?.selected == true
-            participant?.selected = !isElementSelected
-            adapter.notifyItemChanged(holder.adapterPosition, ElementPayload.SELECTION_TOGGLE)
+            participant?.let {
+                if (isElementSelected) {
+                    viewModel.unselectParticipant(it)
+                } else {
+                    viewModel.selectParticipant(it)
+                }
+                it.selected = !isElementSelected
+                participantsAdapter.notifyItemChanged(holder.adapterPosition, ElementPayload.SELECTION_TOGGLE)
+
+            }
         }
     }
 

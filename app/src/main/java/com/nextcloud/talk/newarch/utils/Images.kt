@@ -68,7 +68,7 @@ class Images {
         }
     }
 
-    fun getImageWithBackground(context: Context, drawableId: Int): Bitmap {
+    fun getImageWithBackground(context: Context, drawableId: Int, foregroundColorTint: Int? = null): Bitmap {
         val layers = arrayOfNulls<Drawable>(2)
         layers[0] = context.getDrawable(R.color.bg_message_list_incoming_bubble)
         var scale = 0.25f
@@ -76,8 +76,12 @@ class Images {
             scale = 0.5f
         }
         layers[1] = ScaleDrawable(context.getDrawable(drawableId), Gravity.CENTER, scale, scale)
+        if (foregroundColorTint != null) {
+            layers[1]?.setTint(context.resources.getColor(foregroundColorTint))
+        }
         layers[0]?.level = 0
         layers[1]?.level = 1
+
         return LayerDrawable(layers).toBitmap()
     }
 

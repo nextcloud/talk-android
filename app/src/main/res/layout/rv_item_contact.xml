@@ -26,20 +26,20 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/rv_item_view_height"
     android:layout_margin="@dimen/margin_between_elements"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_centerInParent="true">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/avatarImageView"
         android:layout_width="@dimen/small_item_height"
         android:layout_height="@dimen/small_item_height"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/double_margin_between_elements"
-        android:layout_marginEnd="@dimen/margin_between_elements"
+        android:layout_marginHorizontal="8dp"
         app:shapeAppearanceOverlay="@style/circleImageView"
         tools:srcCompat="@tools:sample/avatars"/>
 
     <androidx.emoji.widget.EmojiTextView
-        android:id="@+id/name_text"
+        android:id="@+id/participantNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"

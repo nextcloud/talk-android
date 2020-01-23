@@ -1,6 +1,7 @@
 package com.nextcloud.talk.newarch.features.contactsflow
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.participants.Participant
@@ -17,13 +18,26 @@ class ContactsViewModel constructor(
         private val getContactsUseCase: GetContactsUseCase,
         val globalService: GlobalService
 ) : BaseViewModel<ConversationsListView>(application) {
-    val contactsLiveData = MutableLiveData<List<Participant>>()
+    private val selectedParticipants = mutableListOf<Participant>()
+    val selectedParticipantsLiveData: MutableLiveData<List<Participant>> = MutableLiveData()
+    val contactsLiveData: MutableLiveData<List<Participant>> = MutableLiveData()
+
     private var searchQuery: String? = null
     var conversationToken: String? = null
 
     fun setSearchQuery(query: String?) {
         searchQuery = query
         loadContacts()
+    }
+
+    fun selectParticipant(participant: Participant) {
+        selectedParticipants.add(participant)
+        selectedParticipantsLiveData.postValue(selectedParticipants)
+    }
+
+    fun unselectParticipant(participant: Participant) {
+        selectedParticipants.remove(participant)
+        selectedParticipantsLiveData.postValue(selectedParticipants)
     }
 
     fun loadContacts() {

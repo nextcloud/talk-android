@@ -38,6 +38,10 @@ class ContactsViewSource<T : Participant>(private val data: LiveData<List<T>>, p
         }
     }
 
+    override fun getElementType(data: T): Int {
+        return elementType
+    }
+
     override fun dependsOn(source: Source<*>): Boolean {
         return false
     }

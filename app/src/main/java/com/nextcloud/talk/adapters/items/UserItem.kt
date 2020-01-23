@@ -268,7 +268,7 @@ class UserItem(
         var checkedImageView: ImageView? = null
 
         init {
-            contactDisplayName = view.findViewById(R.id.name_text)
+            contactDisplayName = view.findViewById(R.id.participantNameTextView)
             avatarImageView = view.findViewById(R.id.avatarImageView)
             contactMentionId = view.findViewById(R.id.secondary_text)
             voiceOrSimpleCallImageView = view.findViewById(R.id.voiceOrSimpleCallImageView)

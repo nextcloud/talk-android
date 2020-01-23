@@ -137,7 +137,7 @@ class AdvancedUserItem(
     ) : FlexibleViewHolder(view, adapter) {
 
         @JvmField
-        @BindView(R.id.name_text)
+        @BindView(R.id.participantNameTextView)
         var contactDisplayName: EmojiTextView? = null
         @JvmField
         @BindView(R.id.secondary_text)

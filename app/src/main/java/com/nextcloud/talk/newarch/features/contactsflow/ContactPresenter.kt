@@ -17,6 +17,9 @@ import com.otaliastudios.elements.Presenter
 import com.otaliastudios.elements.extensions.FooterSource
 import com.otaliastudios.elements.extensions.HeaderSource
 import kotlinx.android.synthetic.main.rv_item_contact.view.*
+import kotlinx.android.synthetic.main.rv_item_contact.view.avatarImageView
+import kotlinx.android.synthetic.main.rv_item_contact.view.participantNameTextView
+import kotlinx.android.synthetic.main.rv_item_contact_selected.view.*
 import kotlinx.android.synthetic.main.rv_item_participant_rv_footer.view.*
 import kotlinx.android.synthetic.main.rv_item_title_header.view.*
 import org.koin.core.KoinComponent
@@ -26,12 +29,15 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
     private val globalService: GlobalService by inject()
 
     override val elementTypes: Collection<Int>
-        get() = listOf(ParticipantElementType.PARTICIPANT.ordinal, ParticipantElementType.PARTICIPANT_HEADER.ordinal, ParticipantElementType.PARTICIPANT_FOOTER.ordinal)
+        get() = listOf(ParticipantElementType.PARTICIPANT.ordinal, ParticipantElementType.PARTICIPANT_SELECTED.ordinal, ParticipantElementType.PARTICIPANT_HEADER.ordinal, ParticipantElementType.PARTICIPANT_FOOTER.ordinal)
 
     override fun onCreate(parent: ViewGroup, elementType: Int): Holder {
         return when (elementType) {
             ParticipantElementType.PARTICIPANT.ordinal -> {
                 Holder(getLayoutInflater().inflate(R.layout.rv_item_contact, parent, false))
+            }
+            ParticipantElementType.PARTICIPANT_SELECTED.ordinal -> {
+                Holder(getLayoutInflater().inflate(R.layout.rv_item_contact_selected, parent, false))
             }
             ParticipantElementType.PARTICIPANT_HEADER.ordinal -> {
                 Holder(getLayoutInflater().inflate(R.layout.rv_item_title_header, parent, false))
@@ -45,18 +51,25 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
     override fun onBind(page: Page, holder: Holder, element: Element<T>, payloads: List<Any>) {
         super.onBind(page, holder, element, payloads)
 
-        if (element.type == ParticipantElementType.PARTICIPANT.ordinal) {
+        if (element.type == ParticipantElementType.PARTICIPANT.ordinal || element.type == ParticipantElementType.PARTICIPANT_SELECTED.ordinal) {
             val participant = element.data as Participant?
             val user = globalService.currentUserLiveData.value
 
-            holder.itemView.checkedImageView.isVisible = participant?.selected == true
+            holder.itemView.checkedImageView?.isVisible = participant?.selected == true
 
             if (!payloads.contains(ElementPayload.SELECTION_TOGGLE)) {
                 participant?.displayName?.let {
-                    holder.itemView.name_text.text = it
+                    if (element.type == ParticipantElementType.PARTICIPANT_SELECTED.ordinal) {
+                        holder.itemView.participantNameTextView.text = it.substringBefore(" ", it)
+                    } else {
+                        holder.itemView.participantNameTextView.text = it
+
+                    }
                 } ?: run {
-                    holder.itemView.name_text.text = context.getString(R.string.nc_guest)
+                    holder.itemView.participantNameTextView.text = context.getString(R.string.nc_guest)
                 }
+
+                holder.itemView.clearImageView?.load(Images().getImageWithBackground(context, R.drawable.ic_baseline_clear_24, R.color.white))
 
                 when (participant?.source) {
                     "users" -> {
