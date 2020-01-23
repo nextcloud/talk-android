@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.newarch.conversationsList.mvp
+package com.nextcloud.talk.newarch.mvvm
 
 import android.view.LayoutInflater
 import android.view.View
