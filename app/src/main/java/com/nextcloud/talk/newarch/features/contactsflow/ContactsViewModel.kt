@@ -1,7 +1,6 @@
 package com.nextcloud.talk.newarch.features.contactsflow
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.participants.Participant

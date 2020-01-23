@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
+import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.ElementPayload
 import com.nextcloud.talk.utils.bundle.BundleKeys

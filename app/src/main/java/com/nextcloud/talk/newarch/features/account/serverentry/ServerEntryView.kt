@@ -34,8 +34,8 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
-import com.nextcloud.talk.newarch.conversationsList.mvp.BaseView
 import com.nextcloud.talk.newarch.features.account.loginentry.LoginEntryView
+import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.server_entry_view.view.*

@@ -22,7 +22,6 @@
 
 package com.nextcloud.talk.newarch.features.contactsflow
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.nextcloud.talk.models.json.participants.Participant
 import com.otaliastudios.elements.Element
