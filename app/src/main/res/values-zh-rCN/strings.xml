@@ -158,8 +158,6 @@
     <string name="nc_remove_from_favorites">取消收藏</string>
     <string name="nc_favorites_explanation">会话将在会话列表中置顶</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">选择联系人</string>
     <string name="nc_contacts_done">完成</string>
 
     <!-- Permissions -->
@@ -266,6 +264,7 @@
     <string name="nc_circles">圈子</string>
     <string name="nc_emails">电子邮箱</string>
     <string name="nc_participants">参与者</string>
+    <string name="nc_others">其它</string>
 
     <string name="nc_owner">拥有者</string>
     <string name="nc_moderator">主持人</string>

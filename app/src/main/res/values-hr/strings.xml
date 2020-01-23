@@ -160,8 +160,6 @@ izbrisan za sve ostale sudionike.</string>
     <string name="nc_favorites_explanation">Razgovor će biti trajno prikazan pri vrhu
 popisa razgovora</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Odaberi kontakte</string>
     <string name="nc_contacts_done">Gotovo</string>
 
     <!-- Permissions -->
@@ -268,6 +266,7 @@ popisa razgovora</string>
     <string name="nc_contacts">Kontakti</string>
     <string name="nc_circles">Krugovi</string>
     <string name="nc_participants">Sudionici</string>
+    <string name="nc_others">Ostalo</string>
 
     <string name="nc_owner">Vlasnik</string>
     <string name="nc_moderator">Moderator</string>

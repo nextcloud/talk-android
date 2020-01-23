@@ -159,8 +159,6 @@
     <string name="nc_favorites_explanation">Pogovor bo pripet na vrh
         seznama pogovorov</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Izbor stikov</string>
     <string name="nc_contacts_done">Začni pogovor</string>
 
     <!-- Permissions -->
@@ -269,7 +267,6 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_circles">Krogi</string>
     <string name="nc_emails">Elektronski naslovi</string>
     <string name="nc_participants">Udeleženci</string>
-
     <string name="nc_owner">Lastnik</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Uporabnik</string>

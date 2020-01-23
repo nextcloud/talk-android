@@ -112,8 +112,6 @@
     <string name="nc_join_via_web">Tham gia từ website</string>
     <string name="nc_add_to_favorites">Thêm vào ưa thích</string>
     <string name="nc_remove_from_favorites">Xóa khỏi ưa thích</string>
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Chọn liên hệ</string>
     <string name="nc_contacts_done">Hoàn tất</string>
 
     <!-- Permissions -->
@@ -184,7 +182,6 @@
     <string name="nc_contacts">Liên hệ</string>
     <string name="nc_circles">Vòng kết nối</string>
     <string name="nc_participants">Người tham gia</string>
-
     <string name="nc_owner">Chủ</string>
     <string name="nc_moderator">Kiểm duyệt</string>
     <string name="nc_user">Người dùng</string>

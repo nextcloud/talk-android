@@ -157,8 +157,6 @@
     <string name="nc_favorites_explanation">Разговор ће бити закачен на врх
 листе разговора</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Одаберите контакт</string>
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->
@@ -265,6 +263,7 @@
     <string name="nc_contacts">Контакти</string>
     <string name="nc_circles">Кругови</string>
     <string name="nc_participants">Учесници</string>
+    <string name="nc_others">Остали</string>
 
     <string name="nc_owner">Власник</string>
     <string name="nc_moderator">Модератор</string>

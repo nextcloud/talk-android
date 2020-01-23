@@ -163,6 +163,7 @@
     <string name="nc_contacts">Kontaktuak</string>
     <string name="nc_circles">Zirkuluak</string>
     <string name="nc_participants">Parte-hartzaileak</string>
+    <string name="nc_others">Besteak</string>
 
     <string name="nc_owner">Jabea</string>
     <string name="nc_moderator">Moderatzailea</string>

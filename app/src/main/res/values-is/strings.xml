@@ -136,8 +136,6 @@
     <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
     <string name="nc_add_to_favorites">Bæta í eftirlæti</string>
     <string name="nc_remove_from_favorites">Fjarlægja úr eftirlætum</string>
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Veldu tengiliði</string>
     <string name="nc_contacts_done">Lokið</string>
 
     <!-- Permissions -->
@@ -231,7 +229,6 @@
     <string name="nc_contacts">Tengiliðir</string>
     <string name="nc_circles">Hringir</string>
     <string name="nc_participants">Þátttakendur</string>
-
     <string name="nc_owner">Eigandi</string>
     <string name="nc_moderator">Umsjónarmaður</string>
     <string name="nc_user">Notandi</string>

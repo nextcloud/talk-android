@@ -143,8 +143,6 @@
     <string name="nc_join_via_web">Присоединиться через веб</string>
     <string name="nc_add_to_favorites">Добавить в избранное</string>
     <string name="nc_remove_from_favorites">Удалить из избранного</string>
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Выбрать контакты</string>
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->
@@ -246,6 +244,7 @@
     <string name="nc_contacts">Контакты</string>
     <string name="nc_circles">Круги</string>
     <string name="nc_participants">Участники</string>
+    <string name="nc_others">Другие</string>
 
     <string name="nc_owner">Владелец</string>
     <string name="nc_moderator">Модератор</string>

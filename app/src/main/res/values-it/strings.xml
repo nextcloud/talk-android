@@ -160,8 +160,6 @@
     <string name="nc_favorites_explanation">La conversazione sarà appuntata in cima all\'elenco
        delle conversazioni</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Seleziona contatti</string>
     <string name="nc_contacts_done">Fine</string>
 
     <!-- Permissions -->
@@ -267,7 +265,9 @@
     <string name="nc_groups">Gruppi</string>
     <string name="nc_contacts">Contatti</string>
     <string name="nc_circles">Cerchie</string>
+    <string name="nc_emails">Email</string>
     <string name="nc_participants">Partecipanti</string>
+    <string name="nc_others">Altri</string>
 
     <string name="nc_owner">Proprietario</string>
     <string name="nc_moderator">Moderatore</string>

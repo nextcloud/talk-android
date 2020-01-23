@@ -162,8 +162,6 @@ Produciuse un fallo ao recuperar os axustes da sinalización</string>
     <string name="nc_favorites_explanation">A conversa estará fixada na parte superior da
         lista de conversas</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Seleccionar contactos</string>
     <string name="nc_contacts_done">Feito</string>
 
     <!-- Permissions -->
@@ -271,6 +269,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_circles">Círculos</string>
     <string name="nc_emails">Correos</string>
     <string name="nc_participants">Participantes</string>
+    <string name="nc_others">Outros</string>
 
     <string name="nc_owner">Propietario</string>
     <string name="nc_moderator">Moderador</string>

@@ -143,8 +143,6 @@
     <string name="nc_join_via_web">Deltag via web</string>
     <string name="nc_add_to_favorites">Føj til favoritter</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Vælg kontakter</string>
     <string name="nc_contacts_done">Færdig</string>
 
     <!-- Permissions -->
@@ -248,7 +246,6 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_contacts">Kontakter</string>
     <string name="nc_circles">Cirkler</string>
     <string name="nc_participants">Deltagere</string>
-
     <string name="nc_owner">Ejer</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">ruger</string>

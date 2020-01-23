@@ -160,8 +160,6 @@
     <string name="nc_favorites_explanation">Rozmowa zostanie przypięta na górze
         listy rozmów</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Wybierz kontakty</string>
     <string name="nc_contacts_done">Gotowe</string>
 
     <!-- Permissions -->
@@ -269,6 +267,7 @@
     <string name="nc_circles">Kręgi</string>
     <string name="nc_emails">E-maile</string>
     <string name="nc_participants">Uczestnicy</string>
+    <string name="nc_others">Inne</string>
 
     <string name="nc_owner">Właściciel</string>
     <string name="nc_moderator">Moderator</string>

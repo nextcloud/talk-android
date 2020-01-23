@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">%1$sアプリからアカウントをインポートする</string>
     <string name="nc_server_failed_to_import_account">選択したアカウントのインポートに失敗しました</string>
     <string name="nc_server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
+    <string name="nc_server_unsupported">サーバーにサポートされているトークアプリがインストールされていません</string>
     <string name="nc_get_from_provider">まだサーバーがありませんか？\ nプロバイダーから取得するにはここをクリックしてください</string>
 
     <!-- Account verification -->
@@ -46,6 +47,8 @@
 
     <string name="nc_never">決して参加しなかった</string>
     <string name="nc_search">検索</string>
+    <string name="nc_search_conversations">会話を検索</string>
+
     <string name="nc_certificate_dialog_title">証明書をチェックアウトする</string>
     <string name="nc_certificate_dialog_text">未確認のSSL証明書を信頼しますか？（ issued by %1$s for %2$s, valid from %3$s to %4$s）</string>
     <string name="nc_yes">はい</string>
@@ -154,8 +157,6 @@
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
     <string name="nc_favorites_explanation">会話は会話リストのトップに固定されます</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">連絡先を選択</string>
     <string name="nc_contacts_done">完了</string>
 
     <!-- Permissions -->
@@ -260,8 +261,8 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_groups">グループ</string>
     <string name="nc_contacts">連絡先</string>
     <string name="nc_circles">サークル</string>
+    <string name="nc_emails">メール</string>
     <string name="nc_participants">参加者</string>
-
     <string name="nc_owner">オーナー</string>
     <string name="nc_moderator">モデレータ</string>
     <string name="nc_user">ユーザー</string>

@@ -143,8 +143,6 @@
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
     <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
     <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Névjegyek kiválasztása</string>
     <string name="nc_contacts_done">Kész</string>
 
     <!-- Permissions -->
@@ -246,7 +244,6 @@
     <string name="nc_contacts">Névjegyek</string>
     <string name="nc_circles">Körök</string>
     <string name="nc_participants">Résztvevők</string>
-
     <string name="nc_owner">Tulajdonos</string>
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_user">Felhasználó</string>

@@ -120,8 +120,6 @@
     <string name="nc_new_conversation">新對話</string>
     <string name="nc_add_to_favorites">加到我的最愛</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
-    <!-- Contacts -->
-    <string name="nc_select_contacts">選取聯絡人</string>
     <string name="nc_contacts_done">完成</string>
 
     <!-- Permissions -->
@@ -183,7 +181,6 @@
     <string name="nc_groups">群組</string>
     <string name="nc_contacts">聯絡人</string>
     <string name="nc_participants">參與者</string>
-
     <string name="nc_owner">擁有者</string>
     <string name="nc_moderator">主持人</string>
     <string name="nc_user">使用者</string>

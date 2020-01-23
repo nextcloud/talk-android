@@ -160,8 +160,6 @@
     <string name="nc_favorites_explanation">Görüşme, görüşmeler listesinin en üstüne
         sabitlenir</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Kişileri seçin</string>
     <string name="nc_contacts_done">Tamam</string>
 
     <!-- Permissions -->
@@ -269,6 +267,7 @@
     <string name="nc_circles">Çevreler</string>
     <string name="nc_emails">E-postalar</string>
     <string name="nc_participants">Katılımcılar</string>
+    <string name="nc_others">Diğerleri</string>
 
     <string name="nc_owner">Sahip</string>
     <string name="nc_moderator">Sorumlu</string>

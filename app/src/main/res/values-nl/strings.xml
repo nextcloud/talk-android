@@ -158,8 +158,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
     <string name="nc_favorites_explanation">Gesprek zal vastgemaakt worden aan de bovenkant van de lijst met gesprekken</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Selecteer contacten</string>
     <string name="nc_contacts_done">Gereed</string>
 
     <!-- Permissions -->
@@ -268,6 +266,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_circles">Kringen</string>
     <string name="nc_emails">E-mails</string>
     <string name="nc_participants">Deelnemers</string>
+    <string name="nc_others">Anderen</string>
 
     <string name="nc_owner">Eigenaar</string>
     <string name="nc_moderator">Moderator</string>

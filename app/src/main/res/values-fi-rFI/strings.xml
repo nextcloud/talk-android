@@ -95,8 +95,6 @@
     <string name="nc_join_via_web">Liity verkon kautta</string>
     <string name="nc_add_to_favorites">Lisää suosikkeihin</string>
     <string name="nc_remove_from_favorites">Poista suosikeista</string>
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Valitse yhteystiedot</string>
     <string name="nc_contacts_done">Valmis</string>
 
     <string name="nc_permissions_settings">Avaa asetukset</string>
@@ -166,7 +164,6 @@
     <string name="nc_contacts">Yhteystiedot</string>
     <string name="nc_circles">Piirit</string>
     <string name="nc_participants">Osallistujat</string>
-
     <string name="nc_owner">Omistaja</string>
     <string name="nc_moderator">Moderaattori</string>
     <string name="nc_user">Käyttäjä</string>

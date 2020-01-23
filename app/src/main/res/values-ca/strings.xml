@@ -157,8 +157,6 @@ suprimirà per la resta de participants.</string>
     <string name="nc_favorites_explanation">La conversa es fixarà a dalt de la
 llista de converses</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Selecciona els contactes</string>
     <string name="nc_contacts_done">Fet</string>
 
     <!-- Permissions -->
@@ -265,6 +263,7 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_contacts">Contactes</string>
     <string name="nc_circles">Cercles</string>
     <string name="nc_participants">Participants</string>
+    <string name="nc_others">Altres</string>
 
     <string name="nc_owner">Propietari</string>
     <string name="nc_moderator">Moderador</string>

@@ -40,13 +40,17 @@
     <!-- Account verification -->
     <string name="nc_push_disabled">Οι ειδοποιήσεις push απενεργοποιήθηκαν</string>
     <string name="nc_capabilities_failed">Η εμφάνιση δυνατοτήτων απέτυχε, ματαιωση</string>
+    <string name="nc_external_server_failed">Αποτυχία λήψης ρυθμίσεων σήματος</string>
+    <string name="nc_display_name_not_fetched">Το εμφανιζόμενο όνομα δεν ήταν δυνατό να ληφθεί, ματαίωση</string>
     <string name="nc_nextcloud_talk_app_not_installed">Η εφαρμογή %1$s δεν εγκαταστάθηκε στον διακομιστή, ματαίωση</string>
     <string name="nc_display_name_not_stored">Το εμφανιζόμενο όνομα δεν μπορεί να αποθηκευτεί, ματαίωση</string>
 
+    <string name="nc_never">Δεν ξανασυνδέθηκε</string>
     <string name="nc_search">Αναζήτηση</string>
     <string name="nc_search_conversations">Αναζήτηση συνομιλιών</string>
 
     <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
+    <string name="nc_certificate_dialog_text">Eμπιστεύεσαι το άγνωστο έως τώρα πιστοποιητικό SSL που εκδόθηκε %1$s για %2$s, έγκυρο από %3$s σε%4$s;</string>
     <string name="nc_yes">Ναι</string>
     <string name="nc_no">Όχι</string>
     <string name="nc_certificate_error">Η ρύθμιση SSL απέτρεψε την σύνδεση</string>
@@ -54,6 +58,7 @@
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Διαμεσολαβητής</string>
     <string name="nc_settings_proxy_type_title">Τύπος διαμεσολαβητή</string>
+    <string name="nc_settings_proxy_host_title">Ενδιάμεσος Η/Υ</string>
     <string name="nc_settings_proxy_port_title">Θύρα διαμεσολαβητή</string>
     <string name="nc_settings_use_credentials_title">Χρήση διαπιστευτηρίων</string>
     <string name="nc_settings_switch_account">Εναλλαγή λογαριασμών</string>
@@ -153,8 +158,6 @@
     <string name="nc_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>
     <string name="nc_favorites_explanation">Η συνομιλία θα καρφιτσωθεί στην κορυφή της λίστας</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Επιλογή επαφών</string>
     <string name="nc_contacts_done">Ολοκληρώθηκε</string>
 
     <!-- Permissions -->
@@ -168,6 +171,8 @@
     <string name="nc_incoming_call">Εισερχόμενη κλήση από</string>
     <string name="nc_nick_guest">Επισκέπτης</string>
     <string name="nc_public_call">Νέα δημόσια συνομιλία</string>
+    <string name="nc_public_call_explanation">Η δημόσια συζήτηση σας επιτρέπει να προσκαλέσετε άτομα μέσω 
+ειδίκού συνδέσμου.</string>
     <string name="nc_call_timeout">Πέρασαν 45 δεύτερα, δοκιμάστε ξανά</string>
     <string name="nc_call_reconnecting">Επανασύνδεση...</string>
     <string name="nc_offline">Σε αποσύνδεση, παρακαλώ ελέγξτε την σύνδεσή σας</string>
@@ -190,6 +195,8 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>
+    <string name="nc_failed_signaling_settings">Ο υπόψη διακομιστής δεν υποστηρίζει την σύνδεση στις δημόσιες συζητήσεις από κινητά 
+τηλέφωνα. Προσπαθήστε να συνδεθείτε μέσω φυλλομετρητή.</string>
     <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Όνομα συνομιλίας</string>
@@ -251,15 +258,21 @@
     <string name="nc_conversations_empty">Συμμετοχή σε συνομιλία ή έναρξη νέας \n Πείτε γειά στους φίλους σας και συναδέλφους!</string>
     <string name="nc_hello">Γεια σας</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">Το όριο %s χαρακτήρων έχει συμπληρωθεί</string>
     <string name="nc_groups">Ομάδες</string>
     <string name="nc_contacts">Επαφές</string>
     <string name="nc_circles">Κύκλοι</string>
+    <string name="nc_emails">Ηλ.Μηνύματα</string>
     <string name="nc_participants">Συμμετέχοντες</string>
-
     <string name="nc_owner">Ιδιοκτήτης</string>
     <string name="nc_moderator">Συντονιστής</string>
     <string name="nc_user">Χρήστης</string>
     <string name="nc_guest">Επισκέπτης</string>
+    <string name="nc_following_link">Χρήστης από δημόσιο σύνδεσμο</string>
+
+    <!-- Browser component -->
+    <string name="nc_file_browser">Περιηγητής αρχείων\"</string>
     <string name="nc_select_files">Επιλέξτε Αρχεία</string>
     <string name="nc_file_browser_back">Πίσω</string>
     <string name="nc_file_browser_refresh">Ανανέωση</string>
@@ -268,10 +281,30 @@
     <!-- Lobby -->
 
     <string name="nc_webinar">Webinar</string>
+    <string name="nc_lobby">Αναμονή</string>
+    <string name="nc_start_time">Ώρα έναρξης</string>
+    <string name="nc_lobby_waiting">Αυτή τη στιγμή είστε σε αναμονή</string>
+    <string name="nc_lobby_waiting_with_date">Αυτή τη στιγμή είστε σε αναμονή.\n 
+Η συνάντηση είναι προγραμματισμένη για %1$s.</string>
+    <string name="nc_manual">Δεν ορίστηκε</string>
+
     <!-- Errors -->
     <string name="nc_no_connection_error">Δεν υπάρχει σύνδεση</string>
+    <string name="nc_bad_response_error">Λάθος απάντηση</string>
+    <string name="nc_timeout_error">Λήξη χρόνου</string>
+    <string name="nc_empty_response_error">Κενή απάντηση</string>
     <string name="nc_not_defined_error">Άγνωστο σφάλμα</string>
+    <string name="nc_unauthorized_error">Μη εξουσιοδοτημένο</string>
+
+    <string name="nc_oops">Οοοπς, κάτι πήγε στραβά.</string>
+
     <string name="nc_general_settings">Γενικά</string>
+    <string name="nc_allow_guests">Επιτρέπονται οι επισκέπτες</string>
+    <string name="nc_last_moderator_title">Δεν μπόρεσε να αποχωρήση από την συνομιλία</string>
+    <string name="nc_last_moderator">Πρέπει να προάγεται νέο συντονιστή πρίν αποχωρήσετε %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Αντιγραφή</string>
     <string name="nc_reply">Απάντηση</string>
 

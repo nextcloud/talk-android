@@ -159,8 +159,6 @@
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
     <string name="nc_favorites_explanation">Konverzace bude připnuta na vrchol seznamu konverzací</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Vybrat kontakty</string>
     <string name="nc_contacts_done">Hotovo</string>
 
     <!-- Permissions -->
@@ -268,6 +266,7 @@
     <string name="nc_circles">Okruhy</string>
     <string name="nc_emails">E-maily</string>
     <string name="nc_participants">Účastníci</string>
+    <string name="nc_others">Ostatní</string>
 
     <string name="nc_owner">Vlastník</string>
     <string name="nc_moderator">Moderátor</string>

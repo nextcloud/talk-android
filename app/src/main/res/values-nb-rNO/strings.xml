@@ -137,8 +137,6 @@
     <string name="nc_favorites_explanation">Samtalen vil bli festet på toppen av
         samtalelisten</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Velg kontakter</string>
     <string name="nc_contacts_done">Ferdig</string>
 
     <!-- Permissions -->
@@ -241,7 +239,6 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_contacts">Kontakter</string>
     <string name="nc_circles">Sirkler</string>
     <string name="nc_participants">Deltakere</string>
-
     <string name="nc_owner">Eier</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Bruker</string>

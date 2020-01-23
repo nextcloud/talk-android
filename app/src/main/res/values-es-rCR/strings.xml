@@ -106,8 +106,6 @@
     <string name="nc_join_via_web">Únete vía web</string>
     <string name="nc_add_to_favorites">Agregar a tus favoritos</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Selecciona los contactos</string>
     <string name="nc_contacts_done">Terminado</string>
 
     <!-- Permissions -->
@@ -165,7 +163,6 @@ teléfonos móviles. Puedes intentar unirte a la conversación a través de un n
     <string name="nc_contacts">Contactos</string>
     <string name="nc_circles">Círculos</string>
     <string name="nc_participants">Participantes</string>
-
     <string name="nc_owner">Dueño</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_user">Usuario</string>

@@ -183,6 +183,7 @@
     <string name="nc_contacts">Adresatai</string>
     <string name="nc_circles">Ratai</string>
     <string name="nc_participants">Dalyviai</string>
+    <string name="nc_others">Kiti</string>
 
     <string name="nc_owner">Savininkas</string>
     <string name="nc_moderator">Moderatorius</string>

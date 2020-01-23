@@ -160,8 +160,6 @@
     <string name="nc_favorites_explanation">Konversationen kommer att fästas på toppen av
         konversationslistan</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Välj kontakter</string>
     <string name="nc_contacts_done">Färdig</string>
 
     <!-- Permissions -->
@@ -269,6 +267,7 @@
     <string name="nc_circles">Cirklar</string>
     <string name="nc_emails">E-post</string>
     <string name="nc_participants">Deltagare</string>
+    <string name="nc_others">Övriga</string>
 
     <string name="nc_owner">Ägare</string>
     <string name="nc_moderator">Moderator</string>

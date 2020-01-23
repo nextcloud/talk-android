@@ -157,8 +157,6 @@
     <string name="nc_favorites_explanation">Razgovor će biti zakačen na vrh
 liste razgovora</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Odaberite kontakt</string>
     <string name="nc_contacts_done">Gotovo</string>
 
     <!-- Permissions -->
@@ -263,7 +261,6 @@ liste razgovora</string>
     <string name="nc_limit_hit">Dostignut je limit od %s karaktera</string>
     <string name="nc_groups">Grupe</string>
     <string name="nc_participants">Učesnici</string>
-
     <string name="nc_owner">Vlasnik</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Korisnik</string>

@@ -160,8 +160,6 @@ zmazaný pre všetkých ostatných zúčastnených</string>
     <string name="nc_favorites_explanation">Rozhovor bude pripnutý na vrchu 
 v zozname rozhovorov</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Vyberte si kontakty</string>
     <string name="nc_contacts_done">Hotovo</string>
 
     <!-- Permissions -->
@@ -269,6 +267,7 @@ v zozname rozhovorov</string>
     <string name="nc_circles">Kruhy</string>
     <string name="nc_emails">E-maily</string>
     <string name="nc_participants">Účastníci</string>
+    <string name="nc_others">Ostatné</string>
 
     <string name="nc_owner">Vlastník</string>
     <string name="nc_moderator">Moderátor</string>
