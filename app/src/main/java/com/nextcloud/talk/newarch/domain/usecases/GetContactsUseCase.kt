@@ -34,6 +34,6 @@ class GetContactsUseCase constructor(
 ) : UseCase<List<Participant>, Any?>(apiErrorHandler) {
     override suspend fun run(params: Any?): List<Participant> {
         val definitionParameters = params as DefinitionParameters
-        return nextcloudTalkRepository.getContactsForUser(definitionParameters[0], definitionParameters[1], definitionParameters[2])
+        return nextcloudTalkRepository.getContactsForUser(definitionParameters[0], definitionParameters[1], definitionParameters[2], definitionParameters[3])
     }
 }

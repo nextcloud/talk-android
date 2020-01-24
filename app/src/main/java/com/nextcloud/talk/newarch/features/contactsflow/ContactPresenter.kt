@@ -51,7 +51,7 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
     private val globalService: GlobalService by inject()
 
     override val elementTypes: Collection<Int>
-        get() = listOf(ParticipantElementType.PARTICIPANT.ordinal, ParticipantElementType.PARTICIPANT_SELECTED.ordinal, ParticipantElementType.PARTICIPANT_HEADER.ordinal, ParticipantElementType.PARTICIPANT_FOOTER.ordinal)
+        get() = listOf(ParticipantElementType.PARTICIPANT.ordinal, ParticipantElementType.PARTICIPANT_SELECTED.ordinal, ParticipantElementType.PARTICIPANT_HEADER.ordinal, ParticipantElementType.PARTICIPANT_FOOTER.ordinal, ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal, ParticipantElementType.PARTICIPANT_JOIN_VIA_LINK.ordinal)
 
     override fun onCreate(parent: ViewGroup, elementType: Int): Holder {
         return when (elementType) {
@@ -64,8 +64,12 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
             ParticipantElementType.PARTICIPANT_HEADER.ordinal -> {
                 Holder(getLayoutInflater().inflate(R.layout.rv_item_title_header, parent, false))
             }
-            else -> {
+            ParticipantElementType.PARTICIPANT_FOOTER.ordinal -> {
                 Holder(getLayoutInflater().inflate(R.layout.rv_item_participant_rv_footer, parent, false))
+            }
+            else -> {
+                // for join via link and new group
+                Holder(getLayoutInflater().inflate(R.layout.rv_item_contact, parent, false))
             }
         }
     }
@@ -120,8 +124,16 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
             }
         } else if (element.type == ParticipantElementType.PARTICIPANT_HEADER.ordinal) {
             holder.itemView.titleTextView.text = (element.data as HeaderSource.Data<*, *>).header.toString()
-        } else {
+        } else if (element.type == ParticipantElementType.PARTICIPANT_FOOTER.ordinal){
             holder.itemView.messageTextView.text = (element.data as FooterSource.Data<*, *>).footer.toString()
+        } else if (element.type == ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal) {
+            val pairData = element.data as Pair<*, *>
+            holder.itemView.participantNameTextView.text = pairData.first as CharSequence
+            holder.itemView.avatarImageView.load(Images().getImageWithBackground(context, pairData.second as Int))
+        } else {
+            val pairData = element.data as Pair<*, *>
+            holder.itemView.participantNameTextView.text = pairData.first as CharSequence
+            holder.itemView.avatarImageView.load(Images().getImageWithBackground(context, pairData.second as Int))
         }
     }
 }

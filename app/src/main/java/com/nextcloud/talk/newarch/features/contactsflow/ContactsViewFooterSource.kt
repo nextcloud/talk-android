@@ -29,7 +29,7 @@ import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Source
 import com.otaliastudios.elements.extensions.FooterSource
 
-class ContactsFooterSource(private val context: Context, private val elementType: Int) : FooterSource<Participant, String>() {
+class ContactsViewFooterSource(private val context: Context, private val elementType: Int) : FooterSource<Participant, String>() {
     private var lastAnchor: Participant? = null
 
     override fun dependsOn(source: Source<*>): Boolean {

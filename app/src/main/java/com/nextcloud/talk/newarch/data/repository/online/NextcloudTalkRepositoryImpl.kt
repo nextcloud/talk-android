@@ -92,8 +92,8 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
         }
     }
 
-    override suspend fun getContactsForUser(user: UserNgEntity, searchQuery: String?, conversationToken: String?): List<Participant> {
-        return apiService.getContacts(authorization = user.getCredentials(), url = ApiUtils.getUrlForContactsSearch(user.baseUrl), shareTypes = ApiUtils.getShareTypesForContactsSearch(), options = ApiUtils.getQueryMapForContactsSearch(searchQuery, conversationToken)).ocs.data.map {
+    override suspend fun getContactsForUser(user: UserNgEntity, groupConversation: Boolean, searchQuery: String?, conversationToken: String?): List<Participant> {
+        return apiService.getContacts(authorization = user.getCredentials(), url = ApiUtils.getUrlForContactsSearch(user.baseUrl), shareTypes = ApiUtils.getShareTypesForContactsSearch(groupConversation), options = ApiUtils.getQueryMapForContactsSearch(searchQuery, conversationToken)).ocs.data.map {
             val participant = Participant()
             participant.userId = it.id
             participant.displayName = it.label

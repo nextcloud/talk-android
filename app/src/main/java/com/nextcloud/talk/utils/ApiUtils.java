@@ -67,16 +67,18 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/core/autocomplete/get";
     }
 
-    public static List<String> getShareTypesForContactsSearch() {
+    public static List<String> getShareTypesForContactsSearch(boolean groupConversation) {
         List<String> shareTypesList = new ArrayList<>();
         // user
         shareTypesList.add("0");
-        // group
-        shareTypesList.add("1");
-        // group
-        shareTypesList.add("4");
-        // remote/circles
-        shareTypesList.add("7");
+        if (groupConversation) {
+            // group
+            shareTypesList.add("1");
+            // email
+            shareTypesList.add("4");
+            // remote/circles
+            shareTypesList.add("7");
+        }
 
         return shareTypesList;
     }

@@ -180,7 +180,9 @@
         conversations list</string>
 
     <!-- Contacts -->
+    <string name="nc_select_contact">Find participant</string>
     <string name="nc_select_contacts">Find participants</string>
+    <string name="nc_select_new_contacts">Find new participants</string>
     <string name="nc_contacts_done">Done</string>
 
     <!-- Permissions -->
@@ -339,4 +341,5 @@
     <string name="path_password_strike_through" translatable="false"
         tools:override="true">M3.27,4.27L19.74,20.74</string>
     <string name="nc_search_for_more">Search for more participants</string>
+    <string name="nc_new_group">New group</string>
 </resources>

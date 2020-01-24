@@ -34,14 +34,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.newarch.features.contactsflow.source.FixedListSource
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.ElementPayload
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.otaliastudios.elements.Adapter
-import com.otaliastudios.elements.Element
-import com.otaliastudios.elements.Page
-import com.otaliastudios.elements.Presenter
+import com.otaliastudios.elements.*
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.contacts_list_view.view.*
 import kotlinx.android.synthetic.main.conversations_list_view.view.recyclerView
@@ -59,6 +57,9 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
         return R.layout.contacts_list_view
     }
 
+    private val isGroupConversation = bundle?.containsKey(BundleKeys.KEY_CONVERSATION_NAME) == true
+    private val hasToken = bundle?.containsKey(BundleKeys.KEY_CONVERSATION_TOKEN) == true
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup
@@ -71,9 +72,11 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
 
         // todo - change empty state magic
         participantsAdapter = Adapter.builder(this)
+                .addSource(FixedListSource(listOf(Pair(context.getString(R.string.nc_new_group), R.drawable.ic_people_group_white_24px)), ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal))
+                //.addSource(FixedListSource(listOf(Pair(context.getString(R.string.nc_join_via_link), R.drawable.ic_link_white_24px)), ParticipantElementType.PARTICIPANT_JOIN_VIA_LINK.ordinal))
                 .addSource(ContactsViewSource(data = viewModel.contactsLiveData, elementType = ParticipantElementType.PARTICIPANT.ordinal))
                 .addSource(ContactsHeaderSource(activity as Context, ParticipantElementType.PARTICIPANT_HEADER.ordinal))
-                .addSource(ContactsFooterSource(activity as Context, ParticipantElementType.PARTICIPANT_FOOTER.ordinal))
+                .addSource(ContactsViewFooterSource(activity as Context, ParticipantElementType.PARTICIPANT_FOOTER.ordinal))
                 .addPresenter(ContactPresenter(activity as Context, ::onElementClick))
                 .addPresenter(Presenter.forLoadingIndicator(activity as Context, R.layout.loading_state))
                 .addPresenter(Presenter.forEmptyIndicator(activity as Context, R.layout.message_state))
@@ -136,7 +139,7 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
 
         }
 
-        viewModel.initialize(bundle?.getString(BundleKeys.KEY_CONVERSATION_TOKEN))
+        viewModel.initialize(bundle?.getString(BundleKeys.KEY_CONVERSATION_TOKEN), bundle?.containsKey(BundleKeys.KEY_CONVERSATION_NAME) == true)
 
         return view
     }
@@ -149,26 +152,46 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
     private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<T>) {
         if (element.data is Participant?) {
             val participant = element.data as Participant?
-            val isElementSelected = participant?.selected == true
-            participant?.let {
-                if (isElementSelected) {
-                    viewModel.unselectParticipant(it)
-                } else {
-                    viewModel.selectParticipant(it)
-                }
-                it.selected = !isElementSelected
-                if (element.type == ParticipantElementType.PARTICIPANT_SELECTED.ordinal) {
-                    participantsAdapter.notifyItemRangeChanged(0, participantsAdapter.itemCount, ElementPayload.SELECTION_TOGGLE)
-                } else {
-                    participantsAdapter.notifyItemChanged(holder.adapterPosition, ElementPayload.SELECTION_TOGGLE)
-                }
 
+            if (isGroupConversation || hasToken) {
+                val isElementSelected = participant?.selected == true
+                participant?.let {
+                    if (isElementSelected) {
+                        viewModel.unselectParticipant(it)
+                    } else {
+                        viewModel.selectParticipant(it)
+                    }
+                    it.selected = !isElementSelected
+                    if (element.type == ParticipantElementType.PARTICIPANT_SELECTED.ordinal) {
+                        participantsAdapter.notifyItemRangeChanged(0, participantsAdapter.itemCount, ElementPayload.SELECTION_TOGGLE)
+                    } else {
+                        participantsAdapter.notifyItemChanged(holder.adapterPosition, ElementPayload.SELECTION_TOGGLE)
+                    }
+                }
+            } else {
+                participant?.let {
+                    // create room etc etc
+                }
             }
+        } else if (element.type == ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal) {
+
+        } else if (element.type == ParticipantElementType.PARTICIPANT_JOIN_VIA_LINK.ordinal) {
+
         }
     }
 
     override fun getTitle(): String? {
-        return resources?.getString(R.string.nc_select_contacts)
+        return when {
+            isGroupConversation -> {
+                resources?.getString(R.string.nc_select_contacts)
+            }
+            hasToken -> {
+                resources?.getString(R.string.nc_select_new_contacts)
+            }
+            else -> {
+                resources?.getString(R.string.nc_select_contact)
+            }
+        }
     }
 
 }

@@ -33,7 +33,7 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 interface NextcloudTalkRepository {
-    suspend fun getContactsForUser(user: UserNgEntity, searchQuery: String?, conversationToken: String?): List<Participant>
+    suspend fun getContactsForUser(user: UserNgEntity, groupConversation: Boolean, searchQuery: String?, conversationToken: String?): List<Participant>
     suspend fun registerPushWithServerForUser(user: UserNgEntity, options: Map<String, String>): PushRegistrationOverall
     suspend fun unregisterPushWithServerForUser(user: UserNgEntity): GenericOverall
     suspend fun registerPushWithProxyForUser(user: UserNgEntity, options: Map<String, String>): Any

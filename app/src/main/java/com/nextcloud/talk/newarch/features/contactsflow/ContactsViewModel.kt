@@ -45,11 +45,13 @@ class ContactsViewModel constructor(
 
     private var searchQuery: String? = null
     private var conversationToken: String? = null
+    private var groupConversation: Boolean = false
     private var initialized = false
 
-    fun initialize(conversationToken: String?) {
-        if (!initialized || conversationToken != this.conversationToken) {
+    fun initialize(conversationToken: String?, groupConversation: Boolean) {
+        if (!initialized || conversationToken != this.conversationToken || groupConversation != this.groupConversation) {
             this.conversationToken = conversationToken
+            this.groupConversation = groupConversation
             loadContacts()
         }
     }
@@ -70,7 +72,7 @@ class ContactsViewModel constructor(
     }
 
     fun loadContacts() {
-        getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, searchQuery, conversationToken), object :
+        getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, groupConversation, searchQuery, conversationToken), object :
                 UseCaseResponse<List<Participant>> {
             override suspend fun onSuccess(result: List<Participant>) {
                 val sortPriority = mapOf("users" to 0, "groups" to 1, "emails" to 2, "circles" to 0)

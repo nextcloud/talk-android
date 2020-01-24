@@ -20,13 +20,22 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.contactsflow
+package com.nextcloud.talk.newarch.features.contactsflow.source
 
-enum class ParticipantElementType {
-    PARTICIPANT,
-    PARTICIPANT_SELECTED,
-    PARTICIPANT_HEADER,
-    PARTICIPANT_FOOTER,
-    PARTICIPANT_NEW_GROUP,
-    PARTICIPANT_JOIN_VIA_LINK
+import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewSource
+import com.otaliastudios.elements.Source
+import com.otaliastudios.elements.extensions.ListSource
+
+class FixedListSource(list: List<Any>, elementType: Int) : ListSource<Any>(list, elementType) {
+    override fun areContentsTheSame(first: Any, second: Any): Boolean {
+        return true
+    }
+
+    override fun <E : Any> areItemsTheSame(own: Any, dependency: Source<E>, other: E?): Boolean {
+        return true
+    }
+
+    override fun dependsOn(source: Source<*>): Boolean {
+        return source is ContactsViewSource
+    }
 }
