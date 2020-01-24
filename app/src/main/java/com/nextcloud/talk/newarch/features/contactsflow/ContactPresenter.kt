@@ -91,7 +91,7 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
                     holder.itemView.participantNameTextView.text = context.getString(R.string.nc_guest)
                 }
 
-                holder.itemView.clearImageView?.load(Images().getImageWithBackground(context, R.drawable.ic_baseline_clear_24, R.color.white))
+                holder.itemView.clearImageView?.load(Images().getImageWithBackground(context, R.drawable.ic_baseline_clear_24, R.color.bg_selected_participant_clear_icon, R.color.white))
 
                 when (participant?.source) {
                     "users" -> {

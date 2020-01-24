@@ -64,6 +64,7 @@
     <color name="bg_dark_mention_chips">#333333</color>
 
 
+    <color name="bg_selected_participant_clear_icon">#484848</color>
     <color name="bg_message_list_incoming_bubble">#EFEFEF</color>
     <color name="bg_message_list_outcoming_bubble">@color/colorPrimary</color>
 

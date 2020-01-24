@@ -96,6 +96,38 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
             selectedParticipantsRecyclerView.initRecyclerView(LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false), selectedParticipantsAdapter, true)
         }
 
+        selectedParticipantsAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+                super.onChanged()
+                toggleSelectedParticipantsViewVisibility()
+            }
+
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                super.onItemRangeRemoved(positionStart, itemCount)
+                toggleSelectedParticipantsViewVisibility()
+            }
+
+            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+                toggleSelectedParticipantsViewVisibility()
+            }
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                toggleSelectedParticipantsViewVisibility()
+            }
+
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                super.onItemRangeChanged(positionStart, itemCount)
+                toggleSelectedParticipantsViewVisibility()
+            }
+
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+                super.onItemRangeChanged(positionStart, itemCount, payload)
+                toggleSelectedParticipantsViewVisibility()
+            }
+        })
+
         viewModel.apply {
             selectedParticipantsLiveData.observe(this@ContactsView) { participants ->
                 view.selectedParticipantsRecyclerView.isVisible = participants.isNotEmpty()
@@ -110,6 +142,11 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
         return view
     }
 
+    private fun toggleSelectedParticipantsViewVisibility() {
+        view?.selectedParticipantsRecyclerView?.isVisible = selectedParticipantsAdapter.itemCount > 0
+        view?.divider?.isVisible = selectedParticipantsAdapter.itemCount > 0
+    }
+
     private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<T>) {
         if (element.data is Participant?) {
             val participant = element.data as Participant?
@@ -121,7 +158,11 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
                     viewModel.selectParticipant(it)
                 }
                 it.selected = !isElementSelected
-                participantsAdapter.notifyItemChanged(holder.adapterPosition, ElementPayload.SELECTION_TOGGLE)
+                if (element.type == ParticipantElementType.PARTICIPANT_SELECTED.ordinal) {
+                    participantsAdapter.notifyItemRangeChanged(0, participantsAdapter.itemCount, ElementPayload.SELECTION_TOGGLE)
+                } else {
+                    participantsAdapter.notifyItemChanged(holder.adapterPosition, ElementPayload.SELECTION_TOGGLE)
+                }
 
             }
         }

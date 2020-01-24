@@ -70,9 +70,9 @@ class Images {
         }
     }
 
-    fun getImageWithBackground(context: Context, drawableId: Int, foregroundColorTint: Int? = null): Bitmap {
+    fun getImageWithBackground(context: Context, drawableId: Int, backgroundDrawableId: Int = R.color.bg_message_list_incoming_bubble, foregroundColorTint: Int? = null): Bitmap {
         val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = context.getDrawable(R.color.bg_message_list_incoming_bubble)
+        layers[0] = context.getDrawable(backgroundDrawableId)
         var scale = 0.25f
         if (drawableId == R.drawable.ic_baseline_email_24 || drawableId == R.drawable.ic_link_white_24px) {
             scale = 0.5f
