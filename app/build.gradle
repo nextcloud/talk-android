@@ -31,7 +31,7 @@ if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") || taskReq
 
 android {
     compileSdkVersion 29
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '29.0.2'
     defaultConfig {
         applicationId "com.nextcloud.talk2"
         versionName version
