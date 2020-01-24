@@ -44,7 +44,15 @@ class ContactsViewModel constructor(
     val contactsLiveData: MutableLiveData<List<Participant>> = MutableLiveData()
 
     private var searchQuery: String? = null
-    var conversationToken: String? = null
+    private var conversationToken: String? = null
+    private var initialized = false
+
+    fun initialize(conversationToken: String?) {
+        if (!initialized || conversationToken != this.conversationToken) {
+            this.conversationToken = conversationToken
+            loadContacts()
+        }
+    }
 
     fun setSearchQuery(query: String?) {
         searchQuery = query
@@ -76,6 +84,13 @@ class ContactsViewModel constructor(
                 }, {
                     it.displayName.toLowerCase()
                 }))
+
+                val selectedUserIds = selectedParticipants.map { it.userId }
+                for (participant in sortedList) {
+                    if (participant.userId in selectedUserIds) {
+                        participant.selected = true
+                    }
+                }
 
                 contactsLiveData.postValue(sortedList)
             }

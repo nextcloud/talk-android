@@ -67,7 +67,6 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
         setHasOptionsMenu(true)
 
         viewModel = viewModelProvider(factory).get(ContactsViewModel::class.java)
-        viewModel.conversationToken = bundle?.getString(BundleKeys.KEY_CONVERSATION_TOKEN)
         val view = super.onCreateView(inflater, container)
 
         // todo - change empty state magic
@@ -137,7 +136,7 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
 
         }
 
-        viewModel.loadContacts()
+        viewModel.initialize(bundle?.getString(BundleKeys.KEY_CONVERSATION_TOKEN))
 
         return view
     }
