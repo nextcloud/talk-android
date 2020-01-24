@@ -57,8 +57,10 @@ class ContactsViewModel constructor(
     }
 
     fun setSearchQuery(query: String?) {
-        searchQuery = query
-        loadContacts()
+        if (query != searchQuery) {
+            searchQuery = query
+            loadContacts()
+        }
     }
 
     fun selectParticipant(participant: Participant) {

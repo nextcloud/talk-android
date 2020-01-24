@@ -23,18 +23,21 @@
 package com.nextcloud.talk.newarch.features.contactsflow
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.text.InputType
+import android.view.*
+import android.view.inputmethod.EditorInfo
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
-import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.features.contactsflow.source.FixedListSource
+import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.ElementPayload
@@ -45,20 +48,23 @@ import kotlinx.android.synthetic.main.contacts_list_view.view.*
 import kotlinx.android.synthetic.main.conversations_list_view.view.recyclerView
 import kotlinx.android.synthetic.main.message_state.view.*
 import org.koin.android.ext.android.inject
+import com.nextcloud.talk.R
 
 class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
 
     private lateinit var viewModel: ContactsViewModel
     val factory: ContactsViewModelFactory by inject()
-    lateinit var participantsAdapter: Adapter
-    lateinit var selectedParticipantsAdapter: Adapter
-    override fun getLayoutId(): Int {
-        return R.layout.contacts_list_view
-    }
+    private lateinit var participantsAdapter: Adapter
+    private lateinit var selectedParticipantsAdapter: Adapter
 
     private val isGroupConversation = bundle?.containsKey(BundleKeys.KEY_CONVERSATION_NAME) == true
     private val hasToken = bundle?.containsKey(BundleKeys.KEY_CONVERSATION_TOKEN) == true
+
+    private var searchMenuItem: MenuItem? = null
+    override fun getLayoutId(): Int {
+        return R.layout.contacts_list_view
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -178,6 +184,25 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
         } else if (element.type == ParticipantElementType.PARTICIPANT_JOIN_VIA_LINK.ordinal) {
 
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_contacts, menu);
+        searchMenuItem = menu.findItem(R.id.action_search)
+        val searchView = MenuItemCompat.getActionView(menu.findItem(R.id.action_search)) as SearchView
+        searchView.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
+        var imeOptions = EditorInfo.IME_ACTION_SEARCH or EditorInfo.IME_FLAG_NO_FULLSCREEN
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
+            imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
+        }
+        searchView.imeOptions = imeOptions;
+        searchView.queryHint = resources?.getString(R.string.nc_search)
+        searchView.setOnQueryTextListener(DebouncingTextWatcher(lifecycle, ::setSearchQuery))
+    }
+
+    private fun setSearchQuery(query: CharSequence?) {
+        viewModel.setSearchQuery(query.toString())
     }
 
     override fun getTitle(): String? {
