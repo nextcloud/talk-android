@@ -141,6 +141,9 @@
     <string name="nc_share_subject">%1$s pakvietimas</string>
     <string name="nc_share_text_pass">\nSlaptažodis: %1$s</string>
 
+    <string name="nc_configure_cert_auth">Pasirinkti tapatybės nustatymo liudijimą</string>
+    <string name="nc_change_cert_auth">Keisti tapatybės nustatymo liudijimą</string>
+
     <!-- Moderation -->
     <string name="nc_demote">Pažeminti iš moderatorių</string>
     <string name="nc_promote">Paaukštinti į moderatorius</string>
@@ -179,6 +182,8 @@
     <string name="nc_conversations_empty">Prisijunkite arba pradėkite naują pokalbį\n Pasisveikinkite su savo draugais ir kolegomis!</string>
     <string name="nc_hello">Sveiki</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">Pasiekta %s simbolių riba</string>
     <string name="nc_groups">Grupės</string>
     <string name="nc_contacts">Adresatai</string>
     <string name="nc_circles">Ratai</string>

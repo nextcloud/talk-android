@@ -156,6 +156,8 @@
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
     <string name="nc_favorites_explanation">La conversation sera épinglée au-dessus de la listes des conversations.</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Rechercher des participants</string>
     <string name="nc_contacts_done">Terminé</string>
 
     <!-- Permissions -->

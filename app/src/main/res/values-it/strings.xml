@@ -160,6 +160,8 @@
     <string name="nc_favorites_explanation">La conversazione sarà appuntata in cima all\'elenco
        delle conversazioni</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Trova partecipanti</string>
     <string name="nc_contacts_done">Fine</string>
 
     <!-- Permissions -->

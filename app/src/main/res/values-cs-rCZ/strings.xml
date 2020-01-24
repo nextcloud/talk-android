@@ -159,6 +159,8 @@
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
     <string name="nc_favorites_explanation">Konverzace bude připnuta na vrchol seznamu konverzací</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Najít účastníky</string>
     <string name="nc_contacts_done">Hotovo</string>
 
     <!-- Permissions -->

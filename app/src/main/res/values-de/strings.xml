@@ -160,6 +160,8 @@ sie auch für alle anderen Teilnehmer gelöscht.</string>
     <string name="nc_favorites_explanation">Das Unterhaltung wird an den oberen Rand der
        Unterhaltungssliste angeheftet</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Teilnehmer finden</string>
     <string name="nc_contacts_done">Fertig</string>
 
     <!-- Permissions -->

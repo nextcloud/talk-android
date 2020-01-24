@@ -158,6 +158,8 @@
     <string name="nc_remove_from_favorites">取消收藏</string>
     <string name="nc_favorites_explanation">会话将在会话列表中置顶</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">寻找参与者</string>
     <string name="nc_contacts_done">完成</string>
 
     <!-- Permissions -->

@@ -160,6 +160,8 @@
     <string name="nc_favorites_explanation">Görüşme, görüşmeler listesinin en üstüne
         sabitlenir</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Katılımcı bul</string>
     <string name="nc_contacts_done">Tamam</string>
 
     <!-- Permissions -->

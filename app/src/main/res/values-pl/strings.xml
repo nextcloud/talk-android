@@ -160,6 +160,8 @@
     <string name="nc_favorites_explanation">Rozmowa zostanie przypięta na górze
         listy rozmów</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Znajdź uczestników</string>
     <string name="nc_contacts_done">Gotowe</string>
 
     <!-- Permissions -->

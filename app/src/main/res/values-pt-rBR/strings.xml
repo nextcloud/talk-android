@@ -160,6 +160,8 @@
     <string name="nc_favorites_explanation">A conversa será fixada na parte superior da
         lista de conversas</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Localizar participantes</string>
     <string name="nc_contacts_done">Concluído</string>
 
     <!-- Permissions -->
