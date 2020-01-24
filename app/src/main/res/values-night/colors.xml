@@ -37,6 +37,7 @@
     <color name="nc_chip_mention_others_background">#6F6F6F</color>
     <color name="nc_grey">@android:color/holo_purple</color>
     <color name="bg_bottom_sheet">#222222</color>
+    <color name="bg_selected_participant_clear_icon">#EFEFEF</color>
     <color name="bg_message_list_incoming_bubble">#484848</color>
     <color name="bg_message_list_outcoming_bubble">#003F62</color>
 
