@@ -24,6 +24,8 @@ package com.nextcloud.talk.newarch.features.search
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.SearchView
+import androidx.databinding.adapters.SearchViewBindingAdapter
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import kotlinx.coroutines.Job
@@ -33,7 +35,7 @@ import kotlinx.coroutines.launch
 class DebouncingTextWatcher(
         lifecycle: Lifecycle,
         private val onDebouncingTextWatcherChange: (CharSequence?) -> Unit
-) : TextWatcher {
+) : TextWatcher, SearchView.OnQueryTextListener() {
     private var debouncePeriod: Long = 500
 
     private val coroutineScope = lifecycle.coroutineScope
@@ -48,11 +50,25 @@ class DebouncingTextWatcher(
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        textChanged(s)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        // do nothing, we already handle it in onQueryTextChange
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        textChanged(newText)
+        return true
+    }
+
+    private fun textChanged(charSequence: CharSequence?) {
         searchJob?.cancel()
         searchJob = coroutineScope.launch {
-            s.let {
+            charSequence.let {
                 delay(debouncePeriod)
-                onDebouncingTextWatcherChange(s)
+                onDebouncingTextWatcherChange(charSequence)
             }
         }
     }

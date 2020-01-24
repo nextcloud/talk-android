@@ -147,7 +147,7 @@ class ConversationsListView : BaseView() {
     }
 
     private fun setSearchQuery(query: CharSequence?) {
-        viewModel.filterLiveData.value = query
+        viewModel.filterLiveData.postValue(query)
     }
 
     private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<Conversation>) {
