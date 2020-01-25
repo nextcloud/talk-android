@@ -160,7 +160,6 @@
     <string name="nc_favorites_explanation">La conversazione sarà appuntata in cima all\'elenco
        delle conversazioni</string>
 
-    <!-- Contacts -->
     <string name="nc_select_contacts">Trova partecipanti</string>
     <string name="nc_contacts_done">Fine</string>
 
@@ -314,4 +313,5 @@
     <string name="nc_copy_message">Copia</string>
     <string name="nc_reply">Rispondi</string>
 
+    <string name="nc_search_for_more">Cerca altri partecipanti</string>
     </resources>

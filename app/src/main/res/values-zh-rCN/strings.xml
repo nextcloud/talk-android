@@ -158,7 +158,6 @@
     <string name="nc_remove_from_favorites">取消收藏</string>
     <string name="nc_favorites_explanation">会话将在会话列表中置顶</string>
 
-    <!-- Contacts -->
     <string name="nc_select_contacts">寻找参与者</string>
     <string name="nc_contacts_done">完成</string>
 
@@ -311,4 +310,5 @@
     <string name="nc_copy_message">复制</string>
     <string name="nc_reply">回复</string>
 
+    <string name="nc_search_for_more">搜索更多参与者</string>
     </resources>

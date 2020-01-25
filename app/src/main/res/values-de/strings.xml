@@ -160,7 +160,6 @@ sie auch für alle anderen Teilnehmer gelöscht.</string>
     <string name="nc_favorites_explanation">Das Unterhaltung wird an den oberen Rand der
        Unterhaltungssliste angeheftet</string>
 
-    <!-- Contacts -->
     <string name="nc_select_contacts">Teilnehmer finden</string>
     <string name="nc_contacts_done">Fertig</string>
 
@@ -314,4 +313,5 @@ Meeting ist für %1$s geplant.</string>
     <string name="nc_copy_message">Kopieren</string>
     <string name="nc_reply">Antworten</string>
 
+    <string name="nc_search_for_more">Weitere Teilnehmer suchen</string>
     </resources>

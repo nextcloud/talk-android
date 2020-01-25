@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">Импортировать учётные записи из приложения %1$s </string>
     <string name="nc_server_failed_to_import_account">Не удалось импортировать выбранную учётную запись</string>
     <string name="nc_server_account_imported">Выбранная учётная запись теперь доступна</string>
+    <string name="nc_server_unsupported">Приложение Talk не установлено на сервере</string>
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
 
     <!-- Account verification -->
@@ -127,6 +128,7 @@
     <string name="nc_start_conversation">Начать беседу</string>
     <string name="nc_configure_room">Настроить беседу</string>
     <string name="nc_leave">Покинуть беседу</string>
+    <string name="nc_simple_leave">Выйти</string>
     <string name="nc_rename">Переименовать разговор</string>
     <string name="nc_set_password">Задать пароль</string>
     <string name="nc_change_password">Изменить пароль</string>
@@ -137,12 +139,21 @@
     <string name="nc_make_call_private">Сделать беседу личной</string>
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete">Удалить</string>
+    <string name="nc_delete_conversation_default">Подтвердите удаление этого обсуждения.</string>
+    <string name="nc_delete_conversation_one2one">При удалении беседы, она будет также
+ удалена у %1$s.</string>
+    <string name="nc_delete_conversation_more">При удалении беседы, она будет также
+удалена у других участников.</string>
+
     <string name="nc_new_conversation_short">Новая</string>
     <string name="nc_new_conversation">Новая беседа</string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
     <string name="nc_join_via_web">Присоединиться через веб</string>
+    <string name="nc_favorite_conversation">Добавить в избранное</string>
     <string name="nc_add_to_favorites">Добавить в избранное</string>
     <string name="nc_remove_from_favorites">Удалить из избранного</string>
+    <string name="nc_favorites_explanation">Беседа будет закреплена вверху списка</string>
+
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->

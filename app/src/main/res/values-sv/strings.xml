@@ -160,6 +160,7 @@
     <string name="nc_favorites_explanation">Konversationen kommer att fästas på toppen av
         konversationslistan</string>
 
+    <string name="nc_select_contacts">Hitta deltagare</string>
     <string name="nc_contacts_done">Färdig</string>
 
     <!-- Permissions -->
@@ -312,4 +313,5 @@
     <string name="nc_copy_message">Kopia</string>
     <string name="nc_reply">Svara</string>
 
+    <string name="nc_search_for_more">Sök efter fler deltagare</string>
     </resources>

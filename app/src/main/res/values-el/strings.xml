@@ -158,6 +158,7 @@
     <string name="nc_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>
     <string name="nc_favorites_explanation">Η συνομιλία θα καρφιτσωθεί στην κορυφή της λίστας</string>
 
+    <string name="nc_select_contacts">Βρείτε συμμετέχοντες</string>
     <string name="nc_contacts_done">Ολοκληρώθηκε</string>
 
     <!-- Permissions -->
@@ -265,6 +266,8 @@
     <string name="nc_circles">Κύκλοι</string>
     <string name="nc_emails">Ηλ.Μηνύματα</string>
     <string name="nc_participants">Συμμετέχοντες</string>
+    <string name="nc_others">Άλλοι</string>
+
     <string name="nc_owner">Ιδιοκτήτης</string>
     <string name="nc_moderator">Συντονιστής</string>
     <string name="nc_user">Χρήστης</string>
@@ -308,4 +311,5 @@
     <string name="nc_copy_message">Αντιγραφή</string>
     <string name="nc_reply">Απάντηση</string>
 
+    <string name="nc_search_for_more">Αναζήτηση περισσότερων συμμετεχόντων</string>
     </resources>
