@@ -43,6 +43,7 @@ class ContactsViewFooterSource(private val context: Context, private val element
     override fun getElementType(data: Data<Participant, String>) = elementType
 
     override fun computeFooters(page: Page, list: List<Participant>): List<Data<Participant, String>> {
+        lastAnchor = null
         val results = arrayListOf<Data<Participant, String>>()
         lastAnchor = if (list.isNotEmpty()) {
             val participant = list.takeLast(1)[0]

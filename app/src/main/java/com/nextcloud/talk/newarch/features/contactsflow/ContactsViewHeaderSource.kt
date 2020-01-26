@@ -32,12 +32,13 @@ import com.otaliastudios.elements.extensions.HeaderSource
 class ContactsHeaderSource(private val context: Context, private val elementType: Int) : HeaderSource<Participant, String>() {
 
     // Store the last header that was added, even if it belongs to a previous page.
-    private var lastHeader: String = ""
+    private var headersAlreadyAdded = mutableListOf<String>()
 
     override fun dependsOn(source: Source<*>) = source is ContactsViewSource
 
     override fun computeHeaders(page: Page, list: List<Participant>): List<Data<Participant, String>> {
         val results = arrayListOf<Data<Participant, String>>()
+        headersAlreadyAdded = mutableListOf()
         for (participant in list) {
             val header = when (participant.source) {
                 "users" -> {
@@ -57,9 +58,9 @@ class ContactsHeaderSource(private val context: Context, private val elementType
                 }
             }
 
-            if (header != lastHeader) {
+            if (!headersAlreadyAdded.contains(header)) {
                 results.add(Data(participant, header))
-                lastHeader = header
+                headersAlreadyAdded.add(header)
             }
         }
 
