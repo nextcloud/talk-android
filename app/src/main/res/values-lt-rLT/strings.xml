@@ -111,6 +111,9 @@
     <string name="nc_new_conversation">Naujas pokalbis</string>
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
     <string name="nc_remove_from_favorites">Šalinti iš mėgstamų</string>
+    <string name="nc_favorites_explanation">Pokalbis bus prisegtas pokalbių sąrašo
+        viršuje</string>
+
     <string name="nc_contacts_done">Atlikta</string>
 
     <!-- Permissions -->
@@ -128,6 +131,7 @@
     <string name="nc_notification_settings">Pranešimų nustatymai</string>
     <string name="nc_notify_me_always">Visada pranešti</string>
     <string name="nc_notify_me_never">Niekada nepranešti</string>
+    <string name="nc_mute_calls">Nutildyti skambučius</string>
     <string name="nc_mute_calls_desc">Gaunamųjų skambučių bus nepaisoma</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
     <!-- Bottom sheet menu -->
@@ -220,4 +224,6 @@
     <string name="nc_copy_message">Kopijuoti</string>
     <string name="nc_reply">Atsakyti</string>
 
-    </resources>
+    <string name="nc_search_for_more">Ieškoti daugiau dalyvių</string>
+    <string name="nc_new_group">Nauja grupė</string>
+</resources>

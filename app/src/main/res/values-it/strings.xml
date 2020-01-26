@@ -160,7 +160,10 @@
     <string name="nc_favorites_explanation">La conversazione sarà appuntata in cima all\'elenco
        delle conversazioni</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Trova partecipante</string>
     <string name="nc_select_contacts">Trova partecipanti</string>
+    <string name="nc_select_new_contacts">Trova nuovi partecipanti</string>
     <string name="nc_contacts_done">Fine</string>
 
     <!-- Permissions -->
@@ -314,4 +317,5 @@
     <string name="nc_reply">Rispondi</string>
 
     <string name="nc_search_for_more">Cerca altri partecipanti</string>
-    </resources>
+    <string name="nc_new_group">Nuovo gruppo</string>
+</resources>

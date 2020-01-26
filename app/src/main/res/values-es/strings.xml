@@ -156,7 +156,10 @@
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
     <string name="nc_favorites_explanation">La conversación será colocada en la parte superior de la lista de conversaciones</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Encontrar participantes</string>
     <string name="nc_select_contacts">Encontrar participantes</string>
+    <string name="nc_select_new_contacts">Encuentra nuevos participantes</string>
     <string name="nc_contacts_done">Hecho</string>
 
     <!-- Permissions -->
@@ -310,4 +313,5 @@
     <string name="nc_reply">Responder</string>
 
     <string name="nc_search_for_more">Buscar más participantes</string>
-    </resources>
+    <string name="nc_new_group">Nuevo grupo</string>
+</resources>

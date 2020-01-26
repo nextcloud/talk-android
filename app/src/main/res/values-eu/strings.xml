@@ -26,14 +26,35 @@
     <string name="nc_server_url">Zerbitzariaren helbidea</string>
     <string name="nc_server_not_installed">Mesedez bukatu zure %1$s instalazioa</string>
     <string name="nc_server_db_upgrade_needed">Mesedez eguneratu zure %1$s datu-basea</string>
+    <string name="nc_server_maintenance">Jarri mesedez %1$s mantenutik kanpo</string>
+    <string name="nc_server_version">%1$s (e)k %2$s 13rekin eta goragokoarekin bakarrik egiten du lan</string>
     <string name="nc_server_import_account_plain">Inportatu kontua</string>
     <string name="nc_server_import_accounts_plain">Inportatu kontuak</string>
+    <string name="nc_server_import_account">Inportatu kontua %1$s apptik</string>
+    <string name="nc_server_import_accounts">Inportatu kontuak %1$s apptik</string>
+    <string name="nc_server_failed_to_import_account">Ezin izan da aukeratutako kontua inportatu</string>
+    <string name="nc_server_account_imported">Aukeratutako kontua inportatu da eta eskuragarri dago</string>
+    <string name="nc_server_unsupported">Zerbitzariak ez du instalatuta Talk aplikazio bateragarria</string>
     <string name="nc_get_from_provider">Oraindik zerbitzaririk gabe?\n Egin klik hemen hornitzailetik bat lortzeko</string>
+
+    <!-- Account verification -->
+    <string name="nc_push_disabled">Push jakinarazpenak desgaiturik</string>
+    <string name="nc_capabilities_failed">Akatsak gaitasunak berreskuratzean. Bertan behera uzten.</string>
+    <string name="nc_external_server_failed">Akatsa seinaleen konfigurazioa berreskuratzean</string>
+    <string name="nc_display_name_not_fetched">Ezin izan da erakusteko izena lortu, bertan behera uzten</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s app-a ez dago instalatuta zerbitzarian, bertan behera uzten</string>
+    <string name="nc_display_name_not_stored">Ezin izan da erakusteko izena biltegiratu, bertan behera uzten</string>
 
     <string name="nc_never">Ez da inoiz elkartu</string>
     <string name="nc_search">Bilatu</string>
+    <string name="nc_search_conversations">Bilatu elkarrizketak</string>
+
+    <string name="nc_certificate_dialog_title">Egiaztatu ziurtagiria</string>
+    <string name="nc_certificate_dialog_text">Fio zara %1$s (e)k  %2$s(e)ntzat emandako SSL ziurtagiri ezezagunaz?,  %3$s tik %4$sra baliagarria?</string>
     <string name="nc_yes">Bai</string>
     <string name="nc_no">Ez</string>
+    <string name="nc_certificate_error">Zure SSL konfigurazioak konexioa eragotzi du</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Proxy mota</string>
@@ -41,15 +62,24 @@
     <string name="nc_settings_proxy_port_title">Proxy portua</string>
     <string name="nc_settings_use_credentials_title">Erabili kredentzialak</string>
     <string name="nc_settings_switch_account">Aldatu kontuen artean</string>
+    <string name="nc_settings_reauthorize">Berrbaimendu</string>
+    <string name="nc_client_cert_setup">Konfiguratu bezeroaren ziurtagiria</string>
     <string name="nc_client_cert_change">Aldatu bezeroaren ziurtagiria</string>
     <string name="nc_settings_remove">Ezabatu</string>
+    <string name="nc_settings_remove_confirmation">Mesedez, berretsi oraingo kontua ezabatzeko asmoa duzula.</string>
     <string name="nc_settings_remove_account">Ezabatu kontua</string>
     <string name="nc_settings_add_account">Kontu berria gehitu</string>
     <string name="nc_add">Gehitu</string>
+    <string name="nc_settings_wrong_account">Oraingo kontua baino ezin da berrbaimendu</string>
+    <string name="nc_settings_no_talk_installed">Talk aplikazioa ez dago instalatuta baimendu nahi duzun zerbitzarian</string>
+    <string name="nc_settings_account_updated">Zure kontua eguneratu egin da, beste kontu bat gehitu beharrean</string>
+    <string name="nc_account_scheduled_for_deletion">Kontua ezabatzeko programatuta dago eta ezin da harekin operatu</string>
     <string name="nc_settings_notification_sounds">Jakinarazpen soinuak</string>
+    <string name="nc_settings_call_ringtone">Deiak</string>
     <string name="nc_settings_other_notifications_ringtone">Beste bat</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
     <string name="nc_settings_vibrate">Bibratu</string>
+    <string name="nc_settings_vibrate_desc">Zure telefonoak dardara egingo du isilik ez badago.</string>
     <string name="nc_settings_appearance">Itxura</string>
     <string name="nc_settings_theme_title">Gaia</string>
     <string name="nc_settings_theme_key">Gaia</string>
@@ -58,6 +88,7 @@
     <string name="nc_settings_theme_light">Argia</string>
     <string name="nc_settings_theme_dark">Iluna</string>
     <string name="nc_settings_privacy">Pribatutasuna</string>
+    <string name="nc_settings_screen_lock_title">Pantailaren blokeoa</string>
     <string name="nc_none">Bat ere ez</string>
     <string name="nc_settings_screen_security_title">Pantailaren segurtasuna</string>
     <string name="nc_screen_lock_timeout_30">30 segundu</string>
@@ -69,11 +100,13 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
 
+    <string name="nc_biometric_unlock">Desblokeatu %1$s</string>
     <string name="nc_cancel">Utzi</string>
 
     <string name="nc_no_proxy">Proxyrik ez</string>
     <string name="nc_username">Erabiltzaile-izena</string>
     <string name="nc_password">Pasahitza</string>
+    <string name="nc_conversation_link">Elkarrizketa esteka</string>
     <string name="nc_new_password">Pasahitz berria</string>
     <string name="nc_wrong_password">Pasahitz okerra</string>
     <string name="nc_about">Honi buruz</string>
@@ -86,18 +119,31 @@
 
     <!-- ConversationEntity menu -->
     <string name="nc_start_conversation">Hasi elkarrizketa bat</string>
+    <string name="nc_configure_room">Konfiguratu elkarrizketa</string>
     <string name="nc_leave">Atera elkarrizketatik</string>
+    <string name="nc_leave_message">Mesedez berretsi elkarrizketa honetatik irtetzeko asmoa duzula.</string>
     <string name="nc_simple_leave">Irten</string>
     <string name="nc_rename">Aldatu izena elkarrizktari</string>
     <string name="nc_set_password">Ezarri pasahitz bat</string>
     <string name="nc_change_password">Aldatu pasahitza</string>
     <string name="nc_clear_password">Garbitu pasahitza</string>
     <string name="nc_share_link">Partekatu esteka</string>
+    <string name="nc_share_link_via">Partekatu esteka...</string>
+    <string name="nc_make_call_public">Egin elkarrizketa publikoa</string>
+    <string name="nc_make_call_private">Egin elkarrizketa pribatua</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
     <string name="nc_delete">Ezabatu</string>
     <string name="nc_new_conversation_short">Berria</string>
+    <string name="nc_new_conversation">Elkarrizketa berria</string>
+    <string name="nc_join_via_link">Sartu esteka baten bidez</string>
+    <string name="nc_join_via_web">Sartu web bidez</string>
+    <string name="nc_favorite_conversation">Elkarrizketa gogokoa</string>
     <string name="nc_add_to_favorites">Gehitu gogokoetara</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
+    <!-- Contacts -->
+    <string name="nc_select_contact">Bilatu parte-hartzailea</string>
+    <string name="nc_select_contacts">Bilatu parte-hartzaileak</string>
+    <string name="nc_select_new_contacts">Bilatu parte-hartzaile berriak</string>
     <string name="nc_contacts_done">Egina</string>
 
     <string name="nc_permissions_settings">Ireki ezarpenak</string>
@@ -121,6 +167,7 @@
     <string name="nc_ok">Ados</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
     <string name="nc_proceed">Jarraitu</string>
+    <string name="nc_wrong_link">Elkarrizketa esteka ez da baliozkoa</string>
     <string name="nc_share_subject">Gonbidapen %1$s</string>
     <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
 
@@ -162,6 +209,7 @@
     <string name="nc_groups">Taldeak</string>
     <string name="nc_contacts">Kontaktuak</string>
     <string name="nc_circles">Zirkuluak</string>
+    <string name="nc_emails">E-postak</string>
     <string name="nc_participants">Parte-hartzaileak</string>
     <string name="nc_others">Besteak</string>
 
@@ -169,6 +217,8 @@
     <string name="nc_moderator">Moderatzailea</string>
     <string name="nc_user">Erabiltzailea</string>
     <string name="nc_guest">Gonbidatua</string>
+    <!-- Browser component -->
+    <string name="nc_file_browser">Fitxategi nabigatzailea\"</string>
     <string name="nc_select_files">Hautatu fitxategiak</string>
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_file_browser_refresh">Freskatu</string>
@@ -187,11 +237,16 @@
     <string name="nc_not_defined_error">Errore ezezaguna</string>
     <string name="nc_unauthorized_error">Baimenik gabe</string>
 
+    <string name="nc_oops">Ooops, zerbait oker joan da.</string>
+
     <string name="nc_general_settings">Orokorra</string>
     <string name="nc_allow_guests">Gonbidatuak baimendu</string>
+    <string name="nc_last_moderator_title">Ezin izan da elkarrizketatik irten</string>
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopiatu</string>
     <string name="nc_reply">Erantzun</string>
 
-    </resources>
+    <string name="nc_search_for_more">Bilatu parte-hartzaile gehiago</string>
+    <string name="nc_new_group">Talde berria</string>
+</resources>

@@ -156,7 +156,10 @@
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
     <string name="nc_favorites_explanation">La conversation sera épinglée au-dessus de la listes des conversations.</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Rechercher des participants</string>
     <string name="nc_select_contacts">Rechercher des participants</string>
+    <string name="nc_select_new_contacts">Rechercher de nouveaux participants</string>
     <string name="nc_contacts_done">Terminé</string>
 
     <!-- Permissions -->
@@ -310,4 +313,5 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_reply">Répondre</string>
 
     <string name="nc_search_for_more">Rechercher d\'autres participants</string>
-    </resources>
+    <string name="nc_new_group">Nouveau groupe</string>
+</resources>
