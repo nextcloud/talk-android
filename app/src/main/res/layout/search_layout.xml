@@ -40,8 +40,7 @@
         app:cardBackgroundColor="@color/transparent"
         android:elevation="2dp"
         app:cardElevation="2dp"
-        android:visibility="gone"
-        app:layout_scrollFlags="scroll|enterAlways|snap">
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"

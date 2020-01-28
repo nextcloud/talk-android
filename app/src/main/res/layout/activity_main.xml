@@ -48,6 +48,7 @@
             android:background="@color/transparent"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:contentInsetStartWithNavigation="0dp"
+            app:layout_scrollFlags="enterAlwaysCollapsed|noScroll"
             app:popupTheme="@style/appActionBarPopupMenu" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -57,7 +58,7 @@
         android:id="@+id/controller_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
