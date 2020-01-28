@@ -124,7 +124,7 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
             }
         } else if (element.type == ParticipantElementType.PARTICIPANT_HEADER.ordinal) {
             holder.itemView.titleTextView.text = (element.data as HeaderSource.Data<*, *>).header.toString()
-        } else if (element.type == ParticipantElementType.PARTICIPANT_FOOTER.ordinal){
+        } else if (element.type == ParticipantElementType.PARTICIPANT_FOOTER.ordinal) {
             holder.itemView.messageTextView.text = (element.data as FooterSource.Data<*, *>).footer.toString()
         } else if (element.type == ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal) {
             val pairData = element.data as Pair<*, *>

@@ -26,21 +26,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
-    android:clipToPadding="false"
-    >
+    android:clipToPadding="false">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/searchCardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="12dp"
-        app:contentPaddingLeft="16dp"
-        app:contentPaddingRight="16dp"
         android:background="@color/transparent"
-        app:cardBackgroundColor="@color/transparent"
         android:elevation="2dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/transparent"
         app:cardElevation="2dp"
-        android:visibility="gone">
+        app:contentPaddingLeft="16dp"
+        app:contentPaddingRight="16dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -66,15 +65,6 @@
                     android:visibility="visible"
                     tools:src="@drawable/ic_arrow_back_black_24dp" />
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:indeterminateTint="@color/colorPrimary"
-                    android:visibility="gone" />
-
             </FrameLayout>
 
             <EditText
@@ -88,13 +78,13 @@
                 android:layout_toStartOf="@id/rightContainer"
                 android:layout_toEndOf="@id/leftContainer"
                 android:background="@null"
-                android:textColor="@color/conversation_item_header"
+                android:focusedByDefault="false"
                 android:imeOptions="actionSearch|flagNoExtractUi"
                 android:inputType="textNoSuggestions"
                 android:lines="1"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:focusedByDefault="false"
+                android:textColor="@color/conversation_item_header"
                 android:textCursorDrawable="@null"
                 android:textSize="16sp"
                 tools:hint="Search" />
@@ -132,6 +122,16 @@
                     android:transitionName="userAvatar.transitionTag"
                     android:visibility="visible"
                     tools:src="@tools:sample/avatars[0]" />
+
+                <ProgressBar
+                    android:id="@+id/searchProgressBar"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    android:indeterminateTint="@color/colorPrimary"
+                    android:scaleType="fitCenter" />
 
             </FrameLayout>
         </RelativeLayout>

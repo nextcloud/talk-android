@@ -31,20 +31,19 @@ import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
-import io.reactivex.Observable
 import retrofit2.http.*
 
 interface ApiService {
     @POST
     suspend fun addParticipant(@Header("Authorization") authorization: String,
-                       @Url url: String,
-                       @Query("newParticipant") newParticipant: String,
-                       @Query("source") source: String): AddParticipantOverall
+                               @Url url: String,
+                               @Query("newParticipant") newParticipant: String,
+                               @Query("source") source: String): AddParticipantOverall
 
     @POST
     suspend fun createRoom(@Header("Authorization") authorization: String, @Url url: String,
-                   @Query("roomType") conversationType: Int, @Query("invite") invite: String?, @Query("source") source: String?,
-                   @Query("roomName") conversationName: String?): ConversationOverall
+                           @Query("roomType") conversationType: Int, @Query("invite") invite: String?, @Query("source") source: String?,
+                           @Query("roomName") conversationName: String?): ConversationOverall
 
 
     @GET
@@ -78,12 +77,12 @@ interface ApiService {
 
     @DELETE
     suspend fun unregisterForPushWithServer(@Header("Authorization") authorization: String,
-                                    @Url url: String): GenericOverall
+                                            @Url url: String): GenericOverall
 
     @FormUrlEncoded
     @POST
     suspend fun registerForPushWithProxy(@Url url: String,
-                                 @FieldMap fields: Map<String, String>): Any
+                                         @FieldMap fields: Map<String, String>): Any
 
     /*
         QueryMap items are as follows:
@@ -93,7 +92,7 @@ interface ApiService {
     */
     @DELETE
     suspend fun unregisterForPushWithProxy(@Url url: String?,
-                                   @QueryMap fields: Map<String, String>): Any
+                                           @QueryMap fields: Map<String, String>): Any
 
     @GET
     suspend fun getConversations(

@@ -25,6 +25,7 @@ package com.nextcloud.talk.newarch.features.contactsflow
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
@@ -52,7 +53,7 @@ class ContactsViewModel constructor(
     val selectedParticipantsLiveData: MutableLiveData<List<Participant>> = MutableLiveData()
     val contactsLiveData: MutableLiveData<List<Participant>> = MutableLiveData()
     private val _operationState = MutableLiveData(ContactsViewOperationStateWrapper(ContactsViewOperationState.WAITING, null, null))
-    val operationState: LiveData<ContactsViewOperationStateWrapper> = _operationState
+    val operationState: LiveData<ContactsViewOperationStateWrapper> = _operationState.distinctUntilChanged()
 
     private var searchQuery: String? = null
     private var conversationToken: String? = null
@@ -111,11 +112,12 @@ class ContactsViewModel constructor(
     }
 
     fun addParticipants(conversationToken: String, participants: List<Participant>) {
+        _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.PROCESSING, null, null))
         for (participant in participants) {
             runBlocking {
                 addParticipantToConversationUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, conversationToken, participant.userId, participant.source), object : UseCaseResponse<AddParticipantOverall> {
                     override suspend fun onSuccess(result: AddParticipantOverall) {
-                        // todo
+
                     }
 
                     override suspend fun onError(errorModel: ErrorModel?) {

@@ -24,7 +24,9 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:layout_below="@id/divider"
+        android:paddingBottom="64dp"
         tools:listitem="@layout/rv_item_contact" />
 
 </RelativeLayout>

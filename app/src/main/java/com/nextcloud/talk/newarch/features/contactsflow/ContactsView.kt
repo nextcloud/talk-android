@@ -23,13 +23,10 @@
 package com.nextcloud.talk.newarch.features.contactsflow
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.text.InputType
-import android.view.*
-import android.view.inputmethod.EditorInfo
-import androidx.appcompat.widget.SearchView
-import androidx.core.view.MenuItemCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,6 +34,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
+import com.nextcloud.talk.R
+import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.features.contactsflow.source.FixedListSource
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
@@ -44,14 +43,17 @@ import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.ElementPayload
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.otaliastudios.elements.*
+import com.otaliastudios.elements.Adapter
+import com.otaliastudios.elements.Element
+import com.otaliastudios.elements.Page
+import com.otaliastudios.elements.Presenter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.contacts_list_view.view.*
 import kotlinx.android.synthetic.main.conversations_list_view.view.recyclerView
 import kotlinx.android.synthetic.main.message_state.view.*
+import kotlinx.android.synthetic.main.search_layout.*
+import kotlinx.android.synthetic.main.search_layout.view.*
 import org.koin.android.ext.android.inject
-import com.nextcloud.talk.R
-import com.nextcloud.talk.controllers.ChatController
 
 class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
@@ -61,10 +63,9 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
     private lateinit var participantsAdapter: Adapter
     private lateinit var selectedParticipantsAdapter: Adapter
 
-    private val isGroupConversation = bundle?.containsKey(BundleKeys.KEY_CONVERSATION_NAME) == true
+    private val isNewGroupConversation = bundle?.getBoolean(BundleKeys.KEY_NEW_GROUP_CONVERSATION) == true
     private val hasToken = bundle?.containsKey(BundleKeys.KEY_CONVERSATION_TOKEN) == true
 
-    private var searchMenuItem: MenuItem? = null
     override fun getLayoutId(): Int {
         return R.layout.contacts_list_view
     }
@@ -107,6 +108,8 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
             selectedParticipantsRecyclerView.initRecyclerView(LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false), selectedParticipantsAdapter, true)
         }
 
+        activity?.inputEditText?.addTextChangedListener(DebouncingTextWatcher(lifecycle, ::setSearchQuery))
+
         selectedParticipantsAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 super.onChanged()
@@ -143,6 +146,7 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
             selectedParticipantsLiveData.observe(this@ContactsView) { participants ->
                 view.selectedParticipantsRecyclerView.isVisible = participants.isNotEmpty()
                 view.divider.isVisible = participants.isNotEmpty()
+                floatingActionButton?.isVisible = participants.isNotEmpty()
 
             }
 
@@ -150,10 +154,15 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
                 when (operationState.operationState) {
                     ContactsViewOperationState.OK -> {
                         val bundle = Bundle()
-                        bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, operationState.conversationToken)
-                        router.replaceTopController(RouterTransaction.with(ChatController(bundle))
-                                .popChangeHandler(HorizontalChangeHandler())
-                                .pushChangeHandler(HorizontalChangeHandler()))
+                        if (!hasToken || isNewGroupConversation) {
+                            bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, operationState.conversationToken)
+                            router.replaceTopController(RouterTransaction.with(ChatController(bundle))
+                                    .popChangeHandler(HorizontalChangeHandler())
+                                    .pushChangeHandler(HorizontalChangeHandler()))
+                        } else {
+                            // we added the participants - go back to conversations info
+                            router.popCurrentController()
+                        }
                     }
                     ContactsViewOperationState.PROCESSING -> {
                         // show progress bar and disable everything
@@ -173,6 +182,11 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
         return view
     }
 
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        searchLayout?.settingsButton?.isVisible = false
+    }
+
     private fun toggleSelectedParticipantsViewVisibility() {
         view?.selectedParticipantsRecyclerView?.isVisible = selectedParticipantsAdapter.itemCount > 0
         view?.divider?.isVisible = selectedParticipantsAdapter.itemCount > 0
@@ -182,7 +196,7 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
         if (element.data is Participant?) {
             val participant = element.data as Participant?
 
-            if (isGroupConversation || hasToken) {
+            if (isNewGroupConversation || hasToken) {
                 val isElementSelected = participant?.selected == true
                 participant?.let {
                     if (isElementSelected) {
@@ -210,28 +224,30 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_contacts, menu);
-        searchMenuItem = menu.findItem(R.id.action_search)
-        val searchView = MenuItemCompat.getActionView(menu.findItem(R.id.action_search)) as SearchView
-        searchView.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
-        var imeOptions = EditorInfo.IME_ACTION_SEARCH or EditorInfo.IME_FLAG_NO_FULLSCREEN
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
-            imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
-        }
-        searchView.imeOptions = imeOptions;
-        searchView.queryHint = resources?.getString(R.string.nc_search)
-        searchView.setOnQueryTextListener(DebouncingTextWatcher(lifecycle, ::setSearchQuery))
-    }
-
     private fun setSearchQuery(query: CharSequence?) {
         viewModel.setSearchQuery(query.toString())
     }
 
+    override fun onFloatingActionButtonClick() {
+        if (hasToken) {
+            val conversationToken = bundle?.getString(BundleKeys.KEY_CONVERSATION_TOKEN)
+            conversationToken?.let {
+                viewModel.selectedParticipantsLiveData.value?.let { participants -> viewModel.addParticipants(it, participants) }
+            }
+        }
+    }
+
+    override fun getAppBarLayoutType(): AppBarLayoutType {
+        return AppBarLayoutType.SEARCH_BAR
+    }
+
+    override fun getFloatingActionButtonDrawableRes(): Int {
+        return R.drawable.ic_arrow_forward_white_24px
+    }
+
     override fun getTitle(): String? {
         return when {
-            isGroupConversation -> {
+            isNewGroupConversation -> {
                 resources?.getString(R.string.nc_select_contacts)
             }
             hasToken -> {

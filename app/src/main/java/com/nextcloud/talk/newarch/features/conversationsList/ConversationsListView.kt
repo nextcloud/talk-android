@@ -33,8 +33,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.bluelinelabs.conductor.ControllerChangeHandler
-import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
@@ -42,6 +40,7 @@ import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.R.drawable
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.ContactsController
 import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
@@ -64,6 +63,7 @@ import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.conversations_list_view.view.*
 import kotlinx.android.synthetic.main.message_state.view.*
 import kotlinx.android.synthetic.main.search_layout.*
+import kotlinx.android.synthetic.main.search_layout.view.*
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
 
@@ -107,9 +107,6 @@ class ConversationsListView : BaseView() {
         }
 
         activity?.inputEditText?.addTextChangedListener(DebouncingTextWatcher(lifecycle, ::setSearchQuery))
-        activity?.clearButton?.setOnClickListener {
-            activity?.inputEditText?.text = null
-        }
         activity?.settingsButton?.setOnClickListener {
             val settingsTransitionName = "userAvatar.transitionTag"
             router.pushController(
@@ -142,9 +139,9 @@ class ConversationsListView : BaseView() {
         return view
     }
 
-    override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
-        actionBar?.setIcon(null)
-        super.onChangeStarted(changeHandler, changeType)
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        searchLayout?.settingsButton?.isVisible = true
     }
 
     private fun setSearchQuery(query: CharSequence?) {
@@ -287,7 +284,7 @@ class ConversationsListView : BaseView() {
 
         return items
     }
-
+    
     override fun onFloatingActionButtonClick() {
         router?.pushController(
                 RouterTransaction.with(ContactsView<Any>())

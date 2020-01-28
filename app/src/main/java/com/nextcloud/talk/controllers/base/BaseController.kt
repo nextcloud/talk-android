@@ -38,6 +38,7 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.SwitchAccountController
@@ -52,7 +53,7 @@ import org.koin.android.ext.android.inject
 import java.util.*
 
 abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
-    public enum class AppBarLayoutType {
+    enum class AppBarLayoutType {
         TOOLBAR,
         SEARCH_BAR
     }
@@ -73,6 +74,30 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
             }
 
             return actionBarProvider?.supportActionBar
+        }
+
+    protected val searchLayout: View?
+        get() {
+            var view: View? = null
+            activity?.let {
+                if (it is MainActivity) {
+                    view = it.searchCardView
+                }
+            }
+            return view
+        }
+
+
+    protected val floatingActionButton: FloatingActionButton?
+        get() {
+            var floatingActionButton: FloatingActionButton? = null
+            activity?.let {
+                if (it is MainActivity) {
+                    floatingActionButton = it.floatingActionButton
+                }
+            }
+
+            return floatingActionButton
         }
 
     protected val appBar: AppBarLayout?
@@ -113,8 +138,9 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         val value = getAppBarLayoutType() == AppBarLayoutType.SEARCH_BAR
         activity?.let {
             if (it is MainActivity) {
-                it.searchCardView?.isVisible = value
-                it.floatingActionButton?.isVisible = value
+                searchLayout?.isVisible = value
+                floatingActionButton?.isVisible = value
+                floatingActionButton?.setImageResource(getFloatingActionButtonDrawableRes())
                 it.toolbar.isVisible = !value
 
                 val layoutParams = it.searchCardView?.layoutParams as AppBarLayout.LayoutParams
@@ -128,6 +154,13 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
                 }
 
                 it.searchCardView?.layoutParams = layoutParams
+                it.clearButton?.setOnClickListener {
+                    activity?.inputEditText?.text = null
+                }
+                it.leftButton?.setOnClickListener {
+                    router.popCurrentController()
+                }
+
             }
         }
 
@@ -163,9 +196,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         showSearchOrToolbar()
         setTitle()
         actionBar?.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize > 1)
-        activity?.let {
-            it.searchCardView.leftButton.isVisible = parentController != null || router.backstackSize > 1
-        }
+        activity?.searchCardView?.leftContainer?.isVisible = parentController != null || router.backstackSize > 1
         super.onAttach(view)
     }
 
@@ -224,8 +255,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         return null
     }
 
-    open fun onFloatingActionButtonClick() {
-    }
-
+    open fun onFloatingActionButtonClick() {}
+    open fun getFloatingActionButtonDrawableRes(): Int = R.drawable.ic_add_white_24px
     open fun getAppBarLayoutType(): AppBarLayoutType = AppBarLayoutType.TOOLBAR
 }
