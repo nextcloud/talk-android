@@ -34,7 +34,12 @@
         android:layout_height="56dp"
         android:background="@color/transparent"
         android:elevation="0dp"
+        android:windowContentOverlay="@null"
         app:elevation="0dp">
+
+        <include
+            layout="@layout/search_layout"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -43,11 +48,8 @@
             android:background="@color/transparent"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:contentInsetStartWithNavigation="0dp"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:popupTheme="@style/appActionBarPopupMenu">
+            app:popupTheme="@style/appActionBarPopupMenu" />
 
-            <include layout="@layout/search_layout" />
-        </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
 

@@ -110,18 +110,13 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
             if (it is MainActivity) {
                 it.searchCardView?.isVisible = value
                 it.floatingActionButton?.isVisible = value
-
-                val layoutParams = it.toolbar.layoutParams as AppBarLayout.LayoutParams
+                it.toolbar.isVisible = !value
 
                 if (value) {
-                    layoutParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
                     it.appBar?.setBackgroundResource(R.color.transparent)
                 } else {
-                    layoutParams.scrollFlags = 0
                     it.appBar?.setBackgroundResource(R.color.colorPrimary)
                 }
-
-                it.toolbar.layoutParams = layoutParams
             }
         }
 
