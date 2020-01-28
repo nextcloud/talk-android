@@ -284,7 +284,7 @@ class ConversationsListView : BaseView() {
 
         return items
     }
-    
+
     override fun onFloatingActionButtonClick() {
         router?.pushController(
                 RouterTransaction.with(ContactsView<Any>())

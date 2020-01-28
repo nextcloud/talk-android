@@ -153,6 +153,7 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
             operationState.observe(this@ContactsView) { operationState ->
                 when (operationState.operationState) {
                     ContactsViewOperationState.OK -> {
+                        searchLayout?.searchProgressBar?.isVisible = true
                         val bundle = Bundle()
                         if (!hasToken || isNewGroupConversation) {
                             bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, operationState.conversationToken)
@@ -165,10 +166,11 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
                         }
                     }
                     ContactsViewOperationState.PROCESSING -> {
-                        // show progress bar and disable everything
+                        searchLayout?.searchProgressBar?.isVisible = true
                     }
                     ContactsViewOperationState.CONVERSATION_CREATION_FAILED -> {
                         // dunno what to do yet, an error message somewhere
+                        searchLayout?.searchProgressBar?.isVisible = false
                     }
                     else -> {
                         // do nothing, we're waiting
