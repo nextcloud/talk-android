@@ -46,6 +46,7 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.search_layout.*
+import kotlinx.android.synthetic.main.search_layout.view.*
 import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.android.inject
 import java.util.*
@@ -114,7 +115,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
             if (it is MainActivity) {
                 it.searchCardView?.isVisible = value
                 it.floatingActionButton?.isVisible = value
-                it.toolbar?.isVisible = !value
+                it.toolbar.isVisible = !value
 
                 val layoutParams = it.searchCardView?.layoutParams as AppBarLayout.LayoutParams
 
@@ -162,6 +163,9 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         showSearchOrToolbar()
         setTitle()
         actionBar?.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize > 1)
+        activity?.let {
+            it.searchCardView.leftButton.isVisible = parentController != null || router.backstackSize > 1
+        }
         super.onAttach(view)
     }
 
