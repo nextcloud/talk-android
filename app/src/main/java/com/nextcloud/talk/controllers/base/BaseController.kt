@@ -110,7 +110,6 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
             if (it is MainActivity) {
                 it.searchCardView?.isVisible = value
                 it.floatingActionButton?.isVisible = value
-                it.inputEditText?.hint = getSearchHint()
 
                 val layoutParams = it.toolbar.layoutParams as AppBarLayout.LayoutParams
 
@@ -178,8 +177,10 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
         val title = getTitle()
         val actionBar = actionBar
-        if (title != null && actionBar != null) {
+        if (title != null && actionBar != null && !getIsUsingSearchLayout()) {
             actionBar.title = title
+        } else if (title != null && activity is MainActivity) {
+            activity?.inputEditText?.hint = title
         }
     }
 
@@ -215,5 +216,4 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     }
 
     open fun getIsUsingSearchLayout(): Boolean = false
-    open fun getSearchHint(): String? = null
 }

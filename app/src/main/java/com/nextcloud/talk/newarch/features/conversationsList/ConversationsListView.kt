@@ -291,12 +291,8 @@ class ConversationsListView : BaseView() {
         return true
     }
 
-    override fun getSearchHint(): String? {
-        return resources?.getString(R.string.nc_search_conversations)
-    }
-
     override fun getTitle(): String? {
-        return resources?.getString(R.string.nc_app_name)
+        return resources?.getString(R.string.nc_search_conversations)
     }
 
     override fun onRestoreViewState(view: View, savedViewState: Bundle) {
