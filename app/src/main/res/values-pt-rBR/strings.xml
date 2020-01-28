@@ -160,7 +160,10 @@
     <string name="nc_favorites_explanation">A conversa será fixada na parte superior da
         lista de conversas</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Localizar participantes</string>
     <string name="nc_select_contacts">Localizar participantes</string>
+    <string name="nc_select_new_contacts">Localizar novos participantes</string>
     <string name="nc_contacts_done">Concluído</string>
 
     <!-- Permissions -->
@@ -314,4 +317,5 @@
     <string name="nc_reply">Responder</string>
 
     <string name="nc_search_for_more">Procurar por mais participantes</string>
-    </resources>
+    <string name="nc_new_group">Novo grupo</string>
+</resources>

@@ -160,7 +160,10 @@
     <string name="nc_favorites_explanation">Görüşme, görüşmeler listesinin en üstüne
         sabitlenir</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Katılımcı bul</string>
     <string name="nc_select_contacts">Katılımcı bul</string>
+    <string name="nc_select_new_contacts">Yeni katılımcılar bul</string>
     <string name="nc_contacts_done">Tamam</string>
 
     <!-- Permissions -->
@@ -313,4 +316,6 @@
     <string name="nc_copy_message">Kopyala</string>
     <string name="nc_reply">Yanıtla</string>
 
-    </resources>
+    <string name="nc_search_for_more">Başka katılımcılar arayın</string>
+    <string name="nc_new_group">Yeni grup</string>
+</resources>
