@@ -66,7 +66,9 @@ class DebouncingTextWatcher(
         searchJob?.cancel()
         searchJob = coroutineScope.launch {
             charSequence.let {
-                delay(debouncePeriod)
+                if (!charSequence.isNullOrEmpty()) {
+                    delay(debouncePeriod)
+                }
                 onDebouncingTextWatcherChange(charSequence)
             }
         }
