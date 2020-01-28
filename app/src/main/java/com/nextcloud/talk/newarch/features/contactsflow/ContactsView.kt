@@ -34,7 +34,9 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.features.contactsflow.source.FixedListSource
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
@@ -49,6 +51,7 @@ import kotlinx.android.synthetic.main.conversations_list_view.view.recyclerView
 import kotlinx.android.synthetic.main.message_state.view.*
 import org.koin.android.ext.android.inject
 import com.nextcloud.talk.R
+import com.nextcloud.talk.controllers.ChatController
 
 class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
@@ -143,6 +146,26 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
 
             }
 
+            operationState.observe(this@ContactsView) { operationState ->
+                when (operationState.operationState) {
+                    ContactsViewOperationState.OK -> {
+                        val bundle = Bundle()
+                        bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, operationState.conversationToken)
+                        router.replaceTopController(RouterTransaction.with(ChatController(bundle))
+                                .popChangeHandler(HorizontalChangeHandler())
+                                .pushChangeHandler(HorizontalChangeHandler()))
+                    }
+                    ContactsViewOperationState.PROCESSING -> {
+                        // show progress bar and disable everything
+                    }
+                    ContactsViewOperationState.CONVERSATION_CREATION_FAILED -> {
+                        // dunno what to do yet, an error message somewhere
+                    }
+                    else -> {
+                        // do nothing, we're waiting
+                    }
+                }
+            }
         }
 
         viewModel.initialize(bundle?.getString(BundleKeys.KEY_CONVERSATION_TOKEN), bundle?.containsKey(BundleKeys.KEY_CONVERSATION_NAME) == true)
@@ -176,7 +199,8 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
                 }
             } else {
                 participant?.let {
-                    // create room etc etc
+                    // One to one conversation
+                    viewModel.createConversation(1, it.userId)
                 }
             }
         } else if (element.type == ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal) {

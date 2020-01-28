@@ -64,7 +64,7 @@ import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.GROUP_CONVERSATION
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.notifications.NotificationOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.models.json.push.NotificationUser
@@ -174,11 +174,11 @@ class NotificationWorker(
                 intent.extras!!.getString(KEY_CONVERSATION_TOKEN)
         )
         )
-                .blockingSubscribe(object : Observer<RoomOverall?> {
+                .blockingSubscribe(object : Observer<ConversationOverall?> {
                     override fun onSubscribe(d: Disposable) {}
-                    override fun onNext(roomOverall: RoomOverall) {
+                    override fun onNext(conversationOverall: ConversationOverall) {
                         val conversation: Conversation =
-                                roomOverall.ocs.data
+                                conversationOverall.ocs.data
                         intent.putExtra(
                                 KEY_ROOM,
                                 Parcels.wrap(

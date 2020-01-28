@@ -61,7 +61,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.PUBLIC_CONVERSATION
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType.SYSTEM_CONVERSATION
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
@@ -618,13 +618,13 @@ class ConversationInfoController(args: Bundle) : BaseController(),
         ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser!!.baseUrl, conversationToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<RoomOverall> {
+                .subscribe(object : Observer<ConversationOverall> {
                     override fun onSubscribe(d: Disposable) {
                         roomDisposable = d
                     }
 
-                    override fun onNext(roomOverall: RoomOverall) {
-                        conversation = roomOverall.ocs.data
+                    override fun onNext(conversationOverall: ConversationOverall) {
+                        conversation = conversationOverall.ocs.data
 
                         val conversationCopy = conversation
 

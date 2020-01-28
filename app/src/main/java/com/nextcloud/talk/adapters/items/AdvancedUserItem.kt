@@ -123,7 +123,7 @@ class AdvancedUserItem(
         return model.name != null && Pattern.compile(
                 constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL
         )
-                .matcher(model.name.trim(' '))
+                .matcher(model.name!!.trim(' '))
                 .find()
     }
 

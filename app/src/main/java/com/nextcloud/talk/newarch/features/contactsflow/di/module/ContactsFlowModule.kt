@@ -23,6 +23,8 @@
 package com.nextcloud.talk.newarch.features.contactsflow.di.module
 
 import android.app.Application
+import com.nextcloud.talk.newarch.domain.usecases.AddParticipantToConversationUseCase
+import com.nextcloud.talk.newarch.domain.usecases.CreateConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetContactsUseCase
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewModelFactory
 import com.nextcloud.talk.newarch.services.GlobalService
@@ -32,7 +34,7 @@ import org.koin.dsl.module
 val ContactsFlowModule = module {
     factory {
         createContactsViewModelFactory(
-                androidApplication(), get(), get()
+                androidApplication(), get(), get(), get(), get()
         )
     }
 }
@@ -40,9 +42,11 @@ val ContactsFlowModule = module {
 fun createContactsViewModelFactory(
         application: Application,
         getContactsUseCase: GetContactsUseCase,
+        createConversationUseCase: CreateConversationUseCase,
+        addParticipantToConversationUseCase: AddParticipantToConversationUseCase,
         globalService: GlobalService
 ): ContactsViewModelFactory {
     return ContactsViewModelFactory(
-            application, getContactsUseCase, globalService
+            application, getContactsUseCase, createConversationUseCase, addParticipantToConversationUseCase, globalService
     )
 }

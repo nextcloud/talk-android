@@ -142,7 +142,7 @@ class UserItem(
                         .getString(R.string.nc_guest)
 
                 if (!TextUtils.isEmpty(model.displayName)) {
-                    displayName = model.displayName
+                    displayName = model.displayName!!
                 }
 
                 holder.avatarImageView!!.load(ApiUtils.getUrlForAvatarWithNameForGuests(
@@ -237,9 +237,9 @@ class UserItem(
         return model.displayName != null && (Pattern.compile(
                 constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL
         )
-                .matcher(model.displayName.trim(' '))
+                .matcher(model.displayName!!.trim(' '))
                 .find() || Pattern.compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                .matcher(model.userId.trim(' '))
+                .matcher(model.userId!!.trim(' '))
                 .find())
     }
 

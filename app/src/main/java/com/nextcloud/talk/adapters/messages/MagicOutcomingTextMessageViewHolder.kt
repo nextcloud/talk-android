@@ -86,7 +86,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         var textSize = context.resources.getDimension(R.dimen.chat_text_size)
         if (messageParameters != null && messageParameters.size > 0) {
             for (key in messageParameters.keys) {
-                val individualHashMap: HashMap<String, String>? = message.messageParameters[key]
+                val individualHashMap: HashMap<String, String>? = message.messageParameters!![key]
                 if (individualHashMap != null) {
                     if (individualHashMap["type"] == "user" || (individualHashMap["type"]
                                     == "guest") || individualHashMap["type"] == "call") {
@@ -95,7 +95,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
                                 individualHashMap["id"]!!,
                                 individualHashMap["name"]!!,
                                 individualHashMap["type"]!!,
-                                message.activeUser,
+                                message.activeUser!!,
                                 R.xml.chip_others)
                     } else if (individualHashMap["type"] == "file") {
                         realView.setOnClickListener(View.OnClickListener { v: View? ->

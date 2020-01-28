@@ -46,7 +46,7 @@ import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
@@ -212,13 +212,13 @@ class OperationsMenuController(args: Bundle) : BaseController() {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
-                            .subscribe(object : Observer<RoomOverall> {
+                            .subscribe(object : Observer<ConversationOverall> {
                                 override fun onSubscribe(d: Disposable) {
                                     disposable = d
                                 }
 
-                                override fun onNext(roomOverall: RoomOverall) {
-                                    conversation = roomOverall.ocs.data
+                                override fun onNext(conversationOverall: ConversationOverall) {
+                                    conversation = conversationOverall.ocs.data
                                     fetchCapabilities(credentials)
                                 }
 
@@ -259,25 +259,25 @@ class OperationsMenuController(args: Bundle) : BaseController() {
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .retry(1)
-                                .subscribe(object : Observer<RoomOverall> {
+                                .subscribe(object : Observer<ConversationOverall> {
                                     override fun onSubscribe(d: Disposable) {
 
                                     }
 
-                                    override fun onNext(roomOverall: RoomOverall) {
-                                        conversation = roomOverall.ocs.data
+                                    override fun onNext(conversationOverall: ConversationOverall) {
+                                        conversation = conversationOverall.ocs.data
 
                                         ncApi.getRoom(credentials,
                                                 ApiUtils.getRoom(currentUser!!.baseUrl, conversation!!.token))
                                                 .subscribeOn(Schedulers.io())
                                                 .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(object : Observer<RoomOverall> {
+                                                .subscribe(object : Observer<ConversationOverall> {
                                                     override fun onSubscribe(d: Disposable) {
 
                                                     }
 
-                                                    override fun onNext(roomOverall: RoomOverall) {
-                                                        conversation = roomOverall.ocs.data
+                                                    override fun onNext(conversationOverall: ConversationOverall) {
+                                                        conversation = conversationOverall.ocs.data
                                                         if (conversationType == Conversation.ConversationType.PUBLIC_CONVERSATION && isGroupCallWorkaroundFinal) {
                                                             performGroupCallWorkaround(credentials)
                                                         } else {
@@ -636,7 +636,7 @@ class OperationsMenuController(args: Bundle) : BaseController() {
             if (operationCode != 99) {
                 showResultImage(true, false)
             } else {
-                val roomOverall = o as RoomOverall
+                val roomOverall = o as ConversationOverall
                 conversation = roomOverall.ocs.data
                 initiateConversation(true, serverCapabilities)
             }

@@ -18,22 +18,19 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.conversations;
+package com.nextcloud.talk.models.json.participants
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.models.json.generic.GenericOCS;
-
-import org.parceler.Parcel;
-
-import java.util.List;
-
-import lombok.Data;
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.models.json.conversations.RoomsOCS
+import kotlinx.serialization.Serializable
+import lombok.Data
 
 @Data
-@Parcel
 @JsonObject
-public class RoomsOCS extends GenericOCS {
-    @JsonField(name = "data")
-    public List<Conversation> data;
+@Serializable
+class AddParticipantOverall {
+    @JvmField
+    @JsonField(name = ["ocs"])
+    var ocs: RoomsOCS? = null
 }

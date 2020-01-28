@@ -48,7 +48,20 @@ val UseCasesModule = module {
     single { createUnregisterPushWithProxyUseCase(get(), get()) }
     single { createUnregisterPushWithServerUseCase(get(), get()) }
     single { createGetContactsUseCase(get(), get()) }
+    single { createCreateConversationUseCase(get(), get()) }
+    single { createAddParticipantToConversationUseCase(get(), get()) }
     factory { createChatViewModelFactory(get(), get(), get(), get(), get(), get()) }
+}
+
+fun createAddParticipantToConversationUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
+                                              apiErrorHandler: ApiErrorHandler): AddParticipantToConversationUseCase {
+    return AddParticipantToConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
+}
+
+fun createCreateConversationUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
+                                    apiErrorHandler: ApiErrorHandler
+): CreateConversationUseCase {
+    return CreateConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createGetContactsUseCase(nextcloudTalkRepository: NextcloudTalkRepository,

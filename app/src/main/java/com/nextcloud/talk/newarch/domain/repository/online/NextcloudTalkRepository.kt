@@ -24,8 +24,9 @@ package com.nextcloud.talk.newarch.domain.repository.online
 
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
@@ -33,6 +34,8 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 interface NextcloudTalkRepository {
+    suspend fun addParticipantToConversation(user: UserNgEntity, conversationToken: String, participantId: String, source: String): AddParticipantOverall
+    suspend fun createConversationForUser(user: UserNgEntity, conversationType: Int, invite: String?, source: String?, conversationName: String?): ConversationOverall
     suspend fun getContactsForUser(user: UserNgEntity, groupConversation: Boolean, searchQuery: String?, conversationToken: String?): List<Participant>
     suspend fun registerPushWithServerForUser(user: UserNgEntity, options: Map<String, String>): PushRegistrationOverall
     suspend fun unregisterPushWithServerForUser(user: UserNgEntity): GenericOverall
@@ -60,13 +63,13 @@ interface NextcloudTalkRepository {
     suspend fun getConversationForUser(
             userEntity: UserNgEntity,
             conversationToken: String
-    ): RoomOverall
+    ): ConversationOverall
 
     suspend fun joinConversationForUser(
             userNgEntity: UserNgEntity,
             conversationToken: String,
             conversationPassword: String?
-    ): RoomOverall
+    ): ConversationOverall
 
     suspend fun exitConversationForUser(
             userNgEntity: UserNgEntity,

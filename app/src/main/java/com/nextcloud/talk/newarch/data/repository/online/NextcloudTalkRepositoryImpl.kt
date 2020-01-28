@@ -24,8 +24,9 @@ package com.nextcloud.talk.newarch.data.repository.online
 
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
@@ -58,11 +59,11 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
         )
     }
 
-    override suspend fun getConversationForUser(userEntity: UserNgEntity, conversationToken: String): RoomOverall {
+    override suspend fun getConversationForUser(userEntity: UserNgEntity, conversationToken: String): ConversationOverall {
         return apiService.getConversation(userEntity.getCredentials(), conversationToken)
     }
 
-    override suspend fun joinConversationForUser(userNgEntity: UserNgEntity, conversationToken: String, conversationPassword: String?): RoomOverall {
+    override suspend fun joinConversationForUser(userNgEntity: UserNgEntity, conversationToken: String, conversationPassword: String?): ConversationOverall {
         return apiService.joinConversation(userNgEntity.getCredentials(), ApiUtils.getUrlForSettingMyselfAsActiveParticipant(userNgEntity.baseUrl, conversationToken), conversationPassword)
     }
 
@@ -90,6 +91,14 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
                     ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
             )
         }
+    }
+
+    override suspend fun addParticipantToConversation(user: UserNgEntity, conversationToken: String, participantId: String, source: String): AddParticipantOverall {
+        return apiService.addParticipant(user.getCredentials(), ApiUtils.getUrlForParticipants(user.baseUrl, conversationToken), participantId, source)
+    }
+
+    override suspend fun createConversationForUser(user: UserNgEntity, conversationType: Int, invite: String?, source: String?, conversationName: String?): ConversationOverall {
+        return apiService.createRoom(authorization = user.getCredentials(), url = ApiUtils.getUrlForRoomEndpoint(user.baseUrl), invite = invite, source = source, conversationType = conversationType, conversationName = conversationName)
     }
 
     override suspend fun getContactsForUser(user: UserNgEntity, groupConversation: Boolean, searchQuery: String?, conversationToken: String?): List<Participant> {
@@ -129,7 +138,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
     override suspend fun getConversationsForUser(user: UserNgEntity): List<Conversation> {
         return apiService.getConversations(
                 user.getCredentials(),
-                ApiUtils.getUrlForGetRooms(user.baseUrl)
+                ApiUtils.getUrlForRoomEndpoint(user.baseUrl)
         )
                 .ocs.data
     }

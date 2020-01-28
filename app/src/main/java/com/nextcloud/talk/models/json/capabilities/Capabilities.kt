@@ -23,6 +23,7 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.Serializable
 import lombok.Data
 import org.parceler.Parcel
 import java.util.*
@@ -30,6 +31,7 @@ import java.util.*
 @Data
 @Parcel
 @JsonObject
+@Serializable
 @Parcelize
 data class Capabilities(
         @JsonField(name = ["spreed"])

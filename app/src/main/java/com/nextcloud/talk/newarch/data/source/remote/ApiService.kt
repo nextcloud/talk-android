@@ -24,15 +24,28 @@ package com.nextcloud.talk.newarch.data.source.remote
 
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import io.reactivex.Observable
 import retrofit2.http.*
 
 interface ApiService {
+    @POST
+    suspend fun addParticipant(@Header("Authorization") authorization: String,
+                       @Url url: String,
+                       @Query("newParticipant") newParticipant: String,
+                       @Query("source") source: String): AddParticipantOverall
+
+    @POST
+    suspend fun createRoom(@Header("Authorization") authorization: String, @Url url: String,
+                   @Query("roomType") conversationType: Int, @Query("invite") invite: String?, @Query("source") source: String?,
+                   @Query("roomName") conversationName: String?): ConversationOverall
+
 
     @GET
     suspend fun getContacts(@Header("Authorization") authorization: String, @Url url: String, @Query("limit") limit: Int = 50, @Query("shareTypes[]") shareTypes: List<String>, @QueryMap options: Map<String, String>): AutocompleteOverall
@@ -58,18 +71,18 @@ interface ApiService {
         Server URL is: baseUrl + ocsApiVersion + "/apps/notifications/api/v2/push
      */
     @POST
-    fun registerForPushWithServer(
+    suspend fun registerForPushWithServer(
             @Header("Authorization") authorization: String,
             @Url url: String,
             @QueryMap options: Map<String, String>): PushRegistrationOverall
 
     @DELETE
-    fun unregisterForPushWithServer(@Header("Authorization") authorization: String,
+    suspend fun unregisterForPushWithServer(@Header("Authorization") authorization: String,
                                     @Url url: String): GenericOverall
 
     @FormUrlEncoded
     @POST
-    fun registerForPushWithProxy(@Url url: String,
+    suspend fun registerForPushWithProxy(@Url url: String,
                                  @FieldMap fields: Map<String, String>): Any
 
     /*
@@ -79,7 +92,7 @@ interface ApiService {
           - "userPublicKey": "{{userPublicKey}}"
     */
     @DELETE
-    fun unregisterForPushWithProxy(@Url url: String?,
+    suspend fun unregisterForPushWithProxy(@Url url: String?,
                                    @QueryMap fields: Map<String, String>): Any
 
     @GET
@@ -114,12 +127,12 @@ interface ApiService {
     ): GenericOverall
 
     @GET
-    suspend fun getConversation(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
+    suspend fun getConversation(@Header("Authorization") authorization: String, @Url url: String): ConversationOverall
 
     @FormUrlEncoded
     @POST
     suspend fun joinConversation(@Header("Authorization") authorization: String,
-                                 @Url url: String, @Field("password") password: String?): RoomOverall
+                                 @Url url: String, @Field("password") password: String?): ConversationOverall
 
     @DELETE
     suspend fun exitConversation(@Header("Authorization") authorization: String,

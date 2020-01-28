@@ -99,7 +99,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
-        val author: String = message.actorDisplayName
+        val author: String = message.actorDisplayName!!
         if (!TextUtils.isEmpty(author)) {
             messageAuthor!!.text = author
         } else {
@@ -165,17 +165,17 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
         if (messageParameters != null && messageParameters.size > 0) {
             for (key in messageParameters.keys) {
-                val individualHashMap = message.messageParameters[key]
+                val individualHashMap = message.messageParameters!![key]
                 if (individualHashMap != null) {
                     if (individualHashMap["type"] == "user" || individualHashMap["type"] == "guest" || individualHashMap["type"] == "call") {
-                        if (individualHashMap["id"] == message.activeUser.userId) {
+                        if (individualHashMap["id"] == message.activeUser!!.userId) {
                             messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
                                     messageText!!.context,
                                     messageString,
                                     individualHashMap["id"]!!,
                                     individualHashMap["name"]!!,
                                     individualHashMap["type"]!!,
-                                    message.activeUser,
+                                    message.activeUser!!,
                                     R.xml.chip_you
                             )
                         } else {
@@ -185,7 +185,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
                                     individualHashMap["id"]!!,
                                     individualHashMap["name"]!!,
                                     individualHashMap["type"]!!,
-                                    message.activeUser,
+                                    message.activeUser!!,
                                     R.xml.chip_others
                             )
                         }

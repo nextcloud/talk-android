@@ -25,18 +25,22 @@ package com.nextcloud.talk.newarch.features.contactsflow
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.nextcloud.talk.newarch.domain.usecases.AddParticipantToConversationUseCase
+import com.nextcloud.talk.newarch.domain.usecases.CreateConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetContactsUseCase
 import com.nextcloud.talk.newarch.services.GlobalService
 
 class ContactsViewModelFactory constructor(
         private val application: Application,
         private val getContactsUseCase: GetContactsUseCase,
+        private val createConversationUseCase: CreateConversationUseCase,
+        private val addParticipantToConversationUseCase: AddParticipantToConversationUseCase,
         private val globalService: GlobalService
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return ContactsViewModel(
-                application, getContactsUseCase, globalService
+                application, getContactsUseCase, createConversationUseCase, addParticipantToConversationUseCase, globalService
         ) as T
     }
 }

@@ -92,26 +92,26 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
         if (message.messageType == SINGLE_NC_ATTACHMENT_MESSAGE) {
             // it's a preview for a Nextcloud share
 
-            messageText!!.text = message.getSelectedIndividualHashMap()["name"]
+            messageText!!.text = message.selectedIndividualHashMap!!["name"]
             setClickableString(
-                    message.getSelectedIndividualHashMap()["name"]!!,
-                    message.getSelectedIndividualHashMap()["link"]!!, messageText!!
+                    message.selectedIndividualHashMap!!["name"]!!,
+                    message.selectedIndividualHashMap!!["link"]!!, messageText!!
             )
 
-            if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
+            if (message.selectedIndividualHashMap!!.containsKey("mimetype")) {
                 if (message.imageUrl == "no-preview") {
-                    image.load(getDrawableResourceIdForMimeType(message.getSelectedIndividualHashMap()["mimetype"]))
+                    image.load(getDrawableResourceIdForMimeType(message.selectedIndividualHashMap!!["mimetype"]))
                 }
             } else {
                 fetchFileInformation(
-                        "/" + message.getSelectedIndividualHashMap()["path"],
+                        "/" + message.selectedIndividualHashMap!!["path"],
                         message.activeUser
                 )
             }
 
             image.setOnClickListener { v: View? ->
                 val accountString =
-                        message.activeUser.username + "@" + message.activeUser
+                        message.activeUser!!.username + "@" + message.activeUser!!
                                 .baseUrl
                                 .replace("https://", "")
                                 .replace("http://", "")
@@ -132,13 +132,13 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
                     )
                     filesAppIntent.putExtra(
                             KEY_FILE_ID,
-                            message.getSelectedIndividualHashMap()["id"]
+                            message.selectedIndividualHashMap!!["id"]
                     )
                     context.startActivity(filesAppIntent)
                 } else {
                     val browserIntent = Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse(message.getSelectedIndividualHashMap()["link"])
+                            Uri.parse(message.selectedIndividualHashMap!!["link"])
                     )
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(browserIntent)
@@ -201,11 +201,11 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
     override fun getPayloadForImageLoader(message: ChatMessage): Any {
         val map = HashMap<String, Any>()
         // used for setting a placeholder
-        if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
-            map["mimetype"] = message.getSelectedIndividualHashMap()["mimetype"]!!
+        if (message.selectedIndividualHashMap!!.containsKey("mimetype")) {
+            map["mimetype"] = message.selectedIndividualHashMap!!["mimetype"]!!
         }
 
-        map["hasPreview"] = message.selectedIndividualHashMap.getOrDefault("has-preview", false)
+        map["hasPreview"] = message.selectedIndividualHashMap!!.getOrDefault("has-preview", false)
 
         return ImageLoaderPayload(map)
     }

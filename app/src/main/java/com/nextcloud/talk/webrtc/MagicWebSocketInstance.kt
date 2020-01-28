@@ -468,9 +468,9 @@ class MagicWebSocketInstance internal constructor(
     }
 
     fun getDisplayNameForSession(session: String?): String {
-        return if (usersHashMap.containsKey(session)) {
+        return (if (usersHashMap.containsKey(session)) {
             usersHashMap[session]!!.displayName
-        } else sharedApplication!!.getString(string.nc_nick_guest)
+        } else sharedApplication!!.getString(string.nc_nick_guest))!!
     }
 
     fun getSessionForUserId(userId: String): String? {
@@ -483,9 +483,9 @@ class MagicWebSocketInstance internal constructor(
     }
 
     fun getUserIdForSession(session: String?): String {
-        return if (usersHashMap.containsKey(session)) {
+        return (if (usersHashMap.containsKey(session)) {
             usersHashMap[session]!!.userId
-        } else ""
+        } else "")!!
     }
 
     @Subscribe(threadMode = BACKGROUND)

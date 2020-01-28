@@ -30,6 +30,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.converters.*
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import kotlinx.serialization.Serializable
 import lombok.Data
 import org.parceler.Parcel
 import org.parceler.ParcelConstructor
@@ -38,6 +39,7 @@ import java.util.*
 @Parcel
 @Data
 @JsonObject(serializeNullCollectionElements = true, serializeNullObjects = true)
+@Serializable
 class Conversation {
     @JsonIgnore
     var databaseId: String? = null

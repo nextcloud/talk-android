@@ -27,7 +27,7 @@ import lombok.Data;
 
 @Data
 @JsonObject
-public class RoomOverall {
+public class ConversationOverall {
     @JsonField(name = "ocs")
     public RoomOCS ocs;
 }

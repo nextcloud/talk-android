@@ -23,25 +23,36 @@
 package com.nextcloud.talk.newarch.features.contactsflow
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
+import com.nextcloud.talk.newarch.domain.usecases.AddParticipantToConversationUseCase
+import com.nextcloud.talk.newarch.domain.usecases.CreateConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetContactsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
 import com.nextcloud.talk.newarch.services.GlobalService
+import kotlinx.coroutines.runBlocking
 import org.koin.core.parameter.parametersOf
 
 class ContactsViewModel constructor(
         application: Application,
         private val getContactsUseCase: GetContactsUseCase,
+        private val createConversationUseCase: CreateConversationUseCase,
+        private val addParticipantToConversationUseCase: AddParticipantToConversationUseCase,
         val globalService: GlobalService
 ) : BaseViewModel<ConversationsListView>(application) {
     private val selectedParticipants = mutableListOf<Participant>()
     val selectedParticipantsLiveData: MutableLiveData<List<Participant>> = MutableLiveData()
     val contactsLiveData: MutableLiveData<List<Participant>> = MutableLiveData()
+    private val _operationState = MutableLiveData(ContactsViewOperationStateWrapper(ContactsViewOperationState.WAITING, null, null))
+    val operationState: LiveData<ContactsViewOperationStateWrapper> = _operationState
 
     private var searchQuery: String? = null
     private var conversationToken: String? = null
@@ -73,6 +84,51 @@ class ContactsViewModel constructor(
         selectedParticipantsLiveData.postValue(selectedParticipants)
     }
 
+    fun createConversation(conversationType: Int, invite: String?, conversationName: String? = null, participants: List<Participant> = listOf()) {
+        _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.PROCESSING, null, null))
+        createConversationUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, conversationType, invite, null, conversationName), object : UseCaseResponse<ConversationOverall> {
+            override suspend fun onSuccess(result: ConversationOverall) {
+                if (result.ocs.data.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION || participants.isEmpty()) {
+                    result.ocs.data.token?.let {
+                        _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.OK, null, it))
+
+                    } ?: run {
+                        _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.CONVERSATION_CREATION_FAILED, null, null))
+                    }
+                } else {
+                    result.ocs.data.token?.let { token ->
+                        addParticipants(token, participants)
+                    }
+                }
+            }
+
+            override suspend fun onError(errorModel: ErrorModel?) {
+                _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.CONVERSATION_CREATION_FAILED, errorModel?.getErrorMessage(), null))
+            }
+
+
+        })
+    }
+
+    fun addParticipants(conversationToken: String, participants: List<Participant>) {
+        for (participant in participants) {
+            runBlocking {
+                addParticipantToConversationUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, conversationToken, participant.userId, participant.source), object : UseCaseResponse<AddParticipantOverall> {
+                    override suspend fun onSuccess(result: AddParticipantOverall) {
+                        // todo
+                    }
+
+                    override suspend fun onError(errorModel: ErrorModel?) {
+                        // handle errors
+                    }
+
+                })
+            }
+        }
+
+        _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.OK, null, conversationToken))
+    }
+
     private fun loadContacts() {
         getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, groupConversation, searchQuery, conversationToken), object :
                 UseCaseResponse<List<Participant>> {
@@ -82,7 +138,7 @@ class ContactsViewModel constructor(
                 val sortedList = result.sortedWith(compareBy({
                     sortPriority[it.source]
                 }, {
-                    it.displayName.toLowerCase()
+                    it.displayName!!.toLowerCase()
                 }))
 
                 val selectedUserIds = selectedParticipants.map { it.userId }

@@ -73,8 +73,8 @@ fun MessageEntity.toChatMessage(): ChatMessage {
 
 @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 fun ChatMessage.toMessageEntity(): MessageEntity {
-    val messageEntity = MessageEntity(this.internalConversationId + "@" + this.jsonMessageId, this.activeUser.id.toString() + "@" + this.internalConversationId)
-    messageEntity.messageId = this.jsonMessageId
+    val messageEntity = MessageEntity(this.internalConversationId + "@" + this.jsonMessageId, this.activeUser!!.id.toString() + "@" + this.internalConversationId)
+    messageEntity.messageId = this.jsonMessageId!!
     messageEntity.actorType = this.actorType
     messageEntity.actorId = this.actorId
     messageEntity.actorDisplayName = this.actorDisplayName

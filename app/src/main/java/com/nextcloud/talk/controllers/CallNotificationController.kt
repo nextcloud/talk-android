@@ -232,7 +232,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     }
 
     private fun handleFromNotification() {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(userBeingCalled!!.baseUrl))
+        ncApi.getRooms(credentials, ApiUtils.getUrlForRoomEndpoint(userBeingCalled!!.baseUrl))
                 .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -241,7 +241,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
                     override fun onSubscribe(d: Disposable) {}
 
                     override fun onNext(roomsOverall: RoomsOverall) {
-                        for (conversation in roomsOverall.ocs.data) {
+                        for (conversation in roomsOverall.ocs.data!!) {
                             if (roomId == conversation.conversationId) {
                                 currentConversation = conversation
                                 runAllThings()

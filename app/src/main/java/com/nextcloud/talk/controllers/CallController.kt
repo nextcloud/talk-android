@@ -53,7 +53,7 @@ import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.*
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
@@ -343,7 +343,7 @@ class CallController(args: Bundle) : BaseController() {
     }
 
     private fun handleFromNotification() {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
+        ncApi.getRooms(credentials, ApiUtils.getUrlForRoomEndpoint(baseUrl))
                 .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -353,7 +353,7 @@ class CallController(args: Bundle) : BaseController() {
                     }
 
                     override fun onNext(roomsOverall: RoomsOverall) {
-                        for (conversation in roomsOverall.ocs.data) {
+                        for (conversation in roomsOverall?.ocs?.data!!) {
                             if (roomId == conversation.conversationId) {
                                 roomToken = conversation.token.toString()
                                 break
@@ -1036,13 +1036,13 @@ class CallController(args: Bundle) : BaseController() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
-                .subscribe(object : Observer<RoomOverall> {
+                .subscribe(object : Observer<ConversationOverall> {
                     override fun onSubscribe(d: Disposable) {
 
                     }
 
-                    override fun onNext(roomOverall: RoomOverall) {
-                        callSession = roomOverall.ocs.data
+                    override fun onNext(conversationOverall: ConversationOverall) {
+                        callSession = conversationOverall.ocs.data
                                 .sessionId
                         callOrJoinRoomViaWebSocket()
                     }
@@ -1548,9 +1548,9 @@ class CallController(args: Bundle) : BaseController() {
                     override fun onNext(participantsOverall: ParticipantsOverall) {
                         participantMap = HashMap()
                         for (participant in participantsOverall.ocs.data) {
-                            participantMap[participant.sessionId] = participant
+                            participantMap[participant.sessionId!!] = participant
                             if (activity != null) {
-                                activity!!.runOnUiThread { setupAvatarForSession(participant.sessionId) }
+                                activity!!.runOnUiThread { setupAvatarForSession(participant.sessionId!!) }
                             }
                         }
                     }
@@ -1937,7 +1937,7 @@ class CallController(args: Bundle) : BaseController() {
                 if (hasMCU) {
                     userId = webSocketClient!!.getUserIdForSession(session)
                 } else {
-                    userId = participantMap[session]!!.userId
+                    userId = participantMap[session]!!.userId!!
                 }
 
                 if (!TextUtils.isEmpty(userId)) {

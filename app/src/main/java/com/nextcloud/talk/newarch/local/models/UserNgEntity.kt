@@ -32,9 +32,11 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.Serializable
 import java.util.*
 
 @Parcelize
+@Serializable
 @Entity(tableName = "users")
 data class UserNgEntity(
         @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long?,

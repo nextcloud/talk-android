@@ -65,7 +65,7 @@ import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
@@ -214,12 +214,12 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.`as`(AutoDispose.autoDisposable(scopeProvider))
-                    ?.subscribe(object : Observer<RoomOverall> {
+                    ?.subscribe(object : Observer<ConversationOverall> {
                         override fun onSubscribe(d: Disposable) {
                         }
 
-                        override fun onNext(roomOverall: RoomOverall) {
-                            currentConversation = roomOverall.ocs.data
+                        override fun onNext(conversationOverall: ConversationOverall) {
+                            currentConversation = conversationOverall.ocs.data
                             loadAvatarForStatusBar()
 
                             setTitle()
@@ -251,7 +251,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     }
 
     private fun handleFromNotification() {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(conversationUser?.baseUrl))
+        ncApi.getRooms(credentials, ApiUtils.getUrlForRoomEndpoint(conversationUser?.baseUrl))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.`as`(AutoDispose.autoDisposable(scopeProvider))
@@ -260,7 +260,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                     }
 
                     override fun onNext(roomsOverall: RoomsOverall) {
-                        for (conversation in roomsOverall.ocs.data) {
+                        for (conversation in roomsOverall.ocs.data!!) {
                             if (roomId == conversation.conversationId) {
                                 roomToken = conversation.token
                                 currentConversation = conversation
@@ -800,13 +800,13 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.retry(3)
                     ?.`as`(AutoDispose.autoDisposable(scopeProvider))
-                    ?.subscribe(object : Observer<RoomOverall> {
+                    ?.subscribe(object : Observer<ConversationOverall> {
                         override fun onSubscribe(d: Disposable) {
                         }
 
-                        override fun onNext(roomOverall: RoomOverall) {
+                        override fun onNext(conversationOverall: ConversationOverall) {
                             inConversation = true
-                            currentConversation?.sessionId = roomOverall.ocs.data.sessionId
+                            currentConversation?.sessionId = conversationOverall.ocs.data.sessionId
                             startPing()
 
                             setupWebsocket()
@@ -1167,7 +1167,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                 }
 
                 if (wasFirstMessageProcessing && chatMessageList.size > 0) {
-                    globalLastKnownFutureMessageId = chatMessageList[0].jsonMessageId
+                    globalLastKnownFutureMessageId = chatMessageList[0].jsonMessageId!!
                 }
 
                 if (adapter != null) {
@@ -1205,7 +1205,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                             )
                     ) {
                         if (chatMessage.actorType == "guests") {
-                            conversationUser?.userId = chatMessage.actorId
+                            conversationUser?.userId = chatMessage.actorId!!
                             setSenderId()
                         }
                     }
@@ -1488,32 +1488,32 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.`as`(AutoDispose.autoDisposable(scopeProvider))
-                    ?.subscribe(object : Observer<RoomOverall> {
+                    ?.subscribe(object : Observer<ConversationOverall> {
                         override fun onSubscribe(d: Disposable) {
 
                         }
 
-                        override fun onNext(roomOverall: RoomOverall) {
+                        override fun onNext(conversationOverall: ConversationOverall) {
                             val conversationIntent = Intent(activity, MagicCallActivity::class.java)
                             val bundle = Bundle()
                             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
-                            bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, roomOverall.ocs.data.token)
-                            bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs.data.conversationId)
+                            bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversationOverall.ocs.data.token)
+                            bundle.putString(BundleKeys.KEY_ROOM_ID, conversationOverall.ocs.data.conversationId)
 
                             if (conversationUser != null) {
                                 if (conversationUser.hasSpreedFeatureCapability("chat-v2")) {
                                     bundle.putParcelable(
                                             BundleKeys.KEY_ACTIVE_CONVERSATION,
-                                            Parcels.wrap(roomOverall.ocs.data)
+                                            Parcels.wrap(conversationOverall.ocs.data)
                                     )
                                     conversationIntent.putExtras(bundle)
 
-                                    if (roomOverall != null && roomOverall.ocs != null && roomOverall.ocs.data !=
-                                            null && roomOverall.ocs.data.token != null
+                                    if (conversationOverall != null && conversationOverall.ocs != null && conversationOverall.ocs.data !=
+                                            null && conversationOverall.ocs.data.token != null
                                     ) {
                                         ConductorRemapping.remapChatController(
                                                 router, conversationUser.id!!,
-                                                roomOverall.ocs.data.token!!, bundle, false
+                                                conversationOverall.ocs.data.token!!, bundle, false
                                         )
                                     }
                                 }

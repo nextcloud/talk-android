@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
 
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
-import com.nextcloud.talk.models.json.conversations.RoomOverall;
+import com.nextcloud.talk.models.json.conversations.ConversationOverall;
 import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.generic.Status;
@@ -87,7 +87,7 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken
     */
     @GET
-    Observable<RoomOverall> getRoom(@Header("Authorization") String authorization, @Url String url);
+    Observable<ConversationOverall> getRoom(@Header("Authorization") String authorization, @Url String url);
 
     /*
         QueryMap items are as follows:
@@ -98,8 +98,8 @@ public interface NcApi {
      */
 
     @POST
-    Observable<RoomOverall> createRoom(@Header("Authorization") String authorization, @Url String url,
-                                       @QueryMap Map<String, String> options);
+    Observable<ConversationOverall> createRoom(@Header("Authorization") String authorization, @Url String url,
+                                               @QueryMap Map<String, String> options);
 
     /*
         QueryMap items are as follows:
@@ -174,8 +174,8 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<RoomOverall> joinRoom(@Nullable @Header("Authorization") String authorization,
-                                     @Url String url, @Nullable @Field("password") String password);
+    Observable<ConversationOverall> joinRoom(@Nullable @Header("Authorization") String authorization,
+                                             @Url String url, @Nullable @Field("password") String password);
 
     @DELETE
     Observable<GenericOverall> leaveRoom(@Nullable @Header("Authorization") String authorization,

@@ -135,7 +135,7 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/capabilities";
     }
 
-    public static String getUrlForGetRooms(String baseUrl) {
+    public static String getUrlForRoomEndpoint(String baseUrl) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room";
     }
 

@@ -66,9 +66,9 @@ class MagicSystemMessageViewHolder(itemView: View) : IncomingTextMessageViewHold
                 R.drawable.shape_grouped_incoming_message)
         ViewCompat.setBackground(bubble, bubbleDrawable)
         var messageString: Spannable = SpannableString(message.text)
-        if (message.messageParameters != null && message.messageParameters.size > 0) {
-            for (key in message.messageParameters.keys) {
-                val individualHashMap: HashMap<String, String>? = message.messageParameters[key]
+        if (message.messageParameters != null && message.messageParameters!!.size > 0) {
+            for (key in message.messageParameters!!.keys) {
+                val individualHashMap: HashMap<String, String>? = message.messageParameters!![key]
                 if (individualHashMap != null && (individualHashMap["type"] == "user" || individualHashMap["type"] == "guest" || individualHashMap["type"] == "call")) {
                     messageString = searchAndColor(messageString, "@" + individualHashMap["name"],
                             mentionColor)

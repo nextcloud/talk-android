@@ -24,7 +24,7 @@ package com.nextcloud.talk.newarch.services
 
 import androidx.lifecycle.LiveData
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
@@ -68,8 +68,8 @@ class GlobalService constructor(usersRepository: UsersRepository,
                 currentUser,
                 conversationToken
         ),
-                object : UseCaseResponse<RoomOverall> {
-                    override suspend fun onSuccess(result: RoomOverall) {
+                object : UseCaseResponse<ConversationOverall> {
+                    override suspend fun onSuccess(result: ConversationOverall) {
                         currentUser?.let {
                             conversationsRepository.saveConversationsForUser(it.id!!, listOf(result.ocs.data))
                             globalServiceInterface.gotConversationInfoForUser(it, result.ocs.data, GlobalServiceInterface.OperationStatus.STATUS_OK)
@@ -91,8 +91,8 @@ class GlobalService constructor(usersRepository: UsersRepository,
                 conversationToken,
                 conversationPassword
         ),
-                object : UseCaseResponse<RoomOverall> {
-                    override suspend fun onSuccess(result: RoomOverall) {
+                object : UseCaseResponse<ConversationOverall> {
+                    override suspend fun onSuccess(result: ConversationOverall) {
                         currentUser?.let {
                             conversationsRepository.saveConversationsForUser(it.id!!, listOf(result.ocs.data))
                             currentConversation = conversationsRepository.getConversationForUserWithToken(it.id!!, result.ocs!!.data!!.token!!)

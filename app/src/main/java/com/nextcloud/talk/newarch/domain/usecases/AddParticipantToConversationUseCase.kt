@@ -19,26 +19,26 @@
  *  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package com.nextcloud.talk.newarch.domain.usecases
 
-import com.nextcloud.talk.models.json.conversations.ConversationOverall
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
 import org.koin.core.parameter.DefinitionParameters
 
-class JoinConversationUseCase constructor(
+class AddParticipantToConversationUseCase constructor(
         private val nextcloudTalkRepository: NextcloudTalkRepository,
         apiErrorHandler: ApiErrorHandler?
-) : UseCase<ConversationOverall, Any?>(apiErrorHandler) {
+) : UseCase<AddParticipantOverall, Any?>(apiErrorHandler) {
 
-    override suspend fun run(params: Any?): ConversationOverall {
+    override suspend fun run(params: Any?): AddParticipantOverall {
         val definitionParameters = params as DefinitionParameters
-        return nextcloudTalkRepository.joinConversationForUser(
+        return nextcloudTalkRepository.addParticipantToConversation(
                 definitionParameters[0],
                 definitionParameters[1],
-                definitionParameters[2]
+                definitionParameters[2],
+                definitionParameters[3]
         )
     }
 }

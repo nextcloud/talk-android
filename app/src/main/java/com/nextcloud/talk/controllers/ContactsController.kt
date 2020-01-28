@@ -57,7 +57,7 @@ import com.nextcloud.talk.events.BottomSheetLockEvent
 import com.nextcloud.talk.jobs.AddParticipantsToConversation
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
@@ -248,22 +248,22 @@ class ContactsController : BaseController,
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .`as`(AutoDispose.autoDisposable(scopeProvider))
-                        .subscribe(object : Observer<RoomOverall> {
+                        .subscribe(object : Observer<ConversationOverall> {
                             override fun onSubscribe(d: Disposable) {
 
                             }
 
-                            override fun onNext(roomOverall: RoomOverall) {
+                            override fun onNext(conversationOverall: ConversationOverall) {
                                 val conversationIntent = Intent(activity, MagicCallActivity::class.java)
                                 val bundle = Bundle()
                                 bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser)
                                 bundle.putString(
                                         BundleKeys.KEY_CONVERSATION_TOKEN,
-                                        roomOverall.ocs.data.token
+                                        conversationOverall.ocs.data.token
                                 )
                                 bundle.putString(
                                         BundleKeys.KEY_ROOM_ID,
-                                        roomOverall.ocs.data.conversationId
+                                        conversationOverall.ocs.data.conversationId
                                 )
 
                                 if (currentUser!!.hasSpreedFeatureCapability("chat-v2")) {
@@ -271,28 +271,28 @@ class ContactsController : BaseController,
                                             credentials,
                                             ApiUtils.getRoom(
                                                     currentUser!!.baseUrl,
-                                                    roomOverall.ocs.data.token
+                                                    conversationOverall.ocs.data.token
                                             )
                                     )
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .`as`(AutoDispose.autoDisposable(scopeProvider))
-                                            .subscribe(object : Observer<RoomOverall> {
+                                            .subscribe(object : Observer<ConversationOverall> {
 
                                                 override fun onSubscribe(d: Disposable) {
 
                                                 }
 
-                                                override fun onNext(roomOverall: RoomOverall) {
+                                                override fun onNext(conversationOverall: ConversationOverall) {
                                                     bundle.putParcelable(
                                                             BundleKeys.KEY_ACTIVE_CONVERSATION,
-                                                            Parcels.wrap(roomOverall.ocs.data)
+                                                            Parcels.wrap(conversationOverall.ocs.data)
                                                     )
 
                                                     ConductorRemapping.remapChatController(
                                                             router,
                                                             currentUser!!.id!!,
-                                                            roomOverall.ocs.data.token!!, bundle, true
+                                                            conversationOverall.ocs.data.token!!, bundle, true
                                                     )
                                                 }
 
@@ -608,13 +608,13 @@ class ContactsController : BaseController,
 
         if ("groups" == participant.source) {
             if (participant.selected) {
-                selectedGroupIds.add(participant.userId)
+                selectedGroupIds.add(participant.userId!!)
             } else {
                 selectedGroupIds.remove(participant.userId)
             }
         } else {
             if (participant.selected) {
-                selectedUserIds.add(participant.userId)
+                selectedUserIds.add(participant.userId!!)
             } else {
                 selectedUserIds.remove(participant.userId)
             }
