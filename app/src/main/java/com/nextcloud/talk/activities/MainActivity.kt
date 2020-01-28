@@ -39,6 +39,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.CallNotificationController
 import com.nextcloud.talk.controllers.LockedController
+import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.features.account.serverentry.ServerEntryView
@@ -100,7 +101,13 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     @OnClick(R.id.floatingActionButton)
     fun onFloatingActionButtonClick() {
-        openNewConversationScreen()
+        val backstack = router?.backstack
+        backstack?.let {
+            if (it.size > 0) {
+                val currentController = it[it.size - 1].controller() as BaseController
+                currentController.onFloatingActionButtonClick()
+            }
+        }
     }
 
     override fun onStart() {

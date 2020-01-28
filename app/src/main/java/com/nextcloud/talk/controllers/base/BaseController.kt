@@ -51,6 +51,10 @@ import org.koin.android.ext.android.inject
 import java.util.*
 
 abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
+    public enum class AppBarLayoutType {
+        TOOLBAR,
+        SEARCH_BAR
+    }
 
     open val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
 
@@ -105,12 +109,12 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     }
 
     private fun showSearchOrToolbar() {
-        val value = getIsUsingSearchLayout()
+        val value = getAppBarLayoutType() == AppBarLayoutType.SEARCH_BAR
         activity?.let {
             if (it is MainActivity) {
                 it.searchCardView?.isVisible = value
                 it.floatingActionButton?.isVisible = value
-                it.toolbar.isVisible = !value
+                it.toolbar?.isVisible = !value
 
                 val layoutParams = it.searchCardView?.layoutParams as AppBarLayout.LayoutParams
 
@@ -146,7 +150,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
             disableKeyboardPersonalisedLearning(view as ViewGroup)
 
             activity?.let {
-                if (it is MainActivity && getIsUsingSearchLayout()) {
+                if (it is MainActivity) {
                     disableKeyboardPersonalisedLearning(it.appBar)
                 }
             }
@@ -178,7 +182,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
         val title = getTitle()
         val actionBar = actionBar
-        if (title != null && actionBar != null && !getIsUsingSearchLayout()) {
+        if (title != null && actionBar != null && getAppBarLayoutType() == AppBarLayoutType.TOOLBAR) {
             actionBar.title = title
         } else if (title != null && activity is MainActivity) {
             activity?.inputEditText?.hint = title
@@ -216,5 +220,8 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         return null
     }
 
-    open fun getIsUsingSearchLayout(): Boolean = false
+    open fun onFloatingActionButtonClick() {
+    }
+
+    open fun getAppBarLayoutType(): AppBarLayoutType = AppBarLayoutType.TOOLBAR
 }

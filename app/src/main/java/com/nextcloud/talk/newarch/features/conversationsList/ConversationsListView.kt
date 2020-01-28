@@ -48,6 +48,7 @@ import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.data.presenters.AdvancedEmptyPresenter
+import com.nextcloud.talk.newarch.features.contactsflow.ContactsView
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
@@ -287,8 +288,15 @@ class ConversationsListView : BaseView() {
         return items
     }
 
-    override fun getIsUsingSearchLayout(): Boolean {
-        return true
+    override fun onFloatingActionButtonClick() {
+        router?.pushController(
+                RouterTransaction.with(ContactsView<Any>())
+                        .pushChangeHandler(HorizontalChangeHandler())
+                        .popChangeHandler(HorizontalChangeHandler()))
+    }
+
+    override fun getAppBarLayoutType(): AppBarLayoutType {
+        return AppBarLayoutType.SEARCH_BAR
     }
 
     override fun getTitle(): String? {
