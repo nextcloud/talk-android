@@ -31,6 +31,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluelinelabs.conductor.ControllerChangeHandler
+import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
@@ -238,12 +240,6 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
                 viewModel.selectedParticipantsLiveData.value?.let { participants -> viewModel.addParticipants(it, participants) }
             }
         }
-    }
-
-    override fun onDestroyView(view: View) {
-        super.onDestroyView(view)
-        activity?.inputEditText?.text = null
-        searchLayout?.searchProgressBar?.isVisible = false
     }
 
     override fun getAppBarLayoutType(): AppBarLayoutType {

@@ -126,6 +126,10 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
         actionBar?.setIcon(null)
         setOptionsMenuHidden(true)
+        if (changeType == ControllerChangeType.POP_EXIT || changeType == ControllerChangeType.PUSH_EXIT) {
+            activity?.inputEditText?.text = null
+            searchLayout?.searchProgressBar?.isVisible = false
+        }
         super.onChangeStarted(changeHandler, changeType)
     }
 
