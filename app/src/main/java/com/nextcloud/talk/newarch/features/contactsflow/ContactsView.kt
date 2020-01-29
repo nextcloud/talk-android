@@ -83,8 +83,7 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
         val view = super.onCreateView(inflater, container)
 
         // todo - change empty state magic
-        participantsAdapter = Adapter.builder(this)
-                .addSource(FixedListSource(listOf(Pair(context.getString(R.string.nc_new_group), R.drawable.ic_people_group_white_24px)), ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal))
+        val participantsAdapterBuilder = Adapter.builder(this)
                 //.addSource(FixedListSource(listOf(Pair(context.getString(R.string.nc_join_via_link), R.drawable.ic_link_white_24px)), ParticipantElementType.PARTICIPANT_JOIN_VIA_LINK.ordinal))
                 .addSource(ContactsViewSource(data = viewModel.contactsLiveData, elementType = ParticipantElementType.PARTICIPANT.ordinal))
                 .addSource(ContactsHeaderSource(activity as Context, ParticipantElementType.PARTICIPANT_HEADER.ordinal))
@@ -97,7 +96,12 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
                     view.messageStateImageView.setImageDrawable((activity as Context).getDrawable(R.drawable.ic_announcement_white_24dp))
                 })
                 .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
-                .into(view.recyclerView)
+
+        if (!hasToken) {
+            participantsAdapterBuilder.addSource(FixedListSource(listOf(Pair(context.getString(R.string.nc_new_group), R.drawable.ic_people_group_white_24px)), ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal))
+        }
+
+        participantsAdapter = participantsAdapterBuilder.into(view.selectedParticipantsRecyclerView)
 
         selectedParticipantsAdapter = Adapter.builder(this)
                 .addSource(ContactsViewSource(data = viewModel.selectedParticipantsLiveData, elementType = ParticipantElementType.PARTICIPANT_SELECTED.ordinal, loadingIndicatorsEnabled = false, errorIndicatorEnabled = false, emptyIndicatorEnabled = false))

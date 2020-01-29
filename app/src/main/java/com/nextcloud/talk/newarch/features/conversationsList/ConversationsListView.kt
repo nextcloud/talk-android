@@ -227,7 +227,6 @@ class ConversationsListView : BaseView() {
     }
 
     private fun openNewConversationScreen() {
-        val bundle = Bundle()
         router.pushController(
                 RouterTransaction.with(ContactsView())
                         .pushChangeHandler(HorizontalChangeHandler())
@@ -285,10 +284,7 @@ class ConversationsListView : BaseView() {
     }
 
     override fun onFloatingActionButtonClick() {
-        router?.pushController(
-                RouterTransaction.with(ContactsView())
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
+        openNewConversationScreen()
     }
 
     override fun getAppBarLayoutType(): AppBarLayoutType {
