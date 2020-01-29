@@ -51,7 +51,8 @@ class ContactsViewModel constructor(
 ) : BaseViewModel<ConversationsListView>(application) {
     private val selectedParticipants = mutableListOf<Participant>()
     val selectedParticipantsLiveData: MutableLiveData<List<Participant>> = MutableLiveData()
-    val contactsLiveData: MutableLiveData<List<Participant>> = MutableLiveData()
+    private val _contacts: MutableLiveData<List<Participant>> = MutableLiveData()
+    val contactsLiveData: LiveData<List<Participant>> = _contacts
     private val _operationState = MutableLiveData(ContactsViewOperationStateWrapper(ContactsViewOperationState.WAITING, null, null))
     val operationState: LiveData<ContactsViewOperationStateWrapper> = _operationState.distinctUntilChanged()
 
@@ -150,7 +151,7 @@ class ContactsViewModel constructor(
                     }
                 }
 
-                contactsLiveData.postValue(sortedList)
+                _contacts.postValue(sortedList)
             }
 
             override suspend fun onError(errorModel: ErrorModel?) {
