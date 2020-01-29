@@ -154,9 +154,9 @@ android {
 }
 
 ext {
-  work_version = '2.3.0-rc01'
+  work_version = '2.3.0'
   koin_version = "2.1.0-alpha-1"
-  lifecycle_version = '2.2.0-rc03'
+  lifecycle_version = '2.2.0'
   coil_version = "0.9.1"
   room_version = "2.2.3"
 }
@@ -227,19 +227,19 @@ dependencies {
   implementation 'androidx.appcompat:appcompat:1.1.0'
   implementation 'androidx.core:core-ktx:1.2.0-rc01'
   implementation 'androidx.sharetarget:sharetarget:1.0.0-rc01'
-  implementation 'com.google.android.material:material:1.2.0-alpha03'
+  implementation 'com.google.android.material:material:1.2.0-alpha04'
   implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
   implementation 'com.github.vanniktech:Emoji:0.6.0'
   implementation group: 'androidx.emoji', name: 'emoji-bundled', version: '1.0.0'
   implementation 'org.michaelevans.colorart:library:0.0.3'
-  implementation 'com.google.android:flexbox:1.1.0'
-  implementation 'com.gitlab.bitfireAT:dav4jvm:ee66e8e5'
+  implementation 'com.google.android:flexbox:2.0.0'
+  implementation 'com.gitlab.bitfireAT:dav4jvm:1.0'
   implementation 'org.conscrypt:conscrypt-android:2.2.1'
 
-  implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+  implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
   implementation 'androidx.biometric:biometric:1.0.1'
-  implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
+  implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
   implementation 'androidx.multidex:multidex:2.0.1'
 
@@ -253,9 +253,9 @@ dependencies {
   implementation 'com.bluelinelabs:conductor-autodispose:3.0.0-rc2'
   implementation "com.github.miquelbeltran:conductor-viewmodel:1.0.3"
 
-  implementation 'com.squareup.okhttp3:okhttp:3.14.3'
-  implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.14.3'
-  implementation 'com.squareup.okhttp3:logging-interceptor:3.14.3'
+  implementation 'com.squareup.okhttp3:okhttp:3.14.4'
+  implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.14.4'
+  implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'
 
   implementation 'com.squareup.retrofit2:retrofit:2.7.1'
   implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.1'
@@ -299,7 +299,7 @@ dependencies {
 
   implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
-  implementation 'com.github.cotechde.hwsecurity:hwsecurity-fido:2.4.5'
+  implementation 'com.github.cotechde.hwsecurity:hwsecurity-fido:2.5.1'
 
   implementation 'com.novoda:merlin:1.2.1'
 
@@ -316,10 +316,10 @@ dependencies {
   kapt 'org.parceler:parceler:1.1.12'
 
   testImplementation 'junit:junit:4.13'
-  testImplementation 'org.mockito:mockito-core:3.0.0'
-  testImplementation 'org.powermock:powermock-core:2.0.2'
-  testImplementation 'org.powermock:powermock-module-junit4:2.0.2'
-  testImplementation 'org.powermock:powermock-api-mockito2:2.0.2'
+  testImplementation 'org.mockito:mockito-core:3.2.4'
+  testImplementation 'org.powermock:powermock-core:2.0.4'
+  testImplementation 'org.powermock:powermock-module-junit4:2.0.4'
+  testImplementation 'org.powermock:powermock-api-mockito2:2.0.4'
 
   androidTestImplementation('androidx.test.espresso:espresso-core:3.3.0-alpha03', {
     exclude group: 'com.android.support', module: 'support-annotations'
