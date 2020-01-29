@@ -197,11 +197,12 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     }
 
     override fun onAttach(view: View) {
+        super.onAttach(view)
         showSearchOrToolbar()
         setTitle()
         actionBar?.setDisplayHomeAsUpEnabled(parentController != null || router.backstackSize > 1)
-        activity?.searchCardView?.leftContainer?.isVisible = parentController != null || router.backstackSize > 1
-        super.onAttach(view)
+        searchLayout?.settingsButton?.isVisible = router.backstackSize == 1
+        searchLayout?.leftButton?.isVisible = parentController != null || router.backstackSize > 1
     }
 
     override fun onDetach(view: View) {

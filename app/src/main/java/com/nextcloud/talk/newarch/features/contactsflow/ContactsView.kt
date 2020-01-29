@@ -192,7 +192,6 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        searchLayout?.settingsButton?.isVisible = false
         floatingActionButton?.isVisible = selectedParticipantsAdapter.itemCount > 0
     }
 

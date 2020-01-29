@@ -50,8 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:visibility="gone">
+                android:layout_centerVertical="true">
 
                 <ImageButton
                     android:id="@+id/leftButton"
@@ -87,7 +86,8 @@
                 android:textColor="@color/conversation_item_header"
                 android:textCursorDrawable="@null"
                 android:textSize="16sp"
-                tools:hint="Search" />
+                tools:hint="Search"
+                tools:ignore="UnusedAttribute" />
 
 
             <FrameLayout
@@ -120,7 +120,7 @@
                     android:src="@drawable/ic_settings_white_24dp"
                     android:tint="@color/fg_default"
                     android:transitionName="userAvatar.transitionTag"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     tools:src="@tools:sample/avatars[0]" />
 
                 <ProgressBar
