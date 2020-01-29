@@ -47,8 +47,6 @@
 
     <string name="nc_never">Nikoli pridružen</string>
     <string name="nc_search">Poišči</string>
-    <string name="nc_search_conversations">Preišči pogovore</string>
-
     <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
     <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
     <string name="nc_yes">Da</string>
@@ -159,6 +157,10 @@
     <string name="nc_favorites_explanation">Pogovor bo pripet na vrh
         seznama pogovorov</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Najdi udeleženca</string>
+    <string name="nc_select_contacts">Najdi udeležence</string>
+    <string name="nc_select_new_contacts">Najdi nove udeležence</string>
     <string name="nc_contacts_done">Začni pogovor</string>
 
     <!-- Permissions -->
@@ -180,7 +182,7 @@
     <string name="nc_leaving_call">Poteka zapuščanje klica ...</string>
 
     <!-- Notification channels -->
-    <string name="nc_notification_channel">%1$s na %2$s kanalu za obveščanje</string>
+    <string name="nc_notification_channel">%1$s na kanalu za obveščanje %2$s</string>
     <string name="nc_notification_channel_calls">Kanal obvestil klicev</string>
     <string name="nc_notification_channel_messages">Kanal obvestil sporočil</string>
     <string name="nc_notification_channel_calls_description">Pokaži dohodne klice</string>
@@ -267,6 +269,8 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_circles">Krogi</string>
     <string name="nc_emails">Elektronski naslovi</string>
     <string name="nc_participants">Udeleženci</string>
+    <string name="nc_others">Ostali</string>
+
     <string name="nc_owner">Lastnik</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Uporabnik</string>
@@ -310,4 +314,6 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_copy_message">Kopiraj</string>
     <string name="nc_reply">Odgovori</string>
 
-    </resources>
+    <string name="nc_search_for_more">Poišči več udeležencev</string>
+    <string name="nc_new_group">Nova skupina</string>
+</resources>

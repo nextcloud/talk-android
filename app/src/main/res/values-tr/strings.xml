@@ -47,8 +47,6 @@
 
     <string name="nc_never">Asls katılmadı</string>
     <string name="nc_search">Arama</string>
-    <string name="nc_search_conversations">Görüşme arama</string>
-
     <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
     <string name="nc_certificate_dialog_text">Şimdiye kadar bilinmeyen, %1$s tarafından %2$s için yayınlanmış %3$s ile %4$s tarihleri arasında geçerli olan sertifikaya güvenilsin mi?</string>
     <string name="nc_yes">Evet</string>

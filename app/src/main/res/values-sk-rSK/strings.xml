@@ -47,8 +47,6 @@
 
     <string name="nc_never">Nikdy nepridaný</string>
     <string name="nc_search">Hľadať</string>
-    <string name="nc_search_conversations">Hľadať v rozhovoroch</string>
-
     <string name="nc_certificate_dialog_title">Skontrolujte certifikát</string>
     <string name="nc_certificate_dialog_text">Dôverujete tomuto doteraz neznámemu SSL certifikátu, vydaného %1$s pre %2$s, platného od %3$s do %4$s ?</string>
     <string name="nc_yes">Áno</string>

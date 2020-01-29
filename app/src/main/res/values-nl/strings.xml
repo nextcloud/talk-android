@@ -48,8 +48,6 @@ Kies er eentje van een provider.</string>
 
     <string name="nc_never">Nooit deelgenomen</string>
     <string name="nc_search">Zoeken</string>
-    <string name="nc_search_conversations">Zoek in gesprekken</string>
-
     <string name="nc_certificate_dialog_title">Verifieer het certificaat</string>
     <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
     <string name="nc_yes">Ja</string>

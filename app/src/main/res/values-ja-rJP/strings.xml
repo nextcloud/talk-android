@@ -47,8 +47,6 @@
 
     <string name="nc_never">決して参加しなかった</string>
     <string name="nc_search">検索</string>
-    <string name="nc_search_conversations">会話を検索</string>
-
     <string name="nc_certificate_dialog_title">証明書をチェックアウトする</string>
     <string name="nc_certificate_dialog_text">未確認のSSL証明書を信頼しますか？（ issued by %1$s for %2$s, valid from %3$s to %4$s）</string>
     <string name="nc_yes">はい</string>

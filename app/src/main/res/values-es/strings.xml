@@ -47,8 +47,6 @@
 
     <string name="nc_never">Nunca unido</string>
     <string name="nc_search">Buscar</string>
-    <string name="nc_search_conversations">Buscar conversaciones</string>
-
     <string name="nc_certificate_dialog_title">Comprobar el certificado</string>
     <string name="nc_certificate_dialog_text">¿Confías en el certificado SSL antes desconocido emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
     <string name="nc_yes">Sí</string>
