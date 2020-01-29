@@ -20,7 +20,7 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.contactsflow
+package com.nextcloud.talk.newarch.features.contactsflow.contacts
 
 enum class ParticipantElementType {
     PARTICIPANT,

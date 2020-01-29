@@ -134,6 +134,7 @@
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_username">Username</string>
     <string name="nc_password">Password</string>
+    <string name="nc_password_optional">Password (Optional)</string>
     <string name="nc_password_redacted">Redacted for privacy reasons</string>
     <string name="nc_conversation_link">Conversation link</string>
     <string name="nc_new_password">New password</string>

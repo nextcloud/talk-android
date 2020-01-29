@@ -20,7 +20,7 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.contactsflow
+package com.nextcloud.talk.newarch.features.contactsflow.contacts
 
 import android.content.Context
 import android.view.ViewGroup

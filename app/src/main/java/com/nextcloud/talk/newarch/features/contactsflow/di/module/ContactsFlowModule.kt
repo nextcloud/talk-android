@@ -26,7 +26,7 @@ import android.app.Application
 import com.nextcloud.talk.newarch.domain.usecases.AddParticipantToConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.CreateConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetContactsUseCase
-import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewModelFactory
+import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsViewModelFactory
 import com.nextcloud.talk.newarch.services.GlobalService
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module

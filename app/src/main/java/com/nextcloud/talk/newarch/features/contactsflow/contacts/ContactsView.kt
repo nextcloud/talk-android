@@ -20,7 +20,7 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.contactsflow
+package com.nextcloud.talk.newarch.features.contactsflow.contacts
 
 import android.content.Context
 import android.os.Bundle
@@ -31,8 +31,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bluelinelabs.conductor.ControllerChangeHandler
-import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler

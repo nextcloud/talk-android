@@ -22,7 +22,7 @@
 
 package com.nextcloud.talk.newarch.features.contactsflow.source
 
-import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewSource
+import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsViewSource
 import com.otaliastudios.elements.Source
 import com.otaliastudios.elements.extensions.ListSource
 

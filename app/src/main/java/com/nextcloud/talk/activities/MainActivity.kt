@@ -43,7 +43,7 @@ import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.features.account.serverentry.ServerEntryView
-import com.nextcloud.talk.newarch.features.contactsflow.ContactsView
+import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsView
 import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.ConductorRemapping

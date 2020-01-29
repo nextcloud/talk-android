@@ -20,7 +20,7 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.contactsflow
+package com.nextcloud.talk.newarch.features.contactsflow.contacts
 
 import androidx.lifecycle.LiveData
 import com.nextcloud.talk.models.json.participants.Participant
