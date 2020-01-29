@@ -55,7 +55,7 @@ import kotlinx.android.synthetic.main.search_layout.*
 import kotlinx.android.synthetic.main.search_layout.view.*
 import org.koin.android.ext.android.inject
 
-class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
+class ContactsView(private val bundle: Bundle? = null) : BaseView() {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
 
     private lateinit var viewModel: ContactsViewModel
@@ -153,7 +153,6 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
             operationState.observe(this@ContactsView) { operationState ->
                 when (operationState.operationState) {
                     ContactsViewOperationState.OK -> {
-                        searchLayout?.searchProgressBar?.isVisible = true
                         val bundle = Bundle()
                         if (!hasToken || isNewGroupConversation) {
                             bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, operationState.conversationToken)
@@ -167,6 +166,7 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
                     }
                     ContactsViewOperationState.PROCESSING -> {
                         searchLayout?.searchProgressBar?.isVisible = true
+                        floatingActionButton?.isVisible = false
                     }
                     ContactsViewOperationState.CONVERSATION_CREATION_FAILED -> {
                         // dunno what to do yet, an error message somewhere
@@ -187,6 +187,7 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
     override fun onAttach(view: View) {
         super.onAttach(view)
         searchLayout?.settingsButton?.isVisible = false
+        floatingActionButton?.isVisible = selectedParticipantsAdapter.itemCount > 0
     }
 
     private fun toggleSelectedParticipantsViewVisibility() {
@@ -194,7 +195,7 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
         view?.divider?.isVisible = selectedParticipantsAdapter.itemCount > 0
     }
 
-    private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<T>) {
+    private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<Any>) {
         if (element.data is Participant?) {
             val participant = element.data as Participant?
 
@@ -237,6 +238,12 @@ class ContactsView<T : Any>(private val bundle: Bundle? = null) : BaseView() {
                 viewModel.selectedParticipantsLiveData.value?.let { participants -> viewModel.addParticipants(it, participants) }
             }
         }
+    }
+
+    override fun onDestroyView(view: View) {
+        super.onDestroyView(view)
+        activity?.inputEditText?.text = null
+        searchLayout?.searchProgressBar?.isVisible = false
     }
 
     override fun getAppBarLayoutType(): AppBarLayoutType {

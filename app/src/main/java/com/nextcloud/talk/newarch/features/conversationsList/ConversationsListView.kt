@@ -228,9 +228,8 @@ class ConversationsListView : BaseView() {
 
     private fun openNewConversationScreen() {
         val bundle = Bundle()
-        bundle.putBoolean(BundleKeys.KEY_NEW_CONVERSATION, true)
         router.pushController(
-                RouterTransaction.with(ContactsController(bundle))
+                RouterTransaction.with(ContactsView())
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler()))
     }
@@ -287,7 +286,7 @@ class ConversationsListView : BaseView() {
 
     override fun onFloatingActionButtonClick() {
         router?.pushController(
-                RouterTransaction.with(ContactsView<Any>())
+                RouterTransaction.with(ContactsView())
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler()))
     }

@@ -38,4 +38,6 @@ class FixedListSource(list: List<Any>, elementType: Int) : ListSource<Any>(list,
     override fun dependsOn(source: Source<*>): Boolean {
         return source is ContactsViewSource
     }
+
+
 }

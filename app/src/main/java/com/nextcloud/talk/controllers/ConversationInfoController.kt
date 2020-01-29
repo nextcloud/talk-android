@@ -66,6 +66,7 @@ import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
+import com.nextcloud.talk.newarch.features.contactsflow.ContactsView
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.utils.Images
@@ -501,10 +502,10 @@ class ConversationInfoController(args: Bundle) : BaseController(),
             adapter!!.addListener(this)
             actionTextView.setOnClickListener {
                 val bundle = Bundle()
-                bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
+                bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversation!!.token)
 
                 router.pushController(
-                        (RouterTransaction.with(ContactsController(bundle))
+                        (RouterTransaction.with(ContactsView(bundle))
                                 .pushChangeHandler(HorizontalChangeHandler())
                                 .popChangeHandler(HorizontalChangeHandler()))
                 )

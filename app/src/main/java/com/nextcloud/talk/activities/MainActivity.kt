@@ -182,7 +182,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     private fun openNewConversationScreen() {
         router?.pushController(
-                RouterTransaction.with(ContactsView<Any>())
+                RouterTransaction.with(ContactsView())
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler())
         )
