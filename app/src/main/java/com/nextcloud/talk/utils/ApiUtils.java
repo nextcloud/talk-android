@@ -28,6 +28,7 @@ import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RetrofitBucket;
+import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,17 +68,19 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/core/autocomplete/get";
     }
 
-    public static List<String> getShareTypesForContactsSearch(boolean groupConversation) {
+    public static List<String> getShareTypesForContactsSearch(UserNgEntity user, boolean groupConversation) {
         List<String> shareTypesList = new ArrayList<>();
         // user
         shareTypesList.add("0");
-        if (groupConversation) {
+        if (groupConversation && user.hasSpreedFeatureCapability("invite-groups-and-mails")) {
             // group
             shareTypesList.add("1");
             // email
             shareTypesList.add("4");
-            // remote/circles
-            shareTypesList.add("7");
+            if (user.hasSpreedFeatureCapability("circles-support")) {
+                // remote/circles
+                shareTypesList.add("7");
+            }
         }
 
         return shareTypesList;
