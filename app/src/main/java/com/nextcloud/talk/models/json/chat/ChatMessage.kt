@@ -158,8 +158,8 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
                     }
                     return ApiUtils.getUrlForFilePreviewWithFileId(activeUser!!.baseUrl,
                             individualHashMap["id"], sharedApplication
-                            !!.resources
-                            !!.getDimensionPixelSize(R.dimen.maximum_file_preview_size))
+                    !!.resources
+                    !!.getDimensionPixelSize(R.dimen.maximum_file_preview_size))
                 }
             }
         }
@@ -197,27 +197,27 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
                         sharedApplication!!.getString(R.string.nc_sent_a_gif_you)
                     } else {
                         String.format(sharedApplication
-                                !!.getResources()
+                        !!.resources
                                 .getString(R.string.nc_sent_a_gif),
                                 if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication
-                                        !!.getString(R.string.nc_guest))
+                                !!.getString(R.string.nc_guest))
                     }
                 } else if (messageType == MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
                     return if (actorId.equals(activeUser!!.userId)) {
                         sharedApplication!!.resources.getString(R.string.nc_sent_an_attachment_you)
                     } else {
                         String.format(sharedApplication
-                                !!.resources
+                        !!.resources
                                 .getString(R.string.nc_sent_an_attachment),
                                 if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication
-                                        !!.getString(R.string.nc_guest))
+                                !!.getString(R.string.nc_guest))
                     }
                 } else if (messageType == MessageType.SINGLE_LINK_MESSAGE) {
                     return if (actorId.equals(activeUser!!.userId)) {
                         sharedApplication!!.resources.getString(R.string.nc_sent_a_link_you)
                     } else {
                         String.format(sharedApplication
-                               !! .getResources()
+                        !!.resources
                                 .getString(R.string.nc_sent_a_link),
                                 if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(R.string.nc_guest))
                     }
@@ -226,30 +226,30 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
                         sharedApplication!!.resources.getString(R.string.nc_sent_an_audio_you)
                     } else {
                         String.format(sharedApplication
-                                !!.getResources()
+                        !!.resources
                                 .getString(R.string.nc_sent_an_audio),
                                 if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication
-                                        !!.getString(R.string.nc_guest))
+                                !!.getString(R.string.nc_guest))
                     }
                 } else if (messageType == MessageType.SINGLE_LINK_VIDEO_MESSAGE) {
                     return if (actorId.equals(activeUser!!.userId)) {
                         sharedApplication!!.resources.getString(R.string.nc_sent_a_video_you)
                     } else {
                         String.format(sharedApplication
-                                !!.resources
+                        !!.resources
                                 .getString(R.string.nc_sent_a_video),
                                 if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication
-                                        !!.getString(R.string.nc_guest))
+                                !!.getString(R.string.nc_guest))
                     }
                 } else if (messageType == MessageType.SINGLE_LINK_IMAGE_MESSAGE) {
                     return if (actorId.equals(activeUser!!.userId)) {
                         sharedApplication!!.getString(R.string.nc_sent_an_image_you)
                     } else {
                         String.format(sharedApplication
-                                !!.getResources()
+                        !!.resources
                                 .getString(R.string.nc_sent_an_image),
                                 if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication
-                                        !!.getString(R.string.nc_guest))
+                                !!.getString(R.string.nc_guest))
                     }
                 }
             }

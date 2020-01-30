@@ -20,7 +20,7 @@
  *  
  */
 
-package com.nextcloud.talk.newarch.features.contactsflow.contacts
+package com.nextcloud.talk.newarch.features.contactsflow
 
 import kotlinx.serialization.Serializable
 
@@ -28,7 +28,9 @@ enum class ContactsViewOperationState {
     WAITING,
     PROCESSING,
     OK,
-    CONVERSATION_CREATION_FAILED
+    CONVERSATION_CREATION_FAILED,
+    CONVERSATION_CREATED_WITH_MISSING_TOKEN,
+    CONVERSATION_PASSWORD_NOT_SET
 }
 
 @Serializable

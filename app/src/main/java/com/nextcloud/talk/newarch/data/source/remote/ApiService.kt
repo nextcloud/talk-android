@@ -34,6 +34,12 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import retrofit2.http.*
 
 interface ApiService {
+    @FormUrlEncoded
+    @PUT
+    suspend fun setPasswordForConversation(@Header("Authorization") authorization: String,
+                                           @Url url: String?,
+                                           @Field("password") password: String): GenericOverall
+
     @POST
     suspend fun addParticipant(@Header("Authorization") authorization: String,
                                @Url url: String,

@@ -31,6 +31,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ProgressBar
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.core.view.isVisible
@@ -87,6 +88,17 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
             return view
         }
 
+    protected val toolbarProgressBar: View?
+        get() {
+            var view: ProgressBar? = null
+            activity?.let {
+                if (it is MainActivity) {
+                    view = it.toolbarProgressBar
+                }
+            }
+            return view
+        }
+
 
     protected val floatingActionButton: FloatingActionButton?
         get() {
@@ -127,6 +139,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         actionBar?.setIcon(null)
         setOptionsMenuHidden(true)
         if (changeType == ControllerChangeType.POP_EXIT || changeType == ControllerChangeType.PUSH_EXIT) {
+            toolbarProgressBar?.isVisible = false
             activity?.inputEditText?.text = null
             searchLayout?.searchProgressBar?.isVisible = false
             floatingActionButton?.isVisible = false

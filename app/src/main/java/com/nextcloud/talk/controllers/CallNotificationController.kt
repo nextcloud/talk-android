@@ -241,7 +241,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
                     override fun onSubscribe(d: Disposable) {}
 
                     override fun onNext(roomsOverall: RoomsOverall) {
-                        for (conversation in roomsOverall.ocs.data!!) {
+                        for (conversation in roomsOverall.ocs.data) {
                             if (roomId == conversation.conversationId) {
                                 currentConversation = conversation
                                 runAllThings()

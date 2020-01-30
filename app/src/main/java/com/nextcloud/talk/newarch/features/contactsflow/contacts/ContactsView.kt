@@ -37,6 +37,8 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationState
+import com.nextcloud.talk.newarch.features.contactsflow.groupconversation.GroupConversationView
 import com.nextcloud.talk.newarch.features.contactsflow.source.FixedListSource
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.mvvm.BaseView
@@ -224,7 +226,9 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
                 }
             }
         } else if (element.type == ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal) {
-
+            router.replaceTopController(RouterTransaction.with(GroupConversationView())
+                    .popChangeHandler(HorizontalChangeHandler())
+                    .pushChangeHandler(HorizontalChangeHandler()))
         } else if (element.type == ParticipantElementType.PARTICIPANT_JOIN_VIA_LINK.ordinal) {
 
         }

@@ -93,6 +93,10 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
         }
     }
 
+    override suspend fun setPasswordForConversation(user: UserNgEntity, conversationToken: String, password: String): GenericOverall {
+        return apiService.setPasswordForConversation(user.getCredentials(), ApiUtils.getUrlForPassword(user.baseUrl, conversationToken), password)
+    }
+
     override suspend fun addParticipantToConversation(user: UserNgEntity, conversationToken: String, participantId: String, source: String): AddParticipantOverall {
         return apiService.addParticipant(user.getCredentials(), ApiUtils.getUrlForParticipants(user.baseUrl, conversationToken), participantId, source)
     }
@@ -102,7 +106,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
     }
 
     override suspend fun getContactsForUser(user: UserNgEntity, groupConversation: Boolean, searchQuery: String?, conversationToken: String?): List<Participant> {
-        return apiService.getContacts(authorization = user.getCredentials(), url = ApiUtils.getUrlForContactsSearch(user.baseUrl), shareTypes = ApiUtils.getShareTypesForContactsSearch(groupConversation), options = ApiUtils.getQueryMapForContactsSearch(searchQuery, conversationToken)).ocs.data.map {
+        return apiService.getContacts(authorization = user.getCredentials(), url = ApiUtils.getUrlForContactsSearch(user.baseUrl), shareTypes = ApiUtils.getShareTypesForContactsSearch(user, groupConversation), options = ApiUtils.getQueryMapForContactsSearch(searchQuery, conversationToken)).ocs.data.map {
             val participant = Participant()
             participant.userId = it.id
             participant.displayName = it.label

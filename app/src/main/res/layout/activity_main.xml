@@ -27,7 +27,6 @@
     android:animateLayoutChanges="true"
     tools:context=".activities.MainActivity">
 
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
@@ -49,7 +48,18 @@
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:contentInsetStartWithNavigation="0dp"
             app:layout_scrollFlags="enterAlwaysCollapsed|noScroll"
-            app:popupTheme="@style/appActionBarPopupMenu" />
+            app:popupTheme="@style/appActionBarPopupMenu">
+
+            <ProgressBar
+                android:id="@+id/toolbarProgressBar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="8dp"
+                android:indeterminateTint="@color/hwSecurityRed"
+                android:scaleType="fitCenter" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -58,7 +68,7 @@
         android:id="@+id/controller_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"

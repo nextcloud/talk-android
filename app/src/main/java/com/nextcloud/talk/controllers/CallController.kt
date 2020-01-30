@@ -353,7 +353,7 @@ class CallController(args: Bundle) : BaseController() {
                     }
 
                     override fun onNext(roomsOverall: RoomsOverall) {
-                        for (conversation in roomsOverall?.ocs?.data!!) {
+                        for (conversation in roomsOverall.ocs?.data!!) {
                             if (roomId == conversation.conversationId) {
                                 roomToken = conversation.token.toString()
                                 break

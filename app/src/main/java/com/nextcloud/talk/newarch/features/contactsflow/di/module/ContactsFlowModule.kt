@@ -26,7 +26,9 @@ import android.app.Application
 import com.nextcloud.talk.newarch.domain.usecases.AddParticipantToConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.CreateConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetContactsUseCase
+import com.nextcloud.talk.newarch.domain.usecases.SetConversationPasswordUseCase
 import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsViewModelFactory
+import com.nextcloud.talk.newarch.features.contactsflow.groupconversation.GroupConversationViewModelFactory
 import com.nextcloud.talk.newarch.services.GlobalService
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
@@ -37,6 +39,20 @@ val ContactsFlowModule = module {
                 androidApplication(), get(), get(), get(), get()
         )
     }
+    factory {
+        createGroupConversationViewModelFactory(
+                androidApplication(), get(), get(), get()
+        )
+    }
+}
+
+fun createGroupConversationViewModelFactory(
+        application: Application,
+        createConversationUseCase: CreateConversationUseCase,
+        setConversationPasswordUseCase: SetConversationPasswordUseCase,
+        globalService: GlobalService
+): GroupConversationViewModelFactory {
+    return GroupConversationViewModelFactory(application, createConversationUseCase, setConversationPasswordUseCase, globalService)
 }
 
 fun createContactsViewModelFactory(

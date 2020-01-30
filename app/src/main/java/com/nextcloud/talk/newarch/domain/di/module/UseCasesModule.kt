@@ -50,7 +50,13 @@ val UseCasesModule = module {
     single { createGetContactsUseCase(get(), get()) }
     single { createCreateConversationUseCase(get(), get()) }
     single { createAddParticipantToConversationUseCase(get(), get()) }
+    single { setConversationPasswordUseCase(get(), get()) }
     factory { createChatViewModelFactory(get(), get(), get(), get(), get(), get()) }
+}
+
+fun setConversationPasswordUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
+                                   apiErrorHandler: ApiErrorHandler): SetConversationPasswordUseCase {
+    return SetConversationPasswordUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun createAddParticipantToConversationUseCase(nextcloudTalkRepository: NextcloudTalkRepository,

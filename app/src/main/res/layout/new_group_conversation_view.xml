@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ /*
   ~  * Nextcloud Talk application
   ~  *
@@ -23,45 +22,49 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/conversationNameTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/nc_call_name"
-            android:id="@+id/conversationNameTextInputLayout">
+            android:hint="@string/nc_call_name">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/conversationNameInputEditText"
                 android:layout_width="match_parent"
-                android:layout_margin="8dp"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_margin="8dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:layout_width="match_parent"
-            android:layout_below="@id/conversationNameTextInputLayout"
-            android:layout_height="wrap_content"
             android:id="@+id/allowGuestsSwitchMaterial"
-            android:text="@string/nc_allow_guests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/conversationNameTextInputLayout"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginBottom="8dp">
-        </com.google.android.material.switchmaterial.SwitchMaterial>
+            android:layout_marginBottom="8dp"
+            android:text="@string/nc_allow_guests"></com.google.android.material.switchmaterial.SwitchMaterial>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/nc_password_optional"
             android:layout_below="@id/allowGuestsSwitchMaterial"
-            android:id="@+id/passwordTextInputLayout">
+            android:visibility="gone"
+            android:hint="@string/nc_password_optional">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordInputEditText"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginHorizontal="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_height="match_parent"/>
+                android:layout_marginBottom="8dp" />
         </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>
 </ScrollView>
