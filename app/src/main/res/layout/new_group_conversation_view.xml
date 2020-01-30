@@ -23,6 +23,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true">
 
     <RelativeLayout
@@ -33,6 +34,7 @@
             android:id="@+id/conversationNameTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:endIconMode="clear_text"
             android:hint="@string/nc_call_name">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -45,6 +47,7 @@
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/allowGuestsSwitchMaterial"
             android:layout_width="match_parent"
+            app:useMaterialThemeColors="true"
             android:layout_height="wrap_content"
             android:layout_below="@id/conversationNameTextInputLayout"
             android:layout_marginHorizontal="8dp"
@@ -57,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/allowGuestsSwitchMaterial"
             android:visibility="gone"
+            app:endIconMode="password_toggle"
             android:hint="@string/nc_password_optional">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -64,6 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="8dp"
+                android:inputType="textPassword"
                 android:layout_marginBottom="8dp" />
         </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>

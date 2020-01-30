@@ -54,7 +54,7 @@ class GroupConversationViewModel constructor(
         createConversationUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, conversationType, null, null, conversationName), object : UseCaseResponse<ConversationOverall> {
             override suspend fun onSuccess(result: ConversationOverall) {
                 result.ocs.data.token?.let { token ->
-                    if (conversationPassword != null) {
+                    if (!conversationPassword.isNullOrEmpty()) {
                         setPasswordForConversation(token, conversationPassword)
                     } else {
                         _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.OK, null, token))

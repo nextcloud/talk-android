@@ -106,7 +106,7 @@ class GroupConversationView : BaseView() {
 
     override fun onFloatingActionButtonClick() {
         view?.conversationNameInputEditText?.text?.let { conversationName ->
-            val conversationType = if (view?.allowGuestsSwitchMaterial?.isChecked == true) 2 else 3
+            val conversationType = if (view?.allowGuestsSwitchMaterial?.isChecked == true) 3 else 2
             viewModel.createConversation(conversationType, conversationName.toString(), view?.passwordInputEditText?.text?.toString())
         }
     }

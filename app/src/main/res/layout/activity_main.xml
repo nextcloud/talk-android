@@ -56,7 +56,8 @@
                 android:layout_height="32dp"
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="8dp"
-                android:indeterminateTint="@color/hwSecurityRed"
+                android:visibility="gone"
+                android:indeterminateTint="@color/white"
                 android:scaleType="fitCenter" />
 
         </com.google.android.material.appbar.MaterialToolbar>
