@@ -47,6 +47,8 @@
 
     <string name="nc_never">Nie beigetreten</string>
     <string name="nc_search">Suche</string>
+    <string name="nc_search_conversations">Unterhaltung finden</string>
+
     <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
     <string name="nc_certificate_dialog_text">Vertrauen Sie dem bisher unbekannten SSL Zertifikat, ausgestellt von %1$s für %2$s, gültig von %3$s bis %4$s?</string>
     <string name="nc_yes">Ja</string>
