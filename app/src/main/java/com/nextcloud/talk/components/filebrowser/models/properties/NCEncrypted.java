@@ -41,9 +41,11 @@ public class NCEncrypted implements Property {
     public static final Name NAME =
             new Name(DavUtils.NC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_IS_ENCRYPTED);
 
-    @Getter
-    @Setter
     private boolean ncEncrypted;
+
+    public boolean isNcEncrypted() {
+        return ncEncrypted;
+    }
 
     private NCEncrypted(boolean isEncrypted) {
         ncEncrypted = isEncrypted;

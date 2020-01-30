@@ -42,7 +42,7 @@ public class HelloResponseWebSocketMessage {
 
     public boolean serverHasMCUSupport() {
         return serverHelloResponseFeaturesWebSocketMessage != null
-                && serverHelloResponseFeaturesWebSocketMessage.getFeatures() != null
-                && serverHelloResponseFeaturesWebSocketMessage.getFeatures().contains("mcu");
+                && serverHelloResponseFeaturesWebSocketMessage.features != null
+                && serverHelloResponseFeaturesWebSocketMessage.features.contains("mcu");
     }
 }

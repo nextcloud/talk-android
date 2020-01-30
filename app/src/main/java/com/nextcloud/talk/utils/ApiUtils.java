@@ -150,7 +150,7 @@ public class ApiUtils {
                                                                 @Nullable String invite,
                                                                 @Nullable String conversationName) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
-        retrofitBucket.setUrl(baseUrl + ocsApiVersion + spreedApiVersion + "/room");
+        retrofitBucket.url = (baseUrl + ocsApiVersion + spreedApiVersion + "/room");
         Map<String, String> queryMap = new HashMap<>();
 
         queryMap.put("roomType", roomType);
@@ -162,7 +162,7 @@ public class ApiUtils {
             queryMap.put("roomName", conversationName);
         }
 
-        retrofitBucket.setQueryMap(queryMap);
+        retrofitBucket.queryMap = (queryMap);
 
         return retrofitBucket;
     }
@@ -170,14 +170,14 @@ public class ApiUtils {
     public static RetrofitBucket getRetrofitBucketForAddParticipant(String baseUrl, String token,
                                                                     String user) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
-        retrofitBucket.setUrl(
+        retrofitBucket.url = (
                 baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/participants");
 
         Map<String, String> queryMap = new HashMap<>();
 
         queryMap.put("newParticipant", user);
 
-        retrofitBucket.setQueryMap(queryMap);
+        retrofitBucket.queryMap = (queryMap);
 
         return retrofitBucket;
     }
@@ -185,14 +185,7 @@ public class ApiUtils {
     public static RetrofitBucket getRetrofitBucketForAddGroupParticipant(String baseUrl, String token,
                                                                          String group) {
         RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(baseUrl, token, group);
-        retrofitBucket.getQueryMap().put("source", "groups");
-        return retrofitBucket;
-    }
-
-    public static RetrofitBucket getRetrofitBucketForAddMailParticipant(String baseUrl, String token,
-                                                                        String mail) {
-        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(baseUrl, token, mail);
-        retrofitBucket.getQueryMap().put("source", "emails");
+        retrofitBucket.queryMap.put("source", "groups");
         return retrofitBucket;
     }
 

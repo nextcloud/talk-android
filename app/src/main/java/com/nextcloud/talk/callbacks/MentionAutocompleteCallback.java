@@ -56,7 +56,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         int end = range[1];
         String replacement = item.label;
 
-        StringBuilder replacementStringBuilder = new StringBuilder(item.getLabel());
+        StringBuilder replacementStringBuilder = new StringBuilder(item.label);
         for (EmojiRange emojiRange : EmojiUtils.emojis(replacement)) {
             replacementStringBuilder.delete(emojiRange.start, emojiRange.end);
         }
@@ -64,10 +64,10 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         editable.replace(start, end, replacementStringBuilder.toString() + " ");
         Spans.MentionChipSpan mentionChipSpan =
                 new Spans.MentionChipSpan(DisplayUtils.INSTANCE.getDrawableForMentionChipSpan(context,
-                        item.getId(), item.getLabel(), conversationUser, item.getSource(),
+                        item.id, item.label, conversationUser, item.source,
                         R.xml.chip_you, editText),
                         BetterImageSpan.ALIGN_CENTER,
-                        item.getId(), item.getLabel());
+                        item.id, item.label);
         editable.setSpan(mentionChipSpan, start, start + replacementStringBuilder.toString().length(),
                 Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         return true;

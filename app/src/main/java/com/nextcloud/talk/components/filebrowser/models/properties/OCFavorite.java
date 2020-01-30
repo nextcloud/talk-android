@@ -41,9 +41,11 @@ public class OCFavorite implements Property {
     public static final Property.Name NAME =
             new Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_FAVORITE);
 
-    @Getter
-    @Setter
     private boolean ocFavorite;
+
+    public boolean isOcFavorite() {
+        return ocFavorite;
+    }
 
     OCFavorite(boolean isFavorite) {
         ocFavorite = isFavorite;

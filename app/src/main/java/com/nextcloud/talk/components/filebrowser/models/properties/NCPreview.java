@@ -41,9 +41,11 @@ public class NCPreview implements Property {
     public static final Property.Name NAME =
             new Property.Name(DavUtils.NC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_HAS_PREVIEW);
 
-    @Getter
-    @Setter
     private boolean ncPreview;
+
+    public boolean isNcPreview() {
+        return ncPreview;
+    }
 
     private NCPreview(boolean hasPreview) {
         ncPreview = hasPreview;

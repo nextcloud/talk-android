@@ -41,9 +41,11 @@ public class OCId implements Property {
     public static final Name NAME =
             new Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_REMOTE_ID);
 
-    @Getter
-    @Setter
     private String ocId;
+
+    public String getOcId() {
+        return ocId;
+    }
 
     private OCId(String id) {
         ocId = id;

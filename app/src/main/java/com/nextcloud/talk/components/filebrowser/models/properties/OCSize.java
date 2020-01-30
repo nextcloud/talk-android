@@ -41,9 +41,11 @@ public class OCSize implements Property {
     public static final Property.Name NAME =
             new Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_SIZE);
 
-    @Getter
-    @Setter
     private long ocSize;
+
+    public long getOcSize() {
+        return ocSize;
+    }
 
     private OCSize(long size) {
         ocSize = size;
