@@ -129,6 +129,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         if (changeType == ControllerChangeType.POP_EXIT || changeType == ControllerChangeType.PUSH_EXIT) {
             activity?.inputEditText?.text = null
             searchLayout?.searchProgressBar?.isVisible = false
+            floatingActionButton?.isVisible = false
         }
         super.onChangeStarted(changeHandler, changeType)
     }
@@ -143,7 +144,6 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         activity?.let {
             if (it is MainActivity) {
                 searchLayout?.isVisible = value
-                floatingActionButton?.isVisible = value
                 floatingActionButton?.setImageResource(getFloatingActionButtonDrawableRes())
                 it.toolbar.isVisible = !value
 

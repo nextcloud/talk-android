@@ -142,6 +142,11 @@ class ConversationsListView : BaseView() {
         return view
     }
 
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        floatingActionButton?.isVisible = true
+    }
+
     private fun setSearchQuery(query: CharSequence?) {
         viewModel.filterLiveData.postValue(query)
     }
