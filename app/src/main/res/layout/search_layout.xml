@@ -24,22 +24,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/searchCardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="64dp"
         android:layout_marginHorizontal="12dp"
         android:background="@color/transparent"
-        android:elevation="2dp"
-        android:visibility="gone"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardElevation="2dp"
-        app:contentPaddingLeft="16dp"
-        app:contentPaddingRight="16dp">
+        app:cardCornerRadius="8dp"
+        android:clipChildren="true"
+        android:clipToPadding="false"
+        app:cardUseCompatPadding="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -48,93 +46,109 @@
             <FrameLayout
                 android:id="@+id/leftContainer"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
+                android:minWidth="48dp"
                 android:layout_centerVertical="true">
 
                 <ImageButton
                     android:id="@+id/leftButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:padding="3dp"
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_arrow_back_black_24dp"
-                    android:tint="@color/fg_default"
-                    android:visibility="visible"
-                    tools:src="@drawable/ic_arrow_back_black_24dp" />
+                    android:tint="@color/outlined_icon_tint"
+                    android:visibility="gone"
+                    tools:src="@drawable/ic_arrow_back_black_24dp"/>
 
             </FrameLayout>
 
-            <EditText
-                android:id="@+id/inputEditText"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/searchTextInputLayout"
+                style="@style/Base.Widget.MaterialComponents.TextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignWithParentIfMissing="true"
+                android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_toStartOf="@id/rightContainer"
                 android:layout_toEndOf="@id/leftContainer"
-                android:background="@null"
+                android:layout_toStartOf="@id/rightContainer"
                 android:focusedByDefault="false"
                 android:imeOptions="actionSearch|flagNoExtractUi"
                 android:inputType="textNoSuggestions"
-                android:lines="1"
-                android:maxLines="1"
-                android:singleLine="true"
                 android:textColor="@color/conversation_item_header"
                 android:textCursorDrawable="@null"
-                android:textSize="16sp"
-                tools:hint="Search"
-                tools:ignore="UnusedAttribute" />
+                app:boxBackgroundMode="none"
+                app:boxStrokeColor="@color/transparent"
+                app:errorEnabled="true"
+                app:helperTextEnabled="false"
+                app:hintEnabled="false"
+                tools:ignore="UnusedAttribute">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:background="@android:color/transparent"
+                    android:focusedByDefault="false"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <FrameLayout
                 android:id="@+id/rightContainer"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
+                android:minWidth="48dp"
                 android:layout_centerVertical="true">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/clearButton"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:padding="3dp"
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_baseline_clear_24"
-                    android:tint="@color/fg_default"
+                    android:src="@drawable/ic_cancel_black_24dp"
+                    android:tint="@color/outlined_icon_tint"
                     android:transitionName="userAvatar.transitionTag"
                     android:visibility="gone"
                     tools:src="@tools:sample/avatars[0]" />
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/settingsButton"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:padding="3dp"
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_settings_white_24dp"
-                    android:tint="@color/fg_default"
+                    android:tint="@color/outlined_icon_tint"
                     android:transitionName="userAvatar.transitionTag"
                     android:visibility="gone"
                     tools:src="@tools:sample/avatars[0]" />
 
                 <ProgressBar
                     android:id="@+id/searchProgressBar"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:padding="3dp"
                     android:layout_gravity="center"
                     android:indeterminate="true"
-                    android:visibility="gone"
                     android:indeterminateTint="@color/colorPrimary"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="fitCenter"
+                    android:visibility="gone" />
 
             </FrameLayout>
         </RelativeLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 </merge>
