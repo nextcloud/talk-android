@@ -24,19 +24,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+    android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/searchCardView"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="12dp"
         android:background="@color/transparent"
+        app:cardPreventCornerOverlap="true"
+        android:clipToPadding="true"
+        android:layout_marginBottom="-4dp"
         app:cardCornerRadius="8dp"
-        android:clipChildren="true"
-        android:clipToPadding="false"
         app:cardUseCompatPadding="true">
 
         <RelativeLayout
@@ -75,6 +74,7 @@
                 android:layout_toEndOf="@id/leftContainer"
                 android:layout_toStartOf="@id/rightContainer"
                 android:focusedByDefault="false"
+                android:layout_marginStart="4dp"
                 android:imeOptions="actionSearch|flagNoExtractUi"
                 android:inputType="textNoSuggestions"
                 android:textColor="@color/conversation_item_header"
