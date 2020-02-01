@@ -47,6 +47,8 @@
 
     <string name="nc_never">Gick aldrig med</string>
     <string name="nc_search">Sök</string>
+    <string name="nc_search_conversations">Hitta konversation</string>
+
     <string name="nc_certificate_dialog_title">Kontrollera certifikatet</string>
     <string name="nc_certificate_dialog_text">Litar du på det tills nu okända SSL-certifikatet, skapad av  %1$s för %2$s, giltig från%3$s till %4$s?</string>
     <string name="nc_yes">Ja</string>
@@ -113,6 +115,7 @@
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_username">Användarnamn</string>
     <string name="nc_password">Lösenord</string>
+    <string name="nc_password_optional">Lösenord (valfritt)</string>
     <string name="nc_password_redacted">Reduceras av integritetsskäl</string>
     <string name="nc_conversation_link">Konversationslänk</string>
     <string name="nc_new_password">Nytt lösenord</string>

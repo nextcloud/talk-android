@@ -47,6 +47,8 @@
 
     <string name="nc_never">Ez da inoiz elkartu</string>
     <string name="nc_search">Bilatu</string>
+    <string name="nc_search_conversations">Bilatu elkarrizketa</string>
+
     <string name="nc_certificate_dialog_title">Egiaztatu ziurtagiria</string>
     <string name="nc_certificate_dialog_text">Fio zara %1$s (e)k  %2$s(e)ntzat emandako SSL ziurtagiri ezezagunaz?,  %3$s tik %4$sra baliagarria?</string>
     <string name="nc_yes">Bai</string>
@@ -87,8 +89,17 @@
     <string name="nc_settings_theme_dark">Iluna</string>
     <string name="nc_settings_privacy">Pribatutasuna</string>
     <string name="nc_settings_screen_lock_title">Pantailaren blokeoa</string>
+    <string name="nc_settings_screen_lock_desc">Giltzatu %1$s Androiden pantaila giltzapen edo onartutako metodo biometrikoarekin</string>
+    <string name="nc_settings_screen_lock_timeout_title">Jardun gabeko denbora-muga pantaila blokeatzeko</string>
     <string name="nc_none">Bat ere ez</string>
     <string name="nc_settings_screen_security_title">Pantailaren segurtasuna</string>
+    <string name="nc_settings_screen_security_desc">Azken elementuen zerrenda eta app barnean pantaila-argazkiak ateratzea galarazten du</string>
+    <string name="nc_settings_incognito_keyboard_title">Teklatu ezkutua</string>
+    <string name="nc_settings_incognito_keyboard_desc">Teklatuaren ikasketa pertsonalizatua desgaitzen du (bermerik gabe)</string>
+    <string name="nc_settings_link_previews_title">Erakutsi esteka aurrebistak</string>
+    <string name="nc_settings_link_previews_desc">Jasotako esteka eta onartutako zerbitzuetako edukia aurreikusten onartzen du</string>
+    <string name="nc_locked">Sakatu desblokeatzeko</string>
+
     <string name="nc_screen_lock_timeout_30">30 segundu</string>
     <string name="nc_screen_lock_timeout_60">Minutu 1</string>
     <string name="nc_screen_lock_timeout_300">5 minutu</string>
@@ -104,6 +115,8 @@
     <string name="nc_no_proxy">Proxyrik ez</string>
     <string name="nc_username">Erabiltzaile-izena</string>
     <string name="nc_password">Pasahitza</string>
+    <string name="nc_password_optional">Pasahitza (aukerakoa)</string>
+    <string name="nc_password_redacted">Pribatutasun arrazoiengatik ezabatuta</string>
     <string name="nc_conversation_link">Elkarrizketa esteka</string>
     <string name="nc_new_password">Pasahitz berria</string>
     <string name="nc_wrong_password">Pasahitz okerra</string>
@@ -131,6 +144,13 @@
     <string name="nc_make_call_private">Egin elkarrizketa pribatua</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
     <string name="nc_delete">Ezabatu</string>
+    <string name="nc_delete_conversation_default">Mesedez berretsi elkarrizketa hau
+        ezabatzeko asmoa duzula.</string>
+    <string name="nc_delete_conversation_one2one">Elkarrizketa ezabatzen baduzu %1$s(r)entzat
+        ere ezabatuko da.</string>
+    <string name="nc_delete_conversation_more">Elkarrizketa hau ezabatzen baduzu beste
+        kideentzat ere ezabatuko da.</string>
+
     <string name="nc_new_conversation_short">Berria</string>
     <string name="nc_new_conversation">Elkarrizketa berria</string>
     <string name="nc_join_via_link">Sartu esteka baten bidez</string>
@@ -138,12 +158,18 @@
     <string name="nc_favorite_conversation">Elkarrizketa gogokoa</string>
     <string name="nc_add_to_favorites">Gehitu gogokoetara</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
+    <string name="nc_favorites_explanation">Elkarrizketa zerrendaren goian ainguratuko
+        da</string>
+
     <!-- Contacts -->
     <string name="nc_select_contact">Bilatu parte-hartzailea</string>
     <string name="nc_select_contacts">Bilatu parte-hartzaileak</string>
     <string name="nc_select_new_contacts">Bilatu parte-hartzaile berriak</string>
     <string name="nc_contacts_done">Egina</string>
 
+    <!-- Permissions -->
+    <string name="nc_camera_permission_permanently_denied">Bideo komunikazioa gaitu nahi baduzu eman \"Kamera\" baimena sistemaren ezarpenetan.</string>
+    <string name="nc_microphone_permission_permanently_denied">Ahots komunikazioa gaitu nahi baduzu eman \"Mikrofonoa\" baimena sistemaren ezarpenetan.</string>
     <string name="nc_permissions_settings">Ireki ezarpenak</string>
 
     <!-- Call -->
@@ -152,25 +178,49 @@
     <string name="nc_incoming_call">Honen sarrerako deia</string>
     <string name="nc_nick_guest">Gonbidatua</string>
     <string name="nc_public_call">Elkarrizketa publiko berria</string>
+    <string name="nc_public_call_explanation">Elkarrizketa publikoak bereziki sortutako esteka baten bidez kanpoko
+        jendea gonbidatzen uzten dizute.</string>
+    <string name="nc_call_timeout">Ez da erantzunik egon 45 segundutan, sakatu berriro saiatzeko</string>
     <string name="nc_call_reconnecting">Berriro konektatzen...</string>
+    <string name="nc_offline">Lineaz kanpo zaude momentu honetan, mesedez egiaztatu zure konexioa</string>
     <string name="nc_leaving_call">Deia uzten...</string>
 
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s %2$s jakinarazpen kanalean</string>
+    <string name="nc_notification_channel_calls">Jakinarazpen kanala deitzen du</string>
+    <string name="nc_notification_channel_messages">Mezu jakinarazpen kanala</string>
+    <string name="nc_notification_channel_calls_description">Sarrerako deiak erakusten ditu</string>
     <string name="nc_notification_settings">Jakinarazpen-ezarpenak</string>
     <string name="nc_plain_old_messages">Mezuak</string>
     <string name="nc_notify_me_always">Jakinarazi beti</string>
+    <string name="nc_notify_me_mention">Jakinarazi aipatzen nautenean</string>
     <string name="nc_notify_me_never">Ez jakinarazi inoiz</string>
     <string name="nc_mute_calls">Mututu deiak</string>
+    <string name="nc_mute_calls_desc">Sarrerako deiak ezikusiko dira</string>
     <string name="nc_important_conversation">Elkarrizketa garrantzitsua</string>
+    <string name="nc_important_conversation_desc">Deiak eta mezu jakinarazpenak Ez molestatu moduan ere erakutsiko dira (sistemaren «Baimendu premiazko lehentasunak soilik» ezarpena jarraitzen du)</string>
+
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Barkatu, zerbait txarto joan da!</string>
+    <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du mugikorraren bidez elkarrizketa
+        publikoetara elkartzea onartzen phones. Elkarrizketara web
+        nabigatzaile baten bidez elkartzen saiatu zaitezke.</string>
     <string name="nc_all_ok_operation">Ados, dena eginda!</string>
     <string name="nc_ok">Ados</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
     <string name="nc_proceed">Jarraitu</string>
+    <string name="nc_call_name_is_same">Sartu duzun izena dagoenaren berdina da</string>
     <string name="nc_wrong_link">Elkarrizketa esteka ez da baliozkoa</string>
+    <string name="nc_share_text">Elkartu elkarrizketara hemen %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">Gonbidapen %1$s</string>
     <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Sakatu-hitz-egiteko</string>
+    <string name="nc_push_to_talk_desc">Mikrofonoa desgaituta daukazunean, egin klik &amp;mantendu sakatzerakoan hitz egiteko</string>
+    <string name="nc_configure_cert_auth">Aukeratu autentifikazio ziurtagiria</string>
+    <string name="nc_change_cert_auth">Aldatu autentifikazio ziurtagiria</string>
+
     <!-- Moderation -->
     <string name="nc_demote">Moderatzailetik degradatua</string>
     <string name="nc_promote">Moderatzaile bihurtu zara</string>
@@ -200,10 +250,24 @@
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Zu: %1$s</string>
 
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">Ez dago kargatzeko elementu gehiagorik. Freskatu berriro saiatzeko.</string>
+    <string name="nc_endless_disabled">Ez dago elementu gehiago kargatzeko (maximora iritsi da).</string>
+    <string name="nc_endless_cancel">Erabiltzaileak ezeztatuta.</string>
+    <string name="nc_endless_error">Errore bat gertatu da elementu gehiago kargatzerakoan.</string>
+
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">%1$s(r)ekin duzun elkarrizketaren menua</string>
+    <string name="nc_description_more_menu_public">%1$s taldeko elkarrizketaren menua</string>
+    <string name="nc_description_more_menu_group">%1$s elkarrizketa publikoaren menua</string>
     <string name="nc_description_send_message_button">Bidali mezua</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Elkartu elkarrizketa batera edo hasi berri bat\n Esan kaixo zure lagun eta lankideei!</string>
     <string name="nc_hello">Kaixo</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">%s karaktere limitera iritsi da</string>
     <string name="nc_groups">Taldeak</string>
     <string name="nc_contacts">Kontaktuak</string>
     <string name="nc_circles">Zirkuluak</string>
@@ -215,16 +279,23 @@
     <string name="nc_moderator">Moderatzailea</string>
     <string name="nc_user">Erabiltzailea</string>
     <string name="nc_guest">Gonbidatua</string>
+    <string name="nc_following_link">Erabiltzailea esteka publiko bat jarraitzen ari da</string>
+
     <!-- Browser component -->
     <string name="nc_file_browser">Fitxategi nabigatzailea\"</string>
     <string name="nc_select_files">Hautatu fitxategiak</string>
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_file_browser_refresh">Freskatu</string>
+    <string name="nc_last_modified">%1$s | Azkenengoz aldatuta: %2$s</string>
+
     <!-- Lobby -->
 
     <string name="nc_webinar">Web-mintegia</string>
     <string name="nc_lobby">Sarrera</string>
     <string name="nc_start_time">Hasiera-ordua</string>
+    <string name="nc_lobby_waiting">Sarreran itxaroten zabiltza momentu honetan.</string>
+    <string name="nc_lobby_waiting_with_date">Sarreran itxatoren ari zara momentu honetan.
+        \n Bilera hau %1$s(e)tan dago antolatuta.</string>
     <string name="nc_manual">Ezarri gabe</string>
 
     <!-- Errors -->
@@ -240,6 +311,8 @@
     <string name="nc_general_settings">Orokorra</string>
     <string name="nc_allow_guests">Gonbidatuak baimendu</string>
     <string name="nc_last_moderator_title">Ezin izan da elkarrizketatik irten</string>
+    <string name="nc_last_moderator">Moderatzaile berri bat hautatu behar duzu %1$s utzi baino lehen.</string>
+
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopiatu</string>

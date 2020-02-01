@@ -117,6 +117,7 @@ Produciuse un fallo ao recuperar os axustes da sinalización</string>
     <string name="nc_no_proxy">Sen proxy </string>
     <string name="nc_username">Nome de usuario</string>
     <string name="nc_password">Contrasinal</string>
+    <string name="nc_password_optional">Contrasinal (opcional)</string>
     <string name="nc_password_redacted">Redactouse por motivos de privacidade</string>
     <string name="nc_conversation_link">Ligazón da conversa</string>
     <string name="nc_new_password">Novo contrasinal</string>

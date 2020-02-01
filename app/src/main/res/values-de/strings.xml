@@ -115,6 +115,7 @@
     <string name="nc_no_proxy">Kein Proxy</string>
     <string name="nc_username">Benutzername</string>
     <string name="nc_password">Passwort</string>
+    <string name="nc_password_optional">Passwort (Optional)</string>
     <string name="nc_password_redacted">Aus Datenschutzgründen überarbeitet</string>
     <string name="nc_conversation_link">Unterhaltungs-Link</string>
     <string name="nc_new_password">Neues Passwort</string>
@@ -284,7 +285,7 @@ sie auch für alle anderen Teilnehmer gelöscht.</string>
     <string name="nc_select_files">Dateien wählen</string>
     <string name="nc_file_browser_back">Zurück</string>
     <string name="nc_file_browser_refresh">Aktualisieren</string>
-    <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
+    <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
 
     <!-- Lobby -->
 

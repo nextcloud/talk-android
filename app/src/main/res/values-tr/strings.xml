@@ -115,6 +115,7 @@
     <string name="nc_no_proxy">Vekil sunucu yok</string>
     <string name="nc_username">Kullanıcı adı</string>
     <string name="nc_password">Parola</string>
+    <string name="nc_password_optional">Parola (İsteğe Bağlı)</string>
     <string name="nc_password_redacted">Gizlilik nedeniyle yeniden düzenlendi</string>
     <string name="nc_conversation_link">Görüşme bağlantısı</string>
     <string name="nc_new_password">Yeni parola</string>

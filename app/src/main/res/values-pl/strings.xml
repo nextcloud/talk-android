@@ -115,6 +115,7 @@
     <string name="nc_no_proxy">Brak proxy</string>
     <string name="nc_username">Nazwa użytkownika</string>
     <string name="nc_password">Hasło</string>
+    <string name="nc_password_optional">Hasło (opcjonalnie)</string>
     <string name="nc_password_redacted">Zredagowany ze względu na prywatność</string>
     <string name="nc_conversation_link">Link do rozmowy</string>
     <string name="nc_new_password">Nowe hasło</string>

@@ -115,6 +115,7 @@
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_username">Uživatelské jméno</string>
     <string name="nc_password">Heslo</string>
+    <string name="nc_password_optional">Heslo (volitelné)</string>
     <string name="nc_password_redacted">Redigováno z důvodu ochrany soukromí</string>
     <string name="nc_conversation_link">Odkaz na konverzaci</string>
     <string name="nc_new_password">Nové heslo</string>
