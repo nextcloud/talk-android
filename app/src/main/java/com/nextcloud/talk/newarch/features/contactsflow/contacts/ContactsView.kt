@@ -39,7 +39,6 @@ import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationState
 import com.nextcloud.talk.newarch.features.contactsflow.groupconversation.GroupConversationView
-import com.nextcloud.talk.newarch.features.contactsflow.source.FixedListSource
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
@@ -84,8 +83,7 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
 
         // todo - change empty state magic
         val participantsAdapterBuilder = Adapter.builder(this)
-                //.addSource(FixedListSource(listOf(Pair(context.getString(R.string.nc_join_via_link), R.drawable.ic_link_white_24px)), ParticipantElementType.PARTICIPANT_JOIN_VIA_LINK.ordinal))
-                .addSource(ContactsViewSource(data = viewModel.contactsLiveData, elementType = ParticipantElementType.PARTICIPANT.ordinal))
+                .addSource(ContactsViewSource(data = viewModel.contactsLiveData))
                 .addSource(ContactsHeaderSource(activity as Context, ParticipantElementType.PARTICIPANT_HEADER.ordinal))
                 .addSource(ContactsViewFooterSource(activity as Context, ParticipantElementType.PARTICIPANT_FOOTER.ordinal))
                 .addPresenter(ContactPresenter(activity as Context, ::onElementClick))
@@ -97,14 +95,10 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
                 })
                 .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
 
-        if (!hasToken) {
-            participantsAdapterBuilder.addSource(FixedListSource(listOf(Pair(context.getString(R.string.nc_new_group), R.drawable.ic_people_group_white_24px)), ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal))
-        }
-
         participantsAdapter = participantsAdapterBuilder.into(view.selectedParticipantsRecyclerView)
 
         selectedParticipantsAdapter = Adapter.builder(this)
-                .addSource(ContactsViewSource(data = viewModel.selectedParticipantsLiveData, elementType = ParticipantElementType.PARTICIPANT_SELECTED.ordinal, loadingIndicatorsEnabled = false, errorIndicatorEnabled = false, emptyIndicatorEnabled = false))
+                .addSource(ContactsViewSource(data = viewModel.selectedParticipantsLiveData, loadingIndicatorsEnabled = false, errorIndicatorEnabled = false, emptyIndicatorEnabled = false))
                 .addPresenter(ContactPresenter(activity as Context, ::onElementClick))
                 .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_ANY, true)
                 .into(view.selectedParticipantsRecyclerView)
@@ -241,8 +235,10 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
     override fun onFloatingActionButtonClick() {
         if (hasToken) {
             val conversationToken = bundle?.getString(BundleKeys.KEY_CONVERSATION_TOKEN)
-            conversationToken?.let {
-                viewModel.selectedParticipantsLiveData.value?.let { participants -> viewModel.addParticipants(it, participants) }
+            conversationToken?.let { conversationToken ->
+                viewModel.selectedParticipantsLiveData.value?.let { participantElements ->
+                    viewModel.addParticipants(conversationToken, participantElements.map { it.data as Participant })
+                }
             }
         }
     }

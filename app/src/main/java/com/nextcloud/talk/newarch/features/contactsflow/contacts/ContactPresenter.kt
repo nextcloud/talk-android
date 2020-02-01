@@ -28,6 +28,7 @@ import androidx.core.view.isVisible
 import coil.api.load
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.services.GlobalService
 import com.nextcloud.talk.newarch.utils.ElementPayload
@@ -78,13 +79,14 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
         super.onBind(page, holder, element, payloads)
 
         if (element.type == ParticipantElementType.PARTICIPANT.ordinal || element.type == ParticipantElementType.PARTICIPANT_SELECTED.ordinal) {
-            val participant = element.data as Participant?
+            val participantElement = element.data as ParticipantElement
+            val participant = participantElement.data as Participant
             val user = globalService.currentUserLiveData.value
 
-            holder.itemView.checkedImageView?.isVisible = participant?.selected == true
+            holder.itemView.checkedImageView?.isVisible = participant.selected == true
 
             if (!payloads.contains(ElementPayload.SELECTION_TOGGLE)) {
-                participant?.displayName?.let {
+                participant.displayName?.let {
                     if (element.type == ParticipantElementType.PARTICIPANT_SELECTED.ordinal) {
                         holder.itemView.participantNameTextView.text = it.substringBefore(" ", it)
                     } else {
@@ -97,7 +99,7 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
 
                 holder.itemView.clearImageView?.load(Images().getImageWithBackground(context, R.drawable.ic_baseline_clear_24, R.color.bg_selected_participant_clear_icon, R.color.white))
 
-                when (participant?.source) {
+                when (participant.source) {
                     "users" -> {
                         when (participant.type) {
                             Participant.ParticipantType.GUEST, Participant.ParticipantType.GUEST_AS_MODERATOR, Participant.ParticipantType.USER_FOLLOWING_LINK -> {
@@ -127,7 +129,7 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
         } else if (element.type == ParticipantElementType.PARTICIPANT_FOOTER.ordinal) {
             holder.itemView.messageTextView.text = (element.data as FooterSource.Data<*, *>).footer.toString()
         } else if (element.type == ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal) {
-            val pairData = element.data as Pair<*, *>
+            val pairData = (element.data as ParticipantElement).data as Pair<*, *>
             holder.itemView.participantNameTextView.text = pairData.first as CharSequence
             holder.itemView.avatarImageView.load(Images().getImageWithBackground(context, pairData.second as Int))
         } else {

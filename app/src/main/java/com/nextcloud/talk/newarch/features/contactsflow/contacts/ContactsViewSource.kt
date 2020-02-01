@@ -24,12 +24,13 @@ package com.nextcloud.talk.newarch.features.contactsflow.contacts
 
 import androidx.lifecycle.LiveData
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
 import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Source
 import com.otaliastudios.elements.extensions.MainSource
 
-class ContactsViewSource<T : Participant>(private val data: LiveData<List<T>>, private val elementType: Int = 0, loadingIndicatorsEnabled: Boolean = true, errorIndicatorEnabled: Boolean = true, emptyIndicatorEnabled: Boolean = true) : MainSource<T>(loadingIndicatorsEnabled, errorIndicatorEnabled, emptyIndicatorEnabled) {
+class ContactsViewSource<T : ParticipantElement>(private val data: LiveData<List<T>>, loadingIndicatorsEnabled: Boolean = true, errorIndicatorEnabled: Boolean = true, emptyIndicatorEnabled: Boolean = true) : MainSource<T>(loadingIndicatorsEnabled, errorIndicatorEnabled, emptyIndicatorEnabled) {
 
     override fun onPageOpened(page: Page, dependencies: List<Element<*>>) {
         super.onPageOpened(page, dependencies)
@@ -39,7 +40,7 @@ class ContactsViewSource<T : Participant>(private val data: LiveData<List<T>>, p
     }
 
     override fun getElementType(data: T): Int {
-        return elementType
+        return data.elementType
     }
 
     override fun dependsOn(source: Source<*>) = false
@@ -49,6 +50,14 @@ class ContactsViewSource<T : Participant>(private val data: LiveData<List<T>>, p
     }
 
     override fun areItemsTheSame(first: T, second: T): Boolean {
-        return first.userId == second.userId
+        if (first.elementType != second.elementType) {
+            return false
+        }
+
+        if (first.data is Participant && second.data is Participant) {
+            return first.data.userId == second.data.userId
+        }
+
+        return first.data == second.data
     }
 }

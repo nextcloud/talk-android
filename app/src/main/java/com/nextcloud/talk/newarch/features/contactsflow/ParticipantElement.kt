@@ -20,24 +20,11 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.contactsflow.source
+package com.nextcloud.talk.newarch.features.contactsflow
 
-import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsViewSource
-import com.otaliastudios.elements.Source
-import com.otaliastudios.elements.extensions.ListSource
+import com.nextcloud.talk.models.json.participants.Participant
 
-class FixedListSource(list: List<Any>, elementType: Int) : ListSource<Any>(list, elementType) {
-    override fun areContentsTheSame(first: Any, second: Any): Boolean {
-        return true
-    }
-
-    override fun <E : Any> areItemsTheSame(own: Any, dependency: Source<E>, other: E?): Boolean {
-        return true
-    }
-
-    override fun dependsOn(source: Source<*>): Boolean {
-        return source is ContactsViewSource
-    }
-
-
-}
+data class ParticipantElement(
+        val data: Any,
+        val elementType: Int
+)

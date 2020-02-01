@@ -27,6 +27,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
@@ -39,6 +40,7 @@ import com.nextcloud.talk.newarch.domain.usecases.GetContactsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationState
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationStateWrapper
+import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
 import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
 import com.nextcloud.talk.newarch.services.GlobalService
 import kotlinx.coroutines.runBlocking
@@ -51,10 +53,10 @@ class ContactsViewModel constructor(
         private val addParticipantToConversationUseCase: AddParticipantToConversationUseCase,
         val globalService: GlobalService
 ) : BaseViewModel<ConversationsListView>(application) {
-    private val selectedParticipants = mutableListOf<Participant>()
-    val selectedParticipantsLiveData: MutableLiveData<List<Participant>> = MutableLiveData()
-    private val _contacts: MutableLiveData<List<Participant>> = MutableLiveData()
-    val contactsLiveData: LiveData<List<Participant>> = _contacts
+    private val selectedParticipants = mutableListOf<ParticipantElement>()
+    val selectedParticipantsLiveData: MutableLiveData<List<ParticipantElement>> = MutableLiveData()
+    private val _contacts: MutableLiveData<List<ParticipantElement>> = MutableLiveData()
+    val contactsLiveData: LiveData<List<ParticipantElement>> = _contacts
     private val _operationState = MutableLiveData(ContactsViewOperationStateWrapper(ContactsViewOperationState.WAITING, null, null))
     val operationState: LiveData<ContactsViewOperationStateWrapper> = _operationState.distinctUntilChanged()
 
@@ -79,12 +81,12 @@ class ContactsViewModel constructor(
     }
 
     fun selectParticipant(participant: Participant) {
-        selectedParticipants.add(participant)
+        selectedParticipants.add(ParticipantElement(participant, ParticipantElementType.PARTICIPANT_SELECTED.ordinal))
         selectedParticipantsLiveData.postValue(selectedParticipants)
     }
 
     fun unselectParticipant(participant: Participant) {
-        selectedParticipants.remove(participant)
+        selectedParticipants.remove(ParticipantElement(participant, ParticipantElementType.PARTICIPANT_SELECTED.ordinal))
         selectedParticipantsLiveData.postValue(selectedParticipants)
     }
 
@@ -146,14 +148,24 @@ class ContactsViewModel constructor(
                     it.displayName!!.toLowerCase()
                 }))
 
-                val selectedUserIds = selectedParticipants.map { it.userId }
-                for (participant in sortedList) {
-                    if (participant.userId in selectedUserIds) {
-                        participant.selected = true
+                val selectedUserIds = selectedParticipants.map { (it.data as Participant).userId }
+
+
+                val participantElementsList: MutableList<ParticipantElement> = sortedList.map {
+                    if (it.userId in selectedUserIds) {
+                        it.selected = true
                     }
+
+                    ParticipantElement(it, ParticipantElementType.PARTICIPANT.ordinal)
+                } as MutableList<ParticipantElement>
+
+
+                if (conversationToken.isNullOrEmpty() && searchQuery.isNullOrEmpty()) {
+                    val newGroupElement = ParticipantElement(Pair(context.getString(R.string.nc_new_group), R.drawable.ic_people_group_white_24px), ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal)
+                    participantElementsList.add(0, newGroupElement)
                 }
 
-                _contacts.postValue(sortedList)
+                _contacts.postValue(participantElementsList)
             }
 
             override suspend fun onError(errorModel: ErrorModel?) {
