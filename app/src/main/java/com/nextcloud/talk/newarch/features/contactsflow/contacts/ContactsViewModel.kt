@@ -23,10 +23,7 @@
 package com.nextcloud.talk.newarch.features.contactsflow.contacts
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
@@ -43,6 +40,7 @@ import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationSta
 import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
 import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
 import com.nextcloud.talk.newarch.services.GlobalService
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
 import org.koin.core.parameter.parametersOf
 
@@ -60,7 +58,13 @@ class ContactsViewModel constructor(
     private val _operationState = MutableLiveData(ContactsViewOperationStateWrapper(ContactsViewOperationState.WAITING, null, null))
     val operationState: LiveData<ContactsViewOperationStateWrapper> = _operationState.distinctUntilChanged()
 
-    private var searchQuery: String? = null
+    private var searchQuery: MutableLiveData<String?> = MutableLiveData()
+    var searchQueryLiveData: LiveData<String?> = Transformations.switchMap(searchQuery) { searchQuery ->
+        if (initialized) {
+            loadContacts()
+        }
+        liveData<String?> { searchQuery }
+    }
     private var conversationToken: String? = null
     private var groupConversation: Boolean = false
     private var initialized = false
@@ -69,15 +73,12 @@ class ContactsViewModel constructor(
         if (!initialized || conversationToken != this.conversationToken || groupConversation != this.groupConversation) {
             this.conversationToken = conversationToken
             this.groupConversation = groupConversation
-            loadContacts()
+            initialized = true
         }
     }
 
     fun setSearchQuery(query: String?) {
-        if (query != searchQuery) {
-            searchQuery = query
-            loadContacts()
-        }
+        searchQuery.postValue(query)
     }
 
     fun selectParticipant(participant: Participant) {
@@ -137,7 +138,7 @@ class ContactsViewModel constructor(
     }
 
     private fun loadContacts() {
-        getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, groupConversation, searchQuery, conversationToken), object :
+        getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, groupConversation, searchQuery.value, conversationToken), object :
                 UseCaseResponse<List<Participant>> {
             override suspend fun onSuccess(result: List<Participant>) {
                 val sortPriority = mapOf("users" to 0, "groups" to 1, "emails" to 2, "circles" to 0)
@@ -160,7 +161,7 @@ class ContactsViewModel constructor(
                 } as MutableList<ParticipantElement>
 
 
-                if (conversationToken.isNullOrEmpty() && searchQuery.isNullOrEmpty()) {
+                if (conversationToken.isNullOrEmpty() && searchQuery.value.isNullOrEmpty()) {
                     val newGroupElement = ParticipantElement(Pair(context.getString(R.string.nc_new_group), R.drawable.ic_people_group_white_24px), ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal)
                     participantElementsList.add(0, newGroupElement)
                 }

@@ -52,9 +52,9 @@
 
                 <ImageButton
                     android:id="@+id/leftButton"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:padding="3dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="4dp"
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
@@ -73,7 +73,6 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/leftContainer"
                 android:layout_toStartOf="@id/rightContainer"
-                android:focusedByDefault="false"
                 android:layout_marginStart="4dp"
                 android:imeOptions="actionSearch|flagNoExtractUi"
                 android:inputType="textNoSuggestions"
@@ -83,8 +82,7 @@
                 app:boxStrokeColor="@color/transparent"
                 app:errorEnabled="true"
                 app:helperTextEnabled="false"
-                app:hintEnabled="false"
-                tools:ignore="UnusedAttribute">
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputEditText"
@@ -110,9 +108,9 @@
 
                 <ImageButton
                     android:id="@+id/clearButton"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:padding="3dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="4dp"
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
@@ -124,9 +122,9 @@
 
                 <ImageButton
                     android:id="@+id/settingsButton"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:padding="3dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="4dp"
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
@@ -138,9 +136,9 @@
 
                 <ProgressBar
                     android:id="@+id/searchProgressBar"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:padding="3dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="4dp"
                     android:layout_gravity="center"
                     android:indeterminate="true"
                     android:indeterminateTint="@color/colorPrimary"

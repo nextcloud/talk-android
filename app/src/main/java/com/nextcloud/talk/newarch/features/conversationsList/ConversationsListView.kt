@@ -73,8 +73,6 @@ class ConversationsListView : BaseView() {
     private lateinit var viewModel: ConversationsListViewModel
     val factory: ConversationListViewModelFactory by inject()
 
-    private var transitionInProgress = false
-
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup
@@ -223,16 +221,6 @@ class ConversationsListView : BaseView() {
                 }
             }
         }
-    }
-
-    override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
-        super.onChangeStarted(changeHandler, changeType)
-        transitionInProgress = true
-    }
-
-    override fun onChangeEnded(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
-        super.onChangeEnded(changeHandler, changeType)
-        transitionInProgress = false
     }
 
     override fun getLayoutId(): Int {

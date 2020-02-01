@@ -65,6 +65,8 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     val context: Context by inject()
     val eventBus: EventBus by inject()
 
+    var transitionInProgress = false
+
     protected val actionBar: ActionBar?
         get() {
             var actionBarProvider: ActionBarProvider? = null
@@ -137,6 +139,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
     override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
         actionBar?.setIcon(null)
+        transitionInProgress = true
         setOptionsMenuHidden(true)
         if (changeType == ControllerChangeType.POP_EXIT || changeType == ControllerChangeType.PUSH_EXIT) {
             toolbarProgressBar?.isVisible = false
@@ -149,6 +152,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
     override fun onChangeEnded(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
         setOptionsMenuHidden(false)
+        transitionInProgress = false
         super.onChangeEnded(changeHandler, changeType)
     }
 

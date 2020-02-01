@@ -143,6 +143,12 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
         })
 
         viewModel.apply {
+            searchQueryLiveData.observe(this@ContactsView) { query ->
+                if (!transitionInProgress) {
+                    activity?.clearButton?.isVisible = !query.isNullOrEmpty()
+                }
+            }
+
             selectedParticipantsLiveData.observe(this@ContactsView) { participants ->
                 view.selectedParticipantsRecyclerView.isVisible = participants.isNotEmpty()
                 view.divider.isVisible = participants.isNotEmpty()
