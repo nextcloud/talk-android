@@ -143,7 +143,7 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
         })
 
         viewModel.apply {
-            searchQueryLiveData.observe(this@ContactsView) { query ->
+            filterLiveData.observe(this@ContactsView) { query ->
                 if (!transitionInProgress) {
                     activity?.clearButton?.isVisible = !query.isNullOrEmpty()
                 }
@@ -235,7 +235,7 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
     }
 
     private fun setSearchQuery(query: CharSequence?) {
-        viewModel.setSearchQuery(query.toString())
+        viewModel.setSearchQuery(query)
     }
 
     override fun onFloatingActionButtonClick() {
