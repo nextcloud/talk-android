@@ -134,10 +134,11 @@ class ContactsViewModel constructor(
     }
 
     private fun loadContacts() {
-        getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, groupConversation, filterLiveData.value, conversationToken), object :
+        val searchQuery: String = if (filterLiveData.value.isNullOrBlank()) "" else filterLiveData.value.toString()
+        getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, groupConversation, searchQuery, conversationToken), object :
                 UseCaseResponse<List<Participant>> {
             override suspend fun onSuccess(result: List<Participant>) {
-                val sortPriority = mapOf("users" to 0, "groups" to 1, "emails" to 2, "circles" to 0)
+                val sortPriority = mapOf("users" to 0, "groups" to 1, "emails" to 2, "circles" to 3)
 
                 val sortedList = result.sortedWith(compareBy({
                     sortPriority[it.source]

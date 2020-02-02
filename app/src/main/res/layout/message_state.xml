@@ -26,12 +26,12 @@
 
     <ImageView
         android:id="@+id/messageStateImageView"
-        android:layout_width="@dimen/item_height"
-        android:layout_height="@dimen/item_height"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:adjustViewBounds="true"
         android:layout_above="@id/messageStateTextView"
         android:layout_centerHorizontal="true"
         android:src="@drawable/ic_logo"
-        android:tint="@color/colorPrimary"
         />
 
     <TextView

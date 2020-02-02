@@ -343,4 +343,5 @@
         tools:override="true">M3.27,4.27L19.74,20.74</string>
     <string name="nc_search_for_more">Search for more participants</string>
     <string name="nc_new_group">New group</string>
+    <string name="nc_search_empty_contacts">Where did they all hide?</string>
 </resources>

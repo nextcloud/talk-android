@@ -23,26 +23,32 @@
 package com.nextcloud.talk.newarch.features.contactsflow.contacts
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.newarch.data.presenters.AdvancedEmptyPresenter
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationState
 import com.nextcloud.talk.newarch.features.contactsflow.groupconversation.GroupConversationView
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.ElementPayload
+import com.nextcloud.talk.newarch.utils.dp
+import com.nextcloud.talk.newarch.utils.px
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.otaliastudios.elements.Adapter
 import com.otaliastudios.elements.Element
@@ -55,7 +61,6 @@ import kotlinx.android.synthetic.main.message_state.view.*
 import kotlinx.android.synthetic.main.search_layout.*
 import kotlinx.android.synthetic.main.search_layout.view.*
 import org.koin.android.ext.android.inject
-
 class ContactsView(private val bundle: Bundle? = null) : BaseView() {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
 
@@ -81,17 +86,25 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
         viewModel = viewModelProvider(factory).get(ContactsViewModel::class.java)
         val view = super.onCreateView(inflater, container)
 
-        // todo - change empty state magic
         val participantsAdapterBuilder = Adapter.builder(this)
                 .addSource(ContactsViewSource(data = viewModel.contactsLiveData))
                 .addSource(ContactsHeaderSource(activity as Context, ParticipantElementType.PARTICIPANT_HEADER.ordinal))
                 .addSource(ContactsViewFooterSource(activity as Context, ParticipantElementType.PARTICIPANT_FOOTER.ordinal))
                 .addPresenter(ContactPresenter(activity as Context, ::onElementClick))
                 .addPresenter(Presenter.forLoadingIndicator(activity as Context, R.layout.loading_state))
-                .addPresenter(Presenter.forEmptyIndicator(activity as Context, R.layout.message_state))
+                .addPresenter(AdvancedEmptyPresenter(activity as Context, R.layout.message_state, null) { view ->
+                    val layoutParams = view.messageStateImageView.layoutParams as RelativeLayout.LayoutParams
+                    layoutParams.height = 128.px
+                    layoutParams.width = 128.px
+                    view.messageStateImageView.layoutParams = layoutParams
+                    view.messageStateTextView.setText(R.string.nc_search_empty_contacts)
+                    view.messageStateImageView.load(context.getDrawable(R.drawable.ic_undraw_not_found_60pq))
+                    view.messageStateImageView.imageTintList = null
+                })
                 .addPresenter(Presenter.forErrorIndicator(activity as Context, R.layout.message_state) { view, throwable ->
                     view.messageStateTextView.setText(R.string.nc_oops)
-                    view.messageStateImageView.setImageDrawable((activity as Context).getDrawable(R.drawable.ic_announcement_white_24dp))
+                    view.messageStateImageView.load((activity as Context).getDrawable(R.drawable.ic_announcement_white_24dp))
+                    view.messageStateImageView.imageTintList = resources?.getColor(R.color.colorPrimary)?.let { ColorStateList.valueOf(it) }
                 })
                 .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
 

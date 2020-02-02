@@ -23,6 +23,7 @@
 package com.nextcloud.talk.newarch.features.conversationslist
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -51,6 +52,7 @@ import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsView
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
+import com.nextcloud.talk.newarch.utils.px
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.animations.SharedElementTransition
@@ -86,10 +88,13 @@ class ConversationsListView : BaseView() {
                 .addSource(ConversationsListSource(viewModel.conversationsLiveData))
                 .addPresenter(ConversationPresenter(activity as Context, ::onElementClick, ::onElementLongClick))
                 .addPresenter(Presenter.forLoadingIndicator(activity as Context, R.layout.loading_state))
-                .addPresenter(AdvancedEmptyPresenter(activity as Context, R.layout.message_state, ::openNewConversationScreen))
+                .addPresenter(AdvancedEmptyPresenter(activity as Context, R.layout.message_state, ::openNewConversationScreen) { view ->
+                    view.messageStateImageView.imageTintList = resources?.getColor(R.color.colorPrimary)?.let { ColorStateList.valueOf(it) }
+                })
                 .addPresenter(Presenter.forErrorIndicator(activity as Context, R.layout.message_state) { view, throwable ->
                     view.messageStateTextView.setText(R.string.nc_oops)
                     view.messageStateImageView.setImageDrawable((activity as Context).getDrawable(drawable.ic_announcement_white_24dp))
+                    view.messageStateImageView.imageTintList = resources?.getColor(R.color.colorPrimary)?.let { ColorStateList.valueOf(it) }
                 })
                 .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
                 .into(view.recyclerView)

@@ -23,15 +23,17 @@
 package com.nextcloud.talk.newarch.data.presenters
 
 import android.content.Context
+import android.view.View
 import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.extensions.EmptyPresenter
 
-class AdvancedEmptyPresenter(context: Context, layout: Int, private val onViewClick: (() -> Unit)? = null) : EmptyPresenter(context, layout) {
+class AdvancedEmptyPresenter(context: Context, layout: Int, private val onViewClick: (() -> Unit)? = null, private val bind: ((View) -> Unit)? = null) : EmptyPresenter(context, layout) {
     override fun onBind(page: Page, holder: Holder, element: Element<Void>, payloads: List<Any>) {
         super.onBind(page, holder, element, payloads)
         holder.itemView.setOnClickListener {
             onViewClick?.invoke()
         }
+        bind?.invoke(holder.itemView)
     }
 }

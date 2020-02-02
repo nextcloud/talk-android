@@ -22,6 +22,7 @@
 
 package com.nextcloud.talk.newarch.utils
 
+import android.content.res.Resources
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.ApiUtils
 import java.security.MessageDigest
@@ -32,3 +33,9 @@ fun String.hashWithAlgorithm(algorithm: String): String {
     val bytes = digest.digest(this.toByteArray(Charsets.UTF_8))
     return bytes.fold("", { str, it -> str + "%02x".format(it) })
 }
+
+val Int.dp: Int
+    get() = (this / Resources.getSystem().displayMetrics.density).toInt()
+
+val Int.px: Int
+    get() = (this * Resources.getSystem().displayMetrics.density).toInt()
