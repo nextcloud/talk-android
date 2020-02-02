@@ -115,6 +115,7 @@
     <string name="nc_no_proxy">Κανένας διαμεσολαβητής</string>
     <string name="nc_username">Όνομα χρήστη</string>
     <string name="nc_password">Συνθηματικό</string>
+    <string name="nc_password_optional">Κωδικός πρόσβασης (Προαιρετικό)</string>
     <string name="nc_password_redacted">Για λόγους προστασίας ιδιωτικότητας</string>
     <string name="nc_conversation_link">Σύνδεσμος συνομιλίας</string>
     <string name="nc_new_password">Νέο συνθηματικό</string>

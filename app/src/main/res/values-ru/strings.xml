@@ -79,12 +79,12 @@
     <string name="nc_settings_vibrate">Вибрация</string>
     <string name="nc_settings_vibrate_desc">Телефон будет вибрировать, если он не отключен</string>
     <string name="nc_settings_appearance">Внешний вид</string>
-    <string name="nc_settings_theme_title">Стиль оформления</string>
+    <string name="nc_settings_theme_title">Оформление</string>
     <string name="nc_settings_theme_key">стиль оформления</string>
-    <string name="nc_settings_theme_follow_system">Использовать системные настройки по-умолчанию</string>
+    <string name="nc_settings_theme_follow_system">Как в системе</string>
     <string name="nc_settings_theme_battery_saver">Установлено режимом сохранения батареи</string>
-    <string name="nc_settings_theme_light">Светлая</string>
-    <string name="nc_settings_theme_dark">Тёмная</string>
+    <string name="nc_settings_theme_light">Светлое</string>
+    <string name="nc_settings_theme_dark">Тёмное</string>
     <string name="nc_settings_privacy">Конфиденциальность</string>
     <string name="nc_settings_screen_lock_title">Блокировка экрана</string>
     <string name="nc_settings_screen_lock_desc">Защищать %1$s с помощью системой блокировки  Android или поддерживаемого биометрического метода</string>
@@ -113,6 +113,7 @@
     <string name="nc_no_proxy">Не использовать прокси-сервер</string>
     <string name="nc_username">Имя пользователя</string>
     <string name="nc_password">Пароль</string>
+    <string name="nc_password_optional">Пароль (необязательно)</string>
     <string name="nc_conversation_link">Ссылка на беседу</string>
     <string name="nc_new_password">Новый пароль</string>
     <string name="nc_wrong_password">Неправильный пароль</string>
@@ -128,6 +129,7 @@
     <string name="nc_start_conversation">Начать беседу</string>
     <string name="nc_configure_room">Настроить беседу</string>
     <string name="nc_leave">Покинуть беседу</string>
+    <string name="nc_leave_message">Подтвердите выход из обсуждения.</string>
     <string name="nc_simple_leave">Выйти</string>
     <string name="nc_rename">Переименовать разговор</string>
     <string name="nc_set_password">Задать пароль</string>
