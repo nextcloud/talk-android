@@ -73,7 +73,7 @@ class ContactsViewModel constructor(
     }
 
     fun setSearchQuery(query: CharSequence?) {
-        filterMutableLiveData.postValue(query)
+        filterMutableLiveData.value = query
         loadContacts()
     }
 
@@ -134,7 +134,7 @@ class ContactsViewModel constructor(
     }
 
     private fun loadContacts() {
-        val searchQuery: String = if (filterLiveData.value.isNullOrBlank()) "" else filterLiveData.value.toString()
+        val searchQuery: String = if (filterMutableLiveData.value.isNullOrBlank()) "" else filterMutableLiveData.value.toString()
         getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, groupConversation, searchQuery, conversationToken), object :
                 UseCaseResponse<List<Participant>> {
             override suspend fun onSuccess(result: List<Participant>) {
