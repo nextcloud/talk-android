@@ -188,8 +188,7 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
 
     val lastMessageDisplayText: String
         get() {
-            if (messageType == MessageType.REGULAR_TEXT_MESSAGE || messageType ==
-                    MessageType.SYSTEM_MESSAGE) {
+            if (messageType == MessageType.REGULAR_TEXT_MESSAGE || messageType == MessageType.SYSTEM_MESSAGE || messageType == MessageType.SINGLE_LINK_MESSAGE) {
                 return text
             } else {
                 if (messageType == MessageType.SINGLE_LINK_GIPHY_MESSAGE || messageType == MessageType.SINGLE_LINK_TENOR_MESSAGE || messageType == MessageType.SINGLE_LINK_GIF_MESSAGE) {
@@ -212,7 +211,7 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
                                 if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication
                                 !!.getString(R.string.nc_guest))
                     }
-                } else if (messageType == MessageType.SINGLE_LINK_MESSAGE) {
+                /*} else if (messageType == MessageType.SINGLE_LINK_MESSAGE) {
                     return if (actorId.equals(activeUser!!.userId)) {
                         sharedApplication!!.resources.getString(R.string.nc_sent_a_link_you)
                     } else {
@@ -220,7 +219,7 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
                         !!.resources
                                 .getString(R.string.nc_sent_a_link),
                                 if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(R.string.nc_guest))
-                    }
+                    }*/
                 } else if (messageType == MessageType.SINGLE_LINK_AUDIO_MESSAGE) {
                     return if (actorId.equals(activeUser!!.userId)) {
                         sharedApplication!!.resources.getString(R.string.nc_sent_an_audio_you)
