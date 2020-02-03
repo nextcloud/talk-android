@@ -148,7 +148,7 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     }
 
     public String getLastMessageDisplayText() {
-        if (getMessageType().equals(MessageType.REGULAR_TEXT_MESSAGE) || getMessageType().equals(MessageType.SYSTEM_MESSAGE)) {
+        if (getMessageType().equals(MessageType.REGULAR_TEXT_MESSAGE) || getMessageType().equals(MessageType.SYSTEM_MESSAGE) || getMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
             return getText();
         } else {
             if (getMessageType().equals(MessageType.SINGLE_LINK_GIPHY_MESSAGE)
@@ -167,13 +167,13 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
                     return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_an_attachment),
                             !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
                 }
-            } else if (getMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
+            /*} else if (getMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
                 if (getActorId().equals(getActiveUser().getUserId())) {
                     return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_a_link_you));
                 } else {
                     return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_a_link),
                             !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
-                }
+                }*/
             } else if (getMessageType().equals(MessageType.SINGLE_LINK_AUDIO_MESSAGE)) {
                 if (getActorId().equals(getActiveUser().getUserId())) {
                     return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_an_audio_you));
