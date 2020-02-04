@@ -319,4 +319,5 @@
 
     <string name="nc_search_for_more">Sök efter fler deltagare</string>
     <string name="nc_new_group">Ny grupp</string>
-    </resources>
+    <string name="nc_search_empty_contacts">Var gömmer sig alla?</string>
+</resources>

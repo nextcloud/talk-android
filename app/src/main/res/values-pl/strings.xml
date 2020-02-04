@@ -319,4 +319,5 @@
 
     <string name="nc_search_for_more">Wyszukaj więcej uczestników</string>
     <string name="nc_new_group">Nowa grupa</string>
-    </resources>
+    <string name="nc_search_empty_contacts">Gdzie oni wszyscy się schowali?</string>
+</resources>

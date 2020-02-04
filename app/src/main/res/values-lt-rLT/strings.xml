@@ -83,6 +83,7 @@
 
     <string name="nc_username">Naudotojo vardas</string>
     <string name="nc_password">Slaptažodis</string>
+    <string name="nc_password_optional">Slaptažodis (Nebūtinas)</string>
     <string name="nc_password_redacted">Redaguotas privatumo sumetimais</string>
     <string name="nc_conversation_link">Pokalbio nuoroda</string>
     <string name="nc_new_password">Naujas slaptažodis</string>
@@ -200,6 +201,8 @@
     <string name="nc_guest">Svečias</string>
     <string name="nc_file_browser_back">Atgal</string>
     <string name="nc_file_browser_refresh">Įkelti iš naujo</string>
+    <string name="nc_last_modified">%1$s | Paskutinį kartą modifikuota: %2$s</string>
+
     <!-- Lobby -->
 
     <string name="nc_webinar">Internetinis seminaras</string>
@@ -216,6 +219,7 @@
     <string name="nc_oops">Oi, kažkas nutiko.</string>
 
     <string name="nc_general_settings">Bendra</string>
+    <string name="nc_allow_guests">Leisti svečius</string>
     <string name="nc_last_moderator_title">Nepavyko išeiti iš pokalbio</string>
     <string name="nc_last_moderator">Prieš išeidami iš %1$s, turite paaukštinti naują moderatorių.</string>
 
@@ -226,4 +230,5 @@
 
     <string name="nc_search_for_more">Ieškoti daugiau dalyvių</string>
     <string name="nc_new_group">Nauja grupė</string>
-    </resources>
+    <string name="nc_search_empty_contacts">Kur jie visi pasislėpė?</string>
+</resources>

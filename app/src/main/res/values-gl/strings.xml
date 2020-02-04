@@ -321,4 +321,5 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
 
     <string name="nc_search_for_more">Buscar máis participantes</string>
     <string name="nc_new_group">Grupo novo</string>
-    </resources>
+    <string name="nc_search_empty_contacts">Onde se agocharon todos?</string>
+</resources>
