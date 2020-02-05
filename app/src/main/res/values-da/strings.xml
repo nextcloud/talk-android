@@ -46,6 +46,8 @@
 
     <string name="nc_never">Aldrig ansluttet</string>
     <string name="nc_search">Søg</string>
+    <string name="nc_search_conversations">Find samtale</string>
+
     <string name="nc_certificate_dialog_title">Tjek certifikatet</string>
     <string name="nc_certificate_dialog_text">Stoler du på det, indtil nu, ukendte SSL certifikat ,udstedt af %1$s for %2$s,  gyldig fra %3$s til %4$s?</string>
     <string name="nc_yes">Ja</string>
@@ -112,6 +114,7 @@
     <string name="nc_no_proxy">Ikke proxy</string>
     <string name="nc_username">Brugernavn</string>
     <string name="nc_password">Adgangskode</string>
+    <string name="nc_password_optional">Adgangskode (valgfrit)</string>
     <string name="nc_conversation_link">Samtalelink</string>
     <string name="nc_new_password">Ny adgangskode</string>
     <string name="nc_wrong_password">Forkert adgangskode</string>
@@ -127,6 +130,7 @@
     <string name="nc_start_conversation">Start en samtale</string>
     <string name="nc_configure_room">Samtaleopsætning</string>
     <string name="nc_leave">Forlad samtale</string>
+    <string name="nc_simple_leave">Forlad</string>
     <string name="nc_rename">Omdøb samtale</string>
     <string name="nc_set_password">Indstil en adgangskode</string>
     <string name="nc_change_password">Skift adgangskode</string>
@@ -141,8 +145,13 @@
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_join_via_link">Deltag via link</string>
     <string name="nc_join_via_web">Deltag via web</string>
+    <string name="nc_favorite_conversation">Føj samtalen til favoritter</string>
     <string name="nc_add_to_favorites">Føj til favoritter</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
+    <!-- Contacts -->
+    <string name="nc_select_contact">Find deltager</string>
+    <string name="nc_select_contacts">Find deltagere</string>
+    <string name="nc_select_new_contacts">Find nye deltagere</string>
     <string name="nc_contacts_done">Færdig</string>
 
     <!-- Permissions -->
@@ -174,6 +183,7 @@ speciel lavet link.</string>
     <string name="nc_notify_me_mention">Giv besked når du bliver omtalt</string>
     <string name="nc_notify_me_never">Giv aldrig besked</string>
     <string name="nc_mute_calls">Gør opkald lydløs</string>
+    <string name="nc_mute_calls_desc">Opkald vil blive ignoreret</string>
     <string name="nc_important_conversation">Vigtig samtale</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noget gik galt, undskyld!</string>
@@ -245,7 +255,10 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_contacts">Kontakter</string>
     <string name="nc_circles">Cirkler</string>
+    <string name="nc_emails">Emails</string>
     <string name="nc_participants">Deltagere</string>
+    <string name="nc_others">Andre</string>
+
     <string name="nc_owner">Ejer</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">ruger</string>
@@ -267,9 +280,28 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_lobby_waiting">Du venter nu i lobbyen.</string>
     <string name="nc_lobby_waiting_with_date">Du venter nu i lobbyen.\n Dette
 møde er planlagt til %1$s.</string>
+    <string name="nc_manual">Ikke indstillet</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Ingen forbindelse</string>
+    <string name="nc_timeout_error">Timeout</string>
+    <string name="nc_empty_response_error">Tomt svar</string>
     <string name="nc_not_defined_error">Ukendt fejl</string>
+    <string name="nc_unauthorized_error">Uautoriseret</string>
+
+    <string name="nc_oops">Der skete en fejl.</string>
+
     <string name="nc_general_settings">Generelt</string>
+    <string name="nc_allow_guests">Tillad gæster</string>
+    <string name="nc_last_moderator_title">Kunne ikke forlade samtalen</string>
+    <string name="nc_last_moderator">Du skal udnævne en ny moderator før du kan forlade %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopiér</string>
     <string name="nc_reply">Besvar</string>
 
-    </resources>
+    <string name="nc_search_for_more">Søg efter flere deltagere</string>
+    <string name="nc_new_group">Ny gruppe</string>
+    <string name="nc_search_empty_contacts">Hvor har de gemt sig alle sammen?</string>
+</resources>

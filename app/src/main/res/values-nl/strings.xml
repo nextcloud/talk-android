@@ -48,6 +48,8 @@ Kies er eentje van een provider.</string>
 
     <string name="nc_never">Nooit deelgenomen</string>
     <string name="nc_search">Zoeken</string>
+    <string name="nc_search_conversations">Zoek gesprek</string>
+
     <string name="nc_certificate_dialog_title">Verifieer het certificaat</string>
     <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
     <string name="nc_yes">Ja</string>
@@ -156,6 +158,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
     <string name="nc_favorites_explanation">Gesprek zal vastgemaakt worden aan de bovenkant van de lijst met gesprekken</string>
 
+    <string name="nc_select_contacts">Zoek deelnemers</string>
     <string name="nc_contacts_done">Gereed</string>
 
     <!-- Permissions -->
@@ -309,4 +312,5 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_copy_message">Kopie</string>
     <string name="nc_reply">Antwoord</string>
 
+    <string name="nc_search_for_more">Zoek meer deelnemers</string>
     </resources>

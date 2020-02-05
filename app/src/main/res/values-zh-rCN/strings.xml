@@ -115,6 +115,7 @@
     <string name="nc_no_proxy">无代理</string>
     <string name="nc_username">用户名</string>
     <string name="nc_password">密码</string>
+    <string name="nc_password_optional">密码（可选）</string>
     <string name="nc_password_redacted">出于隐私原因被删除</string>
     <string name="nc_conversation_link">对话连接</string>
     <string name="nc_new_password">新密码</string>
@@ -315,4 +316,5 @@
 
     <string name="nc_search_for_more">搜索更多参与者</string>
     <string name="nc_new_group">新建群组</string>
-    </resources>
+    <string name="nc_search_empty_contacts">他们都藏在哪里？</string>
+</resources>
