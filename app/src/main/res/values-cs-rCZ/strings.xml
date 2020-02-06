@@ -32,18 +32,18 @@
     <string name="nc_server_import_accounts_plain">Importovat účty</string>
     <string name="nc_server_import_account">Importovat účet z aplikace %1$s</string>
     <string name="nc_server_import_accounts">Importovat účty z aplikace %1$s</string>
-    <string name="nc_server_failed_to_import_account">Vyznačený účet se nepodařilo naimportovat</string>
-    <string name="nc_server_account_imported">Vyznačený účet byl importován a je k dispozici</string>
-    <string name="nc_server_unsupported">Na serveru není nainstalovaná podporovaná aplikace Talk</string>
-    <string name="nc_get_from_provider">Nemáte ještě server?\nKliknutím sem ho získejte od poskytovatele</string>
+    <string name="nc_server_failed_to_import_account">Zvolený účet se nepodařilo naimportovat</string>
+    <string name="nc_server_account_imported">Zvolený účet byl importován a je k dispozici</string>
+    <string name="nc_server_unsupported">Na serveru není nainstalovaná podporovaná verze aplikace Talk</string>
+    <string name="nc_get_from_provider">Nemáte ještě server?\nKlepnutím sem ho získejte od poskytovatele</string>
 
     <!-- Account verification -->
-    <string name="nc_push_disabled">Vyskakovací (push) upozornění zakázána</string>
-    <string name="nc_capabilities_failed">Nepodařilo se získat schopnosti, ukončuje se</string>
+    <string name="nc_push_disabled">Push upozorňování vypnutá</string>
+    <string name="nc_capabilities_failed">Nepodařilo se získat schopnosti, přerušuje se</string>
     <string name="nc_external_server_failed">Nepodařilo se získat nastavení signalizace</string>
     <string name="nc_display_name_not_fetched">Nepodařilo se získat zobrazované jméno, přerušuje se</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Aplikace %1$s není na serveru nainstalována, ruší se</string>
-    <string name="nc_display_name_not_stored">Nepodařilo se uložit zobrazované jméno, ukončuje se</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Aplikace %1$s není na serveru nainstalována, přerušuje se</string>
+    <string name="nc_display_name_not_stored">Nepodařilo se uložit zobrazované jméno, přerušuje se</string>
 
     <string name="nc_never">Nikdy nepřipojeno</string>
     <string name="nc_search">Hledat</string>
@@ -58,24 +58,24 @@
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Typ proxy</string>
-    <string name="nc_settings_proxy_host_title">Stroj s proxy</string>
+    <string name="nc_settings_proxy_host_title">Hostitel proxy</string>
     <string name="nc_settings_proxy_port_title">Port proxy</string>
     <string name="nc_settings_use_credentials_title">Použít přihlašovací údaje</string>
     <string name="nc_settings_switch_account">Přepnout mezi účty</string>
-    <string name="nc_settings_reauthorize">Znovu se ověřit</string>
+    <string name="nc_settings_reauthorize">Znovu získat pověření</string>
     <string name="nc_client_cert_setup">Nastavit klientský certifikát</string>
     <string name="nc_client_cert_change">Změnit klientský certifikát</string>
     <string name="nc_settings_remove">Odebrat</string>
-    <string name="nc_settings_remove_confirmation">Potvrďte, že chcete odebrat stávající účet.</string>
+    <string name="nc_settings_remove_confirmation">Potvrďte, že chcete stávající účet odebrat.</string>
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
     <string name="nc_add">Přidat</string>
-    <string name="nc_settings_wrong_account">Znovu pověřen může být pouze stávající účet</string>
+    <string name="nc_settings_wrong_account">Pověření může být znovuzískáno pouze pro stávající účet</string>
     <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
-    <string name="nc_settings_account_updated">Váš už existující účet byl aktualizován, namísto přidání nového</string>
+    <string name="nc_settings_account_updated">Namísto přidání nového byl zaktualizován váš stávající účet</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánován ke smazání a není možné ho změnit</string>
-    <string name="nc_settings_notification_sounds">Zvuky oznamování</string>
-    <string name="nc_settings_call_ringtone">Dvojstranná volání</string>
+    <string name="nc_settings_notification_sounds">Zvuky upozornění</string>
+    <string name="nc_settings_call_ringtone">Volání mezi dvěma účastníky</string>
     <string name="nc_settings_other_notifications_ringtone">Ostatní</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
     <string name="nc_settings_vibrate">Vibrovat</string>
@@ -93,9 +93,9 @@
     <string name="nc_settings_screen_lock_timeout_title">Časový limit nečinnosti pro zámek obrazovky</string>
     <string name="nc_none">Žádné</string>
     <string name="nc_settings_screen_security_title">Zabezpečení obrazovky</string>
-    <string name="nc_settings_screen_security_desc">Brání snímkům obrazovky v seznamu nedávných a uvnitř aplikace</string>
+    <string name="nc_settings_screen_security_desc">Brání pořizování snímků obrazovky v seznamu nedávných a uvnitř aplikace</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klávesnice</string>
-    <string name="nc_settings_incognito_keyboard_desc">Sdělit klávesnici že má vypnout přizpůsobené učení (bez záruky)</string>
+    <string name="nc_settings_incognito_keyboard_desc">Dát klávesnici pokyn, že má vypnout přizpůsobené učení se (bez záruky)</string>
     <string name="nc_settings_link_previews_title">Zobrazovat náhledy odkazů</string>
     <string name="nc_settings_link_previews_desc">U podporovaných služeb umožňuje náhledy obsahu z obdržených odkazů</string>
     <string name="nc_locked">Odemkněte ťuknutím</string>
@@ -132,7 +132,7 @@
     <string name="nc_start_conversation">Začněte konverzaci</string>
     <string name="nc_configure_room">Nastavit konverzaci</string>
     <string name="nc_leave">Opustit konverzaci</string>
-    <string name="nc_leave_message">Prosím potvrďte váš záměr opustit tuto konverzaci</string>
+    <string name="nc_leave_message">Potvrďte váš záměr opustit tuto konverzaci.</string>
     <string name="nc_simple_leave">Opustit</string>
     <string name="nc_rename">Přejmenovat konverzaci</string>
     <string name="nc_set_password">Nastavit heslo</string>
@@ -144,21 +144,18 @@
     <string name="nc_make_call_private">Udělat konverzaci neveřejnou</string>
     <string name="nc_delete_call">Smazat konverzaci</string>
     <string name="nc_delete">Smazat</string>
-    <string name="nc_delete_conversation_default">Potvrďte prosím svůj úmysl smazat tuto
-        konverzaci.</string>
-    <string name="nc_delete_conversation_one2one">Pokud konverzaci smažete, bude také
-        smazána pro %1$s.</string>
-    <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude také
-        smazána pro všechny ostatní její účastníky.</string>
+    <string name="nc_delete_conversation_default">Potvrďte váš úmysl tuto konverzaci smazat.</string>
+    <string name="nc_delete_conversation_one2one">Pokud konverzaci smažete, bude také smazána pro %1$s.</string>
+    <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude také smazána pro všechny ostatní její účastníky.</string>
 
-    <string name="nc_new_conversation_short">Nové</string>
+    <string name="nc_new_conversation_short">Nová</string>
     <string name="nc_new_conversation">Nová konverzace</string>
-    <string name="nc_join_via_link">Připojit se s odkazem</string>
+    <string name="nc_join_via_link">Připojit se přes odkaz</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
     <string name="nc_favorite_conversation">Oblíbená konverzace</string>
     <string name="nc_add_to_favorites">Přidat do oblíbených</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
-    <string name="nc_favorites_explanation">Konverzace bude připnuta na vrchol seznamu konverzací</string>
+    <string name="nc_favorites_explanation">Konverzace bude připnuta na začátek seznamu konverzací</string>
 
     <!-- Contacts -->
     <string name="nc_select_contact">Najít účastníka</string>
@@ -177,23 +174,22 @@
     <string name="nc_incoming_call">Příchozí hovor od</string>
     <string name="nc_nick_guest">Host</string>
     <string name="nc_public_call">Nová veřejná konverzace</string>
-    <string name="nc_public_call_explanation">Veřejné konverzace umožňují zvát osoby zvenčí prostřednictvím
-        k tomu vytvořeného odkazu.</string>
+    <string name="nc_public_call_explanation">Veřejné konverzace umožňují zvát osoby zvenčí prostřednictvím k tomu vytvořeného odkazu.</string>
     <string name="nc_call_timeout">Žádná odezva po 45 sekundách, ťukněte, pokud chcete zkusit znovu</string>
     <string name="nc_call_reconnecting">Znovunavazování spojení…</string>
-    <string name="nc_offline">Nyní bez připojení, zkontrolujte svou konektivitu</string>
+    <string name="nc_offline">Jste bez připojení – zkontrolujte svou konektivitu</string>
     <string name="nc_leaving_call">Opouštění hovoru…</string>
 
     <!-- Notification channels -->
-    <string name="nc_notification_channel">%1$s na %2$s kanálu upozornění</string>
-    <string name="nc_notification_channel_calls">Kanál oznamování volání</string>
-    <string name="nc_notification_channel_messages">Kanál oznamování zpráv</string>
+    <string name="nc_notification_channel">%1$s v %2$s kanálu upozornění</string>
+    <string name="nc_notification_channel_calls">Kanál pro upozorňování na volání</string>
+    <string name="nc_notification_channel_messages">Kanál pro upozorňování na zprávy</string>
     <string name="nc_notification_channel_calls_description">Zobrazí příchozí hovory</string>
-    <string name="nc_notification_settings">Nastavení oznamování</string>
+    <string name="nc_notification_settings">Nastavení upozorňování</string>
     <string name="nc_plain_old_messages">Zprávy</string>
-    <string name="nc_notify_me_always">Vždy oznamovat</string>
-    <string name="nc_notify_me_mention">Upozornit při zmínění</string>
-    <string name="nc_notify_me_never">Nikdy neoznamovat</string>
+    <string name="nc_notify_me_always">Vždy upozorňovat</string>
+    <string name="nc_notify_me_mention">Upozornit, když vás někdo zmíní</string>
+    <string name="nc_notify_me_never">Nikdy neupozorňovat</string>
     <string name="nc_mute_calls">Ztišit hovory</string>
     <string name="nc_mute_calls_desc">Příchozí volání budou ignorována</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
@@ -201,13 +197,12 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
-    <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování veřejných konverzací prostřednictvím mobilních
-       telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
+    <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování se k veřejným konverzacím prostřednictvím mobilních telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
     <string name="nc_all_ok_operation">OK, vše hotovo!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Název konverzace</string>
     <string name="nc_proceed">Pokračovat</string>
-    <string name="nc_call_name_is_same">Zadané jméno je stejné jako stávající</string>
+    <string name="nc_call_name_is_same">Zadaný název je stejný jako ten stávající</string>
     <string name="nc_wrong_link">Odkaz na konverzaci není platný</string>
     <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s pozvání</string>
@@ -215,9 +210,9 @@
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Vysílačka</string>
-    <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte &amp; držte pro použití vysílačky</string>
-    <string name="nc_configure_cert_auth">Vyberte ověřovací certifikát</string>
-    <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování totožnosti</string>
+    <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte a držte, jako u vysílačky</string>
+    <string name="nc_configure_cert_auth">Vyberte certifikát pro ověřování se</string>
+    <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování se</string>
 
     <!-- Moderation -->
     <string name="nc_demote">Odebrat oprávnění moderátora</string>
@@ -234,13 +229,13 @@
     <string name="nc_new_messages">Nepřečtené zprávy</string>
     <string name="nc_no_messages_yet">Zatím žádné zprávy</string>
     <string name="nc_sent_a_link" formatted="true">%1$s poslal(a) odkaz.</string>
-    <string name="nc_sent_a_gif" formatted="true">%1$s poslal(a) GIF.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s poslal(a) GIF animaci.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s poslal(a) přílohu.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s poslal(a) zvuk.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s poslal(a) video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s poslal(a) obrázek. </string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Odeslali jste odkaz.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Odeslali jste GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Odeslali jste GIF animaci.</string>
     <string name="nc_sent_an_attachment_you">Odeslali jste přílohu.</string>
     <string name="nc_sent_an_audio_you">Odeslali jste zvuk.</string>
     <string name="nc_sent_a_video_you">Odeslali jste video.</string>
@@ -250,7 +245,7 @@
 
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Žádné další položky k načtení. Pro opětovný pokus načtěte znovu.</string>
-    <string name="nc_endless_disabled">Žádné další položky k načtení (dosaženo maxima).</string>
+    <string name="nc_endless_disabled">Žádné další položky k načtení (dosaženo nejvyššího umožněného počtu).</string>
     <string name="nc_endless_cancel">Zrušeno uživatelem.</string>
     <string name="nc_endless_error">Při načítání dalších položek došlo k chybě.</string>
 
@@ -261,7 +256,7 @@
     <string name="nc_description_send_message_button">Poslat zprávu</string>
 
     <!-- Empty states -->
-    <string name="nc_conversations_empty">Připojte se k rozhovoru nebo začněte nový\n Pozdravte své přátele a kolegy!</string>
+    <string name="nc_conversations_empty">Připojte se ke konverzaci nebo začněte novou\n Pozdravte své přátele a kolegy!</string>
     <string name="nc_hello">Zdravím</string>
 
     <!-- Other -->
@@ -292,8 +287,7 @@
     <string name="nc_lobby">Čekárna</string>
     <string name="nc_start_time">Čas zahájení</string>
     <string name="nc_lobby_waiting">V tuto chvíli se nacházíte v čekárně.</string>
-    <string name="nc_lobby_waiting_with_date">Momentálně čeká v lobby.\n Toto
-        setkání je naplánováno na %1$s.</string>
+    <string name="nc_lobby_waiting_with_date">V tuto chvíli se nacházíte v čekárně.\n Toto setkání je naplánováno na %1$s.</string>
     <string name="nc_manual">Nenastaveno</string>
 
     <!-- Errors -->
@@ -302,13 +296,13 @@
     <string name="nc_timeout_error">Časový limit</string>
     <string name="nc_empty_response_error">Prázdná odpověď</string>
     <string name="nc_not_defined_error">Neznámá chyba</string>
-    <string name="nc_unauthorized_error">Neověřeno</string>
+    <string name="nc_unauthorized_error">Není pověření</string>
 
     <string name="nc_oops">Jejda, něco se pokazilo.</string>
 
     <string name="nc_general_settings">Obecné</string>
     <string name="nc_allow_guests">Umožnit hosty</string>
-    <string name="nc_last_moderator_title">Konverzaci se nedaří opustit</string>
+    <string name="nc_last_moderator_title">Konverzaci zatím nemůžete opustit</string>
     <string name="nc_last_moderator">Než budete moci opustit %1$s, je třeba předat někomu roli moderátora.</string>
 
     <!-- Chat -->
