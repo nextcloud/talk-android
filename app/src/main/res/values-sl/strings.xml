@@ -47,6 +47,8 @@
 
     <string name="nc_never">Nikoli pridružen</string>
     <string name="nc_search">Poišči</string>
+    <string name="nc_search_conversations">Najdi pogovor</string>
+
     <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
     <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
     <string name="nc_yes">Da</string>
@@ -113,6 +115,7 @@
     <string name="nc_no_proxy">Brez posredniškega strežnika</string>
     <string name="nc_username">Uporabniško ime</string>
     <string name="nc_password">Geslo</string>
+    <string name="nc_password_optional">Geslo (izbirno)</string>
     <string name="nc_password_redacted">Predelano za zagotavljanje zasebnosti</string>
     <string name="nc_conversation_link">Povezava pogovora</string>
     <string name="nc_new_password">Novo geslo</string>
@@ -316,4 +319,5 @@ Pozdravite prijatelje in znance.</string>
 
     <string name="nc_search_for_more">Poišči več udeležencev</string>
     <string name="nc_new_group">Nova skupina</string>
-    </resources>
+    <string name="nc_search_empty_contacts">Kam so se vsi skrili?</string>
+</resources>
