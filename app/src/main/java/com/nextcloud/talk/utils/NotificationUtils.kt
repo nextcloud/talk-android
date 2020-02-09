@@ -26,6 +26,8 @@ import android.app.NotificationChannel
 import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.Context
+import android.media.AudioAttributes
+import android.net.Uri
 import android.os.Build
 import android.service.notification.StatusBarNotification
 import com.nextcloud.talk.R
@@ -44,7 +46,7 @@ object NotificationUtils {
     fun createNotificationChannel(context: Context,
                                   channelId: String, channelName: String,
                                   channelDescription: String, enableLights: Boolean,
-                                  importance: Int) {
+                                  importance: Int, sound: Uri, audioAttributes: AudioAttributes) {
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -56,7 +58,8 @@ object NotificationUtils {
             channel.description = channelDescription
             channel.enableLights(enableLights)
             channel.lightColor = R.color.colorPrimary
-            channel.setSound(null, null)
+            channel.setSound(sound, audioAttributes)
+            channel.shouldVibrate()
 
             notificationManager.createNotificationChannel(channel)
         }

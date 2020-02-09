@@ -256,7 +256,7 @@ public class CallNotificationController extends BaseController {
                     @Override
                     public void onNext(RoomsOverall roomsOverall) {
                         for (Conversation conversation : roomsOverall.getOcs().getData()) {
-                            if (roomId.equals(conversation.getRoomId())) {
+                            if (roomId.equals(conversation.getRoomId()) || roomId.equals(conversation.token)) {
                                 currentConversation = conversation;
                                 runAllThings();
                                 break;

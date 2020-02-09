@@ -19,5 +19,5 @@
  */
 
 dependencies {
-  implementation "com.google.firebase:firebase-messaging:20.0.0"
+  implementation "com.google.firebase:firebase-messaging:20.1.0"
 }

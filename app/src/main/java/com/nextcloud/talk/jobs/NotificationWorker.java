@@ -343,21 +343,43 @@ public class NotificationWorker extends Worker {
                     groupName);*/
 
             if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
+                AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
+                        (AudioAttributes.CONTENT_TYPE_SONIFICATION);
+                audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
+
+                String ringtonePreferencesString;
+                Uri soundUri;
+
+                ringtonePreferencesString = appPreferences.getMessageRingtoneUri();
+                if (TextUtils.isEmpty(ringtonePreferencesString)) {
+                    soundUri = Uri.parse("android.resource://" + context.getPackageName() +
+                            "/raw/librem_by_feandesign_message");
+                } else {
+                    try {
+                        RingtoneSettings ringtoneSettings = LoganSquare.parse
+                                (ringtonePreferencesString, RingtoneSettings.class);
+                        soundUri = ringtoneSettings.getRingtoneUri();
+                    } catch (IOException exception) {
+                        soundUri = Uri.parse("android.resource://" + context.getPackageName() +
+                                "/raw/librem_by_feandesign_message");
+                    }
+                }
+
                 NotificationUtils.INSTANCE.createNotificationChannel(context,
                         NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3(), context.getResources()
                                 .getString(R.string.nc_notification_channel_messages), context.getResources()
                                 .getString(R.string.nc_notification_channel_messages), true,
-                        NotificationManager.IMPORTANCE_HIGH);
+                        NotificationManager.IMPORTANCE_HIGH, soundUri, audioAttributesBuilder.build());
 
                 notificationBuilder.setChannelId(NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3());
             } else {
-                NotificationUtils.INSTANCE.createNotificationChannel(context,
+                /*NotificationUtils.INSTANCE.createNotificationChannel(context,
                         NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_CALLS_V3(), context.getResources()
                                 .getString(R.string.nc_notification_channel_calls), context.getResources()
                                 .getString(R.string.nc_notification_channel_calls_description), true,
                         NotificationManager.IMPORTANCE_HIGH);
 
-                notificationBuilder.setChannelId(NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_CALLS_V3());
+                notificationBuilder.setChannelId(NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_CALLS_V3());*/
             }
 
         } else {
