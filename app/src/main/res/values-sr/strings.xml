@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">Увези налоге из апликације %1$s</string>
     <string name="nc_server_failed_to_import_account">Грешка при учитавању одабраног налога</string>
     <string name="nc_server_account_imported">Одабрани налог је сада увезен и доступан</string>
+    <string name="nc_server_unsupported">Сервер нема инсталирану подржану Talk апликацију</string>
     <string name="nc_get_from_provider">Имате ли сервер?nКликните овде да направите један код провајдера</string>
 
     <!-- Account verification -->
@@ -46,6 +47,8 @@
 
     <string name="nc_never">Никад придружен</string>
     <string name="nc_search">Тражи</string>
+    <string name="nc_search_conversations">Нађи разговор</string>
+
     <string name="nc_certificate_dialog_title">Провери сертификат</string>
     <string name="nc_certificate_dialog_text">Да ли верујете, до сада непознатом, SSL сертификату, који је издао %1$s на %2$s, валидним од %3$s до %4$s?</string>
     <string name="nc_yes">Да</string>
@@ -112,6 +115,7 @@
     <string name="nc_no_proxy">Без посредника</string>
     <string name="nc_username">Корисничко име</string>
     <string name="nc_password">Лозинка</string>
+    <string name="nc_password_optional">Лозинка (опционо)</string>
     <string name="nc_password_redacted">Уклоњено због приватности</string>
     <string name="nc_conversation_link">Веза ка разговору</string>
     <string name="nc_new_password">Нова лозинка</string>
@@ -157,6 +161,10 @@
     <string name="nc_favorites_explanation">Разговор ће бити закачен на врх
 листе разговора</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Пронађи учесника</string>
+    <string name="nc_select_contacts">Пронађи учеснике</string>
+    <string name="nc_select_new_contacts">Пронађи нове учеснике</string>
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->
@@ -262,6 +270,7 @@
     <string name="nc_groups">Групе</string>
     <string name="nc_contacts">Контакти</string>
     <string name="nc_circles">Кругови</string>
+    <string name="nc_emails">Е-мејлови</string>
     <string name="nc_participants">Учесници</string>
     <string name="nc_others">Остали</string>
 
@@ -296,6 +305,8 @@
     <string name="nc_not_defined_error">Непозната грешка</string>
     <string name="nc_unauthorized_error">Неовлашћено</string>
 
+    <string name="nc_oops">Упс, нешто је пошло наопако.</string>
+
     <string name="nc_general_settings">Опште</string>
     <string name="nc_allow_guests">Дозволи госте</string>
     <string name="nc_last_moderator_title">Не могу напустити разговор</string>
@@ -306,4 +317,7 @@
     <string name="nc_copy_message">Копија</string>
     <string name="nc_reply">Одговори</string>
 
-    </resources>
+    <string name="nc_search_for_more">Тражи још учесника</string>
+    <string name="nc_new_group">Нова група</string>
+    <string name="nc_search_empty_contacts">Где су сви нестали?</string>
+</resources>

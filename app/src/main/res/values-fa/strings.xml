@@ -27,14 +27,31 @@
     <string name="nc_server_not_installed">لطفا نصب %1$s را  به پایان برسانید.</string>
     <string name="nc_server_db_upgrade_needed">لطفا ارتقا دهید  %1$s پایگاه داده خود را</string>
     <string name="nc_server_maintenance">Please bring your %1$s out of maintenance</string>
+    <string name="nc_server_version">%1$s فقط با %2$s 13 و بالاتر می کند</string>
+    <string name="nc_server_import_account_plain"> وارد کردن حساب </string>
+    <string name="nc_server_import_accounts_plain"> وارد کردن حساب ها</string>
+    <string name="nc_server_import_account">  وارد کردن حساب از  برنامه %1$s</string>
+    <string name="nc_server_import_accounts"> وارد کردن حساب ها از برنامه %1$s </string>
+    <string name="nc_server_failed_to_import_account"> وارد  کردن  حساب  انتخاب‌شده  شکست خورد</string>
+    <string name="nc_server_account_imported"> حساب  انتخاب‌شده  اکنون  وارد  شده و  در دسترس  است .</string>
+    <string name="nc_server_unsupported"> کارگزار  برنامه  صحبت  را پشتیبانی  نمی‌کند</string>
     <string name="nc_get_from_provider">آیا هیچ سروری در دسترس ندارید؟ 
 اینجارو کلیک کنید تا یک ارائه دهنده در اختیار شما قرار گیرد </string>
+
+    <!-- Account verification -->
+    <string name="nc_push_disabled">دریافت اعلانات غیرفعال است</string>
+    <string name="nc_capabilities_failed">گرفتن توانایی ها شکست خورد و شکست خورد</string>
+    <string name="nc_external_server_failed"> آوردن  تنظیمات  سیگنال شکست  خورد</string>
+    <string name="nc_display_name_not_fetched">نمایش نام نمی تواند واکشی شود . لغو شد</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s برنامه  روی  کارگزار  نصب  نشد  و  بی‌نتیجه ماند .</string>
+    <string name="nc_display_name_not_stored"> نمی‌توان  نام  نمایش  را  ذخیره  کرد ,  بی‌نتیجه گذاشت</string>
 
     <string name="nc_never">هرگز نپیوندید</string>
     <string name="nc_search">جستجو</string>
     <string name="nc_search_conversations">مکالمه را پیدا کنید</string>
 
     <string name="nc_certificate_dialog_title">گواهی را بررسی کنید</string>
+    <string name="nc_certificate_dialog_text">آیا به گواهی SSL ناشناخته ، صادر شده توسط ، اعتماد دارید %1$s برای %2$s, معتبر از %3$s به %4$s?</string>
     <string name="nc_yes">بله</string>
     <string name="nc_no">نه</string>
     <string name="nc_certificate_error">راه اندازی SSL شما مانع از اتصال شد</string>
@@ -87,15 +104,20 @@
     <string name="nc_screen_lock_timeout_30">30 ثانیه</string>
     <string name="nc_screen_lock_timeout_60">1 دقیقه</string>
     <string name="nc_screen_lock_timeout_300">5 دقیقه</string>
+    <string name="nc_screen_lock_timeout_600">10 دقیقه</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
 
+    <string name="nc_biometric_unlock">باز کردن%1$s</string>
     <string name="nc_cancel">لغو</string>
 
+    <string name="nc_no_proxy">پروکسی نیست</string>
     <string name="nc_username">نام کاربری</string>
     <string name="nc_password">گذرواژه</string>
+    <string name="nc_password_optional">رمز عبور (اختیاری)</string>
+    <string name="nc_password_redacted">به دلایل حریم خصوصی اصلاح شد</string>
     <string name="nc_conversation_link">پیوند مکالمه</string>
     <string name="nc_new_password">گذرواژه جدید</string>
     <string name="nc_wrong_password">Wrong password</string>
@@ -190,6 +212,7 @@
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">برای صحبت کردن فشار دهید</string>
+    <string name="nc_push_to_talk_desc">با غیرفعال کردن میکروفون ، کلیک کنید&amp;نگه دارید تا استفاده کنید Push-to-talk</string>
     <string name="nc_configure_cert_auth">گواهی تأیید اعتبار را انتخاب کنید</string>
     <string name="nc_change_cert_auth">گواهی تأیید اعتبار را تغییر دهید</string>
 
@@ -251,11 +274,15 @@
     <string name="nc_moderator">مدیر</string>
     <string name="nc_user">User</string>
     <string name="nc_guest">مهمان</string>
+    <string name="nc_following_link"> کاربر  پس از  یک  پیوند  عمومی</string>
+
     <!-- Browser component -->
     <string name="nc_file_browser">مرورگر فایل\"</string>
     <string name="nc_select_files">پرونده ها را انتخاب کنید</string>
     <string name="nc_file_browser_back">بازگشت</string>
     <string name="nc_file_browser_refresh">تازه‌سازی</string>
+    <string name="nc_last_modified">%1$s  آخرین  تغییر یافته : %2$s</string>
+
     <!-- Lobby -->
 
     <string name="nc_webinar">وبینار</string>
@@ -288,4 +315,5 @@
 
     <string name="nc_search_for_more">برای شرکت کنندگان بیشتر جستجو کنید</string>
     <string name="nc_new_group">گروه جدید</string>
-    </resources>
+    <string name="nc_search_empty_contacts"> کجا  مخفی  شدن  ?</string>
+</resources>
