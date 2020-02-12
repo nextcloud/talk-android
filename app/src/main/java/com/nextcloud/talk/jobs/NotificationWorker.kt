@@ -426,8 +426,7 @@ class NotificationWorker(
                         signatureVerification!!.userEntity, decryptedPushMessage!!.id
                 )
         val notificationId: Int
-        notificationId = activeStatusBarNotification?.id ?: crc32.value
-                .toInt()
+        notificationId = activeStatusBarNotification?.id ?: crc32.value.toInt()
         if (VERSION.SDK_INT >= VERSION_CODES.N && decryptedPushMessage!!.notificationUser != null && decryptedPushMessage!!.type == "chat") {
             var style: MessagingStyle? = null
             if (activeStatusBarNotification != null) {
@@ -482,7 +481,6 @@ class NotificationWorker(
                         notificationBuilder.setStyle(getStyle(person.build(), style))
                         sendNotificationWithId(notificationId, notificationBuilder.build())
                     }
-
                 }
 
                 val request = Images().getRequestForUrl(
@@ -501,36 +499,6 @@ class NotificationWorker(
         }
     }
 
-    private fun getStyle(
-            person: Person,
-            style: MessagingStyle?
-    ): MessagingStyle? {
-        if (VERSION.SDK_INT >= VERSION_CODES.N) {
-            val newStyle =
-                    MessagingStyle(person)
-            newStyle.conversationTitle = decryptedPushMessage!!.subject
-            newStyle.isGroupConversation = conversationType != "one2one"
-            style?.messages?.forEach(
-                    Consumer { message: Message ->
-                        newStyle.addMessage(
-                                Message(
-                                        message.text,
-                                        message.timestamp, message.person
-                                )
-                        )
-                    }
-            )
-            newStyle.addMessage(
-                    decryptedPushMessage!!.text, decryptedPushMessage!!.timestamp,
-                    person
-            )
-            return newStyle
-        }
-
-        // we'll never come here
-
-        return style
-    }
 
     private fun sendNotificationWithId(
             notificationId: Int,
